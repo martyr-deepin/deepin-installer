@@ -535,7 +535,7 @@ class PartUtil:
             else:
                 partition.unsetFlag()
 
-if __name__=="__main__":
+def test_operate_disk_partition_info_tab_path_disks_partitions():
     pu=PartUtil()
     print "system disks:"
     print pu.path_disks
@@ -560,7 +560,27 @@ if __name__=="__main__":
 
 
     print "\n"
-    print "delete new added partition"
-    part=pu.delete_disk_partition_info_tab()
-    
-    print pu.
+    print "delete new added disk_partition_info_tab"
+    disk=pu.get_disk_from_path("/dev/sda")
+    part=pu.path_disks_partitions[disk][0]
+    pu.delete_disk_partition_info_tab(part)
+    print pu.disk_partition_info_tab
+
+    print "\n"
+    print "after delete system_disks partitions"
+    print pu.path_disks_partitions
+
+    print "\n"
+    print "delete original disk_partition_info_tab"
+    disk=pu.get_disk_from_path("/dev/sdb")
+    part=pu.path_disks_partitions[disk][0]
+    pu.delete_disk_partition_info_tab(part)
+    print pu.disk_partition_info_tab
+
+
+    print "\n"
+    print "after delete original system_disks partitions"
+    print pu.path_disks_partitions
+
+if __name__=="__main__":
+    pass
