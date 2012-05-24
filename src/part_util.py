@@ -107,8 +107,21 @@ class PartUtil:
         return parts_path
 
     def get_blank_disk_freegeometry(self,disk):
+        '''now only func for primary partition'''
         if self.path_disks_partitions[disk]==[]:
             geometry=disk.getFreeSpaceRegions()[-1]
+        else:
+            start=self.path_disks_partitions[disk][-1].geometry.end+1
+            end=disk.getFreeSpaceRegions()[-1].end
+            length=end-start+1
+            geometry=parted.geometry.Geometry(disk.device,start,length,end,None)
+            
+        return geometry
+
+    def get_exist_disk_freegeometry(self,disk):
+        '''now only func for primary partition'''
+        if self.path_disks_partitions[disk]==[]:
+            print "error,should not be blank"
         else:
             start=self.path_disks_partitions[disk][-1].geometry.end+1
             end=disk.getFreeSpaceRegions()[-1].end
@@ -133,8 +146,8 @@ class PartUtil:
         self.type=self.set_disk_partition_type(self.disk,part_type)
         # self.free_part=self.disk.getFreeSpacePartitions()[0]
 
-        self.free_geometry=self.get_blank_disk_freegeometry(self.disk)
-
+        # self.free_geometry=self.get_blank_disk_freegeometry(self.disk)
+        self.free_geometry=self.get_exist_disk_freegeometry(self.disk)
         #temporay change arg :free_part--->free_geometry
 
         # self.geometry=self.set_disk_partition_geometry(self.disk,self.free_part,part_size)
@@ -621,6 +634,8 @@ def test_operate_disk_partition_info_tab_path_disks_partitions():
 if __name__=="__main__":
     pu=PartUtil()
     disk=pu.get_disk_from_path("/dev/sda")
-    pu.add_disk_partition_info_tab("/dev/sda","primary",2048,"ext4",None,None,"/")
-    pu.add_disk_partition_info_tab("/dev/sda","primary",2048,"ext4",None,None,"/home")
+    pu.add_disk_partition_info_tab("/dev/sdb","primary",2048,"ext4",None,None,"/")
+    # pu.add_disk_partition_info_tab("/dev/sda","primary",2048,"ext4",None,None,"/home")
+    # pu.add_disk_partition_info_tab("/dev/sda","primary",3072,"ext4",None,None,None)
+    pu.add_disk_partition_info_tab("/dev/sdb","primary",1024,"ext4",None,None,"")
     pu.add_custom_partition(pu.disk_partition_info_tab)
