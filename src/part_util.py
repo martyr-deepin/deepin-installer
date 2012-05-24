@@ -428,12 +428,23 @@ class PartUtil:
             if item[-1]=="add" and item[0].disk==disk:
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
-                print self.geometry.start
-                print self.geometry.length
-                print self.geometry.end
+                # print self.geometry.start
+                # print self.geometry.length
+                # print self.geometry.end
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
                 disk.addPartition(self.partition,self.constraint)
         disk.commit()        
+        #mkfs/setname/mount disk partitions
+        for item in self.disk_partition_info_tab:
+            if item[-1]=="add" and item[0].disk==disk:
+                self.partition=item[0]
+                self.part_fs=item[4]
+                self.part_name=item[6]
+                self.part_mountpoint=item[7]
+                self.set_disk_partition_fstype(self.partition,self.part_fs)
+                self.set_disk_partition_name(self.partition,self.part_name)
+                self.set_disk_partition_mount(self.partition,self.part_fs,self.part_mountpoint)
+                
                 
     def add_custom_partition(self,disk_partition_info_tab):
         '''add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
@@ -606,58 +617,47 @@ def test_operate_disk_partition_info_tab_path_disks_partitions():
     pu=PartUtil()
     print "system disks:"
     print pu.path_disks
-    
     print "\n"
     print "system_disks partitions:"
     print pu.path_disks_partitions
-
     print "\n"
     print "disk_partition_info_tab"
     print pu.disk_partition_info_tab
-    
     print "\n"
     print "add disk_partition_info_tab"
     pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext4",None,None,"/")
     pu.add_disk_partition_info_tab("/dev/sda","primary",2048,"ext3",None,None,"/home")
     print pu.disk_partition_info_tab
-
     print "\n"
     print "after add system_disks partitions:"
     print pu.path_disks_partitions
-
-
     print "\n"
     print "delete new added disk_partition_info_tab"
     disk=pu.get_disk_from_path("/dev/sda")
     part=pu.path_disks_partitions[disk][0]
     pu.delete_disk_partition_info_tab(part)
     print pu.disk_partition_info_tab
-
     print "\n"
     print "after delete system_disks partitions"
     print pu.path_disks_partitions
-
     print "\n"
     print "delete original disk_partition_info_tab"
     disk=pu.get_disk_from_path("/dev/sdb")
     part=pu.path_disks_partitions[disk][0]
     pu.delete_disk_partition_info_tab(part)
     print pu.disk_partition_info_tab
-
-
     print "\n"
     print "after delete original system_disks partitions"
     print pu.path_disks_partitions
 
 def test_batch_add_partition():
     pu=PartUtil()
-
-    pu.add_disk_partition_info_tab("/dev/sdb","logical",2048,"ext4",None,None,"/")
-    pu.add_disk_partition_info_tab("/dev/sda","primary",2048,"ext4",None,None,"/home")
+    pu.add_disk_partition_info_tab("/dev/sdb","logical",2048,"ext4",None,None,"")
+    pu.add_disk_partition_info_tab("/dev/sda","primary",2048,"ext4",None,None,"/")
     pu.add_disk_partition_info_tab("/dev/sda","extend",3072,"ext4",None,None,None)
-    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"")
+    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"/home")
     pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"")
     pu.add_custom_partition(pu.disk_partition_info_tab)
 
 if __name__=="__main__":
-    pass
+    test_batch_add_partition()
