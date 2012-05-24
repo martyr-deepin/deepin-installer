@@ -106,15 +106,47 @@ class PartUtil:
         parts_path.sort()    
         return parts_path
 
-    def get_disk_free_geometry(self,disk):
-        '''get free_geometry of the disk'''
-        if self.path_disks_partitions[disk]==[] :
-            geometry=disk.getFreeSpaceRegions()[-1]
-        else:
-            start=self.path_disks_partitions[disk][-1].geometry.end+1
-            end=disk.getFreeSpaceRegions()[-1].end
+    def get_disk_free_geometry(self,disk,part_type):
+        '''get free_geometry of the disk,now only func as sequence add'''
+        if part_type=="primary" or part_type=="extend":
+           
+            if self.path_disks_partitions[disk]==[]:
+                geometry=disk.getFreeSpaceRegions()[-1]
+            else:
+                start=self.path_disks_partitions[disk][-1].geometry.end+1
+                end=disk.getFreeSpaceRegions()[-1].end
+                length=end-start+1
+                geometry=parted.geometry.Geometry(disk.device,start,length,end,None)
+        
+        elif part_type=="logical":
+            extend_part=""
+            logical_part=[]
+
+            if self.path_disks_partitions[disk]==[]:
+                print "must have a extend partition first"
+                
+            for part in self.path_disks_partitions[disk]:
+                for item in self.disk_partition_info_tab:
+                    if part==item[0] and item[2]=="extend":
+                        extend_part=part
+                    elif part==item[0] and item[2]=="logical":
+                        logical_part.append(part)
+                    else:
+                        continue
+            extend_start=extend_part.geometry.start
+            extend_end=extend_part.geometry.end
+
+            if logical_part==[]:
+                start=extend_start+4
+            else:
+                start=logical_part[-1].geometry.end+4
+            
+            end=extend_end
             length=end-start+1
             geometry=parted.geometry.Geometry(disk.device,start,length,end,None)
+
+        else:
+            print "invalid partition type"
             
         return geometry
 
@@ -136,7 +168,7 @@ class PartUtil:
         # self.free_part=self.disk.getFreeSpacePartitions()[0]
 
         #temporay change arg :free_part--->free_geometry
-        self.free_geometry=self.get_disk_free_geometry(self.disk)
+        self.free_geometry=self.get_disk_free_geometry(self.disk,part_type)
         # self.geometry=self.set_disk_partition_geometry(self.disk,self.free_part,part_size)
         self.geometry=self.set_disk_partition_geometry(self.disk,self.free_geometry,part_size)
 
@@ -617,12 +649,15 @@ def test_operate_disk_partition_info_tab_path_disks_partitions():
     print "after delete original system_disks partitions"
     print pu.path_disks_partitions
 
+def test_batch_add_partition():
+    pu=PartUtil()
+
+    pu.add_disk_partition_info_tab("/dev/sdb","logical",2048,"ext4",None,None,"/")
+    pu.add_disk_partition_info_tab("/dev/sda","primary",2048,"ext4",None,None,"/home")
+    pu.add_disk_partition_info_tab("/dev/sda","extend",3072,"ext4",None,None,None)
+    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"")
+    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"")
+    pu.add_custom_partition(pu.disk_partition_info_tab)
 
 if __name__=="__main__":
-    pu=PartUtil()
-    disk=pu.get_disk_from_path("/dev/sda")
-    pu.add_disk_partition_info_tab("/dev/sdb","primary",2048,"ext4",None,None,"/")
-    pu.add_disk_partition_info_tab("/dev/sda","primary",2048,"ext4",None,None,"/home")
-    pu.add_disk_partition_info_tab("/dev/sda","primary",3072,"ext4",None,None,None)
-    pu.add_disk_partition_info_tab("/dev/sdb","primary",1024,"ext4",None,None,"")
-    pu.add_custom_partition(pu.disk_partition_info_tab)
+    pass
