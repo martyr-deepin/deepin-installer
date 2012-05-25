@@ -202,9 +202,7 @@ class PartUtil:
             return
         for item in filter(lambda info:partition.__eq__(info[0]),self.disk_partition_info_tab):
             item[-1]=part_flag   
-        # for item in self.disk_partition_info_tab:
-        #     if partition.__eq__(item[0]):# or partition.path==item[0].path:
-        #         item[-1]=part_flag
+
         return  self.disk_partition_info_tab
 
     def delete_disk_partition_info_tab(self,partition):
@@ -224,20 +222,6 @@ class PartUtil:
                 break
 
         return self.disk_partition_info_tab
-
-        # for item in self.disk_partition_info_tab:
-        #     if partition.__eq__(item[0]): #or partition.path==item[0].path:
-        #         if item[-1]=="add":
-        #             self.disk_partition_info_tab=filter(lambda i:i!=item,self.disk_partition_info_tab)
-        #             # self.disk_partition_info_tab.remove(item)
-        #             self.delete_path_disks_partitions(partition.disk,partition)
-        #         elif item[-1]=="keep":
-        #             self.mark_disk_partition_info_tab(partition,"delete")
-        #         else:
-        #             print "invalid,if partition marked delete,you won't see it"
-        #             break
-        #     else:
-        #         continue
 
 #may not need this table
     def add_disk_partition_tab(self,disk,geometry,partition):
@@ -388,18 +372,23 @@ class PartUtil:
             print "partition not in the disk"
             return
 
-        if partition.type==parted.PARTITION_EXTENDED:
-            if disk.getLogicalPartitions()!=[] :
-                print "need delete all logical partitions before delete extend partition"
-                return 
-            
+        if partition.type==parted.PARTITION_EXTENDED and disk.getLogicalPartitions()!=[]:
+            print "need delete all logical partitions before delete extend partition"
+            for logical_part in disk.getLogicalPartitions():
+                self.delete_path_disks_partitions(disk,logical_part)
+                self.disk_partition_info_tab=filter(lambda info:info[0]!=logical_part,self.disk_partition_info_tab)
+                try:
+                    disk.deletePartition(logical_part)
+                except:
+                    print "delete logical_part failed"
+
         self.delete_path_disks_partitions(disk,partition)    
 
         self.disk_partition_info_tab=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab)
-        print "partition disk:"
+        # print "partition disk:"
 
-        print self.get_disk_partitions(disk)
-        print partition.disk
+        # print self.get_disk_partitions(disk)
+        # print partition.disk
         try:
             disk.deletePartition(partition)
         except:
@@ -411,8 +400,8 @@ class PartUtil:
            This function can be called only because you want to delete the original partition
            umount it first
         '''
-        for item in self.disk_partition_info_tab:
-            if item[0].path==partition_path and item[-1]=="delete":
+        for item in filter(lambda info:info[0].path==partition_path,self.disk_partition_info_tab):
+            if item[-1]=="delete":
                 self.partition=item[0]
                 break
             else:
@@ -667,11 +656,11 @@ if __name__=="__main__":
     pu.delete_disk_partition_info_tab(part)
 
     disk2=pu.get_disk_from_path("/dev/sdb")
-    part2=pu.get_disk_partitions(disk2)[0]
+    part2=pu.get_disk_partitions(disk2)[1]
 
     pu.delete_disk_partition_info_tab(part2)
 
-    pu.delete_custom_partition("/dev/sdb1")
+    pu.delete_custom_partition("/dev/sdb2")
     for item in pu.disk_partition_info_tab:
         print item
     pu.add_custom_partition(pu.disk_partition_info_tab)
