@@ -378,18 +378,15 @@ class PartUtil:
                 self.delete_path_disks_partitions(disk,logical_part)
                 self.disk_partition_info_tab=filter(lambda info:info[0]!=logical_part,self.disk_partition_info_tab)
                 try:
+                    self.set_disk_partition_umount(logical_part)
                     disk.deletePartition(logical_part)
                 except:
                     print "delete logical_part failed"
 
         self.delete_path_disks_partitions(disk,partition)    
-
         self.disk_partition_info_tab=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab)
-        # print "partition disk:"
-
-        # print self.get_disk_partitions(disk)
-        # print partition.disk
         try:
+            self.set_disk_partition_umount(partition)
             disk.deletePartition(partition)
         except:
             print "error occurs"
@@ -410,7 +407,6 @@ class PartUtil:
             print "partition doesn't exist"
             return
         self.disk=self.partition.disk
-
         self.delete_disk_partition(self.disk,self.partition)
 
     def recovery_disk_partition(self,disk,partition):
@@ -529,7 +525,6 @@ class PartUtil:
         if mountpoint==None or len(mountpoint)==0:
             print "need mountpoint,not given"
             return 
-
         part_path=partition.path
         mp=TARGET+mountpoint
         if not os.path.exists(mp):
@@ -548,15 +543,21 @@ class PartUtil:
         mount_flag=False
         mtab=get_os_command_output("cat /etc/mtab")
         umount_command="sudo umount "+part_path
+        umount_busy_command="sudo umount -l "+part_path
+        # umount_busy_command="sudo fuser -mk "+part_path
         for item in mtab:
             if item.startswith(part_path):
                 mount_flag=True
-
-        if mount_flag==True:        
-            if not partition.busy:
-                run_os_command(umount_command)
             else:
-                print "partition is busy,cann't umount"
+                continue
+        if mount_flag==True:        
+            if partition.busy:
+                run_os_command(umount_busy_command)
+                # run_os_command(umount_command)
+            else:
+                run_os_command(umount_command)
+        else:
+            print "don't need to umount"+part_path
 
     def get_disk_partition_mount(self,partition):
         '''get partition mount info,need consider multiple mount '''
@@ -589,7 +590,6 @@ class PartUtil:
         set/get partition path for the tree view'''
         # to be implement
         pass
-
 
 def test_operate_disk_partition_info_tab_path_disks_partitions():
     pu=PartUtil()
@@ -643,7 +643,7 @@ def test_delete_new_partition():
         print item
     pu.add_custom_partition(pu.disk_partition_info_tab)
 
-if __name__=="__main__":
+def test_delete_mount_extend_partition():
     pu=PartUtil()    
     pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext4",None,None,"/")
     pu.add_disk_partition_info_tab("/dev/sda","extend",4096,"ext4",None,None,None)
@@ -665,3 +665,6 @@ if __name__=="__main__":
         print item
     pu.add_custom_partition(pu.disk_partition_info_tab)
     
+if __name__=="__main__":
+    test_delete_mount_extend_partition()
+
