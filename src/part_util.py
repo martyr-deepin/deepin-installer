@@ -411,21 +411,36 @@ class PartUtil:
         self.part_size=partition.getSize()
         self.part_maxava_size=partition.getMaxAvailableSize(unit="MB")
 
+    def probe_tab_has_extend(self,disk,disk_partition_info_tab):
+        '''probe extend partition,for except handle add logical without extend'''
+        Flag=False
+        for item in filter(lambda info:info[0].disk==disk,disk_partition_info_tab):
+            if item[0].type==parted.PARTITION_EXTENDED:
+                Flag=True
+            elif item[0].type==parted.PARTITION_NORMAL or item[0].type==parted.PARTITION_LOGICAL:
+                continue
+            else:
+                continue
+        return Flag    
+
     def add_custom_disk_partition(self,disk,disk_partition_info_tab):
         '''help for add_custom_partition'''
-        for item in disk_partition_info_tab:
-            if item[-1]=="add" and item[0].disk==disk:
+        for item in filter(lambda info:info[-1]=="add" and info[0].disk==disk,disk_partition_info_tab):
+            if item[0].type==parted.PARTITION_LOGICAL and not self.probe_tab_has_extend(disk,disk_partition_info_tab):
+                print "can't add logical partition as there is no extended partition"
+                break
+            else:
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
-                # print self.geometry.start
-                # print self.geometry.length
-                # print self.geometry.end
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
                 disk.addPartition(self.partition,self.constraint)
         disk.commit()        
         #mkfs/setname/mount disk partitions
-        for item in self.disk_partition_info_tab:
-            if item[-1]=="add" and item[0].disk==disk:
+        for item in filter(lambda info:info[-1]=="add" and info[0].disk==disk,disk_partition_info_tab):
+            if item[0].type==parted.PARTITION_LOGICAL and not self.probe_tab_has_extend(disk,disk_partition_info_tab):
+                print "as no extended partition to add logical,no need to mkfs and mount"
+                break
+            else:
                 self.partition=item[0]
                 self.part_fs=item[4]
                 self.part_name=item[6]
@@ -609,12 +624,12 @@ if __name__=="__main__":
     pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext4",None,None,"/")
     pu.add_disk_partition_info_tab("/dev/sda","extend",4096,"ext4",None,None,None)
     pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"/home")
-    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,None)
+    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext3",None,None,None)
     # pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext3",None,None,"/usr")
     # print pu.disk_partition_info_tab
 
     disk=pu.get_disk_from_path("/dev/sda")
-    part=pu.path_disks_partitions[disk][-1]
+    part=pu.path_disks_partitions[disk][2]
     
 
     pu.delete_disk_partition_info_tab(part)
