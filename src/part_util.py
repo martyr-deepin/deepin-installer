@@ -200,9 +200,11 @@ class PartUtil:
         if(partition==None):
             print "partition doesn't exist"
             return
-        for item in self.disk_partition_info_tab:
-            if partition.__eq__(item[0]):# or partition.path==item[0].path:
-                item[-1]=part_flag
+        for item in filter(lambda info:partition.__eq__(info[0]),self.disk_partition_info_tab):
+            item[-1]=part_flag   
+        # for item in self.disk_partition_info_tab:
+        #     if partition.__eq__(item[0]):# or partition.path==item[0].path:
+        #         item[-1]=part_flag
         return  self.disk_partition_info_tab
 
     def delete_disk_partition_info_tab(self,partition):
@@ -210,22 +212,33 @@ class PartUtil:
         if(partition==None):
             print "partition doesn't exist"
             return
-        
-        for item in self.disk_partition_info_tab:
-            if partition.__eq__(item[0]): #or partition.path==item[0].path:
-                if item[-1]=="add":
-                    self.disk_partition_info_tab=filter(lambda i:i!=item,self.disk_partition_info_tab)
-                    # self.disk_partition_info_tab.remove(item)
-                    self.delete_path_disks_partitions(partition.disk,partition)
-                elif item[-1]=="keep":
-                    self.mark_disk_partition_info_tab(partition,"delete")
-                else:
-                    print "invalid,if partition marked delete,you won't see it"
-                    break
+
+        for item in filter(lambda info:partition.__eq__(info[0]),self.disk_partition_info_tab):
+            if item[-1]=="add":
+                self.disk_partition_info_tab=filter(lambda i:i!=item,self.disk_partition_info_tab)
+                self.delete_path_disks_partitions(partition.disk,partition)
+            elif item[-1]=="keep":
+                self.mark_disk_partition_info_tab(partition,"delete")
             else:
-                continue
+                print "invalid,if partition marked delete,you wonn't see it"
+                break
 
         return self.disk_partition_info_tab
+
+        # for item in self.disk_partition_info_tab:
+        #     if partition.__eq__(item[0]): #or partition.path==item[0].path:
+        #         if item[-1]=="add":
+        #             self.disk_partition_info_tab=filter(lambda i:i!=item,self.disk_partition_info_tab)
+        #             # self.disk_partition_info_tab.remove(item)
+        #             self.delete_path_disks_partitions(partition.disk,partition)
+        #         elif item[-1]=="keep":
+        #             self.mark_disk_partition_info_tab(partition,"delete")
+        #         else:
+        #             print "invalid,if partition marked delete,you won't see it"
+        #             break
+        #     else:
+        #         continue
+
 #may not need this table
     def add_disk_partition_tab(self,disk,geometry,partition):
         '''add disk part tab,need consider handle except and part mount info'''
@@ -381,8 +394,17 @@ class PartUtil:
                 return 
             
         self.delete_path_disks_partitions(disk,partition)    
-        disk.deletePartition(partition)
-        disk.commitToDevice()
+
+        self.disk_partition_info_tab=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab)
+        print "partition disk:"
+
+        print self.get_disk_partitions(disk)
+        print partition.disk
+        try:
+            disk.deletePartition(partition)
+        except:
+            print "error occurs"
+        disk.commit()
 
     def delete_custom_partition(self,partition_path):
         '''delete disk partition:get partition_path from ui
@@ -616,24 +638,41 @@ def test_operate_disk_partition_info_tab_path_disks_partitions():
     print "\n"
     print "after delete original system_disks partitions"
     print pu.path_disks_partitions
-
-def test_batch_add_partition():
-    pass
-if __name__=="__main__":
+def test_delete_new_partition():
     pu=PartUtil()    
     pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext4",None,None,"/")
     pu.add_disk_partition_info_tab("/dev/sda","extend",4096,"ext4",None,None,None)
     pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"/home")
     pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext3",None,None,None)
-    # pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext3",None,None,"/usr")
-    # print pu.disk_partition_info_tab
 
     disk=pu.get_disk_from_path("/dev/sda")
     part=pu.path_disks_partitions[disk][2]
-    
 
     pu.delete_disk_partition_info_tab(part)
     # print pu.path_disks_partitions[disk]
     for item in pu.disk_partition_info_tab:
         print item
     pu.add_custom_partition(pu.disk_partition_info_tab)
+
+if __name__=="__main__":
+    pu=PartUtil()    
+    pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext4",None,None,"/")
+    pu.add_disk_partition_info_tab("/dev/sda","extend",4096,"ext4",None,None,None)
+    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"/home")
+    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext3",None,None,None)
+
+    disk=pu.get_disk_from_path("/dev/sda")
+    part=pu.path_disks_partitions[disk][2]
+
+    pu.delete_disk_partition_info_tab(part)
+
+    disk2=pu.get_disk_from_path("/dev/sdb")
+    part2=pu.get_disk_partitions(disk2)[0]
+
+    pu.delete_disk_partition_info_tab(part2)
+
+    pu.delete_custom_partition("/dev/sdb1")
+    for item in pu.disk_partition_info_tab:
+        print item
+    pu.add_custom_partition(pu.disk_partition_info_tab)
+    
