@@ -51,7 +51,6 @@ class PartUtil:
     #you can update the variable,but never call the get_path_disks_partitions function again
         self.path_disks_partitions=self.get_path_disks_partitions()
 
-
     #machine based:[disk,geometry,partition],to do the backend operations,may not need this table,consider to delete
         self.disk_partition_tab =[]
 
@@ -100,6 +99,7 @@ class PartUtil:
 
     def refresh_disk_partition_info_tab(self,disk_partition_info_tab):
         '''sort the table according to partition number,update the table after add or delete operation'''
+        #to be implemented
         parts_path=[]
         for item in self.disk_partition_info_tab:
             parts_path.append(item[0].path)
@@ -154,7 +154,7 @@ class PartUtil:
     def get_disk_logical_freepart(self,disk):
         '''attention:this freepart are logical,not in the path_disk_partitions and disk_partition_info_tab,
         used for locate geometry to create new partition'''
-#to be implemented
+#to be implemented,consider to delete this,just use get_disk_free_geometry
         pass
 
     def get_disk_partition_object(self,part_disk_path,part_type,part_size,part_fs):
@@ -214,7 +214,8 @@ class PartUtil:
         for item in self.disk_partition_info_tab:
             if partition.__eq__(item[0]): #or partition.path==item[0].path:
                 if item[-1]=="add":
-                    self.disk_partition_info_tab.remove(item)
+                    self.disk_partition_info_tab=filter(lambda i:i!=item,self.disk_partition_info_tab)
+                    # self.disk_partition_info_tab.remove(item)
                     self.delete_path_disks_partitions(partition.disk,partition)
                 elif item[-1]=="keep":
                     self.mark_disk_partition_info_tab(partition,"delete")
@@ -226,27 +227,27 @@ class PartUtil:
 
         return self.disk_partition_info_tab
 #may not need this table
-    # def add_disk_partition_tab(self,disk,geometry,partition):
-    #     '''add disk part tab,need consider handle except and part mount info'''
-    #     disk_partition_tab_item=(disk,geometry,partition)
-    #     try:
-    #         self.disk_partition_tab.append(disk_partition_tab_item)
-    #     except:
-    #         print "add disk partition tab failed!"
-    #     # return self.disk_partition_tab    
+    def add_disk_partition_tab(self,disk,geometry,partition):
+        '''add disk part tab,need consider handle except and part mount info'''
+        disk_partition_tab_item=(disk,geometry,partition)
+        try:
+            self.disk_partition_tab.append(disk_partition_tab_item)
+        except:
+            print "add disk partition tab failed!"
+        # return self.disk_partition_tab    
 
 
-    # def delete_disk_partition_tab(self,disk,partition):
-    #     '''delete disk part tab item'''
-    #     for disk_partition_tab_item in self.disk_partition_tab:
-    #         if disk in disk_partition_tab_item and partition in disk_partition_tab_item:
-    #             self.disk_partition_tab.remove(disk_partition_tab_item)
-    #     else:
-    #         print "the partition is not in the disk_partition_tab"
-    #     # print self.disk_partition_tab            
+    def delete_disk_partition_tab(self,disk,partition):
+        '''delete disk part tab item'''
+        for disk_partition_tab_item in self.disk_partition_tab:
+            if disk in disk_partition_tab_item and partition in disk_partition_tab_item:
+                self.disk_partition_tab.remove(disk_partition_tab_item)
+        else:
+            print "the partition is not in the disk_partition_tab"
+        # print self.disk_partition_tab            
                     
-    # def change_disk_partition_tab(self,disk,partition):
-    #     pass
+    def change_disk_partition_tab(self,disk,partition):
+        pass
 
 
     #disk operations    
@@ -410,18 +411,6 @@ class PartUtil:
         self.part_size=partition.getSize()
         self.part_maxava_size=partition.getMaxAvailableSize(unit="MB")
 
-    # def add_custom_partition(self,part_disk_path,part_type,part_size,part_fs,part_format,part_name,part_mountpoint):
-    #     '''add partition according to customize'''
-
-    #     self.disk=self.get_disk_from_path(part_disk_path)
-    #     self.type=self.set_disk_partition_type(self.disk,part_type)
-    #     self.free_part=self.disk.getFreeSpacePartitions()[0]
-    #     self.geometry=self.set_disk_partition_geometry(self.disk,self.free_part,part_size)
-    #     self.fs=parted.filesystem.FileSystem(part_fs,self.geometry,False,None)
-    #     self.partition=self.add_disk_partition(self.disk,self.type,self.fs,self.geometry,None)
-    #     self.set_disk_partition_fstype(self.partition,part_fs)
-    #     self.set_disk_partition_name(self.partition,part_name)
-    #     self.set_disk_partition_mount(self.partition,part_fs,part_mountpoint)
     def add_custom_disk_partition(self,disk,disk_partition_info_tab):
         '''help for add_custom_partition'''
         for item in disk_partition_info_tab:
@@ -450,20 +439,6 @@ class PartUtil:
         '''add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
         for disk in self.get_system_disks():
             self.add_custom_disk_partition(disk,disk_partition_info_tab)
-                
-        # for disk in self.disks:
-        #     for item in self.disk_partition_info_tab:
-        #         if item[1]==disk.device.path:
-        #             self.partition=item[0]
-        #             self.part_fs=item[4]
-        #             self.part_name=item[6]
-        #             self.part_mountpoint=item[7]
-        #             self.set_disk_partition_fstype(self.partition,self.part_fs)
-        #             self.set_disk_partition_name(self.partition,self.part_name)
-        #             self.set_disk_partition_mount(self.partition,self.part_fs,self.part_mountpoint)
-        #         else:
-        #             continue
-                
 
     def set_disk_partition_type(self,disk,part_type):
         '''check the to added partition type,need consider the count of primary,extend,etc...'''
@@ -476,22 +451,6 @@ class PartUtil:
         else:
             print "part type error"
         return self.type    
-
-#temporay change the arg:free_part --> free_geometry
-    # def set_disk_partition_geometry(self,disk,free_part,size):
-    #     '''return geometry of the to added partition,now just work for the first partition'''
-    #     if free_part==None:
-    #         free_part=disk.getFreeSpacePartitions()[0]
-    #     #need to make sure the geometry.start of the new partition    
-    #     self.start=free_part.geometry.start
-    #     self.length=long(free_part.geometry.length*size/free_part.getSize())
-    #     self.end=self.start+self.length-1
-    #     if self.end > free_part.geometry.end:
-    #         self.end=free_part.geometry.end
-    #         self.length=self.end-self.start+1
-
-    #     self.geometry=parted.geometry.Geometry(disk.device,self.start,self.length,self.end,None)
-    #     return self.geometry
 
     def set_disk_partition_geometry(self,disk,free_geometry,size):
         '''to get free_geometry'''
@@ -520,13 +479,6 @@ class PartUtil:
         else:
             partition.name=part_name
         
-    # def add_disk_partition(self,disk,,geometry,PedPartition):
-    #     '''create a partition to a given disk,need to consider the constraint'''
-    #     # self.partition=self.get_disk_partition_object()
-
-    #     self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-    #     disk.addPartition(self.partition,self.constraint)
-    #     disk.commitToDevice()
 
     def set_disk_partition_fstype(self,partition,fstype):
         '''format the partition to given fstype,not create the parted fs object'''
@@ -651,13 +603,22 @@ def test_operate_disk_partition_info_tab_path_disks_partitions():
     print pu.path_disks_partitions
 
 def test_batch_add_partition():
-    pu=PartUtil()
-    pu.add_disk_partition_info_tab("/dev/sdb","logical",2048,"ext4",None,None,"")
-    pu.add_disk_partition_info_tab("/dev/sda","primary",2048,"ext4",None,None,"/")
-    pu.add_disk_partition_info_tab("/dev/sda","extend",3072,"ext4",None,None,None)
-    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"/home")
-    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"")
-    pu.add_custom_partition(pu.disk_partition_info_tab)
-
+    pass
 if __name__=="__main__":
-    test_batch_add_partition()
+    pu=PartUtil()    
+    pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext4",None,None,"/")
+    pu.add_disk_partition_info_tab("/dev/sda","extend",4096,"ext4",None,None,None)
+    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,"/home")
+    pu.add_disk_partition_info_tab("/dev/sda","logical",1024,"ext4",None,None,None)
+    # pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext3",None,None,"/usr")
+    # print pu.disk_partition_info_tab
+
+    disk=pu.get_disk_from_path("/dev/sda")
+    part=pu.path_disks_partitions[disk][-1]
+    
+
+    pu.delete_disk_partition_info_tab(part)
+    # print pu.path_disks_partitions[disk]
+    for item in pu.disk_partition_info_tab:
+        print item
+    pu.add_custom_partition(pu.disk_partition_info_tab)
