@@ -106,30 +106,127 @@ class PartUtil:
         parts_path.sort()    
         return parts_path
 
-    def get_disk_free_geometry(self,disk,part_type,length):
+    def get_disk_free_geometry(self,disk,part_type,minlength):
         '''get free geometry to add part:specified by part_type and length'''
+        #get current disk info first
+        primary_part=[]
+        logical_part=[]
+        extended_part=[]
+        
+        for item in filter(lambda info:info[0].disk==disk,self.disk_partition_info_tab):
+            if item[2]=="primary":
+                primary_part.append(item[0])
+            elif item[2]=="extend":
+                extended_part.append(item[0])
+            elif item[2]=="logical":
+                logical_part.append(item[0])
+            else:
+                print "invalid part type"
+
+        if extended_part.count() > 1:
+            print "can have only one extended_part"
+        else:
+            extend_part=extended_part[0]
+        #consider extend part as primary    
+        main_part_list=primary_part.append(extend_part)    
+        main_geom_list=[]
+        logical_geom_list=[]   
+        main_geom_gap_list=[]
+        logical_geom_gap_list=[]
+                   
         if part_type=="primary" or part_type=="extend":
-            #get size valid geometry
-            geom_list=filter(lambda geom:geom.length > 10,disk.getFreeSpaceRegions())
-            #for blank disk
-            if self.path_disks_partitions[disk]==[] and geom_list.
-                geometry=geom_list[-1]
-                if geometry.length < length:
-                    print "disk size to small to create the partition"
-                    #or try to large the geometry
-                    return
-                return geometry    
 
-            elif disk.getFreeSpaceRegions().
+            for part in main_part_list:
+                main_geom_list.sort(cmp=lambda x,y:cmp(x.start,y.start))
+                main_geom_list.append(part.geometry)
+
+            start=disk.getFreeSpaceRegions()[0].start+4
+            end=main_geom_list[0].geom_list.start-4
+            length=end-start+1
+            if length > minlength:
+                main_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
+            else:
+                print "begin of disk have geometry overlap or disk size too small to satisfy minlength"
+                break
+
+            geom=iter(main_geom_list)
+            while geom.next():
+                start=geom.end+4
+                end=geom.next().start-4
+                length=end-start+1
+                if length > minlength:
+                    main_geom_gap=parted.geometry.Geometry(disk.device,start,length,end,None)
+                    main_geom_gap_list.append(main_geom_gap)
+                else:
+                    print "have geometry overlap or disk size too small to satisfy minlength"
+                geom=geom.next
+
+            start=main_geom_list[-1].end+4    
+            end=disk.getFreeSpaceRegions()[-1].end-4 
+            length=end-start+1
+            if length > minlength:
+                main_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
+            else:
+                print "end of disk have geometry overlap or disk size too small to satisfy the minlength"
 
 
+            main_geom_max=main_geom_gap_list[0]    
+            for geom in main_geom_gap_list:    
+                if geom.length > main_geom_max.length:
+                    main_geom_max=geom
+
+            return main_geom_max
+
+        
         elif part_type=="logical":
-            pass
+            if extended_part==[] or extend_part==None:
+                print "must have an extended partition before add logical partition"
+                return 
+
+            for part in logical_part:
+                logical_geom_list.append(part.geometry)
+                logical_geom_list.sort(cmp=lambda x,y:cmp(x.start,y.start))
+
+            start=extend_part.geometry.start+4
+            end=logical_geom_list[0].start-4
+            length=end-start
+            if length > minlength:
+                logical_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
+            else:
+                print "begin of extend_part have geometry overlap or disk is too small to satisfy the minlength"
+                break
+
+            geom=iter(logical_geom_list)
+
+            while geom.next():
+                start=geom.end+4
+                end=geom.next().start-4
+                length=end-start+1
+                if length > minlength:
+                    logical_geom_gap=parted.geometry.Geometry(disk.device,start,length,end,None)
+                    logical_geom_gap_list.append(logical_geom_gap)
+                else:
+                    print "have geometry overlap or disk is too small to satisfy the minlength"
+                geom=geom.next()    
+
+            start=logical_geom_list[-1].end+4
+            end=extend_part.end-4
+            length=end-start
+            if length > minlength:
+                logical_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
+            else:
+                print "end of extend_part have geometry overlap or disk is too small to satisfy the minlength"
+                break
+
+            logical_geom_max=logical_geom_gap_list[0]
+            for geom in logical_geom_gap_list:
+                if geom.length > logical_geom_max.length:
+                    logical_geom_max=geom
+
+            return logical_geom_max        
         else:
             print "invalid partition type"
-
-        return geometry    
-
+            return
 
 
     # def get_disk_free_geometry(self,disk,part_type):
@@ -191,11 +288,13 @@ class PartUtil:
       
         self.disk=self.get_disk_from_path(part_disk_path)
         self.type=self.set_disk_partition_type(self.disk,part_type)
-        # self.free_part=self.disk.getFreeSpacePartitions()[0]
+        
+        import math
+        minlength=math.floor(part_size*1024*1024/self.disk.device.sectorSize)+1
 
-        #temporay change arg :free_part--->free_geometry
-        self.free_geometry=self.get_disk_free_geometry(self.disk,part_type)
-        # self.geometry=self.set_disk_partition_geometry(self.disk,self.free_part,part_size)
+        self.free_geometry=self.get_disk_free_geometry(self.disk,part_type,minlength)
+        # self.free_geometry=self.get_disk_free_geometry(self.disk,part_type)
+
         self.geometry=self.set_disk_partition_geometry(self.disk,self.free_geometry,part_size)
 
         self.fs=parted.filesystem.FileSystem(part_fs,self.geometry,False,None)
@@ -450,8 +549,6 @@ class PartUtil:
         for item in filter(lambda info:info[0].disk==disk,disk_partition_info_tab):
             if item[0].type==parted.PARTITION_EXTENDED:
                 Flag=True
-            elif item[0].type==parted.PARTITION_NORMAL or item[0].type==parted.PARTITION_LOGICAL:
-                continue
             else:
                 continue
         return Flag    
@@ -503,7 +600,7 @@ class PartUtil:
     def set_disk_partition_geometry(self,disk,free_geometry,size):
         '''to get free_geometry'''
         if free_geometry==None:
-            free_geometry=disk.getFreeSpaceRegions()[0]
+            free_geometry=disk.getFreeSpaceRegions()[0]#this have to be fixed
         self.start=free_geometry.start
         self.length=long(free_geometry.length*size/free_geometry.getSize())
         self.end=self.start+self.length-1
@@ -689,5 +786,5 @@ def test_delete_mount_extend_partition():
     pu.add_custom_partition(pu.disk_partition_info_tab)
     
 if  __name__=="__main__":
-    
+    test_delete_mount_extend_partition()
 
