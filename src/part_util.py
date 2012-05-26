@@ -163,15 +163,17 @@ class PartUtil:
                 print "there have enough space between the start of the disk and the first partition"
                 main_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
 
-            for i in range(len(main_geom_list)-2):
+            for i in range(len(main_geom_list)-1):
                 start=main_geom_list[i].end+4
                 end=main_geom_list[i+1].start-4
                 length=end-start+1
                 if length > minlength:
                     main_geom_gap=parted.geometry.Geometry(disk.device,start,length,end,None)
                     main_geom_gap_list.append(main_geom_gap)
+                elif length < -10:
+                    print "have geometry overlap"
                 else:
-                    print "have geometry overlap or disk size too small to satisfy minlength"
+                    print "disk size too small to satisfy minlength"
                 i=i+1    
 
             start=main_geom_list[-1].end+4    
@@ -203,8 +205,16 @@ class PartUtil:
                 logical_geom_list.sort(cmp=lambda x,y:cmp(x.start,y.start))
             #if there is no logical partition,just return the hole extended partition geometry
             if len(logical_geom_list)==0:
-                return extend_part.geometry
-            
+                start=extend_part.geometry.start+4
+                end=extend_part.geometry.end-4
+                length=end-start+1
+                if length > minlength:
+                    return parted.geometry.Geometry(disk.device,start,length,end)
+                else:
+                    print "the hole extend_part size is smaller than the to added logical partition"
+                    return 
+
+            #if there already have logical partitions
             start=extend_part.geometry.start+4
             end=logical_geom_list[0].start-4
             length=end-start
@@ -213,15 +223,17 @@ class PartUtil:
                 logical_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
 
 
-            for i in range(len(logical_geom_list)-2):
+            for i in range(len(logical_geom_list)-1):
                 start=logical_geom_list[i].end+4
                 end=logical_geom_list[i+1]-4
                 length=end-start+1
                 if length > minlength:
                     logical_geom_gap=parted.geometry.Geometry(disk.device,start,length,end,None)
                     logical_geom_gap_list.append(logical_geom_gap)
+                elif length < -10:
+                    print "have geometry overlap"
                 else:
-                    print "have geometry overlap or disk is too small to satisfy the minlength"
+                    print "disk is too small to satisfy the minlength"
                 i=i+1    
 
             start=logical_geom_list[-1].end+4
@@ -492,7 +504,7 @@ class PartUtil:
     def delete_custom_partition(self,partition_path):
         '''delete disk partition:get partition_path from ui
            This function can be called only because you want to delete the original partition
-           umount it first
+           umount it first,handle the table delete in delete_disk_partition
         '''
         for item in filter(lambda info:info[0].path==partition_path,self.disk_partition_info_tab):
             if item[-1]=="delete":
@@ -534,6 +546,7 @@ class PartUtil:
             else:
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
+                print self.geometry
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
                 disk.addPartition(self.partition,self.constraint)
         disk.commit()        
@@ -751,11 +764,12 @@ def test_delete_mount_extend_partition():
     pu.delete_disk_partition_info_tab(part)
 
     disk2=pu.get_disk_from_path("/dev/sdb")
-    part2=pu.get_disk_partitions(disk2)[0]
+    part2=pu.get_disk_partitions(disk2)[2]
     pu.delete_disk_partition_info_tab(part2)
-    pu.delete_custom_partition("/dev/sdb2")
 
-    pu.add_disk_partition_info_tab("/dev/sdb","logical",1024,"ext2",None,None,"/home")
+    pu.delete_custom_partition("/dev/sdb5")
+
+    pu.add_disk_partition_info_tab("/dev/sdb","logical",1000,"ext3",None,None,"/home")
     pu.add_disk_partition_info_tab("/dev/sdb","primary",1000,"ext3",None,None,None)
 
     pu.add_custom_partition(pu.disk_partition_info_tab)
