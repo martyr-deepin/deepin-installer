@@ -1,0 +1,186 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Copyright (C) 2012~2013 Deepin, Inc.
+#               2012~2013 Long Wei
+#
+# Author:     Long Wei <yilang2007lw@gmail.com>
+# Maintainer: Long Wei <yilang2007lw@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import os
+from basic_utils import get_os_command_oneput,run_os_command,get_os_command_output
+
+def get_install_device():
+    ''' return device :/dev/sda,/dev/sdb,etc '''
+    
+    # command="sudo ls /dev"
+    # devices=get_command_output(command)
+    f=os.popen("sudo ls /dev")
+    devices=f.readlines()
+    f.close()
+    device=[]
+    for dev in devices:
+    
+        if dev.startswith("sd",0,3):
+            dev=dev[0:-1]
+            device.append("/dev/"+dev)
+
+    return device
+
+
+def selected_system_device(index):
+    '''choose which device to install system,eg :/dev/sda'''
+
+    device=get_install_device()
+    dev=device[index]
+    # print dev
+    return dev 
+    
+def get_device_size(device):
+    ''' return size(byte) to the special device,
+        support device and partition   '''
+
+    command="sudo fdisk -s "+device
+    strsize=get_os_command_oneput(command)
+    size=int(strsize)*1024
+    return size
+
+def get_device_size_to_human(device):
+    '''return size(GB) to the special device'''
+
+    size=get_device_size(device)
+
+    return format_size(size)
+
+
+def format_size(size):
+    """Format a partition size."""
+
+    if size < 1024:
+        unit = 'B'
+        factor = 1
+    elif size < 1024 * 1024:
+        unit = 'kB'
+        factor = 1024
+    elif size < 1024 * 1024 * 1024:
+        unit = 'MB'
+        factor = 1024 * 1024
+    elif size < 1024* 1024 * 1024 * 1024:
+        unit = 'GB'
+        factor = 1024 * 1024 * 1024
+    else:
+        unit = 'TB'
+        factor = 1024 * 1024 * 1024 * 1024
+
+    return '%.1f %s' % (float(size) / factor, unit)
+
+def change_cwd(destination):
+    command="cd "+destination
+    run_os_command(command)
+
+def parted_mklabel(device,label_type):
+    '''label_type:mbr,gpt...,this leads to create a new partition'''
+
+    command="sudo parted "+device+" "+label_type
+    run_os_command(command)
+
+def parted_mkfs(device,fs_type):
+    '''mkfs,but do not support ext3,ext4'''
+
+    command="sudo parted "+device+" "+fs_type+" "
+    run_os_command(command)
+
+def mkfs_mkfs(device,partition,fs_type):
+    '''mkfs,support ext3,ext4...'''
+
+    # partition=device+partition+" "
+    partition="/dev/sda1"
+    command="sudo mkfs -t "+fs_type+" "+partition
+    run_os_command(command)
+
+def parted_mkpart(device,part_type,start,end):
+    '''part_type:primary,logic,extend...'''
+    command="sudo parted "+device+" mkpart "+part_type+" "+start+" "+end+" "
+    run_os_command(command)
+
+
+def parted_resize(device,partition,start,end):
+    '''resize the given partition,unit:Mb'''
+
+    command="sudo parted "+device+" resize "+partition+" "+start+" "+end+" "
+    run_os_command(command)
+
+
+def parted_rm(device,partition):
+    '''rm a partition:partition is an integer'''
+
+    command="sudo parted "+device+" rm "+partition+" "
+    run_os_command(command)
+
+
+def parted_name(device,partition,name):
+    '''name the partition'''
+
+    command="sudo parted "+device+" name "+partition+" "+name+" "
+    run_os_command(command)
+
+
+def parted_set(device,partition,flag,state):
+    '''flag:boot,swap....;state:on,off'''
+
+    command="sudo parted "+device+" set "+partition+" "+flag+" "+state+" "
+    run_os_command(command)
+
+
+def parted_print(device):
+    '''display the device partition table'''
+
+    command="sudo parted "+device+" print "
+    run_os_command(command)
+
+def parted_quit(device):
+    '''quit the parted program'''
+    
+    command="sudo parted "+device+" quit "
+    run_os_command(command)
+
+def mount_parted_partition(device,partition,mountpoint):
+    '''mount parted partition:/boot,/,/swap...
+    The int arg partition just keep match with parted
+    attention mountpoint is relativate to target'''
+
+    partition=device+partition+" "
+    command="sudo mount "+partition+" "+mountpoint
+    run_os_command(command)
+
+def modify_mountpoint_parted_partition(device,partition,mountpoint):
+    '''call this because the mountpoint to the partition changed'''
+
+    partition=device+partition+" "
+    command="sudo umount "+partition
+    run_os_command(command)
+    command="sudo mount "+partition+" "+mountpoint
+    run_os_command(command)
+
+
+if __name__=="__main__":
+
+    device=selected_system_device(1)
+    print device
+    # print get_device_size(device)
+    
+    print get_device_size_to_human(device)
+    
