@@ -149,7 +149,9 @@ class PartUtil:
     
             self.main_geom_gap_list=[]
             self.logical_geom_gap_list=[]
-
+            #middleware list
+            self.disk_space_info_list=[]
+            
         #get disk main_part_list and logical_part
             for item in filter(lambda info:info[0].disk==disk,self.disk_partition_info_tab):
                 if item[2]=="primary":
@@ -181,8 +183,11 @@ class PartUtil:
                 self.main_part_list=[]
                 
         #put main_part_list and logical_part into disk_space_info_tab_info_tab    
-            self.disk_space_info_tab[disk][0].append(self.main_part_list)    
-            self.disk_space_info_tab[disk][0].append(self.logical_part)
+            self.disk_space_info_list[0].append(self.main_part_list)
+            self.disk_space_info_list[0].append(self.logical_part)
+            
+            # self.disk_space_info_tab[disk][0].append(self.main_part_list)    
+            # self.disk_space_info_tab[disk][0].append(self.logical_part)
 
 
         #get main_geom_list and logical_geom_list     
@@ -201,8 +206,10 @@ class PartUtil:
                 self.logical_geom_list.sort(cmp=lambda x,y:cmp(x.start,y.start))    
     
         #put main_geom_list and logical_geom_list into disk_space_info_tab        
-            self.disk_space_info_tab[disk][1].append(self.main_geom_list)
-            self.disk_space_info_tab[disk][1].append(self.logical_geom_list)
+            self.disk_space_info_list[1].append(self.main_geom_list)
+            self.disk_space_info_list[1].append(self.logical_geom_list)
+            # self.disk_space_info_tab[disk][1].append(self.main_geom_list)
+            # self.disk_space_info_tab[disk][1].append(self.logical_geom_list)
 
         #get main_geom_gap_list and logical_geom_gap_list    
             #get main_geom_gap_list
@@ -283,9 +290,12 @@ class PartUtil:
                     print "end of extend_part have geometry overlap or disk is too small to satisfy the minlength"
 
             #put main_geom_gap_list and logical_geom_gap_list into self.disk_space_info_tab
-            self.disk_space_info_tab[disk][2].append(self.main_geom_gap_list)
-            self.disk_space_info_tab[disk][2].append(self.logical_geom_gap_list)
-
+            # self.disk_space_info_tab[disk][2].append(self.main_geom_gap_list)
+            # self.disk_space_info_tab[disk][2].append(self.logical_geom_gap_list)
+            self.disk_space_info_list[2].append(self.main_geom_gap_list)
+            self.disk_space_info_list[2].append(self.logical_geom_gap_list)
+            self.disk_space_info_tab[disk]=self.disk_space_info_list
+            
         return self.disk_space_info_tab    
 
 
