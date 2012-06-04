@@ -34,9 +34,11 @@ class CopyUtil():
         self.copy_callback_data=""
         self.progress_callback_data=""
         self.total_bytes=0
+        self.global_current_bytes=0
         self.current_bytes=0
         self.end_bytes=0
         self.filelist=[]
+        self.progress_copy_count={}#{dstfile:count,}
 
     def get_source_gfilelist(self,source_path):
         '''get source gfilelist'''
@@ -80,7 +82,7 @@ class CopyUtil():
         if target_type==gio.FILE_TYPE_DIRECTORY:
             for f in filelist:
                 target_gfile=self.get_target_gfile(f,target)
-
+                self.progress_copy_count[target_gfile]=0
                 if f.query_info("standard::type",gio.FILE_QUERY_INFO_NOFOLLOW_SYMLINKS).get_file_type()==gio.FILE_TYPE_DIRECTORY:
                     if target_gfile.query_exists(None):
                         continue
@@ -97,34 +99,40 @@ class CopyUtil():
             print "must supply a directory to copy data"
 
     def start_copy(self,srcfile,dstfile):
+        '''copy srcfile to dstfile,use count to get real progress size'''
+
         srcfile.copy_async(dstfile,self.finish_copy_callback,self.progress_copy_callback,
-                           flags=gio.FILE_COPY_OVERWRITE,io_priority=glib.PRIORITY_DEFAULT,cancellable=None,
-                           user_data=self.copy_callback_data,
-                           progress_callback_data=self.progress_callback_data)
+                           gio.FILE_COPY_OVERWRITE,glib.PRIORITY_DEFAULT,None,
+                           dstfile,
+                           dstfile)
+
         # print "start copy "+srcfile.get_path()+" to "+dstfile.get_path()
 
 
-    def finish_copy_callback(self,srcfile,result,copy_callback_data):
+    def finish_copy_callback(self,srcfile,result,dstfile):
         '''finish copy a single file or directory'''
         print "finish copy:"+srcfile.get_path()
         srcfile.copy_finish(result)
+        end_num_bytes=dstfile.query_info(gio.FILE_ATTRIBUTE_STANDARD_SIZE).get_attribute_uint64(gio.FILE_ATTRIBUTE_STANDARD_SIZE)
+        self.end_bytes+=end_num_bytes
         # self.progressbar.set_text("Finished Copy")
         # self.progressbar.set_fraction(1.0)
 
-    def progress_copy_callback(self,current_num_bytes,end_num_bytes,progress_callback_data):
-        # self.global_current_bytes=self.end_bytes+current_num_bytes
-        # self.end_bytes+=end_num_bytes
-        # self.progressbar.set_text(str(self.global_current_bytes/1024)+"K/"+str(self.total_bytes)+"K:"
-        #                           +str(self.global_current_bytes*100/self.total_bytes*1024)+"%")
-        # self.progressbar.set_fraction(self.global_current_bytes/self.total_bytes*1024)
-        self.progressbar.set_text(str(current_num_bytes)+" / "+str(end_num_bytes))
-        self.progressbar.set_fraction(current_num_bytes/end_num_bytes)
-        print "current_num_bytes:"
-        print current_num_bytes
-        print "end_num_bytes:"
-        print end_num_bytes
+    def progress_copy_callback(self,current_num_bytes,end_num_bytes,dstfile):
+        '''set progress fraction'''
+        self.global_current_bytes=self.end_bytes+current_num_bytes  
+
+        self.progressbar.set_text(str(self.global_current_bytes/1024)+"K/"+str(self.total_bytes/1024)+"K:")
+        self.progressbar.set_fraction(self.global_current_bytes/self.total_bytes)
+
+        # if self.progress_copy_count[dstfile]==0:
+        #     self.end_bytes+=end_num_bytes
+        #     self.progress_copy_count[dstfile]+=1
+        # else:
+        #     print "file "+dstfile.get_path()+" already copied!\n"
 
     def test_copy_single(self):
+
         self.window=gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_size_request(400,300)
         self.window.set_title("Copy Util")
@@ -142,19 +150,18 @@ class CopyUtil():
         self.window.show_all()
 
 
-        srcfile=gio.File("deepin.iso")
-        dstfile=gio.File("deepin_copy.iso")
+        # srcfile=gio.File("deepin.iso")
+        # dstfile=gio.File("deepin_copy.iso")
 
-        self.start_copy(srcfile,dstfile)
-        
+        # self.start_copy(srcfile,dstfile)
+
 if __name__=="__main__":
     cu=CopyUtil()
-    # filelist=cu.get_source_gfilelist("/home/yilang/Project/deepin-installer")
-    # cu.total_bytes=cu.get_total_num_bytes(filelist)
+    filelist=cu.get_source_gfilelist("/home/yilang/Project/deepin-installer")
+    cu.total_bytes=cu.get_total_num_bytes(filelist)
 
-    # cu.copy_list(filelist,"/home/yilang/test")
-
+    cu.copy_list(filelist,"/home/yilang/test")
     cu.test_copy_single()
     gtk.main()
-    # cu.get_source_gfilelist("/home/yilang/Project/deepin-installer")
-    
+
+
