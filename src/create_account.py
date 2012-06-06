@@ -37,6 +37,8 @@ class CreateAccount:
         self.password=self.account_info['password']
         self.confirm_password=self.account_info['confirm_password']
         self.system_user_list=[]
+        self.login_type="password"#autologin,password
+        self.encrypt_password=""
 
     def create_user(self):
         ''' use account info to create username ,password ,user group,etc,need to consider chroot '''
@@ -44,9 +46,20 @@ class CreateAccount:
         run_os_command(cmd_addgroup)
         cmd_adduser="sudo useradd -g"+" "+self.username+" "+"-s /bin/bash -k /dev/null -m"+" "+self.username
         run_os_command(cmd_adduser)
+        if len(self.encrypt_password)==0:
+            self.set_user_password()
+        else:    
+            self.encrypt_home_dir()
 
+    def set_user_password(self):
+        '''set normal password,without encrypt_home_dir'''
         cmd_passwd="echo "+self.username+":"+self.passwd+" | chpasswd"
         run_os_command(cmd_passwd)
+
+    def encrypt_home_dir(self):
+        '''encrypt user home dir,use encrypted password'''
+        cmd_encrypt_passwd="sudo usermod -p "+self.encrypt_passwd+" "+self.username
+        run_os_command(cmd_encrypt_passwd)
 
     def get_system_user_list(self):
         '''return the list of system_user,forbidden to add user specified with the existed name'''
@@ -103,6 +116,12 @@ class CreateAccount:
             SetupInfoMsgUI.set_msg_label_text("用户名与密码不能相同")
             SetupInfoMsgUI.set_msg_label_show(True)
 
+    def generate_hostname(self):
+        '''generate hostname according to username'''
+        self.hostname=self.username+"-deepin"
+        #need set reaction to UI when user enter his username
+        return self.hostname
+
     def assert_hostname(self):
         '''check hostname length,validation,etc'''
         length=self.hostname.length()
@@ -142,6 +161,16 @@ class CreateAccount:
             "AutomaticLoginEnable=true\nTimedLogin=%s\n\nDefaultSession=deepin\n" % (self.username,self.username)
         gdm_conf.write(gdm_conf_str)
         gdm_conf.close()
+
+    def boot_with_logintype(self):
+        '''autologin or need password'''
+        if self.login_type=="autologin":
+            self.set_gdm_autologin()
+        elif self.login_type=="password":
+            pass
+        else:
+            print "invalid login_type"
+
 
 if __name__=="__main__":
     ca=CreateAccount()
