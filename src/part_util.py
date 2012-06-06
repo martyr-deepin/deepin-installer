@@ -89,7 +89,7 @@ class PartUtil:
                     self.part_fs=part.fileSystem.type#just for primary and logical partition
                 except:
                     self.part_fs=None
-                self.part_format=True
+                self.part_format=False
                 self.part_name=part.name
 
                 try:
@@ -583,11 +583,14 @@ class PartUtil:
         return parted.device.Device(dev_path,None)
 
     def get_disk_size(self,disk):
-        '''test function ,never used'''
-        print disk.device.path+" disk size:"+ str(disk.device.getSize("GB")*1.0)+"GB"
+        '''get disk size,used to compare with the optimize swap size'''
+        # '''test function ,never used'''
+        # print disk.device.path+" disk size:"+ str(disk.device.getSize("GB")*1.0)+"GB"
        
-        for part in self.get_disk_partitions(disk):
-            print self.get_disk_partition_size(part)
+        # for part in self.get_disk_partitions(disk):
+        #     print self.get_disk_partition_size(part)
+        return disk.device.getSize("KB")
+
 
     def set_disk_label(self,device):
         '''set disk label:gpt or msdos,to be extended'''
@@ -836,6 +839,57 @@ class PartUtil:
         # to be implement
         pass
 
+    def get_memory_total(self):
+        '''get physical total memory size,unit:KB'''
+        memory_total_command="grep MemTotal /proc/meminfo"
+        total_size=get_os_command_output(memory_total_command)
+        if len(total_size)==0:
+            print "cann't get the size of total memory"
+        else:
+            self.total_memory=int(filter(lambda c:c in "0123456789.",total_size[0]))
+
+        return self.total_memory
+
+    def if_need_swap(self):
+        '''decide whether to make a swap,only used in auto partition'''
+        self.total_memory=self.get_memory_total()
+        self.need_swap=False
+        if self.total_memory < 1024*1024:
+            self.need_swap=True
+        print self.need_swap    
+        return self.need_swap    
+
+    def adapt_autoswap_size(self,disk):
+        '''get the optimize size of the swap'''
+        if self.if_need_swap()==False:
+            print "no need to make swap"
+        else:    
+            self.total_memory=self.get_memory_total()
+            self.disk_size=self.get_disk_size(disk)
+            if self.disk_size < 20*1024*1024:
+                self.swap_size=self.total_memory
+            else:
+                self.swap_size=self.total_memory*2
+                
+        return self.swap_size    
+
+    def auto_partition(self,disk_path):
+        '''auto partition,use a single disk,ignore the variety info tab,force format'''
+        self.disk=self.get_disk_from_path(disk_path)
+        self.disk_size=self.get_disk_size(self.disk)
+        self.total_memory=self.get_memory_total()
+        #delete all partition first,the path_disks_partitions,disk_partition_info_tab automatic sync
+        for part in self.get_disk_partitions[self.disk]:
+            self.delete_disk_partition(self.disk,part)
+
+        if self.disk_size > 40*1024*1024:
+            pass
+        else:
+            pass
+            
+        
+        
+
 def test_operate_disk_partition_info_tab_path_disks_partitions():
     pu=PartUtil()
     print "system disks:"
@@ -914,9 +968,10 @@ def test_delete_mount_extend_partition():
 if  __name__=="__main__":
     # test_delete_mount_extend_partition()
     pu=PartUtil()
-    print pu.get_disk_free_space_info()
-    print "/dev/sdb:"
-    disk=pu.get_disk_from_path("/dev/sdb")
-    print pu.get_disk_total_available_space_size(disk)
-    print pu.get_disk_single_available_space_size(disk,"primary")
+    # print pu.get_disk_free_space_info()
+    # print "/dev/sdb:"
+    # disk=pu.get_disk_from_path("/dev/sdb")
+    # print pu.get_disk_total_available_space_size(disk)
+    # print pu.get_disk_single_available_space_size(disk,"primary")
 
+    pu.if_need_swap()
