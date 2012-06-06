@@ -759,14 +759,24 @@ class PartUtil:
             print "no filesystem specified"
             return
         part_path=partition.path
-        if fstype=="xfs":
-            format_command="sudo mke2fs -t xfs "+part_path
-        elif fstype=="reiserfs":
-            format_command="sudo mkfs.reiserfs "+part_path
-        elif fstype=="swap":
+        #swapoff the partition before change filesystem
+        origin_fs_type=partition.fileSystem.type
+        if origin_fs_type==fstype:
+            print "filesystem not changed"
+            return
+        elif origin_fs_type=="linux-swap":
+            try:
+                swap_off_command="sudo swapoff "+part_path
+                run_os_command(swap_off_command)
+            except:
+                print "swap not on"
+        #set fstype
+        if fstype=="linux-swap":
             format_command="sudo mkswap "+part_path
-        elif fstype in ["ext2","ext3","ext4"]:
-            format_command="sudo mkfs -t "+fstype+" "+part_path
+        elif fstype=="fat32":
+            format_command="sudo mkfs.vfat "+part_path
+        elif fstype in ["ext2","ext3","ext4","reiserfs","xfs"]:
+            format_command="sudo mkfs."+fstype+" -f "+part_path
         else:
             print "invalid fstype"
 
@@ -778,7 +788,7 @@ class PartUtil:
             run_os_command(format_command)
 
         if fstype=="swap":
-            swap_command="swapon "+part_path
+            swap_command="sudo swapon "+part_path
             run_os_command(swap_command)
 
     def set_disk_partition_mount(self,partition,fstype,mountpoint):
