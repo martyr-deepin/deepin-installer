@@ -589,7 +589,7 @@ class PartUtil:
        
         # for part in self.get_disk_partitions(disk):
         #     print self.get_disk_partition_size(part)
-        return disk.device.getSize("KB")
+        return disk.device.getSize("MB")
 
 
     def set_disk_label(self,device):
@@ -840,7 +840,7 @@ class PartUtil:
         pass
 
     def get_memory_total(self):
-        '''get physical total memory size,unit:KB'''
+        '''get physical total memory size,unit:MB'''
         memory_total_command="grep MemTotal /proc/meminfo"
         total_size=get_os_command_output(memory_total_command)
         if len(total_size)==0:
@@ -848,15 +848,15 @@ class PartUtil:
         else:
             self.total_memory=int(filter(lambda c:c in "0123456789.",total_size[0]))
 
-        return self.total_memory
+        return self.total_memory/1024
 
     def if_need_swap(self):
         '''decide whether to make a swap,only used in auto partition'''
         self.total_memory=self.get_memory_total()
         self.need_swap=False
-        if self.total_memory < 1024*1024:
+        if self.total_memory < 1024:
             self.need_swap=True
-        print self.need_swap    
+
         return self.need_swap    
 
     def adapt_autoswap_size(self,disk):
@@ -866,7 +866,7 @@ class PartUtil:
         else:    
             self.total_memory=self.get_memory_total()
             self.disk_size=self.get_disk_size(disk)
-            if self.disk_size < 20*1024*1024:
+            if self.disk_size < 40*1024:
                 self.swap_size=self.total_memory
             else:
                 self.swap_size=self.total_memory*2
@@ -882,12 +882,17 @@ class PartUtil:
         for part in self.get_disk_partitions[self.disk]:
             self.delete_disk_partition(self.disk,part)
 
-        if self.disk_size > 40*1024*1024:
-            pass
+        if self.if_need_swap:
+            self.swap_size=self.adapt_autoswap_size(self.disk)
+            self.add_disk_partition_info_tab(disk_path,"primary",self.swap_size,"linux-swap",None,None,None)
+
+        if self.disk_size > 40*1024:
+            self.add_disk_partition_info_tab(disk_path,"primary",5*1024,"ext4",None,None,"/")
+            self.add_disk_partition_info_tab(disk_path,"primary",self.disk_size-self.swap_size-5*1024,"ext4",None,None,"/home")
         else:
-            pass
+            self.add_disk_partition_info_tab(disk_path,"primary",self.disk_size-self.swap_size,"ext4",None,None,"/")
             
-        
+        self.add_custom_disk_partition(self.disk_partition_info_tab)
         
 
 def test_operate_disk_partition_info_tab_path_disks_partitions():
@@ -926,6 +931,7 @@ def test_operate_disk_partition_info_tab_path_disks_partitions():
     print "\n"
     print "after delete original system_disks partitions"
     print pu.path_disks_partitions
+
 def test_delete_new_partition():
     pu=PartUtil()    
     pu.add_disk_partition_info_tab("/dev/sda","primary",1024,"ext4",None,None,"/")
