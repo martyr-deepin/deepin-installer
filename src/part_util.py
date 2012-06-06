@@ -758,22 +758,28 @@ class PartUtil:
         if fstype==None or len(fstype)==0:
             print "no filesystem specified"
             return
-        #umount a partition before format it to make a filesystem
-        self.set_disk_partition_umount(partition)
         part_path=partition.path
         if fstype=="xfs":
-            format_command=""
+            format_command="sudo mke2fs -t xfs "+part_path
         elif fstype=="reiserfs":
-            format_command=""
+            format_command="sudo mkfs.reiserfs "+part_path
         elif fstype=="swap":
-            format_command=""
+            format_command="sudo mkswap "+part_path
         elif fstype in ["ext2","ext3","ext4"]:
             format_command="sudo mkfs -t "+fstype+" "+part_path
         else:
             print "invalid fstype"
-            
-        run_os_command(format_command)
-    
+
+        try:    
+            run_os_command(format_command)
+        except:
+             #umount a partition before format it to make a filesystem
+            self.set_disk_partition_umount(partition)
+            run_os_command(format_command)
+
+        if fstype=="swap":
+            swap_command="swapon "+part_path
+            run_os_command(swap_command)
 
     def set_disk_partition_mount(self,partition,fstype,mountpoint):
         '''mount partition to mp:new or modify,need consider various situation'''
