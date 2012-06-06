@@ -759,16 +759,17 @@ class PartUtil:
             print "no filesystem specified"
             return
         part_path=partition.path
-        #swapoff the partition before change filesystem
+        #swapoff the partition before change filesystem,if not work,simply reduce code
         origin_fs_type=partition.fileSystem.type
         if origin_fs_type==fstype:
             print "filesystem not changed"
             return
         elif origin_fs_type=="linux-swap":
-            try:
+            swap_data=get_os_command_output("grep "+part_path+" /proc/swaps")
+            if len(swap_data)!=0:
                 swap_off_command="sudo swapoff "+part_path
                 run_os_command(swap_off_command)
-            except:
+            else:    
                 print "swap not on"
         #set fstype
         if fstype=="linux-swap":
@@ -921,6 +922,9 @@ class PartUtil:
             self.add_disk_partition_info_tab(disk_path,"primary",self.disk_size-self.swap_size,"ext4",None,None,"/")
             
         self.add_custom_disk_partition(self.disk_partition_info_tab)
+        
+    def probe_system_os(self):
+        '''probe exists operating system'''
         
 
 def test_operate_disk_partition_info_tab_path_disks_partitions():

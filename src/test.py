@@ -20,18 +20,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from do_partition import Part
-from create_account import *
-from basic_utils import *
-from do_copy import *
+import gtk
+import gio
 
-
-class Test:
-
+class CopyTest(gtk.Window):
     def __init__(self):
+        super(CopyTest,self).__init__()
+        self.set_size_request(300,200)
+        self.set_title("Copy Test")
+        self.set_position(gtk.WIN_POS_CENTER)
+        self.vbox=gtk.VBox(False,1)
         
-        '''1.create partition'''
+        self.progressbar=gtk.ProgressBar(None)
 
-        Part().write_partitions()
+        self.src=gio.File(path="test.py")
+        self.dst=gio.File(path="test_dst.py")
 
-    
+        gio.File.copy_async(self.dst,self.call_back,self.progress_callback,G_FILECOPY_OVERWRITE,G_PRIORITY_DEFAULT,NULL,user_data,call_back data,)
+
+        self.vbox.pack_start(self.progressbar,True,True,5)
+        self.add(self.vbox)
+        self.connect("destroy",gtk.main_quit)
+        self.show_all()
+
+if __name__=="__main__":
+    CopyTest()
+    gtk.main()

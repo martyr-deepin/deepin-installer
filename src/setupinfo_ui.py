@@ -37,7 +37,6 @@ class SetupInfoUI(gtk.Window):
         self.set_size_request(750,500)
         self.set_title("Welcome to install linux deepin")
         self.set_position(gtk.WIN_POS_CENTER)
-        self.set_title("Welcome to install linux deepin")
 
         self.locale_ui=LocaleUI().locale_box
         self.user_ui=UserUI().user_vbox
@@ -52,12 +51,10 @@ class SetupInfoUI(gtk.Window):
         self.pack_box.pack_start(self.msg_ui,False,True,1)
         self.pack_box.pack_start(self.confirm_ui,False,True,1)
 
-
-
         self.connect("destroy",gtk.main_quit)
 
         self.add(self.pack_box)
-        self.show_all()
+        self.show()
 
         
 

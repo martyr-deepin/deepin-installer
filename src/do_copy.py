@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+import gio
 from constant import TARGET
 from basic_utils import run_os_command
 
@@ -43,3 +43,6 @@ class Copy:
         # self.subp=subprocess.Popen(command,stdout=subprocess.PIPE)
         run_os_command(command)
     
+    def do_gio_copy(self):
+        destination=gio.File(TARGET)
+        
