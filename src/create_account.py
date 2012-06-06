@@ -22,7 +22,7 @@
 
 
 import os
-from basic_utils import run_os_command
+from basic_utils import run_os_command,get_os_command_output
 from setupinfo_msg_ui import SetupInfoMsgUI
 from user_ui import UserUI
 
@@ -36,7 +36,7 @@ class CreateAccount:
         self.hostname=self.account_info['hostname']
         self.password=self.account_info['password']
         self.confirm_password=self.account_info['confirm_password']
-        
+        self.system_user_list=[]
 
     def create_user(self):
         ''' use account info to create username ,password ,user group,etc,need to consider chroot '''
@@ -48,6 +48,25 @@ class CreateAccount:
         cmd_passwd="echo "+self.username+":"+self.passwd+" | chpasswd"
         run_os_command(cmd_passwd)
 
+    def get_system_user_list(self):
+        '''return the list of system_user,forbidden to add user specified with the existed name'''
+        system_user_command="cat /etc/passwd"
+        userlist_data=get_os_command_output(system_user_command)
+        for user in userlist_data:
+            username=user.split(":")[0]
+            self.system_user_list.append(username)
+        # print self.system_user_list    
+        return self.system_user_list    
+
+    def forbid_create_exist_user(self):
+        '''forbidden to use the name owened by system'''
+        for username in self.get_system_user_list():
+            if self.username.startswith(username):
+                #here need add UI notify
+                print "username confilct"
+            else:
+                continue
+
     def grant_sudo(self):
         '''add user to sudoers,need to consider chroot'''
         cmd_grantsudo="echo "+self.username+"        "+"ALL=(ALL:ALL) ALL"+">> /etc/sudoers"
@@ -56,46 +75,59 @@ class CreateAccount:
     def assert_user_name(self):
         '''check user name length,validation,can't use root to build account'''
         length=self.username.length()
-
         if(length<5):
-            SetupInfoMsgUI.set_msg_label_text("用户名过")
+            SetupInfoMsgUI.set_msg_label_text("用户名过短")
             SetupInfoMsgUI.set_msg_label_show(True)
-
         elif(length>15):
             SetupInfoMsgUI.set_msg_label_text("用户名过长")
             SetupInfoMsgUI.set_msg_label_show(True)
-
-        if(self.username.startswith("root")):
-            SetupInfoMsgUI.set_msg_label_text("请使用其它用户名")
-            SetupInfoMsgUI.set_msg_label_show(True)
+            
+        self.forbid_create_exist_user()    
+        # if(self.username.startswith("root")):
+        #     SetupInfoMsgUI.set_msg_label_text("请使用其它用户名")
+        #     SetupInfoMsgUI.set_msg_label_show(True)
            
 
     def assert_user_password(self):
         '''check user password length,validation,etc'''
         length=self.password.length()
-
         if(length<5):
-            SetupInfoMsgUI.set_msg_label_text("用户名过长")
+            SetupInfoMsgUI.set_msg_label_text("密码太短")
             SetupInfoMsgUI.set_msg_label_show(True)
-
         elif(length>15):
-            SetupInfoMsgUI.set_msg_label_text("用户名过长")
+            SetupInfoMsgUI.set_msg_label_text("密码太长")
             SetupInfoMsgUI.set_msg_label_show(True)
-        
         if(self.password!=self.confirm_password):
             SetupInfoMsgUI.set_msg_label_text("密码与确认密码不一致")
             SetupInfoMsgUI.set_msg_label_show(True)
-
+        if (self.username==self.password):
+            SetupInfoMsgUI.set_msg_label_text("用户名与密码不能相同")
+            SetupInfoMsgUI.set_msg_label_show(True)
 
     def assert_hostname(self):
         '''check hostname length,validation,etc'''
         length=self.hostname.length()
 
         if(length<5):
-            SetupInfoMsgUI.set_msg_label_text("用户名过长")
+            SetupInfoMsgUI.set_msg_label_text("主机名过短")
             SetupInfoMsgUI.set_msg_label_show(True)
 
         elif(length>15):
-            SetupInfoMsgUI.set_msg_label_text("用户名过长")
+            SetupInfoMsgUI.set_msg_label_text("主机名过长")
             SetupInfoMsgUI.set_msg_label_show(True)
 
+    def set_gdm_autologin(self):
+        '''set gdm autologin'''
+        gdm_path="/target/etc/gdm/custom.conf"
+        if not os.path.exists(gdm_path):
+            run_os_command('mkdir -p '+os.path.dirname(gdm_path))
+            run_os_command("touch "+gdm_path)
+        gdm_conf=open(gdm_path,'w+')
+        gdm_conf_str="\n[daemon]\nTimedLoginEnable=true\nAutomaticLogin=%s\nTimedLoginDelay=10\n"\
+            "AutomaticLoginEnable=true\nTimedLogin=%s\n\nDefaultSession=deepin\n" % (self.username,self.username)
+        gdm_conf.write(gdm_conf_str)
+        gdm_conf.close()
+
+if __name__=="__main__":
+    ca=CreateAccount()
+    ca.get_system_user_list()
