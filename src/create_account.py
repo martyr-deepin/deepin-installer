@@ -86,7 +86,6 @@ class CreateAccount:
         # if(self.username.startswith("root")):
         #     SetupInfoMsgUI.set_msg_label_text("请使用其它用户名")
         #     SetupInfoMsgUI.set_msg_label_show(True)
-           
 
     def assert_user_password(self):
         '''check user password length,validation,etc'''
@@ -107,14 +106,30 @@ class CreateAccount:
     def assert_hostname(self):
         '''check hostname length,validation,etc'''
         length=self.hostname.length()
-
         if(length<5):
             SetupInfoMsgUI.set_msg_label_text("主机名过短")
             SetupInfoMsgUI.set_msg_label_show(True)
-
         elif(length>15):
             SetupInfoMsgUI.set_msg_label_text("主机名过长")
             SetupInfoMsgUI.set_msg_label_show(True)
+
+    def set_host_resolve(self):
+        '''set host resolve'''
+        host_path="/target/etc/hosts"
+        if not os.path.exists(host_path):
+            run_os_command("mkdir -p "+os.path.dirname(host_path))
+            run_os_command("touch "+host_path)
+        host_conf_str="127.0.0.1 localhost \n"
+        host_conf_str=host_conf_str+"127.0.0.1 "+self.hostname+" \n"
+        host_conf_str=host_conf_str+"#The following lines are desire for IPv6 capable hosts\n"
+        host_conf_str=host_conf_str+"::1     ip6-localhost ip6-loopback"
+        host_conf_str=host_conf_str+"fe00::0 ip6-localnet"
+        host_conf_str=host_conf_str+"ff00::0 ip6-mcastprefix"
+        host_conf_str=host_conf_str+"ff02::1 ip6-allnodes"
+        host_conf_str=host_conf_str+"ff02::2 ip6-allrouters"
+        host_conf_str=host_conf_str+"ff02::3 ip6-allhosts"
+        
+        run_os_command(open(host_path,"w+").append(host_conf_str))
 
     def set_gdm_autologin(self):
         '''set gdm autologin'''
