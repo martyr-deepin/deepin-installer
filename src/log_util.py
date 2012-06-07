@@ -25,7 +25,7 @@ import string
 logger_level=["debug","info","warning","error","critical"]
 handler_level=["debug","info","warning","error","critical"]
 log_type=["debug","info","warning","error","critical"]
-formatter_type=["default"]
+formatter_type=["default","lineno","process"]
 filter_type=["default"]
 
 class LogUtil():
@@ -115,14 +115,15 @@ class LogUtil():
 
     def create_handler_formatter(self,handler,formatter_type):
         '''create formatter for the handler'''
-        if formatter_type==None or formatter_type=="default":
-            self.formatter=logging.Formatter("%(asctime)s-%(name)s-%(levelname)s-%(message)s")
+        if formatter_type=="lineno":
+            self.formatter=logging.Formatter("%(filename)s/%(funcName)s-%(lineno)d:%(levelname)s-%(message)s")
             self.set_handler_formatter(handler,self.formatter)
-            return self.formatter
+        elif formatter_type=="process":
+            self.formatter=logging.Formatter("%(process)d-%(thread)d:%(levelname)s-%(message)s")
         else:
-            self.formatter=logging.Formatter(formatter_type)
+            self.formatter=logging.Formatter("%(asctime)s-%(name)s:%(levelname)s-%(message)s")
             self.set_handler_formatter(handler,self.formatter)
-            return self.formatter
+        return self.formatter
 
     def set_handler_formatter(self,handler,formatter):
         '''set formatter for the handler'''
@@ -160,7 +161,7 @@ class LogUtil():
         # handler=logging.FileHandler(str(id(logger))+".txt")
         # print handler
         # self.set_handler_level(logger,handler)
-        self.create_logger_handler(logger,"file","error",None,None)
+        self.create_logger_handler(logger,"file","error","lineno",None)
         self.do_log_msg(logger,"error","some error occurs")
 
         # handler=logging.StreamHandler()
@@ -177,6 +178,6 @@ class LogUtil():
 
 
 if __name__=="__main__":
-    # lu=LogUtil()
-    # lu.test()
+    lu=LogUtil()
+    lu.test()
     pass
