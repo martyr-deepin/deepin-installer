@@ -93,7 +93,7 @@ class PartUtil:
                     self.part_fs=part.fileSystem.type#just for primary and logical partition
                 except:
                     self.part_fs=None
-                self.part_format=False
+                self.part_format=False#donn't format origin partition
                 self.part_name=part.name
 
                 try:
@@ -786,6 +786,12 @@ class PartUtil:
             # print "you can only set filesystem for primary and logical partitionn"
             self.lu.do_log_msg(self.logger,"error","can only set fs for primary/logical partitionn")
             return
+
+        for item in self.disk_partition_info_tab:
+            if item[0]==partition and item[5]==False:
+                print "no need to format the partition"
+                return 
+
         if fstype==None or len(fstype)==0:
             # print "no filesystem specified"
             self.lu.do_log_msg(self.logger,"error","no filesystem specified")
@@ -827,15 +833,16 @@ class PartUtil:
 
     def set_disk_partition_mount(self,partition,fstype,mountpoint):
         '''mount partition to mp:new or modify,need consider various situation'''
+        if mountpoint==None or len(mountpoint)==0:
+            # print "need mountpoint,not given"
+            self.lu.do_log_msg(self.logger,"error","need mountpoint,not given")
+            return 
 
         if partition.type==parted.PARTITION_EXTENDED:
             # print "cann't mount extended partition"
             self.lu.do_log_msg(self.logger,"error","cann't mount extended partition")
             return
-        if mountpoint==None or len(mountpoint)==0:
-            # print "need mountpoint,not given"
-            self.lu.do_log_msg(self.logger,"error","need mountpoint,not given")
-            return 
+
         part_path=partition.path
         mp=TARGET+mountpoint
         if not os.path.exists(mp):
