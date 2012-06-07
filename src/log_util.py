@@ -117,11 +117,15 @@ class LogUtil():
 
     def create_handler_formatter(self,handler,formatter_type):
         '''create formatter for the handler'''
-        if formatter_type=="lineno":
+        if formatter_type=="loglineno":
+            self.formatter=logging.Formatter("%(filename)s/%(funcName)s-%(lineno)d:%(levelname)s-%(message)s")
+            self.set_handler_formatter(handler,self.formatter)
+        elif formatter_type=="lineno":
             self.formatter=logging.Formatter("%(filename)s/%(funcName)s-%(lineno)d:%(levelname)s-%(message)s")
             self.set_handler_formatter(handler,self.formatter)
         elif formatter_type=="process":
             self.formatter=logging.Formatter("%(process)d-%(thread)d:%(levelname)s-%(message)s")
+            self.set_handler_formatter(handler,self.formatter)
         else:
             self.formatter=logging.Formatter("%(asctime)s-%(name)s:%(levelname)s-%(message)s")
             self.set_handler_formatter(handler,self.formatter)
@@ -148,7 +152,7 @@ class LogUtil():
             handler.addFilter(filter)
 
     def do_log_msg(self,logger,log_type,log_msg):
-        '''do actual msg log operation'''
+        '''do actual msg log operation,don't use this as formatter not support lineno recursion'''
         if not isinstance(logger,logging.Logger):
             print "invalid logger"
 
@@ -176,7 +180,10 @@ class LogUtil():
         # print "remove_logger_handler:"
         # self.remove_logger_handler(logger,handler)
         # print handler
-
+class MailUtil():
+    '''mail util'''
+    def __init__(self):
+        pass
 
 
 if __name__=="__main__":

@@ -42,9 +42,6 @@ class PartUtil:
         self.disks=[]
         self.partition=""
         self.partitions=[]
-        self.lu=LogUtil()
-        self.logger=self.lu.create_logger("part_logger","debug")
-        self.handler=self.lu.create_logger_handler(self.logger,"file","debug",None,None)
 
     #{dev_path:disk}   must need this because you refs the same disk object,but they have different Ped id ,
     #and cann't share the id to add partition,so never call the get_path_disks function again,just get the variable value
@@ -72,6 +69,10 @@ class PartUtil:
     #    
     #  }   
         self.disk_space_info_tab={}
+
+        self.lu=LogUtil()
+        self.logger=self.lu.create_logger("part_logger","debug")
+        self.handler=self.lu.create_logger_handler(self.logger,"file","debug","lineno",None)
 
     #disk_partition_tab && disk_partition_info operations:
     def init_disk_partition_info_tab(self):
@@ -174,8 +175,8 @@ class PartUtil:
                 # print "can have only one extended_part"
                 self.lu.do_log_msg(self.logger,"error","can have only one extended_part")
             elif len(self.extended_part)==0:
+                self.logger.info("the disk doesn't have extended_part")
                 # print "the disk "+disk.device.path+" doesn't have extended_part"
-                self.lu.do_log_msg(self.logger,"info","the disk doesn't have extended_part")
             else:
                 self.extend_part=self.extended_part[0]
         
@@ -247,7 +248,8 @@ class PartUtil:
                         self.main_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
                     else:
                         # print "the size between two partition is too small"
-                        self.lu.do_log_msg(self.logger,"warning","the size between two partition is too small")
+                        self.logger.warning("the size between two partition is too small")
+                        # self.lu.do_log_msg(self.logger,"warning","the size between two partition is too small")
                     i=i+1    
         
                 start=self.main_geom_list[-1].end+4    
@@ -257,7 +259,8 @@ class PartUtil:
                     self.main_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
                 else:
                     # print "end of disk have geometry overlap or disk size too small"
-                    self.lu.do_log_msg(self.logger,"warning","end of disk have geometry overlap or disk size too small")
+                    self.logger.warning("end of disk have geometry overlap or disk size too small")
+                    # self.lu.do_log_msg(self.logger,"warning","end of disk have geometry overlap or disk size too small")
             #get logical_geom_gap_list        
             if len(self.logical_geom_list)==0 and len(self.extended_part)!=0:
                 start=self.extend_part.geometry.start+4
@@ -422,13 +425,13 @@ class PartUtil:
            don't worry about the existed partition object,can get from user view partition path
            but now the new added partition path may like /dev/sda-1,not /dev/sda1
         '''
-      
+
         self.disk=self.get_disk_from_path(part_disk_path)
         self.type=self.set_disk_partition_type(self.disk,part_type)
-        
-        import math
-        minlength=math.floor(part_size*1024*1024/self.disk.device.sectorSize)+1
 
+        import math
+        minlength=math.floor((part_size*1024*1024)/(self.disk.device.sectorSize)+1)
+        
         self.free_geometry=self.get_disk_free_geometry(self.disk,part_type,minlength)
         # self.free_geometry=self.get_disk_free_geometry(self.disk,part_type)
 
@@ -1040,7 +1043,7 @@ def test_delete_mount_extend_partition():
     pu.add_custom_partition(pu.disk_partition_info_tab)
     
 if  __name__=="__main__":
-    # test_delete_mount_extend_partition()
+    test_delete_mount_extend_partition()
     pu=PartUtil()
     # print pu.get_disk_free_space_info()
     # print "/dev/sdb:"
@@ -1048,4 +1051,4 @@ if  __name__=="__main__":
     # print pu.get_disk_total_available_space_size(disk)
     # print pu.get_disk_single_available_space_size(disk,"primary")
 
-    pu.if_need_swap()
+    # pu.if_need_swap()
