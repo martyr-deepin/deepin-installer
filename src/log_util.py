@@ -21,9 +21,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import logging.handlers
 import string
+
 logger_level=["debug","info","warning","error","critical"]
 handler_level=["debug","info","warning","error","critical"]
+handler_type=["file","stream","mail","rotate","timerotate"]
 log_type=["debug","info","warning","error","critical"]
 formatter_type=["default","lineno","process"]
 filter_type=["default"]
@@ -73,8 +76,8 @@ class LogUtil():
             self.handler=logging.RotatingFileHandler(self.get_log_file_name(logger))
         elif handler_type=="timerotate":
             self.handler=logging.TimeRotatingFileHandler(self.get_log_file_name(logger))
-        elif handler_type=="smtp":
-            self.handler=logging.SMTPHandler()
+        elif handler_type=="mail":
+            self.handler=logging.handlers.SMTPHandler('smtp.gmail.com','yilang2007lw@163.com',['yilang2007lw@gmail.com'],'ERROR log',)
         else:
             print "currently unsupported handler_type"
             self.handler=logging.StreamHandler()
@@ -109,8 +112,7 @@ class LogUtil():
             handler_level=str.upper(handler_level)
         else:
             handler_level="DEBUG"
-            
-        if isinstance(handler,logging.Handler):
+        if isinstance(handler,logging.Handler):    
             handler.setLevel(handler_level)
 
     def create_handler_formatter(self,handler,formatter_type):
