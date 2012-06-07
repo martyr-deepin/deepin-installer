@@ -26,7 +26,7 @@ import os
 from basic_utils import run_os_command,get_os_command_output
 
 import parted
-
+from log_util import LogUtil
 
 class PartUtil:
     '''user interface communicate with backend via disk_partition_info_tab,mark each partition in the table:
@@ -42,6 +42,9 @@ class PartUtil:
         self.disks=[]
         self.partition=""
         self.partitions=[]
+        self.lu=LogUtil()
+        self.logger=self.lu.create_logger("part_logger","debug")
+        self.handler=self.lu.create_logger_handler(self.logger,"file","debug",None,None)
 
     #{dev_path:disk}   must need this because you refs the same disk object,but they have different Ped id ,
     #and cann't share the id to add partition,so never call the get_path_disks function again,just get the variable value
@@ -163,13 +166,16 @@ class PartUtil:
                     self.extended_part.append(item[0])
                     continue
                 else:
-                    print "invalid part type"
+                    # print "invalid part type"
+                    self.lu.do_log_msg(self.logger,"warning","invalid part type")
                     continue
 
             if len(self.extended_part)>1:        
-                print "can have only one extended_part"
+                # print "can have only one extended_part"
+                self.lu.do_log_msg(self.logger,"error","can have only one extended_part")
             elif len(self.extended_part)==0:
-                print "the disk "+disk.device.path+" doesn't have extended_part"
+                # print "the disk "+disk.device.path+" doesn't have extended_part"
+                self.lu.do_log_msg(self.logger,"info","the disk doesn't have extended_part")
             else:
                 self.extend_part=self.extended_part[0]
         
@@ -231,7 +237,8 @@ class PartUtil:
                 if length > 0:
                     self.main_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
                 else:
-                    print "start of disk have geometry overlap or disk size too small"
+                    # print "start of disk have geometry overlap or disk size too small"
+                    self.lu.do_log_msg(self.logger,"warning","start of disk have geometry overlap or disk size too small")
                 for i in range(len(self.main_geom_list)-1):
                     start=self.main_geom_list[i].end+4
                     end=self.main_geom_list[i+1].start-4
@@ -239,7 +246,8 @@ class PartUtil:
                     if length > 0:
                         self.main_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
                     else:
-                        print "the size between two partition is too small"
+                        # print "the size between two partition is too small"
+                        self.lu.do_log_msg(self.logger,"warning","the size between two partition is too small")
                     i=i+1    
         
                 start=self.main_geom_list[-1].end+4    
@@ -248,8 +256,8 @@ class PartUtil:
                 if length > 0:
                     self.main_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
                 else:
-                    print "end of disk have geometry overlap or disk size too small"
-    
+                    # print "end of disk have geometry overlap or disk size too small"
+                    self.lu.do_log_msg(self.logger,"warning","end of disk have geometry overlap or disk size too small")
             #get logical_geom_gap_list        
             if len(self.logical_geom_list)==0 and len(self.extended_part)!=0:
                 start=self.extend_part.geometry.start+4
@@ -259,7 +267,8 @@ class PartUtil:
                     self.logical_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
                 else:
                     self.logical_geom_gap_list=[]
-                    print "the hole extend_part size is too small"
+                    # print "the hole extend_part size is too small"
+                    self.lu.do_log_msg(self.logger,"error","the hole extend_part size is too small")
             elif len(self.extended_part)!=0:
                 start=self.extend_part.geometry.start+4
                 end=self.logical_geom_list[0].start-4
@@ -267,8 +276,8 @@ class PartUtil:
                 if length > 0:
                     self.logical_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
                 else:
-                    print "the space between start of extend_part and the first logical is too small"
-
+                    # print "the space between start of extend_part and the first logical is too small"
+                    self.lu.do_log_msg(self.logger,"warning","the space between start of extended_part and the first logical is too small")
                 for i in range(len(self.logical_geom_list)-1):
                     start=self.logical_geom_list[i].end+4
                     end=self.logical_geom_list[i+1].start-4
@@ -277,7 +286,8 @@ class PartUtil:
                         self.logical_geom_gap=parted.geometry.Geometry(disk.device,start,length,end,None)
                         self.logical_geom_gap_list.append(self.logical_geom_gap)
                     else:
-                        print "the size between two logical partition is too small"
+                        # print "the size between two logical partition is too small"
+                        self.lu.do_log_msg(self.logger,"warning","the size between two logical partition is too small")
                     i=i+1    
         
                 start=self.logical_geom_list[-1].end+4
@@ -286,10 +296,11 @@ class PartUtil:
                 if length > 0:
                     self.logical_geom_gap_list.append(parted.geometry.Geometry(disk.device,start,length,end,None))
                 else:
-                    print "end of extend_part have geometry overlap or disk is too small to satisfy the minlength"
-
+                    # print "end of extend_part have geometry overlap or disk is too small to satisfy the minlength"
+                    self.lu.do_log_msg(self.logger,"warning","end of extended_part have geometry overlap")
             else:
-                print "the disk "+disk.device.path+" has no extend_part,no need to add logical_geom_gap_list"
+                # print "the disk "+disk.device.path+" has no extend_part,no need to add logical_geom_gap_list"
+                self.lu.do_log_msg(self.logger,"warning","no extend_part,no need to add logical_geom_gap_list")
                 self.logical_geom_gap_list=[]
 
             #put main_geom_gap_list and logical_geom_gap_list into self.disk_space_info_tab
@@ -318,8 +329,8 @@ class PartUtil:
             for geom in disk_space_info_list[2][1]:#logical_geom_gap_list
                 logical_length+=geom.length
         else:
-            print "cann't find disk in the disk_free_space_info"
-        
+            # print "cann't find disk in the disk_free_space_info"
+            self.lu.do_log_msg(self.logger,"error","cann't find disk in the disk_free_space_info")
         self.main_available_space_size=main_length*disk.device.sectorSize/(1024*1024)    
         self.logical_available_space_size=logical_length*disk.device.sectorSize/(1024*1024)
         self.total_available_space_size=(self.main_available_space_size,self.logical_available_space_size)
@@ -353,9 +364,11 @@ class PartUtil:
                 return self.single_available_space_size
     
             else:
-                print "invalid part_type"
+                # print "invalid part_type"
+                self.lu.do_log_msg(self.logger,"error","invalid part_type")
         else:
-            print "cann't find disk in the disk_free_space_info"
+            # print "cann't find disk in the disk_free_space_info"
+            self.lu.do_log_msg(self.logger,"error","cann't find disk in the disk_free_space_info")
 
     def get_disk_free_geometry(self,disk,part_type,minlength):
         '''get free geometry to add part:specified by part_type and minlength,use disk_free_space_info'''
@@ -375,7 +388,8 @@ class PartUtil:
                 if self.geometry.length >= minlength:
                     return self.geometry
                 else:
-                    print "cann't get a main part satisfy the minlength"
+                    # print "cann't get a main part satisfy the minlength"
+                    self.lu.do_log_msg(self.logger,"error","cann't get a main part satisfy the minlength")
     
             elif part_type=="logical":
                 max_geo=disk_space_info_list[2][1][0]
@@ -388,13 +402,14 @@ class PartUtil:
                 if self.geometry.length >= minlength:
                     return self.geometry
                 else:
-                    print "cann't get a logical part satisfy the minlength"
+                    # print "cann't get a logical part satisfy the minlength"
+                    self.lu.do_log_msg(self.logger,"error","cann't get a logical part satisfy the minlength")
             else:
-                print "invalid part type"
-
+                # print "invalid part type"
+                self.lu.do_log_msg(self.logger,"error","invalid part type")
         else:
-            print "get_disk_free_geometry:cann't find disk in the disk_free_space_info"
-            
+            # print "get_disk_free_geometry:cann't find disk in the disk_free_space_info"
+            self.lu.do_log_msg(self.logger,"critical","cann't find disk in the disk_free_space_info")
 
     def get_disk_logical_freepart(self,disk):
         '''attention:this freepart are logical,not in the path_disk_partitions and disk_partition_info_tab,
@@ -445,7 +460,8 @@ class PartUtil:
            Then I can do partition add delete without bother the existed partition
         '''
         if(partition==None):
-            print "partition doesn't exist"
+            # print "partition doesn't exist"
+            self.lu.do_log_msg(self.logger,"error","partition doesn't exist")
             return
         for item in filter(lambda info:partition.__eq__(info[0]),self.disk_partition_info_tab):
             item[-1]=part_flag   
@@ -465,7 +481,8 @@ class PartUtil:
             elif item[-1]=="keep":
                 self.mark_disk_partition_info_tab(partition,"delete")
             else:
-                print "invalid,if partition marked delete,you wonn't see it"
+                # print "invalid,if partition marked delete,you wonn't see it"
+                self.lu.do_log_msg(self.logger,"error","invalid,if partition marked delete,you wonn't see it ")
                 break
 
         return self.disk_partition_info_tab
@@ -477,7 +494,8 @@ class PartUtil:
         try:
             self.disk_partition_tab.append(disk_partition_tab_item)
         except:
-            print "add disk partition tab failed!"
+            # print "add disk partition tab failed!"
+            self.lu.do_log_msg(self.logger,"error","add disk partition tab failed")
         # return self.disk_partition_tab    
 
 
@@ -487,7 +505,8 @@ class PartUtil:
             if disk in disk_partition_tab_item and partition in disk_partition_tab_item:
                 self.disk_partition_tab.remove(disk_partition_tab_item)
         else:
-            print "the partition is not in the disk_partition_tab"
+            # print "the partition is not in the disk_partition_tab"
+            self.lu.do_log_msg(self.logger,"error","the partition is not in the disk_partition_tab")
         # print self.disk_partition_tab            
                     
     def change_disk_partition_tab(self,disk,partition):
@@ -548,16 +567,16 @@ class PartUtil:
         '''insert new added partition to path_disk_partitions variable,keep partition id uniquee'''
         #to add exceptionl handle
         if disk.getPedDisk!=partition.disk.getPedDisk:
-            print "somewhere id not match"
-
+            # print "somewhere id not match"
+            self.lu.do_log_msg(self.logger,"error","somewhere id not match")
         self.path_disks_partitions[disk].append(partition)    
 
     def delete_path_disks_partitions(self,disk,partition):
         '''delete partition from path_disks_partitions variable,keep partition id uniquee'''
         #to add exceptionl handle
         if disk.getPedDisk!=partition.disk.getPedDisk:
-            print "somewhere id not match"
-        
+            # print "somewhere id not match"
+            self.lu.do_log_msg(self.logger,"error","somewhere id not match")
         self.path_disks_partitions[disk].remove(partition)
 
 
@@ -575,7 +594,8 @@ class PartUtil:
         if dev_path in self.path_disks.keys():
             return self.path_disks[dev_path]
         else:
-            print "there's no disk specified by the path"
+            # print "there's no disk specified by the path"
+            self.lu.do_log_msg(self.logger,"critical","there's no disk specified by the path")
             return 
 
     def get_device_from_path(self,dev_path):
@@ -618,11 +638,13 @@ class PartUtil:
         '''atom function:delete the given partition,called only because need delete original partition'''
         self.partitions=self.get_disk_partitions(disk)
         if partition not in self.partitions:
-            print "partition not in the disk"
+            # print "partition not in the disk"
+            self.lu.do_log_msg(self.logger,"error","partition not in the disk")
             return
 
         if partition.type==parted.PARTITION_EXTENDED and disk.getLogicalPartitions()!=[]:
-            print "need delete all logical partitions before delete extend partition"
+            # print "need delete all logical partitions before delete extend partition"
+            self.lu.do_log_msg(self.logger,"info","delete logical partitions before delete extend")
             for logical_part in disk.getLogicalPartitions():
                 self.delete_path_disks_partitions(disk,logical_part)
                 self.disk_partition_info_tab=filter(lambda info:info[0]!=logical_part,self.disk_partition_info_tab)
@@ -630,15 +652,16 @@ class PartUtil:
                     self.set_disk_partition_umount(logical_part)
                     disk.deletePartition(logical_part)
                 except:
-                    print "delete logical_part failed"
-
+                    # print "delete logical_part failed"
+                    self.lu.do_log_msg(self.logger,"error","delete logical_part failed")
         self.delete_path_disks_partitions(disk,partition)    
         self.disk_partition_info_tab=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab)
         try:
             self.set_disk_partition_umount(partition)
             disk.deletePartition(partition)
         except:
-            print "error occurs"
+            # print "error occurs"
+            self.lu.do_log_msg(self.logger,"error","error occurs")
         disk.commit()
 
     def delete_custom_partition(self,partition_path):
@@ -653,7 +676,8 @@ class PartUtil:
             else:
                 continue
         if self.partition==None:
-            print "partition doesn't exist"
+            # print "partition doesn't exist"
+            self.lu.do_log_msg(self.logger,"warning","partition doesn't exist")
             return
         self.disk=self.partition.disk
         self.delete_disk_partition(self.disk,self.partition)
@@ -681,7 +705,8 @@ class PartUtil:
         '''help for add_custom_partition'''
         for item in filter(lambda info:info[-1]=="add" and info[0].disk==disk,disk_partition_info_tab):
             if item[0].type==parted.PARTITION_LOGICAL and not self.probe_tab_has_extend(disk,disk_partition_info_tab):
-                print "can't add logical partition as there is no extended partition"
+                # print "can't add logical partition as there is no extended partition"
+                self.lu.do_log_msg(self.logger,"error","can't add logical as no extended")
                 break
             else:
                 self.partition=item[0]
@@ -719,7 +744,8 @@ class PartUtil:
         elif part_type=="logical":
             self.type=parted.PARTITION_LOGICAL
         else:
-            print "part type error"
+            # print "part type error"
+            self.lu.do_log_msg(self.logger,"error","part type error")
         return self.type    
 
     def set_disk_partition_geometry(self,disk,free_geometry,size):
@@ -745,7 +771,8 @@ class PartUtil:
             return
 
         if not partition.disk.supportsFeature(parted.DISK_TYPE_PARTITION_NAME):
-            print "sorry,can't set partition name"
+            # print "sorry,can't set partition name"
+            self.lu.do_log_msg(self.logger,"warning","sorry,conn't set partition name")
         else:
             partition.name=part_name
         
@@ -753,16 +780,19 @@ class PartUtil:
     def set_disk_partition_fstype(self,partition,fstype):
         '''format the partition to given fstype,not create the parted fs object'''
         if partition.type!=parted.PARTITION_NORMAL and partition.type!=parted.PARTITION_LOGICAL:
-            print "you can only set filesystem for primary and logical partitionn"
+            # print "you can only set filesystem for primary and logical partitionn"
+            self.lu.do_log_msg(self.logger,"error","can only set fs for primary/logical partitionn")
             return
         if fstype==None or len(fstype)==0:
-            print "no filesystem specified"
+            # print "no filesystem specified"
+            self.lu.do_log_msg(self.logger,"error","no filesystem specified")
             return
         part_path=partition.path
         #swapoff the partition before change filesystem,if not work,simply reduce code
         origin_fs_type=partition.fileSystem.type
         if origin_fs_type==fstype:
-            print "filesystem not changed"
+            # print "filesystem not changed"
+            self.lu.do_log_msg(self.logger,"warning","filesystem not changed")
             return
         elif origin_fs_type=="linux-swap":
             swap_data=get_os_command_output("grep "+part_path+" /proc/swaps")
@@ -779,8 +809,8 @@ class PartUtil:
         elif fstype in ["ext2","ext3","ext4","reiserfs","xfs","ntfs"]:
             format_command="sudo mkfs."+fstype+" -f "+part_path
         else:
-            print "invalid fstype"
-
+            # print "invalid fstype"
+            self.lu.do_log_msg(self.logger,"error","invalid fstype")
         try:    
             run_os_command(format_command)
         except:
@@ -796,10 +826,12 @@ class PartUtil:
         '''mount partition to mp:new or modify,need consider various situation'''
 
         if partition.type==parted.PARTITION_EXTENDED:
-            print "cann't mount extended partition"
+            # print "cann't mount extended partition"
+            self.lu.do_log_msg(self.logger,"error","cann't mount extended partition")
             return
         if mountpoint==None or len(mountpoint)==0:
-            print "need mountpoint,not given"
+            # print "need mountpoint,not given"
+            self.lu.do_log_msg(self.logger,"error","need mountpoint,not given")
             return 
         part_path=partition.path
         mp=TARGET+mountpoint
@@ -807,7 +839,8 @@ class PartUtil:
             mkdir_command="sudo mkdir -p "+mp
             run_os_command(mkdir_command)
         if not os.path.exists(part_path):
-            print "partition not exists,commit to os first"
+            # print "partition not exists,commit to os first"
+            self.lu.do_log_msg(self.logger,"error","partition not exists,commit to os first")
             return 
 
         mount_command="sudo mount -t "+fstype+" "+part_path+" "+mp
@@ -852,9 +885,11 @@ class PartUtil:
     def set_disk_partition_flag(self,partition,flag,state):
         '''set the partition status to state'''
         if flag not in partition.getFlagsAsString():
-            print "flag invalid"
+            # print "flag invalid"
+            self.lu.do_log_msg(self.logger,"warning","flag invalid")
         if not partition.isFlagAvailable():
-            print "flag not available"
+            # print "flag not available"
+            self.lu.do_log_msg(self.logger,"warning","flag not available")
         else:    
             if state=="on" | state=="True":
                 partition.setFlag()
@@ -876,7 +911,8 @@ class PartUtil:
         memory_total_command="grep MemTotal /proc/meminfo"
         total_size=get_os_command_output(memory_total_command)
         if len(total_size)==0:
-            print "cann't get the size of total memory"
+            # print "cann't get the size of total memory"
+            self.lu.do_log_msg(self.logger,"error","cann't get the size of total memory")
         else:
             self.total_memory=int(filter(lambda c:c in "0123456789.",total_size[0]))
 
@@ -894,7 +930,8 @@ class PartUtil:
     def adapt_autoswap_size(self,disk):
         '''get the optimize size of the swap'''
         if self.if_need_swap()==False:
-            print "no need to make swap"
+            # print "no need to make swap"
+            self.lu.do_log_msg(self.logger,"warning","no need to make swap")
         else:    
             self.total_memory=self.get_memory_total()
             self.disk_size=self.get_disk_size(disk)
