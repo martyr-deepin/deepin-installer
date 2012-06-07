@@ -120,7 +120,7 @@ class TimezoneUtil():
 
     def set_custom_timezone(self,region):
         '''set timezone according to user selected region'''
-        # self.timezone=self.regiona
+        # self.timezone=self.region
         os.environ.get('TZ',self.timezone)
         self.set_timezone()
 
@@ -189,3 +189,4 @@ if __name__=="__main__":
     tu=TimezoneUtil()
     tu.get_system_regions()
     print tu.region_dict
+

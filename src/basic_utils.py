@@ -157,6 +157,10 @@ def do_reboot():
     command="sudo reboot "
     run_os_command(command)
 
+def probe_exists_os():
+    pass
+
+
 
 if __name__=="__main__":
    print get_os_command_output("cat /etc/passwd")

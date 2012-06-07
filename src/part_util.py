@@ -776,7 +776,7 @@ class PartUtil:
             format_command="sudo mkswap "+part_path
         elif fstype=="fat32":
             format_command="sudo mkfs.vfat "+part_path
-        elif fstype in ["ext2","ext3","ext4","reiserfs","xfs"]:
+        elif fstype in ["ext2","ext3","ext4","reiserfs","xfs","ntfs"]:
             format_command="sudo mkfs."+fstype+" -f "+part_path
         else:
             print "invalid fstype"
@@ -861,6 +861,9 @@ class PartUtil:
             else:
                 partition.unsetFlag()
 
+    def write_partition_table(self):
+        '''write partition change info to /etc/fstab'''
+        pass
 
     def generate_view_partition_path(self):
         '''calc partition path display to user,and as arg to manage disk_partition_info_tab
@@ -922,10 +925,6 @@ class PartUtil:
             self.add_disk_partition_info_tab(disk_path,"primary",self.disk_size-self.swap_size,"ext4",None,None,"/")
             
         self.add_custom_disk_partition(self.disk_partition_info_tab)
-        
-    def probe_system_os(self):
-        '''probe exists operating system'''
-        
 
 def test_operate_disk_partition_info_tab_path_disks_partitions():
     pu=PartUtil()
