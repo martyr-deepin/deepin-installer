@@ -89,12 +89,13 @@ class LogUtil():
 
     def get_log_file_name(self,logger):
         '''generate file name for the FileHandler to logger'''
+        logger_name=logger.name
         logger_id=str(id(logger))
-        import time
-        current_time=time.ctime()
-        suffix=".txt"
-        self.log_file_name=current_time+"_"+logger_id+suffix
-
+        suffix=".log"
+        if len(logger_name)!=0:
+            self.log_file_name=logger_name+suffix
+        else:
+            self.log_file_name=logger_id+suffix
         return self.log_file_name
 
     def add_logger_handler(self,logger,handler):
@@ -104,25 +105,24 @@ class LogUtil():
     
     def set_handler_level(self,handler,handler_level):
         '''set the level of the given handler'''
-        if handler_level in ["noset","debug","info","warning","error","critical"]:
-            handler_level=""
+        if handler_level in ["debug","info","warning","error","critical"]:
+            handler_level=str.upper(handler_level)
         else:
-            handler_level=""
+            handler_level="DEBUG"
             
         if isinstance(handler,logging.Handler):
             handler.setLevel(handler_level)
 
     def create_handler_formatter(self,handler,formatter_type):
         '''create formatter for the handler'''
-        if formatter_type:
-            pass
+        if formatter_type==None or formatter_type=="default":
+            self.formatter=logging.Formatter("%(asctime)s-%(name)s-%(levelname)s-%(message)s")
+            self.set_handler_formatter(handler,self.formatter)
+            return self.formatter
         else:
-            pass
-
-        self.formatter=logging.Formatter(formatter_type)
-        self.set_handler_formatter(handler,self.formatter)
-
-        return self.formatter
+            self.formatter=logging.Formatter(formatter_type)
+            self.set_handler_formatter(handler,self.formatter)
+            return self.formatter
 
     def set_handler_formatter(self,handler,formatter):
         '''set formatter for the handler'''
@@ -131,20 +131,18 @@ class LogUtil():
     
     def create_handler_filter(self,handler,filter_type):
         """create filter for the handler        """
-        if filter_type:
-            pass
+        if filter_type==None or filter_type=="default":
+            return 
         else:
-            pass
-        self.filter=logging.Filter(filter_type)
-        self.set_handler_filter(handler,self.filter)
-
-        return self.filter
+            self.filter=logging.Filter(filter_type)
+            self.set_handler_filter(handler,self.filter)
+    
+            return self.filter
 
     def set_handler_filter(self,handler,filter):
         """set filter for the handler        """
         if isinstance(handler,logging.Handler) and isinstance(filter,logging.Filter):
             handler.addFilter(filter)
-    
 
     def do_log_msg(self,logger,log_type,log_msg):
         '''do actual msg log operation'''
@@ -152,15 +150,19 @@ class LogUtil():
             print "invalid logger"
 
         if log_type in ["debug","info","warning","error","critical"]:
-            logger.log_type(log_msg)
+            getattr(logger, log_type)(log_msg)
         else:
-            print "invalid log_type"
+            logger.debug(log_msg)
 
     def test(self):
         logger=self.create_logger("test_logger",None)
-        print logger
+
         # handler=logging.FileHandler(str(id(logger))+".txt")
         # print handler
+        # self.set_handler_level(logger,handler)
+        self.create_logger_handler(logger,"file","error",None,None)
+        self.do_log_msg(logger,"error","some error occurs")
+
         # handler=logging.StreamHandler()
         # # print handler
         # print "add handler:"
@@ -171,7 +173,10 @@ class LogUtil():
         # print "remove_logger_handler:"
         # self.remove_logger_handler(logger,handler)
         # print handler
-        print id(logger)
+
+
+
 if __name__=="__main__":
-    lu=LogUtil()
-    lu.test()
+    # lu=LogUtil()
+    # lu.test()
+    pass
