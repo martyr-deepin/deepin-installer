@@ -25,8 +25,8 @@ import string
 logger_level=["debug","info","warning","error","critical"]
 handler_level=["debug","info","warning","error","critical"]
 log_type=["debug","info","warning","error","critical"]
-formatter_type=[]
-filter_type=[]
+formatter_type=["default"]
+filter_type=["default"]
 
 class LogUtil():
     '''log util,user interface:
