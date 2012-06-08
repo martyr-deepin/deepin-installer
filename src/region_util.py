@@ -23,7 +23,7 @@
 import os
 import locale
 import time
-from basic_utils import get_os_command_output
+from basic_utils import get_os_command_output,run_os_command
 
 LOCALE_FILE="/usr/share/i18n/SUPPORTED"
 LANGUAGE_FILE="/usr/share/localechooser/shotlists"
@@ -201,14 +201,6 @@ class KeyboardUtil():
         self.keyboard_layout=""
         self.country_list=[]
         self.country_keyboard_list=[]
-        self.keyboard_dict={}
-
-        self.init_keyboard_dict()
-
-    def init_keyboard_dict(self):
-        '''fill keyboard layout data into keyboard_dict'''
-        #to be implemented
-        return self.keyboard_dict
 
     def get_country_list(self):
         '''get country list'''
@@ -221,11 +213,13 @@ class KeyboardUtil():
 
     def set_default_keyboard_layout(self):
         '''set default_keyboard_layout convient for chinese'''
-        pass
+        keyboard_layout_command="setxkbmap -layout cn"
+        run_os_command(keyboard_layout_command)
 
-    def set_keyboard_layout(self,country,layout):
+    def set_keyboard_layout(self,layout):
         '''set keyboard layout'''
-        pass
+        keyboard_layout_command="setxkbmap -layout "+layout
+        run_os_command(keyboard_layout_command)
 
     def get_keyboard_layout(self):
         '''return the custom layout'''
