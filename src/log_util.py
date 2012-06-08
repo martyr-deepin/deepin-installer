@@ -35,7 +35,7 @@ class LogUtil():
     '''log util,user interface:
            create_logger(logger_name,logger_level)
            create_logger_handler(logger,handler_type,handler_level,formatter_type,filter_type)
-           do_log_msg(logger,log_type,log_msg)
+           # do_log_msg(logger,log_type,log_msg)
     '''
     def __init__(self):
         self.logger=""
@@ -117,10 +117,7 @@ class LogUtil():
 
     def create_handler_formatter(self,handler,formatter_type):
         '''create formatter for the handler'''
-        if formatter_type=="loglineno":
-            self.formatter=logging.Formatter("%(filename)s/%(funcName)s-%(lineno)d:%(levelname)s-%(message)s")
-            self.set_handler_formatter(handler,self.formatter)
-        elif formatter_type=="lineno":
+        if formatter_type=="lineno":
             self.formatter=logging.Formatter("%(filename)s/%(funcName)s-%(lineno)d:%(levelname)s-%(message)s")
             self.set_handler_formatter(handler,self.formatter)
         elif formatter_type=="process":
@@ -184,7 +181,6 @@ class MailUtil():
     '''mail util'''
     def __init__(self):
         pass
-
 
 if __name__=="__main__":
     lu=LogUtil()
