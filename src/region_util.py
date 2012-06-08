@@ -23,6 +23,12 @@
 import os
 import locale
 import time
+from basic_utils import get_os_command_output
+
+LOCALE_FILE="/usr/share/i18n/SUPPORTED"
+LANGUAGE_FILE="/usr/share/localechooser/shotlists"
+ISO3166_FILE="/usr/share/zoneinfo/iso3166.tab"
+ZONE_FILE="/usr/share/zoneinfo/zone.tab"
 
 class LocaleUtil():
     '''locale set util'''
@@ -90,48 +96,43 @@ class LocaleUtil():
 class TimezoneUtil():
     '''timezone set util'''
     def __init__(self):
-        self.timezone_dict={}
-        self.timezone=""
-        self.string_time=""
-        self.region=""
-        self.timezone_list=[]
-        
-        self.init_timezone_dict()
+        self.timezone="Asia/shanghai"
+        self.iso3166_tab={}#{CN:CHINA}
+        self.timezone_tab={}#{TZ:(code,coordinate)}
 
-    def init_timezone_dict(self):
-        '''fill timezone data into the dict'''
-        #to be implemented
-        pass
-
-    def get_timezone_list(self):
-        pass
-
-    def get_system_regions(self):
-        regiondata=open("/usr/share/localechooser/regionmap").readlines()
-
-        for line in regiondata:
+    def get_system_timezone_tab(self):
+        '''get timezone_tab from zone.tab'''
+        zone_tab_command="cat /usr/share/zoneinfo/zone.tab"
+        timezone_data=get_os_command_output(zone_tab_command)
+        for line in timezone_data:
             if line.startswith("#"):
                 continue
-            (country_city,island)=line.strip().split(None,1)
-            self.region_dict[country_city]=island
-            
-        return self.region_dict    
+            else:
+                timezone_item=line.strip().split("\t")
+                self.timezone_tab[timezone_item[2]]=(timezone_item[0],timezone_item[1])
+        return self.timezone_tab        
 
+    def get_iso3166_tab(self):
+        '''get iso3166_tab from iso3166.tab'''
+        iso3166_tab_command="cat /usr/share/zoneinfo/iso3166.tab"
+        iso3166_data=get_os_command_output(iso3166_tab_command)
+        for line in iso3166_data:
+            if line.startswith("#"):
+                continue
+            else:
+                iso3166_item=line.strip().split("\t")
+                self.iso3166_tab[iso3166_item[0]]=iso3166_item[1]
 
-    def set_custom_timezone(self,region):
-        '''set timezone according to user selected region'''
-        # self.timezone=self.region
-        os.environ.get('TZ',self.timezone)
-        self.set_timezone()
+        return self.iso3166_tab        
 
-    def set_timezone(self):
+    def set_timezone(self,tz):
         '''atom function to set timezone'''
-        self.timezone=os.environ['TZ']
-        if len(self.timezone)==0:
-            os.environ.get('TZ',"GMT")
-            self.timezone="GMT"
-        time.tzset()
-        self.string_time=time.ctime()
+        if len(tz)==0:
+            self.set_default_timezone()
+        else:
+            self.timezone=tz
+            os.environ.get("TZ",tz)
+            time.tzset()
 
     def get_timezone(self):
         '''return the timezone user had set'''
@@ -139,11 +140,13 @@ class TimezoneUtil():
 
     def set_default_timezone(self):
         '''set timezone to china/shanghai,for chinese people'''
-        pass
+        self.timezone="Asia/shanghai"
+        os.environ.get("TZ",self.timezone)
+        time.tzset()
 
     def get_default_timezone(self):
         '''return default_timezone'''
-        pass
+        return "Asia/shanghai"
 
 class KeyboardUtil():
     '''keyboard set util'''
@@ -187,6 +190,6 @@ if __name__=="__main__":
     # print lu.locale_list
     # print lu.locale_dict
     tu=TimezoneUtil()
-    tu.get_system_regions()
-    print tu.region_dict
-
+    # tu.get_system_regions()
+    # print tu.region_dict
+    print tu.get_system_timezone_tab()
