@@ -85,6 +85,16 @@ class LocaleUtil():
             code=locale[start:end]
         return code
 
+
+    def set_default_locale(self):
+        '''set default_locale for unknown region'''
+        locale.setlocale(locale.LC_ALL,"C")
+
+    def set_timezone_locale(self,timezone):
+        '''do local set operation according to the timezone'''
+        self.locale=self.get_timezone_locale(timezone)
+        locale.setlocale(locale.LC_ALL,self.locale)
+
     def set_locale(self,category,value):
         '''set locale'''
         locale.setlocale(category,value)
@@ -95,20 +105,11 @@ class LocaleUtil():
 
     def set_language(self,language):
         '''set language'''
-        pass
+        self.set_locale("LC_CTYPE",language)
     
-    def get_language(self):
-        '''return custom language'''
-        return self.language
-
-    def set_default_locale(self):
-        '''set default_locale for unknown region'''
+    def install_language_pack(self,locale):
+        '''install language pack for the locale'''
         pass
-
-    def set_default_language(self):
-        '''set default_language for unknown region'''
-        pass
-
 
 class TimezoneUtil():
     '''timezone set util'''
