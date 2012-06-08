@@ -38,12 +38,6 @@ class LocaleUtil():
         self.languagelist=[]
         self.locale=""
         self.language=""
-        self.init_locale_dict()
-
-    def init_locale_dict(self):
-        '''init locale data'''
-        #to be implemented
-        pass
 
     def get_system_locales(self):
         '''get system_locales'''
@@ -68,6 +62,29 @@ class LocaleUtil():
 
         return self.languagelist    
 
+    def get_timezone_locale(self,timezone):
+        '''return locale match the timezone'''
+        code=TimezoneUtil().get_system_timezone_tab()[timezone][0]
+        self.locale_list=filter(lambda locale:self.get_locale_code(locale)==code,self.get_system_locales())
+        if len(self.locale_list)==0:
+            self.locale=self.get_default_locale()
+        else:
+            self.locale=filter(lambda locale:locale.find("UTF-8"),self.locale_list)[0]
+            if len(self.locale)==0:
+                self.locale=self.locale_list[0]
+        
+        return self.locale        
+
+    def get_locale_code(self,locale):
+        '''return the short country code for the given locale'''
+        start=locale.find("_")+1
+        end=locale.find(".")
+        if end==-1:
+            code=locale[start:]
+        else:    
+            code=locale[start:end]
+        return code
+
     def set_locale(self,category,value):
         '''set locale'''
         locale.setlocale(category,value)
@@ -85,11 +102,11 @@ class LocaleUtil():
         return self.language
 
     def set_default_locale(self):
-        '''set default_locale for chinese people'''
+        '''set default_locale for unknown region'''
         pass
 
     def set_default_language(self):
-        '''set default_language for chinese people'''
+        '''set default_language for unknown region'''
         pass
 
 
@@ -214,16 +231,22 @@ class KeyboardUtil():
         return self.layout
 
 if __name__=="__main__":
-    # lu=LocaleUtil()
-    # lu.get_system_locales()
+    lu=LocaleUtil()
+    lu.get_system_locales()
     # print lu.locale_list
+    # print lu.get_locale_code("zh_CN.UTF-8")
+    print lu.get_timezone_locale("Asia/Kolkata")
+    # print lu.get_timezone_locale("Asia/Shanghai")
+
+    # print TimezoneUtil().get_system_timezone_tab()["Asia/Kolkata"][0]
+    print lu.get_locale_code("en_IN")
     # print lu.locale_dict
-    tu=TimezoneUtil()
+    # lu.get_language_shortlist()
+    # tu=TimezoneUtil()
     # tu.get_system_regions()
     # print tu.region_dict
     # print tu.get_system_timezone_tab()
-    print tu.get_timezone_dict()
-
+    # print tu.get_timezone_dict()
 
 
     # print tu.get_timezone_time("Asia/Shanghai")
