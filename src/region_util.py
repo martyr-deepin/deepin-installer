@@ -99,6 +99,9 @@ class TimezoneUtil():
         self.timezone="Asia/shanghai"
         self.iso3166_tab={}#{CN:CHINA}
         self.timezone_tab={}#{TZ:(code,coordinate)}
+        self.timezone_dict={}#{TZ:country,time}
+        self.country=""
+        self.time=""
 
     def get_system_timezone_tab(self):
         '''get timezone_tab from zone.tab'''
@@ -123,7 +126,33 @@ class TimezoneUtil():
                 iso3166_item=line.strip().split("\t")
                 self.iso3166_tab[iso3166_item[0]]=iso3166_item[1]
 
-        return self.iso3166_tab        
+        return self.iso3166_tab   
+
+    def get_timezone_dict(self):
+        '''fill TZ,country,time into dict'''
+        for key in self.get_system_timezone_tab().keys():
+            self.timezone=key
+            self.country=self.get_timezone_country(self.timezone)
+            self.time=self.get_timezone_time(self.timezone)
+            self.timezone_dict[self.timezone]=[self.country,self.time]
+
+        return self.timezone_dict
+    
+    def get_timezone_country(self,timezone):
+        '''get the full country of the given timezone'''
+        self.country_code=self.get_system_timezone_tab()[timezone][0]
+        self.country=self.get_iso3166_tab()[self.country_code]
+
+        return self.country
+
+    def get_timezone_time(self,timezone):
+        '''get the current time of the given timezone'''
+        self.set_timezone(timezone)
+        self.time=time.localtime()
+        # print self.timezone
+        # print self.time
+        # print os.environ["TZ"]
+        return self.time
 
     def set_timezone(self,tz):
         '''atom function to set timezone'''
@@ -131,7 +160,7 @@ class TimezoneUtil():
             self.set_default_timezone()
         else:
             self.timezone=tz
-            os.environ.get("TZ",tz)
+            os.environ["TZ"]=self.timezone
             time.tzset()
 
     def get_timezone(self):
@@ -192,4 +221,13 @@ if __name__=="__main__":
     tu=TimezoneUtil()
     # tu.get_system_regions()
     # print tu.region_dict
-    print tu.get_system_timezone_tab()
+    # print tu.get_system_timezone_tab()
+    print tu.get_timezone_dict()
+
+
+
+    # print tu.get_timezone_time("Asia/Shanghai")
+    # print tu.get_timezone_time("Asia/Kolkata")
+    # print tu.get_timezone_time("America/Caraca")
+
+
