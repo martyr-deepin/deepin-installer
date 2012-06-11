@@ -47,6 +47,7 @@ from dtk.ui.application import Application
 # from dtk.ui.frame import HorizontalFrame
 # from dtk.ui.button import Button
 from welcome import Welcome
+from part import Part
 
 class DeepinInstaller():
     '''deepin installer'''
@@ -62,7 +63,8 @@ class DeepinInstaller():
         self.step_box.set_size_request(-1,50)
 
         self.content_box.pack_start(Welcome().install_frame,True,True,4)
-        self.step_box.pack_start(Welcome().step_box_frame,True,True,4)
+        # self.step_box.pack_start(Welcome().step_box_frame,True,True,4)
+        self.step_box.pack_start(Part().step_box_frame,True,True,4)
 
         self.application.main_box.pack_start(self.content_box)
         self.application.main_box.pack_start(self.step_box)
