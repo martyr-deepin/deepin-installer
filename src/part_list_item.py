@@ -20,9 +20,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+
 import gobject
-from dtk.ui.scrolled_window import ScrolledWindow
+
 from dtk.ui.constant import ALIGN_START
 from dtk.ui.utils import get_content_size
 from dtk.ui.constant import DEFAULT_FONT_SIZE,ALIGN_END

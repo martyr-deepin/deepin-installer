@@ -20,15 +20,46 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from dtk.ui.skin_config import skin_config
+from dtk.ui.theme import Theme,ui_theme
+from dtk.ui.utils import get_parent_dir
+import os
+
+
+# Init skin config.
+skin_config.init_skin(
+    "12",
+    os.path.join(get_parent_dir(__file__, 2), "skin"),
+    os.path.expanduser("~/.config/deepin-installer/skin"),
+    os.path.expanduser("~/.config/deepin-installer/skin_config.ini"),
+    )
+
+# Create application theme.
+app_theme = Theme(
+    os.path.join(get_parent_dir(__file__, 2), "app_theme"),
+    os.path.expanduser("~/.config/deepin-installer/theme")
+    )
+
+# Set theme.
+skin_config.load_themes(ui_theme, app_theme)
+
+
+
+
+
+
 import gtk
-from dtk.ui.window import Window
+
 from dtk.ui.combo import ComboBox,ComboBoxItem
 from dtk.ui.label import Label
+from dtk.ui.popup_window import PopupWindow
 
-class PartNew():
+class PartNew(PopupWindow):
     '''create new partition UI'''
     def __init__(self):
-        self.window=Window()
+        
+        super(PartNew,self).__init__()
+
 
         self.new_part_box=gtk.VBox()
         
@@ -44,7 +75,7 @@ class PartNew():
         self.part_type_box.pack_start(self.part_type_label)
         self.part_type_box.pack_start(self.part_type_combo)
 
-        self.part_capacity_box=gtk.Hbox()
+        self.part_capacity_box=gtk.HBox()
         self.part_capacity_label=Label("新分区容量:")
         self.part_capacity_combo=ComboBox()
         self.part_capacity_box.pack_start(self.part_capacity_label)
@@ -73,4 +104,15 @@ class PartNew():
         self.part_fs_box.pack_start(self.part_fs_label)
         self.part_fs_box.pack_start(self.part_fs_combo)
 
-        
+        self.new_part_box.pack_start(self.part_type_box)
+        self.new_part_box.pack_start(self.part_capacity_box)
+        self.new_part_box.pack_start(self.part_location_box)
+        self.new_part_box.pack_start(self.part_mp_box)
+        self.new_part_box.pack_start(self.part_fs_box)
+
+
+if __name__=="__main__":
+
+
+    PartNew()
+    gtk.main()
