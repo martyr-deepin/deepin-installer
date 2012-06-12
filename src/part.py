@@ -30,7 +30,7 @@ from dtk.ui.frame import HorizontalFrame
 from dtk.ui.scrolled_window import ScrolledWindow
 from part_list_item import PartListItem
 from part_util import PartUtil
-
+from dtk.ui.utils import container_remove_all
 
 class Part(gtk.VBox):
     '''Part UI'''
@@ -48,7 +48,7 @@ class Part(gtk.VBox):
         for disk in disk_info.keys():
             disk_combo_item=ComboBoxItem(disk,None)
             self.choose_disk_combo.add_item(disk_combo_item)
-            self.choose_disk_combo.set_select_index(0)    
+        # self.choose_disk_combo.set_select_index(0)    
 
 
         self.choose_disk_combo.connect("item-selected",self.on_disk_combo_selected)
@@ -58,9 +58,11 @@ class Part(gtk.VBox):
 
         self.selected_disk=self.part_util.get_disk_from_path("/dev/sda")
         
-        # self.disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
+        self.disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
 
         self.partition_box=gtk.HBox(True,4)
+        self.partition_box.set_size_request(-1,35)
+        self.update_part_btn_box()
 
         part_listview_box=gtk.VBox()
         part_listview_box.set_size_request(-1,300)
@@ -84,7 +86,7 @@ class Part(gtk.VBox):
         # self.part_listview.set_expand_column(0)
         part_listview.add_titles(["分区","文件系统","挂载点","格式化","总容量","已用容量","类型"])
         part_listview.add_items(part_listview_items)
-        part_listview.cell_widths=[100,60,60,60,60,60,100]
+        part_listview.cell_widths=[100,60,100,60,60,60,100]
 
         part_scrolled_window=ScrolledWindow()
         part_scrolled_window.add_child(part_listview)
@@ -120,22 +122,26 @@ class Part(gtk.VBox):
         '''update the item of choose disk'''
         pass
 
-    def on_disk_combo_selected(self):
+    def on_disk_combo_selected(self,widget,event):
         '''change disk,react to partitions display'''
-        self.selected_disk=self.part_util.get_disk_from_path(self.choose_disk_combo.get_current_item())
+        self.selected_disk=self.part_util.get_disk_from_path(self.choose_disk_combo.get_current_item().get_label())
 
         self.update_part_btn_box()
 
 
     def update_part_btn_box(self):
         '''when change disk,the partitions display changed'''
+
         self.disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
-        
+        container_remove_all(self.partition_box)
+
         for part in self.disk_partitions:
             part_btn=Button(part.path)
             self.partition_box.pack_start(part_btn,False,False,1)
-            part_btn.connect("connect",self.on_part_btn_clicked)    
+            part_btn.connect("clicked",self.on_part_btn_clicked)    
 
-    def on_part_btn_clicked(self):
-        ''''''
+        self.partition_box.show_all()
+    
+    def on_part_btn_clicked(self,widget):
+        '''react to listview'''
         pass
