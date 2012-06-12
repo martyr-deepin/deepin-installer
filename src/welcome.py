@@ -20,71 +20,44 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.button import RadioButton,Button
+from dtk.ui.button import RadioButton
 from dtk.ui.label import Label
-from dtk.ui.frame import HorizontalFrame,VerticalFrame
-
+from dtk.ui.frame import HorizontalFrame
 
 import gtk
 
-class Welcome():
+class Welcome(gtk.VBox):
     '''first page of installer'''
     def __init__(self):
-        self.content_box=gtk.VBox()
+        super(Welcome, self).__init__()
 
-        self.install_method_label=Label("请选择安装方式：",text_size=20)
+        welcome_label = Label("请选择安装方式:", text_size=15)
+        self.complete_radio_button = RadioButton("清盘安装")
+        self.complete_radio_button.set_active(True)
+        complete_label = Label("这里会清除所有的磁盘数据！")
+        self.advance_radio_button = RadioButton("高级安装")
+        advance_label = Label("自己创建并调整分区！")
 
-        self.install_clear_btn=RadioButton("清盘安装")
-        self.install_clear_describe=Label("          这将会清除硬盘上的全部数据")
-        self.install_clear_box=gtk.VBox()
-        self.install_clear_box.pack_start(self.install_clear_btn,True,True,4)
-        self.install_clear_box.pack_start(self.install_clear_describe,True,True,4)
-        self.install_clear_frame=HorizontalFrame()
-        self.install_clear_frame.add(self.install_clear_box)
-        self.install_clear_frame.set_padding(1,10,20,0)
-
-        self.install_advance_btn=RadioButton("高级安装")
-        self.install_advance_describe=Label("          自己创建并调整分区")
-        self.install_advance_box=gtk.VBox()
-        self.install_advance_box.pack_start(self.install_advance_btn,True,True,4)
-        self.install_advance_box.pack_start(self.install_advance_describe,True,True,4)
-        self.install_advance_frame=HorizontalFrame()
-        self.install_advance_frame.add(self.install_advance_box)
-        self.install_advance_frame.set_padding(10,1,20,0)                                    
-
-        self.content_box.pack_start(self.install_method_label,True,True,40)
-        self.content_box.pack_start(self.install_clear_frame)
-        self.content_box.pack_start(self.install_advance_frame)
-
-
-        self.install_frame=VerticalFrame()
-        self.install_frame.add(self.content_box)
-        self.install_frame.set(0.4,0.2,0,0)
-        self.install_frame.set_padding(40,80,80,100)
+        welcome_label_frame=HorizontalFrame()
+        welcome_label_frame.add(welcome_label)
+        welcome_label_frame.set(1,0,0,0)
 
         
+        main_table = gtk.Table(5, 2)
+        main_table.set_row_spacing(0, 40)
+        main_table.set_row_spacing(2, 40)
 
-        self.welcome_step_box=gtk.HBox()
-        #add step/ok/cancel button
-        self.page_label=Label("Page 5")
-        self.page_label.set_text("第1页，共5页")
-        self.page_frame=HorizontalFrame()
-        self.page_frame.set(0.1,0,0,0)
-        self.page_frame.set_padding(5,0,20,400)
-
-        self.page_frame.add(self.page_label)
-
-        self.ok_button=Button("确定")
-
-        self.cancle_button=Button("退出")
-
-        self.welcome_step_box.pack_start(self.page_frame,False,True,4)
-        self.welcome_step_box.pack_end(self.ok_button,True,True,4)
-        self.welcome_step_box.pack_end(self.cancle_button,True,True,4)
-
-        self.step_box_frame=HorizontalFrame()
-
-        self.step_box_frame.set_padding(0,20,0,20)
-        self.step_box_frame.add(self.welcome_step_box)
-
-
+        main_table.attach(welcome_label_frame, 0, 1, 0,1)
+        main_table.attach(self.complete_radio_button, 1, 2, 1,2, yoptions=gtk.FILL)
+        main_table.attach(complete_label, 1, 2, 2, 3, xpadding=40)
+        main_table.attach(self.advance_radio_button, 1, 2, 3, 4, yoptions=gtk.FILL)
+        main_table.attach(advance_label, 1, 2, 4, 5, xpadding=40)
+        # self.add(main_table)
+        self.pack_start(main_table, False, False,90)
+        
+    def is_complete_install(self):
+        return self.complete_radio_button.get_active()
+        
+        
+        
+        

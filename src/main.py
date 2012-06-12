@@ -24,6 +24,7 @@ from dtk.ui.theme import Theme,ui_theme
 from dtk.ui.utils import get_parent_dir
 import os
 
+
 # Init skin config.
 skin_config.init_skin(
     "12",
@@ -43,35 +44,101 @@ skin_config.load_themes(ui_theme, app_theme)
 
 import gtk
 from dtk.ui.application import Application
-# from dtk.ui.label import Label
-# from dtk.ui.frame import HorizontalFrame
-# from dtk.ui.button import Button
+from dtk.ui.label import Label
+from dtk.ui.frame import HorizontalFrame
+from dtk.ui.button import Button
+from dtk.ui.utils import container_remove_all
+
 from welcome import Welcome
 from part import Part
+from ui_utils import switch_box
 
 class DeepinInstaller():
     '''deepin installer'''
     def __init__(self):
         self.application=Application("installer")
         self.application.set_default_size(756,520)
-        self.application.add_titlebar(["min", "close"],None,"欢迎使用深度软件",None,False)
+        self.application.add_titlebar(["min", "close"],None,"      欢迎使用深度软件",None,False)
         self.application.titlebar.set_size_request(-1,50)
 
         self.content_box=gtk.VBox()
-        self.content_box.set_size_request(-1,420)
+        self.content_box.set_size_request(-1,400)
+
+        self.step_contain_box=gtk.HBox()
+        self.step_contain_box.set_size_request(-1,50)
+
+        self.step=1
+
+        self.page_label=Label("Page 5")
+        self.page_label.set_text("第%d页，共5页" % self.step)
+        self.page_frame=HorizontalFrame()
+        self.page_frame.set(0.1,0,0,0)
+        self.page_frame.set_padding(10,0,60,300)
+        self.page_frame.add(self.page_label)
+
+        self.ok_button=Button("确定")
+        self.back_button=Button("后退")
+
+        self.cancle_button=Button("退出")
         self.step_box=gtk.HBox()
-        self.step_box.set_size_request(-1,50)
+        self.step_box.pack_start(self.page_frame,False,False,4)
+        self.step_box.pack_end(self.ok_button,False,False,4)
+        self.step_box.pack_end(self.back_button,False,False,4)
+        self.step_box.pack_end(self.cancle_button,False,False,4)
 
-        self.content_box.pack_start(Welcome().install_frame,True,True,4)
-        # self.step_box.pack_start(Welcome().step_box_frame,True,True,4)
-        self.step_box.pack_start(Part().step_box_frame,True,True,4)
+        self.step_box_frame=HorizontalFrame()
+        self.step_box_frame.set_size_request(-1,50)
 
-        self.application.main_box.pack_start(self.content_box)
-        self.application.main_box.pack_start(self.step_box)
+        self.step_box_frame.set_padding(0,20,5,10)
+        self.step_box_frame.add(self.step_box)
+
+        self.ok_button.connect("clicked",self.on_ok_btn_click)
+        self.back_button.connect("clicked",self.on_back_btn_click)
+        self.cancle_button.connect("clicked",lambda w:gtk.main_quit())
+
+        self.step_contain_box.add(self.step_box_frame)
+
+        self.show_widgets()
+        self.application.main_box.pack_start(self.content_box,False,False,4)
+        self.application.main_box.pack_end(self.step_contain_box,False,False,4)
         self.application.window.enable_resize=False
         self.application.run()
+        
+        
+    def show_widgets(self):
+        # print "show widgets step:"
+        # print self.step
+        if self.step < 1 or self.step > 5:
+            print "invalid step"
 
+        if self.step == 1:
+            self.welcome_box = Welcome()
+            self.back_button.set_no_show_all(True)
+            container_remove_all(self.back_button)
+            switch_box(self.content_box,self.welcome_box)
 
+        elif self.step == 2:
+            # self.part_frame=Part().part_frame
+            self.part_box=Part()
+            self.back_button.set_no_show_all(False)
+            self.back_button.show_all()
+            switch_box(self.content_box, self.part_box)
+
+        elif self.step==3:
+            pass
+        
+    def update_page_label(self):    
+        self.page_label.set_text("第%d页，共5页" % self.step)
+
+    def on_ok_btn_click(self,widget):
+        self.step=self.step+1
+        self.update_page_label()
+        self.show_widgets()
+
+    def on_back_btn_click(self,widget):
+        self.step=self.step-1
+        self.update_page_label()
+        self.show_widgets()
 
 if __name__=="__main__":
     di=DeepinInstaller()

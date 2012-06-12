@@ -27,65 +27,115 @@ from dtk.ui.combo import ComboBox,ComboBoxItem
 from dtk.ui.button import Button
 from dtk.ui.listview import ListView
 from dtk.ui.frame import HorizontalFrame
+from dtk.ui.scrolled_window import ScrolledWindow
+from part_list_item import PartListItem
+from part_util import PartUtil
 
-class Part():
+
+class Part(gtk.VBox):
     '''Part UI'''
     def __init__(self):
+        super(Part,self).__init__()
 
-        self.choose_disk_box=gtk.HBox()
-        self.choose_disk_label=Label("选择硬盘")
+        self.part_util=PartUtil()
+
+        choose_disk_box=gtk.HBox()
+        choose_disk_label=Label("选择硬盘:    ")
+        
+        disk_info=self.part_util.get_install_device_info()
         self.choose_disk_combo=ComboBox()
-        self.choose_disk1=ComboBoxItem("/dev/sda",None)
-        self.choose_disk2=ComboBoxItem("/dev/sdb",None)
-        self.choose_disk_combo.add_item(self.choose_disk1)
-        self.choose_disk_combo.add_item(self.choose_disk2)
-
-        self.choose_disk_box.pack_start(self.choose_disk_label,True,True,4)
-        self.choose_disk_box.pack_start(self.choose_disk_combo,True,True,4)
-
-
-        self.partition_box=gtk.HBox(True)
-        self.partition_btn1=Button("/dev/sda1")
-        self.partition_btn2=Button("/dev/sda2")
-        self.partition_btn3=Button("/dev/sda5")
-        self.partition_box.pack_start(self.partition_btn1)
-        self.partition_box.pack_start(self.partition_btn2)
-        self.partition_box.pack_start(self.partition_btn3)
-
         
-        self.part_listview_box=gtk.VBox()
+        for disk in disk_info.keys():
+            disk_combo_item=ComboBoxItem(disk,None)
+            self.choose_disk_combo.add_item(disk_combo_item)
+            self.choose_disk_combo.set_select_index(0)    
+
+
+        self.choose_disk_combo.connect("item-selected",self.on_disk_combo_selected)
+    
+        choose_disk_box.pack_start(choose_disk_label,True,True,4)
+        choose_disk_box.pack_start(self.choose_disk_combo,True,True,4)
+
+        self.selected_disk=self.part_util.get_disk_from_path("/dev/sda")
         
-        self.part_set_box=gtk.HBox()
-        self.part_new_table_btn=Button("新建分区表")
-        self.part_new_btn=Button("添加")
-        self.part_edit_btn=Button("更改")
-        self.part_delete_btn=Button("删除")
-        self.part_recovery_btn=Button("还原")
-        self.part_set_box.pack_start(self.part_new_table_btn,True,True,4)
-        self.part_set_box.pack_start(self.part_new_btn,True,True,4)
-        self.part_set_box.pack_start(self.part_edit_btn,True,True,4)
-        self.part_set_box.pack_start(self.part_recovery_btn,True,True,4)
+        # self.disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
+
+        self.partition_box=gtk.HBox(True,4)
+
+        part_listview_box=gtk.VBox()
+        part_listview_box.set_size_request(-1,300)
+        part_listview_items=[]
+        self.disk_partition_info=self.part_util.disk_partition_info_tab
+        for item in self.disk_partition_info:
+            part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+            part_listview_items.append(part_list_item)
+
+
+        part_listview=ListView(
+            [(lambda item:item.partition,cmp),
+            (lambda item:item.fstype,cmp),
+            (lambda item:item.mp,cmp),
+            (lambda item:item.format,cmp),
+            (lambda item:item.total_size,cmp),
+            (lambda item:item.used_size,cmp),
+            (lambda item:item.part_type,cmp)
+             ]
+            )
+        # self.part_listview.set_expand_column(0)
+        part_listview.add_titles(["分区","文件系统","挂载点","格式化","总容量","已用容量","类型"])
+        part_listview.add_items(part_listview_items)
+        part_listview.cell_widths=[100,60,60,60,60,60,100]
+
+        part_scrolled_window=ScrolledWindow()
+        part_scrolled_window.add_child(part_listview)
+        part_listview_box.pack_start(part_scrolled_window)
+
+
+        part_set_box=gtk.HBox(False,12)
+        part_set_box.set_size_request(100,30)
+        part_new_table_btn=Button("新建分区表")
+        part_new_btn=Button("添加")
+        part_edit_btn=Button("更改")
+        part_delete_btn=Button("删除")
+        part_recovery_btn=Button("还原")
+        part_set_box.pack_start(part_new_table_btn,False,False,4)
+        part_set_box.pack_start(part_new_btn,False,False,4)
+        part_set_box.pack_start(part_edit_btn,False,False,4)
+        part_set_box.pack_start(part_delete_btn,False,False,4)
+        part_set_box.pack_start(part_recovery_btn,False,False,4)
+
+        part_frame=HorizontalFrame()
+        part_box=gtk.VBox()
+        part_box.set_size_request(400,-1)
+        part_box.pack_start(choose_disk_box,False,False,4)
+        part_box.pack_start(self.partition_box,False,False,4)
+        part_box.pack_start(part_listview_box,False,False,4)
+        part_box.pack_start(part_set_box,False,False,4)
+        part_frame.add(part_box)
+        part_frame.set_padding(0,0,30,30)
         
-        self.part_step_box=gtk.HBox()
-        self.page_label=Label("Page 5")
-        self.page_label.set_text("第2页，共5页")
-        self.page_frame=HorizontalFrame()
-        self.page_frame.set(0.1,0,0,0)
-        self.page_frame.set_padding(5,0,20,400)
+        self.add(part_frame)
 
-        self.page_frame.add(self.page_label)
+    def update_choose_disk_combo(self):
+        '''update the item of choose disk'''
+        pass
 
-        self.ok_button=Button("确定")
-        self.back_button=Button("后退")
-        self.cancle_button=Button("退出")
+    def on_disk_combo_selected(self):
+        '''change disk,react to partitions display'''
+        self.selected_disk=self.part_util.get_disk_from_path(self.choose_disk_combo.get_current_item())
 
-        self.part_step_box.pack_start(self.page_frame,False,True,4)
-        self.part_step_box.pack_end(self.ok_button,True,True,4)
-        self.part_step_box.pack_end(self.back_button,True,True,4)
-        self.part_step_box.pack_end(self.cancle_button,True,True,4)
+        self.update_part_btn_box()
 
-        self.step_box_frame=HorizontalFrame()
 
-        self.step_box_frame.set_padding(0,20,0,20)
-        self.step_box_frame.add(self.part_step_box)
+    def update_part_btn_box(self):
+        '''when change disk,the partitions display changed'''
+        self.disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
         
+        for part in self.disk_partitions:
+            part_btn=Button(part.path)
+            self.partition_box.pack_start(part_btn,False,False,1)
+            part_btn.connect("connect",self.on_part_btn_clicked)    
+
+    def on_part_btn_clicked(self):
+        ''''''
+        pass
