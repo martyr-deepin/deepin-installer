@@ -272,10 +272,19 @@ class Part(gtk.VBox):
         pass
     def on_part_new_btn_clicked(self,widget):
         '''create new partition'''
-        PartNew().show_all()
+        self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk)
+        self.part_new.show_all()
 
     def on_part_new_ok_btn_clicked(self,widget):
-        pass
+        '''confirm to add new partition'''
+        print "desiro to add new partition"
+        part_type=self.part_new.part_type_combo.get_current_item().get_label()
+        part_capacity=self.part_new.part_capacity_spin.get_value()
+        part_location=self.part_new.part_location_combo.get_current_item().get_label()
+        part_mp=self.part_new.part_mp_combo.get_current_item().get_label()
+        part_fs=self.part_new.part_fs_combo.get_current_item().get_label()
+        #need modify args
+        self.part_util.add_custom_partition(part_type,part_capacity,part_location,part_mp,part_fs)
 
     def on_part_edit_btn_clicked(self,widget):
         '''edit selected partition'''

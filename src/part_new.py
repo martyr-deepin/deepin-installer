@@ -29,11 +29,16 @@ from dtk.ui.titlebar import Titlebar
 from dtk.ui.window import Window
 from dtk.ui.button import Button
 from dtk.ui.frame import HorizontalFrame
+from dtk.ui.spin import SpinBox
+from part_util import PartUtil
 
 class PartNew(Window):
     '''create new partition UI'''
-    def __init__(self):
+    def __init__(self,part_new_ok_callback,selected_disk):
         super(PartNew,self).__init__()
+
+        self.ok_btn_clicked=part_new_ok_callback
+        self.current_disk=selected_disk
 
         self.set_size_request(304,308)
         self.titlebar=Titlebar(["close"],None,None,"新建分区",False,50)
@@ -59,16 +64,13 @@ class PartNew(Window):
 
 
         self.part_capacity_label=Label("新分区容量:")
-        self.part_capacity_combo=ComboBox()
-        part_capacity_small=ComboBoxItem("small",None)
-        part_capacity_big=ComboBoxItem("big",None)
-        self.part_capacity_combo.set_select_index(0)
-        self.part_capacity_combo.set_items([part_capacity_small,part_capacity_big])
+        self.part_capacity_spin=SpinBox(200,100,1000,10,55)
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
         frame.add(self.part_capacity_label)
+
         self.new_part_table.attach(frame,0,1,1,2)
-        self.new_part_table.attach(self.part_capacity_combo,1,2,1,2,xpadding=30)
+        self.new_part_table.attach(self.part_capacity_spin,1,2,1,2,xpadding=30)
 
 
         self.part_location_label=Label("新分区位置:")
@@ -117,6 +119,7 @@ class PartNew(Window):
         self.new_btn_box.pack_end(self.new_cancel_btn,False,False,10)
         self.new_btn_box.pack_end(self.new_ok_btn,False,False,10)
 
+        self.new_ok_btn.connect("clicked",self.ok_btn_clicked)
         self.new_cancel_btn.connect("clicked",lambda w:self.destroy())
         self.titlebar.close_button.connect("clicked", lambda w: self.destroy())
 
@@ -124,6 +127,27 @@ class PartNew(Window):
         self.new_part_box.pack_end(self.new_btn_box,False,False,20)
         self.window_frame.add(self.titlebar)
         self.window_frame.add(self.new_part_box)
+
+    def get_max_size(self):
+        '''return max size user can create with the given part type'''
+        part_type=self.part_type_combo.get_current_item().get_label()
+        if part_type=="主分区":
+            part_type="primary"
+        elif part_type=="扩展分区":
+            part_type="extend"
+        elif part_type=="逻辑分区":
+            part_type="logical"
+        else:
+            # print "invalid part type"
+            part_type="primary"
+
+        print part_type
+        print self.current_disk
+        self.max_size=0
+        self.max_size=PartUtil().get_disk_single_available_space_size(self.current_disk,part_type)
+        print self.max_size
+        return self.max_size
+    
 
 if __name__=="__main__":
 
