@@ -80,8 +80,11 @@ class Part(gtk.VBox):
         part_delete_btn=Button("删除分区")
         part_recovery_btn=Button("还原分区表")
 
+        part_new_table_btn.connect("clicked",self.on__new_table_clicked)
         part_new_btn.connect("clicked",self.on_part_new_btn_clicked)
         part_edit_btn.connect("clicked",self.on_part_edit_btn_clicked)
+        part_delete_btn.connect("clicked",self.on_part_delete_btn_clicked)
+        part_recovery_btn.connect("clicked",self.on_part_recovery_btn_clicked)
 
         part_set_box.pack_start(part_new_table_btn,False,False,4)
         part_set_box.pack_start(part_new_btn,False,False,4)
@@ -102,6 +105,8 @@ class Part(gtk.VBox):
         
         self.add(self.part_frame)
 
+
+#here comes basic function for update UI data
 
     def update_selected_disk(self):
         '''changed the current used and displayed disk'''
@@ -179,12 +184,6 @@ class Part(gtk.VBox):
         '''update the item of choose disk'''
         self.update_selected_disk()
 
-    def on_disk_combo_selected(self,widget,event):
-        '''change disk,react to partitions display'''
-        self.selected_disk=self.update_selected_disk()
-        self.update_part_btn_box()
-        self.update_part_listview()
-
     def update_part_btn_box(self):
         '''when change disk,the partitions display changed'''
     
@@ -217,12 +216,6 @@ class Part(gtk.VBox):
             part_btn.connect("clicked",self.on_part_btn_clicked)    
             
         switch_box(self.partition_btns_container_box,self.partition_box)    
-    
-    def on_part_btn_clicked(self,widget):
-        '''react to listview'''
-        print "btn clicked"
-        self.selected_part_btn=widget
-        print widget.label
         
     def init_part_listview_items(self):
         '''update listview_items,mostly used when change disk or first load'''
@@ -263,6 +256,40 @@ class Part(gtk.VBox):
         part_listview_box.show_all()
         switch_box(self.part_listview_container_box,part_listview_box)
 
+    def add_part_2btn_box(self):
+        '''add new added part to part_btn_box'''
+        #need do actually add operation first
+        self.update_part_btn_box()
+
+    def add_part_2listview(self):
+        '''add new added partition to listview'''
+        # need do autually add operation first
+        self.update_part_listview()
+
+    def delete_part_from_listview(self):
+        '''delete part from listview'''
+        #need do real delete operation first
+        self.update_part_btn_box()
+
+    def delete_part_form_btn_box(self):
+        '''delete part from btn box'''
+        #need do real delete operation first
+        self.update_part_listview()
+
+
+#below comes directly operations by UI
+    def on_disk_combo_selected(self,widget,event):
+        '''change disk,react to partitions display'''
+        self.selected_disk=self.update_selected_disk()
+        self.update_part_btn_box()
+        self.update_part_listview()
+    
+    def on_part_btn_clicked(self,widget):
+        '''react to listview'''
+        print "btn clicked"
+        self.selected_part_btn=widget
+        print widget.label
+
     def on_part_item_clicked(self):
         '''one part clicked'''
         pass
@@ -270,11 +297,19 @@ class Part(gtk.VBox):
     def set_part_item_focus(self):
         '''set part_item_focus'''
         pass
+
+    def on_part_new_table_clicked(self,widget):
+        '''create new partition table of the selected disk'''
+        print "do something first"
+        self.update_part_btn_box()
+        self.update_part_listview()
+
     def on_part_new_btn_clicked(self,widget):
         '''create new partition'''
+        #update_part_btn_box and listview after add partition operation
         self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk)
         self.part_new.show_all()
-
+        
     def on_part_new_ok_btn_clicked(self,widget):
         '''confirm to add new partition'''
         print "desire to add new partition"
@@ -290,15 +325,34 @@ class Part(gtk.VBox):
         # self.part_util.add_custom_partition(part_type,part_capacity,part_location,part_mp,part_fs)
         self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
 
-    def add_part_2listview(self):
-        '''add new added partition to listview'''
-        pass
-
-    def delete_part_from_listview(self):
-        '''delete part from listview'''
-        pass
+        self.add_part_2btn_box()
+        self.add_part_2listview()
 
     def on_part_edit_btn_clicked(self,widget):
         '''edit selected partition'''
         self.part_edit=PartEdit()
         self.part_edit.show_all()
+
+    def on_part_edit_ok_btn_clicked(self,widget):
+        '''confirm to edit partition'''
+        #need also alter info in the backend table
+        self.delete_part_from_listview()
+        self.add_part_2listview()
+        self.update_part_listview()
+
+    def on_part_delete_btn_clicked(self,widget):
+        '''delete partition'''
+        #need also alter info in the backend table
+        self.delete_part_from_listview()
+        self.delete_part_form_btn_box()
+        self.update_part_btn_box()
+        self.update_part_listview()
+
+    def backup_disk_part_table(self):
+        '''backup disk part table just to no edit state'''
+        pass
+
+    def on_part_recovery_btn_clicked(self,widget):
+        '''recovery part info to backup,consider frontend and backend'''
+        self.update_part_btn_box()
+        self.update_part_listview()
