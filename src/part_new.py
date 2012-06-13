@@ -30,7 +30,7 @@ from dtk.ui.window import Window
 from dtk.ui.button import Button
 from dtk.ui.frame import HorizontalFrame
 from dtk.ui.spin import SpinBox
-from part_util import PartUtil
+from part_util import global_part_util
 
 class PartNew(Window):
     '''create new partition UI'''
@@ -39,6 +39,7 @@ class PartNew(Window):
 
         self.ok_btn_clicked=part_new_ok_callback
         self.current_disk=selected_disk
+        self.part_util = global_part_util
 
         self.set_size_request(304,308)
         self.titlebar=Titlebar(["close"],None,None,"新建分区",False,50)
@@ -56,6 +57,7 @@ class PartNew(Window):
         self.part_type_logical=ComboBoxItem("扩展分区",None)
         self.part_type_combo.set_select_index(0)
         self.part_type_combo.set_items([self.part_type_primary,self.part_type_extended,self.part_type_logical])
+        self.limit_2added_part_type()
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
         frame.add(self.part_type_label)
@@ -141,13 +143,34 @@ class PartNew(Window):
             # print "invalid part type"
             part_type="primary"
 
-        print part_type
-        print self.current_disk
         self.max_size=0
-        self.max_size=PartUtil().get_disk_single_available_space_size(self.current_disk,part_type)
-        print self.max_size
+        self.max_size=self.part_util.get_disk_single_available_space_size(self.current_disk,part_type)
         return self.max_size
     
+    def limit_2added_part_type(self):
+        '''limit part_type to add partition'''
+        partitions=self.part_util.get_disk_partitions(self.current_disk)
+
+
+        main_count=0
+        logical_count=0
+        extend_flag=False
+        for part in partitions:
+            if part.type==0:
+                main_count=main_count+1
+            elif part.type==1:
+                logical_count=logical_count+1
+            elif part.type==2:
+                main_count=main_count+1
+                extend_flag=True
+
+        # if main_count > 4:
+        #     self.part_type_combo.disable_item(primary_item)
+        # if extend_flag==True:
+        #     self.part_type_combo.disable_item(extend_item)
+        # if extend_flag==False:
+        #     self.part_type_combo.disable_item(logical_item)
+            
 
 if __name__=="__main__":
 

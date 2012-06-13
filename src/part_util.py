@@ -973,6 +973,11 @@ class PartUtil:
             
         self.add_custom_disk_partition(self.disk_partition_info_tab)
 
+
+#should use global part_util to keep disk/partition/device id uniquee
+global_part_util=PartUtil()
+
+
 def test_operate_disk_partition_info_tab_path_disks_partitions():
     pu=PartUtil()
     print "system disks:"
@@ -1048,6 +1053,7 @@ def test_delete_mount_extend_partition():
     pu.add_disk_partition_info_tab("/dev/sdb","primary",1000,"ext3",None,None,None)
 
     pu.add_custom_partition(pu.disk_partition_info_tab)
+
     
 if  __name__=="__main__":
     test_delete_mount_extend_partition()

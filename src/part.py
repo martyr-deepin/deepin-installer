@@ -29,7 +29,7 @@ from dtk.ui.listview import ListView
 from dtk.ui.frame import HorizontalFrame
 from dtk.ui.scrolled_window import ScrolledWindow
 from part_list_item import PartListItem
-from part_util import PartUtil
+from part_util import global_part_util
 from ui_utils import switch_box
 from part_new import PartNew
 from part_edit import PartEdit
@@ -42,7 +42,7 @@ class Part(gtk.VBox):
         self.selected_disk=None
         self.selected_disk_partitions=None
         self.selected_part=None
-        self.part_util=PartUtil()
+        self.part_util=global_part_util
 
         #select disk box
         choose_disk_box=gtk.HBox()
@@ -277,7 +277,7 @@ class Part(gtk.VBox):
 
     def on_part_new_ok_btn_clicked(self,widget):
         '''confirm to add new partition'''
-        print "desiro to add new partition"
+        print "desire to add new partition"
         part_type=self.part_new.part_type_combo.get_current_item().get_label()
         part_capacity=self.part_new.part_capacity_spin.get_value()
         part_location=self.part_new.part_location_combo.get_current_item().get_label()
