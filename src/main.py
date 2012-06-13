@@ -132,12 +132,14 @@ class DeepinInstaller():
         self.page_label.set_text("第%d页，共5页" % self.step)
 
     def on_ok_btn_click(self,widget):
-        if self.step==1:
-            pass
-        elif self.step==2:
-            self.on_commit_part_operations()
-        elif self.step==3:
-            print "do other operation"
+        '''confirm to goto next step'''
+
+        # if self.step==1:
+        #     print "do nothing"
+        # elif self.step==2:
+        #     self.on_commit_part_operations()
+        # elif self.step==3:
+        #     print "do other operation"
 
         self.step=self.step+1
         self.update_page_label()
