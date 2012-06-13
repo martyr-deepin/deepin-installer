@@ -186,26 +186,17 @@ class Part(gtk.VBox):
 
     def update_part_btn_box(self):
         '''when change disk,the partitions display changed'''
-    
         self.update_selected_disk_partitions()
         self.partition_box=gtk.HBox()
         self.partition_box.set_size_request(-1,35)
-        
         total_width=1000
-        total_length=0
-        for part in filter(lambda item:item.type==0 or item.type==2,self.selected_disk_partitions):
-            total_length=total_length+part.geometry.length
-        # print "total length"    
-        # print total_length    
+        total_length=self.selected_disk.device.length
+
         for part in self.selected_disk_partitions:
             part_btn=Button("B")
             part_btn.set_label(part.path)
             part_btn.min_width=total_width*((float)(part.geometry.length)/(float)(total_length))
-            # print (float)(part.geometry.length/total_length)
-            # print "part length:"
-            # print part.geometry.length
-            # print (float)(part.geometry.length)/(float)(total_length)
-            print part_btn.min_width
+            #need consider the order of partitions
             if part.type==0:
                 self.partition_box.pack_start(part_btn,False,False,1)
             elif part.type==1:
