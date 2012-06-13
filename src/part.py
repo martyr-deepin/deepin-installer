@@ -31,7 +31,8 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from part_list_item import PartListItem
 from part_util import PartUtil
 from ui_utils import switch_box
-
+from part_new import PartNew
+from part_edit import PartEdit
 
 class Part(gtk.VBox):
     '''Part UI'''
@@ -78,6 +79,10 @@ class Part(gtk.VBox):
         part_edit_btn=Button("编辑分区")
         part_delete_btn=Button("删除分区")
         part_recovery_btn=Button("还原分区表")
+
+        part_new_btn.connect("clicked",self.on_part_new_btn_clicked)
+        part_edit_btn.connect("clicked",self.on_part_edit_btn_clicked)
+
         part_set_box.pack_start(part_new_table_btn,False,False,4)
         part_set_box.pack_start(part_new_btn,False,False,4)
         part_set_box.pack_start(part_edit_btn,False,False,4)
@@ -85,17 +90,17 @@ class Part(gtk.VBox):
         part_set_box.pack_start(part_recovery_btn,False,False,4)
         
         #pack above boxes
-        part_frame=HorizontalFrame()
+        self.part_frame=HorizontalFrame()
         part_box=gtk.VBox()
         # part_box.set_size_request(400,-1)
         part_box.pack_start(choose_disk_box,False,False,4)
         part_box.pack_start(self.partition_btns_container_box,False,False,4)
         part_box.pack_start(self.part_listview_container_box,False,False,4)
         part_box.pack_start(part_set_box,False,False,4)
-        part_frame.add(part_box)
-        part_frame.set_padding(0,0,30,30)
+        self.part_frame.add(part_box)
+        self.part_frame.set_padding(0,0,30,30)
         
-        self.add(part_frame)
+        self.add(self.part_frame)
 
 
     def update_selected_disk(self):
@@ -172,11 +177,11 @@ class Part(gtk.VBox):
 
     def update_choose_disk_combo(self):
         '''update the item of choose disk'''
-        pass
+        self.update_selected_disk()
 
     def on_disk_combo_selected(self,widget,event):
         '''change disk,react to partitions display'''
-        self.selected_disk=self.part_util.get_disk_from_path(self.choose_disk_combo.get_current_item().get_label())
+        self.selected_disk=self.update_selected_disk()
         self.update_part_btn_box()
         self.update_part_listview()
 
@@ -184,25 +189,27 @@ class Part(gtk.VBox):
         '''when change disk,the partitions display changed'''
     
         self.update_selected_disk_partitions()
-        self.partition_box=gtk.HBox(True,4)
+        self.partition_box=gtk.HBox()
         self.partition_box.set_size_request(-1,35)
         
-        total_width=500
+        total_width=1000
         total_length=0
         for part in filter(lambda item:item.type==0 or item.type==2,self.selected_disk_partitions):
             total_length=total_length+part.geometry.length
-
+        # print "total length"    
+        # print total_length    
         for part in self.selected_disk_partitions:
-            # print part.type
-            part_btn=Button(part.path)
+            part_btn=Button("B")
             part_btn.set_label(part.path)
-            part_btn.min_width=total_width*(float)(part.geometry.length/total_length)
-
+            part_btn.min_width=total_width*((float)(part.geometry.length)/(float)(total_length))
+            # print (float)(part.geometry.length/total_length)
+            # print "part length:"
+            # print part.geometry.length
+            # print (float)(part.geometry.length)/(float)(total_length)
+            print part_btn.min_width
             if part.type==0:
-                # self.primary_partition_box.pack_start(part_btn,False,False,0)
                 self.partition_box.pack_start(part_btn,False,False,1)
             elif part.type==1:
-                # self.extend_partition_box.pack_start(part_btn,False,False,0)
                 self.partition_box.pack_start(part_btn,False,False,1)
             else:
                 # print "extend,pass"
@@ -263,3 +270,13 @@ class Part(gtk.VBox):
     def set_part_item_focus(self):
         '''set part_item_focus'''
         pass
+    def on_part_new_btn_clicked(self,widget):
+        '''create new partition'''
+        PartNew().show_all()
+
+    def on_part_new_ok_btn_clicked(self,widget):
+        pass
+
+    def on_part_edit_btn_clicked(self,widget):
+        '''edit selected partition'''
+        PartEdit().show_all()

@@ -58,7 +58,7 @@ class DeepinInstaller():
     def __init__(self):
         self.application=Application("installer")
         self.application.set_default_size(756,520)
-        self.application.add_titlebar(["min", "close"],None,"      欢迎使用深度软件",None,False)
+        self.application.add_titlebar(["min", "close"],None,"       欢迎使用深度软件",None,False)
         self.application.titlebar.set_size_request(-1,50)
 
         self.content_box=gtk.VBox()
@@ -118,7 +118,8 @@ class DeepinInstaller():
             switch_box(self.content_box,self.welcome_box)
 
         elif self.step == 2:
-            # self.part_frame=Part().part_frame
+            # self.application.titlebar.change_title("分区信息")
+            
             self.part_box=Part()
             self.back_button.set_no_show_all(False)
             self.back_button.show_all()
