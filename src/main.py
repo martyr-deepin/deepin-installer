@@ -76,8 +76,8 @@ class DeepinInstaller():
         self.page_frame.set_padding(10,0,60,300)
         self.page_frame.add(self.page_label)
 
-        self.ok_button=Button("确定")
-        self.back_button=Button("后退")
+        self.ok_button=Button("下一步")
+        self.back_button=Button("上一步")
 
         self.cancle_button=Button("退出")
         self.step_box=gtk.HBox()
