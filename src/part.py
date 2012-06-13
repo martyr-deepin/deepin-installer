@@ -30,8 +30,8 @@ from dtk.ui.frame import HorizontalFrame
 from dtk.ui.scrolled_window import ScrolledWindow
 from part_list_item import PartListItem
 from part_util import PartUtil
-from dtk.ui.utils import container_remove_all
-import parted
+from ui_utils import switch_box
+
 
 class Part(gtk.VBox):
     '''Part UI'''
@@ -53,48 +53,22 @@ class Part(gtk.VBox):
             self.choose_disk_combo.add_item(disk_combo_item)
 
         self.choose_disk_combo.set_select_index(0)    
-        self.selected_disk=self.part_util.get_disk_from_path("/dev/sda")
+        # self.selected_disk=self.part_util.get_disk_from_path("/dev/sda")
         self.choose_disk_combo.connect("item-selected",self.on_disk_combo_selected)
+        self.update_selected_disk()
         choose_disk_box.pack_start(choose_disk_label,True,True,4)
         choose_disk_box.pack_start(self.choose_disk_combo,True,True,4)
 
         #disk partitions button
-        self.selected_disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
-        self.partition_box=gtk.HBox(True,4)
-        self.primary_partition_box=gtk.HBox(True,4)
-        self.extend_partition_box=gtk.HBox(True,4)
-        self.partition_box.set_size_request(-1,35)
-        self.partition_box.pack_start(self.primary_partition_box)
-        self.partition_box.pack_start(self.extend_partition_box)
+        # self.selected_disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
+        self.partition_btns_container_box=gtk.VBox()
         self.selected_part_btn=None
         self.update_part_btn_box()
 
         #partitions list view
-        part_listview_box=gtk.VBox()
-        # part_listview_box.set_size_request(-1,280)
-        self.part_listview_items=[]
-        self.init_part_listview_items()    
-        part_listview=ListView(
-            [(lambda item:item.partition,cmp),
-            (lambda item:item.fstype,cmp),
-            (lambda item:item.mp,cmp),
-            (lambda item:item.format,cmp),
-            (lambda item:item.total_size,cmp),
-            (lambda item:item.used_size,cmp),
-            (lambda item:item.part_type,cmp)
-             ]
-            )
-        # part_listview.set_expand_column(2)
-        part_listview.add_titles(["分区","文件系统","挂载点","格式化","总容量","已用容量","类型"])
-        part_listview.add_items(self.part_listview_items)
-        # self.selected_part_list_item=part_listview.select_first_item()
+        self.part_listview_container_box=gtk.VBox()
+        self.update_part_listview()
 
-        # part_listview.cell_widths=[100,60,100,60,60,60,100]
-        part_scrolled_window=ScrolledWindow()
-        part_scrolled_window.set_size_request(400,-1)
-        part_scrolled_window.add_child(part_listview)
-        part_listview_box.set_size_request(400,-1)
-        part_listview_box.pack_start(part_scrolled_window)
         
         #partition admin buttons
         part_set_box=gtk.HBox(False,12)
@@ -115,13 +89,86 @@ class Part(gtk.VBox):
         part_box=gtk.VBox()
         # part_box.set_size_request(400,-1)
         part_box.pack_start(choose_disk_box,False,False,4)
-        part_box.pack_start(self.partition_box,False,False,4)
-        part_box.pack_start(part_listview_box,False,False,4)
+        part_box.pack_start(self.partition_btns_container_box,False,False,4)
+        part_box.pack_start(self.part_listview_container_box,False,False,4)
         part_box.pack_start(part_set_box,False,False,4)
         part_frame.add(part_box)
         part_frame.set_padding(0,0,30,30)
         
         self.add(part_frame)
+
+
+    def update_selected_disk(self):
+        '''changed the current used and displayed disk'''
+        self.selected_disk=self.part_util.get_disk_from_path(self.choose_disk_combo.get_current_item().get_label())
+        return self.selected_disk
+
+    def update_selected_disk_partitions(self):
+        '''update the partitions list of the selected_disk'''
+        self.selected_disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
+        return self.selected_disk_partitions
+
+    def update_disk_primary_list(self):
+        '''return primary partitions list of the selected_disk'''
+        self.update_selected_disk_partitions()
+        return filter(lambda item:item.type==0,self.selected_disk_partitions)
+        
+    def update_disk_logical_list(self):
+        '''return logical partitions list of the selected_disk'''
+        self.update_selected_disk_partitions()
+        return filter(lambda item:item.type==1,self.selected_disk_partitions)
+
+    def update_disk_part_path(self):
+        '''update part path when had add or delete partition operation,just update the display'''
+        pass
+
+    def generate_disk_part_path(self,part_type):
+        '''generate_part_path for new add partition,used by listview display and backend add operation'''
+        main_part_list=filter(lambda item:item.type==0 or item.type==2,self.selected_disk_partitions)
+        logical_part_list=filter(lambda item:item.type==1,self.selected_disk_partitions)
+        self.new_part_path=""
+        if part_type=="primary":
+            if len(main_part_list) > 3:
+                print "can at most have 4 primary partition"
+            elif len(main_part_list)==0:
+                self.new_part_path=self.selected_disk.device.path+str(1)
+            else:
+                max_num=max(main_part_list.path[-1])
+                self.new_part_path=self.selected_disk.device.path+str(max_num+1)
+
+        elif part_type=="extend":
+            for part in main_part_list:
+                if part.type==2:
+                    print "can have only one extend "
+                else:
+                    continue
+
+            if len(main_part_list) > 3:
+                print "can at most have 4 primary partition"
+            elif len(main_part_list)==0:
+                self.new_part_path=self.selected_disk.device.path+str(1)
+            else:
+                max_num=max(main_part_list.path[-1])
+                self.new_part_path=self.selected_disk.device.path+str(max_num+1)
+
+        elif part_type=="logical":      
+            for part in main_part_list:
+                if part.type==2:
+                    break
+                else:
+                    continue
+            else:
+                print "must have a extend part first"
+
+            if len(logical_part_list)==0:
+                self.new_part_path=self.selected_disk.device.path+str(5)
+            else:
+                max_num=max(logical_part_list.path[-1])
+                self.new_part_path=self.selected_disk.device.path+str(max_num+1)
+        else:
+            print "invalid part type"
+            
+        return self.new_part_path    
 
     def update_choose_disk_combo(self):
         '''update the item of choose disk'''
@@ -129,34 +176,40 @@ class Part(gtk.VBox):
 
     def on_disk_combo_selected(self,widget,event):
         '''change disk,react to partitions display'''
-        print "disk selected"
         self.selected_disk=self.part_util.get_disk_from_path(self.choose_disk_combo.get_current_item().get_label())
         self.update_part_btn_box()
-        self.init_part_listview_items()
+        self.update_part_listview()
 
     def update_part_btn_box(self):
         '''when change disk,the partitions display changed'''
+    
+        self.update_selected_disk_partitions()
+        self.partition_box=gtk.HBox(True,4)
+        self.partition_box.set_size_request(-1,35)
+        
+        total_width=500
+        total_length=0
+        for part in filter(lambda item:item.type==0 or item.type==2,self.selected_disk_partitions):
+            total_length=total_length+part.geometry.length
 
-        self.disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
-        # container_remove_all(self.partition_box)
-        container_remove_all(self.primary_partition_box)
-        container_remove_all(self.extend_partition_box)
         for part in self.selected_disk_partitions:
             # print part.type
             part_btn=Button(part.path)
             part_btn.set_label(part.path)
+            part_btn.min_width=total_width*(float)(part.geometry.length/total_length)
+
             if part.type==0:
-                self.primary_partition_box.pack_start(part_btn,False,False,1)
+                # self.primary_partition_box.pack_start(part_btn,False,False,0)
+                self.partition_box.pack_start(part_btn,False,False,1)
             elif part.type==1:
-                self.extend_partition_box.pack_start(part_btn,False,False,1)
-            # self.partition_box.pack_start(part_btn,False,False,1)
+                # self.extend_partition_box.pack_start(part_btn,False,False,0)
+                self.partition_box.pack_start(part_btn,False,False,1)
             else:
-                print "extend"
+                # print "extend,pass"
+                pass
             part_btn.connect("clicked",self.on_part_btn_clicked)    
             
-        self.primary_partition_box.show_all()    
-        self.extend_partition_box.show_all()    
-        self.partition_box.show_all()
+        switch_box(self.partition_btns_container_box,self.partition_box)    
     
     def on_part_btn_clicked(self,widget):
         '''react to listview'''
@@ -166,11 +219,42 @@ class Part(gtk.VBox):
         
     def init_part_listview_items(self):
         '''update listview_items,mostly used when change disk or first load'''
+        self.update_selected_disk()
         self.disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.disk_partition_info_tab)
+        part_listview_items=[]
         for item in self.disk_partition_info:
             part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
             # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
-            self.part_listview_items.append(part_list_item)
+            part_listview_items.append(part_list_item)
+
+        return part_listview_items
+    
+    def update_part_listview(self):
+        '''reload listview because the listview_items changed'''
+        self.update_selected_disk_partitions()
+        part_listview_box=gtk.VBox()
+        part_listview_box.set_size_request(-1,280)
+        self.part_listview_items=self.init_part_listview_items()    
+        self.part_listview=ListView(
+            [(lambda item:item.partition,cmp),
+            (lambda item:item.fstype,cmp),
+            (lambda item:item.mp,cmp),
+            (lambda item:item.format,cmp),
+            (lambda item:item.total_size,cmp),
+            (lambda item:item.used_size,cmp),
+            (lambda item:item.part_type,cmp)
+             ]
+            )
+        self.part_listview.set_expand_column(2)
+        self.part_listview.add_titles(["分区","文件系统","挂载点","格式化","总容量","已用容量","类型"])
+        self.part_listview.add_items(self.part_listview_items)
+        
+        # self.part_listview.cell_widths=[100,80,100,60,60,60,100]
+        part_scrolled_window=ScrolledWindow()
+        part_scrolled_window.add_child(self.part_listview)
+        part_listview_box.add(part_scrolled_window)
+        part_listview_box.show_all()
+        switch_box(self.part_listview_container_box,part_listview_box)
 
     def on_part_item_clicked(self):
         '''one part clicked'''
@@ -179,58 +263,3 @@ class Part(gtk.VBox):
     def set_part_item_focus(self):
         '''set part_item_focus'''
         pass
-
-    def update_selected_disk(self):
-        pass
-
-    def update_selected_disk_partitions(self):
-        '''update the partitions list of the selected_disk'''
-        self.selected_disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
-        return self.selected_disk_partitions
-
-    def update_disk_primary_list(self):
-        '''return primary partitions list of the selected_disk'''
-        return filter(lambda item:item.type==0,self.selected_disk_partitions)
-        
-    def update_disk_logical_list(self):
-        '''return logical partitions list of the selected_disk'''
-        return filter(lambda item:item.type==1,self.selected_disk_partitions)
-
-    def generate_part_path(self,disk,part_type):
-        '''generate_part_path from view'''
-        main_part_list=filter(lambda item:item.type==parted.PARTITION_NORMAL or item.type==parted.PARTITION_EXTENDED,
-                              self.selected_disk.partitions)
-        logical_part_list=filter(lambda item:item.type==parted.PARTITION_LOGICAL)
-
-        if part_type=="primary":
-            if len(main_part_list) > 3:
-                print "can at most have 4 primary partition"
-            elif len(main_part_list)==0:
-                return disk.device.path+str(1)
-            else:
-                max_num=max(self.part_util.get_disk_partitions())
-                return disk.device.part+str(max_num+1)
-
-        elif part_type=="extend":
-            for part in self.part_util.get_disk_partitions():
-                if part.type==parted.PARTITION_EXTENDED:
-                    print "can have only one extend "
-
-            if len(main_part_list) > 3:
-                print "can at most have 4 primary partition"
-            elif len(main_part_list)==0:
-                return disk.device.path+str(1)
-            else:
-                max_num=max(self.part_util.get_disk_partitions())
-                print max_num
-                return disk.device.part+str(max_num+1)
-
-        elif part_type=="logical":        
-            if len(logical_part_list)==0:
-                return disk.device.path+str(5)
-            else:
-                max_num=max(self.part_util.get_disk_partitions())
-                return disk.device.part+str(max_num+1)
-
-        else:
-            print "invalid part type"
