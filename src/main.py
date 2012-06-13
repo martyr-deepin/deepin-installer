@@ -124,7 +124,7 @@ class DeepinInstaller():
             self.back_button.set_no_show_all(False)
             self.back_button.show_all()
             switch_box(self.content_box, self.part_box)
-
+            
         elif self.step==3:
             pass
         
@@ -132,9 +132,20 @@ class DeepinInstaller():
         self.page_label.set_text("第%d页，共5页" % self.step)
 
     def on_ok_btn_click(self,widget):
+        if self.step==1:
+            pass
+        elif self.step==2:
+            self.on_commit_part_operations()
+        elif self.step==3:
+            print "do other operation"
+
         self.step=self.step+1
         self.update_page_label()
         self.show_widgets()
+
+    def on_commit_part_operations(self):
+        '''commit partition add/delete/edit operations'''
+        pass
 
     def on_back_btn_click(self,widget):
         self.step=self.step-1

@@ -149,27 +149,17 @@ class PartNew(Window):
     
     def limit_2added_part_type(self):
         '''limit part_type to add partition'''
-        partitions=self.part_util.get_disk_partitions(self.current_disk)
+        main_list=self.part_util.get_disk_main_partitions(self.current_disk)
+        extend_list=self.part_util.get_disk_extended_partition(self.current_disk)
 
-
-        main_count=0
-        logical_count=0
-        extend_flag=False
-        for part in partitions:
-            if part.type==0:
-                main_count=main_count+1
-            elif part.type==1:
-                logical_count=logical_count+1
-            elif part.type==2:
-                main_count=main_count+1
-                extend_flag=True
-
-        # if main_count > 4:
-        #     self.part_type_combo.disable_item(primary_item)
-        # if extend_flag==True:
-        #     self.part_type_combo.disable_item(extend_item)
-        # if extend_flag==False:
-        #     self.part_type_combo.disable_item(logical_item)
+        if len(main_list) > 3:
+            print "need disable primary and extend part type"
+        if len(extend_list)==0:
+            print "need disable logical part type"
+        if len(extend_list)==1:
+            print "need disable extend part type"
+        if len(extend_list) > 1:
+            print "error,should have only one extend partition"
             
 
 if __name__=="__main__":

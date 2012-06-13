@@ -973,6 +973,21 @@ class PartUtil:
             
         self.add_custom_disk_partition(self.disk_partition_info_tab)
 
+    def get_disk_main_partitions(self,disk):
+        '''get primary and extended part list'''
+        return filter(lambda part:part.type==0 or part.type==2,self.get_disk_partitions(disk))
+
+    def get_disk_primary_partitions(self,disk):
+        '''get primary part list'''
+        return filter(lambda part:part.type==0,self.get_disk_partitions(disk))
+
+    def get_disk_extended_partition(self,disk):
+        '''return extended partition of the disk'''
+        return filter(lambda part:part.type==2,self.get_disk_partitions(disk))
+
+    def get_disk_logical_partitions(self,disk):
+        '''get disk logical part list'''
+        return filter(lambda part:part.type==1,self.get_disk_partitions(disk))
 
 #should use global part_util to keep disk/partition/device id uniquee
 global_part_util=PartUtil()
