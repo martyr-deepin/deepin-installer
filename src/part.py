@@ -316,7 +316,9 @@ class Part(gtk.VBox):
         disk_path=self.selected_disk.device.path
 
         part_type=self.part_new.part_type_combo.get_current_item().get_label()
-        part_type_dick={"","",""}
+        part_type_dick={"主分区":"primary","扩展分区":"extend","逻辑分区":"logical",
+                        "primary":"primary","logical":"logical","extend":"extend"}
+
         part_type=part_type_dick[part_type]
         part_path=self.generate_disk_part_path(part_type)
 
