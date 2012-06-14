@@ -254,13 +254,16 @@ class Part(gtk.VBox):
         self.disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.disk_partition_info_tab)
         part_listview_items=[]
         for item in self.disk_partition_info:
-            # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
-            part_list_item=PartListItem(self.selected_disk,item[0],str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
-
-            # part_list_item=PartListItem(str(self.disk_part_display_path[self.selected_disk][item[0]]),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
-
-            # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
-            part_listview_items.append(part_list_item)
+            if item[-1]=="delete":
+                pass
+            else:
+                #part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+                part_list_item=PartListItem(self.selected_disk,item[0],str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+    
+                # part_list_item=PartListItem(str(self.disk_part_display_path[self.selected_disk][item[0]]),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+    
+                # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
+                part_listview_items.append(part_list_item)
 
         return part_listview_items
     
