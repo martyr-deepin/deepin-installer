@@ -242,10 +242,12 @@ class Part(gtk.VBox):
     def init_part_listview_items(self):
         '''update listview_items,mostly used when change disk or first load'''
         self.update_selected_disk()
+        self.update_display_part_path()
         self.disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.disk_partition_info_tab)
         part_listview_items=[]
         for item in self.disk_partition_info:
-            part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+            # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+            part_list_item=PartListItem(str(self.disk_part_display_path[self.selected_disk][item[0]]),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
             # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
             part_listview_items.append(part_list_item)
 
