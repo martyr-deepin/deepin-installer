@@ -252,15 +252,14 @@ class Part(gtk.VBox):
         #need do actually add operation first
         self.update_part_btn_box()
 
-    def add_part_2listview(self):
+    def add_part_2listview(self,part_listview_items):
         '''add new added partition to listview'''
         # need do autually add operation first
-        # self.update_part_listview()
-        part_listview_items=[]
-        part_listview_item1=PartListItem("/dev/hda1","ext4","/test","True","8G","4G","primary")
-        part_listview_item2=PartListItem("/dev/hda2","ext4","/test","True","8G","4G","primary")
-        part_listview_items.append(part_listview_item1)
-        part_listview_items.append(part_listview_item2)
+        # part_listview_items=[]
+        # part_listview_item1=PartListItem("/dev/hda1","ext4","/test","True","8G","4G","primary")
+        # part_listview_item2=PartListItem("/dev/hda2","ext4","/test","True","8G","4G","primary")
+        # part_listview_items.append(part_listview_item1)
+        # part_listview_items.append(part_listview_item2)
         self.part_listview.add_items(part_listview_items)
 
     def delete_part_from_listview(self):
@@ -304,9 +303,9 @@ class Part(gtk.VBox):
     def on_part_new_btn_clicked(self,widget):
         '''create new partition'''
         #update_part_btn_box and listview after add partition operation
-        # self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk)
-        # self.part_new.show_all()
-        self.add_part_2listview()
+        self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk)
+        self.part_new.show_all()
+
     def on_new_table_clicked(self,widget):
         '''clear data in current disk,create new partition table'''
         pass
@@ -315,19 +314,27 @@ class Part(gtk.VBox):
         '''confirm to add new partition'''
         print "desire to add new partition"
         disk_path=self.selected_disk.device.path
+
         part_type=self.part_new.part_type_combo.get_current_item().get_label()
+        part_type_dick={"","",""}
+        part_type=part_type_dick[part_type]
+        part_path=self.generate_disk_part_path(part_type)
+
         part_capacity=self.part_new.part_capacity_spin.get_value()
         part_fs=self.part_new.part_fs_combo.get_current_item().get_label()
         part_format=True
+        part_format_str="True"
         part_name=None
-        # part_location=self.part_new.part_location_combo.get_current_item().get_label()
+        part_location=self.part_new.part_location_combo.get_current_item().get_label()
+
         part_mp=self.part_new.part_mp_combo.get_current_item().get_label()
 
-        # self.part_util.add_custom_partition(part_type,part_capacity,part_location,part_mp,part_fs)
+        part_listview_items=[[part_path,part_fs,part_mp,part_format_str,part_capacity,"4G",part_type]]
+        self.add_part_2listview(part_listview_items)
         self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
 
-        self.add_part_2btn_box()
-        self.add_part_2listview()
+        # self.add_part_2btn_box()
+        
 
     def on_part_edit_btn_clicked(self,widget):
         '''edit selected partition'''
