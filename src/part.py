@@ -344,13 +344,6 @@ class Part(gtk.VBox):
         '''one part clicked'''
         self.current_part_item=self.part_listview.get_current_item()
         print self.current_part_item
-        print self.current_part_item.partition
-        print self.current_part_item.fstype
-        print self.current_part_item.mp
-        print self.current_part_item.format
-        print self.current_part_item.total_size
-        print self.current_part_item.used_size
-        print self.current_part_item.part_type
         return self.current_part_item
 
     def set_part_item_focus(self):
@@ -410,17 +403,31 @@ class Part(gtk.VBox):
 
     def on_part_edit_btn_clicked(self,widget):
         '''edit selected partition'''
-        self.current_part=""
+        self.current_part=self.part_listview.get_current_item().partition
         self.part_edit=PartEdit(self.on_part_edit_ok_btn_clicked,self.current_part)
         self.part_edit.show_all()
 
     def on_part_edit_ok_btn_clicked(self,widget):
         '''confirm to edit partition'''
         #need also alter info in the backend table,
-        self.delete_part_from_listview()
-        self.add_part_2listview()
-        self.update_part_listview()
+        part_edit_fs=self.part_edit.part_fs_combo.get_current_item().get_label()
+        part_edit_mp=self.part_edit.part_mp_combo.get_current_item().get_label()
 
+        for item in self.part_util.disk_partition_info_tab:
+            if item[0]==self.current_part:
+                if part_edit_fs==item[4]:
+                    part_edit_format=False
+                else:
+                    part_edit_format=True
+                    item[4]=part_edit_fs
+                item[7]=part_edit_mp
+                item[5]=part_edit_format
+            else:
+                continue
+        #then need update listview
+        self.init_part_listview_items()        
+        self.update_part_listview()
+        self.part_edit.destroy()
 
     def on_part_delete_btn_clicked(self,widget):
         '''delete partition'''
