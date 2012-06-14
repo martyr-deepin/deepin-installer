@@ -43,8 +43,9 @@ class Part(gtk.VBox):
         self.selected_disk_partitions=None
         self.selected_part=None
         self.part_util=global_part_util
-        self.part_display_path={}#partition:part_path
-
+        self.disk_part_display_path={}#{disk:{partition:part_path}}
+        for disk in self.part_util.get_system_disks():
+            self.disk_part_display_path[disk]={}
         #select disk box
         choose_disk_box=gtk.HBox()
         choose_disk_label=Label("选择硬盘:    ")
@@ -137,15 +138,19 @@ class Part(gtk.VBox):
 
     def update_display_part_path(self):
         '''update part path as the os allocate /dev/sda-1 before write to disk,just for listview display'''
+        print self.part_util.get_system_disks()
         for part in self.update_selected_disk_partitions():
             if not part.path.endswith("-1"):
-                self.part_display_path[part]=part.path
-            elif part.path.endswith("-1") and part not in self.part_display_path.keys():
-                self.part_display_path[part]=self.new_part_path
+                # self.part_display_path[part]=part.path
+                self.disk_part_display_path[self.selected_disk][part]=part.path
+            elif part.path.endswith("-1") and part not in self.disk_part_display_path[self.selected_disk].keys():
+                # self.part_display_path[part]=self.new_part_path
+                self.disk_part_display_path[self.selected_disk][part]=self.new_part_path
             else:
                 print "just keep the old value"
 
-        return self.part_display_path
+        # return self.part_display_path
+        return self.disk_part_display_path        
         
     def generate_disk_part_path(self,part_type):
         '''generate_part_path for new add partition,used by listview display '''
@@ -161,7 +166,8 @@ class Part(gtk.VBox):
             elif len(main_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
-                max_num=max(int(filter(str.isdigit,self.part_display_path[part])) for part in main_part_list)
+                max_num=max(int(filter(str.isdigit,self.disk_part_display_path[self.selected_disk][part]))
+                            for part in main_part_list)
                 self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
         elif part_type=="extend":
@@ -176,7 +182,8 @@ class Part(gtk.VBox):
             elif len(main_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
-                max_num=max(int(filter(str.isdigit,self.part_display_path[part])) for part in main_part_list)
+                max_num=max(int(filter(str.isdigit,self.disk_part_display_path[self.selected_disk][part]))
+                            for part in main_part_list)
                 # max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in main_part_list)
                 self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
@@ -192,12 +199,13 @@ class Part(gtk.VBox):
             if len(logical_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(5)
             else:
-                print self.part_display_path
-                max_num=max(int(filter(str.isdigit,self.part_display_path[part])) for part in logical_part_list)
+                # print self.disk_part_display_path
+                max_num=max(int(filter(str.isdigit,self.disk_part_display_path[self.selected_disk][part])) 
+                            for part in logical_part_list)
                 # max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in logical_part_list)
-                print max_num
+                # print max_num
                 self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
-                print self.new_part_path
+                # print self.new_part_path
         else:
             print "invalid part type"
 
@@ -339,10 +347,10 @@ class Part(gtk.VBox):
         disk_path=self.selected_disk.device.path
 
         part_type=self.part_new.part_type_combo.get_current_item().get_label()
-        part_type_dick={"主分区":"primary","扩展分区":"extend","逻辑分区":"logical",
+        part_type_dict={"主分区":"primary","扩展分区":"extend","逻辑分区":"logical",
                         "primary":"primary","logical":"logical","extend":"extend"}
 
-        part_type=part_type_dick[part_type]
+        part_type=part_type_dict[part_type]
 
         part_path=self.generate_disk_part_path(part_type)
 
