@@ -158,7 +158,7 @@ class Part(gtk.VBox):
         
     def generate_disk_part_path(self,part_type):
         '''generate_part_path for new add partition,used by listview display '''
-        print self.part_util.disk_part_display_path[self.selected_disk]
+        # print self.part_util.disk_part_display_path[self.selected_disk]
         main_part_list=self.update_disk_main_list()
         logical_part_list=self.update_disk_logical_list()
         # self.update_display_part_path()
@@ -169,9 +169,20 @@ class Part(gtk.VBox):
             elif len(main_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
-                max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part]))
-                            for part in main_part_list)
+                for part in main_part_list:
+                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+                        pass
+                    else:
+                        part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
+                        part_num=int(part_num)
+                        if int(part_num) > max_num:
+                            max_num=part_num
+
                 self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+
+                # max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part]))
+                #             for part in main_part_list)
+                # self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
         elif part_type=="extend":
             for part in main_part_list:
@@ -185,8 +196,17 @@ class Part(gtk.VBox):
             elif len(main_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
-                max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part]))
-                            for part in main_part_list)
+                for part in main_part_list:
+                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+                        pass
+                    else:
+                        part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
+                        part_num=int(part_num)
+                        if int(part_num) > max_num:
+                            max_num=part_num
+
+                # max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part]))
+                #             for part in main_part_list)
                 # max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in main_part_list)
                 self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
@@ -290,6 +310,7 @@ class Part(gtk.VBox):
         self.part_listview.connect("single-click-item",self.on_part_item_clicked)
         self.part_listview.connect("double-click-item",self.on_part_item_clicked)
         # self.part_listview.cell_widths=[100,80,100,60,60,60,100]
+        # self.part_listview.select_first_item()
         part_scrolled_window=ScrolledWindow()
         part_scrolled_window.add_child(self.part_listview)
         part_listview_box.add(part_scrolled_window)
