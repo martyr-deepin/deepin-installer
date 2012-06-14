@@ -255,7 +255,13 @@ class Part(gtk.VBox):
     def add_part_2listview(self):
         '''add new added partition to listview'''
         # need do autually add operation first
-        self.update_part_listview()
+        # self.update_part_listview()
+        part_listview_items=[]
+        part_listview_item1=PartListItem("/dev/hda1","ext4","/test","True","8G","4G","primary")
+        part_listview_item2=PartListItem("/dev/hda2","ext4","/test","True","8G","4G","primary")
+        part_listview_items.append(part_listview_item1)
+        part_listview_items.append(part_listview_item2)
+        self.part_listview.add_items(part_listview_items)
 
     def delete_part_from_listview(self):
         '''delete part from listview'''
@@ -298,9 +304,9 @@ class Part(gtk.VBox):
     def on_part_new_btn_clicked(self,widget):
         '''create new partition'''
         #update_part_btn_box and listview after add partition operation
-        self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk)
-        self.part_new.show_all()
-
+        # self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk)
+        # self.part_new.show_all()
+        self.add_part_2listview()
     def on_new_table_clicked(self,widget):
         '''clear data in current disk,create new partition table'''
         pass
