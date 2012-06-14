@@ -141,26 +141,27 @@ class Part(gtk.VBox):
 
     def update_display_part_path(self):
         '''update part path as the os allocate /dev/sda-1 before write to disk,just for listview display'''
-        print self.part_util.get_system_disks()
+        # print self.part_util.get_system_disks()
         for part in self.update_selected_disk_partitions():
             if not part.path.endswith("-1"):
                 # self.part_display_path[part]=part.path
                 self.part_util.disk_part_display_path[self.selected_disk][part]=part.path
-            elif part.path.endswith("-1") and part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
+            elif part.path.endswith("-1"):
+                if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
                 # self.part_display_path[part]=self.new_part_path
-                self.part_util.disk_part_display_path[self.selected_disk][part]=self.new_part_path
-            else:
-                print "just keep the old value"
-
+                    self.part_util.disk_part_display_path[self.selected_disk][part]=self.new_part_path
+                else:
+                    print "just keep the old value of the /dev/sda-1 part"
+                    print self.part_util.disk_part_display_path[self.selected_disk][part]
         # return self.part_display_path
         return self.part_util.disk_part_display_path        
         
     def generate_disk_part_path(self,part_type):
         '''generate_part_path for new add partition,used by listview display '''
-
+        print self.part_util.disk_part_display_path[self.selected_disk]
         main_part_list=self.update_disk_main_list()
         logical_part_list=self.update_disk_logical_list()
-        self.update_display_part_path()
+        # self.update_display_part_path()
         max_num=0
         if part_type=="primary":
             if len(main_part_list) > 3:
@@ -201,22 +202,18 @@ class Part(gtk.VBox):
             if len(logical_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(5)
             else:
-                # print self.part_util.disk_part_display_path
-                # for part in logical_part_list:
-                #     if len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
-                #         continue
-                #     else:
-                #         print self.part_util.disk_part_display_path[self.selected_disk][part]
-                #         if int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])) > max_num:
-                #             max_num=self.part_util.disk_part_display_path[self.selected_disk][part]
-                            
-
-                            
-                max_num=max(int(filter(str.isdigit , self.part_util.disk_part_display_path[self.selected_disk][part])) for part in logical_part_list)
+                for part in logical_part_list:
+                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+                        pass
+                    else:
+                        part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
+                        part_num=int(part_num)
+                        if int(part_num) > max_num:
+                            max_num=part_num
+                        # max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])) for part in logical_part_list)
                 # max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in logical_part_list)
-                print max_num
                 self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
-                print self.new_part_path
+
         else:
             print "invalid part type"
 
@@ -231,7 +228,7 @@ class Part(gtk.VBox):
         self.update_selected_disk_partitions()
         self.partition_box=gtk.HBox()
         self.partition_box.set_size_request(-1,35)
-        total_width=1000
+        total_width=1000 
         total_length=self.selected_disk.device.length
 
         for part in self.selected_disk_partitions:
@@ -397,12 +394,15 @@ class Part(gtk.VBox):
         part_obj=self.part_util.to_add_partition
 
         part_path=self.generate_disk_part_path(part_type)
+        self.part_util.disk_part_display_path[self.selected_disk][part_obj]=part_path
         # part_listview_item=PartListItem(part_path,part_fs,part_mp,part_format_str,str(part_capacity),"4G",part_type)
         part_listview_item=PartListItem(self.selected_disk,part_obj,part_fs,part_mp,part_format_str,str(part_capacity),"4G",part_type)
 
-
         self.add_part_2listview(part_listview_item)
         self.update_selected_disk_partitions()
+        self.update_disk_main_list()
+        self.update_disk_logical_list()
+        self.update_disk_primary_list()
         # print self.part_util.get_disk_partitions(self.selected_disk)
         # self.add_part_2btn_box()
         # self.update_display_part_path()
