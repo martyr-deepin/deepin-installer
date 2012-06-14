@@ -456,6 +456,7 @@ class PartUtil:
         self.disk_partition_info_tab_item=[partition,part_disk_path,part_type,part_size,part_fs,
                                            part_format,part_name,part_mountpoint,part_flag]
         self.disk_partition_info_tab.append(self.disk_partition_info_tab_item)
+
         return self.disk_partition_info_tab
 
     def mark_disk_partition_info_tab(self,partition,part_flag):

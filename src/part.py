@@ -43,6 +43,7 @@ class Part(gtk.VBox):
         self.selected_disk_partitions=None
         self.selected_part=None
         self.part_util=global_part_util
+        self.part_display_path={}#partition:part_path
 
         #select disk box
         choose_disk_box=gtk.HBox()
@@ -128,12 +129,18 @@ class Part(gtk.VBox):
         self.update_selected_disk_partitions()
         return filter(lambda item:item.type==1,self.selected_disk_partitions)
 
-    def update_disk_part_path(self):
-        '''update part path when had add or delete partition operation,just update the display'''
-        pass
+    def update_display_part_path(self):
+        '''update part path as the os allocate /dev/sda-1 before write to disk,just for listview display'''
+        for part in self.part_util.get_disk_partitions(self.selected_disk):
+            if not part.path.endswith("-1") and len(self.part_display_path)==0:
+                self.part_display_path[part]=part.path
+            elif part.path.endswith("-1") and len(self.part_display_path)==0:
+                self.part_display_path[part]=self.new_part_path
+            else:
+                print "just keep the old value"
 
     def generate_disk_part_path(self,part_type):
-        '''generate_part_path for new add partition,used by listview display and backend add operation'''
+        '''generate_part_path for new add partition,used by listview display '''
         main_part_list=self.part_util.get_disk_main_partitions(self.selected_disk)
         logical_part_list=self.part_util.get_disk_logical_partitions(self.selected_disk)
         self.new_part_path=""
@@ -143,7 +150,7 @@ class Part(gtk.VBox):
             elif len(main_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
-                max_num=max(part.path[-1] for part in main_part_list)
+                max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in main_part_list)
                 self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
         elif part_type=="extend":
@@ -158,7 +165,7 @@ class Part(gtk.VBox):
             elif len(main_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
-                max_num=max(part.path[-1] for part in main_part_list)
+                max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in main_part_list)
                 self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
         elif part_type=="logical":      
@@ -173,7 +180,7 @@ class Part(gtk.VBox):
             if len(logical_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(5)
             else:
-                max_num=max(part.path[-1] for part in logical_part_list)
+                max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in logical_part_list)
                 self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
         else:
             print "invalid part type"
@@ -315,12 +322,14 @@ class Part(gtk.VBox):
         '''confirm to add new partition'''
         print "desire to add new partition"
         disk_path=self.selected_disk.device.path
+        print self.part_util.get_disk_partitions(self.selected_disk)
 
         part_type=self.part_new.part_type_combo.get_current_item().get_label()
         part_type_dick={"主分区":"primary","扩展分区":"extend","逻辑分区":"logical",
                         "primary":"primary","logical":"logical","extend":"extend"}
 
         part_type=part_type_dick[part_type]
+        self.update_display_part_path()
         part_path=self.generate_disk_part_path(part_type)
         part_capacity=self.part_new.part_capacity_spin.get_value()
         part_fs=self.part_new.part_fs_combo.get_current_item().get_label()
@@ -328,14 +337,15 @@ class Part(gtk.VBox):
         part_format_str="True"
         part_name=None
         part_location=self.part_new.part_location_combo.get_current_item().get_label()
-
         part_mp=self.part_new.part_mp_combo.get_current_item().get_label()
 
         part_listview_item=PartListItem(part_path,part_fs,part_mp,part_format_str,str(part_capacity),"4G",part_type)
         self.add_part_2listview(part_listview_item)
         self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
-
+        self.update_selected_disk_partitions()
+        print self.part_util.get_disk_partitions(self.selected_disk)
         # self.add_part_2btn_box()
+        # self.update_display_part_path()
         self.part_new.destroy()
 
     def on_part_edit_btn_clicked(self,widge):
