@@ -28,7 +28,7 @@ from dtk.ui.utils import get_content_size
 from dtk.ui.constant import DEFAULT_FONT_SIZE,ALIGN_END
 from dtk.ui.draw import draw_font,draw_pixbuf
 from dtk.ui.theme import ui_theme
-
+from part_util import global_part_util
 
 class PartListItem(gobject.GObject):
     '''part list item'''
@@ -37,9 +37,9 @@ class PartListItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
 
-    def __init__(self,partition,fstype,mp,format,total_size,used_size,part_type):
+    def __init__(self,disk,partition,fstype,mp,format,total_size,used_size,part_type):
         gobject.GObject.__init__(self)
-        self.update(partition,fstype,mp,format,total_size,used_size,part_type)
+        self.update(disk,partition,fstype,mp,format,total_size,used_size,part_type)
         self.index = None
         
     def set_index(self, index):
@@ -50,9 +50,12 @@ class PartListItem(gobject.GObject):
         '''Get index.'''
         return self.index
 
-    def update(self,partition,fstype,mp,format,total_size,used_size,part_type):
+    def update(self,disk,partition,fstype,mp,format,total_size,used_size,part_type):
         '''update item'''
+        self.disk=disk
         self.partition=partition
+        # print self.partition.disk
+        self.part_path=global_part_util.disk_part_display_path[self.disk][self.partition]
         self.fstype=fstype
         self.mp=mp
         self.format=format
@@ -63,7 +66,8 @@ class PartListItem(gobject.GObject):
         # Calculate item size.
         self.partition_padding_x = 10
         self.partition_padding_y = 5
-        (self.partition_width, self.partition_height) = get_content_size(self.partition, DEFAULT_FONT_SIZE)
+        # (self.partition_width, self.partition_height) = get_content_size(self.partition, DEFAULT_FONT_SIZE)
+        (self.partition_width, self.partition_height) = get_content_size(self.part_path, DEFAULT_FONT_SIZE)
         
         self.fstype_padding_x = 10
         self.fstype_padding_y = 5
@@ -116,8 +120,10 @@ class PartListItem(gobject.GObject):
         '''Render partition.'''
         rect.x += self.partition_padding_x
         rect.width -= self.partition_padding_x * 2
-        render_text(cr, rect, self.partition)
-    
+        # render_text(cr, rect, self.partition)
+        render_text(cr, rect, self.part_path)
+        
+
     def render_fstype(self, cr, rect):
         '''Render  fstype.'''
         rect.x += self.fstype_padding_x

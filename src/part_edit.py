@@ -28,11 +28,15 @@ from dtk.ui.label import Label
 from dtk.ui.titlebar import Titlebar
 from dtk.ui.window import Window
 from dtk.ui.button import Button
+from part_util import global_part_util
 
 class PartEdit(Window):
     '''create new partition UI'''
-    def __init__(self):
+    def __init__(self,part_edit_ok_callback,selected_partition):
         super(PartEdit,self).__init__()
+        self.part_util=global_part_util
+        self.selected_partition=selected_partition
+        self.on_ok_btn_clicked=part_edit_ok_callback
 
         self.set_size_request(304,189)
         self.titlebar=Titlebar(["close"],None,None,"编辑分区",False,50)
@@ -72,6 +76,7 @@ class PartEdit(Window):
 
         self.edit_cancel_btn.connect("clicked",lambda w:self.destroy())
         self.titlebar.close_button.connect("clicked", lambda w: self.destroy())
+        self.edit_ok_btn.connect("clicked",self.on_ok_btn_clicked)
 
         self.edit_part_box.pack_start(self.edit_part_table,False,False,20)
         self.edit_part_box.pack_end(self.edit_btn_box,False,False,20)

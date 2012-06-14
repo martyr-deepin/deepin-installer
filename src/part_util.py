@@ -74,6 +74,12 @@ class PartUtil:
         self.logger=self.lu.create_logger("part_logger","debug")
         self.handler=self.lu.create_logger_handler(self.logger,"file","debug","lineno",None)
 
+    #newly port from part.py for share use
+        self.disk_part_display_path={}#{disk:{partition:part_path}}
+        for disk in self.get_system_disks():
+            self.disk_part_display_path[disk]={}
+
+
     #disk_partition_tab && disk_partition_info operations:
     def init_disk_partition_info_tab(self):
         '''read origin disk partition info'''
@@ -448,12 +454,12 @@ class PartUtil:
     def add_disk_partition_info_tab(self,part_disk_path,part_type,part_size,part_fs,part_format,part_name,part_mountpoint):
         '''add partition to the table,insert_path_disks_partitions in get_disk_partition_object because it's used
         not only for add_disk_partition_info_tab,but also the real add partition operate'''
-        partition=self.get_disk_partition_object(part_disk_path,part_type,part_size,part_fs)
-        if partition==None:
+        self.to_add_partition=self.get_disk_partition_object(part_disk_path,part_type,part_size,part_fs)
+        if self.to_add_partition==None:
             print "partition is null"
             return 
         part_flag="add"   
-        self.disk_partition_info_tab_item=[partition,part_disk_path,part_type,part_size,part_fs,
+        self.disk_partition_info_tab_item=[self.to_add_partition,part_disk_path,part_type,part_size,part_fs,
                                            part_format,part_name,part_mountpoint,part_flag]
         self.disk_partition_info_tab.append(self.disk_partition_info_tab_item)
 
