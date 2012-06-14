@@ -322,7 +322,6 @@ class Part(gtk.VBox):
 
         part_type=part_type_dick[part_type]
         part_path=self.generate_disk_part_path(part_type)
-
         part_capacity=self.part_new.part_capacity_spin.get_value()
         part_fs=self.part_new.part_fs_combo.get_current_item().get_label()
         part_format=True
@@ -332,12 +331,12 @@ class Part(gtk.VBox):
 
         part_mp=self.part_new.part_mp_combo.get_current_item().get_label()
 
-        part_listview_item=PartListItem(part_path,part_fs,part_mp,part_format_str,part_capacity,"4G",part_type)
+        part_listview_item=PartListItem(part_path,part_fs,part_mp,part_format_str,str(part_capacity),"4G",part_type)
         self.add_part_2listview(part_listview_item)
         self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
 
         # self.add_part_2btn_box()
-        
+        self.part_new.destroy()
 
     def on_part_edit_btn_clicked(self,widge):
         '''edit selected partition'''
@@ -350,6 +349,7 @@ class Part(gtk.VBox):
         self.delete_part_from_listview()
         self.add_part_2listview()
         self.update_part_listview()
+
 
     def on_part_delete_btn_clicked(self,widget):
         '''delete partition'''

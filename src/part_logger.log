@@ -92,3 +92,20 @@ log_util.py/do_log_msg-157:WARNING-end of extended_part have geometry overlap
 log_util.py/do_log_msg-157:WARNING-end of extended_part have geometry overlap
 log_util.py/do_log_msg-157:ERROR-cann't find disk in the disk_free_space_info
 log_util.py/do_log_msg-157:ERROR-cann't find disk in the disk_free_space_info
+part_util.py/get_disk_free_space_info-251:WARNING-the size between two partition is too small
+part_util.py/get_disk_free_space_info-251:WARNING-the size between two partition is too small
+part_util.py/get_disk_free_space_info-262:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-the space between start of extended_part and the first logical is too small
+log_util.py/do_log_msg-157:WARNING-end of extended_part have geometry overlap
+log_util.py/do_log_msg-157:ERROR-cann't get a logical part satisfy the minlength
+part_util.py/get_disk_free_space_info-251:WARNING-the size between two partition is too small
+part_util.py/get_disk_free_space_info-251:WARNING-the size between two partition is too small
+part_util.py/get_disk_free_space_info-262:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-the space between start of extended_part and the first logical is too small
+log_util.py/do_log_msg-157:WARNING-end of extended_part have geometry overlap
+log_util.py/do_log_msg-157:ERROR-cann't get a logical part satisfy the minlength
+part_util.py/get_disk_free_space_info-251:WARNING-the size between two partition is too small
+part_util.py/get_disk_free_space_info-251:WARNING-the size between two partition is too small
+part_util.py/get_disk_free_space_info-262:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-the space between start of extended_part and the first logical is too small
+log_util.py/do_log_msg-157:WARNING-end of extended_part have geometry overlap
