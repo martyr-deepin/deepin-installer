@@ -143,8 +143,8 @@ class Part(gtk.VBox):
             elif len(main_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
-                max_num=max(main_part_list.path[-1])
-                self.new_part_path=self.selected_disk.device.path+str(max_num+1)
+                max_num=max(part.path[-1] for part in main_part_list)
+                self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
         elif part_type=="extend":
             for part in main_part_list:
@@ -158,8 +158,8 @@ class Part(gtk.VBox):
             elif len(main_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
-                max_num=max(main_part_list.path[-1])
-                self.new_part_path=self.selected_disk.device.path+str(max_num+1)
+                max_num=max(part.path[-1] for part in main_part_list)
+                self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
         elif part_type=="logical":      
             for part in main_part_list:
@@ -173,8 +173,8 @@ class Part(gtk.VBox):
             if len(logical_part_list)==0:
                 self.new_part_path=self.selected_disk.device.path+str(5)
             else:
-                max_num=max(logical_part_list.path[-1])
-                self.new_part_path=self.selected_disk.device.path+str(max_num+1)
+                max_num=max(part.path[-1] for part in logical_part_list)
+                self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
         else:
             print "invalid part type"
             
@@ -252,14 +252,15 @@ class Part(gtk.VBox):
         #need do actually add operation first
         self.update_part_btn_box()
 
-    def add_part_2listview(self,part_listview_items):
+    def add_part_2listview(self,part_listview_item):
         '''add new added partition to listview'''
         # need do autually add operation first
-        # part_listview_items=[]
+        part_listview_items=[]
         # part_listview_item1=PartListItem("/dev/hda1","ext4","/test","True","8G","4G","primary")
         # part_listview_item2=PartListItem("/dev/hda2","ext4","/test","True","8G","4G","primary")
         # part_listview_items.append(part_listview_item1)
         # part_listview_items.append(part_listview_item2)
+        part_listview_items.append(part_listview_item)
         self.part_listview.add_items(part_listview_items)
 
     def delete_part_from_listview(self):
@@ -331,14 +332,14 @@ class Part(gtk.VBox):
 
         part_mp=self.part_new.part_mp_combo.get_current_item().get_label()
 
-        part_listview_items=[[part_path,part_fs,part_mp,part_format_str,part_capacity,"4G",part_type]]
-        self.add_part_2listview(part_listview_items)
+        part_listview_item=PartListItem(part_path,part_fs,part_mp,part_format_str,part_capacity,"4G",part_type)
+        self.add_part_2listview(part_listview_item)
         self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
 
         # self.add_part_2btn_box()
         
 
-    def on_part_edit_btn_clicked(self,widget):
+    def on_part_edit_btn_clicked(self,widge):
         '''edit selected partition'''
         self.part_edit=PartEdit()
         self.part_edit.show_all()
