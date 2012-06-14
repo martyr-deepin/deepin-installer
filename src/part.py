@@ -80,7 +80,7 @@ class Part(gtk.VBox):
         part_delete_btn=Button("删除分区")
         part_recovery_btn=Button("还原分区表")
 
-        part_new_table_btn.connect("clicked",self.on__new_table_clicked)
+        part_new_table_btn.connect("clicked",self.on_new_table_clicked)
         part_new_btn.connect("clicked",self.on_part_new_btn_clicked)
         part_edit_btn.connect("clicked",self.on_part_edit_btn_clicked)
         part_delete_btn.connect("clicked",self.on_part_delete_btn_clicked)
@@ -300,7 +300,11 @@ class Part(gtk.VBox):
         #update_part_btn_box and listview after add partition operation
         self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk)
         self.part_new.show_all()
-        
+
+    def on_new_table_clicked(self,widget):
+        '''clear data in current disk,create new partition table'''
+        pass
+
     def on_part_new_ok_btn_clicked(self,widget):
         '''confirm to add new partition'''
         print "desire to add new partition"
