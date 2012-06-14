@@ -432,10 +432,14 @@ class Part(gtk.VBox):
     def on_part_delete_btn_clicked(self,widget):
         '''delete partition'''
         #need also alter info in the backend table
-        self.delete_part_from_listview()
-        self.delete_part_form_btn_box()
-        self.update_part_btn_box()
-        self.update_part_listview()
+        self.current_part=self.part_listview.get_current_item().partition
+        for item in self.part_util.disk_partition_info_tab:
+            if item[0]==self.current_part:
+                self.part_util.delete_disk_partition_info_tab(self.current_part)
+                self.init_part_listview_items()
+                self.update_part_listview()
+            else:
+                continue
 
     def backup_disk_part_table(self):
         '''backup disk part table just to no edit state'''
