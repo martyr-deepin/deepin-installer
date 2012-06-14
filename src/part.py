@@ -162,6 +162,7 @@ class Part(gtk.VBox):
         main_part_list=self.update_disk_main_list()
         logical_part_list=self.update_disk_logical_list()
         # self.update_display_part_path()
+        self.new_part_path=""
         max_num=0
         if part_type=="primary":
             if len(main_part_list) > 3:
@@ -170,7 +171,9 @@ class Part(gtk.VBox):
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
                 for part in main_part_list:
-                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
+                        pass
+                    elif len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
                         pass
                     else:
                         part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
@@ -197,7 +200,9 @@ class Part(gtk.VBox):
                 self.new_part_path=self.selected_disk.device.path+str(1)
             else:
                 for part in main_part_list:
-                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
+                        pass
+                    elif len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
                         pass
                     else:
                         part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
@@ -223,7 +228,9 @@ class Part(gtk.VBox):
                 self.new_part_path=self.selected_disk.device.path+str(5)
             else:
                 for part in logical_part_list:
-                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
+                        pass
+                    elif len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
                         pass
                     else:
                         part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
