@@ -24,7 +24,7 @@ TARGET="/target"
 PART_TYPE_LIST=["primary","logical","extend","freespace","metadata","protect"]
 import os
 from basic_utils import run_os_command,get_os_command_output
-
+import copy
 import parted
 from log_util import LogUtil
 
@@ -77,9 +77,7 @@ class PartUtil:
     #newly port from part.py for share use
         self.disk_part_display_path={}
         self.init_disk_part_display_path()#{disk:{partition:part_path}}
-        # for disk in self.get_system_disks():
-        #     self.disk_part_display_path[disk]={}
-
+        self.backup_disk_partition_info_tab=self.init_backup_disk_partition_info_tab()
 
     #disk_partition_tab && disk_partition_info operations:
     def init_disk_partition_info_tab(self):
@@ -120,6 +118,46 @@ class PartUtil:
                 disk_partition_info_tab.append(disk_partition_info_tab_item)
 
         return disk_partition_info_tab
+
+    def init_backup_disk_partition_info_tab(self):
+        '''copy from init_disk_partition_info_tab,as _Ped object not support simply deepcopy'''
+        disk_partition_info_tab=[]
+        disk_partition_info_tab_item=[]
+        
+        for disk in self.get_system_disks():
+            if disk.getFirstPartition()==None:
+                self.set_disk_label(disk.device)
+                continue 
+            for part in self.get_disk_partitions(disk):
+                self.partition=part
+                self.part_disk_path=part.disk.device.path
+                self.part_type=PART_TYPE_LIST[part.type]
+                self.part_size=part.getSize(unit="MB")
+                try:
+                    self.part_fs=part.fileSystem.type#just for primary and logical partition
+                except:
+                    self.part_fs=None
+                self.part_format=False#donn't format origin partition
+                self.part_name=part.name
+
+                try:
+                    self.part_mountpoint=self.get_disk_partition_mount(self.partition)[0][1]
+                except:
+                    self.part_mountpoint=""
+                    
+                self.part_flag="keep"   #flag:keep,new,delete 
+                # self.disk_partition_info_tab_item=[self.partition.path,self.part_disk_path,self.part_type,
+                #                                    self.part_size,self.part_fs,self.part_format,
+                #                                    self.part_name,self.part_mountpoint]
+
+                disk_partition_info_tab_item=[self.partition,self.part_disk_path,self.part_type,
+                                              self.part_size,self.part_fs,self.part_format,
+                                              self.part_name,self.part_mountpoint,self.part_flag]
+
+                disk_partition_info_tab.append(disk_partition_info_tab_item)
+
+        return disk_partition_info_tab
+
 
     def refresh_disk_partition_info_tab(self,disk_partition_info_tab):
         '''sort the table according to partition number,update the table after add or delete operation'''
@@ -1004,7 +1042,35 @@ class PartUtil:
             for part in self.get_disk_partitions(disk):
                 self.disk_part_display_path[disk][part]=part.path
 
-        return self.disk_part_display_path        
+        return self.disk_part_display_path       
+
+    def rebuild_disk_partition_info_tab(self,disk):
+        '''backend operation for UI:create new disk partition tab'''
+        for item in self.disk_partition_info_tab:
+            if item[0].disk==disk:
+                self.delete_disk_partition_info_tab(item[0])
+        for item in self.disk_part_display_path[disk]:
+            del item
+            
+    def recovery_disk_partition_info_tab(self,disk):
+        '''backend operation for UI:recovery edited disk partition tab'''
+        #init disk_partition_info_tab
+        self.disk_partition_info_tab=filter(lambda item:item[0].disk==disk,self.disk_partition_info_tab)
+        for item in self.disk_partition_info_tab:
+            if item[0].disk==disk:
+                self.disk_partition_info_tab.remove(item)
+
+        for item in self.backup_disk_partition_info_tab:
+            if item[0].disk==disk:
+                self.disk_partition_info_tab.append(item)
+        #init disk_part_display_path        
+        if disk in self.disk_part_display_path.keys():
+            self.disk_part_display_path[disk].clear()
+            del self.disk_part_display_path[disk]
+        self.disk_part_display_path[disk]={}    
+        for part in self.get_disk_partitions(disk):
+            self.disk_part_display_path[disk][part]=part.path
+
 
 #should use global part_util to keep disk/partition/device id uniquee
 global_part_util=PartUtil()

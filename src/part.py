@@ -70,6 +70,7 @@ class Part(gtk.VBox):
 
         #partitions list view
         self.part_listview_container_box=gtk.VBox()
+        self.part_listview_items=self.init_part_listview_items()
         self.update_part_listview()
 
         
@@ -82,7 +83,7 @@ class Part(gtk.VBox):
         part_delete_btn=Button("删除分区")
         part_recovery_btn=Button("还原分区表")
 
-        part_new_table_btn.connect("clicked",self.on_new_table_clicked)
+        part_new_table_btn.connect("clicked",self.on_part_new_table_clicked)
         part_new_btn.connect("clicked",self.on_part_new_btn_clicked)
         part_edit_btn.connect("clicked",self.on_part_edit_btn_clicked)
         part_delete_btn.connect("clicked",self.on_part_delete_btn_clicked)
@@ -296,9 +297,11 @@ class Part(gtk.VBox):
     def init_part_listview_items(self):
         '''update listview_items,mostly used when change disk or first load'''
         self.update_selected_disk()
-        # self.update_display_part_path()
+
         self.disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.disk_partition_info_tab)
         part_listview_items=[]
+        print "before init part list view items:\n"
+        print part_listview_items
         for item in self.disk_partition_info:
             if item[-1]=="delete":
                 pass
@@ -314,11 +317,11 @@ class Part(gtk.VBox):
         return part_listview_items
     
     def update_part_listview(self):
-        '''reload listview because the listview_items changed'''
+        '''reload listview because the listview_items changed,need give self.part_listview_items before called'''
         self.update_selected_disk_partitions()
         part_listview_box=gtk.VBox()
         part_listview_box.set_size_request(-1,280)
-        self.part_listview_items=self.init_part_listview_items()    
+        # self.part_listview_items=self.init_part_listview_items()    #because recovery part table don't need this
         self.part_listview=ListView(
             # [(lambda item:item.partition,cmp),
             [(lambda item:item.part_path,cmp),
@@ -362,6 +365,7 @@ class Part(gtk.VBox):
     def delete_part_from_listview(self):
         '''delete part from listview'''
         #need do real delete operation first
+        self.part_listview_items=self.init_part_listview_items()
         self.update_part_listview()
 
     def delete_part_form_btn_box(self):
@@ -382,6 +386,7 @@ class Part(gtk.VBox):
         '''change disk,react to partitions display'''
         self.selected_disk=self.update_selected_disk()
         self.update_part_btn_box()
+        self.part_listview_items=self.init_part_listview_items()
         self.update_part_listview()
     
     def on_part_btn_clicked(self,widget):
@@ -402,19 +407,16 @@ class Part(gtk.VBox):
 
     def on_part_new_table_clicked(self,widget):
         '''create new partition table of the selected disk'''
-        print "do something first"
         self.update_part_btn_box()
-        self.update_part_listview()
+        self.part_util.rebuild_disk_partition_info_tab(self.selected_disk)
+
+        self.part_listview.clear()
 
     def on_part_new_btn_clicked(self,widget):
         '''create new partition'''
         #update_part_btn_box and listview after add partition operation
         self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk)
         self.part_new.show_all()
-
-    def on_new_table_clicked(self,widget):
-        '''clear data in current disk,create new partition table'''
-        pass
 
     def on_part_new_ok_btn_clicked(self,widget):
         '''confirm to add new partition'''
@@ -474,7 +476,7 @@ class Part(gtk.VBox):
             else:
                 continue
         #then need update listview
-        self.init_part_listview_items()        
+        self.part_listview_items=self.init_part_listview_items()        
         self.update_part_listview()
         self.part_edit.destroy()
 
@@ -485,16 +487,27 @@ class Part(gtk.VBox):
             if item[0]==self.current_part:
                 self.part_util.delete_disk_partition_info_tab(self.current_part)
                 self.get_delete_part_other_path(self.current_part)
-                self.init_part_listview_items()
+                self.part_listview_items=self.init_part_listview_items()
                 self.update_part_listview()
             else:
                 continue
 
-    def backup_disk_part_table(self):
-        '''backup disk part table just to no edit state'''
-        pass
-
     def on_part_recovery_btn_clicked(self,widget):
         '''recovery part info to backup,consider frontend and backend'''
         self.update_part_btn_box()
+        self.part_listview.clear()
+        self.part_util.recovery_disk_partition_info_tab(self.selected_disk)
+
+        self.part_listview_items=[]
+        self.update_selected_disk()
+
+        disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.backup_disk_partition_info_tab)
+        for item in disk_partition_info:
+            if item[-1]=="delete":
+                pass
+            else:
+                part_list_item=PartListItem(self.selected_disk,item[0],str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+
+                self.part_listview_items.append(part_list_item)
+
         self.update_part_listview()
