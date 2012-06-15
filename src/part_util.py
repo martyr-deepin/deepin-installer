@@ -378,7 +378,7 @@ class PartUtil:
             for geom in disk_space_info_list[2][1]:#logical_geom_gap_list
                 logical_length+=geom.length
         else:
-            # print "cann't find disk in the disk_free_space_info"
+            print "cann't find disk in the disk_free_space_info"
             self.lu.do_log_msg(self.logger,"error","cann't find disk in the disk_free_space_info")
         self.main_available_space_size=main_length*disk.device.sectorSize/(1024*1024)    
         self.logical_available_space_size=logical_length*disk.device.sectorSize/(1024*1024)

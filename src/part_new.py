@@ -65,7 +65,7 @@ class PartNew(Window):
         self.new_part_table.attach(self.part_type_combo,1,2,0,1,xpadding=30)
 
 
-        self.part_capacity_label=Label("新分区容量:")
+        self.part_capacity_label=Label("新分区容量(MB):")
         self.part_capacity_spin=SpinBox(200,100,1000,10,55)
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
@@ -161,6 +161,10 @@ class PartNew(Window):
         if len(extend_list) > 1:
             print "error,should have only one extend partition"
             
+    def limit_2added_part_size(self,part_type):
+        '''limit part size according to the part type:primary,extend,logical'''
+        part_type_dict={"":"primary","":"logical","":"extend"}
+        return self.part_util.get_disk_single_available_space_size(self.current_disk,part_type_dict[part_type])
 
 if __name__=="__main__":
 
