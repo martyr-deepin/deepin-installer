@@ -75,9 +75,10 @@ class PartUtil:
         self.handler=self.lu.create_logger_handler(self.logger,"file","debug","lineno",None)
 
     #newly port from part.py for share use
-        self.disk_part_display_path={}#{disk:{partition:part_path}}
-        for disk in self.get_system_disks():
-            self.disk_part_display_path[disk]={}
+        self.disk_part_display_path={}
+        self.init_disk_part_display_path()#{disk:{partition:part_path}}
+        # for disk in self.get_system_disks():
+        #     self.disk_part_display_path[disk]={}
 
 
     #disk_partition_tab && disk_partition_info operations:
@@ -995,6 +996,15 @@ class PartUtil:
     def get_disk_logical_partitions(self,disk):
         '''get disk logical part list'''
         return filter(lambda part:part.type==1,self.get_disk_partitions(disk))
+
+    def init_disk_part_display_path(self):
+        '''display_path for vitual path to display in UI listview'''
+        for disk in self.get_system_disks():
+            self.disk_part_display_path[disk]={}
+            for part in self.get_disk_partitions(disk):
+                self.disk_part_display_path[disk][part]=part.path
+
+        return self.disk_part_display_path        
 
 #should use global part_util to keep disk/partition/device id uniquee
 global_part_util=PartUtil()

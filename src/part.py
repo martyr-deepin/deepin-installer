@@ -45,10 +45,6 @@ class Part(gtk.VBox):
         self.part_util=global_part_util
         self.new_part_path=""
 
-        ######port to part_util.py
-        # self.disk_part_display_path={}#{disk:{partition:part_path}}
-        # for disk in self.part_util.get_system_disks():
-        #     self.disk_part_display_path[disk]={}
         #select disk box
         choose_disk_box=gtk.HBox()
         choose_disk_label=Label("选择硬盘:    ")
@@ -139,112 +135,241 @@ class Part(gtk.VBox):
         self.update_selected_disk_partitions()
         return filter(lambda item:item.type==1,self.selected_disk_partitions)
 
-    def update_display_part_path(self):
-        '''update part path as the os allocate /dev/sda-1 before write to disk,just for listview display'''
-        # print self.part_util.get_system_disks()
-        for part in self.update_selected_disk_partitions():
-            if not part.path.endswith("-1"):
-                # self.part_display_path[part]=part.path
-                self.part_util.disk_part_display_path[self.selected_disk][part]=part.path
-            elif part.path.endswith("-1"):
-                if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
-                # self.part_display_path[part]=self.new_part_path
-                    self.part_util.disk_part_display_path[self.selected_disk][part]=self.new_part_path
-                else:
-                    print "just keep the old value of the /dev/sda-1 part"
-                    print self.part_util.disk_part_display_path[self.selected_disk][part]
-        # return self.part_display_path
-        return self.part_util.disk_part_display_path        
-        
-    def generate_disk_part_path(self,part_type):
-        '''generate_part_path for new add partition,used by listview display '''
-        # print self.part_util.disk_part_display_path[self.selected_disk]
-        main_part_list=self.update_disk_main_list()
-        logical_part_list=self.update_disk_logical_list()
-        # self.update_display_part_path()
-        self.new_part_path=""
+    def update_disk_extend_list(self):
+        '''return extend partitions list of the selected_disk'''
+        self.update_selected_disk_partitions()
+        return filter(lambda item:item.type==2,self.selected_disk_partitions)
+
+    # def update_display_part_path(self):
+    #     '''update part path as the os allocate /dev/sda-1 before write to disk,just for listview display'''
+    #     # print self.part_util.get_system_disks()
+    #     for part in self.update_selected_disk_partitions():
+    #         if not part.path.endswith("-1"):
+    #             # self.part_display_path[part]=part.path
+    #             self.part_util.disk_part_display_path[self.selected_disk][part]=part.path
+    #         elif part.path.endswith("-1"):
+    #             if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+    #             # self.part_display_path[part]=self.new_part_path
+    #                 self.part_util.disk_part_display_path[self.selected_disk][part]=self.new_part_path
+    #             else:
+    #                 print "just keep the old value of the /dev/sda-1 part"
+    #                 print self.part_util.disk_part_display_path[self.selected_disk][part]
+    #     # return self.part_display_path
+    #     return self.part_util.disk_part_display_path        
+
+
+    def get_new_add_part_path(self,part_obj):
+        '''get new added part path of disk_part_display_path and react to the dict'''
+        main_part_list=filter(lambda item :item.type==0 or item.type==2,self.part_util.disk_part_display_path[self.selected_disk].keys())
+        extend_part_list=filter(lambda item: item.type==2,self.part_util.disk_part_display_path[self.selected_disk].keys())
+        logical_part_list=filter(lambda item :item.type==1,self.part_util.disk_part_display_path[self.selected_disk].keys())
+
+        new_part_path=""
         max_num=0
-        if part_type=="primary":
+        if part_obj.type==0:
             if len(main_part_list) > 3:
                 print "can at most have 4 primary partition"
             elif len(main_part_list)==0:
-                self.new_part_path=self.selected_disk.device.path+str(1)
+                new_part_path=self.selected_disk.device.path+str(1)
             else:
                 for part in main_part_list:
-                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
-                        pass
-                    elif len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
-                        pass
-                    else:
-                        part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
-                        part_num=int(part_num)
-                        if int(part_num) > max_num:
-                            max_num=part_num
+                    part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])[:])
+                    if part_no > max_num:
+                        max_num=part_no
 
-                self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+                new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
-                # max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part]))
-                #             for part in main_part_list)
-                # self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+            self.part_util.disk_part_display_path[self.selected_disk][part_obj]=new_part_path
+            return self.part_util.disk_part_display_path
 
-        elif part_type=="extend":
+        elif part_obj.type==2:
             for part in main_part_list:
                 if part.type==2:
                     print "can have only one extend "
-                else:
-                    continue
-
             if len(main_part_list) > 3:
                 print "can at most have 4 primary partition"
             elif len(main_part_list)==0:
-                self.new_part_path=self.selected_disk.device.path+str(1)
+                new_part_path=self.selected_disk.device.path+str(1)
             else:
                 for part in main_part_list:
-                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
-                        pass
-                    elif len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
-                        pass
-                    else:
-                        part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
-                        part_num=int(part_num)
-                        if int(part_num) > max_num:
-                            max_num=part_num
+                    part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])[:])
+                    if part_no > max_num:
+                        max_num=part_no
 
-                # max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part]))
-                #             for part in main_part_list)
-                # max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in main_part_list)
-                self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+                new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
 
-        elif part_type=="logical":      
-            for part in main_part_list:
-                if part.type==2:
-                    break
-                else:
-                    continue
-            else:
-                print "must have a extend part first"
+            self.part_util.disk_part_display_path[self.selected_disk][part_obj]=new_part_path
+            return self.part_util.disk_part_display_path
+
+        elif part_obj.type==1:
+            if len(extend_part_list)!=1:
+                print "must have only one extend part first"
+                return self.part_util.disk_part_display_path
 
             if len(logical_part_list)==0:
-                self.new_part_path=self.selected_disk.device.path+str(5)
+                new_part_path=self.selected_disk.device.path+str(5)
             else:
                 for part in logical_part_list:
-                    if part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
-                        pass
-                    elif len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
-                        pass
-                    else:
-                        part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
-                        part_num=int(part_num)
-                        if int(part_num) > max_num:
-                            max_num=part_num
-                        # max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])) for part in logical_part_list)
-                # max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in logical_part_list)
-                self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+                    part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])[:])
+                    if part_no > max_num:
+                        max_num=part_no
+
+                new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+
+            self.part_util.disk_part_display_path[self.selected_disk][part_obj]=new_part_path
+            return self.part_util.disk_part_display_path
 
         else:
             print "invalid part type"
+            return self.part_util.disk_part_display_path
 
-        return self.new_part_path    
+    def get_delete_part_other_path(self,part_obj):
+        '''update the disk_part_display_path when delete a partition'''
+        main_part_list=filter(lambda item :item.type==0 or item.type==2,self.part_util.disk_part_display_path[self.selected_disk].keys())
+        extend_part_list=filter(lambda item: item.type==2,self.part_util.disk_part_display_path[self.selected_disk].keys())
+        logical_part_list=filter(lambda item :item.type==1,self.part_util.disk_part_display_path[self.selected_disk].keys())
+
+        if part_obj not in self.part_util.disk_part_display_path[self.selected_disk].keys():
+            print "part_obj not in disk_part_display_path,some error occurs"
+
+        current_num=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0])    
+
+        if part_obj.type==0:
+            if len(main_part_list)==1:
+                del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
+                return self.part_util.disk_part_display_path
+            else:    
+                for part in main_part_list:
+                    part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0])
+                    part_prefix=filter(not str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj][0])
+                    if part_no > current_num:
+                        self.part_util.disk_part_display_path[self.selected_disk][part]=part_prefix+str(part_no-1)
+                del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
+                return self.part_util.disk_part_display_path
+
+        elif part_obj.type==2:
+            if len(logical_part_list)!=0:
+                for part in logical_part_list:
+                    del self.part_util.disk_part_display_path[self.selected_disk][part]
+
+            for part in main_part_list:
+                part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0])
+                part_prefix=filter(not str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj][0])
+                if part_no > current_num:
+                    self.part_util.disk_part_display_path[self.selected_disk][part]=part_prefix+str(part_no-1)
+
+            del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
+            return self.part_util.disk_part_display_path
+
+        elif part_obj.type==1:
+            if len(extend_part_list)!=1:
+                print "must have one extend part first"
+                return self.part_util.disk_part_display_path
+            if len(logical_part_list)==1:
+                del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
+            else:
+                for part in logical_part_list:
+                    part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0])
+                    part_prefix=filter(not str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj][0])
+                    if part_no > current_num:
+                        self.part_util.disk_part_display_path[self.selected_disk][part]=part_prefix+str(part_no-1)
+                del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
+                return self.part_util.disk_part_display_path
+
+        else:
+            print "invalid part type"
+            return self.part_util.disk_part_display_path
+
+
+    # def generate_disk_part_path(self,part_type):
+    #     '''generate_part_path for new add partition,used by listview display '''
+    #     # print self.part_util.disk_part_display_path[self.selected_disk]
+    #     main_part_list=self.update_disk_main_list()
+    #     logical_part_list=self.update_disk_logical_list()
+    #     # self.update_display_part_path()
+    #     self.new_part_path=""
+    #     max_num=0
+    #     if part_type=="primary":
+    #         if len(main_part_list) > 3:
+    #             print "can at most have 4 primary partition"
+    #         elif len(main_part_list)==0:
+    #             self.new_part_path=self.selected_disk.device.path+str(1)
+    #         else:
+    #             for part in main_part_list:
+    #                 if part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
+    #                     pass
+    #                 elif len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+    #                     pass
+    #                 else:
+    #                     part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
+    #                     part_num=int(part_num)
+    #                     if int(part_num) > max_num:
+    #                         max_num=part_num
+
+    #             self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+
+    #             # max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part]))
+    #             #             for part in main_part_list)
+    #             # self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+
+    #     elif part_type=="extend":
+    #         for part in main_part_list:
+    #             if part.type==2:
+    #                 print "can have only one extend "
+    #             else:
+    #                 continue
+
+    #         if len(main_part_list) > 3:
+    #             print "can at most have 4 primary partition"
+    #         elif len(main_part_list)==0:
+    #             self.new_part_path=self.selected_disk.device.path+str(1)
+    #         else:
+    #             for part in main_part_list:
+    #                 if part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
+    #                     pass
+    #                 elif len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+    #                     pass
+    #                 else:
+    #                     part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
+    #                     part_num=int(part_num)
+    #                     if int(part_num) > max_num:
+    #                         max_num=part_num
+
+    #             # max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part]))
+    #             #             for part in main_part_list)
+    #             # max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in main_part_list)
+    #             self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+
+    #     elif part_type=="logical":      
+    #         for part in main_part_list:
+    #             if part.type==2:
+    #                 break
+    #             else:
+    #                 continue
+    #         else:
+    #             print "must have a extend part first"
+
+    #         if len(logical_part_list)==0:
+    #             self.new_part_path=self.selected_disk.device.path+str(5)
+    #         else:
+    #             for part in logical_part_list:
+    #                 if part not in self.part_util.disk_part_display_path[self.selected_disk].keys():
+    #                     pass
+    #                 elif len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
+    #                     pass
+    #                 else:
+    #                     part_num=filter(lambda c:c in "0123456789",self.part_util.disk_part_display_path[self.selected_disk][part])
+    #                     part_num=int(part_num)
+    #                     if int(part_num) > max_num:
+    #                         max_num=part_num
+    #                     # max_num=max(int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])) for part in logical_part_list)
+    #             # max_num=max(filter(str.isdigit,self.part_display_path[part]) for part in logical_part_list)
+    #             self.new_part_path=self.selected_disk.device.path+str(int(max_num)+1)
+
+    #     else:
+    #         print "invalid part type"
+
+    #     return self.new_part_path    
 
     def update_choose_disk_combo(self):
         '''update the item of choose disk'''
@@ -277,7 +402,7 @@ class Part(gtk.VBox):
     def init_part_listview_items(self):
         '''update listview_items,mostly used when change disk or first load'''
         self.update_selected_disk()
-        self.update_display_part_path()
+        # self.update_display_part_path()
         self.disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.disk_partition_info_tab)
         part_listview_items=[]
         for item in self.disk_partition_info:
@@ -417,16 +542,15 @@ class Part(gtk.VBox):
         self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
         part_obj=self.part_util.to_add_partition
 
-        part_path=self.generate_disk_part_path(part_type)
-        self.part_util.disk_part_display_path[self.selected_disk][part_obj]=part_path
+        self.get_new_add_part_path(part_obj)
+        # part_path=self.generate_disk_part_path(part_type)
+        # self.part_util.disk_part_display_path[self.selected_disk][part_obj]=part_path
         # part_listview_item=PartListItem(part_path,part_fs,part_mp,part_format_str,str(part_capacity),"4G",part_type)
         part_listview_item=PartListItem(self.selected_disk,part_obj,part_fs,part_mp,part_format_str,str(part_capacity),"4G",part_type)
 
         self.add_part_2listview(part_listview_item)
         self.update_selected_disk_partitions()
-        self.update_disk_main_list()
-        self.update_disk_logical_list()
-        self.update_disk_primary_list()
+
         # print self.part_util.get_disk_partitions(self.selected_disk)
         # self.add_part_2btn_box()
         # self.update_display_part_path()
