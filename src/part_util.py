@@ -200,8 +200,9 @@ class PartUtil:
             #middleware list
             self.disk_space_info_list=[[],[],[]]
             
-        #get disk main_part_list and logical_part
-            for item in filter(lambda info:info[0].disk==disk,self.disk_partition_info_tab):
+        #get disk main_part_list and logical_part,#fix:use space now in the to deleted part
+            # for item in filter(lambda info:info[0].disk==disk,self.disk_partition_info_tab):
+            for item in filter(lambda info:info[0].disk==disk and info[-1]!="delete",self.disk_partition_info_tab):
                 if item[2]=="primary":
                     self.primary_part.append(item[0])
                     continue
@@ -212,16 +213,16 @@ class PartUtil:
                     self.extended_part.append(item[0])
                     continue
                 else:
-                    # print "invalid part type"
+                    print "invalid part type"
                     self.lu.do_log_msg(self.logger,"warning","invalid part type")
                     continue
 
             if len(self.extended_part)>1:        
-                # print "can have only one extended_part"
+                print "can have only one extended_part"
                 self.lu.do_log_msg(self.logger,"error","can have only one extended_part")
             elif len(self.extended_part)==0:
                 self.logger.info("the disk doesn't have extended_part")
-                # print "the disk "+disk.device.path+" doesn't have extended_part"
+                print "the disk "+disk.device.path+" doesn't have extended_part"
             else:
                 self.extend_part=self.extended_part[0]
         
