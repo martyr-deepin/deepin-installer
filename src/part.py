@@ -335,7 +335,10 @@ class Part(gtk.VBox):
             )
         self.part_listview.set_expand_column(2)
         self.part_listview.add_titles(["分区","文件系统","挂载点","格式化","总容量","已用容量","类型"])
-        self.part_listview.add_items(self.part_listview_items)
+        if len(self.part_listview_items)==0:
+            pass
+        else:
+            self.part_listview.add_items(self.part_listview_items)
         self.part_listview.connect("single-click-item",self.on_part_item_clicked)
         self.part_listview.connect("double-click-item",self.on_part_item_clicked)
         # self.part_listview.cell_widths=[100,80,100,60,60,60,100]
@@ -504,6 +507,6 @@ class Part(gtk.VBox):
         #         pass
         #     else:
         #         part_list_item=PartListItem(self.selected_disk,item[0],str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
-        #         self.part_listview_items.append(part_list_item)
+                # self.part_listview_items.append(part_list_item)
         self.part_listview_items=self.init_part_listview_items()
         self.update_part_listview()
