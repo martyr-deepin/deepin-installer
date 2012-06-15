@@ -33,6 +33,7 @@ from part_util import global_part_util
 from ui_utils import switch_box
 from part_new import PartNew
 from part_edit import PartEdit
+import re
 
 class Part(gtk.VBox):
     '''Part UI'''
@@ -140,24 +141,6 @@ class Part(gtk.VBox):
         self.update_selected_disk_partitions()
         return filter(lambda item:item.type==2,self.selected_disk_partitions)
 
-    # def update_display_part_path(self):
-    #     '''update part path as the os allocate /dev/sda-1 before write to disk,just for listview display'''
-    #     # print self.part_util.get_system_disks()
-    #     for part in self.update_selected_disk_partitions():
-    #         if not part.path.endswith("-1"):
-    #             # self.part_display_path[part]=part.path
-    #             self.part_util.disk_part_display_path[self.selected_disk][part]=part.path
-    #         elif part.path.endswith("-1"):
-    #             if part not in self.part_util.disk_part_display_path[self.selected_disk].keys() or len(self.part_util.disk_part_display_path[self.selected_disk][part])==0:
-    #             # self.part_display_path[part]=self.new_part_path
-    #                 self.part_util.disk_part_display_path[self.selected_disk][part]=self.new_part_path
-    #             else:
-    #                 print "just keep the old value of the /dev/sda-1 part"
-    #                 print self.part_util.disk_part_display_path[self.selected_disk][part]
-    #     # return self.part_display_path
-    #     return self.part_util.disk_part_display_path        
-
-
     def get_new_add_part_path(self,part_obj):
         '''get new added part path of disk_part_display_path and react to the dict'''
         main_part_list=filter(lambda item :item.type==0 or item.type==2,self.part_util.disk_part_display_path[self.selected_disk].keys())
@@ -232,16 +215,16 @@ class Part(gtk.VBox):
         if part_obj not in self.part_util.disk_part_display_path[self.selected_disk].keys():
             print "part_obj not in disk_part_display_path,some error occurs"
 
-        current_num=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0])    
+        current_num=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj])[:])    
 
         if part_obj.type==0:
             if len(main_part_list)==1:
                 del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
                 return self.part_util.disk_part_display_path
             else:    
+                part_prefix=re.findall(r'[^0-9]+',self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0]
                 for part in main_part_list:
-                    part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0])
-                    part_prefix=filter(not str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj][0])
+                    part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])[:])
                     if part_no > current_num:
                         self.part_util.disk_part_display_path[self.selected_disk][part]=part_prefix+str(part_no-1)
                 del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
@@ -252,9 +235,9 @@ class Part(gtk.VBox):
                 for part in logical_part_list:
                     del self.part_util.disk_part_display_path[self.selected_disk][part]
 
+            part_prefix=re.findall(r'[^0-9]+',self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0]
             for part in main_part_list:
-                part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0])
-                part_prefix=filter(not str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj][0])
+                part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])[:])
                 if part_no > current_num:
                     self.part_util.disk_part_display_path[self.selected_disk][part]=part_prefix+str(part_no-1)
 
@@ -268,10 +251,11 @@ class Part(gtk.VBox):
             if len(logical_part_list)==1:
                 del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
             else:
+                part_prefix=re.findall(r'[^0-9]+',self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0]
                 for part in logical_part_list:
-                    part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj])[0])
-                    part_prefix=filter(not str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part_obj][0])
+                    part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])[:])
                     if part_no > current_num:
+                        print "do minus"
                         self.part_util.disk_part_display_path[self.selected_disk][part]=part_prefix+str(part_no-1)
                 del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
                 return self.part_util.disk_part_display_path
@@ -496,11 +480,11 @@ class Part(gtk.VBox):
 
     def on_part_delete_btn_clicked(self,widget):
         '''delete partition'''
-        #need also alter info in the backend table
         self.current_part=self.part_listview.get_current_item().partition
         for item in self.part_util.disk_partition_info_tab:
             if item[0]==self.current_part:
                 self.part_util.delete_disk_partition_info_tab(self.current_part)
+                self.get_delete_part_other_path(self.current_part)
                 self.init_part_listview_items()
                 self.update_part_listview()
             else:
