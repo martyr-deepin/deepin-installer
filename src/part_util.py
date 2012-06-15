@@ -1021,20 +1021,30 @@ class PartUtil:
         self.add_custom_disk_partition(self.disk_partition_info_tab)
 
     def get_disk_main_partitions(self,disk):
-        '''get primary and extended part list'''
-        return filter(lambda part:part.type==0 or part.type==2,self.get_disk_partitions(disk))
+        '''get primary and extended part list,attention:not include marked delete part'''
+
+        return filter(lambda item:item[-1]!="delete" and item[0].disk==disk 
+                                and (item[0].type ==0 or item[0].type==2),self.disk_partition_info_tab)
 
     def get_disk_primary_partitions(self,disk):
         '''get primary part list'''
-        return filter(lambda part:part.type==0,self.get_disk_partitions(disk))
+
+        return filter(lambda item:item[-1]!="delete" and item[0].disk==disk 
+                                and (item[0].type ==0),self.disk_partition_info_tab)
 
     def get_disk_extended_partition(self,disk):
         '''return extended partition of the disk'''
-        return filter(lambda part:part.type==2,self.get_disk_partitions(disk))
+
+        return filter(lambda item:item[-1]!="delete" and item[0].disk==disk 
+                                and (item[0].type ==2),self.disk_partition_info_tab)
+
 
     def get_disk_logical_partitions(self,disk):
         '''get disk logical part list'''
-        return filter(lambda part:part.type==1,self.get_disk_partitions(disk))
+
+        return filter(lambda item:item[-1]!="delete" and item[0].disk==disk 
+                                and (item[0].type ==1),self.disk_partition_info_tab)
+
 
     def init_disk_part_display_path(self):
         '''display_path for vitual path to display in UI listview'''
