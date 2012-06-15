@@ -1049,15 +1049,16 @@ class PartUtil:
         for item in self.disk_partition_info_tab:
             if item[0].disk==disk:
                 self.delete_disk_partition_info_tab(item[0])
-        for item in self.disk_part_display_path[disk]:
-            del item
+
+        self.disk_part_display_path[disk].clear()        
             
     def recovery_disk_partition_info_tab(self,disk):
         '''backend operation for UI:recovery edited disk partition tab'''
         #init disk_partition_info_tab
-        self.disk_partition_info_tab=filter(lambda item:item[0].disk==disk,self.disk_partition_info_tab)
+        self.disk_partition_info_tab=filter(lambda item:item[0].disk!=disk,self.disk_partition_info_tab)
         for item in self.disk_partition_info_tab:
             if item[0].disk==disk:
+                print "already removed item in disk_partition_info_tab,you wonn't see this"
                 self.disk_partition_info_tab.remove(item)
 
         for item in self.backup_disk_partition_info_tab:

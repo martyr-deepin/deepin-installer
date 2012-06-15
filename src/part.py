@@ -300,8 +300,8 @@ class Part(gtk.VBox):
 
         self.disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.disk_partition_info_tab)
         part_listview_items=[]
-        print "before init part list view items:\n"
-        print part_listview_items
+        # print "before init part list view items:\n"
+        # print part_listview_items
         for item in self.disk_partition_info:
             if item[-1]=="delete":
                 pass
@@ -495,19 +495,15 @@ class Part(gtk.VBox):
     def on_part_recovery_btn_clicked(self,widget):
         '''recovery part info to backup,consider frontend and backend'''
         self.update_part_btn_box()
-        self.part_listview.clear()
         self.part_util.recovery_disk_partition_info_tab(self.selected_disk)
+        self.part_listview.clear()
 
-        self.part_listview_items=[]
-        self.update_selected_disk()
-
-        disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.backup_disk_partition_info_tab)
-        for item in disk_partition_info:
-            if item[-1]=="delete":
-                pass
-            else:
-                part_list_item=PartListItem(self.selected_disk,item[0],str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
-
-                self.part_listview_items.append(part_list_item)
-
+        # disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.backup_disk_partition_info_tab)
+        # for item in disk_partition_info:
+        #     if item[-1]=="delete":
+        #         pass
+        #     else:
+        #         part_list_item=PartListItem(self.selected_disk,item[0],str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+        #         self.part_listview_items.append(part_list_item)
+        self.part_listview_items=self.init_part_listview_items()
         self.update_part_listview()
