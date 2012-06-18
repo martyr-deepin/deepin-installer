@@ -78,6 +78,7 @@ class PartUtil:
         self.disk_part_display_path={}
         self.init_disk_part_display_path()#{disk:{partition:part_path}}
         self.backup_disk_partition_info_tab=self.init_backup_disk_partition_info_tab()
+        # self.backup_disk_partition_info_tab=copy.deepcopy(self.disk_partition_info_tab)
 
     #disk_partition_tab && disk_partition_info operations:
     def init_disk_partition_info_tab(self):
@@ -1073,9 +1074,18 @@ class PartUtil:
                 print "already removed item in disk_partition_info_tab,you wonn't see this"
                 self.disk_partition_info_tab.remove(item)
 
-        for item in self.backup_disk_partition_info_tab:
-            if item[0].disk==disk:
-                self.disk_partition_info_tab.append(item)
+        # print "disk_partition_info_tab:"        
+        # print filter(lambda item:item[0].disk==disk,self.disk_partition_info_tab)        
+        # print "\nbackup_disk_partition_info_tab"
+        # print filter(lambda item:item[0].disk==disk,self.backup_disk_partition_info_tab)
+        for item in filter(lambda item:item[0].disk==disk,self.backup_disk_partition_info_tab):
+            item_list=[]
+            for i in item:
+                item_list.append(i)
+            self.disk_partition_info_tab.append(item_list)    
+
+        # print "\nafter backup:disk_partition_info_tab"        
+        # print filter(lambda item:item[0].disk==disk,self.disk_partition_info_tab)
         #init disk_part_display_path        
         if disk in self.disk_part_display_path.keys():
             self.disk_part_display_path[disk].clear()
