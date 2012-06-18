@@ -51,6 +51,7 @@ from dtk.ui.utils import container_remove_all
 
 from welcome import Welcome
 from part import Part
+from account import Account
 from ui_utils import switch_box
 
 class DeepinInstaller():
@@ -70,18 +71,21 @@ class DeepinInstaller():
         self.step=1
 
         self.page_label=Label("Page 5")
-        self.page_label.set_text("第%d页，共5页" % self.step)
+        self.page_label.set_text("第%d步，共5步" % self.step)
+        self.step_label=Label("安装步骤信息")
         self.page_frame=HorizontalFrame()
         self.page_frame.set(0.1,0,0,0)
-        self.page_frame.set_padding(10,0,60,300)
+        # self.page_frame.set_padding(10,0,60,300)
+        self.page_frame.set_padding(10,0,60,40)
         self.page_frame.add(self.page_label)
 
         self.ok_button=Button("下一步")
         self.back_button=Button("上一步")
-
         self.cancle_button=Button("退出")
+
         self.step_box=gtk.HBox()
         self.step_box.pack_start(self.page_frame,False,False,4)
+        # self.step_box.pack_start(self.step_label,False,False,4)
         self.step_box.pack_end(self.ok_button,False,False,4)
         self.step_box.pack_end(self.back_button,False,False,4)
         self.step_box.pack_end(self.cancle_button,False,False,4)
@@ -119,17 +123,23 @@ class DeepinInstaller():
 
         elif self.step == 2:
             # self.application.titlebar.change_title("分区信息")
-            
+            # self.set_step_label("分区信息")
             self.part_box=Part()
             self.back_button.set_no_show_all(False)
             self.back_button.show_all()
             switch_box(self.content_box, self.part_box)
             
         elif self.step==3:
-            pass
+            # self.set_step_label("时区选择（键盘布局)")
+            self.account_box=Account()
+            switch_box(self.content_box,self.account_box)
         
     def update_page_label(self):    
-        self.page_label.set_text("第%d页，共5页" % self.step)
+        self.page_label.set_text("第%d步，共5步" % self.step)
+
+    def set_step_label(self,text):
+        '''update label description of current install step'''
+        self.step_label.set_text(text)
 
     def on_ok_btn_click(self,widget):
         '''confirm to goto next step'''

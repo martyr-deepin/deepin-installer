@@ -410,6 +410,7 @@ class Part(gtk.VBox):
         else:
             self.part_edit_btn.set_clickable(True)
             self.part_delete_btn.set_clickable(True)
+
         return self.current_part_item
 
     def set_part_item_focus(self):

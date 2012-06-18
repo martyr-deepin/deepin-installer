@@ -29,6 +29,7 @@ from dtk.ui.constant import DEFAULT_FONT_SIZE,ALIGN_END
 from dtk.ui.draw import draw_font,draw_pixbuf
 from dtk.ui.theme import ui_theme
 from part_util import global_part_util
+from dtk.ui.button import CheckButton
 
 class PartListItem(gobject.GObject):
     '''part list item'''
@@ -60,7 +61,6 @@ class PartListItem(gobject.GObject):
         self.mp=mp
         self.format=format
         self.total_size=total_size
-
         self.part_type=part_type
 
         # Calculate item size.
@@ -98,10 +98,10 @@ class PartListItem(gobject.GObject):
         '''Get sizes.'''
         return [(self.partition_width + self.partition_padding_x * 2,
                  self.partition_height + self.partition_padding_y * 2),
-                (self.fstype_width + self.fstype_padding_x * 2, 
-                 self.fstype_height + self.fstype_padding_y * 2),
                 (self.mp_width + self.mp_padding_x * 2, 
                  self.mp_height + self.mp_padding_y * 2),
+                (self.fstype_width + self.fstype_padding_x * 2, 
+                 self.fstype_height + self.fstype_padding_y * 2),
                 (self.format_width + self.format_padding_x * 2, 
                  self.format_height + self.format_padding_y * 2),
                 (self.total_size_width + self.total_size_padding_x * 2, 
@@ -114,9 +114,7 @@ class PartListItem(gobject.GObject):
         '''Render partition.'''
         rect.x += self.partition_padding_x
         rect.width -= self.partition_padding_x * 2
-        # render_text(cr, rect, self.partition)
         render_text(cr, rect, self.part_path)
-        
 
     def render_fstype(self, cr, rect):
         '''Render  fstype.'''
@@ -135,6 +133,7 @@ class PartListItem(gobject.GObject):
         rect.x += self.format_padding_x
         rect.width -= self.format_padding_x * 2
         render_text(cr, rect, self.format)
+        # self.render_toggle(cr, rect, self.format)
 
     def render_total_size(self, cr, rect):
         '''Render  total_size.'''
@@ -155,8 +154,21 @@ class PartListItem(gobject.GObject):
                 self.render_format,
                 self.render_total_size,
                 self.render_part_type]
-    
-    
+
+    def render_toggle(self,cr,rect,format=False):
+        '''Render CheckBox button'''
+        self.format_checkbtn=CheckButton()
+        self.format_checkbtn.connect("toggled",self.on_format_toggled)
+        
+    def on_format_toggled(self,widget,event):
+        '''on format button toggled'''
+        if self.format==True:
+            self.format=False
+        elif self.format==False:
+            self.format=True
+        else:
+            self.format=False
+
 def render_text(cr, rect, content, align=ALIGN_START, font_size=DEFAULT_FONT_SIZE):
     '''Render text.'''
     draw_font(cr, content, font_size, 
@@ -167,6 +179,3 @@ def render_image(cr, rect, image_path, x, y):
     '''Render image.'''
     draw_pixbuf(cr, ui_theme.get_pixbuf(image_path).get_pixbuf(), x, y)
 
-def render_toggle(cr,rect):
-    '''Render CheckBox button'''
-    
