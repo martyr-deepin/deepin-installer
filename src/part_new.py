@@ -66,7 +66,7 @@ class PartNew(Window):
         self.part_type_combo.connect("item-selected",self.on_part_type_combo_selected)
 
         self.part_capacity_label=Label("新分区容量(MB):")
-        self.part_capacity_spin=SpinBox(100,10,1000,10,55)
+        self.part_capacity_spin=SpinBox(100,10,10000000000,10,55)
 
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
@@ -163,7 +163,9 @@ class PartNew(Window):
 
     def on_part_type_combo_selected(self,widget,event):
         '''on part_type_combo_selected'''
-        self.part_capacity_spin.set_value(self.get_max_size())
+        ava_size=int(self.get_max_size())
+        self.part_capacity_spin.set_value(ava_size)
+        print self.part_capacity_spin.get_value()
 
 if __name__=="__main__":
 
