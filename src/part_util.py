@@ -394,7 +394,7 @@ class PartUtil:
         self.single_available_space_size=0
         if disk_space_info_tab.has_key(disk):
             disk_space_info_list=disk_space_info_tab[disk]
-            if part_type=="primary" or part_type=="extend":
+            if part_type=="primary" or part_type=="extend" or part_type=="extended":
                 max_geo=disk_space_info_list[2][0][0]
                 for geom in disk_space_info_list[2][0]:
                     if geom.length > max_geo.length:

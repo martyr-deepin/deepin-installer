@@ -77,23 +77,25 @@ class Part(gtk.VBox):
         #partition admin buttons
         part_set_box=gtk.HBox(False,12)
         part_set_box.set_size_request(100,30)
-        part_new_table_btn=Button("新建分区表")
-        part_new_btn=Button("新建分区")
-        part_edit_btn=Button("编辑分区")
-        part_delete_btn=Button("删除分区")
-        part_recovery_btn=Button("还原分区表")
+        self.part_new_table_btn=Button("新建分区表")
+        self.part_new_btn=Button("新建分区")
+        self.part_edit_btn=Button("编辑分区")
+        self.part_delete_btn=Button("删除分区")
+        self.part_recovery_btn=Button("还原分区表")
 
-        part_new_table_btn.connect("clicked",self.on_part_new_table_clicked)
-        part_new_btn.connect("clicked",self.on_part_new_btn_clicked)
-        part_edit_btn.connect("clicked",self.on_part_edit_btn_clicked)
-        part_delete_btn.connect("clicked",self.on_part_delete_btn_clicked)
-        part_recovery_btn.connect("clicked",self.on_part_recovery_btn_clicked)
+        self.part_new_table_btn.connect("clicked",self.on_part_new_table_clicked)
+        self.part_new_btn.connect("clicked",self.on_part_new_btn_clicked)
+        self.part_edit_btn.connect("clicked",self.on_part_edit_btn_clicked)
+        self.part_delete_btn.connect("clicked",self.on_part_delete_btn_clicked)
+        self.part_recovery_btn.connect("clicked",self.on_part_recovery_btn_clicked)
 
-        part_set_box.pack_start(part_new_table_btn,False,False,4)
-        part_set_box.pack_start(part_new_btn,False,False,4)
-        part_set_box.pack_start(part_edit_btn,False,False,4)
-        part_set_box.pack_start(part_delete_btn,False,False,4)
-        part_set_box.pack_start(part_recovery_btn,False,False,4)
+        self.part_delete_btn.set_clickable(False)
+        self.part_edit_btn.set_clickable(False)
+        part_set_box.pack_start(self.part_new_table_btn,False,False,4)
+        part_set_box.pack_start(self.part_new_btn,False,False,4)
+        part_set_box.pack_start(self.part_edit_btn,False,False,4)
+        part_set_box.pack_start(self.part_delete_btn,False,False,4)
+        part_set_box.pack_start(self.part_recovery_btn,False,False,4)
         
         #pack above boxes
         self.part_frame=HorizontalFrame()
@@ -401,7 +403,8 @@ class Part(gtk.VBox):
     def on_part_item_clicked(self,arg1,arg2,arg3,arg4,arg5):
         '''one part clicked'''
         self.current_part_item=self.part_listview.get_current_item()
-        print self.current_part_item
+        self.part_edit_btn.set_clickable(True)
+        self.part_delete_btn.set_clickable(True)
         return self.current_part_item
 
     def set_part_item_focus(self):
@@ -482,10 +485,12 @@ class Part(gtk.VBox):
         self.part_listview_items=self.init_part_listview_items()        
         self.update_part_listview()
         self.part_edit.destroy()
+        self.part_listview.select_prev_item()
 
     def on_part_delete_btn_clicked(self,widget):
         '''delete partition'''
         self.current_part=self.part_listview.get_current_item().partition
+        # index=self.part_listview.get_current_item().get_index()
         for item in self.part_util.disk_partition_info_tab:
             if item[0]==self.current_part:
                 self.part_util.delete_disk_partition_info_tab(self.current_part)
@@ -494,7 +499,8 @@ class Part(gtk.VBox):
                 self.update_part_listview()
             else:
                 continue
-
+        self.part_listview.select_prev_item()
+    
     def on_part_recovery_btn_clicked(self,widget):
         '''recovery part info to backup,consider frontend and backend'''
         self.update_part_btn_box()
