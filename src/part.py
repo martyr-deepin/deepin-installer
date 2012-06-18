@@ -309,7 +309,7 @@ class Part(gtk.VBox):
                 pass
             else:
                 #part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
-                part_list_item=PartListItem(self.selected_disk,item[0],str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+                part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),"8G",item[2])
     
                 # part_list_item=PartListItem(str(self.disk_part_display_path[self.selected_disk][item[0]]),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
     
@@ -327,16 +327,15 @@ class Part(gtk.VBox):
         self.part_listview=ListView(
             # [(lambda item:item.partition,cmp),
             [(lambda item:item.part_path,cmp),
-            (lambda item:item.fstype,cmp),
             (lambda item:item.mp,cmp),
+            (lambda item:item.fstype,cmp),
             (lambda item:item.format,cmp),
             (lambda item:item.total_size,cmp),
-            (lambda item:item.used_size,cmp),
             (lambda item:item.part_type,cmp)
              ]
             )
         self.part_listview.set_expand_column(2)
-        self.part_listview.add_titles(["分区","文件系统","挂载点","格式化","总容量","已用容量","类型"])
+        self.part_listview.add_titles(["分区","挂载点","文件系统","格式化","总容量","类型"])
         if len(self.part_listview_items)==0:
             pass
         else:

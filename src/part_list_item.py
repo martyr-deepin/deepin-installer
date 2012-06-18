@@ -37,9 +37,9 @@ class PartListItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
 
-    def __init__(self,disk,partition,fstype,mp,format,total_size,used_size,part_type):
+    def __init__(self,disk,partition,mp,fstype,format,total_size,part_type):
         gobject.GObject.__init__(self)
-        self.update(disk,partition,fstype,mp,format,total_size,used_size,part_type)
+        self.update(disk,partition,mp,fstype,format,total_size,part_type)
         self.index = None
         
     def set_index(self, index):
@@ -50,7 +50,7 @@ class PartListItem(gobject.GObject):
         '''Get index.'''
         return self.index
 
-    def update(self,disk,partition,fstype,mp,format,total_size,used_size,part_type):
+    def update(self,disk,partition,mp,fstype,format,total_size,part_type):
         '''update item'''
         self.disk=disk
         self.partition=partition
@@ -60,7 +60,7 @@ class PartListItem(gobject.GObject):
         self.mp=mp
         self.format=format
         self.total_size=total_size
-        self.used_size=used_size
+
         self.part_type=part_type
 
         # Calculate item size.
@@ -85,10 +85,6 @@ class PartListItem(gobject.GObject):
         self.total_size_padding_y = 5
         (self.total_size_width, self.total_size_height) = get_content_size(self.total_size, DEFAULT_FONT_SIZE)
 
-        self.used_size_padding_x = 10
-        self.used_size_padding_y = 5
-        (self.used_size_width, self.used_size_height) = get_content_size(self.used_size, DEFAULT_FONT_SIZE)
-
         self.part_type_padding_x = 10
         self.part_type_padding_y = 5
         (self.part_type_width, self.part_type_height) = get_content_size(self.part_type, DEFAULT_FONT_SIZE)
@@ -110,8 +106,6 @@ class PartListItem(gobject.GObject):
                  self.format_height + self.format_padding_y * 2),
                 (self.total_size_width + self.total_size_padding_x * 2, 
                  self.total_size_height + self.total_size_padding_y * 2),
-                (self.used_size_width + self.used_size_padding_x * 2, 
-                 self.used_size_height + self.used_size_padding_y * 2),
                 (self.part_type_width + self.part_type_padding_x * 2, 
                  self.part_type_height + self.part_type_padding_y * 2),
                 ]    
@@ -148,12 +142,6 @@ class PartListItem(gobject.GObject):
         rect.width -= self.total_size_padding_x * 2
         render_text(cr, rect, self.total_size)
 
-    def render_used_size(self, cr, rect):
-        '''Render  used_size.'''
-        rect.x += self.used_size_padding_x
-        rect.width -= self.used_size_padding_x * 2
-        render_text(cr, rect, self.used_size)
-
     def render_part_type(self, cr, rect):
         '''Render part_type.'''
         rect.width -=self.part_type_padding_x * 2
@@ -162,11 +150,10 @@ class PartListItem(gobject.GObject):
     def get_renders(self):
         '''Get render callbacks.'''
         return [self.render_partition,
-                self.render_fstype,
                 self.render_mp,
+                self.render_fstype,
                 self.render_format,
                 self.render_total_size,
-                self.render_used_size,
                 self.render_part_type]
     
     
