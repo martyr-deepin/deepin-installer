@@ -344,7 +344,7 @@ class Part(gtk.VBox):
         self.part_listview.connect("single-click-item",self.on_part_item_clicked)
         self.part_listview.connect("double-click-item",self.on_part_item_clicked)
         # self.part_listview.cell_widths=[100,80,100,60,60,60,100]
-        # self.part_listview.select_first_item()
+        self.part_listview.keep_select_status()
         part_scrolled_window=ScrolledWindow()
         part_scrolled_window.add_child(self.part_listview)
         part_listview_box.add(part_scrolled_window)
@@ -460,6 +460,9 @@ class Part(gtk.VBox):
 
     def on_part_edit_btn_clicked(self,widget):
         '''edit selected partition'''
+        if self.part_listview.get_current_item()==None:
+            print "must selected a partition first!"
+            return 
         self.current_part=self.part_listview.get_current_item().partition
         self.part_edit=PartEdit(self.on_part_edit_ok_btn_clicked,self.current_part)
         self.part_edit.show_all()
@@ -485,10 +488,13 @@ class Part(gtk.VBox):
         self.part_listview_items=self.init_part_listview_items()        
         self.update_part_listview()
         self.part_edit.destroy()
-        self.part_listview.select_prev_item()
+        self.part_listview.select_to_prev_item()
 
     def on_part_delete_btn_clicked(self,widget):
         '''delete partition'''
+        if self.part_listview.get_current_item()==None:
+            print "must select a partition first"
+            return
         self.current_part=self.part_listview.get_current_item().partition
         # index=self.part_listview.get_current_item().get_index()
         for item in self.part_util.disk_partition_info_tab:
@@ -499,7 +505,7 @@ class Part(gtk.VBox):
                 self.update_part_listview()
             else:
                 continue
-        self.part_listview.select_prev_item()
+        self.part_listview.select_to_prev_item()
     
     def on_part_recovery_btn_clicked(self,widget):
         '''recovery part info to backup,consider frontend and backend'''
