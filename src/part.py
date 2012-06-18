@@ -258,7 +258,6 @@ class Part(gtk.VBox):
                 for part in logical_part_list:
                     part_no=int(filter(str.isdigit,self.part_util.disk_part_display_path[self.selected_disk][part])[:])
                     if part_no > current_num:
-                        print "do minus"
                         self.part_util.disk_part_display_path[self.selected_disk][part]=part_prefix+str(part_no-1)
                 del self.part_util.disk_part_display_path[self.selected_disk][part_obj]
                 return self.part_util.disk_part_display_path
@@ -334,7 +333,7 @@ class Part(gtk.VBox):
             (lambda item:item.part_type,cmp)
              ]
             )
-        self.part_listview.set_expand_column(2)
+        self.part_listview.set_expand_column(1)
         self.part_listview.add_titles(["分区","挂载点","文件系统","格式化","总容量","类型"])
         if len(self.part_listview_items)==0:
             pass
@@ -402,8 +401,15 @@ class Part(gtk.VBox):
     def on_part_item_clicked(self,arg1,arg2,arg3,arg4,arg5):
         '''one part clicked'''
         self.current_part_item=self.part_listview.get_current_item()
-        self.part_edit_btn.set_clickable(True)
-        self.part_delete_btn.set_clickable(True)
+        if self.current_part_item.partition.type==2:
+            self.part_edit_btn.set_clickable(False)
+            if len(self.part_util.get_disk_logical_partitions(self.selected_disk))!=0:
+                self.part_delete_btn.set_clickable(False)
+            else:
+                self.part_delete_btn.set_clickable(True)
+        else:
+            self.part_edit_btn.set_clickable(True)
+            self.part_delete_btn.set_clickable(True)
         return self.current_part_item
 
     def set_part_item_focus(self):
@@ -447,7 +453,7 @@ class Part(gtk.VBox):
         # part_path=self.generate_disk_part_path(part_type)
         # self.part_util.disk_part_display_path[self.selected_disk][part_obj]=part_path
         # part_listview_item=PartListItem(part_path,part_fs,part_mp,part_format_str,str(part_capacity),"4G",part_type)
-        part_listview_item=PartListItem(self.selected_disk,part_obj,part_fs,part_mp,part_format_str,str(part_capacity),"4G",part_type)
+        part_listview_item=PartListItem(self.selected_disk,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
 
         self.add_part_2listview(part_listview_item)
         self.update_selected_disk_partitions()

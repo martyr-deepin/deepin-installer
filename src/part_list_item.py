@@ -166,3 +166,7 @@ def render_text(cr, rect, content, align=ALIGN_START, font_size=DEFAULT_FONT_SIZ
 def render_image(cr, rect, image_path, x, y):
     '''Render image.'''
     draw_pixbuf(cr, ui_theme.get_pixbuf(image_path).get_pixbuf(), x, y)
+
+def render_toggle(cr,rect):
+    '''Render CheckBox button'''
+    
