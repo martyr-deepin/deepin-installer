@@ -389,6 +389,7 @@ class PartUtil:
     def get_disk_single_available_space_size(self,disk,part_type):
         '''return the max size for user to create a single partition,not used in the tree view list'''
         disk_space_info_tab=self.get_disk_free_space_info()
+        import math
         self.single_available_space_size=0
         if disk_space_info_tab.has_key(disk):
             disk_space_info_list=disk_space_info_tab[disk]
@@ -399,7 +400,7 @@ class PartUtil:
                         max_geo=geom
                     else:
                         continue
-                self.single_available_space_size=(max_geo.length*disk.device.sectorSize)/(1024*1024) 
+                self.single_available_space_size=math.floor((max_geo.length*disk.device.sectorSize)/(1024*1024))
                 return self.single_available_space_size
 
             elif part_type=="logical":
@@ -409,14 +410,14 @@ class PartUtil:
                         max_geo=geom
                     else:
                         continue
-                self.single_available_space_size=(max_geo.length*disk.device.sectorSize)/(1024*1024)
+                self.single_available_space_size=math.floor((max_geo.length*disk.device.sectorSize)/(1024*1024))
                 return self.single_available_space_size
     
             else:
-                # print "invalid part_type"
+                print "invalid part_type"
                 self.lu.do_log_msg(self.logger,"error","invalid part_type")
         else:
-            # print "cann't find disk in the disk_free_space_info"
+            print "cann't find disk in the disk_free_space_info"
             self.lu.do_log_msg(self.logger,"error","cann't find disk in the disk_free_space_info")
 
     def get_disk_free_geometry(self,disk,part_type,minlength):

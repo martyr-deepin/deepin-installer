@@ -63,10 +63,11 @@ class PartNew(Window):
         frame.add(self.part_type_label)
         self.new_part_table.attach(frame,0,1,0,1)
         self.new_part_table.attach(self.part_type_combo,1,2,0,1,xpadding=30)
-
+        self.part_type_combo.connect("item-selected",self.on_part_type_combo_selected)
 
         self.part_capacity_label=Label("新分区容量(MB):")
-        self.part_capacity_spin=SpinBox(200,100,1000,10,55)
+        self.part_capacity_spin=SpinBox(100,10,1000,10,55)
+
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
         frame.add(self.part_capacity_label)
@@ -141,8 +142,7 @@ class PartNew(Window):
             part_type="logical"
         else:
             # print "invalid part type"
-            part_type="primary"
-
+            part_type="logical"
         self.max_size=0
         self.max_size=self.part_util.get_disk_single_available_space_size(self.current_disk,part_type)
         return self.max_size
@@ -160,11 +160,10 @@ class PartNew(Window):
             print "need disable extend part type"
         if len(extend_list) > 1:
             print "error,should have only one extend partition"
-            
-    def limit_2added_part_size(self,part_type):
-        '''limit part size according to the part type:primary,extend,logical'''
-        part_type_dict={"":"primary","":"logical","":"extend"}
-        return self.part_util.get_disk_single_available_space_size(self.current_disk,part_type_dict[part_type])
+
+    def on_part_type_combo_selected(self,widget,event):
+        '''on part_type_combo_selected'''
+        self.part_capacity_spin.set_value(self.get_max_size())
 
 if __name__=="__main__":
 
