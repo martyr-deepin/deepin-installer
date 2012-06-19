@@ -272,29 +272,19 @@ class Part(gtk.VBox):
 
     def update_part_btn_box(self):
         '''when change disk,the partitions display changed'''
-        self.update_selected_disk_partitions()
-        self.partition_box=gtk.HBox()
-        self.partition_box.set_size_request(-1,35)
-        total_width=800
+        total_width=600
         total_length=self.selected_disk.device.length
+        partition_box=gtk.HBox()
+        partition_box.set_size_request(-1,35)
 
-        # for part in self.selected_disk_partitions:
-        #     part_btn=Button("B")
-        #     part_btn.set_label(part.path)
-        #     part_btn.min_width=total_width*((float)(part.geometry.length)/(float)(total_length))
-        #     #need consider the order of partitions
-        #     if part.type==0:
-        #         self.partition_box.pack_start(part_btn,False,False,1)
-        #     elif part.type==1:
-        #         self.partition_box.pack_start(part_btn,False,False,1)
-        #     else:
-        #         # print "extend,pass"
-        #         pass
-        #     part_btn.connect("clicked",self.on_part_btn_clicked)    
+        disk_part_itemlist=filter(lambda item:item[0].disk==self.selected_disk and item[0].type==0
+                                  or item[0].type==1,self.part_util.disk_partition_info_tab)
+        button_part_list=[]
+        for item in disk_part_itemlist:
+            button_part_list.append(item[0])
 
-        for part in filter(lambda part:part.type==0 or part.type==1,self.selected_disk_partitions):
-            
-            part_btn=Button("B")
+        for part in button_part_list:
+            part_btn=Button("Button")
             part_btn.set_label(part.path)
             width=total_width*((float)(part.geometry.length)/(float)(total_length))
             if width<10:
@@ -303,16 +293,10 @@ class Part(gtk.VBox):
                 hbox=gtk.HBox()
                 hbox.set_size_request((int)(width),30)
                 hbox.add(part_btn)
-                self.partition_box.pack_start(hbox,True,True,1)
+            partition_box.pack_start(hbox,True,True,1)
             part_btn.connect("clicked",self.on_part_btn_clicked)    
 
-        #     darea=gtk.DrawingArea()
-        #     darea.set_size_request(width,height)
-        #     gc=darea.get_style().fg_gc[gtk.STATE_NORMAL]
-        #     darea.window.draw_rectangle(gc,True,0,0,width,height)
-
-
-        switch_box(self.partition_btns_container_box,self.partition_box)    
+        switch_box(self.partition_btns_container_box,partition_box)    
         
     def init_part_listview_items(self):
         '''update listview_items,mostly used when change disk or first load'''
@@ -474,7 +458,7 @@ class Part(gtk.VBox):
 
         self.add_part_2listview(part_listview_item)
         self.update_selected_disk_partitions()
-
+        self.udpate_part_btn_box()
         # print self.part_util.get_disk_partitions(self.selected_disk)
         # self.add_part_2btn_box()
         # self.update_display_part_path()
@@ -528,7 +512,8 @@ class Part(gtk.VBox):
             else:
                 continue
         self.part_listview.select_to_prev_item()
-    
+        self.update_part_btn_box()
+
     def on_part_recovery_btn_clicked(self,widget):
         '''recovery part info to backup,consider frontend and backend'''
         self.update_part_btn_box()
@@ -544,3 +529,4 @@ class Part(gtk.VBox):
                 # self.part_listview_items.append(part_list_item)
         self.part_listview_items=self.init_part_listview_items()
         self.update_part_listview()
+        self.update_part_btn_box()
