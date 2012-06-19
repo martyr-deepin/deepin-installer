@@ -274,11 +274,14 @@ class Part(gtk.VBox):
     def init_part_btn_itemlist(self):
         '''update part_btn_itemlist for buttons box'''
         self.update_selected_disk()
-        disk_part_itemlist=filter(lambda item:item[0].disk==self.selected_disk and item[-1]!="delete" and 
-                                  item[0].type==0 or item[0].type==1,self.part_util.disk_partition_info_tab)
+        disk_part_itemlist=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.disk_partition_info_tab)
+        
         part_btn_itemlist=[]
         for item in disk_part_itemlist:
-            part_btn_itemlist.append(item[0])
+            if item[0].type==2 or item[-1]=="delete":
+                pass
+            else:
+                part_btn_itemlist.append(item[0])
         
         return part_btn_itemlist    
 
