@@ -297,6 +297,9 @@ class Part(gtk.VBox):
         for part in self.init_part_btn_itemlist():
             part_btn=Button("Button")
             part_btn.set_label(self.part_util.disk_part_display_path[self.selected_disk][part])
+            # part_btn.connect("clicked", lambda part_btn:self.on_part_btn_clicked(part_btn,part))    
+            
+            part_btn.connect("clicked",self.on_part_btn_clicked)    
             width=total_width*((float)(part.geometry.length)/(float)(total_length))
             if width<10:
                 pass
@@ -305,8 +308,7 @@ class Part(gtk.VBox):
                 hbox.set_size_request((int)(width),30)
                 hbox.add(part_btn)
                 self.partition_btn_box.pack_start(hbox,True,True,1)
-            part_btn.connect("clicked",self.on_part_btn_clicked)    
-        print "switch_box"    
+
         part_list_vbox.add(self.partition_btn_box)    
         switch_box(self.partition_btns_container_box,part_list_vbox)
 
@@ -403,12 +405,13 @@ class Part(gtk.VBox):
         self.update_part_btn_box()
         self.part_listview_items=self.init_part_listview_items()
         self.update_part_listview()
-    
-    def on_part_btn_clicked(self,widget):
+
+    def on_part_btn_clicked(self,part_btn):
         '''react to listview'''
-        print "btn clicked"
-        self.selected_part_btn=widget
-        print widget.label
+        self.part_listview.clear_highlight()
+        for item in self.part_listview_items:
+            if item.part_path==part_btn.label:
+                self.part_listview.set_highlight(item)
 
     def on_part_item_clicked(self,arg1,arg2,arg3,arg4,arg5):
         '''one part clicked'''
