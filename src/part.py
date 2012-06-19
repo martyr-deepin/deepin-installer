@@ -296,7 +296,7 @@ class Part(gtk.VBox):
         container_remove_all(self.partition_btn_box)
         for part in self.init_part_btn_itemlist():
             part_btn=Button("Button")
-            part_btn.set_label(part.path)
+            part_btn.set_label(self.part_util.disk_part_display_path[self.selected_disk][part])
             width=total_width*((float)(part.geometry.length)/(float)(total_length))
             if width<10:
                 pass
