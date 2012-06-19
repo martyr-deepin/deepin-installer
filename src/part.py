@@ -28,6 +28,7 @@ from dtk.ui.button import Button,CheckButton
 from dtk.ui.listview import ListView
 from dtk.ui.frame import HorizontalFrame
 from dtk.ui.scrolled_window import ScrolledWindow
+from dtk.ui.utils import container_remove_all
 from part_list_item import PartListItem
 from part_util import global_part_util
 from ui_utils import switch_box
@@ -270,20 +271,27 @@ class Part(gtk.VBox):
         '''update the item of choose disk'''
         self.update_selected_disk()
 
+    def init_part_btn_itemlist(self):
+        '''update part_btn_itemlist for buttons box'''
+        self.update_selected_disk()
+        disk_part_itemlist=filter(lambda item:item[0].disk==self.selected_disk and item[-1]!="delete" and 
+                                  item[0].type==0 or item[0].type==1,self.part_util.disk_partition_info_tab)
+        part_btn_itemlist=[]
+        for item in disk_part_itemlist:
+            part_btn_itemlist.append(item[0])
+        
+        return part_btn_itemlist    
+
     def update_part_btn_box(self):
         '''when change disk,the partitions display changed'''
+        part_list_vbox=gtk.VBox()
+        part_list_vbox.set_size_request(-1,35)
+
+        self.partition_btn_box=gtk.HBox()
         total_width=600
         total_length=self.selected_disk.device.length
-        partition_box=gtk.HBox()
-        partition_box.set_size_request(-1,35)
-
-        disk_part_itemlist=filter(lambda item:item[0].disk==self.selected_disk and item[0].type==0
-                                  or item[0].type==1,self.part_util.disk_partition_info_tab)
-        button_part_list=[]
-        for item in disk_part_itemlist:
-            button_part_list.append(item[0])
-
-        for part in button_part_list:
+        container_remove_all(self.partition_btn_box)
+        for part in self.init_part_btn_itemlist():
             part_btn=Button("Button")
             part_btn.set_label(part.path)
             width=total_width*((float)(part.geometry.length)/(float)(total_length))
@@ -293,11 +301,12 @@ class Part(gtk.VBox):
                 hbox=gtk.HBox()
                 hbox.set_size_request((int)(width),30)
                 hbox.add(part_btn)
-            partition_box.pack_start(hbox,True,True,1)
+                self.partition_btn_box.pack_start(hbox,True,True,1)
             part_btn.connect("clicked",self.on_part_btn_clicked)    
+        print "switch_box"    
+        part_list_vbox.add(self.partition_btn_box)    
+        switch_box(self.partition_btns_container_box,part_list_vbox)
 
-        switch_box(self.partition_btns_container_box,partition_box)    
-        
     def init_part_listview_items(self):
         '''update listview_items,mostly used when change disk or first load'''
         self.update_selected_disk()
@@ -371,7 +380,7 @@ class Part(gtk.VBox):
         self.part_listview_items=self.init_part_listview_items()
         self.update_part_listview()
 
-    def delete_part_form_btn_box(self):
+    def delete_part_from_btn_box(self):
         '''delete part from btn box'''
         #need do real delete operation first
         self.update_part_btn_box()
@@ -441,6 +450,7 @@ class Part(gtk.VBox):
         part_type=part_type_dict[part_type]
 
         part_capacity=self.part_new.part_capacity_spin.get_value()
+        print part_capacity
         part_fs=self.part_new.part_fs_combo.get_current_item().get_label()
         part_format=True
         part_format_str="True"
@@ -458,7 +468,7 @@ class Part(gtk.VBox):
 
         self.add_part_2listview(part_listview_item)
         self.update_selected_disk_partitions()
-        self.udpate_part_btn_box()
+        self.update_part_btn_box()
         # print self.part_util.get_disk_partitions(self.selected_disk)
         # self.add_part_2btn_box()
         # self.update_display_part_path()
