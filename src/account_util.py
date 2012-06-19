@@ -23,22 +23,22 @@
 
 import os
 from basic_utils import run_os_command,get_os_command_output
-from setupinfo_msg_ui import SetupInfoMsgUI
-from user_ui import UserUI
-
 
 class CreateAccount:
     '''create user account,home,etc'''
     def __init__(self):
         ''' get user account info from setupinfo_ui'''
-        self.account_info=UserUI().get_account_form()
-        self.username=self.account_info['username']
-        self.hostname=self.account_info['hostname']
-        self.password=self.account_info['password']
-        self.confirm_password=self.account_info['confirm_password']
+        self.username=""
+        self.hostname=""
+        self.password=""
+        self.confirm_password=""
         self.system_user_list=[]
         self.login_type="password"#autologin,password
         self.encrypt_password=""
+        self.username_error_msg=""
+        self.password_error_msg=""
+        self.confirm_password_error_msg=""
+        self.hostname_error_msg=""
 
     def create_user(self):
         ''' use account info to create username ,password ,user group,etc,need to consider chroot '''
@@ -68,15 +68,15 @@ class CreateAccount:
         for user in userlist_data:
             username=user.split(":")[0]
             self.system_user_list.append(username)
-        # print self.system_user_list    
         return self.system_user_list    
 
     def forbid_create_exist_user(self):
         '''forbidden to use the name owened by system'''
         for username in self.get_system_user_list():
-            if self.username.startswith(username):
-                #here need add UI notify
-                print "username confilct"
+            # if self.username.startswith(username):
+            #     print "username confilct"
+            if self.username==username:
+                self.username_error_msg="username confilct"
             else:
                 continue
 
@@ -87,50 +87,40 @@ class CreateAccount:
 
     def assert_user_name(self):
         '''check user name length,validation,can't use root to build account'''
-        length=self.username.length()
+        length=len(self.username)
         if(length<5):
-            SetupInfoMsgUI.set_msg_label_text("用户名过短")
-            SetupInfoMsgUI.set_msg_label_show(True)
+            self.username_error_msg="user name too short"
         elif(length>15):
-            SetupInfoMsgUI.set_msg_label_text("用户名过长")
-            SetupInfoMsgUI.set_msg_label_show(True)
-            
+            self.username_error_msg="user name too long"
         self.forbid_create_exist_user()    
-        # if(self.username.startswith("root")):
-        #     SetupInfoMsgUI.set_msg_label_text("请使用其它用户名")
-        #     SetupInfoMsgUI.set_msg_label_show(True)
 
     def assert_user_password(self):
         '''check user password length,validation,etc'''
-        length=self.password.length()
+        length=len(self.password)
         if(length<5):
-            SetupInfoMsgUI.set_msg_label_text("密码太短")
-            SetupInfoMsgUI.set_msg_label_show(True)
+            self.password_error_msg="password too short"
         elif(length>15):
-            SetupInfoMsgUI.set_msg_label_text("密码太长")
-            SetupInfoMsgUI.set_msg_label_show(True)
-        if(self.password!=self.confirm_password):
-            SetupInfoMsgUI.set_msg_label_text("密码与确认密码不一致")
-            SetupInfoMsgUI.set_msg_label_show(True)
+            self.password_error_msg="password too long"
         if (self.username==self.password):
-            SetupInfoMsgUI.set_msg_label_text("用户名与密码不能相同")
-            SetupInfoMsgUI.set_msg_label_show(True)
+            self.password_error_msg="cann't set password same to username"
+
+    def assert_user_confirm_password(self):
+        '''assert confirm password equal to password'''
+        if (self.password!=self.confirm_password):
+            self.confirm_password_error_msg="password!=confirm_password"
 
     def generate_hostname(self):
         '''generate hostname according to username'''
         self.hostname=self.username+"-deepin"
-        #need set reaction to UI when user enter his username
         return self.hostname
 
     def assert_hostname(self):
         '''check hostname length,validation,etc'''
-        length=self.hostname.length()
+        length=len(self.hostname)
         if(length<5):
-            SetupInfoMsgUI.set_msg_label_text("主机名过短")
-            SetupInfoMsgUI.set_msg_label_show(True)
+            self.hostname_error_msg="hostname too short"
         elif(length>15):
-            SetupInfoMsgUI.set_msg_label_text("主机名过长")
-            SetupInfoMsgUI.set_msg_label_show(True)
+            self.hostname_error_msg="hostname too long"
 
     def set_host_resolve(self):
         '''set host resolve'''
@@ -171,6 +161,7 @@ class CreateAccount:
         else:
             print "invalid login_type"
 
+account_util=CreateAccount()
 
 if __name__=="__main__":
     ca=CreateAccount()

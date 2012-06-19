@@ -63,7 +63,6 @@ class Part(gtk.VBox):
         choose_disk_box.pack_start(self.choose_disk_combo,True,True,4)
 
         #disk partitions button
-        # self.selected_disk_partitions=self.part_util.get_disk_partitions(self.selected_disk)
         self.partition_btns_container_box=gtk.VBox()
         self.selected_part_btn=None
         self.update_part_btn_box()
@@ -276,7 +275,7 @@ class Part(gtk.VBox):
         self.update_selected_disk_partitions()
         self.partition_box=gtk.HBox()
         self.partition_box.set_size_request(-1,35)
-        total_width=1000 
+        total_width=600
         total_length=self.selected_disk.device.length
 
         for part in self.selected_disk_partitions:
@@ -292,7 +291,18 @@ class Part(gtk.VBox):
                 # print "extend,pass"
                 pass
             part_btn.connect("clicked",self.on_part_btn_clicked)    
-            
+
+        # for part in self.selected_disk_partitions:
+        #     width=int(total_width*((float)(part.geometry.length)/(float)(total_length)))
+        #     height=30
+        #     print "width:"
+        #     print width
+        #     darea=gtk.DrawingArea()
+        #     darea.set_size_request(width,height)
+        #     gc=darea.get_style().fg_gc[gtk.STATE_NORMAL]
+        #     darea.window.draw_rectangle(gc,True,0,0,width,height)
+
+
         switch_box(self.partition_btns_container_box,self.partition_box)    
         
     def init_part_listview_items(self):
@@ -309,7 +319,6 @@ class Part(gtk.VBox):
             else:
                 # part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),"8G",item[2])
                 part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),str(item[3]),item[2])
-    
                 # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
                 part_listview_items.append(part_list_item)
 
