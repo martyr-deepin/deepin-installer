@@ -307,10 +307,8 @@ class Part(gtk.VBox):
             if item[-1]=="delete":
                 pass
             else:
-                #part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
-                part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),"8G",item[2])
-    
-                # part_list_item=PartListItem(str(self.disk_part_display_path[self.selected_disk][item[0]]),str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
+                # part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),"8G",item[2])
+                part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),str(item[3]),item[2])
     
                 # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
                 part_listview_items.append(part_list_item)
@@ -334,7 +332,7 @@ class Part(gtk.VBox):
              ]
             )
         self.part_listview.set_expand_column(1)
-        self.part_listview.add_titles(["分区","挂载点","文件系统","格式化","总容量","类型"])
+        self.part_listview.add_titles(["分区","挂载点","文件系统","格式化","总容量(MB)","类型"])
         if len(self.part_listview_items)==0:
             pass
         else:
