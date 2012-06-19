@@ -89,38 +89,41 @@ class CreateAccount:
         '''check user name length,validation,can't use root to build account'''
         length=len(self.username)
         if(length<5):
-            self.username_error_msg="user name too short"
+            self.username_error_msg="用户名长度太短"
         elif(length>15):
-            self.username_error_msg="user name too long"
+            self.username_error_msg="用户名长度太长"
         self.forbid_create_exist_user()    
 
     def assert_user_password(self):
         '''check user password length,validation,etc'''
         length=len(self.password)
         if(length<5):
-            self.password_error_msg="password too short"
+            self.password_error_msg="密码太短"
         elif(length>15):
-            self.password_error_msg="password too long"
+            self.password_error_msg="密码太长"
         if (self.username==self.password):
-            self.password_error_msg="cann't set password same to username"
+            self.password_error_msg="密码不能与用户名一致"
 
     def assert_user_confirm_password(self):
         '''assert confirm password equal to password'''
         if (self.password!=self.confirm_password):
-            self.confirm_password_error_msg="password!=confirm_password"
+            self.confirm_password_error_msg="密码与确认密码不一致"
 
     def generate_hostname(self):
         '''generate hostname according to username'''
-        self.hostname=self.username+"-deepin"
+        if len(self.username)==0:
+            self.hostname=""
+        else:
+            self.hostname=self.username+"-deepin"
         return self.hostname
 
     def assert_hostname(self):
         '''check hostname length,validation,etc'''
         length=len(self.hostname)
         if(length<5):
-            self.hostname_error_msg="hostname too short"
+            self.hostname_error_msg="计算机名长度太短"
         elif(length>15):
-            self.hostname_error_msg="hostname too long"
+            self.hostname_error_msg="计算机名长度太长"
 
     def set_host_resolve(self):
         '''set host resolve'''

@@ -59,6 +59,7 @@ class Account(gtk.VBox):
         self.hostname_entry.entry.connect("press-return",self.on_hostname_return)
         self.hostname_entry.entry.connect("focus-in-event",self.on_hostname_focus_in)
         self.hostname_entry.entry.connect("focus-out-event",self.on_hostname_focus_out)
+        self.hostname_entry.entry.connect("changed",self.on_hostname_changed)
 
         self.password_label=Label("密         码：")
         self.password_entry=TextEntry("请输入密码")
@@ -70,6 +71,7 @@ class Account(gtk.VBox):
         self.password_entry.entry.connect("press-return",self.on_password_return)
         self.password_entry.entry.connect("focus-in-event",self.on_password_focus_in)
         self.password_entry.entry.connect("focus-out-event",self.on_password_focus_out)
+        self.password_entry.entry.connect("changed",self.on_password_changed)
 
         self.confirm_password_label=Label("确认密码：")
         self.confirm_password_entry=TextEntry("请输入确认密码")
@@ -81,6 +83,7 @@ class Account(gtk.VBox):
         self.confirm_password_entry.entry.connect("press-return",self.on_confirm_password_return)
         self.confirm_password_entry.entry.connect("focus-in-event",self.on_confirm_password_focus_in)
         self.confirm_password_entry.entry.connect("focus-out-event",self.on_confirm_password_focus_out)
+        self.confirm_password_entry.entry.connect("changed",self.on_confirm_password_changed)
 
 
         self.auto_login=RadioButton("自动登录")
@@ -148,6 +151,9 @@ class Account(gtk.VBox):
         '''on_username_focus_out'''
         self.on_hostname_return(widget)
 
+    def on_hostname_changed(self,widget,event):
+        account_util.hostname=self.hostname_entry.get_text()
+
     def on_password_return(self,widget):
         '''on_password_return'''
         account_util.assert_user_password()
@@ -160,6 +166,9 @@ class Account(gtk.VBox):
     def on_password_focus_out(self,widget,event):
         self.on_password_return(widget)
 
+    def on_password_changed(self,widget,event):
+        account_util.password=self.password_entry.get_text()
+
     def on_confirm_password_return(self,widget):
         account_util.assert_user_confirm_password()
         self.display_error_msg(account_util.confirm_password_error_msg)
@@ -171,6 +180,8 @@ class Account(gtk.VBox):
     def on_confirm_password_focus_out(self,widget,event):
         self.on_confirm_password_return(widget)
 
+    def on_confirm_password_changed(self,widget,event):
+        account_util.confirm_password=self.confirm_password_entry.get_text()
 
 if __name__=="__main__":
     pass

@@ -275,28 +275,37 @@ class Part(gtk.VBox):
         self.update_selected_disk_partitions()
         self.partition_box=gtk.HBox()
         self.partition_box.set_size_request(-1,35)
-        total_width=600
+        total_width=800
         total_length=self.selected_disk.device.length
 
-        for part in self.selected_disk_partitions:
+        # for part in self.selected_disk_partitions:
+        #     part_btn=Button("B")
+        #     part_btn.set_label(part.path)
+        #     part_btn.min_width=total_width*((float)(part.geometry.length)/(float)(total_length))
+        #     #need consider the order of partitions
+        #     if part.type==0:
+        #         self.partition_box.pack_start(part_btn,False,False,1)
+        #     elif part.type==1:
+        #         self.partition_box.pack_start(part_btn,False,False,1)
+        #     else:
+        #         # print "extend,pass"
+        #         pass
+        #     part_btn.connect("clicked",self.on_part_btn_clicked)    
+
+        for part in filter(lambda part:part.type==0 or part.type==1,self.selected_disk_partitions):
+            
             part_btn=Button("B")
             part_btn.set_label(part.path)
-            part_btn.min_width=total_width*((float)(part.geometry.length)/(float)(total_length))
-            #need consider the order of partitions
-            if part.type==0:
-                self.partition_box.pack_start(part_btn,False,False,1)
-            elif part.type==1:
-                self.partition_box.pack_start(part_btn,False,False,1)
-            else:
-                # print "extend,pass"
+            width=total_width*((float)(part.geometry.length)/(float)(total_length))
+            if width<10:
                 pass
+            else:
+                hbox=gtk.HBox()
+                hbox.set_size_request((int)(width),30)
+                hbox.add(part_btn)
+                self.partition_box.pack_start(hbox,True,True,1)
             part_btn.connect("clicked",self.on_part_btn_clicked)    
 
-        # for part in self.selected_disk_partitions:
-        #     width=int(total_width*((float)(part.geometry.length)/(float)(total_length)))
-        #     height=30
-        #     print "width:"
-        #     print width
         #     darea=gtk.DrawingArea()
         #     darea.set_size_request(width,height)
         #     gc=darea.get_style().fg_gc[gtk.STATE_NORMAL]
