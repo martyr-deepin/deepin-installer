@@ -28,6 +28,7 @@ from dtk.ui.label import Label
 from dtk.ui.titlebar import Titlebar
 from dtk.ui.window import Window
 from dtk.ui.button import Button
+
 from part_util import global_part_util
 
 class PartEdit(Window):
@@ -48,17 +49,23 @@ class PartEdit(Window):
 
 
         self.part_mp_label=Label("挂载点：")
-        self.part_mp_combo=ComboBox([("/",1),("/home",2),("/swap",3)],100)
+        self.part_mp_combo=ComboBox([("/",1),("/home",2),("/swap",3)])
         self.part_mp_combo.select_first_item()
         self.edit_part_table.attach(self.part_mp_label,0,1,0,1,xpadding=30)
-        self.edit_part_table.attach(self.part_mp_combo,1,2,0,1,xpadding=15)
+        self.edit_part_table.attach(self.part_mp_combo,1,2,0,1,xpadding=20)
 
 
         self.part_fs_label=Label("用    于：")
-        self.part_fs_combo=ComboBox([("ext4",1),("ext3",2),("ext2",3)],100)
+        self.part_fs_combo=ComboBox([("ext4",1),("ext3",2),("ext2",3)])
+        # self.part_fs_combo.droplist.item_padding_left=30
+        # self.part_fs_combo.droplist.item_padding_right=3
+        # self.part_fs_combo.droplist.item_padding_y=100
+        # self.part_fs_combo.width=500
+        # self.part_fs_combo.droplist.x_padding=30
+        # self.part_fs_combo.droplist.max_width=300
         self.part_fs_combo.select_first_item()
         self.edit_part_table.attach(self.part_fs_label,0,1,1,2,xpadding=30)
-        self.edit_part_table.attach(self.part_fs_combo,1,2,1,2,xpadding=15)
+        self.edit_part_table.attach(self.part_fs_combo,1,2,1,2,xpadding=20)
 
         self.edit_ok_btn=Button("确定")
         self.edit_cancel_btn=Button("取消")

@@ -55,7 +55,7 @@ class Part(gtk.VBox):
         for (index,disk) in enumerate(disk_info.keys()):
             disk_combo_items.append((disk,index))
 
-        self.choose_disk_combo=ComboBox(disk_combo_items,100)
+        self.choose_disk_combo=ComboBox(disk_combo_items)
 
         self.choose_disk_combo.select_first_item()
         self.choose_disk_combo.connect("item-selected",self.on_disk_combo_selected)

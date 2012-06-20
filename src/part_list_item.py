@@ -168,6 +168,7 @@ class PartListItem(gobject.GObject):
             self.format=True
         else:
             self.format=False
+
 def render_text(cr, rect, content, align=ALIGN_START, font_size=DEFAULT_FONT_SIZE):
     '''Render text.'''
     draw_text(cr, content, 
