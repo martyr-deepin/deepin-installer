@@ -23,7 +23,7 @@
 
 import gtk
 
-from dtk.ui.combo import ComboBox,ComboBoxItem
+from dtk.ui.combo import ComboBox
 from dtk.ui.label import Label
 from dtk.ui.titlebar import Titlebar
 from dtk.ui.window import Window
@@ -48,23 +48,26 @@ class PartEdit(Window):
 
 
         self.part_mp_label=Label("挂载点：")
-        self.part_mp_combo=ComboBox()
-        part_mp_root=ComboBoxItem("/",None)
-        part_mp_home=ComboBoxItem("/home",None)
-        part_mp_swap=ComboBoxItem("/swap",None)
-        self.part_mp_combo.set_select_index(0)
-        self.part_mp_combo.set_items([part_mp_root,part_mp_home,part_mp_swap])
+        self.part_mp_combo=ComboBox([("/",1),("/home",2),("/swap",3)],100)
+        # part_mp_root=ComboBoxItem("/",None)
+        # part_mp_home=ComboBoxItem("/home",None)
+        # part_mp_swap=ComboBoxItem("/swap",None)
+        # self.part_mp_combo.set_select_index(0)
+        self.part_mp_combo.select_first_item()
+        # self.part_mp_combo.set_items([part_mp_root,part_mp_home,part_mp_swap])
         self.edit_part_table.attach(self.part_mp_label,0,1,0,1,xpadding=30)
         self.edit_part_table.attach(self.part_mp_combo,1,2,0,1,xpadding=15)
 
 
         self.part_fs_label=Label("用    于：")
-        self.part_fs_combo=ComboBox()
-        self.part_fs_ext4=ComboBoxItem("ext4",None)
-        self.part_fs_ext3=ComboBoxItem("ext3",None)
-        self.part_fs_ext2=ComboBoxItem("ext2",None)
-        self.part_fs_combo.set_select_index(0)
-        self.part_fs_combo.set_items([self.part_fs_ext4,self.part_fs_ext3,self.part_fs_ext2])
+        self.part_fs_combo=ComboBox([("ext4",1),("ext3",2),("ext2",3)],100)
+        # self.part_fs_combo=ComboBox()
+        # self.part_fs_ext4=ComboBoxItem("ext4",None)
+        # self.part_fs_ext3=ComboBoxItem("ext3",None)
+        # self.part_fs_ext2=ComboBoxItem("ext2",None)
+        # self.part_fs_combo.set_select_index(0)
+        self.part_fs_combo.select_first_item()
+        # self.part_fs_combo.set_items([self.part_fs_ext4,self.part_fs_ext3,self.part_fs_ext2])
         self.edit_part_table.attach(self.part_fs_label,0,1,1,2,xpadding=30)
         self.edit_part_table.attach(self.part_fs_combo,1,2,1,2,xpadding=15)
 

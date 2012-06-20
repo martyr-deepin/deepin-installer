@@ -23,7 +23,7 @@
 
 import gtk
 from dtk.ui.label import Label
-from dtk.ui.combo import ComboBox,ComboBoxItem
+from dtk.ui.combo import ComboBox
 from dtk.ui.button import Button,CheckButton
 from dtk.ui.listview import ListView
 from dtk.ui.frame import HorizontalFrame
@@ -51,12 +51,13 @@ class Part(gtk.VBox):
         choose_disk_box=gtk.HBox()
         choose_disk_label=Label("选择硬盘:    ")
         disk_info=self.part_util.get_install_device_info()
-        self.choose_disk_combo=ComboBox()
-        for disk in disk_info.keys():
-            disk_combo_item=ComboBoxItem(disk,None)
-            self.choose_disk_combo.add_item(disk_combo_item)
+        disk_combo_items=[]
+        for (index,disk) in enumerate(disk_info.keys()):
+            disk_combo_items.append((disk,index))
 
-        self.choose_disk_combo.set_select_index(0)    
+        self.choose_disk_combo=ComboBox(disk_combo_items,100)
+
+        self.choose_disk_combo.select_first_item()
         # self.selected_disk=self.part_util.get_disk_from_path("/dev/sda")
         self.choose_disk_combo.connect("item-selected",self.on_disk_combo_selected)
         self.update_selected_disk()
@@ -115,7 +116,7 @@ class Part(gtk.VBox):
 
     def update_selected_disk(self):
         '''changed the current used and displayed disk'''
-        self.selected_disk=self.part_util.get_disk_from_path(self.choose_disk_combo.get_current_item().get_label())
+        self.selected_disk=self.part_util.get_disk_from_path(self.choose_disk_combo.get_current_item()[0])
         return self.selected_disk
 
     def update_selected_disk_partitions(self):
@@ -449,7 +450,8 @@ class Part(gtk.VBox):
         '''confirm to add new partition'''
         disk_path=self.selected_disk.device.path
         
-        part_type=self.part_new.part_type_combo.get_current_item().get_label()
+        # part_type=self.part_new.part_type_combo.get_current_item().get_label()
+        part_type=self.part_new.part_type_combo.get_current_item()[0]
         part_type_dict={"主分区":"primary","扩展分区":"extend","逻辑分区":"logical",
                         "primary":"primary","logical":"logical","extend":"extend"}
 
@@ -457,12 +459,15 @@ class Part(gtk.VBox):
 
         part_capacity=self.part_new.part_capacity_spin.get_value()
         print part_capacity
-        part_fs=self.part_new.part_fs_combo.get_current_item().get_label()
+        # part_fs=self.part_new.part_fs_combo.get_current_item().get_label()
+        part_fs=self.part_new.part_fs_combo.get_current_item()[0]
         part_format=True
         part_format_str="True"
         part_name=None
-        part_location=self.part_new.part_location_combo.get_current_item().get_label()
-        part_mp=self.part_new.part_mp_combo.get_current_item().get_label()
+        # part_location=self.part_new.part_location_combo.get_current_item().get_label()
+        part_location=self.part_new.part_location_combo.get_current_item()[0]
+        # part_mp=self.part_new.part_mp_combo.get_current_item().get_label()
+        part_mp=self.part_new.part_mp_combo.get_current_item()[0]
         self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
         part_obj=self.part_util.to_add_partition
 
@@ -492,8 +497,11 @@ class Part(gtk.VBox):
     def on_part_edit_ok_btn_clicked(self,widget):
         '''confirm to edit partition'''
         #need also alter info in the backend table,
-        part_edit_fs=self.part_edit.part_fs_combo.get_current_item().get_label()
-        part_edit_mp=self.part_edit.part_mp_combo.get_current_item().get_label()
+        # part_edit_fs=self.part_edit.part_fs_combo.get_current_item().get_label()
+        # part_edit_mp=self.part_edit.part_mp_combo.get_current_item().get_label()
+
+        part_edit_fs=self.part_edit.part_fs_combo.get_current_item()[0]
+        part_edit_mp=self.part_edit.part_mp_combo.get_current_item()[0]
 
         for item in self.part_util.disk_partition_info_tab:
             if item[0]==self.current_part:
@@ -532,7 +540,6 @@ class Part(gtk.VBox):
 
     def on_part_recovery_btn_clicked(self,widget):
         '''recovery part info to backup,consider frontend and backend'''
-        self.update_part_btn_box()
         self.part_util.recovery_disk_partition_info_tab(self.selected_disk)
         self.part_listview.clear()
 

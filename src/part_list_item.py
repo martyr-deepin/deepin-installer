@@ -26,7 +26,7 @@ import gobject
 from dtk.ui.constant import ALIGN_START
 from dtk.ui.utils import get_content_size
 from dtk.ui.constant import DEFAULT_FONT_SIZE,ALIGN_END
-from dtk.ui.draw import draw_font,draw_pixbuf
+from dtk.ui.draw import draw_text,draw_pixbuf
 from dtk.ui.theme import ui_theme
 from part_util import global_part_util
 from dtk.ui.button import CheckButton
@@ -168,12 +168,13 @@ class PartListItem(gobject.GObject):
             self.format=True
         else:
             self.format=False
-
 def render_text(cr, rect, content, align=ALIGN_START, font_size=DEFAULT_FONT_SIZE):
     '''Render text.'''
-    draw_font(cr, content, font_size, 
-              ui_theme.get_color("listItemText").get_color(), 
-              rect.x, rect.y, rect.width, rect.height, align)
+    draw_text(cr, content, 
+                rect.x, rect.y, rect.width, rect.height,
+                font_size, 
+                ui_theme.get_color("listItemText").get_color(), 
+                alignment=align)
     
 def render_image(cr, rect, image_path, x, y):
     '''Render image.'''

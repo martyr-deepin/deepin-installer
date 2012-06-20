@@ -23,7 +23,7 @@
 
 import gtk
 
-from dtk.ui.combo import ComboBox,ComboBoxItem
+from dtk.ui.combo import ComboBox
 from dtk.ui.label import Label
 from dtk.ui.titlebar import Titlebar
 from dtk.ui.window import Window
@@ -51,12 +51,13 @@ class PartNew(Window):
 
 
         self.part_type_label=Label("新分区类型：")
-        self.part_type_combo=ComboBox()
-        self.part_type_primary=ComboBoxItem("主分区",None)
-        self.part_type_extended=ComboBoxItem("逻辑分区",None)
-        self.part_type_logical=ComboBoxItem("扩展分区",None)
-        self.part_type_combo.set_select_index(0)
-        self.part_type_combo.set_items([self.part_type_primary,self.part_type_extended,self.part_type_logical])
+        self.part_type_combo=ComboBox([("主分区",1),("扩展分区",2),("逻辑分区",3)],100)
+        # self.part_type_primary=ComboBoxItem("主分区",None)
+        # self.part_type_extended=ComboBoxItem("逻辑分区",None)
+        # self.part_type_logical=ComboBoxItem("扩展分区",None)
+        self.part_type_combo.select_first_item()
+        # self.part_type_combo.set_select_index(0)
+        # self.part_type_combo.set_items([self.part_type_primary,self.part_type_extended,self.part_type_logical])
         self.limit_2added_part_type()
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
@@ -77,11 +78,12 @@ class PartNew(Window):
 
 
         self.part_location_label=Label("新分区位置:")
-        self.part_location_combo=ComboBox()
-        self.part_location_begin=ComboBoxItem("起始")
-        self.part_location_end=ComboBoxItem("结束")
-        self.part_location_combo.set_select_index(0)
-        self.part_location_combo.set_items([self.part_location_begin,self.part_location_end])
+        self.part_location_combo=ComboBox([("起始",1),("结束",2)],100)
+        # self.part_location_begin=ComboBoxItem("起始")
+        # self.part_location_end=ComboBoxItem("结束")
+        # self.part_location_combo.set_select_index(0)
+        self.part_location_combo.select_first_item()
+        # self.part_location_combo.set_items([self.part_location_begin,self.part_location_end])
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
         frame.add(self.part_location_label)
@@ -90,12 +92,13 @@ class PartNew(Window):
 
 
         self.part_mp_label=Label("挂    载    点：")
-        self.part_mp_combo=ComboBox()
-        part_mp_root=ComboBoxItem("/",None)
-        part_mp_home=ComboBoxItem("/home",None)
-        part_mp_swap=ComboBoxItem("/swap",None)
-        self.part_mp_combo.set_select_index(0)
-        self.part_mp_combo.set_items([part_mp_root,part_mp_home,part_mp_swap])
+        self.part_mp_combo=ComboBox([("/",1),("/home",2),("/swap",3)],100)
+        # part_mp_root=ComboBoxItem("/",None)
+        # part_mp_home=ComboBoxItem("/home",None)
+        # part_mp_swap=ComboBoxItem("/swap",None)
+        # self.part_mp_combo.set_select_index(0)
+        self.part_mp_combo.select_first_item()
+        # self.part_mp_combo.set_items([part_mp_root,part_mp_home,part_mp_swap])
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
         frame.add(self.part_mp_label)
@@ -104,12 +107,13 @@ class PartNew(Window):
 
 
         self.part_fs_label=Label("用              于：")
-        self.part_fs_combo=ComboBox()
-        self.part_fs_ext4=ComboBoxItem("ext4",None)
-        self.part_fs_ext3=ComboBoxItem("ext3",None)
-        self.part_fs_ext2=ComboBoxItem("ext2",None)
-        self.part_fs_combo.set_select_index(0)
-        self.part_fs_combo.set_items([self.part_fs_ext4,self.part_fs_ext3,self.part_fs_ext2])
+        self.part_fs_combo=ComboBox([("ext4",1),("ext3",2),("ext2",3)],100)
+        # self.part_fs_ext4=ComboBoxItem("ext4",None)
+        # self.part_fs_ext3=ComboBoxItem("ext3",None)
+        # self.part_fs_ext2=ComboBoxItem("ext2",None)
+        # self.part_fs_combo.set_select_index(0)
+        self.part_fs_combo.select_first_item()
+        # self.part_fs_combo.set_items([self.part_fs_ext4,self.part_fs_ext3,self.part_fs_ext2])
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
         frame.add(self.part_fs_label)
@@ -133,7 +137,8 @@ class PartNew(Window):
 
     def get_max_size(self):
         '''return max size user can create with the given part type'''
-        part_type=self.part_type_combo.get_current_item().get_label()
+        # part_type=self.part_type_combo.get_current_item().get_label()
+        part_type=self.part_type_combo.get_current_item()[0]
         if part_type=="主分区":
             part_type="primary"
         elif part_type=="扩展分区":
@@ -161,7 +166,7 @@ class PartNew(Window):
         if len(extend_list) > 1:
             print "error,should have only one extend partition"
 
-    def on_part_type_combo_selected(self,widget,event):
+    def on_part_type_combo_selected(self,arg1,arg2,arg3,arg4):
         '''on part_type_combo_selected'''
         ava_size=int(self.get_max_size())
         # self.part_capacity_spin.set_value(ava_size)
