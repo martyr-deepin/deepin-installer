@@ -58,7 +58,6 @@ class Part(gtk.VBox):
         self.choose_disk_combo=ComboBox(disk_combo_items,100)
 
         self.choose_disk_combo.select_first_item()
-        # self.selected_disk=self.part_util.get_disk_from_path("/dev/sda")
         self.choose_disk_combo.connect("item-selected",self.on_disk_combo_selected)
         self.update_selected_disk()
         choose_disk_box.pack_start(choose_disk_label,True,True,4)
@@ -373,10 +372,6 @@ class Part(gtk.VBox):
         '''add new added partition to listview'''
         # need do autually add operation first
         part_listview_items=[]
-        # part_listview_item1=PartListItem("/dev/hda1","ext4","/test","True","8G","4G","primary")
-        # part_listview_item2=PartListItem("/dev/hda2","ext4","/test","True","8G","4G","primary")
-        # part_listview_items.append(part_listview_item1)
-        # part_listview_items.append(part_listview_item2)
         part_listview_items.append(part_listview_item)
         self.part_listview.add_items(part_listview_items)
 
@@ -400,7 +395,7 @@ class Part(gtk.VBox):
         pass
 
 #below comes directly operations by UI
-    def on_disk_combo_selected(self,widget,event):
+    def on_disk_combo_selected(self,widget,event,arg3,arg4):
         '''change disk,react to partitions display'''
         self.selected_disk=self.update_selected_disk()
         self.update_part_btn_box()
@@ -450,7 +445,6 @@ class Part(gtk.VBox):
         '''confirm to add new partition'''
         disk_path=self.selected_disk.device.path
         
-        # part_type=self.part_new.part_type_combo.get_current_item().get_label()
         part_type=self.part_new.part_type_combo.get_current_item()[0]
         part_type_dict={"主分区":"primary","扩展分区":"extend","逻辑分区":"logical",
                         "primary":"primary","logical":"logical","extend":"extend"}
@@ -459,30 +453,21 @@ class Part(gtk.VBox):
 
         part_capacity=self.part_new.part_capacity_spin.get_value()
         print part_capacity
-        # part_fs=self.part_new.part_fs_combo.get_current_item().get_label()
         part_fs=self.part_new.part_fs_combo.get_current_item()[0]
         part_format=True
         part_format_str="True"
         part_name=None
-        # part_location=self.part_new.part_location_combo.get_current_item().get_label()
         part_location=self.part_new.part_location_combo.get_current_item()[0]
-        # part_mp=self.part_new.part_mp_combo.get_current_item().get_label()
         part_mp=self.part_new.part_mp_combo.get_current_item()[0]
         self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
         part_obj=self.part_util.to_add_partition
 
         self.get_new_add_part_path(part_obj)
-        # part_path=self.generate_disk_part_path(part_type)
-        # self.part_util.disk_part_display_path[self.selected_disk][part_obj]=part_path
-        # part_listview_item=PartListItem(part_path,part_fs,part_mp,part_format_str,str(part_capacity),"4G",part_type)
         part_listview_item=PartListItem(self.selected_disk,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
 
         self.add_part_2listview(part_listview_item)
         self.update_selected_disk_partitions()
         self.update_part_btn_box()
-        # print self.part_util.get_disk_partitions(self.selected_disk)
-        # self.add_part_2btn_box()
-        # self.update_display_part_path()
         self.part_new.destroy()
 
     def on_part_edit_btn_clicked(self,widget):
@@ -497,8 +482,6 @@ class Part(gtk.VBox):
     def on_part_edit_ok_btn_clicked(self,widget):
         '''confirm to edit partition'''
         #need also alter info in the backend table,
-        # part_edit_fs=self.part_edit.part_fs_combo.get_current_item().get_label()
-        # part_edit_mp=self.part_edit.part_mp_combo.get_current_item().get_label()
 
         part_edit_fs=self.part_edit.part_fs_combo.get_current_item()[0]
         part_edit_mp=self.part_edit.part_mp_combo.get_current_item()[0]
@@ -526,7 +509,6 @@ class Part(gtk.VBox):
             print "must select a partition first"
             return
         self.current_part=self.part_listview.get_current_item().partition
-        # index=self.part_listview.get_current_item().get_index()
         for item in self.part_util.disk_partition_info_tab:
             if item[0]==self.current_part:
                 self.part_util.delete_disk_partition_info_tab(self.current_part)
@@ -542,14 +524,6 @@ class Part(gtk.VBox):
         '''recovery part info to backup,consider frontend and backend'''
         self.part_util.recovery_disk_partition_info_tab(self.selected_disk)
         self.part_listview.clear()
-
-        # disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.backup_disk_partition_info_tab)
-        # for item in disk_partition_info:
-        #     if item[-1]=="delete":
-        #         pass
-        #     else:
-        #         part_list_item=PartListItem(self.selected_disk,item[0],str(item[4]),str(item[7]),str(item[5]),"8G","4G",item[2])
-                # self.part_listview_items.append(part_list_item)
         self.part_listview_items=self.init_part_listview_items()
         self.update_part_listview()
         self.update_part_btn_box()
