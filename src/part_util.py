@@ -51,11 +51,11 @@ class PartUtil:
     #      ]
     #}
         self.disk_partition_info_tab=self.init_disk_partition_info_tab()
-        #{disk:{partition:part_path}}
+    #{disk:{partition:part_path}}
         self.disk_part_display_path=self.init_disk_part_display_path()
-
-
-
+    #{disk:["freepart",geometry]}    
+        self.disk_geom_info_tab={}
+        self.init_disk_geom_info_tab()
 
     #get disk space_info,used in display available size and constraint the new creating partition size    
     # {disk:[   [main_part_list,logical_part],
@@ -65,9 +65,6 @@ class PartUtil:
     #    
     #  }   
         self.disk_space_info_tab={}
-
-
-
 
         self.lu=LogUtil()
         self.logger=self.lu.create_logger("part_logger","debug")
@@ -429,7 +426,6 @@ class PartUtil:
         '''add partition to the table,insert_path_disks_partitions in get_disk_partition_object because it's used
         not only for add_disk_partition_info_tab,but also the real add partition operate'''
         self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,part_tuple,part_fs,part_location)
-
         if self.to_add_partition==None:
             print "partition is null"
             return 
@@ -437,6 +433,7 @@ class PartUtil:
         disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,part_tuple,part_fs,part_format,
                                       part_name,part_mountpoint,part_location,part_flag]
         self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
+        self.add_part_geom_info_tab(disk,self.to_add_partition.geometry)
 
         return self.disk_partition_info_tab
 
@@ -465,13 +462,15 @@ class PartUtil:
             if item[0]==part and item[-1]=="add":
                 self.disk_partition_info_tab[part.disk].remove(item)
                 self.delete_path_disks_partitions(part.disk,part)
+                self.delete_part_geom_info_tab(part.disk,part.geometry)
             elif item[0]==part and item[-1]=="keep":
                 self.mark_disk_partition_info_tab(part,"delete")
+                self.delete_part_geom_info_tab(part.disk,part.geometry)
             else:
                 print "invalid,if partition marked delete,you wonn't see it"
                 self.lu.do_log_msg(self.logger,"error","invalid,if partition marked delete,you wonn't see it ")
                 break
-
+            
         return self.disk_partition_info_tab
 
     def probe_tab_disk_has_extend(self,disk):
@@ -629,17 +628,32 @@ class PartUtil:
         # self.init_disk_geom_info_tab()
         return self.disk_geom_info_tab[disk]
 
-    def get_prev_geom_info_tab(self,disk,geometry):
+    def get_prev_geom_info_tab_item(self,disk,geometry):
         '''get previous space block of the geometry:part or freespace'''
         self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
         prev_item=filter(lambda item:item[-1].end <= geometry.start,self.disk_geom_info_tab[disk])[-1]
         return prev_item
 
-    def get_next_geom_info_tab(self,disk,geometry):
+    def get_next_geom_info_tab_item(self,disk,geometry):
         '''get next space block of the geometry:part or freespace'''
         self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
         next_item=filter(lambda item:item[-1].start >= geometry.end,self.disk_geom_info_tab[disk])[0]
         return next_item
+
+    def get_current_geom_info_tab_item(self,disk,geometry):
+        '''get current space block of the geometry:part or freespace'''
+        self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        current_item=filter(lambda item:item[-1].start <=geometry.start and item[-1].end >=geometry.end,
+                            self.disk_geom_info_tab[disk])[0]
+        return current_item
+
+    def get_space_geom_size(self,disk,geometry):
+        '''get size of the geometry:part or freespace'''
+        pass
+
+    def get_part_from_geom_info_tab(self,disk,geometry):
+        '''return part obj match the given geometry'''
+        pass
 
     def add_part_geom_info_tab(self,disk,geometry):
         '''update disk_geom_info_tab when add partition from UI'''
@@ -670,7 +684,6 @@ class PartUtil:
             else:
                 print "unknown space"
 
-
     def delete_part_geom_info_tab(self,disk,geometry):
         '''update disk_geom_info_tab when delete partition from UI'''
         for item in self.disk_geom_info_tab[disk]:
@@ -679,13 +692,13 @@ class PartUtil:
             elif item[0]=="part":
                 if item[-1].start<=geometry.start and item[-1].end>=geometry.end:
                     self.disk_geom_info_tab[disk].remove(item)
-                    prev_item=self.get_prev_geom_info_tab(disk,geometry)
+                    prev_item=self.get_prev_geom_info_tab_item(disk,geometry)
                     if prev_item[0]=="freepart":
                         start=prev_item[-1].start
                         self.disk_geom_info_tab[disk].remove(prev_item)
                     else:
                         start=geometry.start
-                    next_item=self.get_next_geom_info_tab(disk,geometry)
+                    next_item=self.get_next_geom_info_tab_item(disk,geometry)
                     if next_item[0]=="freepart":
                         end=next_item[-1].end
                         self.disk_geom_info_tab[disk].remove(next_item)
@@ -696,11 +709,11 @@ class PartUtil:
                     geom=parted.geometry.Geometry(disk.device,start,length,end,None)
                     self.disk_geom_info_tab[disk].append("freepart",geom)
                     self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
-                        
                 else:
                     continue
             else:
                 print "unknown space"
+                
 
     ################set disk partition attribute before add or modify########################
     def get_disk_partition_object(self,disk,part_type,part_size,geom_tuple,part_fs,part_location):
