@@ -25,6 +25,7 @@ PART_TYPE_LIST=["primary","logical","extend","freespace","metadata","protect"]
 import os
 from basic_utils import run_os_command,get_os_command_output
 import parted
+import re
 from log_util import LogUtil
 
 class PartUtil:
@@ -76,7 +77,7 @@ class PartUtil:
         # self.backup_disk_partition_info_tab=copy.deepcopy(self.disk_partition_info_tab)
 
 
-    #######################fill in data relative to disk#######################
+    #######################fill in data relative to disk,mostly in physical#######################
     def __get_path_disks(self):
         '''return{ path:disk} dict,called this only once to make sure the Ped object id will not change'''
         self.path_disks={}
@@ -162,31 +163,6 @@ class PartUtil:
         self.max_support_count=disk.maxSupportedPartitionCount()
         return self.max_support_count
 
-    def get_disk_primary_list(self,disk):
-        '''return list of disk primary partitions,not include marked delete'''
-        disk_primary_list=[]
-        for item in filter(lambda info:info[-1]!="delete",self.disk_part_info_tab[disk]):
-            if item[1]=="primary" or item[0].type==0:
-                disk_primary_list.append(item)
-
-        return disk_primary_list                        
-
-    def get_disk_logical_list(self,disk):
-        '''return list of disk logical partitions,not include marked delete'''
-        disk_logical_list=[]
-        for item in filter(lambda info:info[-1]!="delete",self.disk_part_info_tab[disk]):
-            if item[1]=="logical" or item[0].type==1:
-                disk_logical_list.append(item)
-        return disk_logical_list
-
-    def get_disk_extend_list(self,disk):
-        '''return list of disk extend partitions,not include marked delete'''
-        disk_extend_list=[]
-        for item in filter(lambda info:info[-1]!="delete",self.disk_part_info_tab[disk]):
-            if item[1]=="extend" or item[0].type==2:
-                disk_extend_list.append(item)
-        return disk_extend_list
-
     ##################disk->partiton structure,in logical concept,not react to the physical disk################
     def get_disk_partitions(self,disk):
         '''return partitions of the given disk,get value from path_disks_partitions'''
@@ -205,29 +181,170 @@ class PartUtil:
             print "cann't get mount info"
         return mountinfo        
 
-    def get_disk_main_partitions(self,disk):
-        '''get primary and extended part list,attention:not include marked delete part'''
-        return filter(lambda item:item[-1]!="delete" and item[0].disk==disk 
-                                and (item[0].type ==0 or item[0].type==2),self.disk_partition_info_tab)
 
-    def get_disk_primary_partitions(self,disk):
-        '''get primary part list'''
+    def get_disk_primary_list(self,disk):
+        '''return list of disk primary partitions,not include marked delete'''
+        disk_primary_list=[]
+        if len(self.disk_partition_info_tab[disk])==0:
+            return disk_primary_list
+        for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
+            if item[1]=="primary" or item[0].type==0:
+                disk_primary_list.append(item)
 
-        return filter(lambda item:item[-1]!="delete" and item[0].disk==disk 
-                                and (item[0].type ==0),self.disk_partition_info_tab)
+        return disk_primary_list                        
 
-    def get_disk_extended_partition(self,disk):
-        '''return extended partition of the disk'''
+    def get_disk_logical_list(self,disk):
+        '''return list of disk logical partitions,not include marked delete'''
+        disk_logical_list=[]
+        if len(self.disk_partition_info_tab[disk])==0:
+            return disk_logical_list
+        for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
+            if item[1]=="logical" or item[0].type==1:
+                disk_logical_list.append(item)
+        return disk_logical_list
 
-        return filter(lambda item:item[-1]!="delete" and item[0].disk==disk 
-                                and (item[0].type ==2),self.disk_partition_info_tab)
+    def get_disk_main_list(self,disk):
+        '''return list of disk primary/extend partitions,not include marked delete'''
+        disk_main_list=[]
+        if len(self.disk_partition_info_tab[disk])==0:
+            return disk_main_list
+        for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
+            if item[1]=="primary" or item[1]=="extend":
+                disk_main_list.append(item)
+        return disk_main_list        
 
+    def get_disk_extend_list(self,disk):
+        '''return list of disk extend partitions,not include marked delete'''
+        disk_extend_list=[]
+        if len(self.disk_partition_info_tab[disk])==0:
+            return disk_extend_list
+        for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
+            if item[1]=="extend" or item[0].type==2:
+                disk_extend_list.append(item)
+        return disk_extend_list
 
-    def get_disk_logical_partitions(self,disk):
-        '''get disk logical part list'''
+    def get_new_add_part_path(self,disk,part_obj):
+        '''get new added part path of disk_part_display_path and react to the dict'''
+        main_part_list=filter(lambda item :item.type==0 or item.type==2,self.disk_part_display_path[disk].keys())
+        extend_part_list=filter(lambda item: item.type==2,self.disk_part_display_path[disk].keys())
+        logical_part_list=filter(lambda item :item.type==1,self.disk_part_display_path[disk].keys())
 
-        return filter(lambda item:item[-1]!="delete" and item[0].disk==disk 
-                                and (item[0].type ==1),self.disk_partition_info_tab)
+        new_part_path=""
+        max_num=0
+        if part_obj.type==0:
+            if len(main_part_list) > 3:
+                print "can at most have 4 primary partition"
+            elif len(main_part_list)==0:
+                new_part_path=disk.device.path+str(1)
+            else:
+                for part in main_part_list:
+                    part_no=int(filter(str.isdigit,self.disk_part_display_path[disk][part])[:])
+                    if part_no > max_num:
+                        max_num=part_no
+
+                new_part_path=disk.device.path+str(int(max_num)+1)
+
+            self.disk_part_display_path[disk][part_obj]=new_part_path
+            return self.disk_part_display_path
+
+        elif part_obj.type==2:
+            for part in main_part_list:
+                if part.type==2:
+                    print "can have only one extend "
+            if len(main_part_list) > 3:
+                print "can at most have 4 primary partition"
+            elif len(main_part_list)==0:
+                new_part_path=disk.device.path+str(1)
+            else:
+                for part in main_part_list:
+                    part_no=int(filter(str.isdigit,self.disk_part_display_path[disk][part])[:])
+                    if part_no > max_num:
+                        max_num=part_no
+
+                new_part_path=disk.device.path+str(int(max_num)+1)
+
+            self.disk_part_display_path[disk][part_obj]=new_part_path
+            return self.disk_part_display_path
+
+        elif part_obj.type==1:
+            if len(extend_part_list)!=1:
+                print "must have only one extend part first"
+                return self.disk_part_display_path
+
+            if len(logical_part_list)==0:
+                new_part_path=disk.device.path+str(5)
+            else:
+                for part in logical_part_list:
+                    part_no=int(filter(str.isdigit,self.disk_part_display_path[disk][part])[:])
+                    if part_no > max_num:
+                        max_num=part_no
+
+                new_part_path=disk.device.path+str(int(max_num)+1)
+
+            self.disk_part_display_path[disk][part_obj]=new_part_path
+            return self.disk_part_display_path
+
+        else:
+            print "invalid part type"
+            return self.disk_part_display_path
+
+    def get_delete_part_other_path(self,disk,part_obj):
+        '''update the disk_part_display_path when delete a partition'''
+        main_part_list=filter(lambda item :item.type==0 or item.type==2,self.disk_part_display_path[disk].keys())
+        extend_part_list=filter(lambda item: item.type==2,self.disk_part_display_path[disk].keys())
+        logical_part_list=filter(lambda item :item.type==1,self.disk_part_display_path[disk].keys())
+
+        if part_obj not in self.disk_part_display_path[disk].keys():
+            print "part_obj not in disk_part_display_path,some error occurs"
+
+        current_num=int(filter(str.isdigit,self.disk_part_display_path[disk][part_obj])[:])    
+
+        if part_obj.type==0:
+            if len(main_part_list)==1:
+                del self.disk_part_display_path[disk][part_obj]
+                return self.disk_part_display_path
+            else:    
+                part_prefix=re.findall(r'[^0-9]+',self.disk_part_display_path[disk][part_obj])[0]
+                for part in main_part_list:
+                    part_no=int(filter(str.isdigit,self.disk_part_display_path[disk][part])[:])
+                if part_no > current_num:
+                        self.disk_part_display_path[disk][part]=part_prefix+str(part_no-1)
+                del self.disk_part_display_path[disk][part_obj]
+                return self.disk_part_display_path
+
+        elif part_obj.type==2:
+            if len(logical_part_list)!=0:
+                for part in logical_part_list:
+                    del self.disk_part_display_path[disk][part]
+
+            part_prefix=re.findall(r'[^0-9]+',self.disk_part_display_path[disk][part_obj])[0]
+            for part in main_part_list:
+                part_no=int(filter(str.isdigit,self.disk_part_display_path[disk][part])[:])
+                if part_no > current_num:
+                    self.disk_part_display_path[disk][part]=part_prefix+str(part_no-1)
+
+            del self.disk_part_display_path[disk][part_obj]
+            return self.disk_part_display_path
+
+        elif part_obj.type==1:
+            if len(extend_part_list)!=1:
+                print "must have one extend part first"
+                return self.disk_part_display_path
+            if len(logical_part_list)==1:
+                del self.disk_part_display_path[disk][part_obj]
+            else:
+                part_prefix=re.findall(r'[^0-9]+',self.disk_part_display_path[disk][part_obj])[0]
+                for part in logical_part_list:
+                    part_no=int(filter(str.isdigit,self.disk_part_display_path[disk][part])[:])
+                    if part_no > current_num:
+                        self.disk_part_display_path[disk][part]=part_prefix+str(part_no-1)
+                del self.disk_part_display_path[disk][part_obj]
+                return self.disk_part_display_path
+
+        else:
+            print "invalid part type"
+            return self.disk_part_display_path
+
 
     #disk_partition_tab && disk_partition_info operations:
     def init_disk_partition_info_tab(self):
