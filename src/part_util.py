@@ -425,16 +425,24 @@ class PartUtil:
     def add_disk_partition_info_tab(self,disk,part_type,part_size,part_fs,part_tuple,part_format,part_name,part_mountpoint,part_location):
         '''add partition to the table,insert_path_disks_partitions in get_disk_partition_object because it's used
         not only for add_disk_partition_info_tab,but also the real add partition operate'''
+        if part_type=="logical" and len(self.get_disk_extend_list)==0:
+            geometry=parted.geometry.Geometry(disk.device,part_tuple[0],part_tuple[1],part_tuple[2],None)
+            self.add_disk_extended_partition(disk,geometry)
+
         self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,part_tuple,part_fs,part_location)
         if self.to_add_partition==None:
             print "partition is null"
             return 
+
         part_flag="add"   
         disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,part_tuple,part_fs,part_format,
                                       part_name,part_mountpoint,part_location,part_flag]
         self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
-        self.add_part_geom_info_tab(disk,self.to_add_partition.geometry)
 
+        if part_type!=2:
+            self.add_part_geom_info_tab(disk,self.to_add_partition.geometry)
+        else:
+            pass
         return self.disk_partition_info_tab
 
     def mark_disk_partition_info_tab(self,part,part_flag):
@@ -462,10 +470,12 @@ class PartUtil:
             if item[0]==part and item[-1]=="add":
                 self.disk_partition_info_tab[part.disk].remove(item)
                 self.delete_path_disks_partitions(part.disk,part)
-                self.delete_part_geom_info_tab(part.disk,part.geometry)
+                if part.type!=2:
+                    self.delete_part_geom_info_tab(part.disk,part.geometry)
             elif item[0]==part and item[-1]=="keep":
                 self.mark_disk_partition_info_tab(part,"delete")
-                self.delete_part_geom_info_tab(part.disk,part.geometry)
+                if part.type!=2:
+                    self.delete_part_geom_info_tab(part.disk,part.geometry)
             else:
                 print "invalid,if partition marked delete,you wonn't see it"
                 self.lu.do_log_msg(self.logger,"error","invalid,if partition marked delete,you wonn't see it ")
@@ -524,6 +534,19 @@ class PartUtil:
                 disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
         return disk_partition_info_tab
+    
+    ###################update disk extended part when necessary###################################
+    def add_disk_extended_partition(self,disk,geometry):
+        '''add extended parttion,called this function passive'''
+        if len(self.get_disk_extend_list[disk])!=0:
+            print "no need to add extend partition"
+        else:
+            extend_part=parted.partition.Partition(disk,parted.PARTITION_EXTENDED,None,geometry,None)
+            disk_partition_info_tab_item=[extend_part,"extend",geometry.length*disk.device.sectorSize,
+                                          (geometry.start,geometry.length,geometry.end),None,False,None,None,"start","add"]
+            self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
+
+            self.insert_path_disks_partitions(disk,extend_part)
 
     ##############update path_disks_partitons structure when add/delete partition##################
 
@@ -949,6 +972,13 @@ class PartUtil:
         '''batch add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
         for disk in self.get_system_disks():
             for item in filter(lambda info:info[-1]=="add",self.disk_partition_info_tab[disk]):
+                if self.probe_tab_disk_has_extend(disk):
+                    # print "must add extend first"
+                    if item[0].type==parted.PARTITION_EXTENDED:
+                        self.partition=item[0]
+                        self.geometry=self.partition.geometry
+                        self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                        disk.addPartition(self.partition,self.constraint)
                 if item[0].type==parted.PARTITION_LOGICAL and not self.probe_tab_disk_has_extend(disk):
                     print "can't add logical partition as there is no extended partition"
                     self.lu.do_log_msg(self.logger,"error","can't add logical as no extended")
