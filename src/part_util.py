@@ -537,7 +537,7 @@ class PartUtil:
     
     ###################update disk extended part when necessary###################################
     def add_disk_extended_partition(self,disk,geometry):
-        '''add extended parttion,called this function passive'''
+        '''add extended partition,called this function passive'''
         if len(self.get_disk_extend_list[disk])!=0:
             print "no need to add extend partition"
         else:
@@ -547,6 +547,29 @@ class PartUtil:
             self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
             self.insert_path_disks_partitions(disk,extend_part)
+
+    def delete_disk_extended_partition(self,disk,geometry):
+        '''delete extened partition,called this function passive'''
+        if len(self.get_disk_logical_list[disk])!=0:
+            print "cann't delete extended part since there have logical one"
+        else:
+            print "to be implemented"
+
+    def get_disk_extended_partition_geometry(self,disk,extend_part):
+        '''get the geometry of the current extended part'''
+        pass
+
+    def set_disk_extended_partition_geometry(self,disk,extend_part,geometry):
+        '''set the geometry of the current extended part'''
+        pass
+
+    def grown_disk_extended_partition_geometry(self,disk,extend_part,geom_tuple):
+        '''grown extended geometry since add logical in extra freespace'''
+        pass
+
+    def reduce_disk_exended_partition_geometry(self,disk,extend_part,geom_tuple):
+        '''reduce extended geometry since add primary with freespace in origin extended'''
+        pass
 
     ##############update path_disks_partitons structure when add/delete partition##################
 
@@ -933,7 +956,6 @@ class PartUtil:
             self.lu.do_log_msg(self.logger,"info","delete logical partitions before delete extend")
             for logical_part in disk.getLogicalPartitions():
                 self.delete_path_disks_partitions(disk,logical_part)
-                
                 self.disk_partition_info_tab=filter(lambda info:info[0]!=logical_part,self.disk_partition_info_tab[disk])
                 try:
                     self.set_disk_partition_umount(logical_part)
