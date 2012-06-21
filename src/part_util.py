@@ -46,7 +46,7 @@ class PartUtil:
         self.path_disks=self.__get_path_disks()
     #{disk:[partition1,partition2,],disk2:[]}
         self.path_disks_partitions=self.__get_path_disks_partitions()
-    #{disk:[ partition,part_type,part_size,part_fs,
+    #{disk:[ partition,part_type,part_size,part_tuple,part_fs,
     #        part_format,part_name,part_mountpoint,part_location,part_flag
     #      ]
     #}
@@ -181,7 +181,6 @@ class PartUtil:
             print "cann't get mount info"
         return mountinfo        
 
-
     def get_disk_primary_list(self,disk):
         '''return list of disk primary partitions,not include marked delete'''
         disk_primary_list=[]
@@ -222,6 +221,17 @@ class PartUtil:
             if item[1]=="extend" or item[0].type==2:
                 disk_extend_list.append(item)
         return disk_extend_list
+
+    ##################generate part path when have add or delete partition###################
+    def init_disk_part_display_path(self):
+        '''display_path for vitual path to display in UI listview'''
+        disk_part_display_path={}
+        for disk in self.get_system_disks():
+            disk_part_display_path[disk]={}
+            for part in self.get_disk_partitions(disk):
+                disk_part_display_path[disk][part]=part.path
+
+        return disk_part_display_path       
 
     def get_new_add_part_path(self,disk,part_obj):
         '''get new added part path of disk_part_display_path and react to the dict'''
@@ -346,7 +356,7 @@ class PartUtil:
             return self.disk_part_display_path
 
 
-    #disk_partition_tab && disk_partition_info operations:
+    ################################# disk_partition_info_tab operations:#############################
     def init_disk_partition_info_tab(self):
         '''read origin disk partition info'''
         disk_partition_info_tab={}
@@ -361,6 +371,11 @@ class PartUtil:
             for part in self.get_disk_partitions(disk):
                 part_type=PART_TYPE_LIST[part.type]
                 part_size=part.getSize(unit="MB")
+                start=part.geometry.start
+                length=part.geometry.length
+                end=part.geometry.end
+                part_tuple=(start,length,end)
+                
                 try:
                     part_fs=part.fileSystem.type#just for primary and logical partition
                 except:
@@ -377,38 +392,12 @@ class PartUtil:
                 part_location="start"#start/end
                 part_flag="keep"   #flag:keep,new,delete 
 
-                disk_partition_info_tab_item=[part,part_type,part_size,part_fs,part_format,
+                disk_partition_info_tab_item=[part,part_type,part_size,part_tuple,part_fs,part_format,
                                               part_name,part_mountpoint,part_location,part_flag]
 
                 disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
         return disk_partition_info_tab
-
-    def init_disk_part_display_path(self):
-        '''display_path for vitual path to display in UI listview'''
-        disk_part_display_path={}
-        for disk in self.get_system_disks():
-            disk_part_display_path[disk]={}
-            for part in self.get_disk_partitions(disk):
-                disk_part_display_path[disk][part]=part.path
-
-        return disk_part_display_path       
-
-    ##############update path_disks_partitons structure when add/delete partition##################
-
-    def insert_path_disks_partitions(self,disk,partition):
-        '''insert new added partition to path_disk_partitions variable,keep partition id uniquee'''
-        if disk.getPedDisk!=partition.disk.getPedDisk:
-            print "the partition(id) not in the disk(id)"
-            self.lu.do_log_msg(self.logger,"error","somewhere id not match")
-        self.path_disks_partitions[disk].append(partition)    
-
-    def delete_path_disks_partitions(self,disk,partition):
-        '''delete partition from path_disks_partitions variable,keep partition id uniquee'''
-        if disk.getPedDisk!=partition.disk.getPedDisk:
-            print "the partition(id) not in the disk(id)"
-            self.lu.do_log_msg(self.logger,"error","somewhere id not match")
-        self.path_disks_partitions[disk].remove(partition)
 
     def rebuild_disk_partition_info_tab(self,disk):
         '''backend operation for UI:create new disk partition tab'''
@@ -435,90 +424,17 @@ class PartUtil:
         for part in self.get_disk_partitions(disk):
             self.disk_part_display_path[disk][part]=part.path
 
-    def set_disk_label(self,device):
-        '''set disk label:gpt or msdos,for blank disk'''
-        if device.getSize() >= 1.5*1024*1024:
-            self.disk=parted.freshDisk(device,"gpt")
-        else:
-            self.disk=parted.freshDisk(device,"msdos")
-            
-        return self.disk
 
-    def init_backup_disk_partition_info_tab(self):
-        '''copy from init_disk_partition_info_tab,as _Ped object not support simply deepcopy'''
-        disk_partition_info_tab={}
-        disk_partition_info_tab_item=[]
-
-        for disk in self.get_system_disks():
-            disk_partition_info_tab[disk]=[]
-
-            if disk.getFirstPartition()==None:
-                self.set_disk_label(disk.device)
-                continue 
-            for part in self.get_disk_partitions(disk):
-                part_type=PART_TYPE_LIST[part.type]
-                part_size=part.getSize(unit="MB")
-                try:
-                    part_fs=part.fileSystem.type#just for primary and logical partition
-                except:
-                    part_fs=None
-                part_format=False#donn't format origin partition
-                try:
-                    part_name=part.name
-                except:
-                    part_name=""
-                try:
-                    part_mountpoint=self.get_disk_partition_mount(part)[0][1]
-                except:
-                    part_mountpoint=""
-                part_location="start"#start/end
-                part_flag="keep"   #flag:keep,new,delete 
-
-                disk_partition_info_tab_item=[part,part_type,part_size,part_fs,part_format,
-                                              part_name,part_mountpoint,part_location,part_flag]
-
-                disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
-
-        return disk_partition_info_tab
-
-    def get_disk_partition_size(self,partition):
-        '''return partition size'''
-        return partition.getSize("MB")
-
-    # def get_disk_partition_object(self,disk,part_type,part_size,part_fs,part_location):
-    #     '''get partition_object for add to the disk_partition_info_tab,also for actual partition add operation'''
-
-    #     self.disk=disk
-    #     self.type=self.set_disk_partition_type(self.disk,part_type)
-
-    #     import math
-    #     minlength=math.floor((part_size*1024*1024)/(self.disk.device.sectorSize)+1)
-        
-    #     self.free_geometry=self.get_disk_free_geometry(self.disk,part_type,minlength)
-    #     # self.free_geometry=self.get_disk_free_geometry(self.disk,part_type)
-
-    #     self.geometry=self.set_disk_partition_geometry(self.disk,self.free_geometry,part_size)
-
-    #     self.fs=parted.filesystem.FileSystem(part_fs,self.geometry,False,None)
-    #     self.partition=parted.partition.Partition(self.disk,self.type,self.fs,self.geometry,None)
-    #     #track the Partition ped id
-    #     self.insert_path_disks_partitions(self.disk,self.partition)
-        
-    #     return self.partition
-
-
-
-    ##########operate disk_partition_info_tab,these support interface for UI##############
-    def add_disk_partition_info_tab(self,disk,part_type,part_size,part_fs,part_format,part_name,part_mountpoint,part_location):
+    def add_disk_partition_info_tab(self,disk,part_type,part_size,part_fs,part_tuple,part_format,part_name,part_mountpoint,part_location):
         '''add partition to the table,insert_path_disks_partitions in get_disk_partition_object because it's used
         not only for add_disk_partition_info_tab,but also the real add partition operate'''
-        self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,part_fs,part_location)
+        self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,part_tuple,part_fs,part_location)
 
         if self.to_add_partition==None:
             print "partition is null"
             return 
         part_flag="add"   
-        disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,part_fs,part_format,
+        disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,part_tuple,part_fs,part_format,
                                       part_name,part_mountpoint,part_location,part_flag]
         self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
@@ -568,7 +484,93 @@ class PartUtil:
                 continue
         return Flag    
 
+    def init_backup_disk_partition_info_tab(self):
+        '''copy from init_disk_partition_info_tab,as _Ped object not support simply deepcopy'''
+        disk_partition_info_tab={}
+        disk_partition_info_tab_item=[]
+
+        for disk in self.get_system_disks():
+            disk_partition_info_tab[disk]=[]
+
+            if disk.getFirstPartition()==None:
+                self.set_disk_label(disk.device)
+                continue 
+            for part in self.get_disk_partitions(disk):
+                part_type=PART_TYPE_LIST[part.type]
+                part_size=part.getSize(unit="MB")
+                start=part.geometry.start
+                length=part.geometry.length
+                end=part.geometry.end
+                part_tuple=(start,length,end)
+                
+                try:
+                    part_fs=part.fileSystem.type#just for primary and logical partition
+                except:
+                    part_fs=None
+                part_format=False#donn't format origin partition
+                try:
+                    part_name=part.name
+                except:
+                    part_name=""
+                try:
+                    part_mountpoint=self.get_disk_partition_mount(part)[0][1]
+                except:
+                    part_mountpoint=""
+                part_location="start"#start/end
+                part_flag="keep"   #flag:keep,new,delete 
+
+                disk_partition_info_tab_item=[part,part_type,part_size,part_tuple,part_fs,part_format,
+                                              part_name,part_mountpoint,part_location,part_flag]
+
+                disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
+
+        return disk_partition_info_tab
+
+    ##############update path_disks_partitons structure when add/delete partition##################
+
+    def insert_path_disks_partitions(self,disk,partition):
+        '''insert new added partition to path_disk_partitions variable,keep partition id uniquee'''
+        if disk.getPedDisk!=partition.disk.getPedDisk:
+            print "the partition(id) not in the disk(id)"
+            self.lu.do_log_msg(self.logger,"error","somewhere id not match")
+        self.path_disks_partitions[disk].append(partition)    
+
+    def delete_path_disks_partitions(self,disk,partition):
+        '''delete partition from path_disks_partitions variable,keep partition id uniquee'''
+        if disk.getPedDisk!=partition.disk.getPedDisk:
+            print "the partition(id) not in the disk(id)"
+            self.lu.do_log_msg(self.logger,"error","somewhere id not match")
+        self.path_disks_partitions[disk].remove(partition)
+
+
+    def set_disk_label(self,device):
+        '''set disk label:gpt or msdos,for blank disk'''
+        if device.getSize() >= 1.5*1024*1024:
+            self.disk=parted.freshDisk(device,"gpt")
+        else:
+            self.disk=parted.freshDisk(device,"msdos")
+            
+        return self.disk
+
+
+    def get_disk_partition_size(self,partition):
+        '''return partition size'''
+        return partition.getSize("MB")
+
     ################set disk partition attribute before add or modify########################
+
+    def get_disk_partition_object(self,disk,part_type,part_size,geom_tuple,part_fs,part_location):
+        '''get partition_object for add to the disk_partition_info_tab,also for actual partition add operation
+           add the part_obj to path_disks_partitions when it birth
+        '''
+        self.type=self.set_disk_partition_type(disk,part_type)
+        self.geometry=self.set_disk_partition_geometry(disk,part_size,geom_tuple,part_location)
+        self.fs=parted.filesystem.FileSystem(part_fs,self.geometry,False,None)
+        self.partition=parted.partition.Partition(disk,self.type,self.fs,self.geometry,None)
+        self.insert_path_disks_partitions(disk,self.partition)
+        
+        return self.partition
+
     def set_disk_partition_type(self,disk,part_type):
         '''check the to added partition type,need consider the count of primary,extend,etc...'''
         if part_type=="primary":
@@ -582,20 +584,36 @@ class PartUtil:
             self.lu.do_log_msg(self.logger,"error","part type error")
         return self.type    
 
-    # def set_disk_partition_geometry(self,disk,free_geometry,size):
-    #     '''to get free_geometry'''
-    #     if free_geometry==None:
-    #         free_geometry=disk.getFreeSpaceRegions()[0]#this have to be fixed
-    #     self.start=free_geometry.start
-    #     self.length=long(free_geometry.length*size/free_geometry.getSize())
-    #     self.end=self.start+self.length-1
-        
-    #     if self.end > free_geometry.end:
-    #         self.end=free_geometry.end
-    #         self.length=self.end-self.start+1
+    def get_part_geom_tuple(self,geometry):
+        '''return tuple (start,length,end) of the geometry object'''
+        start=geometry.start
+        length=geometry.length
+        end=geometry.end
 
-    #     self.geometry=parted.geometry.Geometry(disk.device,self.start,self.length,self.end,None)
-    #     return self.geometry
+        return (start,length,end)
+
+    def set_disk_partition_geometry(self,disk,part_size,geom_tuple,part_location):
+        '''to get geometry of new added partition'''
+        import math
+        minlength=math.floor((part_size*1024*1024)/(disk.device.sectorSize)+1)
+        (start,length,end)=geom_tuple
+        if minlength > length:
+            print "the free space too small to hold the partition"
+            part_start=start
+            part_length=length
+            part_end=end
+        else:
+            if part_location=="start" or len(part_location)==0:
+                part_start=start
+                part_length=minlength
+                part_end=part_start+part_end-1
+            elif part_location=="end":
+                part_end=end
+                part_length=minlength
+                part_start=part_end-part_length+1
+
+        self.geometry=parted.geometry.Geometry(disk.device,part_start,part_length,part_end,None)
+        return self.geometry
 
     def set_disk_partition_name(self,partition,part_name):
         '''cann't set this attribute,need to fix'''
@@ -613,9 +631,8 @@ class PartUtil:
             print "you can only set filesystem for primary and logical partition"
             self.lu.do_log_msg(self.logger,"error","can only set fs for primary/logical partition")
             return
-
         for item in self.disk_partition_info_tab[partition.disk]:
-            if item[0]==partition and item[4]==False:
+            if item[0]==partition and item[5]==False:
                 print "no need to format the partition"
                 return 
         if fstype==None or len(fstype)==0:
