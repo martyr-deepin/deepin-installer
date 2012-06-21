@@ -400,6 +400,8 @@ class PartUtil:
         '''backend operation for UI:create new disk partition tab'''
         self.disk_partition_info_tab[disk].clear()
         self.disk_part_display_path[disk].clear()        
+        self.path_disks_partitions[disk].clear()
+        self.disk_geom_info_tab[disk].clear()
             
     def recovery_disk_partition_info_tab(self,disk):
         '''backend operation for UI:recovery edited disk partition tab'''
@@ -420,6 +422,10 @@ class PartUtil:
         self.disk_part_display_path[disk]={}    
         for part in self.get_disk_partitions(disk):
             self.disk_part_display_path[disk][part]=part.path
+
+        self.path_disks_partitions[disk]=self.__get_path_disk_partitions(disk)
+        ###to be implemented
+        # self.disk_geom_info_tab[disk]=self.init_disk_geom_info_tab()
 
     def get_disk_partition_info_tab_item(self,disk,part):
         '''get the item of disk_partition_info_tab specified by part'''
