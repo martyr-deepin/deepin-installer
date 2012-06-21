@@ -421,6 +421,25 @@ class PartUtil:
         for part in self.get_disk_partitions(disk):
             self.disk_part_display_path[disk][part]=part.path
 
+    def get_disk_partition_info_tab_item(self,disk,part):
+        '''get the item of disk_partition_info_tab specified by part'''
+        for item in self.disk_partition_info_tab[disk]:
+            if item[0]==part:
+                return item
+            else:
+                continue
+        else:
+            print "no item in disk_partition_info_tab specified by part"
+
+    def update_disk_partition_info_tab_item(self,disk,part,item_info):
+        '''update the item info of disk_partition_info_tab specified by part'''
+        item=self.get_disk_partition_info_tab_item(disk,part)
+        if item==None or len(item)==0:
+            print "doesn't find the part in disk_partition_info_tab"
+        else:
+            self.disk_partition_info_tab[disk].remove(item)
+            self.disk_partition_info_tab[disk].append(item_info)
+        return self.disk_partition_info_tab    
 
     def add_disk_partition_info_tab(self,disk,part_type,part_size,part_fs,part_tuple,part_format,part_name,part_mountpoint,part_location):
         '''add partition to the table,insert_path_disks_partitions in get_disk_partition_object because it's used
@@ -551,13 +570,18 @@ class PartUtil:
     def delete_disk_extended_partition(self,disk,geometry):
         '''delete extened partition,called this function passive'''
         if len(self.get_disk_logical_list[disk])!=0:
-            print "cann't delete extended part since there have logical one"
+            print "cann't delete extended part since there still have logical one"
         else:
             print "to be implemented"
 
+    def update_extended_disk_partition_info_tab(self,disk,extend_part):
+        '''update extended part info in disk_partition_info_tab,mostly update the geometry'''
+        pass
+
     def get_disk_extended_partition_geometry(self,disk,extend_part):
         '''get the geometry of the current extended part'''
-        pass
+        if extend_part.geometry!=None:
+            return extend_part.geometry
 
     def set_disk_extended_partition_geometry(self,disk,extend_part,geometry):
         '''set the geometry of the current extended part'''
