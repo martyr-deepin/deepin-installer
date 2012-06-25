@@ -32,29 +32,31 @@ def test_disk_partition_info_tab():
     # print pu.disk_partition_info_tab[disk]
     print pu.disk_geom_info_tab[disk]
 
+
 def test_disk_part_display_path():
     for disk in pu.get_system_disks():
         print pu.disk_part_display_path[disk]
+
 
 def test_disk_geom_info_tab():
     # for disk in pu.get_system_disks():
     #     print pu.disk_geom_info_tab[disk]
     disk=pu.get_disk_from_path("/dev/sdb")
-    print pu.disk_geom_info_tab[disk]
-    for item in pu.disk_geom_info_tab[disk]:
-        print item[-1].start
-        print item[-1].end
+    # # print_geom_info(disk)
     pu.add_disk_partition_info_tab(disk,"primary",1024,(100,None,16771855),"ext4",None,None,"/home","start")
-    print pu.disk_geom_info_tab[disk]
-    for item in pu.disk_geom_info_tab[disk]:
-        print item[-1].start
-        print item[-1].end
-    pu.add_disk_partition_info_tab(disk,"primary",1024,(3097148,None,16097148),"ext4",None,None,"/home","start")
-    print pu.disk_geom_info_tab[disk]
-    for item in pu.disk_geom_info_tab[disk]:
-        print item[-1].start
-        print item[-1].end
+    # # print_geom_info(disk)
+    print pu.disk_partition_info_tab[disk]
+    pu.add_disk_partition_info_tab(disk,"logical",1024,(3097148,None,16097148),"ext4",None,None,"/home","start")
+    # # print_geom_info(disk)
+    print pu.disk_partition_info_tab[disk]
+    # print pu.get_disk_extend_list(disk)
 
+def print_geom_info(disk):
+    print pu.disk_geom_info_tab[disk]
+    for item in pu.disk_geom_info_tab[disk]:
+        print item[0]
+        print item[-1].start
+        print item[-1].end
 
 if __name__=="__main__":
     # test_disk_partition_info_tab()

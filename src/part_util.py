@@ -445,13 +445,13 @@ class PartUtil:
             geometry=parted.geometry.Geometry(disk.device,part_tuple[0],part_tuple[1],part_tuple[2],None)
             self.add_disk_extended_partition(disk,geometry)
 
-        if part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
+        elif part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
             if extend_part.geometry.start > part_tuple[0] or extend_part.geometry.end < part_tuple[0]:
                 self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
             else:
                 print "extended space is enough"
-        if part_type=="primary" and len(self.get_disk_extend_list(disk))!=0:
+        elif part_type=="primary" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
             start=extend_part.geometry.start
             length=extend_part.geometry.length
@@ -466,8 +466,6 @@ class PartUtil:
                 end=part_tuple[0]-4
                 length=end-start+1
                 self.reduce_disk_exended_partition_geometry(disk,extend_part,(start,length,end))
-            else:
-                pass
 
         self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,part_tuple,part_fs,part_location)
         if self.to_add_partition==None:
@@ -581,7 +579,7 @@ class PartUtil:
            add-->disk_partition_info_tab
               -->path_disks_partitions
         '''
-        if len(self.get_disk_extend_list[disk])!=0:
+        if len(self.get_disk_extend_list(disk))!=0:
             print "no need to add extend partition"
         else:
             extend_part=parted.partition.Partition(disk,parted.PARTITION_EXTENDED,None,geometry,None)
