@@ -614,6 +614,9 @@ class PartUtil:
             length=end-start+1
             new_geom=parted.geometry.Geometry(disk.device,start,length,end,None)
             self.set_disk_extended_partition_geometry(self,disk,extend_part,new_geom)
+            for item in self.disk_partition_info_tab[disk]:
+                if item[0]==extend_part:
+                    item[3]=(extend_part.geometry.start,extend_part.geometry.length,extend_part.geometry.end)
 
     def reduce_disk_exended_partition_geometry(self,disk,extend_part,geom_tuple):
         '''reduce extended geometry since add primary with freespace in origin extended'''
@@ -646,6 +649,9 @@ class PartUtil:
             else:
                 new_geom=parted.geometry.Geometry(disk.device,geom_tuple[0],geom_tuple[1],geom_tuple[2],None)
                 self.set_disk_extended_partition_geometry(self,disk,extend_part,new_geom)
+                for item in self.disk_partition_info_tab[disk]:
+                    if item[0]==extend_part:
+                        item[3]=(extend_part.geometry.start,extend_part.geometry.length,extend_part.geometry.end)
 
     ##############update path_disks_partitons structure when add/delete partition##################
 
