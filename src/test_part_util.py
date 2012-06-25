@@ -20,21 +20,37 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from part_util import global_part_util
+from part_util import global_part_util as pu
 
 def test_disk_partition_info_tab():
-    for disk in global_part_util.get_system_disks():
-        print global_part_util.disk_partition_info_tab[disk]
-    
+    # for disk in pu.get_system_disks():
+    #     print pu.disk_partition_info_tab[disk]
+    disk=pu.get_disk_from_path("/dev/sdb")
+    # print pu.disk_partition_info_tab[disk]
+    print pu.disk_geom_info_tab[disk]
+    pu.add_disk_partition_info_tab(disk,"primary",1024,(70,1024*1024*1024/disk.device.sectorSize,1024*1024*1024/disk.device.sectorSize),"ext4",None,None,"/home","start")
+    # print pu.disk_partition_info_tab[disk]
+    print pu.disk_geom_info_tab[disk]
+
 def test_disk_part_display_path():
-    for disk in global_part_util.get_system_disks():
-        print global_part_util.disk_part_display_path[disk]
+    for disk in pu.get_system_disks():
+        print pu.disk_part_display_path[disk]
 
 def test_disk_geom_info_tab():
-    for disk in global_part_util.get_system_disks():
-        print global_part_util.disk_geom_info_tab[disk]
+    # for disk in pu.get_system_disks():
+    #     print pu.disk_geom_info_tab[disk]
+    disk=pu.get_disk_from_path("/dev/sdb")
+    print pu.disk_geom_info_tab[disk]
+    for item in pu.disk_geom_info_tab[disk]:
+        print item[-1].start
+        print item[-1].end
+    pu.add_disk_partition_info_tab(disk,"primary",1024,(70,1024*1024*1024/disk.device.sectorSize,1024*1024*1024/disk.device.sectorSize),"ext4",None,None,"/home","start")
+    print pu.disk_geom_info_tab[disk]
+    for item in pu.disk_geom_info_tab[disk]:
+        print item[-1].start
+        print item[-1].end
 
 if __name__=="__main__":
-    test_disk_partition_info_tab()
+    # test_disk_partition_info_tab()
     test_disk_geom_info_tab()
-    test_disk_part_display_path()
+    # test_disk_part_display_path()

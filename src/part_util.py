@@ -457,6 +457,7 @@ class PartUtil:
 
         if part_type!=2:
             self.add_part_geom_info_tab(disk,self.to_add_partition.geometry)
+            print "add geom_info_tab"
         else:
             pass
         return self.disk_partition_info_tab
@@ -731,8 +732,8 @@ class PartUtil:
                     if length > 0:
                         gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                     else:
-                        print "the size between two partition is too small"
-                        # self.logger.warning("the size between two partition is too small")
+                        # print "the size between two partition is too small"
+                        self.logger.warning("the size between two partition is too small")
                         self.lu.do_log_msg(self.logger,"warning","the size between two partition is too small")
                     i=i+1    
         
@@ -742,8 +743,8 @@ class PartUtil:
                 if length > 0:
                     gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                 else:
-                    print "end of disk have geometry overlap or disk size too small"
-                    # self.logger.warning("end of disk have geometry overlap or disk size too small")
+                    # print "end of disk have geometry overlap or disk size too small"
+                    self.logger.warning("end of disk have geometry overlap or disk size too small")
                     self.lu.do_log_msg(self.logger,"warning","end of disk have geometry overlap or disk size too small")
             for item in part_geom_list:
                 space_geom_list.append(item)
@@ -790,7 +791,7 @@ class PartUtil:
         '''update disk_geom_info_tab when add partition from UI'''
         for item in self.disk_geom_info_tab[disk]:
             if item[0]=="part":
-                pass
+                print "cann't add partition to exist part area"
             elif item[0]=="freespace":
                 if item[-1].start <=geometry.start and item[-1].end >= geometry.end:
                     if geometry.start - item[-1].start > 8:
@@ -801,7 +802,6 @@ class PartUtil:
                         self.disk_geom_info_tab[disk].append(["freespace",begin_geometry])
 
                     self.disk_geom_info_tab[disk].append(["part",geometry])    
-
                     if  item[-1].end - geometry.end > 8:
                         after_start=geometry.end
                         after_end=item[-1].end
@@ -809,11 +809,17 @@ class PartUtil:
                         after_geometry=parted.geometry.Geometry(disk.device,after_start,after_length,after_end,None)
                         self.disk_geom_info_tab[disk].append(["freespace",after_geometry])
 
+                    self.disk_geom_info_tab[disk].remove(item)    
                     self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))    
+
+                elif item[-1].start > geometry.start and item[-1].end >=geometry.end:    
+                    print "start of geometry out of range can allocate"
+                elif item[-1].start <= geometry.start and item[-1].end < geometry.end:
+                    print "end of geometry out of range can allocate"
                 else:
-                    print "invalid freespace"
+                    print "geometry not match freespace"
             else:
-                print "unknown space"
+                print "unknown space,not part or freespace"
 
     def delete_part_geom_info_tab(self,disk,geometry):
         '''update disk_geom_info_tab when delete partition from UI'''
@@ -883,23 +889,22 @@ class PartUtil:
     def set_disk_partition_geometry(self,disk,part_size,geom_tuple,part_location):
         '''to get geometry of new added partition'''
         import math
-        minlength=math.floor((part_size*1024*1024)/(disk.device.sectorSize)+1)
+        minlength=math.floor((long)(part_size*1024*1024)/(disk.device.sectorSize)+1)
         (start,length,end)=geom_tuple
         if minlength > length:
             print "the free space too small to hold the partition"
-            part_start=start
-            part_length=length
-            part_end=end
+            part_start=start+4
+            part_end=end-4
+            part_length=part_end-part_start+1
         else:
             if part_location=="start" or len(part_location)==0:
-                part_start=start
+                part_start=start+4
                 part_length=minlength
                 part_end=part_start+part_end-1
             elif part_location=="end":
-                part_end=end
+                part_end=end-4
                 part_length=minlength
                 part_start=part_end-part_length+1
-
         self.geometry=parted.geometry.Geometry(disk.device,part_start,part_length,part_end,None)
         return self.geometry
 
