@@ -745,8 +745,10 @@ class PartUtil:
                     print "end of disk have geometry overlap or disk size too small"
                     # self.logger.warning("end of disk have geometry overlap or disk size too small")
                     self.lu.do_log_msg(self.logger,"warning","end of disk have geometry overlap or disk size too small")
-
-            space_geom_list=part_geom_list.extend(gap_geom_list)      
+            for item in part_geom_list:
+                space_geom_list.append(item)
+            for item in gap_geom_list:
+                space_geom_list.append(item)
             space_geom_list.sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
             self.disk_geom_info_tab[disk]=space_geom_list
 
