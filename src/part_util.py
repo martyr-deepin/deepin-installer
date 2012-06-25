@@ -441,14 +441,37 @@ class PartUtil:
     def add_disk_partition_info_tab(self,disk,part_type,part_size,part_tuple,part_fs,part_format,part_name,part_mountpoint,part_location):
         '''add partition to the table,insert_path_disks_partitions in get_disk_partition_object because it's used
         not only for add_disk_partition_info_tab,but also the real add partition operate'''
-        if part_type=="logical" and len(self.get_disk_extend_list)==0:
+        if part_type=="logical" and len(self.get_disk_extend_list(disk))==0:
             geometry=parted.geometry.Geometry(disk.device,part_tuple[0],part_tuple[1],part_tuple[2],None)
             self.add_disk_extended_partition(disk,geometry)
+
+        if part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
+            extend_part=self.get_disk_extend_list(disk)[0]
+            if extend_part.geometry.start > part_tuple[0] or extend_part.geometry.end < part_tuple[0]:
+                self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
+            else:
+                print "extended space is enough"
+        if part_type=="primary" and len(self.get_disk_extend_list(disk))!=0:
+            extend_part=self.get_disk_extend_list(disk)[0]
+            start=extend_part.geometry.start
+            length=extend_part.geometry.length
+            end=extend_part.geometry.end
+            if part_tuple[0] >= end or part_tuple[2] <= start:
+                pass
+            elif part_tuple[0] <= start and start <= part_tuple[2] <=end:
+                start=part_tuple[2]+4
+                length=end-start+1
+                self.reduce_disk_exended_partition_geometry(disk,extend_part,(start,length,end))
+            elif start <= part_tuple[0] <=end and part_tuple[2] >=end:
+                end=part_tuple[0]-4
+                length=end-start+1
+                self.reduce_disk_exended_partition_geometry(disk,extend_part,(start,length,end))
+            else:
+                pass
 
         self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,part_tuple,part_fs,part_location)
         if self.to_add_partition==None:
             print "partition is null"
-            return 
 
         part_flag="add"   
         disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,part_tuple,part_fs,part_format,
@@ -602,7 +625,7 @@ class PartUtil:
         else:
             print "error,invalid extend_part argument"
 
-        if len(self.get_disk_logical_list(disk))==0 or len(self.get_disk_extend_list)==0:
+        if len(self.get_disk_logical_list(disk))==0 or len(self.get_disk_extend_list(disk))==0:
             print "no need to grown extended geometry as no logical part"
         elif ori_start < geom_tuple[0] and ori_end > geom_tuple[2]:
             print "no need to grown as origin size bigger"
