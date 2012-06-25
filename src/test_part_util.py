@@ -23,8 +23,18 @@
 from part_util import global_part_util
 
 def test_disk_partition_info_tab():
-    print global_part_util.disk_partition_info_tab()
+    for disk in global_part_util.get_system_disks():
+        print global_part_util.disk_partition_info_tab[disk]
+    
+def test_disk_part_display_path():
+    for disk in global_part_util.get_system_disks():
+        print global_part_util.disk_part_display_path[disk]
+
+def test_disk_geom_info_tab():
+    for disk in global_part_util.get_system_disks():
+        print global_part_util.disk_geom_info_tab[disk]
 
 if __name__=="__main__":
     test_disk_partition_info_tab()
-
+    test_disk_geom_info_tab()
+    test_disk_part_display_path()
