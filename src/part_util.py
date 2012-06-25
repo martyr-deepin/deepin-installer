@@ -176,7 +176,7 @@ class PartUtil:
             return disk_primary_list
         for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
             if item[1]=="primary" or item[0].type==0:
-                disk_primary_list.append(item)
+                disk_primary_list.append(item[0])
 
         return disk_primary_list                        
 
@@ -187,7 +187,7 @@ class PartUtil:
             return disk_logical_list
         for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
             if item[1]=="logical" or item[0].type==1:
-                disk_logical_list.append(item)
+                disk_logical_list.append(item[0])
         return disk_logical_list
 
     def get_disk_main_list(self,disk):
@@ -197,7 +197,7 @@ class PartUtil:
             return disk_main_list
         for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
             if item[1]=="primary" or item[1]=="extend":
-                disk_main_list.append(item)
+                disk_main_list.append(item[0])
         return disk_main_list        
 
     def get_disk_extend_list(self,disk):
@@ -207,7 +207,7 @@ class PartUtil:
             return disk_extend_list
         for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
             if item[1]=="extend" or item[0].type==2:
-                disk_extend_list.append(item)
+                disk_extend_list.append(item[0])
         return disk_extend_list
 
     ##################generate part path when have add or delete partition###################
@@ -447,6 +447,10 @@ class PartUtil:
 
         elif part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
+            print "####################extend_part############"
+            print extend_part
+            print "####################extend_part############"
+
             if extend_part.geometry.start > part_tuple[0] or extend_part.geometry.end < part_tuple[0]:
                 self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
             else:
@@ -583,7 +587,7 @@ class PartUtil:
             print "no need to add extend partition"
         else:
             extend_part=parted.partition.Partition(disk,parted.PARTITION_EXTENDED,None,geometry,None)
-            disk_partition_info_tab_item=[extend_part,"extend",geometry.length*disk.device.sectorSize,
+            disk_partition_info_tab_item=[extend_part,"extend",geometry.length*disk.device.sectorSize/1024*1024,
                                           (geometry.start,geometry.length,geometry.end),None,False,None,None,"start","add"]
             self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
