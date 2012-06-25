@@ -44,11 +44,17 @@ def test_disk_geom_info_tab():
     for item in pu.disk_geom_info_tab[disk]:
         print item[-1].start
         print item[-1].end
-    pu.add_disk_partition_info_tab(disk,"primary",1024,(70,1024*1024*1024/disk.device.sectorSize,1024*1024*1024/disk.device.sectorSize),"ext4",None,None,"/home","start")
+    pu.add_disk_partition_info_tab(disk,"primary",1024,(100,None,16771855),"ext4",None,None,"/home","start")
     print pu.disk_geom_info_tab[disk]
     for item in pu.disk_geom_info_tab[disk]:
         print item[-1].start
         print item[-1].end
+    pu.add_disk_partition_info_tab(disk,"primary",1024,(3097148,None,16097148),"ext4",None,None,"/home","start")
+    print pu.disk_geom_info_tab[disk]
+    for item in pu.disk_geom_info_tab[disk]:
+        print item[-1].start
+        print item[-1].end
+
 
 if __name__=="__main__":
     # test_disk_partition_info_tab()

@@ -791,7 +791,7 @@ class PartUtil:
         '''update disk_geom_info_tab when add partition from UI'''
         for item in self.disk_geom_info_tab[disk]:
             if item[0]=="part":
-                print "cann't add partition to exist part area"
+                print "part area,geometry not match"
             elif item[0]=="freespace":
                 if item[-1].start <=geometry.start and item[-1].end >= geometry.end:
                     if geometry.start - item[-1].start > 8:
@@ -812,10 +812,10 @@ class PartUtil:
                     self.disk_geom_info_tab[disk].remove(item)    
                     self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))    
 
-                elif item[-1].start > geometry.start and item[-1].end >=geometry.end:    
-                    print "start of geometry out of range can allocate"
-                elif item[-1].start <= geometry.start and item[-1].end < geometry.end:
-                    print "end of geometry out of range can allocate"
+                elif geometry.start < item[-1].start <geometry.end and item[-1].end >=geometry.end :
+                    print "start of geometry out of range can allocate:need let start bigger"
+                elif item[-1].start <= geometry.start and geometry.start< item[-1].end < geometry.end:
+                    print "end of geometry out of range can allocate:need let end smaller"
                 else:
                     print "geometry not match freespace"
             else:
@@ -891,6 +891,9 @@ class PartUtil:
         import math
         minlength=math.floor((long)(part_size*1024*1024)/(disk.device.sectorSize)+1)
         (start,length,end)=geom_tuple
+        if length==None or length < end-start+1:
+            length=end-start+1
+
         if minlength > length:
             print "the free space too small to hold the partition"
             part_start=start+4
@@ -900,7 +903,7 @@ class PartUtil:
             if part_location=="start" or len(part_location)==0:
                 part_start=start+4
                 part_length=minlength
-                part_end=part_start+part_end-1
+                part_end=part_start+part_length-1
             elif part_location=="end":
                 part_end=end-4
                 part_length=minlength
