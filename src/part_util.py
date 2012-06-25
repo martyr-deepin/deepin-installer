@@ -594,8 +594,11 @@ class PartUtil:
 
     def grown_disk_extended_partition_geometry(self,disk,extend_part,geom_tuple):
         '''grown extended geometry since add logical in extra freespace'''
-        ori_start=extend_part.geometry.start
-        ori_end=extend_part.geometry.end
+        if extend_part!=None:
+            ori_start=extend_part.geometry.start
+            ori_end=extend_part.geometry.end
+        else:
+            print "error,invalid extend_part argument"
 
         if len(self.get_disk_logical_list(disk))==0 or len(self.get_disk_extend_list)==0:
             print "no need to grown extended geometry as no logical part"
@@ -614,7 +617,35 @@ class PartUtil:
 
     def reduce_disk_exended_partition_geometry(self,disk,extend_part,geom_tuple):
         '''reduce extended geometry since add primary with freespace in origin extended'''
-        pass
+        if len(self.get_disk_extend_list(disk))==0:
+            print "no extend part"
+        elif len(self.get_disk_logical_list(disk))==0:
+            start=max(extend_part.geometry.start,geom_tuple[0])
+            end=min(extend_part.geometry.end,geom_tuple[2])
+            length=end-start+1
+            new_geom=parted.geometry.Geometry(disk.device,start,length,end,None)
+            self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
+        else:
+            logical_start=min(part.geometry.start for part in self.get_disk_logical_list(disk))
+            logical_end=max(part.geometry.end for part in self.get_disk_logical_list(disk))
+            ori_start=extend_part.geometry.start
+            ori_end=extend_part.geometry.end
+            first_logical=filter(lambda part:part.geometry.start==logical_start,self.get_disk_logical_list(disk))[0]
+            last_logical=filter(lambda part:part.geometry.end==logical_end,self.get_disk_logical_list(disk))[0]
+
+            if ori_start > logical_start or ori_end < logical_end:
+                print "logical geometry not in extend geometry,error"
+            elif geom_tuple[0]> logical_start or geom_tuple[2] < logical_end:
+                print "cann't reduce geometry into logical"
+            elif geom_tuple[0] <ori_start or geom_tuple[2] > ori_end:
+                print "actually grown size"
+            elif ori_start <= geom_tuple[0] <= logical_start and self.get_prev_geom_info_tab_item(disk,first_logical.geometry)[0]=="part":
+                print "no space before first logical"
+            elif logical_end <=geom_tuple[2] <=ori_end and self.get_next_geom_info_tab_item(disk,last_logical.geometry)[0]=="part"            :
+                print "no space after last logical"
+            else:
+                new_geom=parted.geometry.Geometry(disk.device,geom_tuple[0],geom_tuple[1],geom_tuple[2],None)
+                self.set_disk_extended_partition_geometry(self,disk,extend_part,new_geom)
 
     ##############update path_disks_partitons structure when add/delete partition##################
 
