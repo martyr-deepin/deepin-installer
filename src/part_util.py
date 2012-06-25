@@ -42,6 +42,11 @@ class PartUtil:
         self.disks=[]
         self.partition=""
         self.partitions=[]
+
+        self.lu=LogUtil()
+        self.logger=self.lu.create_logger("part_logger","debug")
+        self.handler=self.lu.create_logger_handler(self.logger,"file","debug","lineno",None)
+
     #{dev_path:disk}
         self.path_disks=self.__get_path_disks()
     #{disk:[partition1,partition2,],disk2:[]}
@@ -56,10 +61,6 @@ class PartUtil:
     #{disk:["freepart",geometry]}    
         self.disk_geom_info_tab={}
         self.init_disk_geom_info_tab()
-
-        self.lu=LogUtil()
-        self.logger=self.lu.create_logger("part_logger","debug")
-        self.handler=self.lu.create_logger_handler(self.logger,"file","debug","lineno",None)
 
         self.backup_disk_partition_info_tab=self.init_backup_disk_partition_info_tab()
         # self.backup_disk_partition_info_tab=copy.deepcopy(self.disk_partition_info_tab)
@@ -696,7 +697,7 @@ class PartUtil:
             gap_geom_list=[]#[["freespace",geometry]]
             space_geom_list=[]
 
-            if len(main_part_list==0):
+            if len(main_part_list)==0:
                 print "a whole blank disk"
                 part_geom_list=[]
             else:
@@ -715,7 +716,7 @@ class PartUtil:
 
             else:
                 start=disk.getFreeSpaceRegions()[0].start+4
-                end=part_geom_list[0].start-4
+                end=part_geom_list[0][-1].start-4
                 length=end-start+1
                 if length > 0:
                     gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
@@ -724,25 +725,25 @@ class PartUtil:
                     self.lu.do_log_msg(self.logger,"warning","start of disk have geometry overlap or disk size too small")
 
                 for i in range(len(part_geom_list)-1):
-                    start=part_geom_list[i].end+4
-                    end=part_geom_list[i+1].start-4
+                    start=part_geom_list[i][-1].end+4
+                    end=part_geom_list[i+1][-1].start-4
                     length=end-start+1
                     if length > 0:
                         gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                     else:
                         print "the size between two partition is too small"
-                        self.logger.warning("the size between two partition is too small")
+                        # self.logger.warning("the size between two partition is too small")
                         self.lu.do_log_msg(self.logger,"warning","the size between two partition is too small")
                     i=i+1    
         
-                start=part_geom_list[-1].end+4    
+                start=part_geom_list[-1][-1].end+4    
                 end=disk.getFreeSpaceRegions()[-1].end-4 
                 length=end-start+1
                 if length > 0:
                     gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                 else:
                     print "end of disk have geometry overlap or disk size too small"
-                    self.logger.warning("end of disk have geometry overlap or disk size too small")
+                    # self.logger.warning("end of disk have geometry overlap or disk size too small")
                     self.lu.do_log_msg(self.logger,"warning","end of disk have geometry overlap or disk size too small")
 
             space_geom_list=part_geom_list.extend(gap_geom_list)      

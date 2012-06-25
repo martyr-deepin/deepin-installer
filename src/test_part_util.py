@@ -22,6 +22,9 @@
 
 from part_util import global_part_util
 
-def test():
-    pass
+def test_disk_partition_info_tab():
+    print global_part_util.disk_partition_info_tab()
+
+if __name__=="__main__":
+    test_disk_partition_info_tab()
 
