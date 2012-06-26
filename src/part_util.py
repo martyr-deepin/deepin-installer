@@ -447,14 +447,21 @@ class PartUtil:
 
         elif part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
-            print "####################extend_part############"
-            print extend_part
-            print "####################extend_part############"
-
-            if extend_part.geometry.start > part_tuple[0] or extend_part.geometry.end < part_tuple[0]:
-                self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
+            # print "###############################"
+            # print extend_part.geometry
+            # print part_tuple
+            # print "###############################"
+            if part_tuple[0] > extend_part.geometry.start and part_tuple[2] < extend_part.geometry.end:
+                pass
             else:
-                print "extended space is enough"
+                print "grown####################"
+                self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
+            # if not extend_part.geometry.start < part_tuple[0] and not extend_part.geometry.end > part_tuple[2]:
+            #     print "start grown"
+            #     self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
+            #     print "end grown"
+            # else:
+            #     print "extended space is enough"
         elif part_type=="primary" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
             start=extend_part.geometry.start
@@ -586,6 +593,7 @@ class PartUtil:
         if len(self.get_disk_extend_list(disk))!=0:
             print "no need to add extend partition"
         else:
+            # fs=parted.filesystem.FileSystem("ext4",geometry,False,None)
             extend_part=parted.partition.Partition(disk,parted.PARTITION_EXTENDED,None,geometry,None)
             disk_partition_info_tab_item=[extend_part,"extend",geometry.length*disk.device.sectorSize/1024*1024,
                                           (geometry.start,geometry.length,geometry.end),None,False,None,None,"start","add"]
@@ -611,10 +619,12 @@ class PartUtil:
 
     def set_disk_extended_partition_geometry(self,disk,extend_part,geom):
         '''set the geometry of the current extended part'''
-        constraint=parted.constraint.Constraint(exactGeom=geom)
+        # constraint=parted.constraint.Constraint(exactGeom=geom)
+        constraint=parted.constraint.Constraint(maxGeom=geom)
         start=geom.start
         end=geom.end
         disk.setPartitionGeometry(extend_part,constraint,start,end)
+        ###need close part_num assert in libparted:disk.c-->_partition_align###
         for item in self.disk_partition_info_tab[disk]:
             if item[0]==extend_part and item[1]=="extend":
                 item[3]=(geom.start,geom.length,geom.end)
@@ -636,14 +646,15 @@ class PartUtil:
         elif ori_end < geom_tuple[0] and self.get_next_geom_info_tab_item(disk,extend_part.geometry)[0]=="part":
             print "cann't grown size to next used space"
         else:
+
             start=min(ori_start,geom_tuple[0])
             end=max(ori_end,geom_tuple[2])
             length=end-start+1
             new_geom=parted.geometry.Geometry(disk.device,start,length,end,None)
-            self.set_disk_extended_partition_geometry(self,disk,extend_part,new_geom)
+            self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
             for item in self.disk_partition_info_tab[disk]:
                 if item[0]==extend_part:
-                    item[3]=(extend_part.geometry.start,extend_part.geometry.length,extend_part.geometry.end)
+                    item[3]=(start,length,end)
 
     def reduce_disk_exended_partition_geometry(self,disk,extend_part,geom_tuple):
         '''reduce extended geometry since add primary with freespace in origin extended'''
@@ -675,7 +686,7 @@ class PartUtil:
                 print "no space after last logical"
             else:
                 new_geom=parted.geometry.Geometry(disk.device,geom_tuple[0],geom_tuple[1],geom_tuple[2],None)
-                self.set_disk_extended_partition_geometry(self,disk,extend_part,new_geom)
+                # self.set_disk_extended_partition_geometry(self,disk,extend_part,new_geom)
                 for item in self.disk_partition_info_tab[disk]:
                     if item[0]==extend_part:
                         item[3]=(extend_part.geometry.start,extend_part.geometry.length,extend_part.geometry.end)
