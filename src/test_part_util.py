@@ -46,15 +46,15 @@ def test_disk_geom_info_tab():
 
 
     pu.add_disk_partition_info_tab(disk,"logical",1024,(3097148,None,8097148),"ext4",None,None,"/home","start")
-    print pu.get_disk_extend_list(disk)[0].geometry
-    print pu.disk_partition_info_tab[disk]
+    # print pu.get_disk_extend_list(disk)[0].geometry
+    # print pu.disk_partition_info_tab[disk]
 
-    pu.add_disk_partition_info_tab(disk,"logical",1024,(8097148,None,13097148),"ext4",None,None,"/","start")
+    # pu.add_disk_partition_info_tab(disk,"logical",1024,(8097148,None,13097148),"ext4",None,None,"/","start")
     # # print_geom_info(disk)
-    print pu.disk_partition_info_tab[disk]
-    print pu.get_disk_extend_list(disk)[0].geometry
-
-
+    # print pu.disk_partition_info_tab[disk]
+    # print pu.get_disk_extend_list(disk)[0].geometry
+    pu.add_custom_partition()
+    
 def print_geom_info(disk):
     print pu.disk_geom_info_tab[disk]
     for item in pu.disk_geom_info_tab[disk]:

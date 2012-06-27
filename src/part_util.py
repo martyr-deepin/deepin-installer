@@ -447,21 +447,12 @@ class PartUtil:
 
         elif part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
-            # print "###############################"
-            # print extend_part.geometry
-            # print part_tuple
-            # print "###############################"
+
             if part_tuple[0] > extend_part.geometry.start and part_tuple[2] < extend_part.geometry.end:
                 pass
             else:
-                print "grown####################"
                 self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
-            # if not extend_part.geometry.start < part_tuple[0] and not extend_part.geometry.end > part_tuple[2]:
-            #     print "start grown"
-            #     self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
-            #     print "end grown"
-            # else:
-            #     print "extended space is enough"
+
         elif part_type=="primary" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
             start=extend_part.geometry.start
@@ -1121,25 +1112,33 @@ class PartUtil:
                 
     def add_custom_partition(self):
         '''batch add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
+        print "begin batch add partition"
         for disk in self.get_system_disks():
             for item in filter(lambda info:info[-1]=="add",self.disk_partition_info_tab[disk]):
-                if self.probe_tab_disk_has_extend(disk):
-                    # print "must add extend first"
-                    if item[0].type==parted.PARTITION_EXTENDED:
-                        self.partition=item[0]
-                        self.geometry=self.partition.geometry
-                        self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                        disk.addPartition(self.partition,self.constraint)
-                if item[0].type==parted.PARTITION_LOGICAL and not self.probe_tab_disk_has_extend(disk):
-                    print "can't add logical partition as there is no extended partition"
-                    self.lu.do_log_msg(self.logger,"error","can't add logical as no extended")
-                    break
-                else:
+                if item[0].type==0 or item[0].type==2:
                     self.partition=item[0]
                     self.geometry=self.partition.geometry
                     self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
                     disk.addPartition(self.partition,self.constraint)
+                    print "add primary/extended partition ok"
+                else:
+                    continue
+            for item in filter(lambda info:info[-1]=="add",self.disk_partition_info_tab[disk]):
+                if item[0].type==parted.PARTITION_LOGICAL and not self.probe_tab_disk_has_extend(disk):
+                    print "can't add logical partition as there is no extended partition"
+                    self.lu.do_log_msg(self.logger,"error","can't add logical as no extended")
+                    # break
+                elif item[0].type==1:
+                    print "add logical partition"
+                    self.partition=item[0]
+                    self.geometry=self.partition.geometry
+                    self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                    disk.addPartition(self.partition,self.constraint)
+                    print "add logical partition ok"
+                else:
+                    print "you had add primary/extended partition first"
             disk.commit()        
+            print "add all partitions ok"
             #mkfs/setname/mount disk partitions
             for item in filter(lambda info:info[-1]=="add",self.disk_partition_info_tab[disk]):
                 if item[0].type==parted.PARTITION_LOGICAL and not self.probe_tab_disk_has_extend(disk):
