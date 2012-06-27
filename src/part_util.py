@@ -909,47 +909,52 @@ class PartUtil:
 
     def delete_part_geom_info_tab(self,disk,geometry):
         '''update disk_geom_info_tab when delete partition from UI'''
-        if self.get_start_geom_info_tab_item(disk,geometry)==self.get_end_geom_info_tab_item(disk,geometry):
-            current_item=self.get_start_geom_info_tab_item(disk,geometry)
+        current_item=self.get_start_geom_info_tab_item(disk,geometry)
+        current_end_item=self.get_end_geom_info_tab_item(disk,geometry)
+        prev_item=self.get_prev_geom_info_tab_item(disk,geometry)
+        next_item=self.get_next_geom_info_tab_item(disk,geometry)
+
+        if current_item==None or len(current_item)==0:
+            print "no space specified by the geometry"
+            return
+
+        if current_item==current_end_item:
             if current_item[0]=="freespace":
                 print "freespace,no need to delete"
             else:
-                if self.get_prev_geom_info_tab_item(disk,geometry)[0]=="freespace":
-                    
-
-        else:
-
-            
-
-        for item in self.disk_geom_info_tab[disk]:
-
-            if item[0]=="freespace":
-                pass
-            elif item[0]=="part":
-                if item[-1].start<=geometry.start and item[-1].end>=geometry.end:
-                    self.disk_geom_info_tab[disk].remove(item)
-                    prev_item=self.get_prev_geom_info_tab_item(disk,geometry)
-                    if prev_item[0]=="freepart":
-                        start=prev_item[-1].start
-                        self.disk_geom_info_tab[disk].remove(prev_item)
-                    else:
-                        start=geometry.start
-                    next_item=self.get_next_geom_info_tab_item(disk,geometry)
-                    if next_item[0]=="freepart":
-                        end=next_item[-1].end
-                        self.disk_geom_info_tab[disk].remove(next_item)
-                    else:
-                        end=geometry.end
-
-                    length=end-start+1
-                    geom=parted.geometry.Geometry(disk.device,start,length,end,None)
-                    self.disk_geom_info_tab[disk].append("freepart",geom)
-                    self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+                if prev_item[0]=="freespace":
+                    start=prev_item[-1].start
                 else:
-                    continue
-            else:
-                print "unknown space"
-                
+                    start=current_item[-1].start
+                if next_item[0]=="freespace":
+                    end=next_item[-1].end
+                else:
+                    end=current_item[-1].end
+                length=end-start+1    
+
+                geom=parted.geometry.Geometry(disk.device,start,length,end,None)
+                self.disk_geom_info_tab[disk].remove(current_item)
+                self.disk_geom_info_tab[disk].append("freespace",geom)
+                self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        else:
+            if current_end_item[0]=="freespace":
+                if prev_item[0]=="freespace":
+                    start=prev_item[-1].start
+                else:
+                    start=current_item[-1].start
+                if next_item[0]=="freespace":
+                    end=next_item[-1].end
+                else:
+                    end=current_end_item[-1].end
+                length=end-start+1    
+
+                geom=parted.geometry.Geometry(disk.device,start,length,end,None)
+                self.disk_geom_info_tab[disk].remove(current_item)
+                self.disk_geom_info_tab[disk].remove(current_end_item)
+                self.disk_geom_info_tab[disk].append("freespace",geom)
+                self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+            else:    
+                print "can operate only one block one time,please adapt the geometry"
 
     ################set disk partition attribute before add or modify########################
     def get_disk_partition_object(self,disk,part_type,part_size,geom_tuple,part_fs,part_location):
