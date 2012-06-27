@@ -68,8 +68,8 @@ def test_reduce_extend_part():
     # print pu.disk_partition_info_tab[disk]
 
 
-    # pu.add_disk_partition_info_tab(disk,"logical",1000,(8097148,None,13097148),"ext4",None,None,"/","start")
-    pu.add_disk_partition_info_tab(disk,"primary",1000,(5150000,None,8000000),"ext4",None,None,"/","start")
+    pu.add_disk_partition_info_tab(disk,"logical",1000,(8097148,None,13097148),"ext4",None,None,"/","start")
+    # pu.add_disk_partition_info_tab(disk,"primary",1000,(5150000,None,8000000),"ext4",None,None,"/","start")
 
 
     print_geom_info(disk)

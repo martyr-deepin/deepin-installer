@@ -661,21 +661,11 @@ class PartUtil:
         # constraint=parted.constraint.Constraint(exactGeom=geom)
         start=geom.start
         end=geom.end
-        # print "the extend_part geometry before set:"
-        # print extend_part.geometry
-
         # disk.setPartitionGeometry(extend_part,constraint,start,end)
         extend_part.geometry.start=start
         extend_part.geometry.end=end
         extend_part.geometry.length=end-start+1
 
-        # print "the extend_part geometry after set,before m:"        
-        # print extend_part.geometry
-
-        # print "calculateMaxPartitionGeometry:"
-        # print disk.calculateMaxPartitionGeometry(extend_part,constraint)
-        # disk.maximizePartition(extend_part,constraint)
-        ###need close part_num assert in libparted:disk.c-->_partition_align###
         for item in self.disk_partition_info_tab[disk]:
             if item[0]==extend_part and item[1]=="extend":
                 item[3]=(geom.start,geom.length,geom.end)
@@ -685,6 +675,7 @@ class PartUtil:
         if extend_part!=None:
             ori_start=extend_part.geometry.start
             ori_end=extend_part.geometry.end
+            logical_list=self.get_disk_logical_list(disk).sort(cmp=lambda x,y:cmp(x.geometry.start,y.geometry.start))
         else:
             print "error,invalid extend_part argument"
 
@@ -692,9 +683,15 @@ class PartUtil:
             print "no need to grown extended geometry as no extended part"
         elif ori_start < geom_tuple[0] and ori_end > geom_tuple[2]:
             print "no need to grown as origin size bigger"
-        elif ori_start > geom_tuple[0] and self.get_prev_geom_info_tab_item(disk,extend_part.geometry)[0]=="part":
+        elif len(self.get_disk_logical_list(disk))==0:
+            start=min(ori_start,geom_tuple[0])
+            end=max(ori_end,geom_tuple[2])
+            length=end-start+1
+            new_geom=parted.geometry.Geometry(disk.device,start,length,end,None)
+            self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
+        elif ori_start > geom_tuple[0] and self.get_prev_geom_info_tab_item(disk,logical_list[0].geometry)[0]=="part":
             print "cann't grown size to prev used space"
-        elif ori_end < geom_tuple[0] and self.get_next_geom_info_tab_item(disk,extend_part.geometry)[0]=="part":
+        elif ori_end < geom_tuple[0] and self.get_next_geom_info_tab_item(disk,logical_list[-1].geometry)[0]=="part":
             print "cann't grown size to next used space"
         else:
             start=min(ori_start,geom_tuple[0])
@@ -702,7 +699,6 @@ class PartUtil:
             length=end-start+1
             new_geom=parted.geometry.Geometry(disk.device,start,length,end,None)
             self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
-
 
     def reduce_disk_extended_partition_geometry(self,disk,extend_part,geom_tuple):
         '''reduce extended geometry since add primary with freespace in origin extended'''
@@ -844,21 +840,30 @@ class PartUtil:
     def get_prev_geom_info_tab_item(self,disk,geometry):
         '''get previous space block of the geometry:part or freespace'''
         self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
-        prev_item=filter(lambda item:item[-1].end <= geometry.start,self.disk_geom_info_tab[disk])[-1]
+        if geometry.start <= self.disk_geom_info_tab[disk][0][-1].end:
+            prev_item=self.disk_geom_info_tab[disk][0]
+        else:
+            prev_item=filter(lambda item:item[-1].end <= geometry.start,self.disk_geom_info_tab[disk])[-1]
         return prev_item
 
     def get_next_geom_info_tab_item(self,disk,geometry):
         '''get next space block of the geometry:part or freespace'''
         self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
-        next_item=filter(lambda item:item[-1].start >= geometry.end,self.disk_geom_info_tab[disk])[0]
+        if geometry.end >= self.disk_geom_info_tab[disk][-1][-1].start:
+            next_item=self.disk_geom_info_tab[disk][-1]
+        else:    
+            next_item=filter(lambda item:item[-1].start >= geometry.end,self.disk_geom_info_tab[disk])[0]
         return next_item
 
-    def get_current_geom_info_tab_item(self,disk,geometry):
-        '''get current space block of the geometry:part or freespace'''
+    def get_start_geom_info_tab_item(self,disk,geometry):
+        '''get current space block of the geometry:return the start one'''
         self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
-        current_item=filter(lambda item:item[-1].start <=geometry.start and item[-1].end >=geometry.end,
-                            self.disk_geom_info_tab[disk])[0]
-        return current_item
+        return filter(lambda item:item[-1].start <= geometry.start,self.disk_geom_info_tab[disk])[-1]
+
+    def get_end_geom_info_tab_item(self,disk,geometry):
+        '''get current space block of the geometry:return the end one'''
+        self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        return filter(lambda item:item[-1].end >= geometry.end,self.disk_geom_info_tab[disk])[0]
 
     def get_space_geom_size(self,disk,geometry):
         '''get size of the geometry:part or freespace'''
@@ -904,7 +909,20 @@ class PartUtil:
 
     def delete_part_geom_info_tab(self,disk,geometry):
         '''update disk_geom_info_tab when delete partition from UI'''
+        if self.get_start_geom_info_tab_item(disk,geometry)==self.get_end_geom_info_tab_item(disk,geometry):
+            current_item=self.get_start_geom_info_tab_item(disk,geometry)
+            if current_item[0]=="freespace":
+                print "freespace,no need to delete"
+            else:
+                if self.get_prev_geom_info_tab_item(disk,geometry)[0]=="freespace":
+                    
+
+        else:
+
+            
+
         for item in self.disk_geom_info_tab[disk]:
+
             if item[0]=="freespace":
                 pass
             elif item[0]=="part":
