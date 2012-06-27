@@ -962,15 +962,13 @@ class PartUtil:
             print "no filesystem specified"
             self.lu.do_log_msg(self.logger,"error","no filesystem specified")
             return
-
         part_path=partition.path
         #swapoff the partition before change filesystem,if not work,simply reduce code
         try:
             origin_fs_type=partition.fileSystem.type
             if origin_fs_type==fstype:
-                # print "filesystem not changed"
+                print "filesystem not changed or partition hadnn't been formated"
                 self.lu.do_log_msg(self.logger,"warning","filesystem not changed")
-                return
             elif origin_fs_type=="linux-swap":
                 swap_data=get_os_command_output("grep "+part_path+" /proc/swaps")
                 if len(swap_data)!=0:
@@ -978,17 +976,18 @@ class PartUtil:
                     run_os_command(swap_off_command)
                 else:    
                     print "swap not on"
+            else:
+                print "fstype had changed,need format"
         except:
             print "get origin_fs_type error"
             self.lu.do_log_msg(self.logger,"error","get origin_fs_type error")
-
         #set fstype
         if fstype=="linux-swap":
             format_command="sudo mkswap "+part_path
         elif fstype=="fat32":
             format_command="sudo mkfs.vfat "+part_path
         elif fstype in ["ext2","ext3","ext4","reiserfs","xfs","ntfs"]:
-            format_command="sudo mkfs."+fstype+" -f "+part_path
+            format_command="sudo mkfs."+fstype+" "+part_path
         else:
             # print "invalid fstype"
             self.lu.do_log_msg(self.logger,"error","invalid fstype")
@@ -1123,20 +1122,20 @@ class PartUtil:
                     print "add primary/extended partition ok"
                 else:
                     continue
-            for item in filter(lambda info:info[-1]=="add",self.disk_partition_info_tab[disk]):
-                if item[0].type==parted.PARTITION_LOGICAL and not self.probe_tab_disk_has_extend(disk):
+            for item in filter(lambda info:info[-1]=="add" and info[0].type==1,self.disk_partition_info_tab[disk]):
+                if not self.probe_tab_disk_has_extend(disk):
                     print "can't add logical partition as there is no extended partition"
                     self.lu.do_log_msg(self.logger,"error","can't add logical as no extended")
                     # break
-                elif item[0].type==1:
+                elif item[0].type!=1:
+                    print "you had add primary/extended partition first"
+                else:
                     print "add logical partition"
                     self.partition=item[0]
                     self.geometry=self.partition.geometry
                     self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
                     disk.addPartition(self.partition,self.constraint)
                     print "add logical partition ok"
-                else:
-                    print "you had add primary/extended partition first"
             disk.commit()        
             print "add all partitions ok"
             #mkfs/setname/mount disk partitions
