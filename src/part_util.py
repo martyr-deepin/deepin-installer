@@ -676,26 +676,38 @@ class PartUtil:
             ori_start=extend_part.geometry.start
             ori_end=extend_part.geometry.end
             logical_list=self.get_disk_logical_list(disk).sort(cmp=lambda x,y:cmp(x.geometry.start,y.geometry.start))
+            if len(logical_list)!=0:
+                prev_item=self.get_prev_geom_info_tab_item(disk,logical_list[0].geometry)
+                next_item=self.get_next_geom_info_tab_item(disk,logical_list[-1].geometry)
+            else:
+                prev_item=self.get_prev_geom_info_tab_item(disk,extend_part.geometry)
+                next_item=self.get_next_geom_info_tab_item(disk,extend_part.geometry)
         else:
             print "error,invalid extend_part argument"
+            return 
 
         if len(self.get_disk_extend_list(disk))==0:
-            print "no need to grown extended geometry as no extended part"
+            print "no need to grown as no extended part,error!!!"
         elif ori_start < geom_tuple[0] and ori_end > geom_tuple[2]:
             print "no need to grown as origin size bigger"
-        elif len(self.get_disk_logical_list(disk))==0:
-            start=min(ori_start,geom_tuple[0])
-            end=max(ori_end,geom_tuple[2])
-            length=end-start+1
-            new_geom=parted.geometry.Geometry(disk.device,start,length,end,None)
-            self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
-        elif ori_start > geom_tuple[0] and self.get_prev_geom_info_tab_item(disk,logical_list[0].geometry)[0]=="part":
-            print "cann't grown size to prev used space"
-        elif ori_end < geom_tuple[0] and self.get_next_geom_info_tab_item(disk,logical_list[-1].geometry)[0]=="part":
-            print "cann't grown size to next used space"
         else:
-            start=min(ori_start,geom_tuple[0])
-            end=max(ori_end,geom_tuple[2])
+            if ori_start >= geom_tuple[0]:
+                if prev_item[0]=="freespace":
+                    start=max(prev_item[-1].start,geom_tuple[0])
+                else:
+                    print "cann't grown size to prev used space"
+                    start=ori_start
+            else:
+                start=ori_start
+
+            if ori_end <= geom_tuple[2]:
+                if next_item[0]=="freespace":
+                    end=min(next_item[-1].end,geom_tuple[2])
+                else:
+                    print "cann't grown size to next used space"
+                    end=ori_end
+            else:
+                end=ori_end
             length=end-start+1
             new_geom=parted.geometry.Geometry(disk.device,start,length,end,None)
             self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
