@@ -451,6 +451,7 @@ class PartUtil:
             if part_tuple[0] > extend_part.geometry.start and part_tuple[2] < extend_part.geometry.end:
                 print "extend_part space is big enough to add the logical"
             else:
+                print "need grown_disk_extended_partition_geometry"
                 self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
 
         elif part_type=="primary" and len(self.get_disk_extend_list(disk))!=0:
@@ -459,7 +460,7 @@ class PartUtil:
             length=extend_part.geometry.length
             end=extend_part.geometry.end
             if part_tuple[0] >= end or part_tuple[2] <= start:
-                pass
+                print "no need to smaller extend_part when add primary"
             elif part_tuple[0] <= start and start <= part_tuple[2] <=end:
                 start=part_tuple[2]+4
                 length=end-start+1
@@ -640,8 +641,8 @@ class PartUtil:
         else:
             print "error,invalid extend_part argument"
 
-        if len(self.get_disk_logical_list(disk))==0 or len(self.get_disk_extend_list(disk))==0:
-            print "no need to grown extended geometry as no logical part"
+        if len(self.get_disk_extend_list(disk))==0:
+            print "no need to grown extended geometry as no extended part"
         elif ori_start < geom_tuple[0] and ori_end > geom_tuple[2]:
             print "no need to grown as origin size bigger"
         elif ori_start > geom_tuple[0] and self.get_prev_geom_info_tab_item(disk,extend_part.geometry)[0]=="part":
@@ -649,7 +650,6 @@ class PartUtil:
         elif ori_end < geom_tuple[0] and self.get_next_geom_info_tab_item(disk,extend_part.geometry)[0]=="part":
             print "cann't grown size to next used space"
         else:
-
             start=min(ori_start,geom_tuple[0])
             end=max(ori_end,geom_tuple[2])
             length=end-start+1

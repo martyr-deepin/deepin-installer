@@ -57,14 +57,17 @@ def test_disk_geom_info_tab():
 
 def test_reduce_extend_part():
     disk=pu.get_disk_from_path("/dev/sdb")
-    pu.add_disk_partition_info_tab(disk,"primary",1024,(100,None,3000000),"ext4",None,None,"/home","start")
+    # pu.add_disk_partition_info_tab(disk,"primary",1000,(100,None,2048100),"ext4",None,None,"/home","start")
     # pu.add_disk_partition_info_tab(disk,"extend",1024,(16771855,None,8097148),"ext4",None,None,"/home","start")
 
-    pu.add_disk_partition_info_tab(disk,"logical",1024,(5097148,None,7097148),"ext4",None,None,"/var","start")
+    pu.add_disk_partition_info_tab(disk,"logical",1000,(3097148,None,5197148),"ext4",None,None,"/var","start")
     # # print pu.get_disk_extend_list(disk)[0].geometry
     # print pu.disk_partition_info_tab[disk]
-    pu.add_disk_partition_info_tab(disk,"logical",1024,(8097148,None,13097148),"ext4",None,None,"/","start")
-    pu.add_disk_partition_info_tab(disk,"primary",1024,(2500000,None,5000000),"ext4",None,None,"/","start")
+
+
+    # pu.add_disk_partition_info_tab(disk,"logical",1000,(8097148,None,13097148),"ext4",None,None,"/","start")
+    # pu.add_disk_partition_info_tab(disk,"primary",1000,(2050000,None,4100000),"ext4",None,None,"/","start")
+
 
     # print_geom_info(disk)
     # print pu.disk_partition_info_tab[disk]
