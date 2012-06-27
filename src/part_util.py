@@ -449,7 +449,7 @@ class PartUtil:
             extend_part=self.get_disk_extend_list(disk)[0]
 
             if part_tuple[0] > extend_part.geometry.start and part_tuple[2] < extend_part.geometry.end:
-                pass
+                print "extend_part space is big enough to add the logical"
             else:
                 self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
 
@@ -611,14 +611,26 @@ class PartUtil:
     def set_disk_extended_partition_geometry(self,disk,extend_part,geom):
         '''set the geometry of the current extended part'''
         # constraint=parted.constraint.Constraint(exactGeom=geom)
-        constraint=parted.constraint.Constraint(maxGeom=geom)
         start=geom.start
         end=geom.end
-        disk.setPartitionGeometry(extend_part,constraint,start,end)
+        # print "the extend_part geometry before set:"
+        # print extend_part.geometry
+
+        # disk.setPartitionGeometry(extend_part,constraint,start,end)
+        extend_part.geometry.start=start
+        extend_part.geometry.end=end
+        extend_part.geometry.length=end-start+1
+
+        # print "the extend_part geometry after set,before m:"        
+        # print extend_part.geometry
+
+        # print "calculateMaxPartitionGeometry:"
+        # print disk.calculateMaxPartitionGeometry(extend_part,constraint)
+        # disk.maximizePartition(extend_part,constraint)
         ###need close part_num assert in libparted:disk.c-->_partition_align###
-        for item in self.disk_partition_info_tab[disk]:
-            if item[0]==extend_part and item[1]=="extend":
-                item[3]=(geom.start,geom.length,geom.end)
+        # for item in self.disk_partition_info_tab[disk]:
+        #     if item[0]==extend_part and item[1]=="extend":
+        #         item[3]=(geom.start,geom.length,geom.end)
 
     def grown_disk_extended_partition_geometry(self,disk,extend_part,geom_tuple):
         '''grown extended geometry since add logical in extra freespace'''
