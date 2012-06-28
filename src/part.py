@@ -274,8 +274,8 @@ class Part(gtk.VBox):
     def init_part_btn_itemlist(self):
         '''update part_btn_itemlist for buttons box'''
         self.update_selected_disk()
-        disk_part_itemlist=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.disk_partition_info_tab)
-        
+
+        disk_part_itemlist=self.part_util.disk_partition_info_tab[self.selected_disk]
         part_btn_itemlist=[]
         for item in disk_part_itemlist:
             if item[0].type==2 or item[-1]=="delete":
@@ -316,7 +316,8 @@ class Part(gtk.VBox):
         '''update listview_items,mostly used when change disk or first load'''
         self.update_selected_disk()
 
-        self.disk_partition_info=filter(lambda item:item[0].disk==self.selected_disk,self.part_util.disk_partition_info_tab)
+        self.disk_partition_info=self.part_util.disk_partition_info_tab[self.selected_disk]
+        
         part_listview_items=[]
         # print "before init part list view items:\n"
         # print part_listview_items
@@ -486,7 +487,7 @@ class Part(gtk.VBox):
         part_edit_fs=self.part_edit.part_fs_combo.get_current_item()[0]
         part_edit_mp=self.part_edit.part_mp_combo.get_current_item()[0]
 
-        for item in self.part_util.disk_partition_info_tab:
+        for item in self.part_util.disk_partition_info_tab[self.selected_disk]:
             if item[0]==self.current_part:
                 if part_edit_fs==item[4]:
                     part_edit_format=False
@@ -509,7 +510,7 @@ class Part(gtk.VBox):
             print "must select a partition first"
             return
         self.current_part=self.part_listview.get_current_item().partition
-        for item in self.part_util.disk_partition_info_tab:
+        for item in self.part_util.disk_partition_info_tab[self.selected_disk]:
             if item[0]==self.current_part:
                 self.part_util.delete_disk_partition_info_tab(self.current_part)
                 self.get_delete_part_other_path(self.current_part)
