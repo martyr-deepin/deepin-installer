@@ -906,14 +906,14 @@ class PartUtil:
                         self.disk_geom_info_tab[disk].append(["freespace",after_geometry])
 
                     self.disk_geom_info_tab[disk].remove(item)    
-                    # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))    
+
                     self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
                 elif geometry.start < item[-1].start <geometry.end and item[-1].end >=geometry.end :
-                    print "start of geometry out of range can allocate:need let start bigger"
+                    print "error,start of geometry out of range can allocate:need let start bigger"
                 elif item[-1].start <= geometry.start and geometry.start< item[-1].end < geometry.end:
-                    print "end of geometry out of range can allocate:need let end smaller"
+                    print "error,end of geometry out of range can allocate:need let end smaller"
                 else:
-                    print "geometry not match freespace"
+                    print "geometry not match freespace,goto find the next block"
             else:
                 print "unknown space,not part or freespace"
 
@@ -927,17 +927,18 @@ class PartUtil:
         if current_item==None or len(current_item)==0:
             print "no space specified by the geometry"
             return
-
         if current_item==current_end_item:
             if current_item[0]=="freespace":
                 print "freespace,no need to delete"
             else:
                 if prev_item[0]=="freespace":
                     start=prev_item[-1].start
+                    self.disk_geom_info_tab[disk].remove(prev_item)
                 else:
                     start=current_item[-1].start
                 if next_item[0]=="freespace":
                     end=next_item[-1].end
+                    self.disk_geom_info_tab[disk].remove(next_item)
                 else:
                     end=current_item[-1].end
                 length=end-start+1    
@@ -945,25 +946,26 @@ class PartUtil:
                 geom=parted.geometry.Geometry(disk.device,start,length,end,None)
                 self.disk_geom_info_tab[disk].remove(current_item)
                 self.disk_geom_info_tab[disk].append("freespace",geom)
-                # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
                 self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
         else:
+            print "this should be error,the geometry arg should indicate only one block"
             if current_end_item[0]=="freespace":
                 if prev_item[0]=="freespace":
                     start=prev_item[-1].start
+                    self.disk_geom_info_tab[disk].remove(prev_item)
                 else:
                     start=current_item[-1].start
                 if next_item[0]=="freespace":
                     end=next_item[-1].end
+                    self.disk_geom_info_tab[disk].remove(next_item)
                 else:
                     end=current_end_item[-1].end
                 length=end-start+1    
-
                 geom=parted.geometry.Geometry(disk.device,start,length,end,None)
                 self.disk_geom_info_tab[disk].remove(current_item)
                 self.disk_geom_info_tab[disk].remove(current_end_item)
                 self.disk_geom_info_tab[disk].append("freespace",geom)
-                # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+
                 self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
             else:    
                 print "can operate only one block one time,please adapt the geometry"
