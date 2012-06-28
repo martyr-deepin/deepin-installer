@@ -447,7 +447,6 @@ class PartUtil:
 
         elif part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
-
             if space_geom.start > extend_part.geometry.start and space_geom.end < extend_part.geometry.end:
                 print "extend_part space is big enough to add the logical"
             else:
@@ -457,7 +456,6 @@ class PartUtil:
         elif part_type=="primary" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
             start=extend_part.geometry.start
-            length=extend_part.geometry.length
             end=extend_part.geometry.end
             if space_geom.start >= end or space_geom.end <= start:
                 print "no need to smaller extend_part when add primary"
@@ -467,8 +465,7 @@ class PartUtil:
 
         self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,space_geom,part_fs,part_location)
         if self.to_add_partition==None:
-            print "partition is null"
-
+            print "error,partition is null"
         part_flag="add"   
         disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,space_geom,part_fs,part_format,
                                       part_name,part_mountpoint,part_location,part_flag]
@@ -866,7 +863,7 @@ class PartUtil:
         '''get size of the geometry:part or freespace'''
         pass
 
-    def get_part_from_geom_info_tab(self,disk,geometry):
+    def get_part_from_geom(self,disk,geometry):
         '''return part obj match the given geometry'''
         current_start_item=self.get_start_geom_info_tab_item(disk,geometry)
         current_end_item=self.get_end_geom_info_tab_item(disk,geometry)
@@ -877,18 +874,14 @@ class PartUtil:
                 return
             elif current_start_item[0]=="part":
                 for item in disk_partition_info_item:
-                    if item[0].geometry.contains(geometry) or geometry.contains(item[0].geometry):
-                        if item[0].type==2:
-                            pass
-                        else:
-                            return item[0]
+                    if item[0].geometry==geometry:
+                        return item[0]
                     else:
                         continue
                 else:
-                    print "not find a geometry adapte part"
+                    print "do not find a part match the given geometry"
         else:
             print "invalid geometry arg,have part block overlaps"
-                    
 
     def add_part_geom_info_tab(self,disk,geometry):
         '''update disk_geom_info_tab when add partition from UI'''
