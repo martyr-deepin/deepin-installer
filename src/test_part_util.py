@@ -86,8 +86,17 @@ def test_delete_disk_partition_info_tab():
 
     pu.add_disk_partition_info_tab(disk,"primary",1000,(12288000,None,14288000),"ext4",None,None,"/","start")
     print_geom_info(disk)
+    import parted
+    geometry=parted.geometry.Geometry(disk.device,9000000,None,10000000,None)
+    print "get the geometry object"
+    print geometry
+    print "get the part object:"
+    part=pu.get_part_from_geom_info_tab(disk,geometry)
+    print part
 
-    pu.delete_disk_partition_info_tab()
+
+    print "delete the part"
+    pu.delete_disk_partition_info_tab(part)
     print_geom_info(disk)
 
     pu.add_custom_partition()

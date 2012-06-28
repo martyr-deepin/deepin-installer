@@ -31,6 +31,8 @@ skin_config.init_skin(
     os.path.join(get_parent_dir(__file__, 2), "skin"),
     os.path.expanduser("~/.config/deepin-installer/skin"),
     os.path.expanduser("~/.config/deepin-installer/skin_config.ini"),
+    "deepin-installer-demo",
+    "1.0"
     )
 
 # Create application theme.

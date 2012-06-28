@@ -897,7 +897,10 @@ class PartUtil:
             elif current_start_item[0]=="part":
                 for item in disk_partition_info_item:
                     if item[0].geometry.contains(geometry) or geometry.contains(item[0].geometry):
-                        return item[0]
+                        if item[0].type==2:
+                            pass
+                        else:
+                            return item[0]
                     else:
                         continue
                 else:
