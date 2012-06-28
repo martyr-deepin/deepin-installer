@@ -976,8 +976,7 @@ class PartUtil:
            add the part_obj to path_disks_partitions when it birth
         '''
         self.type=self.set_disk_partition_type(disk,part_type)
-        self.geometry=space_geom
-        # self.geometry=self.set_disk_partition_geometry(disk,part_size,geom_tuple,part_location)
+        self.geometry=self.set_disk_partition_geometry(disk,part_size,space_geom,part_location)
         self.fs=parted.filesystem.FileSystem(part_fs,self.geometry,False,None)
         self.partition=parted.partition.Partition(disk,self.type,self.fs,self.geometry,None)
         self.insert_path_disks_partitions(disk,self.partition)
@@ -1005,14 +1004,13 @@ class PartUtil:
 
         return (start,length,end)
 
-    def set_disk_partition_geometry(self,disk,part_size,geom_tuple,part_location):
+    def set_disk_partition_geometry(self,disk,part_size,space_geom,part_location):
         '''to get geometry of new added partition'''
         import math
         minlength=math.floor((long)(part_size*1024*1024)/(disk.device.sectorSize)+1)
-        (start,length,end)=geom_tuple
+        (start,length,end)=(space_geom.start,space_geom.length,space_geom.end)
         if length==None or length < end-start+1:
             length=end-start+1
-
         if minlength > length:
             print "the free space too small to hold the partition"
             part_start=start+4
@@ -1027,8 +1025,10 @@ class PartUtil:
                 part_end=end-4
                 part_length=minlength
                 part_start=part_end-part_length+1
-        self.geometry=parted.geometry.Geometry(disk.device,part_start,part_length,part_end,None)
-        return self.geometry
+        space_geom.start=part_start
+        space_geom.length=part_length
+        space_geom.end=part_end
+        return space_geom
 
     def set_disk_partition_name(self,partition,part_name):
         '''cann't set this attribute,need to fix'''
