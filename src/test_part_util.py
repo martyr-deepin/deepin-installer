@@ -74,6 +74,23 @@ def test_reduce_extend_part():
     # print pu.get_disk_extend_list(disk)[0].geometry
     pu.add_custom_partition()
 
+def test_delete_disk_partition_info_tab():
+    disk=pu.get_disk_from_path("/dev/sdb")
+    print_geom_info(disk)
+
+    pu.add_disk_partition_info_tab(disk,"logical",1000,(3097148,None,5197148),"ext4",None,None,"/var","end")
+    print_geom_info(disk)
+
+    pu.add_disk_partition_info_tab(disk,"logical",1000,(8097148,None,13097148),"ext4",None,None,"/","start")
+    print_geom_info(disk)
+
+    pu.add_disk_partition_info_tab(disk,"primary",1000,(12288000,None,14288000),"ext4",None,None,"/","start")
+    print_geom_info(disk)
+
+    pu.delete_disk_partition_info_tab()
+    print_geom_info(disk)
+
+    pu.add_custom_partition()
     
 def print_geom_info(disk):
     print pu.disk_geom_info_tab[disk]
@@ -86,4 +103,5 @@ if __name__=="__main__":
     # test_disk_partition_info_tab()
     # test_disk_geom_info_tab()
     # test_disk_part_display_path()
-    test_reduce_extend_part()
+    # test_reduce_extend_part()
+    test_delete_disk_partition_info_tab()

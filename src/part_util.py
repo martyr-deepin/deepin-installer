@@ -887,7 +887,24 @@ class PartUtil:
 
     def get_part_from_geom_info_tab(self,disk,geometry):
         '''return part obj match the given geometry'''
-        pass
+        current_start_item=self.get_start_geom_info_tab_item(disk,geometry)
+        current_end_item=self.get_end_geom_info_tab_item(disk,geometry)
+        disk_partition_info_item=self.disk_partition_info_tab[disk]
+        if current_start_item==current_end_item:
+            if current_start_item[0]=="freespace":
+                print "the block of the geometry is freespace"
+                return
+            elif current_start_item[0]=="part":
+                for item in disk_partition_info_item:
+                    if item[0].geometry.contains(geometry) or geometry.contains(item[0].geometry):
+                        return item[0]
+                    else:
+                        continue
+                else:
+                    print "not find a geometry adapte part"
+        else:
+            print "invalid geometry arg,have part block overlaps"
+                    
 
     def add_part_geom_info_tab(self,disk,geometry):
         '''update disk_geom_info_tab when add partition from UI'''
