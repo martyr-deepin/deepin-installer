@@ -323,25 +323,21 @@ class Part(gtk.VBox):
             if item[0]=="freespace":
                 # part_list_item=PartListItem(self.selected_disk,item,None,None,None,None,None,None)
                 # part_listview_items.append(part_list_item)
-                print "show freespace in the listview"
+                print "show freespace in the listview:"
+                
             elif item[0]=="part":
                 for pi in self.disk_partition_info:
-                    if item[1].contains(pi[0].geometry):
-                        part_list_item=PartListItem(self.selected_disk,pi[3],pi[0],str(pi[7]),str(pi[4]),str(pi[5]),str(pi[2]),str(pi[1]))
+                    if item[1]==pi[0].geometry:
+                        # (self,disk,geom_item,partition,mp,fstype,format,total_size,part_type)
+                        part_list_item=PartListItem(self.selected_disk,item,pi[0],str(pi[7]),str(pi[4]),str(pi[5]),str(pi[2]),str(pi[1]))
                         part_listview_items.append(part_list_item)
+                        break
+                    else:
+                        continue
                 else:
-                    print "donn't find the disk_geom_info_tab item in disk_partition_info_tab"
+                    print "donn't find the disk_geom_info_tab item in disk_partition_info_tab:"
             else:
                 print "invalid disk block"
-
-        # for item in self.disk_partition_info:
-        #     if item[-1]=="delete":
-        #         pass
-        #     else:
-        #         #[disk,geom_item,partition,mp,fstype,format,total_size,part_type]
-        #         part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),str(item[3]),str(item[2]))
-        #         # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
-        #         part_listview_items.append(part_list_item)
 
         return part_listview_items
     
