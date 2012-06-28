@@ -131,6 +131,7 @@ class PartNew(Window):
             part_type="logical"
         self.max_size=0
         self.max_size=self.part_util.get_disk_single_available_space_size(self.current_disk,part_type)
+            
         return self.max_size
     
     def limit_2added_part_type(self):
@@ -156,6 +157,7 @@ class PartNew(Window):
     def on_part_type_combo_selected(self,arg1,arg2,arg3,arg4):
         '''on part_type_combo_selected'''
         ava_size=int(self.get_max_size())
+        # ava_size=int(self.part_util.get_space_geom_size(disk,geometry))
         # self.part_capacity_spin.set_value(ava_size)
         self.part_capacity_spin.set_upper(ava_size)
         self.part_capacity_spin.set_value(int(ava_size/2))

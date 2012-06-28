@@ -63,7 +63,7 @@ class PartUtil:
         self.disk_geom_info_tab={}
         self.init_disk_geom_info_tab()
 
-        self.backup_disk_partition_info_tab=self.init_backup_disk_partition_info_tab()
+        self.backup_disk_partition_info_tab=self.init_disk_partition_info_tab()
         # self.backup_disk_partition_info_tab=copy.deepcopy(self.disk_partition_info_tab)
 
     #######################fill in data relative to disk,mostly in physical#######################
@@ -527,47 +527,6 @@ class PartUtil:
                 continue
         return Flag    
 
-    def init_backup_disk_partition_info_tab(self):
-        '''copy from init_disk_partition_info_tab,as _Ped object not support simply deepcopy'''
-        disk_partition_info_tab={}
-        disk_partition_info_tab_item=[]
-
-        for disk in self.get_system_disks():
-            disk_partition_info_tab[disk]=[]
-
-            if disk.getFirstPartition()==None:
-                self.set_disk_label(disk.device)
-                continue 
-            for part in self.get_disk_partitions(disk):
-                part_type=PART_TYPE_LIST[part.type]
-                part_size=part.getSize(unit="MB")
-                start=part.geometry.start
-                length=part.geometry.length
-                end=part.geometry.end
-                part_tuple=(start,length,end)
-                
-                try:
-                    part_fs=part.fileSystem.type#just for primary and logical partition
-                except:
-                    part_fs=None
-                part_format=False#donn't format origin partition
-                try:
-                    part_name=part.name
-                except:
-                    part_name=""
-                try:
-                    part_mountpoint=self.get_disk_partition_mount(part)[0][1]
-                except:
-                    part_mountpoint=""
-                part_location="start"#start/end
-                part_flag="keep"   #flag:keep,new,delete 
-
-                disk_partition_info_tab_item=[part,part_type,part_size,part_tuple,part_fs,part_format,
-                                              part_name,part_mountpoint,part_location,part_flag]
-
-                disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
-
-        return disk_partition_info_tab
     
     ###################update disk extended part when necessary###################################
     def add_disk_extended_partition(self,disk,geometry):
@@ -875,7 +834,8 @@ class PartUtil:
 
     def get_space_geom_size(self,disk,geometry):
         '''get size of the geometry:part or freespace'''
-        pass
+        space_size=(float)(geometry.length*disk.device.sectorSize)/(float)(1024*1024)
+        return space_size
 
     def get_part_from_geom(self,disk,geometry):
         '''return part obj match the given geometry'''

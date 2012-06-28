@@ -2096,3 +2096,22 @@ part_util.py/init_disk_geom_info_tab-817:WARNING-the size between two partition 
 log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
 part_util.py/init_disk_geom_info_tab-828:WARNING-end of disk have geometry overlap or disk size too small
 log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-828:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:ERROR-invalid,if partition marked delete,you wonn't see it 
+part_util.py/init_disk_geom_info_tab-817:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-828:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-828:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small

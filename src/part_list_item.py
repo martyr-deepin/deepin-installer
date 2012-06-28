@@ -41,6 +41,7 @@ class PartListItem(gobject.GObject):
     def __init__(self,disk,geom_item,partition,mp,fstype,format,total_size,part_type):
         gobject.GObject.__init__(self)
         self.update(disk,geom_item,partition,mp,fstype,format,total_size,part_type)
+    
         self.index = None
         
     def set_index(self, index):
@@ -55,9 +56,8 @@ class PartListItem(gobject.GObject):
         '''update item'''
         self.disk=disk
         self.geom_item=geom_item
+        # if self.geom_item[0]=="part":
         self.partition=partition
-
-        # print self.partition.disk
         self.part_path=global_part_util.disk_part_display_path[self.disk][self.partition]
         self.fstype=fstype
         self.mp=mp
