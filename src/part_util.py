@@ -58,7 +58,8 @@ class PartUtil:
         self.disk_partition_info_tab=self.init_disk_partition_info_tab()
     #{disk:{partition:part_path}}
         self.disk_part_display_path=self.init_disk_part_display_path()
-    #{disk:["freepart",geometry]},use geometry object to keep match with disk_partition_info_tab    
+    #{disk:["freespace",geometry]},use geometry object to keep match with disk_partition_info_tab    
+    #attention:the geometry id of freespace is variable#
         self.disk_geom_info_tab={}
         self.init_disk_geom_info_tab()
 
@@ -673,10 +674,14 @@ class PartUtil:
                 print "need reduce size at the start of the extend_part"
                 if len(logical_list)!=0:
                     if primary_geom.end > logical_list[0].geometry.start:
-                        print "add primary to space used by first logical,smaller the primary end to to added part"
-                        primary_geom.end = logical_list[0].geometry.start-4
-                        primary_geom.length=primary_geom.end - primary_geom.start + 1
-                        ##########need also change the value of size############
+                        # print "add primary to space used by first logical,smaller the primary end to to added part"
+                        # primary_geom.end = logical_list[0].geometry.start-4
+                        # primary_geom.length=primary_geom.end - primary_geom.start + 1
+                        print "error,cann't add primary into first logical"
+                    else:    
+                        extend_part.geometry.start=min(primary_geom.end+4,logical_list[0].geometry.start)
+                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+
                 extend_part.geometry.start=primary_geom.end+4
                 extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
 
@@ -697,8 +702,16 @@ class PartUtil:
                         print "error,cann't add primary into logical"
                         return 
                 else:
-                    ########################to be implemented############################
-                    pass
+                    print "choose the bigger part to be new extend_part"
+                    start_gap=primary_geom.start - start
+                    end_gap=end - primary_geom.end
+                    if start_gap <= end_gap:
+                        extend_part.geometry.start=primary_geom.end+4
+                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start +1
+                    else:    
+                        extend_part.geometry.end=primary_geom.start-4
+                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+
             elif start < primary_geom.start <= end and primary_geom.end > end:
                 print "need reduce size at the end to the extend_part"
                 if len(logical_list)!=0:
@@ -709,12 +722,13 @@ class PartUtil:
                         extend_part.geometry.end=max(logical_list[-1].geometry.end,primary_geom.start-4)
                         extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
                 else:
-                    ########################to be implemented############################
-                    pass
+                    extend_part.geometry.end=primary_geom.start-4
+                    extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+
             elif primary_geom.start <= start and primary_geom.end >=end:
                 print "the primary geometry contains the extend one"
                 if len(logical_list)==0:
-                    ########################to be implemented############################
+                    self.disk_partition_info_tab[disk]=filter(lambda info:info[0].type!=2,self.disk_partition_info_tab[disk])
                     print "you should delete the extend part to get the space to add primary"
                 else:
                     print "invalid,cann't add primary whoes geometry contains logicals" 
@@ -1033,7 +1047,7 @@ class PartUtil:
     def set_disk_partition_name(self,partition,part_name):
         '''cann't set this attribute,need to fix'''
         if not partition.disk.supportsFeature(parted.DISK_TYPE_PARTITION_NAME):
-            print "sorry,can't set partition name"
+            print "sorry,the disk doesn't support set partition name"
             self.lu.do_log_msg(self.logger,"warning","sorry,conn't set partition name")
         elif part_name==None or len(part_name)==0:
             partition.name=""
