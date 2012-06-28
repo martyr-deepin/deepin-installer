@@ -465,7 +465,7 @@ class PartUtil:
             elif part_tuple[0] <= start and start <= part_tuple[2] <=end:
                 print "need reduce size at the start of the extend_part"
                 if len(self.get_disk_logical_list(disk))!=0:
-                    logical_list=self.get_disk_logical_list(disk).sort(cmp=lambda x,y:cmp(x.geometry.start,y.geometry.start))
+                    logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
                     if part_tuple[2] > logical_list[0].geometry.start:
                         print "add primary to space used by first logical"
                         part_tuple[2]=logical_list[0].geometry.start-4
@@ -480,7 +480,7 @@ class PartUtil:
             elif part_tuple[0] > start and start <= part_tuple[2] <=end:
                 print "add primary into old extend_part,need reduce size at the start of the extend_part"
                 if len(self.get_disk_logical_list(disk))!=0:
-                    logical_list=self.get_disk_logical_list(disk).sort(cmp=lambda x,y:cmp(x.geometry.start,y.geometry.start))
+                    logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
                     if part_tuple[2] <= logical_list[0].geometry.start:
                         start=max(part_tuple[2]+4,logical_list[0].geometry.start)
                         length=end-start+1
@@ -505,7 +505,7 @@ class PartUtil:
             elif start <= part_tuple[0] <=end and part_tuple[2] >=end:
                 print "need reduce size at the end to the extend_part"
                 if len(self.get_disk_logical_list(disk))!=0:
-                    logical_list=self.get_disk_logical_list(disk).sort(cmp=lambda x,y:cmp(x.geometry.start,y.geometry.start))
+                    logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
                     if part_tuple[0] < logical_list[-1].geometry.end:
                         print "add primary to space used by last logical"
                         part_tuple[0]=logical_list[-1].geometry.end+4
@@ -675,7 +675,7 @@ class PartUtil:
         if extend_part!=None:
             ori_start=extend_part.geometry.start
             ori_end=extend_part.geometry.end
-            logical_list=self.get_disk_logical_list(disk).sort(cmp=lambda x,y:cmp(x.geometry.start,y.geometry.start))
+            logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
             if len(logical_list)!=0:
                 prev_item=self.get_prev_geom_info_tab_item(disk,logical_list[0].geometry)
                 next_item=self.get_next_geom_info_tab_item(disk,logical_list[-1].geometry)
@@ -727,8 +727,8 @@ class PartUtil:
             logical_end=max(part.geometry.end for part in self.get_disk_logical_list(disk))
             ori_start=extend_part.geometry.start
             ori_end=extend_part.geometry.end
-            first_logical=self.get_disk_logical_list(disk).sort(cmp=lambda x,y:cmp(x.geometry.start,y.geometry.start))[0]
-            last_logical=self.get_disk_logical_list(disk).sort(cmp=lambda x,y:cmp(x.geometry.start,y.geometry.start))[-1]
+            first_logical=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)[0]
+            last_logical=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)[-1]
 
             if ori_start > logical_start or ori_end < logical_end:
                 print "logical geometry not in extend geometry,error"
@@ -796,7 +796,7 @@ class PartUtil:
                         pass
                     else:
                         part_geom_list.append(["part",part.geometry])
-                part_geom_list.sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+                part_geom_list=sorted(part_geom_list,key=lambda x:x[-1].start)        
                 
             if len(part_geom_list)==0 or len(main_part_list)==0:
                 start=disk.getFreeSpaceRegions()[0].start+4
@@ -839,7 +839,7 @@ class PartUtil:
                 space_geom_list.append(item)
             for item in gap_geom_list:
                 space_geom_list.append(item)
-            space_geom_list.sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+            space_geom_list=sorted(space_geom_list,key=lambda x:x[-1].start)
             self.disk_geom_info_tab[disk]=space_geom_list
 
         return self.disk_geom_info_tab    
@@ -851,7 +851,8 @@ class PartUtil:
 
     def get_prev_geom_info_tab_item(self,disk,geometry):
         '''get previous space block of the geometry:part or freespace'''
-        self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
         if geometry.start <= self.disk_geom_info_tab[disk][0][-1].end:
             prev_item=self.disk_geom_info_tab[disk][0]
         else:
@@ -860,7 +861,8 @@ class PartUtil:
 
     def get_next_geom_info_tab_item(self,disk,geometry):
         '''get next space block of the geometry:part or freespace'''
-        self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
         if geometry.end >= self.disk_geom_info_tab[disk][-1][-1].start:
             next_item=self.disk_geom_info_tab[disk][-1]
         else:    
@@ -869,12 +871,14 @@ class PartUtil:
 
     def get_start_geom_info_tab_item(self,disk,geometry):
         '''get current space block of the geometry:return the start one'''
-        self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
         return filter(lambda item:item[-1].start <= geometry.start,self.disk_geom_info_tab[disk])[-1]
 
     def get_end_geom_info_tab_item(self,disk,geometry):
         '''get current space block of the geometry:return the end one'''
-        self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+        self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
+        # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
         return filter(lambda item:item[-1].end >= geometry.end,self.disk_geom_info_tab[disk])[0]
 
     def get_space_geom_size(self,disk,geometry):
@@ -908,8 +912,8 @@ class PartUtil:
                         self.disk_geom_info_tab[disk].append(["freespace",after_geometry])
 
                     self.disk_geom_info_tab[disk].remove(item)    
-                    self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))    
-
+                    # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))    
+                    self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
                 elif geometry.start < item[-1].start <geometry.end and item[-1].end >=geometry.end :
                     print "start of geometry out of range can allocate:need let start bigger"
                 elif item[-1].start <= geometry.start and geometry.start< item[-1].end < geometry.end:
@@ -947,7 +951,8 @@ class PartUtil:
                 geom=parted.geometry.Geometry(disk.device,start,length,end,None)
                 self.disk_geom_info_tab[disk].remove(current_item)
                 self.disk_geom_info_tab[disk].append("freespace",geom)
-                self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+                # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+                self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
         else:
             if current_end_item[0]=="freespace":
                 if prev_item[0]=="freespace":
@@ -964,7 +969,8 @@ class PartUtil:
                 self.disk_geom_info_tab[disk].remove(current_item)
                 self.disk_geom_info_tab[disk].remove(current_end_item)
                 self.disk_geom_info_tab[disk].append("freespace",geom)
-                self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+                # self.disk_geom_info_tab[disk].sort(cmp=lambda x,y:cmp(x[-1].start,y[-1].start))
+                self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
             else:    
                 print "can operate only one block one time,please adapt the geometry"
 
