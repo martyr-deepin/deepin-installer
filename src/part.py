@@ -316,17 +316,31 @@ class Part(gtk.VBox):
         '''update listview_items,mostly used when change disk or first load'''
         self.update_selected_disk()
 
-        self.disk_partition_info=self.part_util.disk_partition_info_tab[self.selected_disk]
-        
+        self.disk_partition_info=filter(lambda item:item[0].type!=2 and item[-1]!="delete",self.part_util.disk_partition_info_tab[self.selected_disk])
+        self.disk_geom_info=self.part_util.disk_geom_info_tab[self.selected_disk]
         part_listview_items=[]
-        for item in self.disk_partition_info:
-            if item[-1]=="delete":
-                pass
-            else:
-                #[disk,partition,mp,fstype,format,total_size,part_type]
-                part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),str(item[3]),str(item[2]))
-                # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
+        for item in self.disk_geom_info:
+            if item[0]=="freespace":
+                part_list_item=PartListItem(self.selected_disk,item,None,None,None,None,None,None)
                 part_listview_items.append(part_list_item)
+            elif item[0]=="part":
+                for pi in self.disk_partition_info:
+                    if item[1].contains(pi[0].geometry):
+                        part_list_item=PartListItem(self.selected_disk,pi[3],pi[0],str(pi[7]),str(pi[4]),str(pi[2]),str(pi[1]))
+                        part_listview_items.append(part_list_item)
+                else:
+                    print "donn't find the disk_geom_info_tab item in disk_partition_info_tab"
+            else:
+                print "invalid disk block"
+
+        # for item in self.disk_partition_info:
+        #     if item[-1]=="delete":
+        #         pass
+        #     else:
+        #         #[disk,geom_item,partition,mp,fstype,format,total_size,part_type]
+        #         part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),str(item[3]),str(item[2]))
+        #         # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
+        #         part_listview_items.append(part_list_item)
 
         return part_listview_items
     
@@ -355,7 +369,7 @@ class Part(gtk.VBox):
         self.part_listview.connect("single-click-item",self.on_part_item_clicked)
         self.part_listview.connect("double-click-item",self.on_part_item_clicked)
         # self.part_listview.cell_widths=[100,80,100,60,60,60,100]
-        self.part_listview.keep_select_status()
+        # self.part_listview.keep_select_status()
         part_scrolled_window=ScrolledWindow()
         part_scrolled_window.add_child(self.part_listview)
         part_listview_box.add(part_scrolled_window)
@@ -413,7 +427,8 @@ class Part(gtk.VBox):
         self.current_part_item=self.part_listview.get_current_item()
         if self.current_part_item.partition.type==2:
             self.part_edit_btn.set_clickable(False)
-            if len(self.part_util.get_disk_logical_partitions(self.selected_disk))!=0:
+            # if len(self.part_util.get_disk_logical_partitions(self.selected_disk))!=0:
+            if len(self.part_util.get_disk_logical_list(self.selected_disk))!=0:
                 self.part_delete_btn.set_clickable(False)
             else:
                 self.part_delete_btn.set_clickable(True)

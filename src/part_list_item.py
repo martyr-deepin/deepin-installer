@@ -38,9 +38,9 @@ class PartListItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
 
-    def __init__(self,disk,partition,mp,fstype,format,total_size,part_type):
+    def __init__(self,disk,geom_item,partition,mp,fstype,format,total_size,part_type):
         gobject.GObject.__init__(self)
-        self.update(disk,partition,mp,fstype,format,total_size,part_type)
+        self.update(disk,geom_item,partition,mp,fstype,format,total_size,part_type)
         self.index = None
         
     def set_index(self, index):
@@ -51,10 +51,12 @@ class PartListItem(gobject.GObject):
         '''Get index.'''
         return self.index
 
-    def update(self,disk,partition,mp,fstype,format,total_size,part_type):
+    def update(self,disk,geom_item,partition,mp,fstype,format,total_size,part_type):
         '''update item'''
         self.disk=disk
+        self.geom_item=geom_item
         self.partition=partition
+
         # print self.partition.disk
         self.part_path=global_part_util.disk_part_display_path[self.disk][self.partition]
         self.fstype=fstype
@@ -92,7 +94,6 @@ class PartListItem(gobject.GObject):
         '''Emit redraw-request signal.'''
         self.emit("redraw-request")
 
-        
     def get_column_sizes(self):
         '''Get sizes.'''
         return [(self.partition_width + self.partition_padding_x * 2,
