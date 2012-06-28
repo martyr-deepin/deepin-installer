@@ -51,14 +51,14 @@ class PartUtil:
         self.path_disks=self.__get_path_disks()
     #{disk:[partition1,partition2,],disk2:[]}
         self.path_disks_partitions=self.__get_path_disks_partitions()
-    #{disk:[ partition,part_type,part_size,part_tuple,part_fs,
+    #{disk:[ partition,part_type,part_size,space_geom,part_fs,
     #        part_format,part_name,part_mountpoint,part_location,part_flag
     #      ]
     #}
         self.disk_partition_info_tab=self.init_disk_partition_info_tab()
     #{disk:{partition:part_path}}
         self.disk_part_display_path=self.init_disk_part_display_path()
-    #{disk:["freepart",geometry]}    
+    #{disk:["freepart",geometry]},use geometry object to keep match with disk_partition_info_tab    
         self.disk_geom_info_tab={}
         self.init_disk_geom_info_tab()
 
@@ -359,11 +359,9 @@ class PartUtil:
             for part in self.get_disk_partitions(disk):
                 part_type=PART_TYPE_LIST[part.type]
                 part_size=part.getSize(unit="MB")
-                start=part.geometry.start
-                length=part.geometry.length
-                end=part.geometry.end
-                part_tuple=(start,length,end)
-                
+                #need generate an geometry object have uniquee id
+                space_geom=part.geometry
+                # space_geom=parted.geometry.Geometry(disk.device,part.geometry.start,part.geometry.length,part.geometry.end,None)
                 try:
                     part_fs=part.fileSystem.type#just for primary and logical partition
                 except:
@@ -380,7 +378,10 @@ class PartUtil:
                 part_location="start"#start/end
                 part_flag="keep"   #flag:keep,new,delete 
 
-                disk_partition_info_tab_item=[part,part_type,part_size,part_tuple,part_fs,part_format,
+                # disk_partition_info_tab_item=[part,part_type,part_size,part_tuple,part_fs,part_format,
+                #                               part_name,part_mountpoint,part_location,part_flag]
+
+                disk_partition_info_tab_item=[part,part_type,part_size,space_geom,part_fs,part_format,
                                               part_name,part_mountpoint,part_location,part_flag]
 
                 disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
@@ -438,97 +439,44 @@ class PartUtil:
             self.disk_partition_info_tab[disk].append(item_info)
         return self.disk_partition_info_tab    
 
-    def add_disk_partition_info_tab(self,disk,part_type,part_size,part_tuple,part_fs,part_format,part_name,part_mountpoint,part_location):
+    def add_disk_partition_info_tab(self,disk,part_type,part_size,space_geom,part_fs,part_format,part_name,part_mountpoint,part_location):
         '''add partition to the table,insert_path_disks_partitions in get_disk_partition_object because it's used
         not only for add_disk_partition_info_tab,but also the real add partition operate'''
         if part_type=="logical" and len(self.get_disk_extend_list(disk))==0:
-            geometry=parted.geometry.Geometry(disk.device,part_tuple[0],part_tuple[1],part_tuple[2],None)
-            self.add_disk_extended_partition(disk,geometry)
+            self.add_disk_extended_partition(disk,space_geom)
 
         elif part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
 
-            if part_tuple[0] > extend_part.geometry.start and part_tuple[2] < extend_part.geometry.end:
+            if space_geom.start > extend_part.geometry.start and space_geom.end < extend_part.geometry.end:
                 print "extend_part space is big enough to add the logical"
             else:
                 print "need grown_disk_extended_partition_geometry"
-                self.grown_disk_extended_partition_geometry(disk,extend_part,part_tuple)
+                self.grown_disk_extended_partition_geometry(disk,extend_part,space_geom)
 
         elif part_type=="primary" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
             start=extend_part.geometry.start
             length=extend_part.geometry.length
             end=extend_part.geometry.end
-            if part_tuple[0] >= end or part_tuple[2] <= start:
+            if space_geom.start >= end or space_geom.end <= start:
                 print "no need to smaller extend_part when add primary"
+            else:
+                print "need reduce extend_part geometry when add primary"
+                self.reduce_disk_extended_partition_geometry(disk,extend_part,space_geom)
 
-            elif part_tuple[0] <= start and start <= part_tuple[2] <=end:
-                print "need reduce size at the start of the extend_part"
-                if len(self.get_disk_logical_list(disk))!=0:
-                    logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
-                    if part_tuple[2] > logical_list[0].geometry.start:
-                        print "add primary to space used by first logical"
-                        part_tuple[2]=logical_list[0].geometry.start-4
-                    else:
-                        pass
-                else:
-                    pass
-                start=part_tuple[2]+4
-                length=end-start+1
-                self.reduce_disk_extended_partition_geometry(disk,extend_part,(start,length,end))
-
-            elif part_tuple[0] > start and start <= part_tuple[2] <=end:
-                print "add primary into old extend_part,need reduce size at the start of the extend_part"
-                if len(self.get_disk_logical_list(disk))!=0:
-                    logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
-                    if part_tuple[2] <= logical_list[0].geometry.start:
-                        start=max(part_tuple[2]+4,logical_list[0].geometry.start)
-                        length=end-start+1
-                        self.reduce_disk_extended_partition_geometry(disk,extend_part,(start,length,end))
-                    elif part_tuple[0] >= logical_list[-1].geometry.end:
-                        end=min(logical_list[-1].geometry.end,part_tuple[0]-4)
-                        length=end-start+1
-                        self.reduce_disk_extended_partition_geometry(disk,extend_part,(start,length,end))
-                    elif part_tuple[0] < logical_list[0].geometry.start <=part_tuple[2]:
-                        start=logical_list[0].geometry.start
-                        part_tuple[2]=logical_list[0].geometry.start-4
-                        length=end-start+1
-                        self.reduce_disk_extended_partition_geometry(disk,extend_part,(start,length,end))
-                    elif part_tuple[0] <= logical_list[-1].geometry.end < part_tuple[2]:
-                        end=logical_list[-1].geometry.end
-                        part_tuple[0]=logical_list[-1].geometry.end+4
-                        length=end-start+1
-                        self.reduce_disk_extended_partition_geometry(disk,extend_part,(start,length,end))
-                    else:
-                        print "invalid,cann't add primary use space of logical"
-
-            elif start <= part_tuple[0] <=end and part_tuple[2] >=end:
-                print "need reduce size at the end to the extend_part"
-                if len(self.get_disk_logical_list(disk))!=0:
-                    logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
-                    if part_tuple[0] < logical_list[-1].geometry.end:
-                        print "add primary to space used by last logical"
-                        part_tuple[0]=logical_list[-1].geometry.end+4
-                    else:
-                        pass
-                else:
-                    pass
-                end=part_tuple[0]-4
-                length=end-start+1
-                self.reduce_disk_extended_partition_geometry(disk,extend_part,(start,length,end))
-
-        self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,part_tuple,part_fs,part_location)
+        self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,space_geom,part_fs,part_location)
         if self.to_add_partition==None:
             print "partition is null"
 
         part_flag="add"   
-        disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,part_tuple,part_fs,part_format,
+        disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,space_geom,part_fs,part_format,
                                       part_name,part_mountpoint,part_location,part_flag]
         self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
         if part_type!=2:
             self.add_part_geom_info_tab(disk,self.to_add_partition.geometry)
-            print "add geom_info_tab"
+            print "add to disk_geom_info_tab when add new partition"
         else:
             pass
         return self.disk_partition_info_tab
@@ -632,10 +580,9 @@ class PartUtil:
         if len(self.get_disk_extend_list(disk))!=0:
             print "no need to add extend partition"
         else:
-            # fs=parted.filesystem.FileSystem("ext4",geometry,False,None)
             extend_part=parted.partition.Partition(disk,parted.PARTITION_EXTENDED,None,geometry,None)
             disk_partition_info_tab_item=[extend_part,"extend",geometry.length*disk.device.sectorSize/1024*1024,
-                                          (geometry.start,geometry.length,geometry.end),None,False,None,None,"start","add"]
+                                          geometry,None,False,None,None,"start","add"]
             self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
             self.insert_path_disks_partitions(disk,extend_part)
@@ -656,21 +603,22 @@ class PartUtil:
         if extend_part.geometry!=None:
             return extend_part.geometry
 
-    def set_disk_extended_partition_geometry(self,disk,extend_part,geom):
-        '''set the geometry of the current extended part'''
-        # constraint=parted.constraint.Constraint(exactGeom=geom)
-        start=geom.start
-        end=geom.end
-        # disk.setPartitionGeometry(extend_part,constraint,start,end)
-        extend_part.geometry.start=start
-        extend_part.geometry.end=end
-        extend_part.geometry.length=end-start+1
+    ########################no need this func,as have the same geometry object######################
+    # def set_disk_extended_partition_geometry(self,disk,extend_part,geom):
+    #     '''set the geometry of the current extended part'''
+    #     # constraint=parted.constraint.Constraint(exactGeom=geom)
+    #     start=geom.start
+    #     end=geom.end
+    #     # disk.setPartitionGeometry(extend_part,constraint,start,end)
+    #     extend_part.geometry.start=start
+    #     extend_part.geometry.end=end
+    #     extend_part.geometry.length=end-start+1
 
-        for item in self.disk_partition_info_tab[disk]:
-            if item[0]==extend_part and item[1]=="extend":
-                item[3]=(geom.start,geom.length,geom.end)
+    #     for item in self.disk_partition_info_tab[disk]:
+    #         if item[0]==extend_part and item[1]=="extend":
+    #             item[3]=(geom.start,geom.length,geom.end)
 
-    def grown_disk_extended_partition_geometry(self,disk,extend_part,geom_tuple):
+    def grown_disk_extended_partition_geometry(self,disk,extend_part,space_geom):
         '''grown extended geometry since add logical in extra freespace'''
         if extend_part!=None:
             ori_start=extend_part.geometry.start
@@ -688,61 +636,94 @@ class PartUtil:
 
         if len(self.get_disk_extend_list(disk))==0:
             print "no need to grown as no extended part,error!!!"
-        elif ori_start < geom_tuple[0] and ori_end > geom_tuple[2]:
+        elif ori_start < space_geom.start and ori_end > space_geom.end:
             print "no need to grown as origin size bigger"
         else:
-            if ori_start >= geom_tuple[0]:
+            if ori_start >= space_geom.start:
                 if prev_item[0]=="freespace":
-                    start=max(prev_item[-1].start,geom_tuple[0])
+                    start=max(prev_item[-1].start,space_geom.start)
                 else:
                     print "cann't grown size to prev used space"
                     start=ori_start
             else:
                 start=ori_start
 
-            if ori_end <= geom_tuple[2]:
+            if ori_end <= space_geom.end:
                 if next_item[0]=="freespace":
-                    end=min(next_item[-1].end,geom_tuple[2])
+                    end=min(next_item[-1].end,space_geom.end)
                 else:
                     print "cann't grown size to next used space"
                     end=ori_end
             else:
                 end=ori_end
             length=end-start+1
-            new_geom=parted.geometry.Geometry(disk.device,start,length,end,None)
-            self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
 
-    def reduce_disk_extended_partition_geometry(self,disk,extend_part,geom_tuple):
+            extend_part.geometry.start=start
+            extend_part.geometry.length=length
+            extend_part.geometry.end=end
+
+    def reduce_disk_extended_partition_geometry(self,disk,extend_part,primary_geom):
         '''reduce extended geometry since add primary with freespace in origin extended'''
         if len(self.get_disk_extend_list(disk))==0:
-            print "no extend part"
-        elif len(self.get_disk_logical_list(disk))==0:
-            start=max(extend_part.geometry.start,geom_tuple[0])
-            end=min(extend_part.geometry.end,geom_tuple[2])
-            length=end-start+1
-            new_geom=parted.geometry.Geometry(disk.device,start,length,end,None)
-            self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
+            print "error,no extend part"
         else:
-            logical_start=min(part.geometry.start for part in self.get_disk_logical_list(disk))
-            logical_end=max(part.geometry.end for part in self.get_disk_logical_list(disk))
-            ori_start=extend_part.geometry.start
-            ori_end=extend_part.geometry.end
-            first_logical=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)[0]
-            last_logical=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)[-1]
+            start=extend_part.geometry.start
+            length=extend_part.geometry.length
+            end=extend_part.geometry.end
+            logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
 
-            if ori_start > logical_start or ori_end < logical_end:
-                print "logical geometry not in extend geometry,error"
-            elif geom_tuple[0]> logical_start or geom_tuple[2] < logical_end:
-                print "cann't reduce geometry into logical"
-            elif geom_tuple[0] <ori_start or geom_tuple[2] > ori_end:
-                print "actually grown size"
-            elif ori_start <= geom_tuple[0] <= logical_start and self.get_prev_geom_info_tab_item(disk,first_logical.geometry)[0]=="part":
-                print "no space before first logical"
-            elif logical_end <=geom_tuple[2] <=ori_end and self.get_next_geom_info_tab_item(disk,last_logical.geometry)[0]=="part"            :
-                print "no space after last logical"
+            if primary_geom.start <= start and start < primary_geom.end <= end:
+                print "need reduce size at the start of the extend_part"
+                if len(logical_list)!=0:
+                    if primary_geom.end > logical_list[0].geometry.start:
+                        print "add primary to space used by first logical,smaller the primary end to to added part"
+                        primary_geom.end = logical_list[0].geometry.start-4
+                        primary_geom.length=primary_geom.end - primary_geom.start + 1
+                        ##########need also change the value of size############
+                extend_part.geometry.start=primary_geom.end+4
+                extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+
+            elif primary_geom.start > start and start < primary_geom.end <=end:
+                print "add primary into old extend_part,need reduce size at the start of the extend_part"
+                if len(logical_list)!=0:
+                    if primary_geom.end <= logical_list[0].geometry.start:
+                        start=max(primary_geom.end+4,logical_list[0].geometry.start)
+                        length=end-start+1
+                        extend_part.geometry.start=start
+                        extend_part.geometry.length=length
+                    elif primary_geom.start >= logical_list[-1].geometry.end:
+                        end=min(logical_list[-1].geometry.end,primary_geom.start-4)
+                        length=end-start+1
+                        extend_part.geometry.end=end
+                        extend_part.geometry.length=length
+                    else:
+                        print "error,cann't add primary into logical"
+                        return 
+                else:
+                    ########################to be implemented############################
+                    pass
+            elif start < primary_geom.start <= end and primary_geom.end > end:
+                print "need reduce size at the end to the extend_part"
+                if len(logical_list)!=0:
+                    if start < logical_list[-1].geometry.end:
+                        print "error ,add primary to space used by last logical"
+                        return 
+                    else:
+                        extend_part.geometry.end=max(logical_list[-1].geometry.end,primary_geom.start-4)
+                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+                else:
+                    ########################to be implemented############################
+                    pass
+            elif primary_geom.start <= start and primary_geom.end >=end:
+                print "the primary geometry contains the extend one"
+                if len(logical_list)==0:
+                    ########################to be implemented############################
+                    print "you should delete the extend part to get the space to add primary"
+                else:
+                    print "invalid,cann't add primary whoes geometry contains logicals" 
+
             else:
-                new_geom=parted.geometry.Geometry(disk.device,geom_tuple[0],geom_tuple[1],geom_tuple[2],None)
-                self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
+                print "invalid situation,you wonn't see this "
 
     ##############update path_disks_partitons structure when add/delete partition##################
 
@@ -995,12 +976,13 @@ class PartUtil:
                 print "can operate only one block one time,please adapt the geometry"
 
     ################set disk partition attribute before add or modify########################
-    def get_disk_partition_object(self,disk,part_type,part_size,geom_tuple,part_fs,part_location):
+    def get_disk_partition_object(self,disk,part_type,part_size,space_geom,part_fs,part_location):
         '''get partition_object for add to the disk_partition_info_tab,also for actual partition add operation
            add the part_obj to path_disks_partitions when it birth
         '''
         self.type=self.set_disk_partition_type(disk,part_type)
-        self.geometry=self.set_disk_partition_geometry(disk,part_size,geom_tuple,part_location)
+        self.geometry=space_geom
+        # self.geometry=self.set_disk_partition_geometry(disk,part_size,geom_tuple,part_location)
         self.fs=parted.filesystem.FileSystem(part_fs,self.geometry,False,None)
         self.partition=parted.partition.Partition(disk,self.type,self.fs,self.geometry,None)
         self.insert_path_disks_partitions(disk,self.partition)
