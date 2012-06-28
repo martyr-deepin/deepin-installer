@@ -319,14 +319,12 @@ class Part(gtk.VBox):
         self.disk_partition_info=self.part_util.disk_partition_info_tab[self.selected_disk]
         
         part_listview_items=[]
-        # print "before init part list view items:\n"
-        # print part_listview_items
         for item in self.disk_partition_info:
             if item[-1]=="delete":
                 pass
             else:
-                # part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),"8G",item[2])
-                part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),str(item[3]),item[2])
+                #[disk,partition,mp,fstype,format,total_size,part_type]
+                part_list_item=PartListItem(self.selected_disk,item[0],str(item[7]),str(item[4]),str(item[5]),str(item[3]),str(item[2]))
                 # part_list_item=PartListItem(str(item[0].path),str(item[4]),str(item[7]),CheckButton(),"8G","4G",item[2])
                 part_listview_items.append(part_list_item)
 

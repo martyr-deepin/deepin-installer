@@ -66,7 +66,6 @@ class PartListItem(gobject.GObject):
         # Calculate item size.
         self.partition_padding_x = 10
         self.partition_padding_y = 5
-        # (self.partition_width, self.partition_height) = get_content_size(self.partition, DEFAULT_FONT_SIZE)
         (self.partition_width, self.partition_height) = get_content_size(self.part_path, DEFAULT_FONT_SIZE)
         
         self.fstype_padding_x = 10
@@ -110,41 +109,41 @@ class PartListItem(gobject.GObject):
                  self.part_type_height + self.part_type_padding_y * 2),
                 ]    
         
-    def render_partition(self, cr, rect):
+    def render_partition(self, cr, rect ,in_select , in_highlight):
         '''Render partition.'''
         rect.x += self.partition_padding_x
         rect.width -= self.partition_padding_x * 2
-        render_text(cr, rect, self.part_path)
+        render_text(cr, rect, self.part_path ,in_select , in_highlight)
 
-    def render_fstype(self, cr, rect):
+    def render_fstype(self, cr, rect ,in_select , in_highlight):
         '''Render  fstype.'''
         rect.x += self.fstype_padding_x
         rect.width -= self.fstype_padding_x * 2
-        render_text(cr, rect, self.fstype)
+        render_text(cr, rect, self.fstype ,in_select , in_highlight)
 
-    def render_mp(self, cr, rect):
+    def render_mp(self, cr, rect ,in_select ,in_highlight):
         '''Render mp.'''
         rect.x += self.mp_padding_x
         rect.width -= self.mp_padding_x * 2
-        render_text(cr, rect, self.mp)
+        render_text(cr, rect, self.mp ,in_select ,in_highlight)
 
-    def render_format(self, cr, rect):
+    def render_format(self, cr, rect ,in_select ,in_highlight):
         '''Render  format.'''
         rect.x += self.format_padding_x
         rect.width -= self.format_padding_x * 2
-        render_text(cr, rect, self.format)
+        render_text(cr, rect, self.format ,in_select ,in_highlight)
         # self.render_toggle(cr, rect, self.format)
 
-    def render_total_size(self, cr, rect):
+    def render_total_size(self, cr, rect ,in_select ,in_highlight):
         '''Render  total_size.'''
         rect.x += self.total_size_padding_x
         rect.width -= self.total_size_padding_x * 2
-        render_text(cr, rect, self.total_size)
+        render_text(cr, rect, self.total_size ,in_select ,in_highlight)
 
-    def render_part_type(self, cr, rect):
+    def render_part_type(self, cr, rect ,in_select ,in_highlight):
         '''Render part_type.'''
         rect.width -=self.part_type_padding_x * 2
-        render_text(cr, rect, self.part_type, ALIGN_END)
+        render_text(cr, rect, self.part_type,in_select ,in_highlight ,align=ALIGN_END)
     
     def get_renders(self):
         '''Get render callbacks.'''
@@ -169,13 +168,17 @@ class PartListItem(gobject.GObject):
         else:
             self.format=False
 
-def render_text(cr, rect, content, align=ALIGN_START, font_size=DEFAULT_FONT_SIZE):
+def render_text(cr, rect, content, in_select, in_highlight, align=ALIGN_START, font_size=DEFAULT_FONT_SIZE):
     '''Render text.'''
+    if in_select or in_highlight:
+        color = ui_theme.get_color("listItemSelectText").get_color()
+    else:
+        color = ui_theme.get_color("listItemText").get_color()
     draw_text(cr, content, 
-                rect.x, rect.y, rect.width, rect.height,
-                font_size, 
-                ui_theme.get_color("listItemText").get_color(), 
-                alignment=align)
+              rect.x, rect.y, rect.width, rect.height,
+              font_size, 
+              color,
+              alignment=align)
     
 def render_image(cr, rect, image_path, x, y):
     '''Render image.'''
