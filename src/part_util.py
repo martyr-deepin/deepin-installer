@@ -742,7 +742,7 @@ class PartUtil:
                 print "no space after last logical"
             else:
                 new_geom=parted.geometry.Geometry(disk.device,geom_tuple[0],geom_tuple[1],geom_tuple[2],None)
-                self.set_disk_extended_partition_geometry(self,disk,extend_part,new_geom)
+                self.set_disk_extended_partition_geometry(disk,extend_part,new_geom)
 
     ##############update path_disks_partitons structure when add/delete partition##################
 
