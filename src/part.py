@@ -321,12 +321,13 @@ class Part(gtk.VBox):
         part_listview_items=[]
         for item in self.disk_geom_info:
             if item[0]=="freespace":
-                part_list_item=PartListItem(self.selected_disk,item,None,None,None,None,None,None)
-                part_listview_items.append(part_list_item)
+                # part_list_item=PartListItem(self.selected_disk,item,None,None,None,None,None,None)
+                # part_listview_items.append(part_list_item)
+                print "show freespace in the listview"
             elif item[0]=="part":
                 for pi in self.disk_partition_info:
                     if item[1].contains(pi[0].geometry):
-                        part_list_item=PartListItem(self.selected_disk,pi[3],pi[0],str(pi[7]),str(pi[4]),str(pi[2]),str(pi[1]))
+                        part_list_item=PartListItem(self.selected_disk,pi[3],pi[0],str(pi[7]),str(pi[4]),str(pi[5]),str(pi[2]),str(pi[1]))
                         part_listview_items.append(part_list_item)
                 else:
                     print "donn't find the disk_geom_info_tab item in disk_partition_info_tab"
