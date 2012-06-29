@@ -391,10 +391,18 @@ class PartUtil:
 
     def rebuild_disk_partition_info_tab(self,disk):
         '''backend operation for UI:create new disk partition tab'''
-        self.disk_partition_info_tab[disk].clear()
-        self.disk_part_display_path[disk].clear()        
-        self.path_disks_partitions[disk].clear()
-        self.disk_geom_info_tab[disk].clear()
+        del self.disk_partition_info_tab[disk]
+        self.disk_partition_info_tab[disk]=[]
+        
+        del self.disk_part_display_path[disk]
+        self.disk_part_display_path[disk]={}
+
+        del self.path_disks_partitions[disk]
+        self.path_disks_partitions=[]
+
+        del self.disk_geom_info_tab[disk]
+        self.disk_geom_info_tab[disk]={}
+
             
     def recovery_disk_partition_info_tab(self,disk):
         '''backend operation for UI:recovery edited disk partition tab'''
@@ -568,7 +576,7 @@ class PartUtil:
 
     def delete_disk_extended_partition(self,disk,extend_part):
         '''delete extened partition,when delete all logical part in the table'''
-        if len(self.get_disk_logical_list[disk])!=0:
+        if len(self.get_disk_logical_list(disk))!=0:
             print "cann't delete extended part since there still have logical one"
         else:
             ####this delete other table automaticly########
