@@ -56,39 +56,47 @@ class PartListItem(gobject.GObject):
         '''update item'''
         self.disk=disk
         self.geom_item=geom_item
-        # if self.geom_item[0]=="part":
-        self.partition=partition
-        self.part_path=global_part_util.disk_part_display_path[self.disk][self.partition]
-        self.fstype=fstype
-        self.mp=mp
-        self.format=format
-        self.total_size=total_size
-        self.part_type=part_type
-
-        # Calculate item size.
-        self.partition_padding_x = 10
-        self.partition_padding_y = 5
-        (self.partition_width, self.partition_height) = get_content_size(self.part_path, DEFAULT_FONT_SIZE)
-        
-        self.fstype_padding_x = 10
-        self.fstype_padding_y = 5
-        (self.fstype_width, self.fstype_height) = get_content_size(self.fstype, DEFAULT_FONT_SIZE)
-
-        self.mp_padding_x = 10
-        self.mp_padding_y = 5
-        (self.mp_width, self.mp_height) = get_content_size(self.mp, DEFAULT_FONT_SIZE)
-
-        self.format_padding_x = 10
-        self.format_padding_y = 5
-        (self.format_width, self.format_height) = get_content_size(self.format, DEFAULT_FONT_SIZE)
-
-        self.total_size_padding_x = 10
-        self.total_size_padding_y = 5
-        (self.total_size_width, self.total_size_height) = get_content_size(self.total_size, DEFAULT_FONT_SIZE)
-
-        self.part_type_padding_x = 10
-        self.part_type_padding_y = 5
-        (self.part_type_width, self.part_type_height) = get_content_size(self.part_type, DEFAULT_FONT_SIZE)
+        if self.geom_item[0]=="part":
+            self.partition=partition
+            self.part_path=global_part_util.disk_part_display_path[self.disk][self.partition]
+            self.fstype=fstype
+            self.mp=mp
+            self.format=format
+            self.total_size=total_size
+            self.part_type=part_type
+        else:
+            self.partition=None
+            self.part_path=""
+            self.fstype=""
+            self.mp="free"
+            self.format="space"
+            self.total_size=total_size
+            self.part_type=""
+        if True:    
+            # Calculate item size.
+            self.partition_padding_x = 10
+            self.partition_padding_y = 5
+            (self.partition_width, self.partition_height) = get_content_size(self.part_path, DEFAULT_FONT_SIZE)
+           
+            self.fstype_padding_x = 10
+            self.fstype_padding_y = 5
+            (self.fstype_width, self.fstype_height) = get_content_size(self.fstype, DEFAULT_FONT_SIZE)
+   
+            self.mp_padding_x = 10
+            self.mp_padding_y = 5
+            (self.mp_width, self.mp_height) = get_content_size(self.mp, DEFAULT_FONT_SIZE)
+   
+            self.format_padding_x = 10
+            self.format_padding_y = 5
+            (self.format_width, self.format_height) = get_content_size(self.format, DEFAULT_FONT_SIZE)
+   
+            self.total_size_padding_x = 10
+            self.total_size_padding_y = 5
+            (self.total_size_width, self.total_size_height) = get_content_size(self.total_size, DEFAULT_FONT_SIZE)
+   
+            self.part_type_padding_x = 10
+            self.part_type_padding_y = 5
+            (self.part_type_width, self.part_type_height) = get_content_size(self.part_type, DEFAULT_FONT_SIZE)
         
     def emit_redraw_request(self):
         '''Emit redraw-request signal.'''
