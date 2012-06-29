@@ -318,6 +318,7 @@ class Part(gtk.VBox):
 
         self.disk_partition_info=filter(lambda item:item[0].type!=2 and item[-1]!="delete",self.part_util.disk_partition_info_tab[self.selected_disk])
         self.disk_geom_info=self.part_util.disk_geom_info_tab[self.selected_disk]
+
         part_listview_items=[]
         for item in self.disk_geom_info:
             if item[0]=="freespace":
@@ -377,19 +378,6 @@ class Part(gtk.VBox):
         '''add new added part to part_btn_box'''
         #need do actually add operation first
         self.update_part_btn_box()
-
-    def add_part_2listview(self,part_listview_item):
-        '''add new added partition to listview'''
-        # need do autually add operation first
-        part_listview_items=[]
-        part_listview_items.append(part_listview_item)
-        self.part_listview.add_items(part_listview_items)
-
-    def delete_part_from_listview(self):
-        '''delete part from listview'''
-        #need do real delete operation first
-        self.part_listview_items=self.init_part_listview_items()
-        self.update_part_listview()
 
     def delete_part_from_btn_box(self):
         '''delete part from btn box'''
@@ -489,6 +477,7 @@ class Part(gtk.VBox):
         '''create new partition'''
         #update_part_btn_box and listview after add partition operation
         current_geom_item=self.part_listview.get_current_item().geom_item
+
         self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk,current_geom_item)
         self.part_new.show_all()
 
@@ -523,15 +512,20 @@ class Part(gtk.VBox):
 
         # self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
         self.part_util.add_disk_partition_info_tab(disk,part_type,part_capacity,space_geom,part_fs,part_format,part_name,part_mp,part_location)
-        part_obj=self.part_util.to_add_partition
+        # part_obj=self.part_util.to_add_partition
 
         ####update display path in add_disk_partition_info_tab function
         # self.get_new_add_part_path(part_obj)
 
-        geom_item=self.part_util.new_add_geom_item
-        # part_listview_item=PartListItem(self.selected_disk,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
-        part_listview_item=PartListItem(disk,geom_item,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
-        self.add_part_2listview(part_listview_item)
+        # geom_item=self.part_util.new_add_geom_item
+
+        # part_listview_item=PartListItem(disk,geom_item,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
+
+        # self.add_part_2listview(part_listview_item)
+        # self.update_part_listview()
+        self.part_listview_items=self.init_part_listview_items()
+        self.update_part_listview()
+
         self.update_selected_disk_partitions()
         self.update_part_btn_box()
         self.part_new.destroy()

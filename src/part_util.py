@@ -472,6 +472,7 @@ class PartUtil:
         part_flag="add"   
         disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,space_geom,part_fs,part_format,
                                       part_name,part_mountpoint,part_location,part_flag]
+
         self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
         self.get_new_add_part_path(disk,self.to_add_partition)
@@ -482,6 +483,7 @@ class PartUtil:
             print "finish add_part_geom_info_tab when add new partition"
         else:
             pass
+
         return self.disk_partition_info_tab
 
     def mark_disk_partition_info_tab(self,part,part_flag):
@@ -897,13 +899,13 @@ class PartUtil:
                         after_geometry=parted.geometry.Geometry(disk.device,after_start,after_length,after_end,None)
                         self.disk_geom_info_tab[disk].append(["freespace",after_geometry])
 
-                    self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
+                    # self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
 
-                    print "before remove"
-                    print self.disk_geom_info_tab[disk]
+                    # print "before remove"
+                    # print self.disk_geom_info_tab[disk]
                     self.disk_geom_info_tab[disk].remove(item)    
-                    print "after remove"
-                    print self.disk_geom_info_tab[disk]
+                    # print "after remove"
+                    # print self.disk_geom_info_tab[disk]
 
                     self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
 
