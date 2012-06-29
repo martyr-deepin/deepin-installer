@@ -495,9 +495,16 @@ class Part(gtk.VBox):
     def on_part_new_ok_btn_clicked(self,widget):
         '''confirm to add new partition'''
         disk=self.selected_disk
-        geom_item=self.part_listview.get_current_item().geom_item
-        space_geom=geom_item[1]
+        freespace_geometry=self.part_listview.get_current_item().geom_item[1]
+        #######attention :new added part geometry is deepcopy of the old freespace###########
+        import copy
+        import parted
+        start=copy.deepcopy(freespace_geometry.start)
+        length=copy.deepcopy(freespace_geometry.length)
+        end=copy.deepcopy(freespace_geometry.end)
+        space_geom =parted.geometry.Geometry(disk.device,start,length,end,None)
         
+
         part_type=self.part_new.part_type_combo.get_current_item()[0]
         part_type_dict={"主分区":"primary","扩展分区":"extend","逻辑分区":"logical",
                         "primary":"primary","logical":"logical","extend":"extend"}
@@ -521,6 +528,7 @@ class Part(gtk.VBox):
         ####update display path in add_disk_partition_info_tab function
         # self.get_new_add_part_path(part_obj)
 
+        geom_item=self.part_util.new_add_geom_item
         # part_listview_item=PartListItem(self.selected_disk,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
         part_listview_item=PartListItem(disk,geom_item,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
         self.add_part_2listview(part_listview_item)

@@ -443,6 +443,7 @@ class PartUtil:
     def add_disk_partition_info_tab(self,disk,part_type,part_size,space_geom,part_fs,part_format,part_name,part_mountpoint,part_location):
         '''add partition to the table,insert_path_disks_partitions in get_disk_partition_object because it's used
         not only for add_disk_partition_info_tab,but also the real add partition operate'''
+        ####attention:space_geom is a deepcopy of the geometry object of disk_geom_info_tab######
         if part_type=="logical" and len(self.get_disk_extend_list(disk))==0:
             self.add_disk_extended_partition(disk,space_geom)
 
@@ -476,8 +477,9 @@ class PartUtil:
         self.get_new_add_part_path(disk,self.to_add_partition)
 
         if part_type!=2:
+            print "begin add_part_geom_info_tab when add new partitions"
             self.add_part_geom_info_tab(disk,self.to_add_partition.geometry)
-            print "add to disk_geom_info_tab when add new partition"
+            print "finish add_part_geom_info_tab when add new partition"
         else:
             pass
         return self.disk_partition_info_tab
@@ -873,9 +875,11 @@ class PartUtil:
         '''update disk_geom_info_tab when add partition from UI'''
         for item in self.disk_geom_info_tab[disk]:
             if item[0]=="part":
-                print "part area,geometry not match"
+                print "part area,geometry not match,goto find the freespace one"
+                continue
             elif item[0]=="freespace":
                 if item[-1].start <=geometry.start and item[-1].end >= geometry.end:
+                    print "find the match freespace block to add new part"
                     if geometry.start - item[-1].start > 8:
                         begin_start=item[-1].start
                         begin_end=geometry.start
@@ -883,7 +887,9 @@ class PartUtil:
                         begin_geometry=parted.geometry.Geometry(disk.device,begin_start,begin_length,begin_end,None)
                         self.disk_geom_info_tab[disk].append(["freespace",begin_geometry])
 
-                    self.disk_geom_info_tab[disk].append(["part",geometry])    
+                    self.new_add_geom_item=["part",geometry]
+                    self.disk_geom_info_tab[disk].append(self.new_add_geom_item)    
+
                     if  item[-1].end - geometry.end > 8:
                         after_start=geometry.end
                         after_end=item[-1].end
@@ -891,17 +897,34 @@ class PartUtil:
                         after_geometry=parted.geometry.Geometry(disk.device,after_start,after_length,after_end,None)
                         self.disk_geom_info_tab[disk].append(["freespace",after_geometry])
 
+                    self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
+
+                    print "before remove"
+                    print self.disk_geom_info_tab[disk]
                     self.disk_geom_info_tab[disk].remove(item)    
+                    print "after remove"
+                    print self.disk_geom_info_tab[disk]
 
                     self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
+
+                    print "finish find the match freespace block to add new part"    
+                    break
+
                 elif geometry.start < item[-1].start <geometry.end and item[-1].end >=geometry.end :
                     print "error,start of geometry out of range can allocate:need let start bigger"
+                    continue
                 elif item[-1].start <= geometry.start and geometry.start< item[-1].end < geometry.end:
                     print "error,end of geometry out of range can allocate:need let end smaller"
+                    continue
                 else:
                     print "geometry not match freespace,goto find the next block"
+                    continue
             else:
-                print "unknown space,not part or freespace"
+                print "unknown space type,not part or freespace"
+                continue
+        else:
+            print "error,doesn't find the matched freespace in disk_geom_info_tab"
+
 
     def delete_part_geom_info_tab(self,disk,geometry):
         '''update disk_geom_info_tab when delete partition from UI'''
