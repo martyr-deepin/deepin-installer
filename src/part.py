@@ -494,7 +494,9 @@ class Part(gtk.VBox):
 
     def on_part_new_ok_btn_clicked(self,widget):
         '''confirm to add new partition'''
-        disk_path=self.selected_disk.device.path
+        disk=self.selected_disk
+        geom_item=self.part_listview.get_current_item().geom_item
+        space_geom=geom_item[1]
         
         part_type=self.part_new.part_type_combo.get_current_item()[0]
         part_type_dict={"主分区":"primary","扩展分区":"extend","逻辑分区":"logical",
@@ -503,19 +505,24 @@ class Part(gtk.VBox):
         part_type=part_type_dict[part_type]
 
         part_capacity=self.part_new.part_capacity_spin.get_value()
-        print part_capacity
         part_fs=self.part_new.part_fs_combo.get_current_item()[0]
+
         part_format=True
         part_format_str="True"
         part_name=None
         part_location=self.part_new.part_location_combo.get_current_item()[0]
+
         part_mp=self.part_new.part_mp_combo.get_current_item()[0]
-        self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
+
+        # self.part_util.add_disk_partition_info_tab(disk_path,part_type,part_capacity,part_fs,part_format,part_name,part_mp)
+        self.part_util.add_disk_partition_info_tab(disk,part_type,part_capacity,space_geom,part_fs,part_format,part_name,part_mp,part_location)
         part_obj=self.part_util.to_add_partition
 
-        self.get_new_add_part_path(part_obj)
-        part_listview_item=PartListItem(self.selected_disk,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
+        ####update display path in add_disk_partition_info_tab function
+        # self.get_new_add_part_path(part_obj)
 
+        # part_listview_item=PartListItem(self.selected_disk,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
+        part_listview_item=PartListItem(disk,geom_item,part_obj,part_mp,part_fs,part_format_str,str(part_capacity),part_type)
         self.add_part_2listview(part_listview_item)
         self.update_selected_disk_partitions()
         self.update_part_btn_box()

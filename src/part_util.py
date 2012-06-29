@@ -472,6 +472,8 @@ class PartUtil:
                                       part_name,part_mountpoint,part_location,part_flag]
         self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
+        self.get_new_add_part_path(disk,self.to_add_partition)
+
         if part_type!=2:
             self.add_part_geom_info_tab(disk,self.to_add_partition.geometry)
             print "add to disk_geom_info_tab when add new partition"

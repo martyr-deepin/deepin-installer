@@ -75,7 +75,8 @@ class PartNew(Window):
 
 
         self.part_location_label=Label("新分区位置:")
-        self.part_location_combo=ComboBox([("起始",1),("结束",2)])
+        # self.part_location_combo=ComboBox([("起始",1),("结束",2)])
+        self.part_location_combo=ComboBox([("start",1),("end",2)])
         self.part_location_combo.select_first_item()
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
