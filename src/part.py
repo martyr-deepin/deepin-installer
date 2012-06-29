@@ -488,7 +488,8 @@ class Part(gtk.VBox):
     def on_part_new_btn_clicked(self,widget):
         '''create new partition'''
         #update_part_btn_box and listview after add partition operation
-        self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk)
+        current_geom_item=self.part_listview.get_current_item().geom_item
+        self.part_new=PartNew(self.on_part_new_ok_btn_clicked,self.selected_disk,current_geom_item)
         self.part_new.show_all()
 
     def on_part_new_ok_btn_clicked(self,widget):

@@ -34,11 +34,12 @@ from part_util import global_part_util
 
 class PartNew(Window):
     '''create new partition UI'''
-    def __init__(self,part_new_ok_callback,selected_disk):
+    def __init__(self,part_new_ok_callback,selected_disk,geom_item):
         super(PartNew,self).__init__()
 
         self.ok_btn_clicked=part_new_ok_callback
         self.current_disk=selected_disk
+        self.current_geom_item=geom_item
         self.part_util = global_part_util
 
         self.set_size_request(304,308)
@@ -51,7 +52,7 @@ class PartNew(Window):
 
 
         self.part_type_label=Label("新分区类型：")
-        self.part_type_combo=ComboBox([("主分区",1),("扩展分区",2),("逻辑分区",3)])
+        self.part_type_combo=ComboBox([("主分区",1),("逻辑分区",2)])
         # self.part_type_combo.select_first_item()
         self.limit_2added_part_type()
         frame=HorizontalFrame()
@@ -62,7 +63,8 @@ class PartNew(Window):
         self.part_type_combo.connect("item-selected",self.on_part_type_combo_selected)
 
         self.part_capacity_label=Label("新分区容量(MB):")
-        self.part_capacity_spin=SpinBox(100,10,10000000000,10,55)
+        self.max_size=self.get_max_size()
+        self.part_capacity_spin=SpinBox(self.max_size,10,self.max_size,10,55)
 
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
@@ -117,22 +119,8 @@ class PartNew(Window):
         self.window_frame.add(self.new_part_box)
 
     def get_max_size(self):
-        '''return max size user can create with the given part type'''
-        # part_type=self.part_type_combo.get_current_item().get_label()
-        part_type=self.part_type_combo.get_current_item()[0]
-        if part_type=="主分区":
-            part_type="primary"
-        elif part_type=="扩展分区":
-            part_type="extend"
-        elif part_type=="逻辑分区":
-            part_type="logical"
-        else:
-            # print "invalid part type"
-            part_type="logical"
-        self.max_size=0
-        self.max_size=self.part_util.get_disk_single_available_space_size(self.current_disk,part_type)
-            
-        return self.max_size
+        '''return max size user can create with the given part type,geometry'''
+        return self.part_util.get_space_geom_size(self.current_disk,self.current_geom_item[1])
     
     def limit_2added_part_type(self):
         '''limit part_type to add partition'''
