@@ -84,9 +84,9 @@ class Part(gtk.VBox):
         self.part_recovery_btn=Button("还原分区表")
 
         self.part_new_table_btn.connect("clicked",self.on_part_new_table_clicked)
-        self.part_new_btn.connect("clicked",self.on_part_new_btn_clicked)
-        self.part_edit_btn.connect("clicked",self.on_part_edit_btn_clicked)
-        self.part_delete_btn.connect("clicked",self.on_part_delete_btn_clicked)
+        self.part_new_id=self.part_new_btn.connect("clicked",self.on_part_new_btn_clicked)
+        self.part_edit_id=self.part_edit_btn.connect("clicked",self.on_part_edit_btn_clicked)
+        self.part_delete_id=self.part_delete_btn.connect("clicked",self.on_part_delete_btn_clicked)
         self.part_recovery_btn.connect("clicked",self.on_part_recovery_btn_clicked)
 
         self.part_delete_btn.set_clickable(False)
@@ -422,18 +422,57 @@ class Part(gtk.VBox):
     def on_part_item_clicked(self,arg1,arg2,arg3,arg4,arg5):
         '''one part clicked'''
         self.current_part_item=self.part_listview.get_current_item()
-        if self.current_part_item.partition.type==2:
+        if self.current_part_item.geom_item[0]=="freespace":
+            self.part_delete_btn.set_clickable(False)
             self.part_edit_btn.set_clickable(False)
-            # if len(self.part_util.get_disk_logical_partitions(self.selected_disk))!=0:
-            if len(self.part_util.get_disk_logical_list(self.selected_disk))!=0:
-                self.part_delete_btn.set_clickable(False)
+            self.part_new_btn.set_clickable(True)
+        else:    
+            if self.current_part_item.partition.type==2:
+                self.part_edit_btn.set_clickable(False)
+                if len(self.part_util.get_disk_logical_list(self.selected_disk))!=0:
+                    self.part_delete_btn.set_clickable(False)
+                else:
+                    self.part_delete_btn.set_clickable(True)
             else:
+                self.part_edit_btn.set_clickable(True)
                 self.part_delete_btn.set_clickable(True)
-        else:
-            self.part_edit_btn.set_clickable(True)
-            self.part_delete_btn.set_clickable(True)
-
+            self.part_new_btn.set_clickable(False)    
+        # self.update_part_btn_signal()    
         return self.current_part_item
+
+    def update_part_btn_signal(self):
+        '''update signal handle when set_clickable of part operate btn'''
+        if self.part_new_btn.clickable==True:
+            try:
+                self.part_new_btn.handler_unblock(self.part_new_id)
+            except:
+                print "part new btn not blocked"
+        else:
+            try:
+                self.part_new_btn.handler_block(self.part_new_id)
+            except:
+                print "part new btn not unblocked"
+        if self.part_edit_btn.clickable==True:
+            try:
+                self.part_edit_btn.handler_unblock(self.part_edit_id)
+            except:
+                print "part edit btn not blocked"
+        else:
+            try:
+                self.part_edit_btn.handler_block(self.part_edit_id)
+            except:
+                print "part edit btn not unblocked"
+
+        if self.part_delete_btn.clickable==True:
+            try:
+                self.part_delete_btn.handler_unblock(self.part_delete_id)
+            except:
+                print "part delete btn not blocked"
+        else:
+            try:
+                self.part_delete_btn.handler_block(self.part_delete_id)
+            except:
+                print "part delete btn not unblocked"
 
     def set_part_item_focus(self):
         '''set part_item_focus'''

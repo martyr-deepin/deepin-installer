@@ -759,7 +759,7 @@ class PartUtil:
                 start=disk.getFreeSpaceRegions()[0].start+4
                 end=part_geom_list[0][-1].start-4
                 length=end-start+1
-                if length > 0:
+                if length > 8:
                     gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                 else:
                     print "start of disk have geometry overlap or disk size too small"
@@ -769,7 +769,7 @@ class PartUtil:
                     start=part_geom_list[i][-1].end+4
                     end=part_geom_list[i+1][-1].start-4
                     length=end-start+1
-                    if length > 0:
+                    if length > 8:
                         gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                     else:
                         # print "the size between two partition is too small"
@@ -780,7 +780,7 @@ class PartUtil:
                 start=part_geom_list[-1][-1].end+4    
                 end=disk.getFreeSpaceRegions()[-1].end-4 
                 length=end-start+1
-                if length > 0:
+                if length > 8:
                     gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                 else:
                     # print "end of disk have geometry overlap or disk size too small"
