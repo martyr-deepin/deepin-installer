@@ -559,6 +559,7 @@ class PartUtil:
             self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
             self.insert_path_disks_partitions(disk,extend_part)
+            self.get_new_add_part_path(disk,extend_part)
 
     def delete_disk_extended_partition(self,disk,geometry):
         '''delete extened partition,called this function passive'''
