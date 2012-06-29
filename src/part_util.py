@@ -467,6 +467,7 @@ class PartUtil:
         self.to_add_partition=self.get_disk_partition_object(disk,part_type,part_size,space_geom,part_fs,part_location)
         if self.to_add_partition==None:
             print "error,partition is null"
+
         part_flag="add"   
         disk_partition_info_tab_item=[self.to_add_partition,part_type,part_size,space_geom,part_fs,part_format,
                                       part_name,part_mountpoint,part_location,part_flag]

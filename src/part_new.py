@@ -180,11 +180,9 @@ class PartNew(Window):
     def on_part_type_combo_selected(self,arg1,arg2,arg3,arg4):
         '''on part_type_combo_selected'''
         ava_size=int(self.get_max_size())
-        # ava_size=int(self.part_util.get_space_geom_size(disk,geometry))
-        # self.part_capacity_spin.set_value(ava_size)
         self.part_capacity_spin.set_upper(ava_size)
-        self.part_capacity_spin.set_value(int(ava_size/2))
-        # print self.part_capacity_spin.get_value()
+        self.part_capacity_spin.set_value(ava_size)
+
 
 if __name__=="__main__":
 
