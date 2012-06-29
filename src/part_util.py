@@ -501,20 +501,29 @@ class PartUtil:
             return
 
         for item in self.disk_partition_info_tab[part.disk]:
-            if item[0]==part and item[-1]=="add":
-                self.disk_partition_info_tab[part.disk].remove(item)
-                self.delete_path_disks_partitions(part.disk,part)
-                if part.type!=2:
-                    self.delete_part_geom_info_tab(part.disk,part.geometry)
-            elif item[0]==part and item[-1]=="keep":
-                self.mark_disk_partition_info_tab(part,"delete")
-                if part.type!=2:
-                    self.delete_part_geom_info_tab(part.disk,part.geometry)
-            else:
-                print "invalid,if partition marked delete,you wonn't see it"
-                self.lu.do_log_msg(self.logger,"error","invalid,if partition marked delete,you wonn't see it ")
+            if item[0]==part:
+                if item[-1]=="add":
+                    self.disk_partition_info_tab[part.disk].remove(item)
+                    self.delete_path_disks_partitions(part.disk,part)
+                    if part.type!=2:
+                        self.delete_part_geom_info_tab(part.disk,part.geometry)
+                    self.get_delete_part_other_path(part.disk,part)    
+
+                elif item[-1]=="keep":
+                    self.mark_disk_partition_info_tab(part,"delete")
+                    if part.type!=2:
+                        self.delete_part_geom_info_tab(part.disk,part.geometry)
+                    self.get_delete_part_other_path(part.disk,part)    
+
+                else:
+                    print "invalid,if partition marked delete,you wonn't got it in UI listview"
+                    self.lu.do_log_msg(self.logger,"error","invalid,if partition marked delete,you wonn't see it ")
                 break
-            
+            else:
+                continue
+        else:    
+            print "doesn't find the partition in disk_partition_info_tab to delete"
+
         return self.disk_partition_info_tab
 
     def probe_tab_disk_has_extend(self,disk):
@@ -919,7 +928,7 @@ class PartUtil:
 
                 geom=parted.geometry.Geometry(disk.device,start,length,end,None)
                 self.disk_geom_info_tab[disk].remove(current_item)
-                self.disk_geom_info_tab[disk].append("freespace",geom)
+                self.disk_geom_info_tab[disk].append(["freespace",geom])
                 self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
         else:
             print "this should be error,the geometry arg should indicate only one block"
@@ -938,7 +947,7 @@ class PartUtil:
                 geom=parted.geometry.Geometry(disk.device,start,length,end,None)
                 self.disk_geom_info_tab[disk].remove(current_item)
                 self.disk_geom_info_tab[disk].remove(current_end_item)
-                self.disk_geom_info_tab[disk].append("freespace",geom)
+                self.disk_geom_info_tab[disk].append(["freespace",geom])
 
                 self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
             else:    

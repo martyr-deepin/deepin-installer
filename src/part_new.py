@@ -128,8 +128,8 @@ class PartNew(Window):
             print "error,must add partition use freespace area"
             return 
 
-        prev_item=self.part_util.get_prev_geom_info_tab_item(self.current_disk,self.current_geom_item)
-        next_item=self.part_util.get_next_geom_info_tab_item(self.current_disk,self.current_geom_item)
+        prev_item=self.part_util.get_prev_geom_info_tab_item(self.current_disk,self.current_geom_item[1])
+        next_item=self.part_util.get_next_geom_info_tab_item(self.current_disk,self.current_geom_item[1])
         if prev_item[0]!="freespace" and prev_item!=self.current_geom_item:
             prev_part=self.part_util.get_part_from_geom(self.current_disk,prev_item[1])
         else:
@@ -142,37 +142,37 @@ class PartNew(Window):
         if len(self.part_util.get_disk_logical_list(self.current_disk))==0:
             if len(self.part_util.get_disk_primary_list(self.current_disk)) >=4:
                 print "only add logical ok"
-                self.part_type_combo.droplist.insensitive_item(0)
+                # self.part_type_combo.droplist.insensitive_item(0)
             else:
                 print "both primary/logical ok"
         else:
             if len(self.part_util.get_disk_primary_list(self.current_disk)) >=4:
                 print "only add logical ok"
-                self.part_type_combo.droplist.insensitive_item(0)
+                # self.part_type_combo.droplist.insensitive_item(0)
             else:    
                 if prev_part!=None and next_part!=None:
                     if prev_part.type==1 and next_part.type==1:
                         print "only add logical ok"
-                        self.part_type_combo.droplist.insensitive_item(0)
+                        # self.part_type_combo.droplist.insensitive_item(0)
                     elif prev_part.type==0 and next_part.type==0:
                         print "only add primary ok"
-                        self.part_type_combo.droplist.insensitive_item(1)
+                        # self.part_type_combo.droplist.insensitive_item(1)
                     else:
                         print "both primary/logical ok"
                 elif prev_part!=None and next_part==None:
                     if prev_part.type==0:
                         print "only add primary ok"
-                        self.part_type_combo.droplist.insensitive_item(1)
+                        # self.part_type_combo.droplist.insensitive_item(1)
                     else:
                         print "only add logical ok"
-                        self.part_type_combo.droplist.insensitive_item(0)
+                        # self.part_type_combo.droplist.insensitive_item(0)
                 elif prev_part==None and next_part!=None:
                     if next_part.type==0:
                         print "only add primary ok"
-                        self.part_type_combo.droplist.insensitive_item(1)
+                        # self.part_type_combo.droplist.insensitive_item(1)
                     else:
                         print "only add logical ok"
-                        self.part_type_combo.droplist.insensitive_item(0)
+                        # self.part_type_combo.droplist.insensitive_item(0)
                 else:        
                     print "error,because the logical list not null"
 
