@@ -306,7 +306,7 @@ class PartUtil:
                 part_prefix=re.findall(r'[^0-9]+',self.disk_part_display_path[disk][part_obj])[0]
                 for part in main_part_list:
                     part_no=int(filter(str.isdigit,self.disk_part_display_path[disk][part])[:])
-                if part_no > current_num:
+                    if part_no > current_num:
                         self.disk_part_display_path[disk][part]=part_prefix+str(part_no-1)
                 del self.disk_part_display_path[disk][part_obj]
                 return self.disk_part_display_path
