@@ -531,6 +531,11 @@ class PartUtil:
         else:    
             print "doesn't find the partition in disk_partition_info_tab to delete"
 
+        #delete extend_part when no logical    
+        if len(self.get_disk_extend_list(part.disk))==1 and len(self.get_disk_logical_list(part.disk))==0:
+            print "delete extend part as no logical,when add new logical then add new extend"
+            self.delete_disk_extended_partition(part.disk,self.get_disk_extend_list(part.disk)[0])
+
         return self.disk_partition_info_tab
 
     def probe_tab_disk_has_extend(self,disk):
@@ -561,12 +566,13 @@ class PartUtil:
             self.insert_path_disks_partitions(disk,extend_part)
             self.get_new_add_part_path(disk,extend_part)
 
-    def delete_disk_extended_partition(self,disk,geometry):
-        '''delete extened partition,called this function passive'''
+    def delete_disk_extended_partition(self,disk,extend_part):
+        '''delete extened partition,when delete all logical part in the table'''
         if len(self.get_disk_logical_list[disk])!=0:
             print "cann't delete extended part since there still have logical one"
         else:
-            print "to be implemented"
+            ####this delete other table automaticly########
+            self.delete_disk_partition_info_tab(extend_part)
 
     def update_extended_disk_partition_info_tab(self,disk,extend_part):
         '''update extended part info in disk_partition_info_tab,mostly update the geometry'''
