@@ -124,23 +124,57 @@ class PartNew(Window):
     
     def limit_2added_part_type(self):
         '''limit part_type to add partition'''
-        # main_list=self.part_util.get_disk_main_partitions(self.current_disk)
-        main_list=self.part_util.get_disk_main_list(self.current_disk)
-        # extend_list=self.part_util.get_disk_extended_partition(self.current_disk)
-        extend_list=self.part_util.get_disk_extend_list(self.current_disk)
+        if self.current_geom_item[0]!="freespace":
+            print "error,must add partition use freespace area"
+            return 
 
-        if len(main_list) > 3:
-            print "need disable primary and extend part type"
-            # self.part_type_combo.droplist.insensitive_item(0)
-            # self.part_type_combo.droplist.insensitive_item(1)
-        if len(extend_list)==0:
-            print "need disable logical part type"
-            # self.part_type_combo.droplist.insensitive_item(2)
-        if len(extend_list)==1:
-            print "need disable extend part type"
-            # self.part_type_combo.droplist.insensitive_item(1)
-        if len(extend_list) > 1:
-            print "error,should have only one extend partition"
+        prev_item=self.part_util.get_prev_geom_info_tab_item(self.current_disk,self.current_geom_item)
+        next_item=self.part_util.get_next_geom_info_tab_item(self.current_disk,self.current_geom_item)
+        if prev_item[0]!="freespace" and prev_item!=self.current_geom_item:
+            prev_part=self.part_util.get_part_from_geom(self.current_disk,prev_item[1])
+        else:
+            prev_part=None
+        if next_item[0]!="freespace" and next_item!=self.current_geom_item:
+            next_part=self.part_util.get_part_from_geom(self.current_disk,next_item[1])
+        else:
+            next_part=None
+
+        if len(self.part_util.get_disk_logical_list(self.current_disk))==0:
+            if len(self.part_util.get_disk_primary_list(self.current_disk)) >=4:
+                print "only add logical ok"
+                self.part_type_combo.droplist.insensitive_item(0)
+            else:
+                print "both primary/logical ok"
+        else:
+            if len(self.part_util.get_disk_primary_list(self.current_disk)) >=4:
+                print "only add logical ok"
+                self.part_type_combo.droplist.insensitive_item(0)
+            else:    
+                if prev_part!=None and next_part!=None:
+                    if prev_part.type==1 and next_part.type==1:
+                        print "only add logical ok"
+                        self.part_type_combo.droplist.insensitive_item(0)
+                    elif prev_part.type==0 and next_part.type==0:
+                        print "only add primary ok"
+                        self.part_type_combo.droplist.insensitive_item(1)
+                    else:
+                        print "both primary/logical ok"
+                elif prev_part!=None and next_part==None:
+                    if prev_part.type==0:
+                        print "only add primary ok"
+                        self.part_type_combo.droplist.insensitive_item(1)
+                    else:
+                        print "only add logical ok"
+                        self.part_type_combo.droplist.insensitive_item(0)
+                elif prev_part==None and next_part!=None:
+                    if next_part.type==0:
+                        print "only add primary ok"
+                        self.part_type_combo.droplist.insensitive_item(1)
+                    else:
+                        print "only add logical ok"
+                        self.part_type_combo.droplist.insensitive_item(0)
+                else:        
+                    print "error,because the logical list not null"
 
     def on_part_type_combo_selected(self,arg1,arg2,arg3,arg4):
         '''on part_type_combo_selected'''
