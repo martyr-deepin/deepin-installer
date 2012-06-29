@@ -2566,3 +2566,231 @@ part_util.py/init_disk_geom_info_tab-807:WARNING-the size between two partition 
 log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
 part_util.py/init_disk_geom_info_tab-818:WARNING-end of disk have geometry overlap or disk size too small
 log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-809:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-809:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-820:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-809:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-809:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-820:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-807:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-807:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-818:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-807:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-807:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-818:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-807:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-807:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-818:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-807:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-807:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-818:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-806:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-817:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-808:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-810:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-810:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-821:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-810:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-810:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-821:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-811:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-811:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-822:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-811:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-811:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-822:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-814:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-814:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-825:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-814:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-814:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-825:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-830:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-819:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-830:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-813:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-813:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-824:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-813:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-813:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-824:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-820:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-820:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-831:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-820:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-820:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-831:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-814:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-814:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-825:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small
+part_util.py/init_disk_geom_info_tab-814:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-814:WARNING-the size between two partition is too small
+log_util.py/do_log_msg-157:WARNING-the size between two partition is too small
+part_util.py/init_disk_geom_info_tab-825:WARNING-end of disk have geometry overlap or disk size too small
+log_util.py/do_log_msg-157:WARNING-end of disk have geometry overlap or disk size too small

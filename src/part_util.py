@@ -60,12 +60,12 @@ class PartUtil:
         self.disk_part_display_path=self.init_disk_part_display_path()
     #{disk:["freespace",geometry]},use geometry object to keep match with disk_partition_info_tab    
     #attention:the geometry id of freespace is variable#
-        self.disk_geom_info_tab={}
-        self.init_disk_geom_info_tab()
+        self.disk_geom_info_tab=self.init_disk_geom_info_tab()
+
 
         self.backup_disk_partition_info_tab=self.init_disk_partition_info_tab()
         # self.backup_disk_partition_info_tab=copy.deepcopy(self.disk_partition_info_tab)
-
+        self.backup_disk_geom_info_tab=self.init_disk_geom_info_tab()
     #######################fill in data relative to disk,mostly in physical#######################
     def __get_path_disks(self):
         '''return{ path:disk} dict,called this only once to make sure the Ped object id will not change'''
@@ -398,35 +398,42 @@ class PartUtil:
         self.disk_part_display_path[disk]={}
 
         del self.path_disks_partitions[disk]
-        self.path_disks_partitions=[]
-
+        self.path_disks_partitions[disk]=[]
+        
         del self.disk_geom_info_tab[disk]
-        self.disk_geom_info_tab[disk]={}
+        self.disk_geom_info_tab[disk]=[]
 
-            
     def recovery_disk_partition_info_tab(self,disk):
         '''backend operation for UI:recovery edited disk partition tab'''
-        #init disk_partition_info_tab
-        del self.disk_partition_info_tab[disk]
-        self.disk_partition_info_tab[disk]=[]
+        self.rebuild_disk_partition_info_tab(disk)
 
+        #init disk_partition_info_tab
         for item in self.backup_disk_partition_info_tab[disk]:
             item_list=[]
             for i in item:
                 item_list.append(i)
             self.disk_partition_info_tab[disk].append(item_list)    
 
+        #init path_disks_partitions    
+        self.path_disks_partitions[disk]=[]    
+        for item in self.disk_partition_info_tab[disk]:
+            self.path_disks_partitions[disk].append(item[0])
+
         #init disk_part_display_path        
         if disk in self.disk_part_display_path.keys():
             self.disk_part_display_path[disk].clear()
             del self.disk_part_display_path[disk]
-        self.disk_part_display_path[disk]={}    
+        self.disk_part_display_path[disk]={}
         for part in self.get_disk_partitions(disk):
             self.disk_part_display_path[disk][part]=part.path
-
-        self.path_disks_partitions[disk]=self.__get_path_disk_partitions(disk)
-        ###to be implemented
-        # self.disk_geom_info_tab[disk]=self.init_disk_geom_info_tab()
+        print self.disk_part_display_path[disk]
+    
+        #init disk_geom_info_tab
+        for item in self.backup_disk_geom_info_tab[disk]:    
+            item_list=[]
+            for i in item:
+                item_list.append(i)
+            self.disk_geom_info_tab[disk].append(item_list)
 
     def get_disk_partition_info_tab_item(self,disk,part):
         '''get the item of disk_partition_info_tab specified by part'''
@@ -759,10 +766,10 @@ class PartUtil:
     #####################probe geom layout of the disk########################################
     def init_disk_geom_info_tab(self):
         '''init_disk_geom_info_tab,not include the extended partition'''
-        self.disk_geom_info_tab={}#
+        disk_geom_info_tab={}#
 
         for disk in self.get_system_disks():
-            self.disk_geom_info_tab[disk]=[]
+            disk_geom_info_tab[disk]=[]
             main_part_list=self.get_disk_main_list(disk)
 
             part_geom_list=[]#[["part",geometry]]
@@ -822,9 +829,9 @@ class PartUtil:
             for item in gap_geom_list:
                 space_geom_list.append(item)
             space_geom_list=sorted(space_geom_list,key=lambda x:x[-1].start)
-            self.disk_geom_info_tab[disk]=space_geom_list
+            disk_geom_info_tab[disk]=space_geom_list
 
-        return self.disk_geom_info_tab    
+        return disk_geom_info_tab    
 
     def get_disk_geom_info_tab(self,disk):
         '''get geom layout of the disk:include partition and freespace'''
