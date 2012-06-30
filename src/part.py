@@ -356,7 +356,8 @@ class Part(gtk.VBox):
             (lambda item:item.format,cmp),
             (lambda item:item.total_size,cmp),
             (lambda item:item.part_type,cmp)
-             ]
+             ],
+            enable_multiple_select=False
             )
         self.part_listview.set_expand_column(1)
         self.part_listview.add_titles(["分区","挂载点","文件系统","格式化","总容量(MB)","类型"])

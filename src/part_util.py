@@ -426,7 +426,6 @@ class PartUtil:
         self.disk_part_display_path[disk]={}
         for part in self.get_disk_partitions(disk):
             self.disk_part_display_path[disk][part]=part.path
-        print self.disk_part_display_path[disk]
     
         #init disk_geom_info_tab
         for item in self.backup_disk_geom_info_tab[disk]:    
