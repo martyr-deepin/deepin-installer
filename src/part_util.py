@@ -980,15 +980,15 @@ class PartUtil:
                 print "freespace,no need to delete"
             else:
                 if prev_item[0]=="freespace":
-                    start=prev_item[-1].start
+                    start=prev_item[-1].start+4
                     self.disk_geom_info_tab[disk].remove(prev_item)
                 else:
-                    start=current_item[-1].start
+                    start=current_item[-1].start+4
                 if next_item[0]=="freespace":
-                    end=next_item[-1].end
+                    end=next_item[-1].end-4
                     self.disk_geom_info_tab[disk].remove(next_item)
                 else:
-                    end=current_item[-1].end
+                    end=current_item[-1].end-4
                 length=end-start+1    
 
                 geom=parted.geometry.Geometry(disk.device,start,length,end,None)
@@ -996,18 +996,18 @@ class PartUtil:
                 self.disk_geom_info_tab[disk].append(["freespace",geom])
                 self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
         else:
-            print "this should be error,the geometry arg should indicate only one block"
+            print "error,the geometry arg should indicate only one block"
             if current_end_item[0]=="freespace":
                 if prev_item[0]=="freespace":
-                    start=prev_item[-1].start
+                    start=prev_item[-1].start+4
                     self.disk_geom_info_tab[disk].remove(prev_item)
                 else:
-                    start=current_item[-1].start
+                    start=current_item[-1].start+4
                 if next_item[0]=="freespace":
-                    end=next_item[-1].end
+                    end=next_item[-1].end-4
                     self.disk_geom_info_tab[disk].remove(next_item)
                 else:
-                    end=current_end_item[-1].end
+                    end=current_end_item[-1].end-4
                 length=end-start+1    
                 geom=parted.geometry.Geometry(disk.device,start,length,end,None)
                 self.disk_geom_info_tab[disk].remove(current_item)
@@ -1170,6 +1170,14 @@ class PartUtil:
             print "no need to umount extended part"
             return True
         part_path=partition.path
+        for item in get_os_command_output("cat /proc/mounts"):
+            if item.startswith(part_path):
+                mount_point=item.split()[1]
+                break
+            else:    
+                continue
+        else:
+            return True
 
         def is_umount():        
             after_mtab=get_os_command_output("cat /proc/mounts")
@@ -1182,33 +1190,14 @@ class PartUtil:
             else:
                 return True
 
-        if not is_umount():
+        while not is_umount():
             run_os_command("sudo umount "+part_path)
-        else:
-            return True
-
-        if not is_umount():
-            run_os_command("sudo umount -l "+part_path)
-        else:
-            return True
-
-        mtab=get_os_command_output("cat /proc/mounts")
-        mount_list=[]
-        mount_item_list=[]
-        for item in mtab:
-            mount_item_list=item.split()
-            mount_list.append(mount_item_list)
-            if item.startswith(part_path):
-                mount_point=mount_item_list[1]
-        force_umount_command="sudo umount -f "+mount_point        
-
-        if not is_umount():
-            for item in mount_list:
-                if item[1]==mount_point:
-                    run_os_command(force_umount_command)
-            for item in mount_list:
-                if item[1]==mount_point and item[0]!=part_path:
-                    run_os_command("sudo mount -t %s %s %s") %item[2] % item[0] % item[1]
+            if not is_umount():
+                run_os_command("sudo umount -l "+part_path)
+            else:
+                return True
+            if not is_umount() and mount_point!=None:
+                run_os_command("sudo umount -f "+mount_point)
         else:
             return True
 
@@ -1236,17 +1225,21 @@ class PartUtil:
             print "partition not in the disk"
             self.lu.do_log_msg(self.logger,"error","partiton not in the disk")
             return 
-        if partition.type==parted.PARTITION_EXTENDED and len(self.get_disk_logical_list(disk))!=0:
+        if partition.type==2 and len(self.get_disk_logical_list(disk))!=0:
             print "error,need delete all logical partitions before delete extend partition"
             self.lu.do_log_msg(self.logger,"error","delete logical partitions before delete extend")
 
         self.delete_path_disks_partitions(disk,partition)    
         self.disk_partition_info_tab[disk]=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab[disk])
         try:
-            self.set_disk_partition_umount(partition)
-            disk.deletePartition(partition)
+            if self.set_disk_partition_umount(partition)==True:
+                disk.deletePartition(partition)
+            else:
+                print "error,need umount partition before delete"
+                self.set_disk_partition_umount(partition)
+                disk.deletePartition(partition)
         except:
-            print "delete partition error occurs,device may busy"
+            print "error,delete partition error occurs,device may busy"
             self.lu.do_log_msg(self.logger,"error","delete partition error occurs")
 
 
@@ -1290,19 +1283,6 @@ class PartUtil:
         '''batch add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
         print "begin batch add partition"
         for disk in self.get_system_disks():
-            for item in filter(lambda info:info[-1]=="add" and info[0].type==0,self.disk_partition_info_tab[disk]):    
-                print "add primary partition"
-                self.partition=item[0]
-                self.geometry=self.partition.geometry
-                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                disk.addPartition(self.partition,self.constraint)
-                # try:
-                #     disk.addPartition(self.partition,self.constraint)
-                #     print "successfully add primary partition for %s" % disk.device.path
-                # except:
-                #     print "add primary partition error"
-                disk.commit()
-                
             for item in filter(lambda info:info[-1]=="add" and info[0].type==2,self.disk_partition_info_tab[disk]):
                 print "add extended partition first"
                 self.partition=item[0]
@@ -1327,6 +1307,18 @@ class PartUtil:
                 #     print "successfully add logical partition for %s" % disk.device.path
                 # except:
                 #     print "add logical partition error"
+
+            for item in filter(lambda info:info[-1]=="add" and info[0].type==0,self.disk_partition_info_tab[disk]):    
+                print "add primary partition"
+                self.partition=item[0]
+                self.geometry=self.partition.geometry
+                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                disk.addPartition(self.partition,self.constraint)
+                # try:
+                #     disk.addPartition(self.partition,self.constraint)
+                #     print "successfully add primary partition for %s" % disk.device.path
+                # except:
+                #     print "add primary partition error"
 
             disk.commit()        
             print "add all partitions for the disk %s ok" % disk.device.path

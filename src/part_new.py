@@ -169,14 +169,14 @@ class PartNew(Window):
                         print "only add primary ok"
                         # self.part_type_combo.droplist.insensitive_item(1)
                     else:
-                        print "only add logical ok"
+                        print "both primary/logical ok"
                         # self.part_type_combo.droplist.insensitive_item(0)
                 elif prev_part==None and next_part!=None:
                     if next_part.type==0:
                         print "only add primary ok"
                         # self.part_type_combo.droplist.insensitive_item(1)
                     else:
-                        print "only add logical ok"
+                        print "both primary/logical ok"
                         # self.part_type_combo.droplist.insensitive_item(0)
                 else:        
                     print "error,because the logical list not null"
