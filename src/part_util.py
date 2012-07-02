@@ -604,7 +604,7 @@ class PartUtil:
                     continue
             else:    
                 print "doesn't find the extend partition in disk_partition_info_tab to delete"
-            print "successfully delete the extended part"    
+            print "successfully delete the extended part from table"    
         return self.disk_partition_info_tab
 
 
@@ -1218,46 +1218,50 @@ class PartUtil:
     def delete_custom_partition(self):
         '''batch delete origin disk partitions:'''
         for disk in self.get_system_disks():
-            disk_partition_info=self.disk_partition_info_tab[disk]
-            for item in filter(lambda info:info[-1]=="delete",disk_partition_info):
+            for item in filter(lambda info:info[-1]=="delete",self.disk_partition_info_tab[disk]):
                 if item[0]==None:
                     print "error,the partition object should not be null"
                     continue
                 elif item[0].type==1:
+                    print "delete logical partition"
                     try:
                         self.delete_disk_partition(disk,item[0])
                     except:
                         print "delete logical partition error!"
+                    print "successfully delete logical partition"    
                 else:
                     continue
 
-            for item in filter(lambda info:info[-1]=="delete",disk_partition_info):
+            for item in filter(lambda info:info[-1]=="delete",self.disk_partition_info_tab[disk]):
                 if item[0].type==1:
                     print "error,you should have already delete the logical partition"
+                    print item[0]
                     continue
                 elif item[0].type==0 or item[0].type==2:
+                    print "delete primary/extended partition"
                     try:
                         self.delete_disk_partition(disk,item[0])
                     except:
                         print "delete primary/extend partition error!"
+                    print "successfully delete primary/extended partition"    
                 else:
                     continue
             disk.commit()        
 
-    def add_disk_partition(self):
-        '''atom function:add disk partition'''
-        pass
-                
     def add_custom_partition(self):
         '''batch add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
         print "begin batch add partition"
         for disk in self.get_system_disks():
             for item in filter(lambda info:info[-1]=="add",self.disk_partition_info_tab[disk]):
                 if item[0].type==0 or item[0].type==2:
+                    print "add primary/extended partition"
                     self.partition=item[0]
                     self.geometry=self.partition.geometry
                     self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                    disk.addPartition(self.partition,self.constraint)
+                    if (self.constraint.isSolution(self.geometry)):
+                        disk.addPartition(self.partition,self.constraint)
+                    else:
+                        print "constraint is not the solution of the geometry"
                     print "add primary/extended partition ok"
                 else:
                     continue
@@ -1273,7 +1277,10 @@ class PartUtil:
                     self.partition=item[0]
                     self.geometry=self.partition.geometry
                     self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                    disk.addPartition(self.partition,self.constraint)
+                    if (self.constraint.isSolution(self.geometry)):
+                        disk.addPartition(self.partition,self.constraint)
+                    else:
+                        print "constraint is not the solution of the geometry"
                     print "add logical partition ok"
             disk.commit()        
             print "add all partitions ok"
