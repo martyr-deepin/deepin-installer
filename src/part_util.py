@@ -464,7 +464,7 @@ class PartUtil:
 
         elif part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
             extend_part=self.get_disk_extend_list(disk)[0]
-            if space_geom.start > extend_part.geometry.start and space_geom.end < extend_part.geometry.end:
+            if space_geom.start -4 > extend_part.geometry.start and space_geom.end + 4 < extend_part.geometry.end:
                 print "extend_part space is big enough to add the logical"
             else:
                 print "need grown_disk_extended_partition_geometry"
@@ -474,7 +474,7 @@ class PartUtil:
             extend_part=self.get_disk_extend_list(disk)[0]
             start=extend_part.geometry.start
             end=extend_part.geometry.end
-            if space_geom.start >= end or space_geom.end <= start:
+            if space_geom.start -4 >= end or space_geom.end +4 <= start:
                 print "no need to smaller extend_part when add primary"
             else:
                 print "need reduce extend_part geometry when add primary"
@@ -577,6 +577,10 @@ class PartUtil:
             end=copy.deepcopy(geometry.end)
             length=end - start + 1
             
+            geometry.start=geometry.start+4
+            geometry.end=geometry.end-4
+            geometry.length=geometry.end - geometry.start + 1
+
             extend_geometry=parted.geometry.Geometry(disk.device,start,length,end,None)
             extend_part=parted.partition.Partition(disk,parted.PARTITION_EXTENDED,None,extend_geometry,None)
             disk_partition_info_tab_item=[extend_part,"extend",extend_geometry.length*disk.device.sectorSize/1024*1024,
@@ -633,6 +637,7 @@ class PartUtil:
                 prev_item=self.get_prev_geom_info_tab_item(disk,logical_list[0].geometry)
                 next_item=self.get_next_geom_info_tab_item(disk,logical_list[-1].geometry)
             else:
+                print "grown extend_part as no logical,maybe an error occurs"
                 prev_item=self.get_prev_geom_info_tab_item(disk,extend_part.geometry)
                 next_item=self.get_next_geom_info_tab_item(disk,extend_part.geometry)
         else:
@@ -641,21 +646,21 @@ class PartUtil:
 
         if len(self.get_disk_extend_list(disk))==0:
             print "no need to grown as no extended part,error!!!"
-        elif ori_start < space_geom.start and ori_end > space_geom.end:
+        elif ori_start +4 < space_geom.start and ori_end -4 > space_geom.end:
             print "no need to grown as origin size bigger"
         else:
-            if ori_start >= space_geom.start:
+            if ori_start +4 >= space_geom.start:
                 if prev_item[0]=="freespace":
-                    start=max(prev_item[-1].start,space_geom.start)
+                    start=max(prev_item[-1].start,space_geom.start-4)
                 else:
                     print "cann't grown size to prev used space"
                     start=ori_start
             else:
                 start=ori_start
 
-            if ori_end <= space_geom.end:
+            if ori_end -4 <= space_geom.end:
                 if next_item[0]=="freespace":
-                    end=min(next_item[-1].end,space_geom.end)
+                    end=min(next_item[-1].end,space_geom.end + 4)
                 else:
                     print "cann't grown size to next used space"
                     end=ori_end
@@ -680,13 +685,13 @@ class PartUtil:
             if primary_geom.start <= start and start < primary_geom.end <= end:
                 print "need reduce size at the start of the extend_part"
                 if len(logical_list)!=0:
-                    if primary_geom.end > logical_list[0].geometry.start:
+                    if primary_geom.end >= logical_list[0].geometry.start - 4:
                         # print "add primary to space used by first logical,smaller the primary end to to added part"
                         # primary_geom.end = logical_list[0].geometry.start-4
                         # primary_geom.length=primary_geom.end - primary_geom.start + 1
                         print "error,cann't add primary into first logical"
                     else:    
-                        extend_part.geometry.start=min(primary_geom.end+4,logical_list[0].geometry.start)
+                        extend_part.geometry.start=min(primary_geom.end+4,logical_list[0].geometry.start-4)
                         extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
 
                 extend_part.geometry.start=primary_geom.end+4
@@ -695,13 +700,13 @@ class PartUtil:
             elif primary_geom.start > start and start < primary_geom.end <=end:
                 print "add primary into old extend_part,need reduce size at the start of the extend_part"
                 if len(logical_list)!=0:
-                    if primary_geom.end <= logical_list[0].geometry.start:
-                        start=max(primary_geom.end+4,logical_list[0].geometry.start)
+                    if primary_geom.end <= logical_list[0].geometry.start - 4:
+                        start=max(primary_geom.end+4,logical_list[0].geometry.start-4)
                         length=end-start+1
                         extend_part.geometry.start=start
                         extend_part.geometry.length=length
-                    elif primary_geom.start >= logical_list[-1].geometry.end:
-                        end=min(logical_list[-1].geometry.end,primary_geom.start-4)
+                    elif primary_geom.start >= logical_list[-1].geometry.end +4:
+                        end=min(logical_list[-1].geometry.end +4,primary_geom.start-4)
                         length=end-start+1
                         extend_part.geometry.end=end
                         extend_part.geometry.length=length
@@ -722,11 +727,11 @@ class PartUtil:
             elif start < primary_geom.start <= end and primary_geom.end > end:
                 print "need reduce size at the end to the extend_part"
                 if len(logical_list)!=0:
-                    if start < logical_list[-1].geometry.end:
+                    if start < logical_list[-1].geometry.end +4:
                         print "error ,add primary to space used by last logical"
                         return 
                     else:
-                        extend_part.geometry.end=max(logical_list[-1].geometry.end,primary_geom.start-4)
+                        extend_part.geometry.end=max(logical_list[-1].geometry.end+4,primary_geom.start-4)
                         extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
                 else:
                     extend_part.geometry.end=primary_geom.start-4
@@ -1166,7 +1171,8 @@ class PartUtil:
             return 
         part_path=partition.path
         mount_flag=False
-        mtab=get_os_command_output("cat /etc/mtab")
+        # mtab=get_os_command_output("cat /etc/mtab")
+        mtab=get_os_command_output("cat /proc/mounts")
         umount_command="sudo umount "+part_path
         umount_busy_command="sudo umount -l "+part_path
         # umount_busy_command="sudo fuser -mk "+part_path
@@ -1232,9 +1238,9 @@ class PartUtil:
                     print "delete logical partition"
                     try:
                         self.delete_disk_partition(disk,item[0])
+                        print "successfully delete logical partition"    
                     except:
                         print "delete logical partition error!"
-                    print "successfully delete logical partition"    
                 else:
                     continue
 
@@ -1247,9 +1253,9 @@ class PartUtil:
                     print "delete primary/extended partition"
                     try:
                         self.delete_disk_partition(disk,item[0])
+                        print "successfully delete primary/extended partition"    
                     except:
                         print "delete primary/extend partition error!"
-                    print "successfully delete primary/extended partition"    
                 else:
                     continue
             disk.commit()        
