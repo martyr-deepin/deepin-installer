@@ -604,7 +604,7 @@ class PartUtil:
                     continue
             else:    
                 print "doesn't find the extend partition in disk_partition_info_tab to delete"
-
+            print "successfully delete the extended part"    
         return self.disk_partition_info_tab
 
 
@@ -1213,7 +1213,7 @@ class PartUtil:
         except:
             print "delete partition error occurs"
             self.lu.do_log_msg(self.logger,"error","delete partition error occurs")
-        disk.commit()
+
 
     def delete_custom_partition(self):
         '''batch delete origin disk partitions:'''
@@ -1221,13 +1221,28 @@ class PartUtil:
             disk_partition_info=self.disk_partition_info_tab[disk]
             for item in filter(lambda info:info[-1]=="delete",disk_partition_info):
                 if item[0]==None:
-                    print "partition doesn't exist"
-                    self.lu.do_log_msg(self.logger,"warning","partition doesn't exist")
-                else:
+                    print "error,the partition object should not be null"
+                    continue
+                elif item[0].type==1:
                     try:
                         self.delete_disk_partition(disk,item[0])
                     except:
-                        print "batch delete origin partition error!"
+                        print "delete logical partition error!"
+                else:
+                    continue
+
+            for item in filter(lambda info:info[-1]=="delete",disk_partition_info):
+                if item[0].type==1:
+                    print "error,you should have already delete the logical partition"
+                    continue
+                elif item[0].type==0 or item[0].type==2:
+                    try:
+                        self.delete_disk_partition(disk,item[0])
+                    except:
+                        print "delete primary/extend partition error!"
+                else:
+                    continue
+            disk.commit()        
 
     def add_disk_partition(self):
         '''atom function:add disk partition'''
