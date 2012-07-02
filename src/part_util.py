@@ -1170,20 +1170,6 @@ class PartUtil:
             print "no need to umount extended part"
             return True
         part_path=partition.path
-        mount_flag=False
-
-        mtab=get_os_command_output("cat /proc/mounts")
-        umount_command="sudo umount "+part_path
-        mount_list=[]
-        mount_item_list=[]
-
-        for item in mtab:
-            mount_item_list=item.split()
-            mount_list.append(mount_item_list)
-            if item.startswith(part_path):
-                mount_flag=True
-                mount_point=mount_item_list[1]
-        force_umount_command="sudo umount -f "+mount_point        
 
         def is_umount():        
             after_mtab=get_os_command_output("cat /proc/mounts")
@@ -1196,15 +1182,35 @@ class PartUtil:
             else:
                 return True
 
-        if mount_flag==True:
-            run_os_command(umount_command)
-            if partition.busy or is_umount()==False:
-                for item in mount_list:
-                    if item[1]==mount_point:
-                        run_os_command(force_umount_command)
-                for item in mount_list:
-                    if item[1]==mount_point and item[0]!=part_path:
-                        run_os_command("sudo mount -t %s %s %s") %item[2] % item[0] % item[1]
+        if not is_umount():
+            run_os_command("sudo umount "+part_path)
+        else:
+            return True
+
+        if not is_umount():
+            run_os_command("sudo umount -l "+part_path)
+        else:
+            return True
+
+        mtab=get_os_command_output("cat /proc/mounts")
+        mount_list=[]
+        mount_item_list=[]
+        for item in mtab:
+            mount_item_list=item.split()
+            mount_list.append(mount_item_list)
+            if item.startswith(part_path):
+                mount_point=mount_item_list[1]
+        force_umount_command="sudo umount -f "+mount_point        
+
+        if not is_umount():
+            for item in mount_list:
+                if item[1]==mount_point:
+                    run_os_command(force_umount_command)
+            for item in mount_list:
+                if item[1]==mount_point and item[0]!=part_path:
+                    run_os_command("sudo mount -t %s %s %s") %item[2] % item[0] % item[1]
+        else:
+            return True
 
         return is_umount()                
 
@@ -1237,11 +1243,10 @@ class PartUtil:
         self.delete_path_disks_partitions(disk,partition)    
         self.disk_partition_info_tab[disk]=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab[disk])
         try:
-            while(self.set_disk_partition_umount(partition)==False):
-                self.set_disk_partition_umount(partition)
+            self.set_disk_partition_umount(partition)
             disk.deletePartition(partition)
         except:
-            print "delete partition error occurs"
+            print "delete partition error occurs,device may busy"
             self.lu.do_log_msg(self.logger,"error","delete partition error occurs")
 
 

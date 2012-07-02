@@ -121,10 +121,17 @@ def test_umount():
     #     print item[0]
     #     print item[1]
 
+def test_umount_partition():
+    disk=pu.get_disk_from_path("/dev/sdb")
+    for part in pu.get_disk_partitions(disk):
+        pu.set_disk_partition_umount(part)
+
+
 if __name__=="__main__":
     # test_disk_partition_info_tab()
     # test_disk_geom_info_tab()
     # test_disk_part_display_path()
     # test_reduce_extend_part()
     # test_delete_disk_partition_info_tab()
-    test_umount()
+    # test_umount()
+    test_umount_partition()
