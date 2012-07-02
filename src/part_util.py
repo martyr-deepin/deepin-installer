@@ -1252,36 +1252,46 @@ class PartUtil:
         '''batch add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
         print "begin batch add partition"
         for disk in self.get_system_disks():
-            for item in filter(lambda info:info[-1]=="add",self.disk_partition_info_tab[disk]):
-                if item[0].type==0 or item[0].type==2:
-                    print "add primary/extended partition"
-                    self.partition=item[0]
-                    self.geometry=self.partition.geometry
-                    self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                    if (self.constraint.isSolution(self.geometry)):
-                        disk.addPartition(self.partition,self.constraint)
-                    else:
-                        print "constraint is not the solution of the geometry"
-                    print "add primary/extended partition ok"
-                else:
-                    continue
-            for item in filter(lambda info:info[-1]=="add" and info[0].type==1,self.disk_partition_info_tab[disk]):
-                if not self.probe_tab_disk_has_extend(disk):
-                    print "can't add logical partition as there is no extended partition"
-                    self.lu.do_log_msg(self.logger,"error","can't add logical as no extended")
-                    # break
-                elif item[0].type!=1:
-                    print "you had already added primary/extended partition "
-                else:
-                    print "add logical partition"
-                    self.partition=item[0]
-                    self.geometry=self.partition.geometry
-                    self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                    if (self.constraint.isSolution(self.geometry)):
-                        disk.addPartition(self.partition,self.constraint)
-                    else:
-                        print "constraint is not the solution of the geometry"
-                    print "add logical partition ok"
+            for item in filter(lambda info:info[-1]=="add" and info[0].type==2,self.disk_partition_info_tab[disk]):
+                print "add extended partition first"
+                self.partition=item[0]
+                self.geometry=self.partition.geometry
+                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                try:
+                    disk.addPartition(self.partition,self.constraint)
+                except:
+                    print "add extended partition error"
+                disk.commit()
+                print "successfully add extended partition"
+            else:
+                print "no need to add extended part for the disk %s" % disk.device.path
+
+            for item in filter(lambda info:info[-1]=="add" and info[0].type==0,self.disk_partition_info_tab[disk]):    
+                print "add primary partition"
+                self.partition=item[0]
+                self.geometry=self.partition.geometry
+                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                try:
+                    disk.addPartition(self.partition,self.constraint)
+                except:
+                    print "add primary partition error"
+                print "successfully add primary partition"
+            else:
+                print "no need to add primary part for the disk %s" % disk.device.path
+
+            for item in filter(lambda info:info[-1]=="add" and info[0].type==1,self.disk_partition_info_tab[disk]):    
+                print "add logical partition"
+                self.partition=item[0]
+                self.geometry=self.partition.geometry
+                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                try:
+                    disk.addPartition(self.partition,self.constraint)
+                except:
+                    print "add logical partition error"
+                print "successfully add logical partition"
+            else:
+                print "no need to add logical part for the disk %s" % disk.device.path
+
             disk.commit()        
             print "add all partitions ok"
             #mkfs/setname/mount disk partitions
