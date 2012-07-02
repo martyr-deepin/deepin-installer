@@ -108,9 +108,23 @@ def print_geom_info(disk):
         print item[-1].start
         print item[-1].end
 
+def test_umount():
+    from basic_utils import get_os_command_output
+    mtab=get_os_command_output("cat /proc/mounts")
+    # print mtab
+    # mtab_list=mtab.split()
+    # print mtab_list
+    for item in mtab:
+        item_list=item.split()
+        print item_list
+    #     print item
+    #     print item[0]
+    #     print item[1]
+
 if __name__=="__main__":
     # test_disk_partition_info_tab()
     # test_disk_geom_info_tab()
     # test_disk_part_display_path()
     # test_reduce_extend_part()
-    test_delete_disk_partition_info_tab()
+    # test_delete_disk_partition_info_tab()
+    test_umount()

@@ -1165,10 +1165,10 @@ class PartUtil:
         run_os_command(mount_command)
         
     def set_disk_partition_umount(self,partition):
-        '''umount the partition,may used before remove a partition'''
+        '''umount the partition,return True when umount successfully'''
         if partition.type==2:
             print "no need to umount extended part"
-            return 
+            return True
         part_path=partition.path
         mount_flag=False
         # mtab=get_os_command_output("cat /etc/mtab")
@@ -1179,17 +1179,31 @@ class PartUtil:
         for item in mtab:
             if item.startswith(part_path):
                 mount_flag=True
+                mount_list=item.split()
+                mount_point=mount_list[1]
             else:
                 continue
+        umount_force_command="sudo umount -f "+mount_point    
+
         if mount_flag==True:        
             if partition.busy:
                 run_os_command(umount_busy_command)
-                # run_os_command(umount_command)
+                if partition.busy:
+                    run_os_command(umount_force_command)
             else:
                 run_os_command(umount_command)
         else:
             print "don't need to umount"+part_path
-            return
+            return True 
+        after_mtab=get_os_command_output("cat /proc/mounts")
+        for item in after_mtab:
+            if item.startswith(part_path):
+                return False
+                break
+            else:
+                continue
+        else:
+            return True
 
     def set_disk_partition_flag(self,partition,flag,state):
         '''set the partition status to state'''
@@ -1220,7 +1234,8 @@ class PartUtil:
         self.delete_path_disks_partitions(disk,partition)    
         self.disk_partition_info_tab[disk]=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab[disk])
         try:
-            self.set_disk_partition_umount(partition)
+            while(self.set_disk_partition_umount(partition)==False):
+                self.set_disk_partition_umount(partition)
             disk.deletePartition(partition)
         except:
             print "delete partition error occurs"
@@ -1321,6 +1336,7 @@ class PartUtil:
                     self.set_disk_partition_name(self.partition,self.part_name)
                     self.set_disk_partition_mount(self.partition,self.part_fs,self.part_mountpoint)
 
+        
     ###############################do real partition operations#########################                
     def do_advance_partition(self):
         '''do in fact part operations,delete old first,then add new ones'''
