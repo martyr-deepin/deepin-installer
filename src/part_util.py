@@ -582,11 +582,31 @@ class PartUtil:
 
     def delete_disk_extended_partition(self,disk,extend_part):
         '''delete extened partition,when delete all logical part in the table'''
-        if len(self.get_disk_logical_list(disk))!=0:
+        if(extend_part==None or extend_part.type!=2):
+            print "the partition already deleted or partition type invalid"
+        elif len(self.get_disk_logical_list(disk))!=0:
             print "cann't delete extended part since there still have logical one"
         else:
-            ####this delete other table automaticly########
-            self.delete_disk_partition_info_tab(extend_part)
+            for item in self.disk_partition_info_tab[disk]:
+                if item[0]==extend_part:
+                    if item[-1]=="add":
+                        self.disk_partition_info_tab[disk].remove(item)
+                        self.delete_path_disks_partitions(disk,extend_part)
+                        self.get_delete_part_other_path(disk,extend_part)    
+                    elif item[-1]=="keep":
+                        self.mark_disk_partition_info_tab(extend_part,"delete")
+                        self.get_delete_part_other_path(disk,extend_part)    
+                    else:
+                        print "invalid,if partition marked delete,you wonn't got it in UI listview"
+                        self.lu.do_log_msg(self.logger,"error","invalid,if partition marked delete,you wonn't see it ")
+                    break
+                else:
+                    continue
+            else:    
+                print "doesn't find the extend partition in disk_partition_info_tab to delete"
+
+        return self.disk_partition_info_tab
+
 
     def update_extended_disk_partition_info_tab(self,disk,extend_part):
         '''update extended part info in disk_partition_info_tab,mostly update the geometry'''
@@ -596,21 +616,6 @@ class PartUtil:
         '''get the geometry of the current extended part'''
         if extend_part.geometry!=None:
             return extend_part.geometry
-
-    ########################no need this func,as have the same geometry object######################
-    # def set_disk_extended_partition_geometry(self,disk,extend_part,geom):
-    #     '''set the geometry of the current extended part'''
-    #     # constraint=parted.constraint.Constraint(exactGeom=geom)
-    #     start=geom.start
-    #     end=geom.end
-    #     # disk.setPartitionGeometry(extend_part,constraint,start,end)
-    #     extend_part.geometry.start=start
-    #     extend_part.geometry.end=end
-    #     extend_part.geometry.length=end-start+1
-
-    #     for item in self.disk_partition_info_tab[disk]:
-    #         if item[0]==extend_part and item[1]=="extend":
-    #             item[3]=(geom.start,geom.length,geom.end)
 
     def grown_disk_extended_partition_geometry(self,disk,extend_part,space_geom):
         '''grown extended geometry since add logical in extra freespace'''
@@ -1199,33 +1204,20 @@ class PartUtil:
         if partition.type==parted.PARTITION_EXTENDED and len(self.get_disk_logical_list(disk))!=0:
             print "error,need delete all logical partitions before delete extend partition"
             self.lu.do_log_msg(self.logger,"error","delete logical partitions before delete extend")
-            # for logical_part in disk.getLogicalPartitions():
-            #     self.delete_path_disks_partitions(disk,logical_part)
-            #     self.disk_partition_info_tab=filter(lambda info:info[0]!=logical_part,self.disk_partition_info_tab[disk])
-            #     try:
-            #         self.set_disk_partition_umount(logical_part)
-            #         disk.deletePartition(logical_part)
-            #     except:
-            #         print "delete logical_part failed"
-            #         self.lu.do_log_msg(self.logger,"error","delete logical_part failed")
+
         self.delete_path_disks_partitions(disk,partition)    
-        self.disk_partition_info_tab=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab[disk])
-        # try:
-        #     self.set_disk_partition_umount(partition)
-        #     disk.deletePartition(partition)
-        # except:
-        #     print "delete partition error occurs"
-        #     self.lu.do_log_msg(self.logger,"error","delete partition error occurs")
-        self.set_disk_partition_umount(partition)
-        disk.deletePartition(partition)
-
-
+        self.disk_partition_info_tab[disk]=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab[disk])
+        try:
+            self.set_disk_partition_umount(partition)
+            disk.deletePartition(partition)
+        except:
+            print "delete partition error occurs"
+            self.lu.do_log_msg(self.logger,"error","delete partition error occurs")
         disk.commit()
 
     def delete_custom_partition(self):
         '''batch delete origin disk partitions:'''
         for disk in self.get_system_disks():
-            print self.disk_partition_info_tab[disk]
             disk_partition_info=self.disk_partition_info_tab[disk]
             for item in filter(lambda info:info[-1]=="delete",disk_partition_info):
                 if item[0]==None:
@@ -1260,7 +1252,7 @@ class PartUtil:
                     self.lu.do_log_msg(self.logger,"error","can't add logical as no extended")
                     # break
                 elif item[0].type!=1:
-                    print "you had add primary/extended partition first"
+                    print "you had already added primary/extended partition "
                 else:
                     print "add logical partition"
                     self.partition=item[0]
