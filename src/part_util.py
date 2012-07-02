@@ -1171,39 +1171,42 @@ class PartUtil:
             return True
         part_path=partition.path
         mount_flag=False
-        # mtab=get_os_command_output("cat /etc/mtab")
+
         mtab=get_os_command_output("cat /proc/mounts")
         umount_command="sudo umount "+part_path
-        umount_busy_command="sudo umount -l "+part_path
-        # umount_busy_command="sudo fuser -mk "+part_path
+        mount_list=[]
+        mount_item_list=[]
+
         for item in mtab:
+            mount_item_list=item.split()
+            mount_list.append(mount_item_list)
             if item.startswith(part_path):
                 mount_flag=True
-                mount_list=item.split()
-                mount_point=mount_list[1]
-            else:
-                continue
-        umount_force_command="sudo umount -f "+mount_point    
+                mount_point=mount_item_list[1]
+        force_umount_command="sudo umount -f "+mount_point        
 
-        if mount_flag==True:        
-            if partition.busy:
-                run_os_command(umount_busy_command)
-                if partition.busy:
-                    run_os_command(umount_force_command)
+        def is_umount():        
+            after_mtab=get_os_command_output("cat /proc/mounts")
+            for item in after_mtab:
+                if item.startswith(part_path):
+                    return False
+                    break
+                else:
+                    continue
             else:
-                run_os_command(umount_command)
-        else:
-            print "don't need to umount"+part_path
-            return True 
-        after_mtab=get_os_command_output("cat /proc/mounts")
-        for item in after_mtab:
-            if item.startswith(part_path):
-                return False
-                break
-            else:
-                continue
-        else:
-            return True
+                return True
+
+        if mount_flag==True:
+            run_os_command(umount_command)
+            if partition.busy or is_umount()==False:
+                for item in mount_list:
+                    if item[1]==mount_point:
+                        run_os_command(force_umount_command)
+                for item in mount_list:
+                    if item[1]==mount_point and item[0]!=part_path:
+                        run_os_command("sudo mount -t %s %s %s") %item[2] % item[0] % item[1]
+
+        return is_umount()                
 
     def set_disk_partition_flag(self,partition,flag,state):
         '''set the partition status to state'''
