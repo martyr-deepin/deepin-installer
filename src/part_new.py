@@ -121,7 +121,9 @@ class PartNew(Window):
 
     def get_max_size(self):
         '''return max size user can create with the given part type,geometry'''
-        return self.part_util.get_space_geom_size(self.current_disk,self.current_geom_item[1])
+        size=self.part_util.get_space_geom_size(self.current_disk,self.current_geom_item[1])
+        size="%.2f" % size
+        return size
     
     def limit_2added_part_type(self):
         '''limit part_type to add partition'''
