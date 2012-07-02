@@ -27,6 +27,7 @@ from basic_utils import run_os_command,get_os_command_output
 import parted
 import re
 from log_util import LogUtil
+import copy
 
 class PartUtil:
     '''user interface communicate with backend via disk_partition_info_tab,mark each partition in the table:
@@ -572,9 +573,14 @@ class PartUtil:
         if len(self.get_disk_extend_list(disk))!=0:
             print "no need to add extend partition"
         else:
-            extend_part=parted.partition.Partition(disk,parted.PARTITION_EXTENDED,None,geometry,None)
-            disk_partition_info_tab_item=[extend_part,"extend",geometry.length*disk.device.sectorSize/1024*1024,
-                                          geometry,None,False,None,None,"start","add"]
+            start=copy.deepcopy(geometry.start)
+            end=copy.deepcopy(geometry.end)
+            length=end - start + 1
+            
+            extend_geometry=parted.geometry.Geometry(disk.device,start,length,end,None)
+            extend_part=parted.partition.Partition(disk,parted.PARTITION_EXTENDED,None,extend_geometry,None)
+            disk_partition_info_tab_item=[extend_part,"extend",extend_geometry.length*disk.device.sectorSize/1024*1024,
+                                          extend_geometry,None,False,None,None,"start","add"]
             self.disk_partition_info_tab[disk].append(disk_partition_info_tab_item)
 
             self.insert_path_disks_partitions(disk,extend_part)
@@ -1259,12 +1265,10 @@ class PartUtil:
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
                 try:
                     disk.addPartition(self.partition,self.constraint)
+                    print "successfully add extended partition for %s" % disk.device.path
                 except:
                     print "add extended partition error"
                 disk.commit()
-                print "successfully add extended partition"
-            else:
-                print "no need to add extended part for the disk %s" % disk.device.path
 
             for item in filter(lambda info:info[-1]=="add" and info[0].type==0,self.disk_partition_info_tab[disk]):    
                 print "add primary partition"
@@ -1273,11 +1277,9 @@ class PartUtil:
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
                 try:
                     disk.addPartition(self.partition,self.constraint)
+                    print "successfully add primary partition for %s" % disk.device.path
                 except:
                     print "add primary partition error"
-                print "successfully add primary partition"
-            else:
-                print "no need to add primary part for the disk %s" % disk.device.path
 
             for item in filter(lambda info:info[-1]=="add" and info[0].type==1,self.disk_partition_info_tab[disk]):    
                 print "add logical partition"
@@ -1286,14 +1288,12 @@ class PartUtil:
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
                 try:
                     disk.addPartition(self.partition,self.constraint)
+                    print "successfully add logical partition for %s" % disk.device.path
                 except:
                     print "add logical partition error"
-                print "successfully add logical partition"
-            else:
-                print "no need to add logical part for the disk %s" % disk.device.path
 
             disk.commit()        
-            print "add all partitions ok"
+            print "add all partitions for the disk %s ok" % disk.device.path
             #mkfs/setname/mount disk partitions
             for item in filter(lambda info:info[-1]=="add",self.disk_partition_info_tab[disk]):
                 if item[0].type==parted.PARTITION_LOGICAL and not self.probe_tab_disk_has_extend(disk):
