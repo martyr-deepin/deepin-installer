@@ -801,8 +801,8 @@ class PartUtil:
                 if length > 2048:
                     gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                 else:
-                    print "start of disk have geometry overlap or disk size too small"
-                    self.lu.do_log_msg(self.logger,"warning","start of disk have geometry overlap or disk size too small")
+                    print "start of disk have geometry gap or disk size too small"
+                    self.lu.do_log_msg(self.logger,"warning","start of disk have geometry gap or disk size too small")
 
                 for i in range(len(part_geom_list)-1):
                     start=part_geom_list[i][-1].end+4
@@ -1150,6 +1150,9 @@ class PartUtil:
         
     def set_disk_partition_umount(self,partition):
         '''umount the partition,may used before remove a partition'''
+        if partition.type==2:
+            print "no need to umount extended part"
+            return 
         part_path=partition.path
         mount_flag=False
         mtab=get_os_command_output("cat /etc/mtab")
@@ -1189,36 +1192,40 @@ class PartUtil:
     #####################backend operation for add/delete partition###########################
     def delete_disk_partition(self,disk,partition):
         '''atom function:delete the given partition,called only because need delete original partition'''
-        self.partitions=self.get_disk_partitions(disk)
-        if partition not in self.partitions:
+        if partition.disk!=disk:
             print "partition not in the disk"
-            self.lu.do_log_msg(self.logger,"error","partition not in the disk")
-            return
-        if partition.type==parted.PARTITION_EXTENDED and disk.getLogicalPartitions()!=[]:
-            print "need delete all logical partitions before delete extend partition"
-            self.lu.do_log_msg(self.logger,"info","delete logical partitions before delete extend")
-            for logical_part in disk.getLogicalPartitions():
-                self.delete_path_disks_partitions(disk,logical_part)
-                self.disk_partition_info_tab=filter(lambda info:info[0]!=logical_part,self.disk_partition_info_tab[disk])
-                try:
-                    self.set_disk_partition_umount(logical_part)
-                    disk.deletePartition(logical_part)
-                except:
-                    print "delete logical_part failed"
-                    self.lu.do_log_msg(self.logger,"error","delete logical_part failed")
+            self.lu.do_log_msg(self.logger,"error","partiton not in the disk")
+            return 
+        if partition.type==parted.PARTITION_EXTENDED and len(self.get_disk_logical_list(disk))!=0:
+            print "error,need delete all logical partitions before delete extend partition"
+            self.lu.do_log_msg(self.logger,"error","delete logical partitions before delete extend")
+            # for logical_part in disk.getLogicalPartitions():
+            #     self.delete_path_disks_partitions(disk,logical_part)
+            #     self.disk_partition_info_tab=filter(lambda info:info[0]!=logical_part,self.disk_partition_info_tab[disk])
+            #     try:
+            #         self.set_disk_partition_umount(logical_part)
+            #         disk.deletePartition(logical_part)
+            #     except:
+            #         print "delete logical_part failed"
+            #         self.lu.do_log_msg(self.logger,"error","delete logical_part failed")
         self.delete_path_disks_partitions(disk,partition)    
         self.disk_partition_info_tab=filter(lambda info:info[0]!=partition,self.disk_partition_info_tab[disk])
-        try:
-            self.set_disk_partition_umount(partition)
-            disk.deletePartition(partition)
-        except:
-            print "delete partition error occurs"
-            self.lu.do_log_msg(self.logger,"error","delete partition error occurs")
+        # try:
+        #     self.set_disk_partition_umount(partition)
+        #     disk.deletePartition(partition)
+        # except:
+        #     print "delete partition error occurs"
+        #     self.lu.do_log_msg(self.logger,"error","delete partition error occurs")
+        self.set_disk_partition_umount(partition)
+        disk.deletePartition(partition)
+
+
         disk.commit()
 
     def delete_custom_partition(self):
         '''batch delete origin disk partitions:'''
         for disk in self.get_system_disks():
+            print self.disk_partition_info_tab[disk]
             disk_partition_info=self.disk_partition_info_tab[disk]
             for item in filter(lambda info:info[-1]=="delete",disk_partition_info):
                 if item[0]==None:
