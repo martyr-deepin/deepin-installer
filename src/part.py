@@ -330,7 +330,16 @@ class Part(gtk.VBox):
                 for pi in self.disk_partition_info:
                     if item[1]==pi[0].geometry:
                         # (self,disk,geom_item,partition,mp,fstype,format,total_size,part_type)
-                        part_list_item=PartListItem(self.selected_disk,item,pi[0],str(pi[7]),str(pi[4]),str(pi[5]),str(pi[2]),str(pi[1]))
+                        partition=pi[0]
+                        mp=str(pi[7])
+                        fstype=str(pi[4])
+                        format=str(pi[5])
+                        if pi[2] > 10000:
+                            total_size="%.2f GB" % float((float)(pi[2])/(float)(1024))
+                        else:    
+                            total_size="%.2f MB" % (float)(pi[2])
+                        part_type=str(pi[1])
+                        part_list_item=PartListItem(self.selected_disk,item,partition,mp,fstype,format,total_size,part_type)
                         part_listview_items.append(part_list_item)
                         break
                     else:
@@ -360,7 +369,7 @@ class Part(gtk.VBox):
             enable_multiple_select=False
             )
         self.part_listview.set_expand_column(1)
-        self.part_listview.add_titles(["分区","挂载点","文件系统","格式化","总容量(MB)","类型"])
+        self.part_listview.add_titles(["分区","挂载点","文件系统","格式化","总容量","类型"])
         if len(self.part_listview_items)==0:
             pass
         else:
