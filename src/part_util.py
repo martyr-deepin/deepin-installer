@@ -909,9 +909,11 @@ class PartUtil:
                         begin_start=item[-1].start
                         begin_end=geometry.start
                         begin_length=begin_end-begin_start+1
-                        begin_geometry=parted.geometry.Geometry(disk.device,begin_start,begin_length,begin_end,None)
-                        self.disk_geom_info_tab[disk].append(["freespace",begin_geometry])
-
+                        if begin_length > 2048:
+                            begin_geometry=parted.geometry.Geometry(disk.device,begin_start,begin_length,begin_end,None)
+                            self.disk_geom_info_tab[disk].append(["freespace",begin_geometry])
+                        else:
+                            pass
                     self.new_add_geom_item=["part",geometry]
                     self.disk_geom_info_tab[disk].append(self.new_add_geom_item)    
 
@@ -919,17 +921,13 @@ class PartUtil:
                         after_start=geometry.end
                         after_end=item[-1].end
                         after_length=after_end-after_start+1
-                        after_geometry=parted.geometry.Geometry(disk.device,after_start,after_length,after_end,None)
-                        self.disk_geom_info_tab[disk].append(["freespace",after_geometry])
+                        if after_length > 2048:
+                            after_geometry=parted.geometry.Geometry(disk.device,after_start,after_length,after_end,None)
+                            self.disk_geom_info_tab[disk].append(["freespace",after_geometry])
+                        else:
+                            pass
 
-                    # self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
-
-                    # print "before remove"
-                    # print self.disk_geom_info_tab[disk]
                     self.disk_geom_info_tab[disk].remove(item)    
-                    # print "after remove"
-                    # print self.disk_geom_info_tab[disk]
-
                     self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
 
                     print "finish find the match freespace block to add new part"    
