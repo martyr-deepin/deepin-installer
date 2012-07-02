@@ -919,11 +919,11 @@ class PartUtil:
                 print "part area,geometry not match,goto find the freespace one"
                 continue
             elif item[0]=="freespace":
-                if item[-1].start <=geometry.start and item[-1].end >= geometry.end:
+                if item[-1].start +4 <=geometry.start and item[-1].end -4 >= geometry.end:
                     print "find the match freespace block to add new part"
-                    if geometry.start - item[-1].start > 8:
-                        begin_start=item[-1].start
-                        begin_end=geometry.start
+                    if geometry.start - item[-1].start > 4:
+                        begin_start=item[-1].start+4
+                        begin_end=geometry.start-4
                         begin_length=begin_end-begin_start+1
                         if begin_length > 2048:
                             begin_geometry=parted.geometry.Geometry(disk.device,begin_start,begin_length,begin_end,None)
@@ -933,9 +933,9 @@ class PartUtil:
                     self.new_add_geom_item=["part",geometry]
                     self.disk_geom_info_tab[disk].append(self.new_add_geom_item)    
 
-                    if  item[-1].end - geometry.end > 8:
-                        after_start=geometry.end
-                        after_end=item[-1].end
+                    if  item[-1].end - geometry.end > 4:
+                        after_start=geometry.end+4
+                        after_end=item[-1].end-4
                         after_length=after_end-after_start+1
                         if after_length > 2048:
                             after_geometry=parted.geometry.Geometry(disk.device,after_start,after_length,after_end,None)
@@ -1236,14 +1236,16 @@ class PartUtil:
                     continue
                 elif item[0].type==1:
                     print "delete logical partition"
-                    try:
-                        self.delete_disk_partition(disk,item[0])
-                        print "successfully delete logical partition"    
-                    except:
-                        print "delete logical partition error!"
+                    self.delete_disk_partition(disk,item[0])
+                    # try:
+                    #     self.delete_disk_partition(disk,item[0])
+                    #     print "successfully delete logical partition"    
+                    # except:
+                    #     print "delete logical partition error!"
                 else:
                     continue
 
+            disk.commit()    
             for item in filter(lambda info:info[-1]=="delete",self.disk_partition_info_tab[disk]):
                 if item[0].type==1:
                     print "error,you should have already delete the logical partition"
@@ -1251,11 +1253,12 @@ class PartUtil:
                     continue
                 elif item[0].type==0 or item[0].type==2:
                     print "delete primary/extended partition"
-                    try:
-                        self.delete_disk_partition(disk,item[0])
-                        print "successfully delete primary/extended partition"    
-                    except:
-                        print "delete primary/extend partition error!"
+                    self.delete_disk_partition(disk,item[0])
+                    # try:
+                    #     self.delete_disk_partition(disk,item[0])
+                    #     print "successfully delete primary/extended partition"    
+                    # except:
+                    #     print "delete primary/extend partition error!"
                 else:
                     continue
             disk.commit()        
@@ -1264,39 +1267,43 @@ class PartUtil:
         '''batch add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
         print "begin batch add partition"
         for disk in self.get_system_disks():
-            for item in filter(lambda info:info[-1]=="add" and info[0].type==2,self.disk_partition_info_tab[disk]):
-                print "add extended partition first"
-                self.partition=item[0]
-                self.geometry=self.partition.geometry
-                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                try:
-                    disk.addPartition(self.partition,self.constraint)
-                    print "successfully add extended partition for %s" % disk.device.path
-                except:
-                    print "add extended partition error"
-                disk.commit()
-
             for item in filter(lambda info:info[-1]=="add" and info[0].type==0,self.disk_partition_info_tab[disk]):    
                 print "add primary partition"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                try:
-                    disk.addPartition(self.partition,self.constraint)
-                    print "successfully add primary partition for %s" % disk.device.path
-                except:
-                    print "add primary partition error"
+                disk.addPartition(self.partition,self.constraint)
+                # try:
+                #     disk.addPartition(self.partition,self.constraint)
+                #     print "successfully add primary partition for %s" % disk.device.path
+                # except:
+                #     print "add primary partition error"
+                disk.commit()
+                
+            for item in filter(lambda info:info[-1]=="add" and info[0].type==2,self.disk_partition_info_tab[disk]):
+                print "add extended partition first"
+                self.partition=item[0]
+                self.geometry=self.partition.geometry
+                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                disk.addPartition(self.partition,self.constraint)
+                # try:
+                #     disk.addPartition(self.partition,self.constraint)
+                #     print "successfully add extended partition for %s" % disk.device.path
+                # except:
+                #     print "add extended partition error"
+                disk.commit()
 
             for item in filter(lambda info:info[-1]=="add" and info[0].type==1,self.disk_partition_info_tab[disk]):    
                 print "add logical partition"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                try:
-                    disk.addPartition(self.partition,self.constraint)
-                    print "successfully add logical partition for %s" % disk.device.path
-                except:
-                    print "add logical partition error"
+                disk.addPartition(self.partition,self.constraint)
+                # try:
+                #     disk.addPartition(self.partition,self.constraint)
+                #     print "successfully add logical partition for %s" % disk.device.path
+                # except:
+                #     print "add logical partition error"
 
             disk.commit()        
             print "add all partitions for the disk %s ok" % disk.device.path
