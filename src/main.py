@@ -52,6 +52,7 @@ from dtk.ui.button import Button
 from dtk.ui.utils import container_remove_all
 
 from welcome import Welcome
+from part_util import global_part_util
 from part import Part
 from account import Account
 from ui_utils import switch_box
@@ -63,7 +64,8 @@ class DeepinInstaller():
         self.application.set_default_size(756,520)
         self.application.add_titlebar(["min", "close"],None,"       欢迎使用深度软件",None,False)
         self.application.titlebar.set_size_request(-1,50)
-
+        self.part_util=global_part_util
+        
         self.content_box=gtk.VBox()
         self.content_box.set_size_request(-1,400)
 
@@ -146,12 +148,12 @@ class DeepinInstaller():
     def on_ok_btn_click(self,widget):
         '''confirm to goto next step'''
 
-        # if self.step==1:
-        #     print "do nothing"
-        # elif self.step==2:
-        #     self.on_commit_part_operations()
-        # elif self.step==3:
-        #     print "do other operation"
+        if self.step==1:
+            print "ensure to advance partition"
+        elif self.step==2:
+            self.on_commit_part_operations()
+        elif self.step==3:
+            print "do other operation"
 
         self.step=self.step+1
         self.update_page_label()
@@ -159,7 +161,7 @@ class DeepinInstaller():
 
     def on_commit_part_operations(self):
         '''commit partition add/delete/edit operations'''
-        pass
+        self.part_util.do_advance_partition()
 
     def on_back_btn_click(self,widget):
         self.step=self.step-1

@@ -1276,6 +1276,12 @@ class PartUtil:
                     self.set_disk_partition_name(self.partition,self.part_name)
                     self.set_disk_partition_mount(self.partition,self.part_fs,self.part_mountpoint)
 
+    ###############################do real partition operations#########################                
+    def do_advance_partition(self):
+        '''do in fact part operations,delete old first,then add new ones'''
+        self.delete_custom_partition()
+        self.add_custom_partition()
+
     ################################auto partition tools################################
     def get_memory_total(self):
         '''get physical total memory size,unit:MB'''
