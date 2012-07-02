@@ -60,11 +60,12 @@ class PartNew(Window):
         frame.add(self.part_type_label)
         self.new_part_table.attach(frame,0,1,0,1)
         self.new_part_table.attach(self.part_type_combo,1,2,0,1,xpadding=30)
-        self.part_type_combo.connect("item-selected",self.on_part_type_combo_selected)
+        # self.part_type_combo.connect("item-selected",self.on_part_type_combo_selected)
 
         self.part_capacity_label=Label("新分区容量(MB):")
         self.max_size=self.get_max_size()
         self.part_capacity_spin=SpinBox(self.max_size,10,self.max_size,10,55)
+        self.part_capacity_spin.value_entry.connect("changed",self.on_part_capacity_changed)
 
         frame=HorizontalFrame()
         frame.set_padding(0,0,30,10)
@@ -122,7 +123,8 @@ class PartNew(Window):
     def get_max_size(self):
         '''return max size user can create with the given part type,geometry'''
         size=self.part_util.get_space_geom_size(self.current_disk,self.current_geom_item[1])
-        size="%.2f" % size
+        import math
+        size=int(math.floor(size))
         return size
     
     def limit_2added_part_type(self):
@@ -179,11 +181,17 @@ class PartNew(Window):
                 else:        
                     print "error,because the logical list not null"
 
-    def on_part_type_combo_selected(self,arg1,arg2,arg3,arg4):
-        '''on part_type_combo_selected'''
-        ava_size=int(self.get_max_size())
-        self.part_capacity_spin.set_upper(ava_size)
-        self.part_capacity_spin.set_value(ava_size)
+    def on_part_capacity_changed(self,widget,event):
+        '''on_part_capacity_changed'''
+        spin_value=int(self.part_capacity_spin.value_entry.get_text())
+        spin_value=self.part_capacity_spin.adjust_value(spin_value)
+        self.part_capacity_spin.update_and_emit(spin_value)
+
+    # def on_part_type_combo_selected(self,arg1,arg2,arg3,arg4):
+    #     '''on part_type_combo_selected'''
+    #     ava_size=int(self.get_max_size())
+    #     self.part_capacity_spin.set_upper(ava_size)
+    #     self.part_capacity_spin.set_value(ava_size)
 
 
 if __name__=="__main__":

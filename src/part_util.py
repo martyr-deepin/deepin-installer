@@ -1039,11 +1039,11 @@ class PartUtil:
     def set_disk_partition_geometry(self,disk,part_size,space_geom,part_location):
         '''to get geometry of new added partition'''
         import math
-        minlength=math.floor((long)(part_size*1024*1024)/(disk.device.sectorSize)+1)
+        minlength=math.floor((float)((float)(part_size)*1024*1024)/(float)(disk.device.sectorSize))
         (start,length,end)=(space_geom.start,space_geom.length,space_geom.end)
         if length==None or length < end-start+1:
             length=end-start+1
-        if minlength > length:
+        if minlength + 8 > length:
             print "the free space too small to hold the partition"
             part_start=start+4
             part_end=end-4
@@ -1219,7 +1219,8 @@ class PartUtil:
     def delete_custom_partition(self):
         '''batch delete origin disk partitions:'''
         for disk in self.get_system_disks():
-            for item in filter(lambda info:info[-1]=="delete",self.disk_partition_info_tab[disk]):
+            disk_partition_info=self.disk_partition_info_tab[disk]
+            for item in filter(lambda info:info[-1]=="delete",disk_partition_info):
                 if item[0]==None:
                     print "partition doesn't exist"
                     self.lu.do_log_msg(self.logger,"warning","partition doesn't exist")
