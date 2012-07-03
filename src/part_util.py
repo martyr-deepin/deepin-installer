@@ -704,64 +704,48 @@ class PartUtil:
             print "error,no extend part"
         else:
             start=extend_part.geometry.start
-            length=extend_part.geometry.length
             end=extend_part.geometry.end
             logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
 
             if primary_geom.start <= start and start < primary_geom.end <= end:
                 print "need reduce size at the start of the extend_part"
                 if len(logical_list)!=0:
-                    if primary_geom.end >= logical_list[0].geometry.start - 4:
-                        # print "add primary to space used by first logical,smaller the primary end to to added part"
-                        # primary_geom.end = logical_list[0].geometry.start-4
-                        # primary_geom.length=primary_geom.end - primary_geom.start + 1
-                        print "error,cann't add primary into first logical"
-                    else:    
-                        extend_part.geometry.start=min(primary_geom.end+4,logical_list[0].geometry.start-4)
-                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
-
-                extend_part.geometry.start=primary_geom.end+4
-                extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+                    print "smaller primary geom to satisfy logical gap"
+                    primary_geom.end=min(primary_geom.end,logical_list[0].geometry.start -8)
+                    primary_geom.length=primary_geom.end - primary_geom.start + 1
+                    extend_part.geometry.start=primary_geom.end+4
+                    extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+                else:
+                    print "you should delete extend_part when no logical"
 
             elif primary_geom.start > start and start < primary_geom.end <=end:
                 print "add primary into old extend_part,need reduce size at the start of the extend_part"
                 if len(logical_list)!=0:
-                    if primary_geom.end <= logical_list[0].geometry.start - 4:
-                        start=max(primary_geom.end+4,logical_list[0].geometry.start-4)
-                        length=end-start+1
-                        extend_part.geometry.start=start
-                        extend_part.geometry.length=length
-                    elif primary_geom.start >= logical_list[-1].geometry.end +4:
-                        end=min(logical_list[-1].geometry.end +4,primary_geom.start-4)
-                        length=end-start+1
-                        extend_part.geometry.end=end
-                        extend_part.geometry.length=length
+                    if primary_geom.end <= logical_list[0].geometry.start:
+                        primary_geom.end=min(primary_geom.end,logical_list[0].geometry.start - 8)
+                        primary_geom.length=primary_geom.end - primary_geom.start +1
+                        extend_part.geometry.start=primary_geom.end+4
+                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+                    elif primary_geom.start >= logical_list[-1].geometry.end:
+                        primary_geom.start=max(primary_geom.start,logical_list[-1].geometry.end +8)
+                        primary_geom.length=primary_geom.end -primary_geom.start + 1
+                        extend_part.geometry.end=primary_geom.start - 4
+                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
                     else:
                         print "error,cann't add primary into logical"
                         return 
                 else:
-                    print "choose the bigger part to be new extend_part"
-                    start_gap=primary_geom.start - start
-                    end_gap=end - primary_geom.end
-                    if start_gap <= end_gap:
-                        extend_part.geometry.start=primary_geom.end+4
-                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start +1
-                    else:    
-                        extend_part.geometry.end=primary_geom.start-4
-                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+                    print "you should delete extend_part when no logical"
 
             elif start < primary_geom.start <= end and primary_geom.end > end:
                 print "need reduce size at the end to the extend_part"
                 if len(logical_list)!=0:
-                    if start < logical_list[-1].geometry.end +4:
-                        print "error ,add primary to space used by last logical"
-                        return 
-                    else:
-                        extend_part.geometry.end=max(logical_list[-1].geometry.end+4,primary_geom.start-4)
-                        extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
-                else:
-                    extend_part.geometry.end=primary_geom.start-4
+                    primary_geom.start=max(primary_geom.start,logical_list[-1].geometry.end+8)
+                    primary_geom.length=primary_geom.end - primary_geom.start + 1
+                    extend_part.geometry.end=primary_geom.start -4
                     extend_part.geometry.length=extend_part.geometry.end - extend_part.geometry.start + 1
+                else:
+                    print "you should delete extend_part when no logical"
 
             elif primary_geom.start <= start and primary_geom.end >=end:
                 print "the primary geometry contains the extend one"
@@ -1315,9 +1299,9 @@ class PartUtil:
                 self.geometry=self.partition.geometry
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
 
-                print "test add extended partition geometry satisfy:"
+                print "\ntest add extended partition geometry satisfy:"
                 print self.test_geometry_satisfy(disk)
-                print "test add extended partition geometry satisfy:"
+                print "test add extended partition geometry satisfy ok\n"
 
 
                 disk.addPartition(self.partition,self.constraint)
@@ -1335,9 +1319,9 @@ class PartUtil:
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
 
 
-                print "test add logical partition geometry satisfy:"
+                print "\ntest add logical partition geometry satisfy:"
                 print self.test_geometry_satisfy(disk)
-                print "test add logical partition geometry satisfy:"
+                print "test add logical partition geometry satisfy ok \n"
 
 
                 disk.addPartition(self.partition,self.constraint)
@@ -1354,9 +1338,9 @@ class PartUtil:
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
 
 
-                print "test add primary partition geometry satisfy:"
+                print "\n test add primary partition geometry satisfy:"
                 print self.test_geometry_satisfy(disk)
-                print "test add primary partition geometry satisfy:"
+                print "test add primary partition geometry satisfy ok \n"
 
                 disk.addPartition(self.partition,self.constraint)
                 # try:
@@ -1451,39 +1435,47 @@ class PartUtil:
         '''make sure partitions in the disk satisfy the constraint'''
         main_list=sorted(self.get_disk_main_list(disk),key=lambda x:x.geometry.start)
         logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
-        extend_part=self.get_disk_extend_list(disk)[0]
+        extend_list=self.get_disk_extend_list(disk)
         if len(main_list) > 1:
             for i in range(len(main_list)-1):
-                if main_list[i].geometry.end > main_list[i+1].geometry.start:
+                if main_list[i].geometry.end > main_list[i+1].geometry.start -4:
                     print "main_list not satisfy:"
-                    print main_list[i]
-                    print main_list[i]+1
+                    print main_list[i].geometry
+                    print main_list[i+1].geometry
                     return False
                     break
                 else:
                     continue
             else:
                 print "main list with each other satisfy"
+        else:
+            print "the main part count less than two"
 
         if len(logical_list) > 1:    
             for i in range(len(logical_list)-1):
-                if logical_list[i].geometry.end > logical_list[i+1].geometry.start:
+                if logical_list[i].geometry.end > logical_list[i+1].geometry.start -4:
                     print "logical_list not satisfy:"
-                    print logical_list[i]
-                    print logical_list[i+1]
+                    print logical_list[i].geometry
+                    print logical_list[i+1].geometry
                     return False
                     break
                 else:
                     continue
             else:
                 print "logical list with each other satisfy"
+        else:
+            print "the logical count less than two"
                 
-        if extend_part!=None and len(logical_list) > 0:
-            if extend_part.geometry.start > logical_list[0].start:
+        if len(logical_list) > 0:
+            if extend_list[0].geometry.start > logical_list[0].geometry.start -4:
                 print "the first logical start not satisfy"
+                print extend_list[0].geometry
+                print logical_list[0].geometry
                 return False
-            if extend_part.geometry.end < logical_list[-1].end:
+            if extend_list[0].geometry.end < logical_list[-1].geometry.end +4:
                 print "the last logical end not satisfy"
+                print extend_list[0].geometry
+                print logical_list[-1].geometry
                 return False
 
         return True    
