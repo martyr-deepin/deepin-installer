@@ -148,12 +148,12 @@ class DeepinInstaller():
     def on_ok_btn_click(self,widget):
         '''confirm to goto next step'''
 
-        # if self.step==1:
-        #     print "ensure to advance partition"
-        # elif self.step==2:
-        #     self.on_commit_part_operations()
-        # elif self.step==3:
-        #     print "do other operation"
+        if self.step==1:
+            print "ensure to advance partition"
+        elif self.step==2:
+            self.on_commit_part_operations()
+        elif self.step==3:
+            print "do other operation"
 
         self.step=self.step+1
         self.update_page_label()
