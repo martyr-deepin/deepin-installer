@@ -1314,6 +1314,12 @@ class PartUtil:
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+
+                print "test add extended partition geometry satisfy:"
+                print self.test_geometry_satisfy(disk)
+                print "test add extended partition geometry satisfy:"
+
+
                 disk.addPartition(self.partition,self.constraint)
                 # try:
                 #     disk.addPartition(self.partition,self.constraint)
@@ -1327,6 +1333,13 @@ class PartUtil:
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+
+
+                print "test add logical partition geometry satisfy:"
+                print self.test_geometry_satisfy(disk)
+                print "test add logical partition geometry satisfy:"
+
+
                 disk.addPartition(self.partition,self.constraint)
                 # try:
                 #     disk.addPartition(self.partition,self.constraint)
@@ -1339,6 +1352,12 @@ class PartUtil:
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+
+
+                print "test add primary partition geometry satisfy:"
+                print self.test_geometry_satisfy(disk)
+                print "test add primary partition geometry satisfy:"
+
                 disk.addPartition(self.partition,self.constraint)
                 # try:
                 #     disk.addPartition(self.partition,self.constraint)
@@ -1426,6 +1445,48 @@ class PartUtil:
             self.add_disk_partition_info_tab(disk_path,"primary",self.disk_size-self.swap_size,"ext4",None,None,"/")
             
         self.add_custom_disk_partition(self.disk_partition_info_tab)
+        
+    ###############################util functions for test#########################                
+    def test_geometry_satisfy(self,disk):
+        '''make sure partitions in the disk satisfy the constraint'''
+        main_list=sorted(self.get_disk_main_list(disk),key=lambda x:x.geometry.start)
+        logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
+        extend_part=self.get_disk_extend_list(disk)[0]
+        if len(main_list) > 1:
+            for i in range(len(main_list)-1):
+                if main_list[i].geometry.end > main_list[i+1].geometry.start:
+                    print "main_list not satisfy:"
+                    print main_list[i]
+                    print main_list[i]+1
+                    return False
+                    break
+                else:
+                    continue
+            else:
+                print "main list with each other satisfy"
+
+        if len(logical_list) > 1:    
+            for i in range(len(logical_list)-1):
+                if logical_list[i].geometry.end > logical_list[i+1].geometry.start:
+                    print "logical_list not satisfy:"
+                    print logical_list[i]
+                    print logical_list[i+1]
+                    return False
+                    break
+                else:
+                    continue
+            else:
+                print "logical list with each other satisfy"
+                
+        if extend_part!=None and len(logical_list) > 0:
+            if extend_part.geometry.start > logical_list[0].start:
+                print "the first logical start not satisfy"
+                return False
+            if extend_part.geometry.end < logical_list[-1].end:
+                print "the last logical end not satisfy"
+                return False
+
+        return True    
 
 #should use global part_util to keep disk/partition/device id uniquee
 global_part_util=PartUtil()
