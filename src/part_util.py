@@ -651,7 +651,20 @@ class PartUtil:
         else:
             if ori_start +4 >= space_geom.start:
                 if prev_item[0]=="freespace":
-                    start=max(prev_item[-1].start,space_geom.start-4)
+                    if prev_item[-1].start <=space_geom.start -4:
+                        start=space_geom.start-4
+                    else:
+                        start=prev_item[-1].start
+                        space_geom.start=prev_item[-1].start+4
+                        space_geom.length=space_geom.end - space_geom.start +1
+                elif prev_item[0]=="part" and self.get_part_from_geom(disk,prev_item[-1]).type==1:
+                    print "grown extended with prev logical,this should be error"
+                    if prev_item[-1].start <=space_geom.start -4:
+                        start=space_geom.start-4
+                    else:
+                        start=prev_item[-1].start
+                        space_geom.start=prev_item[-1].start+4
+                        space_geom.length=space_geom.end - space_geom.start + 1
                 else:
                     print "cann't grown size to prev used space"
                     start=ori_start
@@ -660,7 +673,20 @@ class PartUtil:
 
             if ori_end -4 <= space_geom.end:
                 if next_item[0]=="freespace":
-                    end=min(next_item[-1].end,space_geom.end + 4)
+                    if next_item[-1].end >= space_geom.end +4:
+                        end=space_geom.end +4
+                    else:
+                        end=next_item[-1].end
+                        space_geom.end=next_item[-1].end -4
+                        space_geom.length=space_geom.end - space_geom.start + 1
+                elif next_item[0]=="part" and self.get_part_from_geom(disk,next_item[-1]).type==1:
+                    print "grown extended with next logical,this should be error"
+                    if next_item[-1].end >= space_geom.end +4:
+                        end=space_geom.end +4
+                    else:
+                        end=next_item[-1].end
+                        space_geom.end=next_item[-1].end -4
+                        space_geom.length=space_geom.end - space_geom.start + 1
                 else:
                     print "cann't grown size to next used space"
                     end=ori_end
