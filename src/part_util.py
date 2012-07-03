@@ -816,7 +816,7 @@ class PartUtil:
                 start=disk.getFreeSpaceRegions()[0].start+4
                 end=disk.getFreeSpaceRegions()[-1].end-4
                 length=end-start+1
-                if length > 2048:
+                if length > 20480:
                     gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                 else:
                     print "the whole blank disk is too small"
@@ -824,7 +824,7 @@ class PartUtil:
                 start=disk.getFreeSpaceRegions()[0].start+4
                 end=part_geom_list[0][-1].start-4
                 length=end-start+1
-                if length > 2048:
+                if length > 20480:
                     gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                 else:
                     print "start of disk have geometry gap or disk size too small"
@@ -834,7 +834,7 @@ class PartUtil:
                     start=part_geom_list[i][-1].end+4
                     end=part_geom_list[i+1][-1].start-4
                     length=end-start+1
-                    if length > 2048:
+                    if length > 20480:
                         gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                     else:
                         # print "the size between two partition is too small"
@@ -845,7 +845,7 @@ class PartUtil:
                 start=part_geom_list[-1][-1].end+4    
                 end=disk.getFreeSpaceRegions()[-1].end-4 
                 length=end-start+1
-                if length > 2048:
+                if length > 20480:
                     gap_geom_list.append(["freespace",parted.geometry.Geometry(disk.device,start,length,end,None)])
                 else:
                     # print "end of disk have geometry overlap or disk size too small"
@@ -926,16 +926,16 @@ class PartUtil:
         '''update disk_geom_info_tab when add partition from UI'''
         for item in self.disk_geom_info_tab[disk]:
             if item[0]=="part":
-                print "part area,geometry not match,goto find the freespace one"
+                # print "part area,geometry not match,goto find the freespace one"
                 continue
             elif item[0]=="freespace":
                 if item[-1].start +4 <=geometry.start and item[-1].end -4 >= geometry.end:
-                    print "find the match freespace block to add new part"
+                    # print "find the match freespace block to add new part"
                     if geometry.start - item[-1].start > 4:
                         begin_start=item[-1].start+4
                         begin_end=geometry.start-4
                         begin_length=begin_end-begin_start+1
-                        if begin_length > 2048:
+                        if begin_length > 20480:
                             begin_geometry=parted.geometry.Geometry(disk.device,begin_start,begin_length,begin_end,None)
                             self.disk_geom_info_tab[disk].append(["freespace",begin_geometry])
                         else:
@@ -947,7 +947,7 @@ class PartUtil:
                         after_start=geometry.end+4
                         after_end=item[-1].end-4
                         after_length=after_end-after_start+1
-                        if after_length > 2048:
+                        if after_length > 20480:
                             after_geometry=parted.geometry.Geometry(disk.device,after_start,after_length,after_end,None)
                             self.disk_geom_info_tab[disk].append(["freespace",after_geometry])
                         else:
@@ -956,7 +956,7 @@ class PartUtil:
                     self.disk_geom_info_tab[disk].remove(item)    
                     self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
 
-                    print "finish find the match freespace block to add new part"    
+                    # print "finish find the match freespace block to add new part"    
                     break
 
                 elif geometry.start < item[-1].start <geometry.end and item[-1].end >=geometry.end :
@@ -983,7 +983,7 @@ class PartUtil:
         next_item=self.get_next_geom_info_tab_item(disk,geometry)
 
         if current_item==None or len(current_item)==0:
-            print "no space specified by the geometry"
+            print "error,no space specified by the geometry"
             return
         if current_item==current_end_item:
             if current_item[0]=="freespace":
@@ -1026,7 +1026,7 @@ class PartUtil:
 
                 self.disk_geom_info_tab[disk]=sorted(self.disk_geom_info_tab[disk],key=lambda x:x[-1].start)
             else:    
-                print "can operate only one block one time,please adapt the geometry"
+                print "error,can operate only one block one time,please adapt the geometry"
 
     ################set disk partition attribute before add or modify########################
     def get_disk_partition_object(self,disk,part_type,part_size,space_geom,part_fs,part_location):
@@ -1297,11 +1297,12 @@ class PartUtil:
                 print "add extended partition first"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
-                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                # self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                self.constraint=parted.constraint.Constraint(maxGeom=self.geometry)
 
-                print "\ntest add extended partition geometry satisfy:"
-                print self.test_geometry_satisfy(disk)
-                print "test add extended partition geometry satisfy ok\n"
+                # print "\ntest add extended partition geometry satisfy:"
+                # print self.test_geometry_satisfy(disk)
+                # print "test add extended partition geometry satisfy ok\n"
 
 
                 disk.addPartition(self.partition,self.constraint)
@@ -1316,12 +1317,13 @@ class PartUtil:
                 print "add logical partition"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
-                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                # self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                self.constraint=parted.constraint.Constraint(maxGeom=self.geometry)
 
 
-                print "\ntest add logical partition geometry satisfy:"
-                print self.test_geometry_satisfy(disk)
-                print "test add logical partition geometry satisfy ok \n"
+                # print "\ntest add logical partition geometry satisfy:"
+                # print self.test_geometry_satisfy(disk)
+                # print "test add logical partition geometry satisfy ok \n"
 
 
                 disk.addPartition(self.partition,self.constraint)
@@ -1335,12 +1337,13 @@ class PartUtil:
                 print "add primary partition"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
-                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                # self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                self.constraint=parted.constraint.Constraint(maxGeom=self.geometry)
+                
 
-
-                print "\n test add primary partition geometry satisfy:"
-                print self.test_geometry_satisfy(disk)
-                print "test add primary partition geometry satisfy ok \n"
+                # print "\n test add primary partition geometry satisfy:"
+                # print self.test_geometry_satisfy(disk)
+                # print "test add primary partition geometry satisfy ok \n"
 
                 disk.addPartition(self.partition,self.constraint)
                 # try:
@@ -1472,11 +1475,13 @@ class PartUtil:
                 print extend_list[0].geometry
                 print logical_list[0].geometry
                 return False
-            if extend_list[0].geometry.end < logical_list[-1].geometry.end +4:
+            elif extend_list[0].geometry.end < logical_list[-1].geometry.end +4:
                 print "the last logical end not satisfy"
                 print extend_list[0].geometry
                 print logical_list[-1].geometry
                 return False
+            else:
+                print "logical_list satisfy the extend part"
 
         return True    
 
