@@ -208,7 +208,7 @@ class PartUtil:
         if len(self.disk_partition_info_tab[disk])==0:
             return disk_extend_list
         for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
-            if item[1]=="extend" or item[0].type==2:
+            if item[0].type==2:
                 disk_extend_list.append(item[0])
         return disk_extend_list
 
@@ -463,6 +463,8 @@ class PartUtil:
             self.add_disk_extended_partition(disk,space_geom)
 
         elif part_type=="logical" and len(self.get_disk_extend_list(disk))!=0:
+            if len(self.get_disk_extend_list(disk)) > 1:
+                print "#######################error,can have only one extend########################################"
             extend_part=self.get_disk_extend_list(disk)[0]
             if space_geom.start -4 > extend_part.geometry.start and space_geom.end + 4 < extend_part.geometry.end:
                 print "extend_part space is big enough to add the logical"
@@ -1294,17 +1296,20 @@ class PartUtil:
         '''batch add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
         print "begin batch add partition"
         for disk in self.get_system_disks():
-            disk.commit()
             for item in filter(lambda info:info[-1]=="add" and info[0].type==2,self.disk_partition_info_tab[disk]):
                 print "add extended partition first"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
 
-                # print "\ntest add extended partition geometry satisfy:"
-                # print self.test_geometry_satisfy(disk)
-                # print "test add extended partition geometry satisfy ok\n"
-
+                print "###################constraint info ##########################"
+                print self.constraint.startAlign
+                print self.constraint.endAlign
+                print self.constraint.startRange
+                print self.constraint.endRange
+                print self.constraint.minSize
+                print self.constraint.maxSize
+                print "###################constraint info ##########################"
 
                 disk.addPartition(self.partition,self.constraint)
                 # try:
@@ -1318,12 +1323,22 @@ class PartUtil:
                 print "add logical partition"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
-                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                extend_geom=self.get_disk_logical_list(disk)[0].geometry
+                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry,minSize=extend_geom.start,maxSize=extend_geom.end)
+                print "###################geometry info ##########################"
+                print self.get_disk_logical_list(disk)
+                print extend_geom
+                print self.geometry
+                print "###################geometry info ##########################"
 
-                # print "\ntest add logical partition geometry satisfy:"
-                # print self.test_geometry_satisfy(disk)
-                # print "test add logical partition geometry satisfy ok \n"
-
+                print "###################constraint info ##########################"
+                print self.constraint.startAlign
+                print self.constraint.endAlign
+                print self.constraint.startRange
+                print self.constraint.endRange
+                print self.constraint.minSize
+                print self.constraint.maxSize
+                print "###################constraint info ##########################"
 
                 disk.addPartition(self.partition,self.constraint)
                 # try:
@@ -1337,10 +1352,18 @@ class PartUtil:
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
                 self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
+                print "###################geometry info ##########################"
+                print self.geometry
+                print "###################geometry info ##########################"
 
-                # print "\n test add primary partition geometry satisfy:"
-                # print self.test_geometry_satisfy(disk)
-                # print "test add primary partition geometry satisfy ok \n"
+                print "###################constraint info ##########################"
+                print self.constraint.startAlign
+                print self.constraint.endAlign
+                print self.constraint.startRange
+                print self.constraint.endRange
+                print self.constraint.minSize
+                print self.constraint.maxSize
+                print "###################constraint info ##########################"
 
                 disk.addPartition(self.partition,self.constraint)
                 # try:
