@@ -1258,7 +1258,6 @@ class PartUtil:
     def delete_custom_partition(self):
         '''batch delete origin disk partitions:'''
         for disk in self.get_system_disks():
-            disk.commit()
             for item in filter(lambda info:info[-1]=="delete",self.disk_partition_info_tab[disk]):
                 if item[0]==None:
                     print "error,the partition object should not be null"
@@ -1274,7 +1273,6 @@ class PartUtil:
                 else:
                     continue
 
-            disk.commit()    
             for item in filter(lambda info:info[-1]=="delete",self.disk_partition_info_tab[disk]):
                 if item[0].type==1:
                     print "error,you should have already delete the logical partition"
@@ -1315,7 +1313,6 @@ class PartUtil:
                     self.geometry=self.get_disk_extend_list(disk)[0].geometry
                     self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
                     disk.setPartitionGeometry(self.partition,self.constraint,self.geometry.start,self.geometry.end)
-            disk.commit()
 
             for item in filter(lambda info:info[-1]=="add" and info[0].type==1,self.disk_partition_info_tab[disk]):    
                 print "add logical partition"
@@ -1342,7 +1339,6 @@ class PartUtil:
                 #     print "successfully add primary partition for %s" % disk.device.path
                 # except:
                 #     print "add primary partition error"
-
             disk.commit()        
             print "add all partitions for the disk %s ok" % disk.device.path
             #mkfs/setname/mount disk partitions
@@ -1358,7 +1354,6 @@ class PartUtil:
                     self.set_disk_partition_fstype(self.partition,self.part_fs)
                     self.set_disk_partition_name(self.partition,self.part_name)
                     self.set_disk_partition_mount(self.partition,self.part_fs,self.part_mountpoint)
-            disk.commit()        
         
     ###############################do real partition operations#########################                
     def do_advance_partition(self):
@@ -1424,9 +1419,35 @@ class PartUtil:
             
         self.add_custom_disk_partition(self.disk_partition_info_tab)
         
+    ###############################live with other OS#########################                
+    def probe_other_os(self):
+        '''probe exist os of the current machine'''
+        os_list=get_os_command_output("sudo os-prober")
+        os_dict={}
+        for item in os_list:
+            item_list=item.split(":")
+            os_dict[item_list[0]]=item_list[1]
+        # print os_dict    
+        return os_dict
+
+    def detect_disk_freespace(self):
+        '''probe freespace of the current machine'''
+        disk_freespace_dict={}
+        for disk in self.get_system_disks():
+            disk_freespace_dict[disk]=[]
+            for geom in disk.getFreeSpaceRegions():
+                disk_freespace_dict[disk].append(geom)
+
+        return disk_freespace_dict        
+
+    def get_minimum_install_size(self):
+        '''return the minimum size needed to install the os:unit by sector'''
+        return 15*1024*1024*1024/512
+
+
     ###############################util functions for test#########################                
     def test_geometry_satisfy(self,disk):
-        '''make sure partitions in the disk satisfy the constraint'''
+        '''make sure partitions in the disk satisfy the geometry constraint'''
         main_list=sorted(self.get_disk_main_list(disk),key=lambda x:x.geometry.start)
         logical_list=sorted(self.get_disk_logical_list(disk),key=lambda x:x.geometry.start)
         extend_list=self.get_disk_extend_list(disk)

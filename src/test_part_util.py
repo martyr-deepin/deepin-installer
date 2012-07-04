@@ -134,4 +134,6 @@ if __name__=="__main__":
     # test_reduce_extend_part()
     # test_delete_disk_partition_info_tab()
     # test_umount()
-    test_umount_partition()
+    # test_umount_partition()
+    pu.probe_other_os()
+    # pu.detect_disk_freespace()
