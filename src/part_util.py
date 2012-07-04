@@ -1297,8 +1297,7 @@ class PartUtil:
                 print "add extended partition first"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
-                # self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                self.constraint=parted.constraint.Constraint(maxGeom=self.geometry)
+                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
 
                 # print "\ntest add extended partition geometry satisfy:"
                 # print self.test_geometry_satisfy(disk)
@@ -1317,9 +1316,7 @@ class PartUtil:
                 print "add logical partition"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
-                # self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                self.constraint=parted.constraint.Constraint(maxGeom=self.geometry)
-
+                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
 
                 # print "\ntest add logical partition geometry satisfy:"
                 # print self.test_geometry_satisfy(disk)
@@ -1337,9 +1334,7 @@ class PartUtil:
                 print "add primary partition"
                 self.partition=item[0]
                 self.geometry=self.partition.geometry
-                # self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
-                self.constraint=parted.constraint.Constraint(maxGeom=self.geometry)
-                
+                self.constraint=parted.constraint.Constraint(exactGeom=self.geometry)
 
                 # print "\n test add primary partition geometry satisfy:"
                 # print self.test_geometry_satisfy(disk)
