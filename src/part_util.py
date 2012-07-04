@@ -1430,20 +1430,58 @@ class PartUtil:
         # print os_dict    
         return os_dict
 
-    def detect_disk_freespace(self):
+    def detect_disk_freespace(self,disk):
         '''probe freespace of the current machine'''
-        disk_freespace_dict={}
-        for disk in self.get_system_disks():
-            disk_freespace_dict[disk]=[]
-            for geom in disk.getFreeSpaceRegions():
-                disk_freespace_dict[disk].append(geom)
+        disk_freespace_list=[]
+        for geom in disk.getFreeSpaceRegions():
+            disk_freespace_list.append(geom)
+        return disk_freespace_list    
+        # disk_freespace_dict={}
+        # for disk in self.get_system_disks():
+        #     disk_freespace_dict[disk]=[]
+        #     for geom in disk.getFreeSpaceRegions():
+        #         disk_freespace_dict[disk].append(geom)
 
-        return disk_freespace_dict        
+        # return disk_freespace_dict        
 
     def get_minimum_install_size(self):
         '''return the minimum size needed to install the os:unit by sector'''
         return 15*1024*1024*1024/512
 
+    def get_operating_system_disk(self,os_name):
+        '''return disk that the given OS had installed in'''
+        #attention to consider a person install two same os on two disk
+        for key,value in self.probe_other_os():
+            if value==os_name:
+                return self.get_disk_from_path(key)
+                break
+            else:
+                continue
+        else:
+            print "doesn't find the %s in os_dict" % os_name
+
+    def is_display_live_together(self):
+        '''return whether display install LD to live together with other OS'''
+        if self.probe_other_os().__len__==0:
+            return False
+        else:
+            for disk in self.get_system_disks():
+                max_geom=max(self.detect_disk_freespace(disk))
+                if max_geom.length > self.get_minimum_install_size:
+                    return True
+                    break
+                else:
+                    continue
+            else:
+                return False
+
+    def is_display_live_overwrite(self):
+        '''return whether display install LD to overwrite exist OS,
+        pay attention to multiple OS environment:too many os'''
+        if self.probe_other_os().__len__==0:
+            return False
+        else:
+            return True
 
     ###############################util functions for test#########################                
     def test_geometry_satisfy(self,disk):
