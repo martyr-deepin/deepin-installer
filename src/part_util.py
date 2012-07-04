@@ -1256,6 +1256,7 @@ class PartUtil:
     def delete_custom_partition(self):
         '''batch delete origin disk partitions:'''
         for disk in self.get_system_disks():
+            disk.commit()
             for item in filter(lambda info:info[-1]=="delete",self.disk_partition_info_tab[disk]):
                 if item[0]==None:
                     print "error,the partition object should not be null"
@@ -1293,6 +1294,7 @@ class PartUtil:
         '''batch add partition according to disk_partition_info_tab,then mount them,every disk batch commit'''
         print "begin batch add partition"
         for disk in self.get_system_disks():
+            disk.commit()
             for item in filter(lambda info:info[-1]=="add" and info[0].type==2,self.disk_partition_info_tab[disk]):
                 print "add extended partition first"
                 self.partition=item[0]
@@ -1362,7 +1364,7 @@ class PartUtil:
                     self.set_disk_partition_fstype(self.partition,self.part_fs)
                     self.set_disk_partition_name(self.partition,self.part_name)
                     self.set_disk_partition_mount(self.partition,self.part_fs,self.part_mountpoint)
-
+            disk.commit()        
         
     ###############################do real partition operations#########################                
     def do_advance_partition(self):
