@@ -88,27 +88,6 @@ def run_os_command(command):
         for line in traceback.format_exc().split("\n"):
             syslog.syslog(syslog.LOG_ERR,line)
 
-def mount_sys(target):
-    '''mount sys'''
-    command_mkdir="sudo mkdir -p "+TARGET+"/sys"
-    command_mountsys="sudo mount -o bind /sys "+TARGET+"/sys"
-    run_os_command(command_mkdir)
-    run_os_command(command_mountsys)
-
-def mount_proc(target):
-    ''' mount proc'''
-    command_mkdir="sudo mkdir -p "+TARGET+"/proc"
-    command_mountproc="sudo mount -t proc none "+TARGET+"/proc"
-    run_os_command(command_mkdir)
-    run_os_command(command_mountproc)
-
-def mount_dev(target):
-    ''' mount dev'''
-    command_mkdir="sudo mkdir -p "+TARGET+"/dev"
-    command_mountdev="sudo mount -o bind /dev "+TARGET+"/dev"
-    run_os_command(command_mkdir)
-    run_os_command(command_mountdev)
-
 def write_etc_fstab(target,fstab_info):
     '''write partition set to fstab'''
     fstab_information=fstab_info

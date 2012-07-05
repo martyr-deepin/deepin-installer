@@ -1525,18 +1525,21 @@ class PartUtil:
             self.partition=parted.partition.Partition(disk,self.type,self.fs,self.geometry,None)
 
         return self.partition        
-            
-    ###############################util functions for test#########################                
-    def test_mount_root(self,disk):
-        '''make sure had mount root to install OS'''
-        for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
-            if item[7]=="/":
-                return True
-                break
-            else:
-                continue
-        else:
-            return False
+
+    ##########################functions do mount and fs after partition###################
+    def mount_sys_essential(self):
+        '''mount sys/proc/dev to the host OS'''
+        for dir in "/sys","/dev","/proc":
+            mp=TARGET+dir
+            if not os.path.exists(mp):
+                run_os_command("sudo mkdir -p %s" % mp)
+        run_os_command("sudo mount -o bind /dev %s " % TARGET+"/dev")        
+        run_os_command("sudo mount -t proc none %s " % TARGET+"/proc")
+        run_os_command("sudo mount -o bind /sys %s " % TARGET+"/sys")
+
+    def write_host_fstab(self):
+        '''write essential fstab into host OS /etc/fstab'''
+
 
     def get_part_uuid(self):    
         '''return {part_path:uuid} of the partition'''
@@ -1553,6 +1556,20 @@ class PartUtil:
             uuid_dict[part_path]=uuid    
 
         return uuid_dict
+
+
+            
+    ###############################util functions for test#########################                
+    def test_mount_root(self,disk):
+        '''make sure had mount root to install OS'''
+        for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
+            if item[7]=="/":
+                return True
+                break
+            else:
+                continue
+        else:
+            return False
 
     def test_geometry_satisfy(self,disk):
         '''make sure partitions in the disk satisfy the geometry constraint'''
