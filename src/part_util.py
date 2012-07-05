@@ -1446,7 +1446,7 @@ class PartUtil:
         #attention to consider a person install two same os on two disk
         for key,value in self.probe_other_os():
             if value==os_name:
-                return self.get_disk_from_path(filter(lambda x:not x.isdigit(),key))
+                return self.get_disk_from_path(filter(lambda x:not x.isdigit(),key)[0])
                 break
             else:
                 continue
@@ -1459,7 +1459,7 @@ class PartUtil:
             return False
         else:
             for disk in self.get_system_disks():
-                max_geom=max(self.detect_disk_freespace(disk))
+                max_geom=sorted(self.detect_disk_freespace(disk),key=lambda x:x.length)[-1]
                 if max_geom.length > self.get_minimum_install_size:
                     return True
                     break
@@ -1492,18 +1492,20 @@ class PartUtil:
     def install_together_path(self,disk):
         '''install LD to live together with other os in the disk'''
         ################attention to blank disk that doesn't mklabel##################
-        max_geom=max(self.detect_disk_freespace(disk))
+        max_geom=sorted(self.detect_disk_freespace(disk),key=lambda x:x.length)[-1]
         if max_geom.length < self.get_minimum_install_size():
             print "error,donn't have enough freespace to install LD"
         else:
             self.geometry=max_geom
             if len(self.get_disk_main_list(disk)) < 4:
-                self.set_disk_partition_fstype(disk,"primary")
+                self.type=self.set_disk_partition_fstype(disk,"primary")
             else:
-                self.set_disk_partition_fstype(disk,"logical")
-            self.fs=self.set_disk_partition_fstype()
-        ################to be implemented########################
+                self.type=self.set_disk_partition_fstype(disk,"logical")
+            self.fs=parted.filesystem.FileSystem("ext4",self.geometry,False,None)
+            self.partition=parted.partition.Partition(disk,self.type,self.fs,self.geometry,None)
 
+        return self.partition        
+            
     ###############################util functions for test#########################                
     def test_geometry_satisfy(self,disk):
         '''make sure partitions in the disk satisfy the geometry constraint'''
