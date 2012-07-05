@@ -296,6 +296,7 @@ class PartUtil:
 
         if part_obj not in self.disk_part_display_path[disk].keys():
             print "part_obj not in disk_part_display_path,some error occurs"
+            return self.disk_part_display_path
 
         current_num=int(filter(str.isdigit,self.disk_part_display_path[disk][part_obj])[:])    
 
@@ -392,31 +393,18 @@ class PartUtil:
 
     def rebuild_disk_partition_info_tab(self,disk):
         '''backend operation for UI:create new disk partition tab'''
-        del self.disk_partition_info_tab[disk]
-        self.disk_partition_info_tab[disk]=[]
-        
-        del self.disk_part_display_path[disk]
-        self.disk_part_display_path[disk]={}
-
-        del self.path_disks_partitions[disk]
-        self.path_disks_partitions[disk]=[]
-        
-        del self.disk_geom_info_tab[disk]
-        self.disk_geom_info_tab[disk]=[]
-        self.disk_geom_info_tab=self.init_disk_geom_info_tab()
+        for item in self.disk_partition_info_tab[disk]:
+            self.delete_disk_partition_info_tab(item[0])
 
     def recovery_disk_partition_info_tab(self,disk):
         '''backend operation for UI:recovery edited disk partition tab'''
         #clear data in all the tables
         del self.disk_partition_info_tab[disk]
         self.disk_partition_info_tab[disk]=[]
-        
         del self.disk_part_display_path[disk]
         self.disk_part_display_path[disk]={}
-
         del self.path_disks_partitions[disk]
         self.path_disks_partitions[disk]=[]
-        
         del self.disk_geom_info_tab[disk]
         self.disk_geom_info_tab[disk]=[]
 
