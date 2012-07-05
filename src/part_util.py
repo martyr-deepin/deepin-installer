@@ -1363,6 +1363,7 @@ class PartUtil:
                 backup_item=filter(lambda it:it[3].contains(item[3]) and it[0].type==item[0].type,self.backup_disk_partition_info_tab[disk])[0]
                 if backup_item[4]!=item[4]:
                     item[5]=True
+                    self.set_disk_partition_umount(item[0])
                     self.set_disk_partition_fstype(item[0],item[4])
                 if backup_item[7]!=item[7]:
                     self.set_disk_partition_umount(item[0])
