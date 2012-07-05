@@ -403,10 +403,22 @@ class PartUtil:
         
         del self.disk_geom_info_tab[disk]
         self.disk_geom_info_tab[disk]=[]
+        self.disk_geom_info_tab=self.init_disk_geom_info_tab()
 
     def recovery_disk_partition_info_tab(self,disk):
         '''backend operation for UI:recovery edited disk partition tab'''
-        self.rebuild_disk_partition_info_tab(disk)
+        #clear data in all the tables
+        del self.disk_partition_info_tab[disk]
+        self.disk_partition_info_tab[disk]=[]
+        
+        del self.disk_part_display_path[disk]
+        self.disk_part_display_path[disk]={}
+
+        del self.path_disks_partitions[disk]
+        self.path_disks_partitions[disk]=[]
+        
+        del self.disk_geom_info_tab[disk]
+        self.disk_geom_info_tab[disk]=[]
 
         #init disk_partition_info_tab
         for item in self.backup_disk_partition_info_tab[disk]:

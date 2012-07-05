@@ -485,8 +485,9 @@ class Part(gtk.VBox):
         '''create new partition table of the selected disk'''
         self.update_part_btn_box()
         self.part_util.rebuild_disk_partition_info_tab(self.selected_disk)
-
-        self.part_listview.clear()
+        # self.part_listview.clear()
+        self.part_listview_items=self.init_part_listview_items()
+        self.update_part_listview()
 
     def on_part_new_btn_clicked(self,widget):
         '''create new partition'''
@@ -569,8 +570,12 @@ class Part(gtk.VBox):
                     item[4]=part_edit_fs
                 item[7]=part_edit_mp
                 item[5]=part_edit_format
+                # backup_item=filter(lambda item:item[0].==self.current_part)
+                break
             else:
                 continue
+        else:
+            print "doenn't find the part in edit it"
         #then need update listview
         self.part_listview_items=self.init_part_listview_items()        
         self.update_part_listview()
