@@ -1538,6 +1538,21 @@ class PartUtil:
         else:
             return False
 
+    def get_part_uuid(self):    
+        '''return {part_path:uuid} of the partition'''
+        uuid_list=get_os_command_output("sudo blkid")
+        uuid_dict={}
+        for item in uuid_list:
+            part_path=item.split(":")[0]
+            uuid_str=item.split(":")[1].split(" ")
+            for it in uuid_str:
+                if it.startswith("UUID"):
+                    uuid=it[6:-1]
+                else:
+                    continue
+            uuid_dict[part_path]=uuid    
+
+        return uuid_dict
 
     def test_geometry_satisfy(self,disk):
         '''make sure partitions in the disk satisfy the geometry constraint'''
@@ -1595,7 +1610,7 @@ global_part_util=PartUtil()
 
 def test():
     '''test function'''
-    pass
+    global_part_util.get_part_uuid()
 
 if  __name__=="__main__":
     test()
