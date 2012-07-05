@@ -62,7 +62,7 @@ class PartNew(Window):
         self.new_part_table.attach(self.part_type_combo,1,2,0,1,xpadding=30)
         # self.part_type_combo.connect("item-selected",self.on_part_type_combo_selected)
 
-        self.part_capacity_label=Label("新分区容量(MB):")
+        self.part_capacity_label=Label("新分区容量(MiB):")
         self.max_size=self.get_max_size()
         self.part_capacity_spin=SpinBox(self.max_size,10,self.max_size,10,55)
         self.part_capacity_spin.value_entry.connect("changed",self.on_part_capacity_changed)

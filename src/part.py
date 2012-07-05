@@ -324,9 +324,9 @@ class Part(gtk.VBox):
             if item[0]=="freespace":
                 size=self.part_util.get_space_geom_size(self.selected_disk,item[1])
                 if size> 10000:
-                    str_size="%.2f GB" % float((float)(size)/(float)(1024))
+                    str_size="%.2f GiB" % float((float)(size)/(float)(1024))
                 else:    
-                    str_size="%.2f MB" % (float)(size)
+                    str_size="%.2f MiB" % (float)(size)
                 part_list_item=PartListItem(self.selected_disk,item,None,None,None,None,str_size,None)
                 part_listview_items.append(part_list_item)
                 print "show freespace in the listview:"
@@ -340,9 +340,9 @@ class Part(gtk.VBox):
                         fstype=str(pi[4])
                         format=str(pi[5])
                         if pi[2] > 10000:
-                            total_size="%.2f GB" % float((float)(pi[2])/(float)(1024))
+                            total_size="%.2f GiB" % float((float)(pi[2])/(float)(1024))
                         else:    
-                            total_size="%.2f MB" % (float)(pi[2])
+                            total_size="%.2f MiB" % (float)(pi[2])
                         part_type=str(pi[1])
                         part_list_item=PartListItem(self.selected_disk,item,partition,mp,fstype,format,total_size,part_type)
                         part_listview_items.append(part_list_item)
