@@ -570,7 +570,16 @@ class Part(gtk.VBox):
                     item[4]=part_edit_fs
                 item[7]=part_edit_mp
                 item[5]=part_edit_format
-                # backup_item=filter(lambda item:item[0].==self.current_part)
+
+                backup_item=filter(lambda it:it[3].contains(item[3]) and it[0].type==item[0].type,self.part_util.backup_disk_partition_info_tab[self.selected_disk])[0]
+                if backup_item[4]==item[4] and backup_item[7]==item[7]:
+                    print "filesystem and mountpoint not changed,no need to modify"
+                else:
+                    if item[-1]=="keep" or item[-1]=="modify":
+                        self.part_util.mark_disk_partition_info_tab(item[0],"modify")
+                        # item[-1]="modify"
+                    else:
+                        pass
                 break
             else:
                 continue

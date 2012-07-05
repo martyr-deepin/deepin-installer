@@ -67,6 +67,7 @@ class PartUtil:
         self.backup_disk_partition_info_tab=self.init_disk_partition_info_tab()
         # self.backup_disk_partition_info_tab=copy.deepcopy(self.disk_partition_info_tab)
         self.backup_disk_geom_info_tab=self.init_disk_geom_info_tab()
+
     #######################fill in data relative to disk,mostly in physical#######################
     def __get_path_disks(self):
         '''return{ path:disk} dict,called this only once to make sure the Ped object id will not change'''
@@ -533,7 +534,7 @@ class PartUtil:
                         self.delete_part_geom_info_tab(part.disk,part.geometry)
                     self.get_delete_part_other_path(part.disk,part)    
 
-                elif item[-1]=="keep":
+                elif item[-1]=="keep" or item[-1]=="modify":
                     self.mark_disk_partition_info_tab(part,"delete")
                     if part.type!=2:
                         self.delete_part_geom_info_tab(part.disk,part.geometry)
@@ -605,7 +606,7 @@ class PartUtil:
                         self.disk_partition_info_tab[disk].remove(item)
                         self.delete_path_disks_partitions(disk,extend_part)
                         self.get_delete_part_other_path(disk,extend_part)    
-                    elif item[-1]=="keep":
+                    elif item[-1]=="keep" or item[-1]=="modify":
                         self.mark_disk_partition_info_tab(extend_part,"delete")
                         self.get_delete_part_other_path(disk,extend_part)    
                     else:
@@ -1355,11 +1356,26 @@ class PartUtil:
                     self.set_disk_partition_name(self.partition,self.part_name)
                     self.set_disk_partition_mount(self.partition,self.part_fs,self.part_mountpoint)
         
+    def modify_custom_partition(self):
+        '''modify custom partition,because you changed the filesystem or mountpoint of original partitions'''
+        for disk in self.get_system_disks():
+            for item in filter(lambda info:info[-1]=="modify",self.disk_partition_info_tab[disk]):
+                backup_item=filter(lambda it:it[3].contains(item[3]) and it[0].type==item[0].type,self.backup_disk_partition_info_tab[disk])[0]
+                if backup_item[4]!=item[4]:
+                    item[5]=True
+                    self.set_disk_partition_fstype(item[0],item[4])
+                if backup_item[7]!=item[7]:
+                    self.set_disk_partition_umount(item[0])
+                    self.set_disk_partition_mount(item[0],item[4],item[7])
+                if backup_item[4]==item[4] and backup_item[7]==item[7]:
+                    print "error,filesystem and mountpoint not changed"
+
     ###############################do real partition operations#########################                
     def do_advance_partition(self):
         '''do in fact part operations,delete old first,then add new ones'''
         self.delete_custom_partition()
         self.add_custom_partition()
+        self.modify_custom_partition()
 
     ################################auto partition tools################################
     def get_memory_total(self):
