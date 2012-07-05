@@ -1533,13 +1533,41 @@ class PartUtil:
             mp=TARGET+dir
             if not os.path.exists(mp):
                 run_os_command("sudo mkdir -p %s" % mp)
-        run_os_command("sudo mount -o bind /dev %s " % TARGET+"/dev")        
+        run_os_command("sudo mount --bind /dev %s " % TARGET+"/dev")        
         run_os_command("sudo mount -t proc none %s " % TARGET+"/proc")
-        run_os_command("sudo mount -o bind /sys %s " % TARGET+"/sys")
+        run_os_command("sudo mount --bind /sys %s " % TARGET+"/sys")
 
     def write_host_fstab(self):
         '''write essential fstab into host OS /etc/fstab'''
-
+        fstab_str_list=[]
+        fstab_str=""
+        proc_str="proc    /proc   proc    nodev,noexec,nosuid    0    0\n"
+        fstab_str_list.append(proc_str)
+        for disk in self.get_system_disks():
+            for item in self.get_disk_partition_info_tab[disk]:
+                part_mountpoint=item[7]
+                part_fstype=item[4]
+                part_path=item[0].path
+                part_option="defaults 0 2\n"
+                part_comment="# %s was on %s during installation\n" % (part_mountpoint,part_path)
+                if len(part_mountpoint)!=0:
+                    if part_mountpoint=="/":
+                        part_option="errors=remount-ro 0 1\n"
+                    elif part_mountpoint=="swap" or part_fstype.startswith("linux-swap"):
+                        part_mountpoint=" "
+                        part_fstype="swap"
+                        part_option="sw 0 0\n"
+                    part_dev="UUID=%s    " % self.get_part_uuid()[part_path]    
+                    part_str=part_comment+part_dev+part_mountpoint+"   "+part_fstype+"    "+part_option
+                    fstab_str_list.append(part_str)
+                else:
+                    pass
+        for str in fstab_str_list:
+            fstab_str+=str
+        file_path=TARGET+"/etc/fstab"
+        fstab=open(file_path,"w")
+        fstab.write(fstab_str)
+        fstab.close()
 
     def get_part_uuid(self):    
         '''return {part_path:uuid} of the partition'''
