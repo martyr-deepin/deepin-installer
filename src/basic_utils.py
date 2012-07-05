@@ -20,14 +20,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+TARGET="/target"
 import os
-
 import syslog
-
-import subprocess
+# import subprocess
 import traceback
-
-
 
 # def get_command_output(command):
 #     '''Run commmand and return result:[] '''
@@ -43,13 +40,22 @@ import traceback
 
 #     return result        
 
+#this also may have some problems
+# def run_command(command):
+#     '''just run command'''
+#     try:
+#         subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    
+#     except:
+#         for line in traceback.format_exc().split("\n"):
+#             syslog.syslog(syslog.LOG_ERR,line)
+
 def get_os_command_output(command):
     '''run command directly use os.system,return result:[]'''
     result=[]
     try:
         f=os.popen(command)
         data=f.readlines()
-        
         for item in data:
             result.append(item[0:-1])
     except:
@@ -59,7 +65,6 @@ def get_os_command_output(command):
         f.close()
 
     return result    
-
 
 def get_os_command_oneput(command):
     '''run command directly use os.system,return a string item'''
@@ -74,16 +79,6 @@ def get_os_command_oneput(command):
         f.close()
 
     return result    
-
-#this also may have some problems
-# def run_command(command):
-#     '''just run command'''
-#     try:
-#         subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    
-#     except:
-#         for line in traceback.format_exc().split("\n"):
-#             syslog.syslog(syslog.LOG_ERR,line)
         
 def run_os_command(command):
     '''run command directly use os.sys'''
@@ -93,44 +88,29 @@ def run_os_command(command):
         for line in traceback.format_exc().split("\n"):
             syslog.syslog(syslog.LOG_ERR,line)
 
-
-def mount_target_root(target,device):
-    '''mount sys'''
-
-    target_root="sudo mkdir "+target
-    command_mountroot="sudo mount "+device+" "+target_root
-  
-    run_os_command(command_mountroot)
-
-
 def mount_sys(target):
     '''mount sys'''
-
-    command_mkdir="sudo mkdir -p "+target+"/sys"
-    command_mountsys="sudo mount -o bind /sys "+target+"/sys"
+    command_mkdir="sudo mkdir -p "+TARGET+"/sys"
+    command_mountsys="sudo mount -o bind /sys "+TARGET+"/sys"
     run_os_command(command_mkdir)
     run_os_command(command_mountsys)
 
 def mount_proc(target):
     ''' mount proc'''
-
-    command_mkdir="sudo mkdir -p "+target+"/proc"
-    command_mountproc="sudo mount -t proc none "+target+"/proc"
+    command_mkdir="sudo mkdir -p "+TARGET+"/proc"
+    command_mountproc="sudo mount -t proc none "+TARGET+"/proc"
     run_os_command(command_mkdir)
     run_os_command(command_mountproc)
 
-
 def mount_dev(target):
     ''' mount dev'''
-
-    command_mkdir="sudo mkdir -p "+target+"/dev"
-    command_mountdev="sudo mount -o bind /dev "+target+"/dev"
+    command_mkdir="sudo mkdir -p "+TARGET+"/dev"
+    command_mountdev="sudo mount -o bind /dev "+TARGET+"/dev"
     run_os_command(command_mkdir)
     run_os_command(command_mountdev)
 
 def write_etc_fstab(target,fstab_info):
     '''write partition set to fstab'''
-
     fstab_information=fstab_info
     fstab_path=target+"/etc/fstab"
     pfstab=open(fstab_path,'a+')
@@ -156,9 +136,6 @@ def do_update_grub():
 def do_reboot():
     command="sudo reboot "
     run_os_command(command)
-
-def probe_exists_os():
-    pass
 
 
 

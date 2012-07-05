@@ -1094,8 +1094,11 @@ class PartUtil:
     def set_disk_partition_name(self,partition,part_name):
         '''cann't set this attribute,need to fix'''
         if not partition.disk.supportsFeature(parted.DISK_TYPE_PARTITION_NAME):
-            print "sorry,the disk doesn't support set partition name"
-            self.lu.do_log_msg(self.logger,"warning","sorry,conn't set partition name")
+            try:
+                run_os_command("sudo e2label %s %s" %(partition.path,part_name))
+            except:    
+                print "sorry,the disk doesn't support set partition name"
+                self.lu.do_log_msg(self.logger,"warning","sorry,conn't set partition name")
         elif part_name==None or len(part_name)==0:
             partition.name=""
         else:
@@ -1524,6 +1527,18 @@ class PartUtil:
         return self.partition        
             
     ###############################util functions for test#########################                
+    def test_mount_root(self,disk):
+        '''make sure had mount root to install OS'''
+        for item in filter(lambda info:info[-1]!="delete",self.disk_partition_info_tab[disk]):
+            if item[7]=="/":
+                return True
+                break
+            else:
+                continue
+        else:
+            return False
+
+
     def test_geometry_satisfy(self,disk):
         '''make sure partitions in the disk satisfy the geometry constraint'''
         main_list=sorted(self.get_disk_main_list(disk),key=lambda x:x.geometry.start)
