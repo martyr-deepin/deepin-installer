@@ -1,2 +1,20 @@
-*.pyc
-.#*
+.gitignore
+
+.tag*
+tags
+cscope*
+build/
+resources/installer/js/installer.js
+*.swp
+*.log
+*~
+*.orig
+core
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+install_manifest.txt
+*.js

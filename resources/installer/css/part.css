@@ -1,0 +1,252 @@
+.ModelDialog {
+	position: fixed;
+	font-family: Arial, Helvetica, sans-serif;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 99999;
+	opacity:0;
+	-webkit-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+}
+
+.ModelDialog:target {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.ModelDialogShow {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ModelDialog > div {
+    width: 70%;
+	position: relative;
+	margin: 10% auto;
+	padding: 5px 20px 13px 20px;
+	border-radius: 10px;
+	background: #fff;
+	background: -webkit-linear-gradient(#fff, #999);
+	background: -o-linear-gradient(#fff, #999);
+}
+
+.close {
+	background: #606061;
+	color: #FFFFFF;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -10px;
+	width: 24px;
+	text-decoration: none;
+	font-weight: bold;
+	-webkit-border-radius: 12px;
+	border-radius: 12px;
+	-webkit-box-shadow: 1px 1px 3px #000;
+	box-shadow: 1px 1px 3px #000;
+}
+
+.close:hover { 
+    background: #00d9ff; 
+}
+
+.PartLineItem {
+    height: 80%;
+    float: left;
+    text-align: center;
+    border: 1px solid;
+    opacity: 0.4;
+}
+
+.PartLineItemSelected {
+    opacity: 1;
+}
+
+.PartLineMaps {
+    width: 100%;
+    height: 10%; 
+    margin: 5px 0;
+    border: 1px solid;
+    text-align: center;
+}
+
+.PartTable {
+    width: 100%;
+    height: 70%;
+    border: 1px solid #000000;
+}
+
+.PartTableHeader {
+    width: 100%;
+    height: 10%;
+    background: #F2F6F9;
+    border-bottom: 1px solid #000000;
+    padding: 5px 0;
+}
+
+.PartTableHeaderCell {
+    float: left;
+    width: 20%;
+    height: 80%;
+    -webkit-transform: translate(0, 25%);
+}
+
+.PartTableHeaderSimple {
+    float: left;
+    width: 25%;
+    height: 80%;
+    -webkit-transform: translate(0, 25%);
+}
+
+.PartTableItems {
+    width: 100%;
+    height: 88%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.PartTableItem {
+    width: 100%;
+    height: 20%;
+    clear: both;
+    text-align: center;
+}
+
+.PartTableItem select {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.PartTableItem .ItemCellTxt {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.PartTableItemSelected {
+    background:#A17328;
+    border: 1px solid;
+}
+
+.PartTableItemSelected select {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.PartTableItemSelected .ItemCellTxt {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.PartTableItemCell {
+    float: left;
+    width: 20%;
+    height: 80%;
+    -webkit-transform: translate(0, 25%);
+}
+
+.PartTableItemSimple {
+    float: left;
+    width: 25%;
+    height: 80%;
+    -webkit-transform: translate(0, 25%);
+}
+
+.Color {
+    width: 10%;
+    height: 50%;
+    float: left;
+    margin-left: 10%;
+    text-align: right;
+}
+
+.Path {
+    width: 70%;
+    height: 100%;
+    margin-left: -10%;
+    float: right;
+    text-align: left;
+}
+
+.PartOp {
+    width: 100%;
+    height: 15%;
+    margin: 10px 0;
+}
+
+.BtnContainer {
+    width: 100%;
+    height: 50%;
+    text-align: center;
+}
+
+.PartOpBtn {
+    float: left;
+    width: 18%;
+    height: 100%;
+    margin: 2px;
+    border: 2px solid;
+    padding: 2px;
+    background: yellow;
+    opacity: 0.8;
+    pointer-events: auto;
+}
+
+.PartOpBtn:hover {
+    opacity: 1;
+    color: red;
+}
+
+.PartOpBtnDisabled, .PartOpBtnDisabled:hover {
+    float: left;
+    width: 18%;
+    height: 100%;
+    margin: 2px;
+    border: 2px solid;
+    padding: 2px;
+    background: yellow;
+    opacity: 0.3; 
+    pointer-events: none;
+}
+
+.PartGrub {
+    width: 100%;
+    height: 40%;
+}
+
+.GrubDesc {
+    margin: 0 5px 0 2px;
+    float: left;
+    font-size: 16px;
+    width: 180px;
+}
+
+.GrubSelect {
+    text-align: left;
+    margin-left: 180px;
+}
+
+.GrubSelect select{
+    float: left;
+}
+
+.Error {
+    padding-top: 10px;
+    width: 80%;
+    float: left;
+    text-align: left;
+}
+
+.NextStep {
+    width: 20%;
+    float: right;
+}
+
+.NextStep #button {
+    width: 40%;
+}
+
