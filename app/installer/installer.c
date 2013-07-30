@@ -52,6 +52,12 @@ gboolean installer_is_running()
     }
 }
 
+JS_EXPORT_API
+void installer_finish_install ()
+{
+    gtk_main_quit ();
+}
+
 int main(int argc, char **argv)
 {
     init_i18n ();

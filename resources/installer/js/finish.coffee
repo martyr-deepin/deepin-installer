@@ -50,4 +50,5 @@ class Finish extends Page
         @finish_btn.setAttribute("value", "完成")
         @finish_btn.addEventListener("click", (e) =>
             echo "finish install"
+            DCore.Installer.finish_install()
         )
