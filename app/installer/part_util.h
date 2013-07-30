@@ -62,6 +62,8 @@ JS_EXPORT_API const gchar* installer_get_partition_fs (const gchar *part);
 
 JS_EXPORT_API gboolean installer_get_partition_busy (const gchar *part);
 
+JS_EXPORT_API gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name);
+
 JS_EXPORT_API gchar* installer_get_partition_used (const gchar *part);
 
 JS_EXPORT_API void installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end);
@@ -71,6 +73,8 @@ JS_EXPORT_API void installer_delete_disk_partition (const gchar *disk, const gch
 JS_EXPORT_API void installer_update_partition_fs (const gchar *part, const gchar *fs);
 
 JS_EXPORT_API void installer_update_partition_mp (const gchar *part);
+
+JS_EXPORT_API void installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status);
 
 JS_EXPORT_API void installer_write_disk (const gchar *disk);
 

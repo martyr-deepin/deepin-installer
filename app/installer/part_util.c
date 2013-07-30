@@ -381,6 +381,28 @@ gboolean installer_get_partition_busy (const gchar *part)
 }
 
 JS_EXPORT_API 
+gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name)
+{
+    gboolean result = FALSE;
+    PedPartition *pedpartition = NULL;
+    PedPartitionFlag flag;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+
+        flag = ped_partition_flag_get_by_name (flag_name);
+        if (ped_partition_is_flag_available (pedpartition, flag)) {
+
+            result = (gboolean ) ped_partition_get_flag (pedpartition, flag);
+        }
+    } else {
+        g_warning ("get partition flag:find pedpartition %s failed\n", part);
+    }
+
+    return result;
+}
+
+JS_EXPORT_API 
 gchar* installer_get_partition_used (const gchar *part)
 {
     gchar* result = NULL;
@@ -554,6 +576,25 @@ JS_EXPORT_API
 void installer_update_partition_mp (const gchar *part)
 {
     ;
+}
+
+JS_EXPORT_API 
+void installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status)
+{
+    PedPartition *pedpartition = NULL;
+    PedPartitionFlag flag;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+
+        flag = ped_partition_flag_get_by_name (flag_name);
+        if (ped_partition_is_flag_available (pedpartition, flag)) {
+
+            ped_partition_set_flag (pedpartition, flag, status);
+        }
+    } else {
+        g_warning ("get partition flag:find pedpartition %s failed\n", part);
+    }
 }
 
 JS_EXPORT_API 
