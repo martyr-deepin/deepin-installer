@@ -248,7 +248,8 @@ for disk in disks
             if DCore.Installer.get_partition_length(part) > 4096
                 v_disk_info[disk]["partitions"].push(part)
         else if DCore.Installer.get_partition_type(part) in ["normal", "extended", "logical"]
-            v_disk_info[disk]["partitions"].push(part)
+            if DCore.Installer.get_partition_path(part).indexOf("/dev/mapper") == -1
+                v_disk_info[disk]["partitions"].push(part)
 
 v_part_info = {}
 for disk in disks
@@ -812,7 +813,8 @@ undo_table = (disk) ->
             if DCore.Installer.get_partition_length(part) > 4096
                 v_disk_info[disk]["partitions"].push(part)
         else if DCore.Installer.get_partition_type(part) in ["normal", "extended", "logical"]
-            v_disk_info[disk]["partitions"].push(part)
+            if DCore.Installer.get_partition_path(part).indexOf("/dev/mapper") == -1
+                v_disk_info[disk]["partitions"].push(part)
 
     for part in v_disk_info[disk]["partitions"]
         v_part_info[part] = {}
