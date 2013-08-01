@@ -46,8 +46,10 @@ for disk in disks
         m_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
         if m_part_info[part]["type"] == "extended"
             m_part_info[part]["fs"] = "extended"
-        else
+        else if m_part_info[part]["type"] in ["normal", "logical"]
             m_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
+        else
+            m_part_info[part]["fs"] = ""
         m_part_info[part]["format"] = false
         try
             m_part_info[part]["mp"] = DCore.Installer.get_partition_mp(part)
@@ -264,9 +266,10 @@ for disk in disks
         v_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
         if v_part_info[part]["type"] == "extended"
             v_part_info[part]["fs"] = "extended"
-        else
+        else if v_part_info[part]["type"] in ["normal", "logical"]
             v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
-        v_part_info[part]["format"] = false
+        else
+            v_part_info[part]["fs"] = ""
         try
             v_part_info[part]["mp"] = DCore.Installer.get_partition_mp(part)
         catch error
@@ -827,9 +830,10 @@ undo_table = (disk) ->
         v_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
         if v_part_info[part]["type"] == "extended"
             v_part_info[part]["fs"] = "extended"
-        else
+        else if v_part_info[part]["type"] in ["normal", "logical"]
             v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
-        v_part_info[part]["format"] = false
+        else
+            v_part_info[part]["fs"] = ""
         try
             v_part_info[part]["mp"] = DCore.Installer.get_partition_mp(part)
         catch error
