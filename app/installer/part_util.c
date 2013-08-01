@@ -59,8 +59,11 @@ void init_parted ()
             g_printf ("init parted:ped device open succeed\n");
         }
         //fixed: when there is no partition table on the device
-        disk = ped_disk_new (device);
-        if (disk == NULL) {
+        if (ped_disk_probe (device) != NULL) {
+            disk = ped_disk_new (device);
+
+        } else {
+            g_printf ("init parted:new disk partition table for %s\n", device->path);
             const PedDiskType *type;
             long long size = device->sector_size;
             PedSector length = device->length;
@@ -72,10 +75,8 @@ void init_parted ()
 
             if (type != NULL) {
                 disk = ped_disk_new_fresh (device, type);
-                g_printf ("init parted:ped disk new fresh\n");
-
             } else {
-                g_warning ("init parted:ped disk type get failed\n");
+                g_warning ("init parted:ped disk type get failed:%s\n", device->path);
             }
         }
 
