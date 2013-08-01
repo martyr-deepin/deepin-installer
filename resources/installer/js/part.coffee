@@ -490,12 +490,20 @@ class PartTableItem extends Widget
             undo_btn.setAttribute("class", "PartOpBtnDisabled")
 
         else
+            echo "invalid type in set btn status"
             #table_btn.setAttribute("class", "PartOpBtnDisabled")
             add_btn.setAttribute("class", "PartOpBtnDisabled")
             delete_btn.setAttribute("class", "PartOpBtnDisabled")
             query_btn.setAttribute("class", "PartOpBtnDisabled")
             mode_btn.setAttribute("class", "PartOpBtn")
             undo_btn.setAttribute("class", "PartOpBtn")
+
+        if DCore.Installer.get_partition_flag(@id, "lvm")
+            add_btn.setAttribute("class", "PartOpBtnDisabled")
+            delete_btn.setAttribute("class", "PartOpBtnDisabled")
+            query_btn.setAttribute("class", "PartOpBtnDisabled")
+            mode_btn.setAttribute("class", "PartOpBtnDisabled")
+            undo_btn.setAttribute("class", "PartOpBtnDisabled")
 
     focus: ->
         __selected_item?.blur()
