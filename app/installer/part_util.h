@@ -60,6 +60,8 @@ JS_EXPORT_API double installer_get_partition_end (const gchar *part);
 
 JS_EXPORT_API const gchar* installer_get_partition_fs (const gchar *part);
 
+JS_EXPORT_API gchar* installer_get_partition_label (const gchar *part);
+
 JS_EXPORT_API gboolean installer_get_partition_busy (const gchar *part);
 
 JS_EXPORT_API gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name);

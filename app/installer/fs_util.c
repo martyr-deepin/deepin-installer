@@ -392,6 +392,13 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         }
         cmd = g_strdup_printf ("mkreiserfs -f %s", path);
 
+    } else if (g_strcmp0 (fs, "btrfs") == 0) {
+        if (g_find_program_in_path ("mkfs.btrfs") == NULL) {
+            g_warning ("mkfs.btrfs not installed\n");
+            return ;
+        }
+        cmd = g_strdup_printf ("mkfs.btrfs %s", path);
+
     } else if (g_strcmp0 (fs, "xfs") == 0 ) {
         if (g_find_program_in_path ("mkfs.xfs") == NULL) {
             g_warning ("mkfs.xfs not installed\n");
@@ -411,4 +418,112 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
     }
 
     g_free (cmd);
+}
+
+gchar *
+get_partition_label (const gchar *path, const gchar *fs)
+{
+    gchar *label = NULL;
+
+    gchar *cmd = NULL;
+    GError *error = NULL;
+
+    if (g_strcmp0 (fs, "ext4") == 0) {
+        if (g_find_program_in_path ("e2label") == NULL) {
+            g_warning ("e2label not installed\n");
+
+        } else {
+            cmd = g_strdup_printf ("e2label %s", path);
+            g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+        }
+
+    } else if (g_strcmp0 (fs, "ext3") == 0) {
+        if (g_find_program_in_path ("e2label") == NULL) {
+            g_warning ("e2label not installed\n");
+
+        } else {
+            cmd = g_strdup_printf ("e2label %s", path);
+            g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+        }
+
+    } else if (g_strcmp0 (fs, "ext2") == 0) {
+        if (g_find_program_in_path ("e2label") == NULL) {
+            g_warning ("e2label not installed\n");
+
+        } else {
+            cmd = g_strdup_printf ("e2label %s", path);
+            g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+        }
+
+    } else if (g_strcmp0 (fs, "fat16") == 0) {
+        g_printf ("to be implemented\n");
+
+    } else if (g_strcmp0 (fs, "fat32") == 0) {
+        g_printf ("to be implemented\n");
+
+    } else if  (g_strcmp0 (fs, "jfs") == 0) {
+        if (g_find_program_in_path ("jfs_tune") == NULL) {
+            g_warning ("jfs_tune not installed\n");
+
+        } else {
+            cmd = g_strdup_printf ("jfs_tune -l %s", path);
+            g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+        }
+
+    } else if  (g_strcmp0 (fs, "linux-swap") == 0) {
+        if (g_find_program_in_path ("swaplabel") == NULL) {
+            g_warning ("swaplabel not installed\n");
+
+        } else {
+            cmd = g_strdup_printf ("swaplabel %s", path);
+            g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+        }
+
+    } else if (g_strcmp0 (fs, "ntfs") == 0) {
+        if (g_find_program_in_path ("ntfslabel") == NULL) {
+            g_warning ("ntfslabel not installed\n");
+
+        } else {
+            cmd = g_strdup_printf ("ntfslabel --force %s", path);
+            g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+        }
+    
+    } else if (g_strcmp0 (fs, "reiserfs") == 0) {
+        if (g_find_program_in_path ("debugreiserfs") == NULL) {
+            g_warning ("debugreiserfs not installed\n");
+
+        } else {
+            cmd = g_strdup_printf ("debugreiserfs %s", path);
+            g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+        }
+
+    } else if (g_strcmp0 (fs, "xfs") == 0 ) {
+        if (g_find_program_in_path ("xfs_db") == NULL) {
+            g_warning ("xfs_db not installed\n");
+
+        } else {
+            cmd = g_strdup_printf ("xfs_db -r -c 'label' %s", path);
+            g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+        }
+
+    } else if (g_strcmp0 (fs, "btrfs") == 0 ) {
+        if (g_find_program_in_path ("btrfs") == NULL) {
+            g_warning ("btrfs not installed\n");
+
+        } else {
+            cmd = g_strdup_printf ("btrfs filesytem show %s", path);
+            g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+        }
+
+    } else {
+        g_warning ("file system:%s currently not supported\n", fs);
+    }
+
+    if (error != NULL) {
+        g_warning ("%s\n", error->message);
+        g_error_free (error);
+    }
+    g_free (cmd);
+
+    return label;
 }

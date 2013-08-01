@@ -385,6 +385,32 @@ const gchar *installer_get_partition_fs (const gchar *part)
 }
 
 JS_EXPORT_API 
+gchar* installer_get_partition_label (const gchar *part)
+{
+    gchar *label = NULL;
+
+    gchar *path = NULL;
+    const gchar *fs = installer_get_partition_fs (part);
+    PedPartition *pedpartition = NULL;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+        path = ped_partition_get_path (pedpartition);
+        if (path != NULL && fs != NULL) {
+            label = get_partition_label (path, fs);
+
+        } else {
+            g_warning ("get partition label:get part %s path/fs failed\n", part);
+        }
+    } else {
+        g_warning ("get partition label:find pedpartition %s failed\n", part);
+    }
+    g_free (path);
+
+    return label;
+}
+
+JS_EXPORT_API 
 gboolean installer_get_partition_busy (const gchar *part)
 {
     gboolean busy = FALSE;
@@ -451,7 +477,7 @@ gchar* installer_get_partition_used (const gchar *part)
             return result;
         }
 
-        path = g_strdup (ped_partition_get_path (pedpartition));
+        path = ped_partition_get_path (pedpartition);
         if (path != NULL) {
             if ((ped_partition_is_busy (pedpartition)) == 1) {
                 result = get_mounted_partition_used (path);

@@ -31,4 +31,6 @@ gchar *get_partition_used (const gchar *path, const gchar *fs);
 
 void set_partition_filesystem (const gchar *path, const gchar *fs);
 
+gchar *get_partition_label (const gchar *path, const gchar *fs);
+
 #endif
