@@ -47,12 +47,30 @@ void init_parted ()
     partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, (GEqualFunc) g_str_equal, (GDestroyNotify) g_free, NULL);
 
     PedDevice *device = NULL;
+    PedDisk *disk = NULL;
 
     ped_device_probe_all ();
 
     while ((device = ped_device_get_next (device))) {
-        //fix me: when there is no partition table on the device
-        PedDisk *disk = ped_disk_new (device);
+        //fixed: when there is no partition table on the device
+        disk = ped_disk_new (device);
+        if (disk == NULL) {
+            const PedDiskType *type;
+            long long size = device->sector_size;
+            PedSector length = device->length;
+            if (size * length > (long long) 2*1024*1024*1024*1024) {
+                type = ped_disk_type_get ("gpt");
+            } else {
+                type = ped_disk_type_get ("msdos");
+            }
+
+            if (type != NULL) {
+                disk = ped_disk_new_fresh (device, type);
+
+            } else {
+                g_warning ("init parted:ped disk type get failed\n");
+            }
+        }
 
         gchar *uuid_num = installer_rand_uuid ();
         gchar *uuid = g_strdup_printf ("disk%s", uuid_num);
