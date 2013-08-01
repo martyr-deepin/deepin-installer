@@ -52,6 +52,12 @@ void init_parted ()
     ped_device_probe_all ();
 
     while ((device = ped_device_get_next (device))) {
+        if (0 == ped_device_open (device)) {
+            g_warning ("init parted:ped device open failed\n");
+            continue;
+        } else {
+            g_printf ("init parted:ped device open succeed\n");
+        }
         //fixed: when there is no partition table on the device
         disk = ped_disk_new (device);
         if (disk == NULL) {
@@ -66,6 +72,7 @@ void init_parted ()
 
             if (type != NULL) {
                 disk = ped_disk_new_fresh (device, type);
+                g_printf ("init parted:ped disk new fresh\n");
 
             } else {
                 g_warning ("init parted:ped disk type get failed\n");
