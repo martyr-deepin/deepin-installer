@@ -52,12 +52,11 @@ void init_parted ()
     ped_device_probe_all ();
 
     while ((device = ped_device_get_next (device))) {
-        if (0 == ped_device_open (device)) {
-            g_warning ("init parted:ped device open failed\n");
+        if (device->read_only) {
+            g_warning ("init parted:device read only\n");
             continue;
-        } else {
-            g_printf ("init parted:ped device open succeed\n");
-        }
+        } 
+
         //fixed: when there is no partition table on the device
         if (ped_disk_probe (device) != NULL) {
             disk = ped_disk_new (device);
