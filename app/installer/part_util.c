@@ -21,6 +21,8 @@
 
 #include "part_util.h"
 #include "fs_util.h"
+#include <mntent.h>
+
 static GHashTable *disks;
 static GHashTable *partitions;
 static GHashTable *disk_partitions;
@@ -632,7 +634,60 @@ void installer_update_partition_fs (const gchar *part, const gchar *fs)
 JS_EXPORT_API 
 void installer_write_fs_tab (const gchar *part, const gchar *mp)
 {
-    g_printf ("write fs tab\n");
+    if (target == NULL) {
+        g_warning ("write fs tab:must mount target first\n");
+        return ;
+    }
+    PedPartition *pedpartition = NULL;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+        gchar *path = g_strdup (ped_partition_get_path (pedpartition));
+        gchar *fs = NULL;
+
+        PedGeometry *geom = ped_geometry_duplicate (&pedpartition->geom);
+        PedFileSystemType *fs_type = ped_file_system_probe (geom);
+        if (fs_type != NULL) {
+            fs = g_strdup (fs_type->name);
+        }
+
+        if (path == NULL || fs == NULL || mp == NULL) {
+            g_warning ("write fs tab:path/fs/mp contains one null\n");
+
+        } else {
+            gchar *fs_tab = g_strdup_printf ("%s/etc/fstab", target);
+            struct mntent *mnt;
+            FILE *mount_file;
+            
+            mount_file = setmntent (fs_tab, "rw"); 
+            if (mount_file != NULL) {
+                if (g_strcmp0 ("/", mp) == 0) {
+                    mnt->mnt_opts = "errors=remount-ro";
+                    mnt->mnt_passno = 1;
+                } else {
+                    mnt->mnt_opts = "defaults";
+                    mnt->mnt_passno = 2;
+                }
+                mnt->mnt_fsname = path;
+                mnt->mnt_dir = g_strdup (mp);
+                mnt->mnt_type = fs;
+                mnt->mnt_freq = 0;
+
+                if ((addmntent(mount_file, mnt)) == 1) {
+                    g_warning ("write fs tab: addmntent for %s failed\n", fs_tab);
+                } 
+
+            } else {
+                g_warning ("write fs tab: setmntent for %s failed\n", fs_tab);
+            }
+            g_free (fs_tab);
+        }
+
+        g_free (fs);
+        g_free (path);
+    } else {
+        g_warning ("write fs tab:find pedpartition %s failed\n", part);
+    }
 }
 
 JS_EXPORT_API 
