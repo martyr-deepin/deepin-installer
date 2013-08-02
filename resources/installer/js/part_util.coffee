@@ -57,11 +57,6 @@ for disk in disks
             m_part_info[part]["mp"] = "unused"
         m_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
         m_part_info[part]["op"] = "keep"
-        m_part_info[part]["change_type"] = false
-        m_part_info[part]["change_fs"] = false
-        m_part_info[part]["change_size"] = false
-        m_part_info[part]["change_mp"] = false
-
     
 #sort part op flags as below:
 #1)first delete, then update and add
@@ -155,6 +150,7 @@ mark_add = (part) ->
         m_part_info[part]["start"] = v_part_info[part]["start"]
         m_part_info[part]["length"] = v_part_info[part]["length"]
         m_part_info[part]["end"] = v_part_info[part]["end"]
+        m_part_info[part]["mp"] = v_part_info[part]["mp"]
 
 #mark delete for original part, delete from flags for new partition
 mark_delete = (part) ->
@@ -230,6 +226,40 @@ do_partition = ->
 
         else
             echo "just keep disk"
+
+#get target part that mount root
+get_target_part = ->
+    echo "get target part"
+    for disk in disks
+        for part in m_disk_info[disk]["partitions"]
+            if m_part_info[part]["op"] != "delete" and m_part_info[part]["mp"] == "/"
+                return part
+    return null
+
+#check whether had a part that mount root
+check_target_part = ->
+    if get_target_part()?
+        return true
+    else
+        return false
+
+#write /etc/fstab
+write_fs_tab = ->
+    echo "write fs tab"
+    target = get_target_part()
+    if not target?
+        echo "get target failed"
+        return 
+
+    for disk in disks
+        for part in m_disk_info[disk]["partitions"]
+            if m_part_info[part]["op"] != "delete"
+                if m_part_info[part]["mp"]? and m_part_info[part]["mp"].length > 0
+                    try
+                        DCore.Installer.write_fs_tab(target, part, m_part_info[part]["mp"])
+                    catch error
+                        echo error
+
 #Model end
 #Model
 #
