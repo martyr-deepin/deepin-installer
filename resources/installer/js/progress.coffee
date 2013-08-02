@@ -36,6 +36,8 @@ class Progress extends Page
 
         @progress_container = create_element("div", "ProgressContainer", @footer)
         @progressbar = create_element("div", "ProgressBar", @progress_container)
+        @progressdesc = create_element("div", "Progressdesc", @progress_container)
+        @progressdesc.innerText = "Progress Description"
 
     switch_ppt: (direction)->
         if direction == "prev"
