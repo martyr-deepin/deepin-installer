@@ -19,12 +19,18 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "account.h"
+#include "misc.h"
 #include <pwd.h>
 #include <sys/types.h>
 
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
+
+void copy_file (const gchar *src, const gchar *dest)
+{
+  g_printf ("copy file\n");  
+
+}
 
 JS_EXPORT_API 
 JSObjectRef installer_get_system_users()
@@ -48,8 +54,13 @@ JSObjectRef installer_get_system_users()
 }
 
 JS_EXPORT_API 
-void installer_create_user (char *username, char *hostname, char *password)
+void installer_create_user (const gchar *username, const gchar *hostname, const gchar *password)
 {
-    ;
+    g_printf ("create user\n");
+}
+
+void write_hostname (const gchar *hostname)
+{
+    g_printf ("write hostname\n");
 }
 

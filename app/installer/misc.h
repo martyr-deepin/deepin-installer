@@ -28,8 +28,12 @@
 #include "utils.h"
 #include "jsextension.h"
 
+void copy_file (const gchar *src, const gchar *dest);
+
 JS_EXPORT_API JSObjectRef installer_get_system_users();
 
-JS_EXPORT_API void installer_create_user (char *username, char *hostname, char *password);
+JS_EXPORT_API void installer_create_user (const gchar *username, const gchar *hostname, const gchar *password);
+
+void write_hostname (const gchar *hostname);
 
 #endif

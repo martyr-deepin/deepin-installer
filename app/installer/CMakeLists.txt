@@ -4,7 +4,7 @@ GEN_JSC_SOURCE(JSC_GEN "jsc")
 
 pkg_check_modules(PARTED REQUIRED libparted)
 
-add_executable(${NAME} ${JSC_GEN} account.c fs_util.c part_util.c installer.c)
+add_executable(${NAME} ${JSC_GEN} misc.c fs_util.c part_util.c installer.c)
 
 target_link_libraries(${NAME} dcom ${DWEBVIEW_LIBRARIES} ${PARTED_LIBRARIES})
 
