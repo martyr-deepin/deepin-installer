@@ -24,6 +24,7 @@
 static GHashTable *disks;
 static GHashTable *partitions;
 static GHashTable *disk_partitions;
+static const gchar *target = NULL;
 
 JS_EXPORT_API 
 gchar* installer_rand_uuid ()
@@ -629,9 +630,9 @@ void installer_update_partition_fs (const gchar *part, const gchar *fs)
 }
 
 JS_EXPORT_API 
-void installer_update_partition_mp (const gchar *part)
+void installer_write_fs_tab (const gchar *part, const gchar *mp)
 {
-    ;
+    g_printf ("write fs tab\n");
 }
 
 JS_EXPORT_API 
@@ -677,4 +678,49 @@ void installer_write_disk (const gchar *disk)
     } else {
         g_warning ("write disk:find peddisk %s failed\n", disk);
     }
+}
+
+JS_EXPORT_API 
+gboolean installer_mount_target (const gchar *part)
+{
+    gboolean result = FALSE;
+
+    PedPartition *pedpartition = NULL;
+    GError *error = NULL;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+        gchar *path = g_strdup (ped_partition_get_path (pedpartition));
+        if (path == NULL) {
+            g_warning ("mount target:%s path is NULL\n", part);
+
+        } else {
+            gchar *target_uuid = installer_rand_uuid ();
+            target = g_strdup_printf ("/mnt/target%s", target_uuid);
+
+            if (g_file_test (target, G_FILE_TEST_EXISTS)) {
+                g_warning ("mount target:re rand uuid as target exists\n");
+                gchar *target_uuid = installer_rand_uuid ();
+                target = g_strdup_printf ("/mnt/target%s", target_uuid);
+            }
+            g_free (target_uuid);
+
+            if (g_mkdir_with_parents (target, 0777) != -1) {
+                gchar *cmd = g_strdup_printf ("mount %s %s", path, target);
+                g_spawn_command_line_async (cmd, &error);
+                if (error != NULL) {
+                    g_warning ("mount target:mount failed %s\n", error->message);
+                    g_error_free (error);
+                } else {
+                    result = TRUE;
+                }
+                g_free (cmd);
+            }
+            g_free (path);
+        }
+    } else {
+        g_warning ("mount target:find pedpartition %s failed\n", part);
+    }
+
+    return result;
 }
