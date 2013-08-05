@@ -74,7 +74,7 @@ JS_EXPORT_API void installer_delete_disk_partition (const gchar *disk, const gch
 
 JS_EXPORT_API void installer_update_partition_fs (const gchar *part, const gchar *fs);
 
-JS_EXPORT_API void installer_write_fs_tab (const gchar *part, const gchar *mp);
+JS_EXPORT_API void installer_write_partition_mp (const gchar *part, const gchar *mp);
 
 JS_EXPORT_API void installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status);
 

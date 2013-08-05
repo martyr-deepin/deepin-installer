@@ -256,7 +256,7 @@ write_fs_tab = ->
             if m_part_info[part]["op"] != "delete"
                 if m_part_info[part]["mp"]? and m_part_info[part]["mp"].length > 0
                     try
-                        DCore.Installer.write_fs_tab(part, m_part_info[part]["mp"])
+                        DCore.Installer.write_partition_mp(part, m_part_info[part]["mp"])
                     catch error
                         echo error
 

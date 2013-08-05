@@ -444,6 +444,9 @@ gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
 
+        if (!ped_partition_is_active (pedpartition)) 
+            return result;
+
         flag = ped_partition_flag_get_by_name (flag_name);
         if (flag == 0) {
             g_warning ("get partition flag: ped partition flag get by name failed\n");
@@ -632,7 +635,7 @@ void installer_update_partition_fs (const gchar *part, const gchar *fs)
 }
 
 JS_EXPORT_API 
-void installer_write_fs_tab (const gchar *part, const gchar *mp)
+void installer_write_partition_mp (const gchar *part, const gchar *mp)
 {
     if (target == NULL) {
         g_warning ("write fs tab:must mount target first\n");
