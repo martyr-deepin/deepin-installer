@@ -59,6 +59,60 @@ void installer_create_user (const gchar *username, const gchar *hostname, const 
     g_printf ("create user\n");
 }
 
+JS_EXPORT_API 
+void installer_reboot ()
+{
+    GError *error = NULL;
+    GDBusProxy *ck_proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
+            G_DBUS_PROXY_FLAGS_NONE,
+            NULL,
+            "org.freedesktop.ConsoleKit",
+            "/org/freedesktop/ConsoleKit/Manager",
+            "org.freedesktop.ConsoleKit.Manager",
+            NULL,
+            &error);
+
+    g_assert (ck_proxy != NULL);
+    if (error != NULL) {
+        g_warning ("installer reboot: ck proxy %s\n", error->message);
+        g_error_free (error);
+    }
+
+    GVariant *can_restart_var = g_dbus_proxy_call_sync (ck_proxy,
+                                "CanRestart",
+                                NULL,
+                                G_DBUS_CALL_FLAGS_NONE,
+                                -1,
+                                NULL,
+                                &error);
+
+    g_assert (can_restart_var != NULL);
+    if (error != NULL) {
+        g_warning ("installer reboot: CanRestart %s\n", error->message);
+        g_error_free (error);
+    }
+
+    gboolean can_restart = FALSE;
+    g_variant_get (can_restart_var, "(b)", &can_restart);
+
+    g_variant_unref (can_restart_var);
+
+    if (can_restart) {
+        g_dbus_proxy_call (ck_proxy,
+                           "Restart",
+                           NULL,
+                           G_DBUS_CALL_FLAGS_NONE,
+                           -1,
+                           NULL,
+                           NULL,
+                           NULL);
+    } else {
+        g_warning ("installer reboot: can restart is false\n");
+    }
+
+    g_object_unref (ck_proxy);
+}
+
 void write_hostname (const gchar *hostname)
 {
     g_printf ("write hostname\n");
