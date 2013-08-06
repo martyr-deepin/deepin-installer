@@ -23,9 +23,12 @@
 #include "part_util.h"
 #include <pwd.h>
 #include <sys/types.h>
+#include <libxklavier/xklavier.h>
 
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
+
+static JSObjectRef layouts;
 
 void copy_file (const gchar *src, const gchar *dest)
 {
@@ -114,6 +117,63 @@ void installer_reboot ()
     }
 
     g_object_unref (ck_proxy);
+}
+
+static void 
+foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
+{
+    printf("\tname: %s\n", item->name);
+    printf("\tshort_description: %s\n", item->short_description);
+    printf("\tdescription: %s\n", item->description);
+    printf("\t----------\n");
+}
+
+static void 
+foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
+{
+    printf("name: %s  ", item->name);
+    printf("short_description: %s  ", item->short_description);
+    printf("description: %s\n", item->description);
+    xkl_config_registry_foreach_layout_variant(config, item->name, foreach_variant, NULL);
+}
+
+JS_EXPORT_API 
+JSObjectRef installer_get_keyboard_layouts ()
+{
+    layouts = json_array_create ();
+
+    Display *dpy = XOpenDisplay (NULL);
+    if (dpy == NULL) {
+        g_warning ("get keyboard layouts: XOpenDisplay\n");
+        return layouts;
+    }
+
+    XklEngine *engine = xkl_engine_get_instance (dpy);
+    if (engine == NULL) {
+        g_warning ("get keyboard layouts: xkl engine get instance\n");
+        return layouts;
+    }
+
+    XklConfigRegistry *cfg_reg = NULL;
+    cfg_reg = xkl_config_registry_get_instance (engine);
+    if (cfg_reg == NULL) {
+        g_warning ("get keyboard layouts: xkl config registry get instance\n");
+        return layouts;
+    }
+
+    if (!xkl_config_registry_load(cfg_reg, TRUE)) {
+        g_warning ("get keyboard layouts: xkl config registry load\n");
+        return layouts;
+    }
+
+    xkl_config_registry_foreach_layout(cfg_reg, foreach_layout, NULL);
+
+
+    g_object_unref (engine);
+    g_object_unref (cfg_reg);
+    XCloseDisplay (dpy);
+
+    return layouts;
 }
 
 void write_hostname (const gchar *hostname)
