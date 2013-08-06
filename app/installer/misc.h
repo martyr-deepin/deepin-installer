@@ -38,4 +38,6 @@ JS_EXPORT_API void installer_reboot ();
 
 void write_hostname (const gchar *hostname);
 
+void mount_procfs ();
+
 #endif

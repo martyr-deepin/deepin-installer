@@ -26,7 +26,7 @@
 static GHashTable *disks;
 static GHashTable *partitions;
 static GHashTable *disk_partitions;
-static const gchar *target = NULL;
+const gchar *target;
 
 JS_EXPORT_API 
 gchar* installer_rand_uuid ()
@@ -664,17 +664,22 @@ void installer_write_partition_mp (const gchar *part, const gchar *mp)
             
             mount_file = setmntent (fs_tab, "rw"); 
             if (mount_file != NULL) {
-                if (g_strcmp0 ("/", mp) == 0) {
-                    mnt->mnt_opts = "errors=remount-ro";
-                    mnt->mnt_passno = 1;
-                } else {
-                    mnt->mnt_opts = "defaults";
-                    mnt->mnt_passno = 2;
-                }
+
                 mnt->mnt_fsname = path;
                 mnt->mnt_dir = g_strdup (mp);
                 mnt->mnt_type = fs;
+                mnt->mnt_opts = g_strdup ("defaults");
                 mnt->mnt_freq = 0;
+                mnt->mnt_passno = 2;
+
+                if (g_strcmp0 ("/", mp) == 0) {
+                    mnt->mnt_opts = g_strdup ("errors=remount-ro");
+                    mnt->mnt_passno = 1;
+                } else if (g_strcmp0 ("swap", mp) == 0 || g_strcmp0 ("linux-swap", fs) == 0) {
+                    mnt->mnt_type = g_strdup ("swap");
+                    mnt->mnt_opts = g_strdup ("sw,pri=1");
+                    mnt->mnt_passno = 0;
+                }
 
                 if ((addmntent(mount_file, mnt)) == 1) {
                     g_warning ("write fs tab: addmntent for %s failed\n", fs_tab);

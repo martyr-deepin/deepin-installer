@@ -20,6 +20,7 @@
  **/
 
 #include "misc.h"
+#include "part_util.h"
 #include <pwd.h>
 #include <sys/types.h>
 
@@ -118,3 +119,61 @@ void write_hostname (const gchar *hostname)
     g_printf ("write hostname\n");
 }
 
+void mount_procfs ()
+{
+    GError *error = NULL;
+    gint status = -1;
+
+    extern const gchar* target;
+    if (target == NULL) {
+        g_warning ("mount procfs:target is NULL\n");
+        return ;
+    }
+
+    gchar *mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", target);
+    g_spawn_command_line_sync (mount_dev, NULL, NULL, &status, &error);
+    if (error != NULL) {
+        g_warning ("mount procfs:mount dev %s\n", error->message);
+        g_error_free (error);
+    }
+    if (status != 0) {
+        g_warning ("mount procfs:mount dev failed\n");
+    }
+    g_free (mount_dev);
+
+    gchar *mount_devpts = g_strdup_printf ("mount -vt devpts devpts %s/dev/pts", target);
+    g_spawn_command_line_sync (mount_devpts, NULL, NULL, &status, &error);
+    if (error != NULL) {
+        g_warning ("mount procfs:mount devpts %s\n", error->message);
+        g_error_free (error);
+    }
+    if (status != 0) {
+        g_warning ("mount procfs:mount devpts failed\n");
+    }
+    g_free (mount_devpts);
+
+
+    gchar *mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", target);
+    g_spawn_command_line_sync (mount_proc, NULL, NULL, &status, &error);
+    if (error != NULL) {
+        g_warning ("mount procfs:mount proc %s\n", error->message);
+        g_error_free (error);
+    }
+    if (status != 0) {
+        g_warning ("mount procfs:mount proc failed\n");
+    }
+    g_free (mount_proc);
+
+    gchar *mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sys", target);
+    g_spawn_command_line_sync (mount_sys, NULL, NULL, &status, &error);
+    if (error != NULL) {
+        g_warning ("mount procfs:mount sys %s\n", error->message);
+        g_error_free (error);
+    }
+    if (status != 0) {
+        g_warning ("mount procfs:mount sys failed\n");
+    }
+    g_free (mount_sys);
+
+    //gchar *mount_shm = g_strdup_printf ("mount -vt tmpfs shm %s/dev/shm", target);
+}
