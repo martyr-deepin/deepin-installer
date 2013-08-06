@@ -116,7 +116,46 @@ void installer_reboot ()
 
 void write_hostname (const gchar *hostname)
 {
-    g_printf ("write hostname\n");
+    GError *error = NULL;
+
+    if (hostname == NULL) {
+        g_warning ("write hostname:hostname is NULL\n");
+        return ;
+    }
+
+    extern const gchar* target;
+    if (target == NULL) {
+        g_warning ("write hostname:target is NULL\n");
+        return ;
+    }
+
+    gchar *hostname_file = g_strdup_printf ("%s/etc/hostname", target);
+
+    g_file_set_contents (hostname_file, hostname, -1, &error);
+    if (error != NULL) {
+        g_warning ("write hostname: set hostname file %s contents failed\n", hostname_file);
+    }
+    g_free (hostname_file);
+
+    gchar *hosts_file = g_strdup_printf ("%s/etc/hosts", target);
+
+    const gchar *lh = "127.0.0.1  localhost\n";
+    const gchar *lha = g_strdup_printf ("127.0.1.1  %s\n", hostname);
+    const gchar *ip6_comment = "\n# The following lines are desirable for IPv6 capable hosts\n";
+    const gchar *loopback = "::1     ip6-localhost ip6-loopback\n";
+    const gchar *localnet = "fe00::0 ip6-localnet\n";
+    const gchar *mcastprefix = "ff00::0 ip6-mcastprefix\n";
+    const gchar *allnodes = "ff02::1 ip6-allnodes\n";
+    const gchar *allrouters = "ff02::2 ip6-allrouters\n";
+
+    gchar *hosts_content = g_strconcat (lh, lha, ip6_comment, loopback, localnet, mcastprefix, allnodes, allrouters, NULL);
+    g_file_set_contents (hosts_file, hosts_content, -1, &error);
+    if (error != NULL) {
+        g_warning ("write hostname: set hosts file %s contents failed\n", hosts_file);
+    }
+
+    g_free (hosts_file);
+    g_free (hosts_content);
 }
 
 void mount_procfs ()
