@@ -38,6 +38,7 @@ get_matched_string (const gchar *target, const gchar *regex_string)
         g_error_free (error);
         return NULL;
     }
+    error = NULL;
 
     g_regex_match (regex, target, 0, &match_info);
     if (g_match_info_matches (match_info)) {
@@ -416,6 +417,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         g_warning ("%s\n", error->message);
         g_error_free (error);
     }
+    error = NULL;
 
     g_free (cmd);
 }
@@ -520,9 +522,11 @@ get_partition_label (const gchar *path, const gchar *fs)
     }
 
     if (error != NULL) {
-        g_warning ("%s\n", error->message);
+        g_warning ("get partition label:%s\n", error->message);
         g_error_free (error);
     }
+    error = NULL;
+
     g_free (cmd);
 
     return label;

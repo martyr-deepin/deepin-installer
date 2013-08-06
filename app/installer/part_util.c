@@ -777,6 +777,7 @@ gboolean installer_mount_target (const gchar *part)
                 } else {
                     result = TRUE;
                 }
+                error = NULL;
                 g_free (cmd);
             }
             g_free (path);

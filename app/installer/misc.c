@@ -78,6 +78,7 @@ void installer_reboot ()
         g_warning ("installer reboot: ck proxy %s\n", error->message);
         g_error_free (error);
     }
+    error = NULL;
 
     GVariant *can_restart_var = g_dbus_proxy_call_sync (ck_proxy,
                                 "CanRestart",
@@ -92,6 +93,7 @@ void installer_reboot ()
         g_warning ("installer reboot: CanRestart %s\n", error->message);
         g_error_free (error);
     }
+    error = NULL;
 
     gboolean can_restart = FALSE;
     g_variant_get (can_restart_var, "(b)", &can_restart);
@@ -134,11 +136,12 @@ void write_hostname (const gchar *hostname)
     g_file_set_contents (hostname_file, hostname, -1, &error);
     if (error != NULL) {
         g_warning ("write hostname: set hostname file %s contents failed\n", hostname_file);
+        g_error_free (error);
     }
+    error = NULL;
     g_free (hostname_file);
 
     gchar *hosts_file = g_strdup_printf ("%s/etc/hosts", target);
-
     const gchar *lh = "127.0.0.1  localhost\n";
     const gchar *lha = g_strdup_printf ("127.0.1.1  %s\n", hostname);
     const gchar *ip6_comment = "\n# The following lines are desirable for IPv6 capable hosts\n";
@@ -152,8 +155,9 @@ void write_hostname (const gchar *hostname)
     g_file_set_contents (hosts_file, hosts_content, -1, &error);
     if (error != NULL) {
         g_warning ("write hostname: set hosts file %s contents failed\n", hosts_file);
+        g_error_free (error);
     }
-
+    error = NULL;
     g_free (hosts_file);
     g_free (hosts_content);
 }
@@ -175,6 +179,8 @@ void mount_procfs ()
         g_warning ("mount procfs:mount dev %s\n", error->message);
         g_error_free (error);
     }
+    error = NULL;
+
     if (status != 0) {
         g_warning ("mount procfs:mount dev failed\n");
     }
@@ -186,11 +192,12 @@ void mount_procfs ()
         g_warning ("mount procfs:mount devpts %s\n", error->message);
         g_error_free (error);
     }
+    error = NULL;
+
     if (status != 0) {
         g_warning ("mount procfs:mount devpts failed\n");
     }
     g_free (mount_devpts);
-
 
     gchar *mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", target);
     g_spawn_command_line_sync (mount_proc, NULL, NULL, &status, &error);
@@ -198,6 +205,8 @@ void mount_procfs ()
         g_warning ("mount procfs:mount proc %s\n", error->message);
         g_error_free (error);
     }
+    error = NULL;
+
     if (status != 0) {
         g_warning ("mount procfs:mount proc failed\n");
     }
@@ -209,6 +218,8 @@ void mount_procfs ()
         g_warning ("mount procfs:mount sys %s\n", error->message);
         g_error_free (error);
     }
+    error = NULL;
+
     if (status != 0) {
         g_warning ("mount procfs:mount sys failed\n");
     }
