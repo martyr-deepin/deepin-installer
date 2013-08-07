@@ -19,16 +19,14 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef __ACCOUNT_H
-#define __ACCOUNT_H
+#ifndef __MISC_H
+#define __MISC_H
 
 #include <stdio.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include "utils.h"
 #include "jsextension.h"
-
-void copy_file (const gchar *src, const gchar *dest);
 
 JS_EXPORT_API JSObjectRef installer_get_system_users ();
 
@@ -41,6 +39,8 @@ JS_EXPORT_API JSObjectRef installer_get_keyboard_layouts ();
 JS_EXPORT_API JSObjectRef installer_get_layout_variants (const gchar *layout_name); 
 
 JS_EXPORT_API void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant);
+
+void copy_file ();
 
 void write_hostname (const gchar *hostname);
 

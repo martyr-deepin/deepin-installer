@@ -33,12 +33,6 @@ extern void endpwent (void);
 
 GHashTable *layout_variants_hash = NULL;
 
-void copy_file (const gchar *src, const gchar *dest)
-{
-  g_printf ("copy file\n");  
-
-}
-
 JS_EXPORT_API 
 JSObjectRef installer_get_system_users()
 {
@@ -262,6 +256,68 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
     g_object_unref (config);
     g_object_unref (engine);
     XCloseDisplay (dpy);
+}
+
+static GList*
+get_source_file_list (const gchar *source_root)
+{
+    GList *filelist = NULL;
+
+    GError *error = NULL;
+
+    GFile *source = g_file_new_for_path (source_root); 
+    if (source == NULL) {
+        g_warning ("get source file list:g_file_new_for_path %s\n", source_root);
+        g_object_unref (source);
+        return filelist;
+    }
+
+    GFileInfo *source_info = g_file_query_info (source, "standard::type", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get source file list:g_file_query_info %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+    if (source_info == NULL) {
+        g_warning ("get source file list:g_file_query_info failed\n");
+        g_object_unref (source_info);
+        g_object_unref (source);
+        return filelist;
+    }
+
+    GFileType type = g_file_info_get_file_type (source_info);
+    if (type == G_FILE_TYPE_DIRECTORY) {
+        g_warning ("get source file list:to be implemented\n");
+
+    } else {
+        g_warning ("get source file list:invalid source type\n");
+        g_object_unref (source_info);
+        g_object_unref (source);
+        return filelist;
+    }
+
+    g_object_unref (source_info);
+    g_object_unref (source);
+
+    return filelist;
+}
+
+static gchar* 
+get_coordinate_target (const gchar *src)
+{
+    g_printf ("get coordinate target\n");
+}
+
+static gint
+get_total_size ()
+{
+    g_printf ("get total size\n");
+}
+
+void 
+copy_file ()
+{
+  g_printf ("copy file\n");  
 }
 
 void write_hostname (const gchar *hostname)
