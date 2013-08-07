@@ -40,6 +40,8 @@ JS_EXPORT_API JSObjectRef installer_get_keyboard_layouts ();
 
 JS_EXPORT_API JSObjectRef installer_get_layout_variants (const gchar *layout_name); 
 
+JS_EXPORT_API void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant);
+
 void write_hostname (const gchar *hostname);
 
 void mount_procfs ();

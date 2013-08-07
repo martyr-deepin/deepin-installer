@@ -223,6 +223,47 @@ JSObjectRef installer_get_layout_variants (const gchar *layout_name)
     return layout_variants;
 }
 
+JS_EXPORT_API 
+void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant)
+{
+    Display *dpy = XOpenDisplay (NULL);
+    if (dpy == NULL) {
+        g_warning ("set keyboard layout variant: XOpenDisplay\n");
+        return ;
+    }
+
+    XklEngine *engine = xkl_engine_get_instance (dpy);
+    if (engine == NULL) {
+        g_warning ("set keyboard layout variant: xkl engine get instance\n");
+        return ;
+    }
+
+    XklConfigRec *config = xkl_config_rec_new ();
+    xkl_config_rec_get_from_server (config, engine);
+    if (config == NULL) {
+        g_warning ("set keyboard layout variant: xkl config rec\n");
+        return ;
+    }
+
+    gchar **layouts = g_strsplit (layout, "", -1); 
+    if (layouts == NULL) {
+        g_warning ("set keyboard layout variant:must specify layout\n");
+        return ;
+    }
+    xkl_config_rec_set_layouts (config, (const gchar **)layouts);
+    g_strfreev (layouts);
+
+    gchar **variants = g_strsplit (variant, "", -1);
+    if (variants != NULL) {
+        xkl_config_rec_set_variants (config, (const gchar **)variants);
+    }
+    g_strfreev (variants);
+
+    g_object_unref (config);
+    g_object_unref (engine);
+    XCloseDisplay (dpy);
+}
+
 void write_hostname (const gchar *hostname)
 {
     GError *error = NULL;
