@@ -31,8 +31,7 @@
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
 
-JSObjectRef layouts;
-JSObjectRef layout_variants;
+GHashTable *layout_variants_hash = NULL;
 
 void copy_file (const gchar *src, const gchar *dest)
 {
@@ -124,66 +123,79 @@ void installer_reboot ()
 }
 
 static void 
-foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
+_foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
-    gsize* index = (gsize*) data;
-    g_warning ("foreach variant index:%d\n", *index);
+    const gchar *layout = (const gchar *)data;
 
-    JSValueRef variant = jsvalue_from_cstr (get_global_context (), item->name);
+    //fix me:free glist memory
+    GList *variants = g_list_copy (g_hash_table_lookup (layout_variants_hash, layout));
+    variants = g_list_append (variants, g_strdup (item->name));
 
-    json_array_insert (layout_variants, *index, variant);
-
-    *index = *index + 1;
+    g_hash_table_replace (layout_variants_hash, g_strdup (layout), variants);
 }
 
 static void 
-foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
+_foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
-    gsize* index = (gsize*) data;
-    g_debug ("foreach layout index:%d\n", *index);
+    const gchar *layout = item->name;
+    GList *variants = NULL;
+    g_hash_table_insert (layout_variants_hash, g_strdup (layout), variants);
 
-    JSValueRef layout = jsvalue_from_cstr (get_global_context (), item->name);
-
-    json_array_insert (layouts, *index, layout);
-
-    *index = *index + 1;
+    xkl_config_registry_foreach_layout_variant(config, g_strdup (layout), _foreach_variant, (gpointer) layout);
 }
 
-JS_EXPORT_API 
-JSObjectRef installer_get_keyboard_layouts ()
+void
+init_keyboard_layouts () 
 {
-    layouts = json_array_create ();
+    layout_variants_hash = g_hash_table_new_full ((GHashFunc) g_str_hash, (GEqualFunc) g_str_equal, (GDestroyNotify) g_free, (GDestroyNotify) g_list_free);
 
     Display *dpy = XOpenDisplay (NULL);
     if (dpy == NULL) {
-        g_warning ("get keyboard layouts: XOpenDisplay\n");
-        return layouts;
+        g_warning ("init keyboard layouts: XOpenDisplay\n");
+        return ;
     }
 
     XklEngine *engine = xkl_engine_get_instance (dpy);
     if (engine == NULL) {
-        g_warning ("get keyboard layouts: xkl engine get instance\n");
-        return layouts;
+        g_warning ("init keyboard layouts: xkl engine get instance\n");
+        return ;
     }
 
     XklConfigRegistry *cfg_reg = NULL;
     cfg_reg = xkl_config_registry_get_instance (engine);
     if (cfg_reg == NULL) {
-        g_warning ("get keyboard layouts: xkl config registry get instance\n");
-        return layouts;
+        g_warning ("init keyboard layouts: xkl config registry get instance\n");
+        return ;
     }
 
     if (!xkl_config_registry_load(cfg_reg, TRUE)) {
-        g_warning ("get keyboard layouts: xkl config registry load\n");
-        return layouts;
+        g_warning ("init keyboard layouts: xkl config registry load\n");
+        return ;
     }
 
-    gsize index = 0;
-    xkl_config_registry_foreach_layout(cfg_reg, foreach_layout, &index);
+    xkl_config_registry_foreach_layout(cfg_reg, _foreach_layout, NULL);
 
     g_object_unref (engine);
     g_object_unref (cfg_reg);
     XCloseDisplay (dpy);
+}
+
+JS_EXPORT_API 
+JSObjectRef installer_get_keyboard_layouts ()
+{
+    JSObjectRef layouts = json_array_create ();
+    if (layout_variants_hash == NULL) {
+        init_keyboard_layouts ();
+    }
+
+    gsize index = 0;
+    GList *keys = g_hash_table_get_keys (layout_variants_hash);
+
+    for (index = 0; index < g_list_length (keys); index++) {
+        gchar *layout = g_strdup (g_list_nth_data (keys, index));
+        json_array_insert (layouts, index, jsvalue_from_cstr (get_global_context (), layout));
+        g_free (layout);
+    }
 
     return layouts;
 }
@@ -191,42 +203,24 @@ JSObjectRef installer_get_keyboard_layouts ()
 JS_EXPORT_API 
 JSObjectRef installer_get_layout_variants (const gchar *layout_name) 
 {
-
-    layout_variants = json_array_create ();
-
-    Display *dpy = XOpenDisplay (NULL);
-    if (dpy == NULL) {
-        g_warning ("get layout variants: XOpenDisplay\n");
-        return layout_variants;
-    }
-
-    XklEngine *engine = xkl_engine_get_instance (dpy);
-    if (engine == NULL) {
-        g_warning ("get layout variants: xkl engine get instance\n");
-        return layout_variants;
-    }
-
-    XklConfigRegistry *cfg_reg = NULL;
-    cfg_reg = xkl_config_registry_get_instance (engine);
-    if (cfg_reg == NULL) {
-        g_warning ("get layout variants: xkl config registry get instance\n");
-        return layout_variants;
-    }
-
-    if (!xkl_config_registry_load(cfg_reg, TRUE)) {
-        g_warning ("get layout variants: xkl config registry load\n");
-        return layout_variants;
+    JSObjectRef layout_variants = json_array_create ();
+    if (layout_variants_hash == NULL) {
+        init_keyboard_layouts ();
     }
 
     gsize index = 0;
-    xkl_config_registry_foreach_layout_variant(cfg_reg, layout_name, foreach_variant, &index);
+    GList *variants = (GList *) g_hash_table_lookup (layout_variants_hash, layout_name);
+    //if (variants == NULL) {
+    //    g_warning ("get layout variants: g_hash_table_lookup for %s failed\n", layout_name);
+    //}
 
-    g_object_unref (engine);
-    g_object_unref (cfg_reg);
-    XCloseDisplay (dpy);
+    for (index = 0; index < g_list_length (variants); index++) {
+        gchar *variant = g_strdup (g_list_nth_data (variants, index));
+        json_array_insert (layout_variants, index, jsvalue_from_cstr (get_global_context (), variant));
+        g_free (variant);
+    }
 
     return layout_variants;
-
 }
 
 void write_hostname (const gchar *hostname)
