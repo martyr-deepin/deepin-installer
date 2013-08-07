@@ -38,6 +38,8 @@ JS_EXPORT_API void installer_reboot ();
 
 JS_EXPORT_API JSObjectRef installer_get_keyboard_layouts (); 
 
+JS_EXPORT_API JSObjectRef installer_get_layout_variants (const gchar *layout_name); 
+
 void write_hostname (const gchar *hostname);
 
 void mount_procfs ();

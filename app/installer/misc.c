@@ -23,12 +23,16 @@
 #include "part_util.h"
 #include <pwd.h>
 #include <sys/types.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
 
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
 
-static JSObjectRef layouts;
+JSObjectRef layouts;
+JSObjectRef layout_variants;
 
 void copy_file (const gchar *src, const gchar *dest)
 {
@@ -122,19 +126,27 @@ void installer_reboot ()
 static void 
 foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
-    printf("\tname: %s\n", item->name);
-    printf("\tshort_description: %s\n", item->short_description);
-    printf("\tdescription: %s\n", item->description);
-    printf("\t----------\n");
+    gsize* index = (gsize*) data;
+    g_warning ("foreach variant index:%d\n", *index);
+
+    JSValueRef variant = jsvalue_from_cstr (get_global_context (), item->name);
+
+    json_array_insert (layout_variants, *index, variant);
+
+    *index = *index + 1;
 }
 
 static void 
 foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
-    printf("name: %s  ", item->name);
-    printf("short_description: %s  ", item->short_description);
-    printf("description: %s\n", item->description);
-    xkl_config_registry_foreach_layout_variant(config, item->name, foreach_variant, NULL);
+    gsize* index = (gsize*) data;
+    g_debug ("foreach layout index:%d\n", *index);
+
+    JSValueRef layout = jsvalue_from_cstr (get_global_context (), item->name);
+
+    json_array_insert (layouts, *index, layout);
+
+    *index = *index + 1;
 }
 
 JS_EXPORT_API 
@@ -166,14 +178,55 @@ JSObjectRef installer_get_keyboard_layouts ()
         return layouts;
     }
 
-    xkl_config_registry_foreach_layout(cfg_reg, foreach_layout, NULL);
-
+    gsize index = 0;
+    xkl_config_registry_foreach_layout(cfg_reg, foreach_layout, &index);
 
     g_object_unref (engine);
     g_object_unref (cfg_reg);
     XCloseDisplay (dpy);
 
     return layouts;
+}
+
+JS_EXPORT_API 
+JSObjectRef installer_get_layout_variants (const gchar *layout_name) 
+{
+
+    layout_variants = json_array_create ();
+
+    Display *dpy = XOpenDisplay (NULL);
+    if (dpy == NULL) {
+        g_warning ("get layout variants: XOpenDisplay\n");
+        return layout_variants;
+    }
+
+    XklEngine *engine = xkl_engine_get_instance (dpy);
+    if (engine == NULL) {
+        g_warning ("get layout variants: xkl engine get instance\n");
+        return layout_variants;
+    }
+
+    XklConfigRegistry *cfg_reg = NULL;
+    cfg_reg = xkl_config_registry_get_instance (engine);
+    if (cfg_reg == NULL) {
+        g_warning ("get layout variants: xkl config registry get instance\n");
+        return layout_variants;
+    }
+
+    if (!xkl_config_registry_load(cfg_reg, TRUE)) {
+        g_warning ("get layout variants: xkl config registry load\n");
+        return layout_variants;
+    }
+
+    gsize index = 0;
+    xkl_config_registry_foreach_layout_variant(cfg_reg, layout_name, foreach_variant, &index);
+
+    g_object_unref (engine);
+    g_object_unref (cfg_reg);
+    XCloseDisplay (dpy);
+
+    return layout_variants;
+
 }
 
 void write_hostname (const gchar *hostname)
