@@ -234,8 +234,8 @@ JSObjectRef installer_get_current_layout_variant ()
 
     g_assert (config != NULL);
 
-    gchar **layouts = config->layouts;
-    gchar **variants = config->variants;
+    gchar **layouts = g_strdupv (config->layouts);
+    gchar **variants = g_strdupv (config->variants);
 
     JSObjectRef layout_array = json_array_create ();
     JSObjectRef variant_array = json_array_create ();
@@ -251,32 +251,38 @@ JSObjectRef installer_get_current_layout_variant ()
     }
     json_append_value (current, "variants", (JSValueRef) variant_array);
 
+    g_strfreev (layouts);
+    g_strfreev (variants);
+
     return current;
 }
 
 JS_EXPORT_API 
 void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant)
 {
-    //fix me ,test failed
     if (config == NULL) {
         g_warning ("set keyboard layout variant:xkl config null\n");
         init_keyboard_layouts ();
     }
-
     g_assert (config != NULL);
 
-    gchar **layouts = g_strsplit (layout, "", -1); 
+    gchar **layouts = g_new0 (char *, 2);
+    layouts[0] = g_strdup (layout);
+
     if (layouts == NULL) {
         g_warning ("set keyboard layout variant:must specify layout\n");
         return ;
     }
     xkl_config_rec_set_layouts (config, (const gchar **)layouts);
-    g_strfreev (layouts);
 
-    gchar **variants = g_strsplit (variant, "", -1);
+    gchar **variants = g_new0 (char *, 2);
+    variants[0] = g_strdup (variant);
+
     if (variants != NULL) {
         xkl_config_rec_set_variants (config, (const gchar **)variants);
     }
+
+    g_strfreev (layouts);
     g_strfreev (variants);
 }
 
