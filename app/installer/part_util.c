@@ -123,7 +123,7 @@ JSObjectRef installer_list_disks()
     g_assert (disk_keys != NULL);
 
     for (i = 0; i < g_list_length (disk_keys); i++) {
-        json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), g_strdup (g_list_nth_data (disk_keys, i))));
+        json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), g_list_nth_data (disk_keys, i)));
     }
 
     return array;
