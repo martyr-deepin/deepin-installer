@@ -206,7 +206,7 @@ JSObjectRef installer_get_disk_partitions (const gchar *disk)
    
     if (parts != NULL) {
         for (i = 0; i < g_list_length (parts); i++) {
-            json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), g_strdup (g_list_nth_data (parts, i))));
+            json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), g_list_nth_data (parts, i)));
         }
     }
 
@@ -280,7 +280,7 @@ gchar* installer_get_partition_path (const gchar *part)
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
-        path = g_strdup (ped_partition_get_path (pedpartition));
+        path = ped_partition_get_path (pedpartition);
 
     } else {
         g_warning ("get partition path:find pedpartition %s failed\n", part);
@@ -298,7 +298,7 @@ gchar* installer_get_partition_mp (const gchar *part)
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
 
-        gchar *path = g_strdup (ped_partition_get_path (pedpartition));
+        gchar *path = ped_partition_get_path (pedpartition);
         if (path != NULL) {
             mp = g_strdup (get_partition_mount_point (path));
 
