@@ -42,6 +42,8 @@ JS_EXPORT_API JSObjectRef installer_get_current_layout_variant ();
 
 JS_EXPORT_API void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant);
 
+JS_EXPORT_API JSObjectRef installer_get_timezone_list ();
+
 JS_EXPORT_API void installer_set_timezone (const gchar *timezone);
 
 void copy_file (const gchar *source_root);

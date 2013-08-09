@@ -287,6 +287,71 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
 }
 
 JS_EXPORT_API 
+JSObjectRef installer_get_timezone_list ()
+{
+    JSObjectRef timezones = json_array_create ();
+
+    GFile *zoneinfo_dir = NULL;
+    GFileEnumerator *enumerator = NULL;
+    GFileInfo *info = NULL;
+    gsize index = 0;
+    GError *error = NULL;
+
+    zoneinfo_dir = g_file_new_for_path ("/usr/share/zoneinfo");
+    if (zoneinfo_dir == NULL) {
+        g_warning ("get timezone list:get zoneinfo dir failed\n");
+        return timezones;
+    }
+
+    enumerator = g_file_enumerate_children (zoneinfo_dir, "standard::type", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get timezone list:enumerator zoneinfo failed %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    info = g_file_enumerator_next_file (enumerator, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get timezone list:enumerator first child failed %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    while (info != NULL) {
+        GFile *file = NULL;
+        gchar *display_name = NULL;
+        gchar *relative = NULL;
+
+        display_name = g_strdup (g_file_info_get_display_name (info));
+        file = g_file_get_child_for_display_name (zoneinfo_dir, display_name, &error);
+        if (error != NULL) {
+            g_warning ("get timezone list:get child for display name %s\n", error->message);
+            g_error_free (error);
+            continue;
+        }
+        error = NULL;
+        
+        relative = g_file_get_relative_path (zoneinfo_dir, file);
+        if (relative == NULL) {
+            g_warning ("get timezone list:get relative path failed\n");
+            continue;
+        }
+
+        json_array_insert (timezones, index, jsvalue_from_cstr (get_global_context (), g_strdup (relative)));
+        index = index++;
+
+        g_free (relative);
+        g_free (display_name);
+        g_object_unref (file);
+    }
+    g_object_unref (info);
+    g_object_unref (enumerator);
+    g_object_unref (zoneinfo_dir);
+
+    return timezones;
+}
+
+JS_EXPORT_API 
 void installer_set_timezone (const gchar *timezone)
 {
     GError *error = NULL;
