@@ -217,6 +217,58 @@ JSObjectRef installer_get_layout_variants (const gchar *layout_name)
     return layout_variants;
 }
 
+JS_EXPORT_API
+JSObjectRef installer_get_current_layout_variant ()
+{
+    JSObjectRef current = json_create ();
+
+    Display *dpy = XOpenDisplay (NULL);
+    if (dpy == NULL) {
+        g_warning ("get current layout variant: XOpenDisplay\n");
+        return current;
+    }
+
+    XklEngine *engine = xkl_engine_get_instance (dpy);
+    if (engine == NULL) {
+        g_warning ("get current layout variant: xkl engine get instance\n");
+        return current;
+    }
+
+    XklConfigRec *config = xkl_config_rec_new ();
+    xkl_config_rec_get_from_server (config, engine);
+    if (config == NULL) {
+        g_warning ("get current layout variant: xkl config rec\n");
+        return current;
+    }
+
+    gchar **layouts = config->layouts;
+    gchar **variants = config->variants;
+
+    JSObjectRef layout_array = json_array_create ();
+    JSObjectRef variant_array = json_array_create ();
+
+    gsize index = 0;
+    for (index = 0; index < sizeof(layouts)/sizeof(gchar*); index++) {
+        //json_array_insert (layout_array, index, jsvalue_from_cstr (get_global_context (), g_strdup (layouts[index])));
+        json_array_insert (layout_array, index, jsvalue_from_cstr (get_global_context (), layouts[index]));
+    }
+
+    json_append_value (current, "layouts", (JSValueRef) layout_array);
+
+    for (index = 0; index < sizeof(variants)/sizeof(gchar*); index++) {
+        //json_array_insert (variant_array, index, jsvalue_from_cstr (get_global_context (), g_strdup (variants[index])));
+        json_array_insert (variant_array, index, jsvalue_from_cstr (get_global_context (), variants[index]));
+    }
+
+    json_append_value (current, "variants", (JSValueRef) variant_array);
+
+    g_object_unref (config);
+    g_object_unref (engine);
+    XCloseDisplay (dpy);
+
+    return current;
+}
+
 JS_EXPORT_API 
 void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant)
 {
