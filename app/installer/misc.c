@@ -286,6 +286,57 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
     g_strfreev (variants);
 }
 
+JS_EXPORT_API 
+void installer_set_timezone (const gchar *timezone)
+{
+    GError *error = NULL;
+
+    extern const gchar *target;
+    if (target == NULL) {
+        g_warning ("set timezone:target is NULL\n");
+        return ;
+    }
+
+    gchar *timezone_file = g_strdup_printf ("%s/etc/timezone", target);
+    g_file_set_contents (timezone_file, timezone, -1, &error);
+    if (error != NULL) {
+        g_warning ("set timezone:write timezone %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+    g_free (timezone_file);
+
+    gchar *zoneinfo_file = g_strdup_printf ("%s/etc/timezone/%s", target, timezone);
+    gchar *zone_content = NULL;
+    gsize length;
+
+    g_file_get_contents (zoneinfo_file, &zone_content, &length, &error);
+    if (error != NULL) {
+        g_warning ("set timezone:read /etc/timezone %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+    g_free (zoneinfo_file);
+    
+    if (zone_content == NULL) {
+        g_warning ("set timezone:read /etc/timezone/%s failed\n", timezone);
+        return ;
+    }
+
+    gchar *localtime_file = g_strdup_printf ("%s/etc/localtime", target);
+    g_file_set_contents (localtime_file, zone_content, -1, &error);
+    if (error != NULL) {
+        g_warning ("set timezone:write localtime %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    g_free (zone_content);
+    g_free (localtime_file);
+
+    //fix me, set /etc/default/rcS content"
+}
+
 //fix me, insert the copy file blacklist 
 static GList*
 get_source_file_list (const gchar *source_root)
