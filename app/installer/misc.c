@@ -31,6 +31,7 @@
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
 
+XklConfigRec *config = NULL;
 GHashTable *layout_variants_hash = NULL;
 
 JS_EXPORT_API 
@@ -155,6 +156,13 @@ init_keyboard_layouts ()
         return ;
     }
 
+    config = xkl_config_rec_new ();
+    xkl_config_rec_get_from_server (config, engine);
+    if (config == NULL) {
+        g_warning ("init keyboard layouts: xkl config rec\n");
+        return ;
+    }
+
     XklConfigRegistry *cfg_reg = NULL;
     cfg_reg = xkl_config_registry_get_instance (engine);
     if (cfg_reg == NULL) {
@@ -204,9 +212,6 @@ JSObjectRef installer_get_layout_variants (const gchar *layout_name)
 
     gsize index = 0;
     GList *variants = (GList *) g_hash_table_lookup (layout_variants_hash, layout_name);
-    //if (variants == NULL) {
-    //    g_warning ("get layout variants: g_hash_table_lookup for %s failed\n", layout_name);
-    //}
 
     for (index = 0; index < g_list_length (variants); index++) {
         gchar *variant = g_strdup (g_list_nth_data (variants, index));
@@ -222,24 +227,12 @@ JSObjectRef installer_get_current_layout_variant ()
 {
     JSObjectRef current = json_create ();
 
-    Display *dpy = XOpenDisplay (NULL);
-    if (dpy == NULL) {
-        g_warning ("get current layout variant: XOpenDisplay\n");
-        return current;
-    }
-
-    XklEngine *engine = xkl_engine_get_instance (dpy);
-    if (engine == NULL) {
-        g_warning ("get current layout variant: xkl engine get instance\n");
-        return current;
-    }
-
-    XklConfigRec *config = xkl_config_rec_new ();
-    xkl_config_rec_get_from_server (config, engine);
     if (config == NULL) {
-        g_warning ("get current layout variant: xkl config rec\n");
-        return current;
+        g_warning ("get current layout variant: config is NULL\n");
+        init_keyboard_layouts ();
     }
+
+    g_assert (config != NULL);
 
     gchar **layouts = config->layouts;
     gchar **variants = config->variants;
@@ -249,22 +242,14 @@ JSObjectRef installer_get_current_layout_variant ()
 
     gsize index = 0;
     for (index = 0; index < sizeof(layouts)/sizeof(gchar*); index++) {
-        //json_array_insert (layout_array, index, jsvalue_from_cstr (get_global_context (), g_strdup (layouts[index])));
         json_array_insert (layout_array, index, jsvalue_from_cstr (get_global_context (), layouts[index]));
     }
-
     json_append_value (current, "layouts", (JSValueRef) layout_array);
 
     for (index = 0; index < sizeof(variants)/sizeof(gchar*); index++) {
-        //json_array_insert (variant_array, index, jsvalue_from_cstr (get_global_context (), g_strdup (variants[index])));
         json_array_insert (variant_array, index, jsvalue_from_cstr (get_global_context (), variants[index]));
     }
-
     json_append_value (current, "variants", (JSValueRef) variant_array);
-
-    g_object_unref (config);
-    g_object_unref (engine);
-    XCloseDisplay (dpy);
 
     return current;
 }
@@ -272,24 +257,13 @@ JSObjectRef installer_get_current_layout_variant ()
 JS_EXPORT_API 
 void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant)
 {
-    Display *dpy = XOpenDisplay (NULL);
-    if (dpy == NULL) {
-        g_warning ("set keyboard layout variant: XOpenDisplay\n");
-        return ;
-    }
-
-    XklEngine *engine = xkl_engine_get_instance (dpy);
-    if (engine == NULL) {
-        g_warning ("set keyboard layout variant: xkl engine get instance\n");
-        return ;
-    }
-
-    XklConfigRec *config = xkl_config_rec_new ();
-    xkl_config_rec_get_from_server (config, engine);
+    //fix me ,test failed
     if (config == NULL) {
-        g_warning ("set keyboard layout variant: xkl config rec\n");
-        return ;
+        g_warning ("set keyboard layout variant:xkl config null\n");
+        init_keyboard_layouts ();
     }
+
+    g_assert (config != NULL);
 
     gchar **layouts = g_strsplit (layout, "", -1); 
     if (layouts == NULL) {
@@ -304,10 +278,6 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
         xkl_config_rec_set_variants (config, (const gchar **)variants);
     }
     g_strfreev (variants);
-
-    g_object_unref (config);
-    g_object_unref (engine);
-    XCloseDisplay (dpy);
 }
 
 //fix me, insert the copy file blacklist 
