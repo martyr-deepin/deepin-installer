@@ -512,10 +512,9 @@ finish_callback (GObject *source_object, GAsyncResult *res, gpointer user_data)
     g_printf ("finish callback\n");
 }
 
-void 
-copy_file (const gchar *source_root)
+JS_EXPORT_API 
+void installer_copy_file (const gchar *source_root)
 {
-    GList *filelist = NULL;
     GError *error = NULL;
 
     extern const gchar *target;
@@ -584,8 +583,32 @@ copy_file (const gchar *source_root)
         g_object_unref (src);
         g_object_unref (dest);
     }
+}
 
-    g_list_free_full (filelist, (GDestroyNotify) g_object_unref);
+JS_EXPORT_API 
+void installer_extract_squashfs ()
+{
+    if (g_find_program_in_path ("unsquashfs") == NULL) {
+        g_warning ("extract squashfs: unsquashfs not installed\n");
+    }
+
+    extern const gchar *target;
+    if (target == NULL) {
+        g_warning ("extract squash fs:target is NULL\n");
+        return ;
+    }
+
+    GError *error = NULL;
+    gchar *cmd = g_strdup_printf ("unsquashfs -f -d %s %s", target, "/cdrom/casper/filesystem.squashfs");
+
+    g_spawn_command_line_async (cmd, &error);
+    if (error != NULL) {
+        g_warning ("extract squashfs:cmd %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    g_free (cmd);
 }
 
 void write_hostname (const gchar *hostname)
