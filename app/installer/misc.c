@@ -613,6 +613,9 @@ cb_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
     gchar *match = get_matched_string (string, "\\d{1,3}%");
     //g_printf ("cb out watch:%s\n", string);
     //g_printf ("cb out watch:match->              %s\n", match);
+    if (match == NULL) {
+        g_debug ("cb out watch:line without extract progress\n");
+    }
     *progress = g_strdup (match);
 
     g_free (match);
@@ -723,6 +726,7 @@ JS_EXPORT_API
 void installer_extract_squashfs ()
 {
     GThread *thread = g_thread_new ("extract", (GThreadFunc) extract_squashfs, NULL);
+    //fix me, when to unref the thread
 }
 
 void write_hostname (const gchar *hostname)
