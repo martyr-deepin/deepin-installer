@@ -33,6 +33,7 @@ extern void endpwent (void);
 
 XklConfigRec *config = NULL;
 GHashTable *layout_variants_hash = NULL;
+static GList *timezone_list = NULL;
 
 JS_EXPORT_API 
 JSObjectRef installer_get_system_users()
@@ -286,67 +287,99 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
     g_strfreev (variants);
 }
 
+void walk_directory (const gchar *root, void *callback (const gchar *))
+{
+    GFile *source_dir = NULL;
+    GFileInfo *info = NULL;
+    GError *error = NULL;
+
+    source_dir = g_file_new_for_path (root);
+    info = g_file_query_info (source_dir, "standard::", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
+    if (error != NULL) {
+        g_warning ("walk directory:query info %s\n", error->message);
+        g_error_free (error);
+        return ;
+    }
+    error = NULL;
+
+    if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR) {
+        //g_warning ("walk directory: add file %s\n", root);
+        callback (root);
+
+    } else if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+
+        GFileEnumerator *enumerator = g_file_enumerate_children (source_dir, "standard::type", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
+        if (error != NULL) {
+            g_warning ("walk directory:enumerate children %s\n", error->message);
+            g_error_free (error);
+        }
+        error = NULL;
+
+        GFileInfo *child_info = g_file_enumerator_next_file (enumerator, NULL, &error);
+        if (error != NULL) {
+            g_warning ("walk directory:enumerate next file%s\n", error->message);
+            g_error_free (error);
+        }
+        error = NULL;
+
+        while (child_info != NULL) {
+            gchar *path = g_strdup_printf ("%s/%s", root, g_file_info_get_name (child_info));
+
+            callback ((const gchar *) path);
+            walk_directory (path, callback);
+
+            g_free (path);
+            child_info = g_file_enumerator_next_file (enumerator, NULL, &error);
+            if (error != NULL) {
+                g_warning ("walk directory:enumerate next in while %s\n", error->message);
+                g_error_free (error);
+            }
+            error = NULL;
+        }
+        //g_object_unref (child_info);
+        g_object_unref (enumerator);
+
+    } else {
+        g_debug ("walk directory:current not support\n");
+        return ;
+    }
+
+    g_object_unref (info);
+    g_object_unref (source_dir);
+}
+
+void *
+walk_timezones (const gchar *path)
+{
+    GFile *zone_dir = g_file_new_for_path ("/usr/share/zoneinfo");
+    GFile *zone = g_file_new_for_path (path);
+
+    gchar *relative = g_file_get_relative_path (zone_dir, zone);
+    if (relative == NULL) {
+        g_warning ("walk timezones: relative is NULL\n");
+    } else if (g_str_has_prefix (relative, "posix") || g_str_has_prefix (relative, "right")) {
+        g_debug ("walk timezones: ignore files under posix and right\n");
+    } else {
+        //g_warning ("walk timezones: %s\n", relative);
+        timezone_list = g_list_append (timezone_list, relative);
+    }
+
+    g_free (relative);
+    g_object_unref (zone);
+    g_object_unref (zone_dir);
+}
+
 JS_EXPORT_API 
 JSObjectRef installer_get_timezone_list ()
 {
     JSObjectRef timezones = json_array_create ();
 
-    GFile *zoneinfo_dir = NULL;
-    GFileEnumerator *enumerator = NULL;
-    GFileInfo *info = NULL;
+    walk_directory ("/usr/share/zoneinfo", walk_timezones);
+
     gsize index = 0;
-    GError *error = NULL;
-
-    zoneinfo_dir = g_file_new_for_path ("/usr/share/zoneinfo");
-    if (zoneinfo_dir == NULL) {
-        g_warning ("get timezone list:get zoneinfo dir failed\n");
-        return timezones;
+    for (index = 0; index < g_list_length (timezone_list); index++) {
+        json_array_insert (timezones, index, jsvalue_from_cstr (get_global_context (), (gchar *)g_list_nth_data (timezone_list, index)));
     }
-
-    enumerator = g_file_enumerate_children (zoneinfo_dir, "standard::type", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
-    if (error != NULL) {
-        g_warning ("get timezone list:enumerator zoneinfo failed %s\n", error->message);
-        g_error_free (error);
-    }
-    error = NULL;
-
-    info = g_file_enumerator_next_file (enumerator, NULL, &error);
-    if (error != NULL) {
-        g_warning ("get timezone list:enumerator first child failed %s\n", error->message);
-        g_error_free (error);
-    }
-    error = NULL;
-
-    while (info != NULL) {
-        GFile *file = NULL;
-        gchar *display_name = NULL;
-        gchar *relative = NULL;
-
-        display_name = g_strdup (g_file_info_get_display_name (info));
-        file = g_file_get_child_for_display_name (zoneinfo_dir, display_name, &error);
-        if (error != NULL) {
-            g_warning ("get timezone list:get child for display name %s\n", error->message);
-            g_error_free (error);
-            continue;
-        }
-        error = NULL;
-        
-        relative = g_file_get_relative_path (zoneinfo_dir, file);
-        if (relative == NULL) {
-            g_warning ("get timezone list:get relative path failed\n");
-            continue;
-        }
-
-        json_array_insert (timezones, index, jsvalue_from_cstr (get_global_context (), g_strdup (relative)));
-        index = index++;
-
-        g_free (relative);
-        g_free (display_name);
-        g_object_unref (file);
-    }
-    g_object_unref (info);
-    g_object_unref (enumerator);
-    g_object_unref (zoneinfo_dir);
 
     return timezones;
 }
