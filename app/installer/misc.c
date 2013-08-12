@@ -21,6 +21,7 @@
 
 #include "misc.h"
 #include "part_util.h"
+#include "fs_util.h"
 #include <pwd.h>
 #include <sys/types.h>
 #include <X11/Xlib.h>
@@ -597,6 +598,8 @@ watch_extract_child (GPid pid, gint status, gpointer data)
 static gboolean 
 cb_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
 {
+    gchar **progress = (gchar **) data;
+
     gchar *string;
     gsize  size;
 
@@ -606,9 +609,13 @@ cb_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
     }
 
     g_io_channel_read_line (channel, &string, &size, NULL, NULL);
-    //fix me, parse progress here
-    g_printf ("cb out watch:%s\n", string);
 
+    gchar *match = get_matched_string (string, "\\d{1,3}%");
+    //g_printf ("cb out watch:%s\n", string);
+    //g_printf ("cb out watch:match->              %s\n", match);
+    *progress = g_strdup (match);
+
+    g_free (match);
     g_free (string);
 
     return TRUE;
@@ -637,8 +644,18 @@ cb_err_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
 static gboolean
 cb_timeout (gpointer data)
 {
-    //fix me, update ui progress here
-    g_printf ("cb timeout\n");
+    gchar **progress = (gchar **)data;
+
+    if (*progress != NULL) {
+        g_printf ("cb timeout:progress %s\n", *progress);
+        if (g_strcmp0 ("100%", *progress) == 0) {
+            g_printf ("cb timeout:extract finish\n");
+            return FALSE;
+        }
+    } else {
+        g_warning ("cb timeout:progress null\n");
+    }
+
     return TRUE;
 }
 
@@ -694,10 +711,10 @@ extract_squashfs (gpointer data)
     out_channel = g_io_channel_unix_new (std_output);
     err_channel = g_io_channel_unix_new (std_error);
 
-    g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress);
-    g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress);
+    g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, &progress);
+    g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, &progress);
 
-    timeout_id = g_timeout_add (100, (GSourceFunc) cb_timeout, progress);
+    timeout_id = g_timeout_add (100, (GSourceFunc) cb_timeout, &progress);
 
     g_strfreev (argv);
 }

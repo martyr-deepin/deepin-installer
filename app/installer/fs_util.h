@@ -23,6 +23,8 @@
 #define __FS_UTIL_H
 #include <glib.h>
 
+gchar *get_matched_string (const gchar *target, const gchar *regex_string);
+
 gchar *get_partition_mount_point (const gchar *path);
 
 gchar *get_mounted_partition_used (const gchar *path);
