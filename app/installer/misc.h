@@ -54,4 +54,6 @@ void write_hostname (const gchar *hostname);
 
 void mount_procfs ();
 
+void emit_progress (const gchar *progress);
+
 #endif

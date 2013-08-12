@@ -27,6 +27,7 @@
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
+#include <gio/gunixinputstream.h>
 
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
@@ -585,30 +586,126 @@ void installer_copy_file (const gchar *source_root)
     }
 }
 
-JS_EXPORT_API 
-void installer_extract_squashfs ()
+static void
+watch_extract_child (GPid pid, gint status, gpointer data)
+{
+    gint timeout_id = *(gint*) data;
+    g_source_remove (timeout_id);
+    g_spawn_close_pid (pid);
+}
+
+static gboolean 
+cb_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
+{
+    gchar *string;
+    gsize  size;
+
+    if (cond == G_IO_HUP) {
+        g_io_channel_unref (channel);
+        return FALSE;
+    }
+
+    g_io_channel_read_line (channel, &string, &size, NULL, NULL);
+    //fix me, parse progress here
+    g_printf ("cb out watch:%s\n", string);
+
+    g_free (string);
+
+    return TRUE;
+}
+
+static gboolean
+cb_err_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
+{
+    gchar *string;
+    gsize  size;
+
+    if (cond == G_IO_HUP) {
+        g_io_channel_unref (channel);
+        return FALSE;
+    }
+
+    g_io_channel_read_line (channel, &string, &size, NULL, NULL);
+    //fix me, parse error here
+    g_printf ("cb err watch:%s\n", string); 
+
+    g_free (string);
+
+    return TRUE;
+}
+
+static gboolean
+cb_timeout (gpointer data)
+{
+    //fix me, update ui progress here
+    g_printf ("cb timeout\n");
+    return TRUE;
+}
+
+gpointer 
+extract_squashfs (gpointer data)
 {
     if (g_find_program_in_path ("unsquashfs") == NULL) {
         g_warning ("extract squashfs: unsquashfs not installed\n");
+        return NULL;
     }
 
     extern const gchar *target;
     if (target == NULL) {
         g_warning ("extract squash fs:target is NULL\n");
-        return ;
+        return NULL;
     }
 
-    GError *error = NULL;
-    gchar *cmd = g_strdup_printf ("unsquashfs -f -d %s %s", target, "/cdrom/casper/filesystem.squashfs");
+    gchar **argv = g_new0 (gchar *, 6);
+    argv[0] = g_strdup ("unsquashfs");
+    argv[1] = g_strdup ("-f");
+    argv[2] = g_strdup ("-d");
+    argv[3] = g_strdup (target);
+    argv[4] = g_strdup ("/cdrom/casper/filesystem.squashfs");
 
-    g_spawn_command_line_async (cmd, &error);
+    gint std_output;
+    gint std_error;
+    GError *error = NULL;
+    GPid pid;
+    GIOChannel *out_channel = NULL;
+    GIOChannel *err_channel = NULL;
+    gint timeout_id = 0;
+    gchar *progress = NULL;
+
+    g_spawn_async_with_pipes (NULL,
+                              argv,
+                              NULL,
+                              G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
+                              NULL,
+                              NULL,
+                              &pid,
+                              NULL,
+                              &std_output,
+                              &std_error,
+                              &error);
     if (error != NULL) {
-        g_warning ("extract squashfs:cmd %s\n", error->message);
+        g_warning ("extract squashfs:spawn async pipes %s\n", error->message);
         g_error_free (error);
     }
     error = NULL;
 
-    g_free (cmd);
+    g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, &timeout_id);
+
+    out_channel = g_io_channel_unix_new (std_output);
+    err_channel = g_io_channel_unix_new (std_error);
+
+    g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress);
+    g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress);
+
+    timeout_id = g_timeout_add (100, (GSourceFunc) cb_timeout, progress);
+
+    g_strfreev (argv);
+}
+
+JS_EXPORT_API 
+void installer_extract_squashfs ()
+{
+    GThread *thread = g_thread_new ("extract", (GThreadFunc) extract_squashfs, NULL);
 }
 
 void write_hostname (const gchar *hostname)
@@ -721,4 +818,9 @@ void mount_procfs ()
     g_free (mount_sys);
 
     //gchar *mount_shm = g_strdup_printf ("mount -vt tmpfs shm %s/dev/shm", target);
+}
+
+void emit_progress (const gchar *progress)
+{
+    g_printf ("emit progress:%s\n", progress);
 }
