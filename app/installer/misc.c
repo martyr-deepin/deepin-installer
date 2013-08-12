@@ -34,6 +34,7 @@ extern void endpwent (void);
 XklConfigRec *config = NULL;
 GHashTable *layout_variants_hash = NULL;
 static GList *timezone_list = NULL;
+static GList *filelist = NULL;
 
 JS_EXPORT_API 
 JSObjectRef installer_get_system_users()
@@ -361,7 +362,7 @@ walk_timezones (const gchar *path)
         g_debug ("walk timezones: ignore files under posix and right\n");
     } else {
         //g_warning ("walk timezones: %s\n", relative);
-        timezone_list = g_list_append (timezone_list, relative);
+        timezone_list = g_list_append (timezone_list, g_strdup (relative));
     }
 
     g_free (relative);
@@ -435,59 +436,19 @@ void installer_set_timezone (const gchar *timezone)
     //fix me, set /etc/default/rcS content"
 }
 
+void *
+walk_copy (const gchar *path)
+{
+    GFile *file = g_file_new_for_path (path);
+    filelist = g_list_append (filelist, g_file_dup (file));
+    g_object_unref (file);
+}
+
 //fix me, insert the copy file blacklist 
 static GList*
 get_source_file_list (const gchar *source_root)
 {
-    GList *filelist = NULL;
-
-    GFile *source_dir = NULL;
-    GFileEnumerator *enumerator = NULL;
-    GFileInfo *info = NULL;
-    GError *error = NULL;
-
-    source_dir = g_file_new_for_path (source_root); 
-    if (source_dir == NULL) {
-        g_warning ("get source file list:g_file_new_for_path %s\n", source_root);
-        return filelist;
-    }
-    filelist = g_list_append (filelist, g_file_dup (source_dir));
-
-    enumerator = g_file_enumerate_children (source_dir, "standard::type", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
-    if (error != NULL) {
-        g_warning ("get source file list:g_file_enumerate_children %s\n", error->message);
-        g_error_free (error);
-    }
-    error = NULL;
-
-    info = g_file_enumerator_next_file (enumerator, NULL, &error);
-    if (error != NULL) {
-        g_warning ("get sourcef file list:enumerator first child failed %s\n", error->message);
-        g_error_free (error);
-    }
-    error = NULL;
-
-    while (info != NULL) {
-        GFile *file = NULL;
-        gchar *display_name = NULL;
-
-        display_name = g_strdup (g_file_info_get_display_name (info));
-        file = g_file_get_child_for_display_name (source_dir, display_name, &error);
-        if (error != NULL) {
-            g_warning ("get source file list: get child for display name %s\n", error->message);
-            g_error_free (error);
-        }
-        error = NULL;
-
-        filelist = g_list_append (filelist, g_file_dup (file));
-
-        g_free (display_name);
-        g_object_unref (file);
-    }
-
-    g_object_unref (info);
-    g_object_unref (enumerator);
-    g_object_unref (source_dir);
+    walk_directory (source_root, walk_copy);
 
     return filelist;
 }
@@ -512,7 +473,6 @@ get_coordinate_target (const gchar *source_root, GFile *src)
         g_warning ("get coordinate target:get source root file %s failed\n", source_root);
         return coo_target;
     }
-    g_object_unref (source_dir);
 
     gchar *relative_path = g_file_get_relative_path (source_dir, src);
     if (relative_path == NULL) {
@@ -529,6 +489,7 @@ get_coordinate_target (const gchar *source_root, GFile *src)
 
     g_free (relative_path);
     g_object_unref (target_dir);
+    g_object_unref (source_dir);
 
     return coo_target;
 }
