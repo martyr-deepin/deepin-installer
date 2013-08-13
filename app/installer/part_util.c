@@ -650,6 +650,7 @@ gboolean installer_update_partition_fs (const gchar *part, const gchar *fs)
     return ret;
 }
 
+//call after chroot
 JS_EXPORT_API 
 gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
 {
@@ -658,29 +659,45 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
     //    g_warning ("write fs tab:must mount target first\n");
     //    return ;
     //}
+    if (mp == NULL) {
+        g_warning ("write fs tab:mount point is NULL\n");
+        return ret;
+    }
+
     PedPartition *pedpartition = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
         gchar *path = g_strdup (ped_partition_get_path (pedpartition));
+        if (path == NULL) {
+            g_warning ("write fs tab:get partition %s path failed\n", part);
+            return ret;
+        }
+
         gchar *fs = NULL;
 
         PedGeometry *geom = ped_geometry_duplicate (&pedpartition->geom);
+        //fix me, free the geom object
         PedFileSystemType *fs_type = ped_file_system_probe (geom);
         if (fs_type != NULL) {
             fs = g_strdup (fs_type->name);
+        } else {
+            g_warning ("write fs tab:probe filesystem failed\n");
+            return ret;
         }
 
-        if (path == NULL || fs == NULL || mp == NULL) {
-            g_warning ("write fs tab:path/fs/mp contains one null\n");
+        if (fs == NULL) {
+            g_warning ("write fs tab:get partition %s fs failed\n", part);
+            return ret;
 
         } else {
             //gchar *fs_tab = g_strdup_printf ("%s/etc/fstab", target);
-            gchar *fs_tab = g_strdup ("/etc/fstab");
+            //gchar *fs_tab = g_strdup ("/etc/fstab");
             struct mntent *mnt;
             FILE *mount_file;
             
-            mount_file = setmntent (fs_tab, "rw"); 
+            //mount_file = setmntent (fs_tab, "rw"); 
+            mount_file = setmntent ("/etc/fstab", "rw");
             if (mount_file != NULL) {
 
                 mnt->mnt_fsname = path;
@@ -700,20 +717,20 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
                 }
 
                 if ((addmntent(mount_file, mnt)) == 1) {
-                    g_warning ("write fs tab: addmntent for %s failed\n", fs_tab);
+                    g_warning ("write fs tab: addmntent failed\n");
                 } else {
                     g_debug ("write fs tab: addmntent succeed\n");
                     ret = TRUE;
                 }
 
             } else {
-                g_warning ("write fs tab: setmntent for %s failed\n", fs_tab);
+                g_warning ("write fs tab: setmntent failed\n");
             }
-            g_free (fs_tab);
+            //g_free (fs_tab);
         }
 
-        g_free (fs);
-        g_free (path);
+        //g_free (fs);
+        //g_free (path);
 
     } else {
         g_warning ("write fs tab:find pedpartition %s failed\n", part);

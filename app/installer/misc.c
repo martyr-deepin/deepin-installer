@@ -556,26 +556,33 @@ JSObjectRef installer_get_timezone_list ()
 }
 
 JS_EXPORT_API 
-void installer_set_timezone (const gchar *timezone)
+gboolean installer_set_timezone (const gchar *timezone)
 {
+    gboolean ret = FALSE;
+
     GError *error = NULL;
+    //extern const gchar *target;
+    //if (target == NULL) {
+    //    g_warning ("set timezone:target is NULL\n");
+    //    return ret;
+    //}
 
-    extern const gchar *target;
-    if (target == NULL) {
-        g_warning ("set timezone:target is NULL\n");
-        return ;
-    }
+    //gchar *timezone_file = g_strdup_printf ("%s/etc/timezone", target);
 
-    gchar *timezone_file = g_strdup_printf ("%s/etc/timezone", target);
+    gchar *timezone_file = g_strdup ("/etc/timezone");
     g_file_set_contents (timezone_file, timezone, -1, &error);
     if (error != NULL) {
         g_warning ("set timezone:write timezone %s\n", error->message);
         g_error_free (error);
+        g_free (timezone_file);
+        return ret;
     }
     error = NULL;
     g_free (timezone_file);
 
-    gchar *zoneinfo_file = g_strdup_printf ("%s/etc/timezone/%s", target, timezone);
+    //gchar *zoneinfo_file = g_strdup_printf ("%s/etc/timezone/%s", target, timezone);
+
+    gchar *zoneinfo_file = g_strdup_printf ("/etc/timezone/%s", timezone);
     gchar *zone_content = NULL;
     gsize length;
 
@@ -583,20 +590,27 @@ void installer_set_timezone (const gchar *timezone)
     if (error != NULL) {
         g_warning ("set timezone:read /etc/timezone %s\n", error->message);
         g_error_free (error);
+        g_free (zoneinfo_file);
+        return ret;
     }
     error = NULL;
     g_free (zoneinfo_file);
     
     if (zone_content == NULL) {
         g_warning ("set timezone:read /etc/timezone/%s failed\n", timezone);
-        return ;
+        return ret;
     }
 
-    gchar *localtime_file = g_strdup_printf ("%s/etc/localtime", target);
+    //gchar *localtime_file = g_strdup_printf ("%s/etc/localtime", target);
+
+    gchar *localtime_file = g_strdup ("/etc/localtime");
     g_file_set_contents (localtime_file, zone_content, -1, &error);
     if (error != NULL) {
         g_warning ("set timezone:write localtime %s\n", error->message);
         g_error_free (error);
+        g_free (zone_content);
+        g_free (localtime_file);
+        return ret;
     }
     error = NULL;
 
@@ -604,6 +618,9 @@ void installer_set_timezone (const gchar *timezone)
     g_free (localtime_file);
 
     //fix me, set /etc/default/rcS content"
+    ret = TRUE;
+
+    return ret;
 }
 
 void *
@@ -682,6 +699,7 @@ finish_callback (GObject *source_object, GAsyncResult *res, gpointer user_data)
     g_printf ("finish callback\n");
 }
 
+//discard as can't read 3.6G file into memory
 JS_EXPORT_API 
 void installer_copy_file (const gchar *source_root)
 {
@@ -817,12 +835,23 @@ cb_timeout (gpointer data)
 {
     gchar **progress = (gchar **)data;
 
+    if (1) {
+        g_printf ("hello\n");
+    }
+
+    if (g_strcmp0 ("hello", "hello") == 0) {
+        g_printf ("equal\n");
+    }
+
     if (*progress != NULL) {
-        g_printf ("cb timeout:progress %s\n", *progress);
-        if (g_strcmp0 ("100%", *progress) == 0) {
-            g_printf ("cb timeout:extract finish\n");
-            return FALSE;
-        }
+        g_printf ("progress\n");
+        g_printf ("dump progress:%s\n", g_strdup (*progress));
+
+        //g_printf ("cb timeout:progress %s\n", *progress);
+        //if (g_strcmp0 ("100%", *progress) == 0) {
+        //    g_printf ("cb timeout:extract finish\n");
+        //    return FALSE;
+        //}
     } else {
         g_warning ("cb timeout:progress null\n");
     }
