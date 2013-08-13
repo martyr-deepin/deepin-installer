@@ -57,6 +57,4 @@ JS_EXPORT_API gboolean installer_mount_procfs ();
 
 JS_EXPORT_API gboolean installer_chroot_target ();
 
-void emit_progress (const gchar *progress);
-
 #endif

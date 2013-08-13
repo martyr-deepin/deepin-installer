@@ -84,4 +84,6 @@ JS_EXPORT_API gboolean installer_mount_target (const gchar *part);
 
 JS_EXPORT_API gboolean installer_update_grub (const gchar *uuid);
 
+void emit_progress (const gchar *step, const gchar *progress);
+
 #endif

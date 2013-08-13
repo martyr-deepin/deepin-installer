@@ -997,7 +997,3 @@ gboolean installer_chroot_target ()
     return ret;
 }
 
-void emit_progress (const gchar *progress)
-{
-    g_printf ("emit progress:%s\n", progress);
-}
