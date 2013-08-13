@@ -33,6 +33,7 @@
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
 extern int chroot (const char *path);
+extern int lchown (const char *path, uid_t owner, gid_t group);
 
 XklConfigRec *config = NULL;
 GHashTable *layout_variants_hash = NULL;
@@ -61,37 +62,150 @@ JSObjectRef installer_get_system_users()
 }
 
 JS_EXPORT_API 
-void installer_create_user (const gchar *username, const gchar *hostname, const gchar *password)
+gboolean installer_create_user (const gchar *username, const gchar *hostname, const gchar *password)
 {
-    g_printf ("create user\n");
+    gboolean ret = FALSE;
+
+    GError *error = NULL;
+    gint status = -1;
+    gchar *useradd_cmd = NULL;
+    uid_t uid;
+    gid_t gid;
+    gchar *home = NULL;
+    gchar *chown_cmd = NULL;
+    gchar *passwd_cmd = NULL;
+
+    const gchar *groups[] = {"cdrom", "floppy", "dialout", "audio", "video", "plugdev", 
+                            "sambashare", "admin", "wheel", "netdev", "lp", "scanner", "lpadmin"};
+
+    useradd_cmd = g_strdup_printf ("useradd -U -r -m --skel /etc/skel --shell /bin/bash %s", username);
+    g_spawn_command_line_sync (useradd_cmd, NULL, NULL, &status, &error);
+    if (error != NULL) {
+        g_warning ("create user:useradd %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+    if (status != 0) {
+        g_warning ("create user:user add failed\n");
+        g_free (useradd_cmd);
+        return ret;
+    }
+    g_free (useradd_cmd);
+
+    struct passwd *user;
+    while ((user = getpwent ()) != NULL) {
+        if (g_strcmp0 (username, user->pw_name) == 0) {
+            home = g_strdup (user->pw_dir);        
+            uid = user->pw_uid;
+            gid = user->pw_gid;
+            break;
+        }
+    }
+    endpwent ();
+    if (home == NULL) {
+        g_warning ("create user:get user home failed\n");
+
+    } else {
+        if (lchown (home, uid, gid) != 0) {
+            g_warning ("create user:lchown failed\n");
+        }
+        g_free (home);
+    }
+
+    passwd_cmd = g_strdup_printf ("echo %s\n %s\n | passwd %s", password, password, username); 
+    //'echo "'+self.password+'\n'+self.password+'" |chroot '+self.insenv.target+' passwd '+self.username
+    g_spawn_command_line_sync (passwd_cmd, NULL, NULL, &status, &error);
+    if (error != NULL) {
+        g_warning ("create user:passwd %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+    if (status != 0) {
+        g_warning ("create user:set user password failed\n");
+        g_free (passwd_cmd);
+        return ret;
+    }
+    g_free (passwd_cmd);
+
+    const gchar *group = *groups;
+    while (group != NULL) {
+        gchar *groupadd_cmd = g_strdup_printf ("groupadd --system -f %s", group);
+        g_spawn_command_line_sync (groupadd_cmd, NULL, NULL, &status, &error);
+        if (error != NULL) {
+            g_warning ("create user:groupadd %s\n", error->message);
+            g_error_free (error);
+        }
+        error = NULL;
+        if (status != 0) {
+            g_warning ("create user:group add failed for %s\n", *groups);
+            g_free (groupadd_cmd);
+            group++;
+            continue;
+        }
+        g_free (groupadd_cmd);
+
+        gchar *gpasswd_cmd = g_strdup_printf ("gpasswd --add %s %s", username, group);
+        g_spawn_command_line_sync (gpasswd_cmd, NULL, NULL, &status, &error);
+        if (error != NULL) {
+            g_warning ("create user:gpasswd %s\n", error->message);
+            g_error_free (error);
+        }
+        error = NULL;
+        if (status != 0) {
+            g_warning ("create user:gpasswd failed for %s\n", *groups);
+            g_free (gpasswd_cmd);
+            group++;
+            continue;
+        }
+        g_free (gpasswd_cmd);
+
+        group++;
+    }
+
+    if (! write_hostname (hostname)) {
+        g_warning ("create user:write hostname failed\n");
+        return ret;
+    }
+
+    ret = TRUE;
+
+    return ret;
 }
 
-void write_hostname (const gchar *hostname)
+gboolean 
+write_hostname (const gchar *hostname)
 {
+    gboolean ret = FALSE;
+
     GError *error = NULL;
 
     if (hostname == NULL) {
         g_warning ("write hostname:hostname is NULL\n");
-        return ;
+        return ret;
     }
 
-    extern const gchar* target;
-    if (target == NULL) {
-        g_warning ("write hostname:target is NULL\n");
-        return ;
-    }
+    //extern const gchar* target;
+    //if (target == NULL) {
+    //    g_warning ("write hostname:target is NULL\n");
+    //    return ret;
+    //}
 
-    gchar *hostname_file = g_strdup_printf ("%s/etc/hostname", target);
+    //gchar *hostname_file = g_strdup_printf ("%s/etc/hostname", target);
+    gchar *hostname_file = g_strdup ("/etc/hostname");
 
     g_file_set_contents (hostname_file, hostname, -1, &error);
     if (error != NULL) {
         g_warning ("write hostname: set hostname file %s contents failed\n", hostname_file);
         g_error_free (error);
+        g_free (hostname_file);
+        return ret;
     }
     error = NULL;
     g_free (hostname_file);
 
-    gchar *hosts_file = g_strdup_printf ("%s/etc/hosts", target);
+    //gchar *hosts_file = g_strdup_printf ("%s/etc/hosts", target);
+
+    gchar *hosts_file = g_strdup ("/etc/hosts");
     const gchar *lh = "127.0.0.1  localhost\n";
     const gchar *lha = g_strdup_printf ("127.0.1.1  %s\n", hostname);
     const gchar *ip6_comment = "\n# The following lines are desirable for IPv6 capable hosts\n";
@@ -106,10 +220,17 @@ void write_hostname (const gchar *hostname)
     if (error != NULL) {
         g_warning ("write hostname: set hosts file %s contents failed\n", hosts_file);
         g_error_free (error);
+        g_free (hosts_file);
+        g_free (hosts_content);
+        return ret;
     }
     error = NULL;
     g_free (hosts_file);
     g_free (hosts_content);
+
+    ret = TRUE;
+
+    return ret;
 }
 
 JS_EXPORT_API 
@@ -800,6 +921,7 @@ gboolean installer_mount_procfs ()
 
     if (status != 0) {
         g_warning ("mount procfs:mount dev failed\n");
+        g_free (mount_dev);
         return ret;
     }
     g_free (mount_dev);
@@ -814,6 +936,7 @@ gboolean installer_mount_procfs ()
 
     if (status != 0) {
         g_warning ("mount procfs:mount devpts failed\n");
+        g_free (mount_devpts);
         return ret;
     }
     g_free (mount_devpts);
@@ -828,6 +951,7 @@ gboolean installer_mount_procfs ()
 
     if (status != 0) {
         g_warning ("mount procfs:mount proc failed\n");
+        g_free (mount_proc);
         return ret;
     }
     g_free (mount_proc);
@@ -842,6 +966,7 @@ gboolean installer_mount_procfs ()
 
     if (status != 0) {
         g_warning ("mount procfs:mount sys failed\n");
+        g_free (mount_sys);
         return ret;
     }
     g_free (mount_sys);
