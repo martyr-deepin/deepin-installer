@@ -788,3 +788,48 @@ gboolean installer_mount_target (const gchar *part)
 
     return result;
 }
+
+JS_EXPORT_API 
+gboolean installer_update_grub (const gchar *uuid)
+{
+    gboolean ret = FALSE;
+    gchar *path = NULL;
+    gchar *grub_install = NULL;
+    GError *error = NULL;
+
+    if (g_str_has_prefix (uuid, "disk")) {
+        path = installer_get_disk_path (uuid);
+
+    } else if (g_str_has_prefix (uuid, "part")) {
+        path = installer_get_partition_path (uuid);
+
+    } else {
+        g_warning ("update grub:invalid uuid %s\n", uuid);
+        return ret;
+    }
+
+    grub_install = g_strdup_printf ("grub-install --no-floppy --force %s", path);
+    g_spawn_command_line_sync (grub_install, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("update grub:grub-install %s\n", error->message);
+        g_error_free (error);
+        g_free (grub_install);
+        g_free (path);
+        return ret;
+    }
+    error = NULL;
+    g_free (grub_install);
+    g_free (path);
+
+    g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("update grub:update grub %s\n", error->message);
+        g_error_free (error);
+        return ret;
+    }
+    error = NULL;
+    ret = TRUE;
+
+    return ret;
+}
+
