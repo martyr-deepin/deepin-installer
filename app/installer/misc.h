@@ -25,12 +25,15 @@
 #include <stdio.h>
 #include <glib.h>
 #include <glib/gprintf.h>
+#include <unistd.h>
 #include "utils.h"
 #include "jsextension.h"
 
 JS_EXPORT_API JSObjectRef installer_get_system_users ();
 
 JS_EXPORT_API void installer_create_user (const gchar *username, const gchar *hostname, const gchar *password);
+
+void write_hostname (const gchar *hostname);
 
 JS_EXPORT_API void installer_reboot ();
 
@@ -50,9 +53,9 @@ JS_EXPORT_API void installer_copy_file (const gchar *source_root);
 
 JS_EXPORT_API void installer_extract_squashfs ();
 
-void write_hostname (const gchar *hostname);
+JS_EXPORT_API gboolean installer_mount_procfs ();
 
-void mount_procfs ();
+JS_EXPORT_API gboolean installer_chroot_target ();
 
 void emit_progress (const gchar *progress);
 

@@ -32,6 +32,7 @@
 
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
+extern int chroot (const char *path);
 
 XklConfigRec *config = NULL;
 GHashTable *layout_variants_hash = NULL;
@@ -63,6 +64,52 @@ JS_EXPORT_API
 void installer_create_user (const gchar *username, const gchar *hostname, const gchar *password)
 {
     g_printf ("create user\n");
+}
+
+void write_hostname (const gchar *hostname)
+{
+    GError *error = NULL;
+
+    if (hostname == NULL) {
+        g_warning ("write hostname:hostname is NULL\n");
+        return ;
+    }
+
+    extern const gchar* target;
+    if (target == NULL) {
+        g_warning ("write hostname:target is NULL\n");
+        return ;
+    }
+
+    gchar *hostname_file = g_strdup_printf ("%s/etc/hostname", target);
+
+    g_file_set_contents (hostname_file, hostname, -1, &error);
+    if (error != NULL) {
+        g_warning ("write hostname: set hostname file %s contents failed\n", hostname_file);
+        g_error_free (error);
+    }
+    error = NULL;
+    g_free (hostname_file);
+
+    gchar *hosts_file = g_strdup_printf ("%s/etc/hosts", target);
+    const gchar *lh = "127.0.0.1  localhost\n";
+    const gchar *lha = g_strdup_printf ("127.0.1.1  %s\n", hostname);
+    const gchar *ip6_comment = "\n# The following lines are desirable for IPv6 capable hosts\n";
+    const gchar *loopback = "::1     ip6-localhost ip6-loopback\n";
+    const gchar *localnet = "fe00::0 ip6-localnet\n";
+    const gchar *mcastprefix = "ff00::0 ip6-mcastprefix\n";
+    const gchar *allnodes = "ff02::1 ip6-allnodes\n";
+    const gchar *allrouters = "ff02::2 ip6-allrouters\n";
+
+    gchar *hosts_content = g_strconcat (lh, lha, ip6_comment, loopback, localnet, mcastprefix, allnodes, allrouters, NULL);
+    g_file_set_contents (hosts_file, hosts_content, -1, &error);
+    if (error != NULL) {
+        g_warning ("write hostname: set hosts file %s contents failed\n", hosts_file);
+        g_error_free (error);
+    }
+    error = NULL;
+    g_free (hosts_file);
+    g_free (hosts_content);
 }
 
 JS_EXPORT_API 
@@ -729,61 +776,18 @@ void installer_extract_squashfs ()
     //fix me, when to unref the thread
 }
 
-void write_hostname (const gchar *hostname)
+JS_EXPORT_API
+gboolean installer_mount_procfs ()
 {
-    GError *error = NULL;
+    gboolean ret = FALSE;
 
-    if (hostname == NULL) {
-        g_warning ("write hostname:hostname is NULL\n");
-        return ;
-    }
-
-    extern const gchar* target;
-    if (target == NULL) {
-        g_warning ("write hostname:target is NULL\n");
-        return ;
-    }
-
-    gchar *hostname_file = g_strdup_printf ("%s/etc/hostname", target);
-
-    g_file_set_contents (hostname_file, hostname, -1, &error);
-    if (error != NULL) {
-        g_warning ("write hostname: set hostname file %s contents failed\n", hostname_file);
-        g_error_free (error);
-    }
-    error = NULL;
-    g_free (hostname_file);
-
-    gchar *hosts_file = g_strdup_printf ("%s/etc/hosts", target);
-    const gchar *lh = "127.0.0.1  localhost\n";
-    const gchar *lha = g_strdup_printf ("127.0.1.1  %s\n", hostname);
-    const gchar *ip6_comment = "\n# The following lines are desirable for IPv6 capable hosts\n";
-    const gchar *loopback = "::1     ip6-localhost ip6-loopback\n";
-    const gchar *localnet = "fe00::0 ip6-localnet\n";
-    const gchar *mcastprefix = "ff00::0 ip6-mcastprefix\n";
-    const gchar *allnodes = "ff02::1 ip6-allnodes\n";
-    const gchar *allrouters = "ff02::2 ip6-allrouters\n";
-
-    gchar *hosts_content = g_strconcat (lh, lha, ip6_comment, loopback, localnet, mcastprefix, allnodes, allrouters, NULL);
-    g_file_set_contents (hosts_file, hosts_content, -1, &error);
-    if (error != NULL) {
-        g_warning ("write hostname: set hosts file %s contents failed\n", hosts_file);
-        g_error_free (error);
-    }
-    error = NULL;
-    g_free (hosts_file);
-    g_free (hosts_content);
-}
-
-void mount_procfs ()
-{
     GError *error = NULL;
     gint status = -1;
 
     extern const gchar* target;
     if (target == NULL) {
         g_warning ("mount procfs:target is NULL\n");
-        return ;
+        return ret;
     }
 
     gchar *mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", target);
@@ -796,6 +800,7 @@ void mount_procfs ()
 
     if (status != 0) {
         g_warning ("mount procfs:mount dev failed\n");
+        return ret;
     }
     g_free (mount_dev);
 
@@ -809,6 +814,7 @@ void mount_procfs ()
 
     if (status != 0) {
         g_warning ("mount procfs:mount devpts failed\n");
+        return ret;
     }
     g_free (mount_devpts);
 
@@ -822,6 +828,7 @@ void mount_procfs ()
 
     if (status != 0) {
         g_warning ("mount procfs:mount proc failed\n");
+        return ret;
     }
     g_free (mount_proc);
 
@@ -835,10 +842,34 @@ void mount_procfs ()
 
     if (status != 0) {
         g_warning ("mount procfs:mount sys failed\n");
+        return ret;
     }
     g_free (mount_sys);
 
+    ret = TRUE;
+
+    return ret;
     //gchar *mount_shm = g_strdup_printf ("mount -vt tmpfs shm %s/dev/shm", target);
+}
+
+JS_EXPORT_API
+gboolean installer_chroot_target ()
+{
+    gboolean ret = FALSE;
+
+    extern const gchar* target;
+    if (target == NULL) {
+        g_warning ("chroot:target is NULL\n");
+        return ret;
+    }
+
+    if (chroot (target) == 0) {
+        ret = TRUE;
+    } else {
+        g_warning ("chroot:chroot to %s falied\n", target);
+    }
+
+    return ret;
 }
 
 void emit_progress (const gchar *progress)
