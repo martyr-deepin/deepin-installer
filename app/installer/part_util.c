@@ -504,9 +504,11 @@ gchar* installer_get_partition_used (const gchar *part)
     return result;
 }
 
-JS_EXPORT_API void 
-installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end)
+JS_EXPORT_API 
+gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end)
 {
+    gboolean ret = FALSE;
+
     PedDisk *peddisk = NULL;
     PedPartition *pedpartition = NULL;
     PedPartitionType part_type;
@@ -528,7 +530,7 @@ installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const g
         } else {
             part_type = -1;
             g_warning("new disk partition:invalid partition type %s\n", type);
-            return ;
+            return ret;
         }
 
         if (part_type != PED_PARTITION_EXTENDED) {
@@ -536,7 +538,7 @@ installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const g
             part_fs = ped_file_system_type_get (fs);
             if (part_fs == NULL) {
                 g_warning("new disk partition:must spec file system %s\n", fs);
-                return;
+                return ret;
             }
         }
 
@@ -558,6 +560,7 @@ installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const g
 
                     if (ped_disk_add_partition (peddisk, pedpartition, pedconstraint) != 0 ) {
                         g_printf ("new disk partition:add partition ok\n");
+                        ret = TRUE;
 
                     } else {
                         g_warning ("new disk partition:add disk partition failed\n");
@@ -576,13 +579,16 @@ installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const g
 
     } else {
         g_warning ("new disk partition:find peddisk %s failed\n", disk);
-        return ;
     }
+
+    return ret;
 }
 
 JS_EXPORT_API 
-void installer_delete_disk_partition (const gchar *disk, const gchar *part)
+gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part)
 {
+    gboolean ret = FALSE;
+
     PedDisk *peddisk = NULL;
     PedPartition *pedpartition = NULL;
 
@@ -593,6 +599,7 @@ void installer_delete_disk_partition (const gchar *disk, const gchar *part)
 
         if ((ped_disk_delete_partition (peddisk, pedpartition) != 0)) {
             g_printf("delete disk partition:ok\n");
+            ret = TRUE;
 
         } else {
             g_warning ("delete disk partition:failed\n");
@@ -601,11 +608,15 @@ void installer_delete_disk_partition (const gchar *disk, const gchar *part)
     } else {
         g_warning ("delete disk partition:find peddisk %s failed\n", disk);
     }
+
+    return ret;
 }
 
 JS_EXPORT_API
-void installer_update_partition_fs (const gchar *part, const gchar *fs)
+gboolean installer_update_partition_fs (const gchar *part, const gchar *fs)
 {
+    gboolean ret = FALSE;
+
     PedPartition *pedpartition = NULL;
     const PedFileSystemType *part_fs_type = NULL;
     const gchar *part_path = NULL;
@@ -617,21 +628,26 @@ void installer_update_partition_fs (const gchar *part, const gchar *fs)
         if (part_fs_type != NULL) {
             if ((ped_partition_set_system (pedpartition, part_fs_type)) == 0) {
                 g_warning ("update partition fs: ped partition set system %s failed\n", fs);
+                return ret;
             }
         } else {
             g_warning ("update partition fs:get part fs type %s failed\n", fs);
+            return ret;
         }
 
         part_path = ped_partition_get_path (pedpartition);
         if (part_path != NULL) {
             set_partition_filesystem (part_path, fs);
             g_printf ("update partition fs:ok\n");
+            ret = TRUE;
         } else {
             g_warning ("update partition fs:don't know the partition path\n");
         }
     } else {
         g_warning ("update partition fs:find pedpartition %s failed\n", part);
     }
+
+    return ret;
 }
 
 JS_EXPORT_API 
@@ -657,9 +673,6 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
 
         if (path == NULL || fs == NULL || mp == NULL) {
             g_warning ("write fs tab:path/fs/mp contains one null\n");
-            //g_free (path);
-            //g_free (fs);
-            return ret;
 
         } else {
             //gchar *fs_tab = g_strdup_printf ("%s/etc/fstab", target);
@@ -688,37 +701,32 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
 
                 if ((addmntent(mount_file, mnt)) == 1) {
                     g_warning ("write fs tab: addmntent for %s failed\n", fs_tab);
-                    g_free (fs_tab);
-                    g_free (fs);
-                    g_free (path);
-                    return ret;
-                } 
+                } else {
+                    g_debug ("write fs tab: addmntent succeed\n");
+                    ret = TRUE;
+                }
 
             } else {
                 g_warning ("write fs tab: setmntent for %s failed\n", fs_tab);
-                g_free (fs_tab);
-                g_free (fs);
-                g_free (path);
-                return ret;
             }
             g_free (fs_tab);
         }
 
         g_free (fs);
         g_free (path);
+
     } else {
         g_warning ("write fs tab:find pedpartition %s failed\n", part);
-        return ret;
     }
-
-    ret = TRUE;
 
     return ret;
 }
 
 JS_EXPORT_API 
-void installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status)
+gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status)
 {
+    gboolean ret = FALSE;
+
     PedPartition *pedpartition = NULL;
     PedPartitionFlag flag;
 
@@ -727,17 +735,21 @@ void installer_set_partition_flag (const gchar *part, const gchar *flag_name, gb
 
         flag = ped_partition_flag_get_by_name (flag_name);
         if (ped_partition_is_flag_available (pedpartition, flag)) {
-
             ped_partition_set_flag (pedpartition, flag, status);
+            ret = TRUE;
         }
     } else {
         g_warning ("get partition flag:find pedpartition %s failed\n", part);
     }
+
+    return ret;
 }
 
 JS_EXPORT_API 
-void installer_write_disk (const gchar *disk)
+gboolean installer_write_disk (const gchar *disk)
 {
+    gboolean ret = FALSE;
+
     PedDisk *peddisk = NULL;
 
     peddisk = (PedDisk *) g_hash_table_lookup (disks, disk);
@@ -745,20 +757,23 @@ void installer_write_disk (const gchar *disk)
 
         if ((ped_disk_commit_to_dev (peddisk)) == 0) {
             g_warning ("write disk:commit to dev failed\n");
-            return ;
+            return ret;
         }
 
         if ((ped_disk_commit_to_os (peddisk)) == 0) {
             g_warning ("write disk:commit to dev failed\n");
-            return ;
+            return ret;
         }
                 
         g_spawn_command_line_async ("sync", NULL);
-        g_printf ("write disk:%s succeed\n", disk);
+        ret = TRUE;
+        g_debug ("write disk:%s succeed\n", disk);
 
     } else {
         g_warning ("write disk:find peddisk %s failed\n", disk);
     }
+
+    return ret;
 }
 
 JS_EXPORT_API 
@@ -774,6 +789,7 @@ gboolean installer_mount_target (const gchar *part)
         gchar *path = g_strdup (ped_partition_get_path (pedpartition));
         if (path == NULL) {
             g_warning ("mount target:%s path is NULL\n", part);
+            return result;
 
         } else {
             gchar *target_uuid = installer_rand_uuid ();
