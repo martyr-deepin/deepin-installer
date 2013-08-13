@@ -635,12 +635,13 @@ void installer_update_partition_fs (const gchar *part, const gchar *fs)
 }
 
 JS_EXPORT_API 
-void installer_write_partition_mp (const gchar *part, const gchar *mp)
+gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
 {
-    if (target == NULL) {
-        g_warning ("write fs tab:must mount target first\n");
-        return ;
-    }
+    gboolean ret = FALSE;
+    //if (target == NULL) {
+    //    g_warning ("write fs tab:must mount target first\n");
+    //    return ;
+    //}
     PedPartition *pedpartition = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
@@ -656,9 +657,13 @@ void installer_write_partition_mp (const gchar *part, const gchar *mp)
 
         if (path == NULL || fs == NULL || mp == NULL) {
             g_warning ("write fs tab:path/fs/mp contains one null\n");
+            //g_free (path);
+            //g_free (fs);
+            return ret;
 
         } else {
-            gchar *fs_tab = g_strdup_printf ("%s/etc/fstab", target);
+            //gchar *fs_tab = g_strdup_printf ("%s/etc/fstab", target);
+            gchar *fs_tab = g_strdup ("/etc/fstab");
             struct mntent *mnt;
             FILE *mount_file;
             
@@ -683,10 +688,18 @@ void installer_write_partition_mp (const gchar *part, const gchar *mp)
 
                 if ((addmntent(mount_file, mnt)) == 1) {
                     g_warning ("write fs tab: addmntent for %s failed\n", fs_tab);
+                    g_free (fs_tab);
+                    g_free (fs);
+                    g_free (path);
+                    return ret;
                 } 
 
             } else {
                 g_warning ("write fs tab: setmntent for %s failed\n", fs_tab);
+                g_free (fs_tab);
+                g_free (fs);
+                g_free (path);
+                return ret;
             }
             g_free (fs_tab);
         }
@@ -695,7 +708,12 @@ void installer_write_partition_mp (const gchar *part, const gchar *mp)
         g_free (path);
     } else {
         g_warning ("write fs tab:find pedpartition %s failed\n", part);
+        return ret;
     }
+
+    ret = TRUE;
+
+    return ret;
 }
 
 JS_EXPORT_API 
