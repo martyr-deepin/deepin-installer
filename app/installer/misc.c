@@ -69,31 +69,24 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
 
     GError *error = NULL;
     gint status = -1;
-    gchar *useradd_cmd = NULL;
-    uid_t uid;
-    gid_t gid;
-    gchar *home = NULL;
-    gchar *chown_cmd = NULL;
-    gchar *passwd_cmd = NULL;
 
-    gchar **groups = g_new0 (gchar*, 14);
-    groups[0] = g_strdup("cdrom");
-    groups[1] = g_strdup("floppy");
-    groups[2] = g_strdup("dialout");
-    groups[3] = g_strdup("audio");
-    groups[4] = g_strdup("video");
-    groups[5] = g_strdup("plugdev");
-    groups[6] = g_strdup("sambashare");
-    groups[7] = g_strdup("admin");
-    groups[8] = g_strdup("wheel");
-    groups[9] = g_strdup("netdev");
-    groups[10] = g_strdup("lp");
-    groups[11] = g_strdup("scanner");
-    groups[12] = g_strdup("lpadmin");
+    gchar **groups = g_new0 (gchar*, 15);
+    groups[0] = g_strdup ("cdrom");
+    groups[1] = g_strdup ("floppy");
+    groups[2] = g_strdup ("dialout");
+    groups[3] = g_strdup ("audio");
+    groups[4] = g_strdup ("video");
+    groups[5] = g_strdup ("plugdev");
+    groups[6] = g_strdup ("sambashare");
+    groups[7] = g_strdup ("admin");
+    groups[8] = g_strdup ("wheel");
+    groups[9] = g_strdup ("netdev");
+    groups[10] = g_strdup ("lp");
+    groups[11] = g_strdup ("scanner");
+    groups[12] = g_strdup ("lpadmin");
+    groups[13] = g_strdup ("sudo");
 
-    g_printf ("create user:debug useradd\n");
-
-    useradd_cmd = g_strdup_printf ("useradd -U -r -m --skel /etc/skel --shell /bin/bash %s", username);
+    gchar *useradd_cmd = g_strdup_printf ("useradd -U -m --skel /etc/skel --shell /bin/bash %s", username);
     g_spawn_command_line_sync (useradd_cmd, NULL, NULL, &status, &error);
     if (error != NULL) {
         g_warning ("create user:useradd %s\n", error->message);
@@ -107,32 +100,45 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
     }
     g_free (useradd_cmd);
 
-    struct passwd *user = g_new0 (struct passwd, 1);
-    while ((user = getpwent ()) != NULL) {
-        if (g_strcmp0 (username, user->pw_name) == 0) {
-            home = g_strdup (user->pw_dir);        
-            uid = user->pw_uid;
-            gid = user->pw_gid;
-            break;
-        }
+    //struct passwd *user = g_new0 (struct passwd, 1);
+    //uid_t uid;
+    //gid_t gid;
+    //gchar *home = NULL;
+    //while ((user = getpwent ()) != NULL) {
+    //    if (g_strcmp0 (username, user->pw_name) == 0) {
+    //        home = g_strdup (user->pw_dir);        
+    //        uid = user->pw_uid;
+    //        gid = user->pw_gid;
+    //        break;
+    //    }
+    //}
+    //endpwent ();
+    //g_free (user);
+
+    //if (home == NULL) {
+    //    g_warning ("create user:get user home failed\n");
+
+    //} else {
+    //    if (lchown (home, uid, gid) != 0) {
+    //        g_warning ("create user:lchown failed\n");
+    //    }
+    //    g_free (home);
+    //}
+    gchar *chown_cmd = g_strdup_printf ("chown -hR %s:%s /home/%s", username, username, username);
+    g_spawn_command_line_sync (chown_cmd, NULL, NULL, &status, &error);
+    if (error != NULL) {
+        g_warning ("create user:chown %s\n", error->message);
+        g_error_free (error);
     }
-    endpwent ();
-    g_free (user);
-
-    if (home == NULL) {
-        g_warning ("create user:get user home failed\n");
-
-    } else {
-        if (lchown (home, uid, gid) != 0) {
-            g_warning ("create user:lchown failed\n");
-        }
-        g_free (home);
+    error = NULL;
+    if (status != 0) {
+        g_warning ("create user:chown failed\n");
     }
+    g_free (chown_cmd);
 
-    g_printf ("create user:debug passwd\n");
-
-    passwd_cmd = g_strdup_printf ("echo %s\n %s\n | passwd %s", password, password, username); 
-    //'echo "'+self.password+'\n'+self.password+'" |chroot '+self.insenv.target+' passwd '+self.username
+    //fix me, fix set user passwd
+    gchar *passwd_cmd = g_strdup_printf ("echo %s\n %s\n | passwd %s", password, password, username); 
+    //g_printf ("create user:passwd cmd %s\n", passwd_cmd);
     g_spawn_command_line_sync (passwd_cmd, NULL, NULL, &status, &error);
     if (error != NULL) {
         g_warning ("create user:passwd %s\n", error->message);
@@ -183,7 +189,9 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
 
         groups++;
     }
-    g_strfreev (groups);
+
+    //fix me, can't free groups
+    //g_strfreev (groups);
 
     if (! write_hostname (hostname)) {
         g_warning ("create user:write hostname failed\n");
@@ -867,15 +875,21 @@ static gboolean
 cb_timeout (gpointer data)
 {
     gchar **progress = (gchar **)data;
+    static gchar *report_progress = "0%";
 
     if (*progress != NULL) {
-
-        g_printf ("cb timeout: emit extract progress:%s\n", *progress);
-        //emit_progress ("extract", *progress);
-        if (g_strcmp0 ("100%", *progress) == 0) {
-            g_printf ("cb timeout:extract finish\n");
-            g_strfreev (progress);
-            return FALSE;
+        if (g_strcmp0 (*progress, report_progress) == 0) {
+            g_debug ("cb timeout:progress not changed\n");
+            return TRUE;
+        } else {
+            report_progress = *progress;
+            g_printf ("cb timeout: emit extract progress:%s\n", *progress);
+            //emit_progress ("extract", *progress);
+            if (g_strcmp0 ("100%", *progress) == 0) {
+                g_printf ("cb timeout:extract finish\n");
+                g_strfreev (progress);
+                return FALSE;
+            }
         }
     } else {
         g_warning ("cb timeout:progress null\n");
@@ -884,18 +898,20 @@ cb_timeout (gpointer data)
     return TRUE;
 }
 
-gpointer 
-extract_squashfs (gpointer data)
+//gpointer 
+//extract_squashfs (gpointer data)
+JS_EXPORT_API
+void installer_extract_squashfs ()
 {
     if (g_find_program_in_path ("unsquashfs") == NULL) {
         g_warning ("extract squashfs: unsquashfs not installed\n");
-        return NULL;
+        return ;
     }
 
     extern const gchar *target;
     if (target == NULL) {
         g_warning ("extract squash fs:target is NULL\n");
-        return NULL;
+        return ;
     }
 
     gchar **argv = g_new0 (gchar *, 6);
@@ -936,8 +952,10 @@ extract_squashfs (gpointer data)
     out_channel = g_io_channel_unix_new (std_output);
     err_channel = g_io_channel_unix_new (std_error);
 
-    g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress);
-    g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress);
+    g_io_add_watch_full (out_channel, G_PRIORITY_LOW, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress, (GDestroyNotify) g_io_channel_unref);
+    g_io_add_watch_full (err_channel, G_PRIORITY_LOW, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress, (GDestroyNotify) g_io_channel_unref);
+    //g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress);
+    //g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress);
 
     *timeout_id = g_timeout_add (100, (GSourceFunc) cb_timeout, progress);
     //g_printf ("extract squashfs:timout id %d\n", *timeout_id);
@@ -946,13 +964,13 @@ extract_squashfs (gpointer data)
     g_strfreev (argv);
 }
 
-JS_EXPORT_API 
-void installer_extract_squashfs ()
-{
-    GThread *thread = g_thread_new ("extract", (GThreadFunc) extract_squashfs, NULL);
-
-    g_thread_unref (thread);
-}
+//JS_EXPORT_API 
+//void installer_extract_squashfs ()
+//{
+//    GThread *thread = g_thread_new ("extract", (GThreadFunc) extract_squashfs, NULL);
+//
+//    g_thread_unref (thread);
+//}
 
 JS_EXPORT_API
 gboolean installer_mount_procfs ()
