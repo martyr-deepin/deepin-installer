@@ -33,6 +33,14 @@ JS_EXPORT_API JSObjectRef installer_get_system_users ();
 
 JS_EXPORT_API gboolean installer_create_user (const gchar *username, const gchar *hostname, const gchar *password);
 
+gboolean add_user (const gchar *username);
+
+gboolean set_user_home (const gchar *username);
+
+gboolean set_user_password (const gchar *username, const gchar *password);
+
+gboolean set_group (const gchar *username);
+
 gboolean write_hostname (const gchar *hostname);
 
 JS_EXPORT_API void installer_reboot ();

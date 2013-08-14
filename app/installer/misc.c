@@ -45,7 +45,7 @@ JSObjectRef installer_get_system_users()
 {
     JSObjectRef array = json_array_create ();
 
-    struct passwd *user = g_new0 (struct passwd, 1);
+    struct passwd *user;
     gchar *username = NULL;
     int i = 0;
 
@@ -55,15 +55,142 @@ JSObjectRef installer_get_system_users()
         i++;
         g_free (username);
     }
-
     endpwent ();
-    g_free (user);
 
     return array;
 }
 
 JS_EXPORT_API 
 gboolean installer_create_user (const gchar *username, const gchar *hostname, const gchar *password)
+{
+    gboolean ret = FALSE;
+
+    if (!add_user (username)) {
+        g_warning ("create user:add user failed\n");
+        //return ret;
+    }
+
+    if (!set_user_home (username)) {
+        g_warning ("create user:set user home failed\n");
+        //return ret;
+    }
+
+    if (!set_user_password (username, password)) {
+        g_warning ("create user:write hostname failed\n");
+        //return ret;
+    }
+
+    if (!set_group (username)) {
+        g_warning ("create user:set group failed\n");
+        //return ret;
+    }
+    
+    if (!write_hostname (hostname)) {
+        g_warning ("create user:write hostname failed\n");
+        //return ret;
+    }
+
+    ret = TRUE;
+
+    return ret;
+}
+
+gboolean 
+add_user (const gchar *username)
+{
+    gboolean ret = FALSE;
+
+    GError *error = NULL;
+    gint status = -1;
+
+    gchar *useradd_cmd = g_strdup_printf ("useradd -U -m --skel /etc/skel --shell /bin/bash %s", username);
+    g_spawn_command_line_sync (useradd_cmd, NULL, NULL, &status, &error);
+    if (error != NULL) {
+        g_warning ("create user:useradd %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+    if (status != 0) {
+        g_warning ("create user:user add failed\n");
+        g_free (useradd_cmd);
+        return ret;
+    }
+    g_free (useradd_cmd);
+
+    ret = TRUE;
+
+    return ret;
+}
+
+gboolean 
+set_user_home (const gchar *username)
+{
+    gboolean ret = FALSE;
+
+    GError *error = NULL;
+    gint status = -1;
+
+    //chown home to user
+    struct passwd *user;
+    user = getpwnam (username);
+    if (user != NULL) {
+        gchar *home = user->pw_dir;
+        uid_t uid = user->pw_uid;
+        gid_t gid = user->pw_gid;
+
+        if (lchown (home, uid, gid) != 0) {
+            g_warning ("create user:lchown failed\n");
+        }
+        g_free (home);
+
+    } else {
+        g_warning ("create user:getpwnam %s\n", strerror (errno));
+
+        gchar *chown_cmd = g_strdup_printf ("chown -hR %s:%s /home/%s", username, username, username);
+        g_spawn_command_line_sync (chown_cmd, NULL, NULL, NULL, &error);
+        if (error != NULL) {
+            g_warning ("create user:chown %s\n", error->message);
+            g_error_free (error);
+        }
+        error = NULL;
+        g_free (chown_cmd);
+    }
+
+    ret = TRUE;
+
+    return ret;
+}
+
+gboolean 
+set_user_password (const gchar *username, const gchar *password)
+{
+    gboolean ret = FALSE;
+
+    GError *error = NULL;
+    gint status = -1;
+    //fix me, fix set user passwd
+    gchar *passwd_cmd = g_strdup_printf ("echo %s\n %s\n | passwd %s", password, password, username); 
+    //g_printf ("create user:passwd cmd %s\n", passwd_cmd);
+    g_spawn_command_line_sync (passwd_cmd, NULL, NULL, &status, &error);
+    if (error != NULL) {
+        g_warning ("create user:passwd %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+    if (status != 0) {
+        g_warning ("create user:set user password failed\n");
+        g_free (passwd_cmd);
+        return ret;
+    }
+    g_free (passwd_cmd);
+
+    ret = TRUE;
+
+    return ret;
+}
+
+gboolean 
+set_group (const gchar *username)
 {
     gboolean ret = FALSE;
 
@@ -85,72 +212,6 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
     groups[11] = g_strdup ("scanner");
     groups[12] = g_strdup ("lpadmin");
     groups[13] = g_strdup ("sudo");
-
-    gchar *useradd_cmd = g_strdup_printf ("useradd -U -m --skel /etc/skel --shell /bin/bash %s", username);
-    g_spawn_command_line_sync (useradd_cmd, NULL, NULL, &status, &error);
-    if (error != NULL) {
-        g_warning ("create user:useradd %s\n", error->message);
-        g_error_free (error);
-    }
-    error = NULL;
-    if (status != 0) {
-        g_warning ("create user:user add failed\n");
-        g_free (useradd_cmd);
-        return ret;
-    }
-    g_free (useradd_cmd);
-
-    //struct passwd *user = g_new0 (struct passwd, 1);
-    //uid_t uid;
-    //gid_t gid;
-    //gchar *home = NULL;
-    //while ((user = getpwent ()) != NULL) {
-    //    if (g_strcmp0 (username, user->pw_name) == 0) {
-    //        home = g_strdup (user->pw_dir);        
-    //        uid = user->pw_uid;
-    //        gid = user->pw_gid;
-    //        break;
-    //    }
-    //}
-    //endpwent ();
-    //g_free (user);
-
-    //if (home == NULL) {
-    //    g_warning ("create user:get user home failed\n");
-
-    //} else {
-    //    if (lchown (home, uid, gid) != 0) {
-    //        g_warning ("create user:lchown failed\n");
-    //    }
-    //    g_free (home);
-    //}
-    gchar *chown_cmd = g_strdup_printf ("chown -hR %s:%s /home/%s", username, username, username);
-    g_spawn_command_line_sync (chown_cmd, NULL, NULL, &status, &error);
-    if (error != NULL) {
-        g_warning ("create user:chown %s\n", error->message);
-        g_error_free (error);
-    }
-    error = NULL;
-    if (status != 0) {
-        g_warning ("create user:chown failed\n");
-    }
-    g_free (chown_cmd);
-
-    //fix me, fix set user passwd
-    gchar *passwd_cmd = g_strdup_printf ("echo %s\n %s\n | passwd %s", password, password, username); 
-    //g_printf ("create user:passwd cmd %s\n", passwd_cmd);
-    g_spawn_command_line_sync (passwd_cmd, NULL, NULL, &status, &error);
-    if (error != NULL) {
-        g_warning ("create user:passwd %s\n", error->message);
-        g_error_free (error);
-    }
-    error = NULL;
-    if (status != 0) {
-        g_warning ("create user:set user password failed\n");
-        g_free (passwd_cmd);
-        return ret;
-    }
-    g_free (passwd_cmd);
 
     while (*groups != NULL) {
         gchar *groupadd_cmd = g_strdup_printf ("groupadd -r -f %s", *groups);
@@ -189,17 +250,8 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
 
         groups++;
     }
-
     //fix me, can't free groups
     //g_strfreev (groups);
-
-    if (! write_hostname (hostname)) {
-        g_warning ("create user:write hostname failed\n");
-        return ret;
-    }
-
-    ret = TRUE;
-
     return ret;
 }
 
@@ -215,13 +267,6 @@ write_hostname (const gchar *hostname)
         return ret;
     }
 
-    //extern const gchar* target;
-    //if (target == NULL) {
-    //    g_warning ("write hostname:target is NULL\n");
-    //    return ret;
-    //}
-
-    //gchar *hostname_file = g_strdup_printf ("%s/etc/hostname", target);
     gchar *hostname_file = g_strdup ("/etc/hostname");
 
     g_file_set_contents (hostname_file, hostname, -1, &error);
@@ -233,8 +278,6 @@ write_hostname (const gchar *hostname)
     }
     error = NULL;
     g_free (hostname_file);
-
-    //gchar *hosts_file = g_strdup_printf ("%s/etc/hosts", target);
 
     gchar *hosts_file = g_strdup ("/etc/hosts");
     const gchar *lh = "127.0.0.1  localhost\n";

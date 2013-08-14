@@ -655,11 +655,6 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
 {
     gboolean ret = FALSE;
 
-    //if (target == NULL) {
-    //    g_warning ("write fs tab:target is NULL\n");
-    //    return ret;
-    //}
-
     if (mp == NULL) {
         g_warning ("write fs tab:mount point is NULL\n");
         return ret;
@@ -690,7 +685,6 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
             g_warning ("write fs tab:get partition %s fs failed\n", part);
             return ret;
         } else {
-            //gchar *fstab_path = g_strdup_printf ("%s/etc/fstab", target);
             struct mntent mnt;
             FILE *mount_file = setmntent ("/etc/fstab", "a");
             if (mount_file != NULL) {
@@ -724,7 +718,6 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
             if (endmntent (mount_file) != 1) {
                 g_warning ("write fs tab: endmntent failed\n");
             }
-            //g_free (fstab_path);
         }
         g_free (fs);
         g_free (path);
