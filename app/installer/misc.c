@@ -161,28 +161,96 @@ set_user_home (const gchar *username)
     return ret;
 }
 
+static void
+watch_passwd_child (GPid pid, gint status, gpointer data)
+{
+    g_printf ("watch password child:set password finish\n");
+
+    g_spawn_close_pid (pid);
+}
+
+static gboolean 
+passwd_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
+{
+    gchar *password = (gchar *)data;
+
+    gchar *string;
+    gsize  size;
+
+    if (cond == G_IO_HUP) {
+        g_io_channel_unref (channel);
+        return FALSE;
+    }
+
+    g_io_channel_read_line (channel, &string, &size, NULL, NULL);
+    //fix me, put password here
+    g_printf ("password out watch:%s\n", string); 
+
+    g_free (string);
+
+    return TRUE;
+}
+
+static gboolean
+passwd_err_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
+{
+    gchar *string;
+    gsize  size;
+
+    if (cond == G_IO_HUP) {
+        g_io_channel_unref (channel);
+        return FALSE;
+    }
+
+    g_io_channel_read_line (channel, &string, &size, NULL, NULL);
+    //fix me, parse error here
+    g_printf ("password err watch:%s\n", string); 
+
+    g_free (string);
+
+    return TRUE;
+}
+
 gboolean 
 set_user_password (const gchar *username, const gchar *password)
 {
     gboolean ret = FALSE;
 
+    gchar **argv = g_new0 (gchar *, 3);
+    argv[0] = g_strdup ("passwd");
+    argv[1] = g_strdup (username);
+
+    gint std_output;
+    gint std_error;
     GError *error = NULL;
-    gint status = -1;
-    //fix me, fix set user passwd
-    gchar *passwd_cmd = g_strdup_printf ("echo %s\n %s\n | passwd %s", password, password, username); 
-    //g_printf ("create user:passwd cmd %s\n", passwd_cmd);
-    g_spawn_command_line_sync (passwd_cmd, NULL, NULL, &status, &error);
+    GPid pid;
+    GIOChannel *out_channel = NULL;
+    GIOChannel *err_channel = NULL;
+
+    g_spawn_async_with_pipes (NULL,
+                              argv,
+                              NULL,
+                              G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
+                              NULL,
+                              NULL,
+                              &pid,
+                              NULL,
+                              &std_output,
+                              &std_error,
+                              &error);
     if (error != NULL) {
-        g_warning ("create user:passwd %s\n", error->message);
+        g_warning ("set user password:spawn async pipes %s\n", error->message);
         g_error_free (error);
     }
     error = NULL;
-    if (status != 0) {
-        g_warning ("create user:set user password failed\n");
-        g_free (passwd_cmd);
-        return ret;
-    }
-    g_free (passwd_cmd);
+
+    out_channel = g_io_channel_unix_new (std_output);
+    err_channel = g_io_channel_unix_new (std_error);
+
+    g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) passwd_out_watch, (gpointer) password);
+    g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) passwd_err_watch, (gpointer) password);
+
+    g_child_watch_add (pid, (GChildWatchFunc) watch_passwd_child, NULL);
 
     ret = TRUE;
 
@@ -252,6 +320,8 @@ set_group (const gchar *username)
     }
     //fix me, can't free groups
     //g_strfreev (groups);
+    ret = TRUE;
+
     return ret;
 }
 
