@@ -812,12 +812,16 @@ watch_extract_child (GPid pid, gint status, gpointer data)
     }
 
     gint* timeout_id = (gint *) (data);
+    //g_printf ("watch extract child:timeout id %d\n", *timeout_id);
+
     if (*timeout_id > 0) {
         g_source_remove (*timeout_id);
         g_free (timeout_id);
     } else {
         g_warning ("watch extract child:timeout id less than 0\n");
     }
+    g_printf ("watch extract child:extract finish\n");
+    //emit_progress ("extract", *progress);
 
     g_spawn_close_pid (pid);
 }
@@ -871,25 +875,18 @@ cb_err_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
     return TRUE;
 }
 
+//will stop automaticly when extract finish
 static gboolean
 cb_timeout (gpointer data)
 {
     gchar **progress = (gchar **)data;
-    static gchar *report_progress = "0%";
 
-    if (*progress != NULL) {
-        if (g_strcmp0 (*progress, report_progress) == 0) {
-            g_debug ("cb timeout:progress not changed\n");
-            return TRUE;
-        } else {
-            report_progress = *progress;
+    if (progress != NULL) {
+        if (*progress != NULL) {
             g_printf ("cb timeout: emit extract progress:%s\n", *progress);
             //emit_progress ("extract", *progress);
-            if (g_strcmp0 ("100%", *progress) == 0) {
-                g_printf ("cb timeout:extract finish\n");
-                g_strfreev (progress);
-                return FALSE;
-            }
+        } else {
+            g_warning ("cb timeout:*progress null\n");
         }
     } else {
         g_warning ("cb timeout:progress null\n");
@@ -898,8 +895,6 @@ cb_timeout (gpointer data)
     return TRUE;
 }
 
-//gpointer 
-//extract_squashfs (gpointer data)
 JS_EXPORT_API
 void installer_extract_squashfs ()
 {
@@ -929,7 +924,6 @@ void installer_extract_squashfs ()
     GIOChannel *err_channel = NULL;
 
     gint* timeout_id = g_new0 (gint, 1);
-
     gchar** progress = g_new0 (gchar*, 1);
 
     g_spawn_async_with_pipes (NULL,
@@ -957,20 +951,12 @@ void installer_extract_squashfs ()
     //g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress);
     //g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress);
 
-    *timeout_id = g_timeout_add (100, (GSourceFunc) cb_timeout, progress);
+    *timeout_id = g_timeout_add (300, (GSourceFunc) cb_timeout, progress);
     //g_printf ("extract squashfs:timout id %d\n", *timeout_id);
     g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, timeout_id);
 
     g_strfreev (argv);
 }
-
-//JS_EXPORT_API 
-//void installer_extract_squashfs ()
-//{
-//    GThread *thread = g_thread_new ("extract", (GThreadFunc) extract_squashfs, NULL);
-//
-//    g_thread_unref (thread);
-//}
 
 JS_EXPORT_API
 gboolean installer_mount_procfs ()
