@@ -21,7 +21,6 @@
 
 #include "part_util.h"
 #include "fs_util.h"
-#include <mntent.h>
 
 static GHashTable *disks;
 static GHashTable *partitions;
@@ -656,10 +655,10 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
 {
     gboolean ret = FALSE;
 
-    if (target == NULL) {
-        g_warning ("write fs tab:target is NULL\n");
-        return ret;
-    }
+    //if (target == NULL) {
+    //    g_warning ("write fs tab:target is NULL\n");
+    //    return ret;
+    //}
 
     if (mp == NULL) {
         g_warning ("write fs tab:mount point is NULL\n");
@@ -691,28 +690,28 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
             g_warning ("write fs tab:get partition %s fs failed\n", part);
             return ret;
         } else {
-            gchar *fstab_path = g_strdup_printf ("%s/etc/fstab", target);
-            struct mntent *mnt = g_new0 (struct mntent, 1);
-            FILE *mount_file = setmntent (fstab_path, "rw");
+            //gchar *fstab_path = g_strdup_printf ("%s/etc/fstab", target);
+            struct mntent mnt;
+            FILE *mount_file = setmntent ("/etc/fstab", "a");
             if (mount_file != NULL) {
-                mnt->mnt_fsname = path;
-                mnt->mnt_dir = g_strdup (mp);
-                mnt->mnt_type = fs;
-                mnt->mnt_opts = g_strdup ("defaults");
-                mnt->mnt_freq = 0;
-                mnt->mnt_passno = 2;
+                mnt.mnt_fsname = path;
+                mnt.mnt_dir = g_strdup (mp);
+                mnt.mnt_type = fs;
+                mnt.mnt_opts = "defaults";
+                mnt.mnt_freq = 0;
+                mnt.mnt_passno = 2;
 
                 if (g_strcmp0 ("/", mp) == 0) {
-                    mnt->mnt_opts = g_strdup ("errors=remount-ro");
-                    mnt->mnt_passno = 1;
+                    mnt.mnt_opts = "errors=remount-ro";
+                    mnt.mnt_passno = 1;
                 } else if (g_strcmp0 ("swap", mp) == 0 || g_strcmp0 ("linux-swap", fs) == 0) {
-                    mnt->mnt_type = g_strdup ("swap");
-                    mnt->mnt_opts = g_strdup ("sw,pri=1");
-                    mnt->mnt_passno = 0;
+                    mnt.mnt_type = "swap";
+                    mnt.mnt_opts = "sw,pri=1";
+                    mnt.mnt_passno = 0;
                 }
 
-                if ((addmntent(mount_file, mnt)) == 1) {
-                    g_warning ("write fs tab: addmntent failed\n");
+                if ((addmntent(mount_file, &mnt)) != 0) {
+                    g_warning ("write fs tab: addmntent failed %s\n", strerror (errno));
                 } else {
                     g_debug ("write fs tab: addmntent succeed\n");
                     ret = TRUE;
@@ -720,9 +719,12 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
             } else {
                 g_warning ("write fs tab: setmntent failed\n");
             }
-            fclose (mount_file);
-            g_free (mnt);
-            g_free (fstab_path);
+
+            fflush (mount_file);
+            if (endmntent (mount_file) != 1) {
+                g_warning ("write fs tab: endmntent failed\n");
+            }
+            //g_free (fstab_path);
         }
         g_free (fs);
         g_free (path);

@@ -23,6 +23,8 @@
 
 #include <parted/parted.h>
 #include <stdio.h>
+#include <errno.h>
+#include <mntent.h>
 #include <glib.h>
 #include <glib/gprintf.h>
 #include "utils.h"
