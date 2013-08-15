@@ -40,6 +40,11 @@ GHashTable *layout_variants_hash = NULL;
 static GList *timezone_list = NULL;
 static GList *filelist = NULL;
 
+struct pwd_data {
+    GIOChannel *channel;
+    const gchar *password;
+};
+
 JS_EXPORT_API 
 JSObjectRef installer_get_system_users()
 {
@@ -165,50 +170,36 @@ static void
 watch_passwd_child (GPid pid, gint status, gpointer data)
 {
     g_printf ("watch password child:set password finish\n");
-
     g_spawn_close_pid (pid);
 }
 
-static gboolean 
+static gboolean
 passwd_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
 {
-    gchar *password = (gchar *)data;
-
-    gchar *string;
+    gchar buf[4096];
     gsize  size;
+    GError *error = NULL;
 
     if (cond == G_IO_HUP) {
         g_io_channel_unref (channel);
         return FALSE;
     }
 
-    g_io_channel_read_line (channel, &string, &size, NULL, NULL);
-    //fix me, put password here
-    g_printf ("password out watch:%s\n", string); 
+    if (g_io_channel_read_chars (channel, buf, 4096, NULL, &error) != G_IO_STATUS_NORMAL) {
+        g_warning ("passwd out watch: read chars %s\n", error->message);    
+        g_error_free (error);
+    }
+    error = NULL;
 
-    g_free (string);
+    //to be implemented
 
     return TRUE;
 }
 
-static gboolean
-passwd_err_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
+static void
+ignore_sigpipe (gpointer data)
 {
-    gchar *string;
-    gsize  size;
-
-    if (cond == G_IO_HUP) {
-        g_io_channel_unref (channel);
-        return FALSE;
-    }
-
-    g_io_channel_read_line (channel, &string, &size, NULL, NULL);
-    //fix me, parse error here
-    g_printf ("password err watch:%s\n", string); 
-
-    g_free (string);
-
-    return TRUE;
+    signal (SIGPIPE, SIG_IGN);    
 }
 
 gboolean 
@@ -220,23 +211,20 @@ set_user_password (const gchar *username, const gchar *password)
     argv[0] = g_strdup ("passwd");
     argv[1] = g_strdup (username);
 
-    gint std_output;
-    gint std_error;
     GError *error = NULL;
     GPid pid;
-    GIOChannel *out_channel = NULL;
-    GIOChannel *err_channel = NULL;
+    gint std_in, std_out, std_err;
 
     g_spawn_async_with_pipes (NULL,
                               argv,
                               NULL,
                               G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
-                              NULL,
+                              ignore_sigpipe,
                               NULL,
                               &pid,
-                              NULL,
-                              &std_output,
-                              &std_error,
+                              &std_in,
+                              &std_out,
+                              &std_err,
                               &error);
     if (error != NULL) {
         g_warning ("set user password:spawn async pipes %s\n", error->message);
@@ -244,14 +232,46 @@ set_user_password (const gchar *username, const gchar *password)
     }
     error = NULL;
 
-    out_channel = g_io_channel_unix_new (std_output);
-    err_channel = g_io_channel_unix_new (std_error);
+    if ((dup2 (std_err, std_out)) == -1) {
+        g_warning ("set user password:dup %s\n", strerror (errno));
+    }
+
+    //fix me, free io channel
+    GIOChannel *in_channel = g_io_channel_unix_new (std_in);
+    GIOChannel *out_channel = g_io_channel_unix_new (std_out);
+
+    if (g_io_channel_set_encoding (in_channel, NULL, &error) != G_IO_STATUS_NORMAL) {
+        g_warning ("set user password:encoding in channel %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    if (g_io_channel_set_encoding (out_channel, NULL, &error) != G_IO_STATUS_NORMAL) {
+        g_warning ("set user password:encoding out channel %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    if (g_io_channel_set_flags (in_channel, G_IO_FLAG_NONBLOCK, &error) != G_IO_STATUS_NORMAL) {
+        g_warning ("set user password:nonblock in channel %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    if (g_io_channel_set_flags (out_channel, G_IO_FLAG_NONBLOCK, &error) != G_IO_STATUS_NORMAL) {
+        g_warning ("set user password:nonblock out channel %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    g_io_channel_set_buffered (in_channel, FALSE);
+    g_io_channel_set_buffered (out_channel, FALSE);
 
     g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) passwd_out_watch, (gpointer) password);
-    g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) passwd_err_watch, (gpointer) password);
 
     g_child_watch_add (pid, (GChildWatchFunc) watch_passwd_child, NULL);
 
+    g_strfreev (argv);
     ret = TRUE;
 
     return ret;
@@ -1055,7 +1075,7 @@ void installer_extract_squashfs ()
         g_error_free (error);
     }
     error = NULL;
-
+    //fix me, free io channel
     out_channel = g_io_channel_unix_new (std_output);
     err_channel = g_io_channel_unix_new (std_error);
 
