@@ -37,7 +37,6 @@ struct PasswdHandler {
     GPid pid;
     GIOChannel *in_channel;
     GIOChannel *out_channel;
-    GQueue *queue;
     guint child_watch_id;
     guint stdout_watch_id;
 };

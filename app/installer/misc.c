@@ -66,8 +66,6 @@ static void
 free_passwd_handler (struct PasswdHandler *handler)
 {
     GError *error = NULL;
-
-    g_queue_free (handler->queue);
     
     if (handler->child_watch_id != 0) {
         g_source_remove (handler->child_watch_id);
@@ -138,28 +136,21 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
         //return ret;
     }
 
-    g_warning ("create user: set user password\n");
     struct PasswdHandler *handler = g_new0 (struct PasswdHandler, 1);
-    handler->username = username;
-    handler->password = password;
+    handler->username = g_strdup (username);
+    handler->password = g_strdup (password);
     handler->pid = -1;
     handler->in_channel = NULL;
     handler->out_channel = NULL;
-    handler->queue = g_queue_new (); 
     handler->child_watch_id = 0;
     handler->stdout_watch_id = 0;
 
-    g_queue_push_tail (handler->queue, g_strdup (handler->password));
-    g_queue_push_tail (handler->queue, g_strdup (handler->password));
-
-    g_warning ("create user: set user password begin\n");
     if (!set_user_password (handler)) {
         g_warning ("create user:set user password failed\n");
         //return ret;
     } else {
         free_passwd_handler (handler);
     }
-    g_warning ("create user finish\n");
 
     ret = TRUE;
 
@@ -235,15 +226,6 @@ set_user_home (const gchar *username)
 static void
 watch_passwd_child (GPid pid, gint status, struct PasswdHandler *handler)
 {
-    //if (WIFEXITED (status)) {
-    //    if (WEXITSTATUS (status) >= 255) {
-    //        g_warning ("Child exited unexpectedly");
-    //    }
-    //    if (WEXITSTATUS (status) == 0) {
-    //        g_printf ("watch password child:set password finish\n");
-    //    }
-    //}
-
     g_printf ("watch password child:set password finish\n");
     free_passwd_handler (handler);
 }
@@ -251,14 +233,15 @@ watch_passwd_child (GPid pid, gint status, struct PasswdHandler *handler)
 static gboolean
 passwd_out_watch (GIOChannel *channel, GIOCondition cond, struct PasswdHandler *handler)
 {
-    g_printf ("passwd out watch called *****************************\n");
+    static int write_count = 0;
+    if (write_count > 1) {
+        return False;
+    }
 
-    gchar buf[BUFSIZE];  
-    gsize bytes_read;
-    gsize bytes_written;
+    gchar buf[BUFSIZE];
     GError *error = NULL;        
 
-    if (g_io_channel_read_chars (channel, buf, BUFSIZE, &bytes_read, &error) != G_IO_STATUS_NORMAL) {
+    if (g_io_channel_read_chars (channel, buf, BUFSIZE, NULL, &error) != G_IO_STATUS_NORMAL) {
         g_warning ("passwd out watch:read error %s", error->message);
         g_error_free (error);
         return TRUE;
@@ -266,17 +249,16 @@ passwd_out_watch (GIOChannel *channel, GIOCondition cond, struct PasswdHandler *
     error = NULL;
     g_printf ("passwd out watch: read %s\n", buf);
 
-    gchar *passwd = g_queue_pop_head (handler->queue);
+    gchar *passwd = g_strdup_printf ("%s\n", handler->password);
+    //g_printf ("passwd out watch:write password %s\n", handler->password);
     if (passwd != NULL) {
-        if (g_io_channel_write_chars (handler->in_channel, passwd, -1, &bytes_written, &error) != G_IO_STATUS_NORMAL) {
+        if (g_io_channel_write_chars (handler->in_channel, passwd, -1, NULL, &error) != G_IO_STATUS_NORMAL) {
             g_warning ("passwd out watch:write %s to channel: %s", passwd, error->message);
             g_error_free (error);
         }
         error = NULL;
-
-        g_printf ("passwd out watch: write %s\n", passwd);
-        memset (passwd, 0, strlen (passwd));
         g_free (passwd);
+        write_count = write_count + 1;
     }
 
     return TRUE;
@@ -330,8 +312,6 @@ set_user_password (struct PasswdHandler *handler)
         return ret;
     }
 
-    g_warning ("set user password:set channel\n");
-
     handler->in_channel = g_io_channel_unix_new (std_in);
     handler->out_channel = g_io_channel_unix_new (std_out);
 
@@ -351,15 +331,10 @@ set_user_password (struct PasswdHandler *handler)
     g_io_channel_set_buffered (handler->in_channel, FALSE);
     g_io_channel_set_buffered (handler->out_channel, FALSE);
 
-    g_queue_push_tail (handler->queue, g_strdup (handler->password));
-    g_queue_push_tail (handler->queue, g_strdup (handler->password));
-
-    g_warning ("set user password:watch stdout\n");
-    handler->stdout_watch_id = g_io_add_watch (handler->out_channel, G_IO_IN | G_IO_PRI | G_IO_OUT, (GIOFunc) passwd_out_watch, handler);
+    handler->stdout_watch_id = g_io_add_watch (handler->out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) passwd_out_watch, handler);
     handler->child_watch_id = g_child_watch_add (handler->pid, (GChildWatchFunc) watch_passwd_child, handler);
 
     ret = TRUE;
-    g_warning ("set user password:return true\n");
 
     return ret;
 }
