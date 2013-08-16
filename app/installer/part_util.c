@@ -819,6 +819,8 @@ gboolean installer_mount_target (const gchar *part)
                 }
                 error = NULL;
                 g_free (cmd);
+            } else {
+                g_warning ("mount target:make target dir failed\n");
             }
             g_free (path);
         }

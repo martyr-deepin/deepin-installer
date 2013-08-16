@@ -26,8 +26,21 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <signal.h>
 #include "utils.h"
 #include "jsextension.h"
+
+struct PasswdHandler {
+    const gchar *username;
+    const gchar *password;
+    GPid pid;
+    GIOChannel *in_channel;
+    GIOChannel *out_channel;
+    GQueue *queue;
+    guint child_watch_id;
+    guint stdout_watch_id;
+};
 
 JS_EXPORT_API JSObjectRef installer_get_system_users ();
 
@@ -37,7 +50,7 @@ gboolean add_user (const gchar *username);
 
 gboolean set_user_home (const gchar *username);
 
-gboolean set_user_password (const gchar *username, const gchar *password);
+gboolean set_user_password (struct PasswdHandler *handler);
 
 gboolean set_group (const gchar *username);
 
