@@ -251,7 +251,7 @@ watch_passwd_child (GPid pid, gint status, struct PasswdHandler *handler)
 static gboolean
 passwd_out_watch (GIOChannel *channel, GIOCondition cond, struct PasswdHandler *handler)
 {
-    g_printf ("passwd out watch called\n");
+    g_printf ("passwd out watch called *****************************\n");
 
     gchar buf[BUFSIZE];  
     gsize bytes_read;
@@ -355,10 +355,12 @@ set_user_password (struct PasswdHandler *handler)
     g_queue_push_tail (handler->queue, g_strdup (handler->password));
 
     g_warning ("set user password:watch stdout\n");
-    handler->stdout_watch_id = g_io_add_watch (handler->out_channel, G_IO_IN | G_IO_PRI | G_IO_HUP, (GIOFunc) passwd_out_watch, handler);
+    handler->stdout_watch_id = g_io_add_watch (handler->out_channel, G_IO_IN | G_IO_PRI | G_IO_OUT, (GIOFunc) passwd_out_watch, handler);
     handler->child_watch_id = g_child_watch_add (handler->pid, (GChildWatchFunc) watch_passwd_child, handler);
 
     ret = TRUE;
+    g_warning ("set user password:return true\n");
+
     return ret;
 }
 
