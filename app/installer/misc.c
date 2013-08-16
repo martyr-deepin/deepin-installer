@@ -145,12 +145,13 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
     handler->child_watch_id = 0;
     handler->stdout_watch_id = 0;
 
-    if (!set_user_password (handler)) {
-        g_warning ("create user:set user password failed\n");
-        //return ret;
-    } else {
-        free_passwd_handler (handler);
-    }
+    //if (!set_user_password (handler)) {
+    //    g_warning ("create user:set user password failed\n");
+    //    //return ret;
+    //} else {
+    //    free_passwd_handler (handler);
+    //}
+    set_user_password (handler);
 
     ret = TRUE;
 
