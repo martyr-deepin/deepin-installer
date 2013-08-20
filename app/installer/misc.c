@@ -734,7 +734,9 @@ void walk_directory (const gchar *root, void *callback (const gchar *))
             }
             error = NULL;
         }
-        //g_object_unref (child_info);
+        if (child_info != NULL) {
+            g_object_unref (child_info);
+        }
         g_object_unref (enumerator);
 
     } else {
