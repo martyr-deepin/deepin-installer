@@ -80,6 +80,7 @@ void installer_finish_install ()
     //g_free (umount_proc);
     //g_free (umount_sys);
 
+    ped_device_free_all ();
     gtk_main_quit ();
 }
 

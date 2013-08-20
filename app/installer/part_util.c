@@ -60,7 +60,6 @@ void init_parted ()
             continue;
         } 
 
-        //fixed: when there is no partition table on the device
         if (ped_disk_probe (device) != NULL) {
             disk = ped_disk_new (device);
 
@@ -643,14 +642,12 @@ gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk
             return ret;
         }
 
-        //fix me, whether need to check fs
-        //if (part_type != PED_PARTITION_EXTENDED) {
-        //    part_fs = ped_file_system_type_get (fs);
-        //    if (part_fs == NULL) {
-        //        g_warning("new disk partition:must spec file system %s\n", fs);
-        //        return ret;
-        //    }
-        //}
+        if (part_type != PED_PARTITION_EXTENDED) {
+            part_fs = ped_file_system_type_get (fs);
+            if (part_fs == NULL) {
+                g_warning("new disk partition:ped file system type get for %s is NULL\n", fs);
+            }
+        }
 
         part_start = (PedSector) start;
         part_end = (PedSector) end;

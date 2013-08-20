@@ -363,9 +363,10 @@ set_group (const gchar *username)
     groups[11] = g_strdup ("scanner");
     groups[12] = g_strdup ("lpadmin");
     groups[13] = g_strdup ("sudo");
-
-    while (*groups != NULL) {
-        gchar *groupadd_cmd = g_strdup_printf ("groupadd -r -f %s", *groups);
+    int i ;
+    
+    for (i = 0; i < 14; i++) {
+        gchar *groupadd_cmd = g_strdup_printf ("groupadd -r -f %s", groups[i]);
         g_printf ("create user:groupadd cmd %s\n", groupadd_cmd);
 
         g_spawn_command_line_sync (groupadd_cmd, NULL, NULL, &status, &error);
@@ -375,14 +376,13 @@ set_group (const gchar *username)
         }
         error = NULL;
         if (status != 0) {
-            g_warning ("create user:group add failed for %s\n", *groups);
+            g_warning ("create user:group add failed for %s\n", groups[i]);
             g_free (groupadd_cmd);
-            groups++;
             continue;
         }
         g_free (groupadd_cmd);
 
-        gchar *gpasswd_cmd = g_strdup_printf ("gpasswd --add %s %s", username, *groups);
+        gchar *gpasswd_cmd = g_strdup_printf ("gpasswd --add %s %s", username, groups[i]);
         g_printf ("create user:gpasswd cmd %s\n", gpasswd_cmd);
 
         g_spawn_command_line_sync (gpasswd_cmd, NULL, NULL, &status, &error);
@@ -392,17 +392,14 @@ set_group (const gchar *username)
         }
         error = NULL;
         if (status != 0) {
-            g_warning ("create user:gpasswd failed for %s\n", *groups);
+            g_warning ("create user:gpasswd failed for %s\n", groups[i]);
             g_free (gpasswd_cmd);
-            groups++;
             continue;
         }
         g_free (gpasswd_cmd);
-
-        groups++;
     }
-    //fix me, can't free groups as groups++ out of the original string array
-    //g_strfreev (groups);
+    g_strfreev (groups);
+
     ret = TRUE;
 
     return ret;
