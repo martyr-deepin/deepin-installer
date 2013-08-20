@@ -392,17 +392,64 @@ gchar* installer_get_partition_label (const gchar *part)
     gchar *label = NULL;
 
     gchar *path = NULL;
-    const gchar *fs = installer_get_partition_fs (part);
     PedPartition *pedpartition = NULL;
+    GError *error = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
         path = ped_partition_get_path (pedpartition);
-        if (path != NULL && fs != NULL) {
-            label = get_partition_label (path, fs);
+        if (path != NULL) {
+            gchar **tmp = g_strsplit (path, "/", 3);
+            gchar *device = g_strdup(tmp[2]);
+            const gchar *object_path = NULL;
+
+            object_path = g_strdup_printf ("/org/freedesktop/UDisks2/block_devices/%s", device);
+            //g_printf ("get partition label: object path %s\n", object_path);
+            g_free (device);
+            g_strfreev (tmp);
+
+            if (g_variant_is_object_path (object_path)) {
+                GDBusProxy *proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+                    G_DBUS_PROXY_FLAGS_NONE,
+                    NULL,
+                    "org.freedesktop.UDisks2",
+                    object_path,
+                    "org.freedesktop.UDisks2.Block",
+                    NULL,
+                    &error);
+
+                if (proxy != NULL && error == NULL) {
+                    GVariant *label_var = g_dbus_proxy_get_cached_property (proxy, "IdLabel");
+
+                    if (error != NULL) {
+                        g_warning ("get partition label:Get %s\n", error->message);
+                        g_error_free (error);
+                    }
+                    error = NULL;
+
+                    if (label_var != NULL) {
+                       label = g_variant_dup_string (label_var, NULL); 
+                       g_variant_unref (label_var);
+
+                    } else {
+                        g_warning ("get partition label:get property IdLabel failed\n");
+                    }
+                    g_object_unref (proxy);
+
+                } else {
+                    g_warning ("get partition label: dbus proxy %s\n", error->message);
+                    g_error_free (error);
+                }
+                error = NULL;
+
+            } else {
+                g_warning ("get partition label:object path invalid %s\n", object_path);
+            }
+
+            g_free ((gchar *)object_path);
 
         } else {
-            g_warning ("get partition label:get part %s path/fs failed\n", part);
+            g_warning ("get partition label:get part %s path failed\n", part);
         }
     } else {
         g_warning ("get partition label:find pedpartition %s failed\n", part);
@@ -728,6 +775,7 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
     return ret;
 }
 
+//used for bios_grub when install grub to gpt disk with bios
 JS_EXPORT_API 
 gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status)
 {
@@ -743,9 +791,12 @@ gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name
         if (ped_partition_is_flag_available (pedpartition, flag)) {
             ped_partition_set_flag (pedpartition, flag, status);
             ret = TRUE;
+        } else {
+            g_warning ("set partition flag:flag %s is not available\n", flag_name);
         }
+
     } else {
-        g_warning ("get partition flag:find pedpartition %s failed\n", part);
+        g_warning ("set partition flag:find pedpartition %s failed\n", part);
     }
 
     return ret;
