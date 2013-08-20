@@ -145,13 +145,8 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
     handler->child_watch_id = 0;
     handler->stdout_watch_id = 0;
 
-    //if (!set_user_password (handler)) {
-    //    g_warning ("create user:set user password failed\n");
-    //    //return ret;
-    //} else {
-    //    free_passwd_handler (handler);
-    //}
     set_user_password (handler);
+    free_passwd_handler (handler);
 
     ret = TRUE;
 
@@ -228,7 +223,6 @@ static void
 watch_passwd_child (GPid pid, gint status, struct PasswdHandler *handler)
 {
     g_printf ("watch password child:set password finish\n");
-    free_passwd_handler (handler);
 }
 
 static gboolean
@@ -240,6 +234,7 @@ passwd_out_watch (GIOChannel *channel, GIOCondition cond, struct PasswdHandler *
     }
 
     gchar buf[BUFSIZE];
+    memset (buf, 0, BUFSIZE);
     GError *error = NULL;        
 
     if (g_io_channel_read_chars (channel, buf, BUFSIZE, NULL, &error) != G_IO_STATUS_NORMAL) {
@@ -995,18 +990,23 @@ watch_extract_child (GPid pid, gint status, gpointer data)
         g_warning ("watch extract child:arg data is NULL\n");
     }
 
-    gint* timeout_id = (gint *) (data);
-    //g_printf ("watch extract child:timeout id %d\n", *timeout_id);
-
-    if (*timeout_id > 0) {
-        g_source_remove (*timeout_id);
-        g_free (timeout_id);
-    } else {
-        g_warning ("watch extract child:timeout id less than 0\n");
+    guint* cb_ids = (guint *) data;
+    if (cb_ids[0] > 0) {
+        g_source_remove (cb_ids[0]);
+        cb_ids[0] = 0;
     }
+    if (cb_ids[1] > 0) {
+        g_source_remove (cb_ids[1]);
+        cb_ids[1] = 0;
+    }
+    if (cb_ids[2] > 0) {
+        g_source_remove (cb_ids[2]);
+        cb_ids[2] = 0;
+    }
+    g_free (cb_ids);
+
     g_printf ("watch extract child:extract finish\n");
     //emit_progress ("extract", *progress);
-
     g_spawn_close_pid (pid);
 }
 
@@ -1107,7 +1107,7 @@ void installer_extract_squashfs ()
     GIOChannel *out_channel = NULL;
     GIOChannel *err_channel = NULL;
 
-    gint* timeout_id = g_new0 (gint, 1);
+    guint* cb_ids = g_new0 (guint, 3);
     gchar** progress = g_new0 (gchar*, 1);
 
     g_spawn_async_with_pipes (NULL,
@@ -1126,18 +1126,16 @@ void installer_extract_squashfs ()
         g_error_free (error);
     }
     error = NULL;
-    //fix me, free io channel
     out_channel = g_io_channel_unix_new (std_output);
     err_channel = g_io_channel_unix_new (std_error);
 
-    g_io_add_watch_full (out_channel, G_PRIORITY_LOW, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress, (GDestroyNotify) g_io_channel_unref);
-    g_io_add_watch_full (err_channel, G_PRIORITY_LOW, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress, (GDestroyNotify) g_io_channel_unref);
+    cb_ids[0] = g_io_add_watch_full (out_channel, G_PRIORITY_LOW, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress, (GDestroyNotify) g_io_channel_unref);
+    cb_ids[1] = g_io_add_watch_full (err_channel, G_PRIORITY_LOW, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress, (GDestroyNotify) g_io_channel_unref);
     //g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress);
     //g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress);
 
-    *timeout_id = g_timeout_add (500, (GSourceFunc) cb_timeout, progress);
-    //g_printf ("extract squashfs:timout id %d\n", *timeout_id);
-    g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, timeout_id);
+    cb_ids[2] = g_timeout_add (1000, (GSourceFunc) cb_timeout, progress);
+    g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, cb_ids);
 
     g_strfreev (argv);
 }
