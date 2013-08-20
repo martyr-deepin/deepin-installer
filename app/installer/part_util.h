@@ -70,6 +70,8 @@ JS_EXPORT_API gboolean installer_get_partition_flag (const gchar *part, const gc
 
 JS_EXPORT_API gchar* installer_get_partition_used (const gchar *part);
 
+JS_EXPORT_API gchar* installer_get_partition_os (const gchar *part);
+
 JS_EXPORT_API gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end);
 
 JS_EXPORT_API gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part);

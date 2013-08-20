@@ -25,6 +25,7 @@
 static GHashTable *disks;
 static GHashTable *partitions;
 static GHashTable *disk_partitions;
+static GHashTable *partition_os = NULL;
 const gchar *target;
 
 JS_EXPORT_API 
@@ -546,6 +547,69 @@ gchar* installer_get_partition_used (const gchar *part)
     }
 
     g_free (path);
+
+    return result;
+}
+
+JS_EXPORT_API 
+gchar* installer_get_partition_os (const gchar *part)
+{
+    gchar* result = NULL;
+
+    gchar *path = NULL;
+    PedPartition *pedpartition = NULL;
+    GError *error = NULL;
+
+    if (partition_os == NULL) {
+        g_printf ("get partition os:init hash table\n");
+        partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, (GEqualFunc) g_str_equal, (GDestroyNotify) g_free, (GDestroyNotify) g_free);
+        if (g_find_program_in_path ("os-prober") == NULL) {
+            g_warning ("get partition os:os-prober not installed\n");
+            return result;
+        }
+
+        gchar *output = NULL;
+        g_spawn_command_line_sync ("os-prober", &output, NULL, NULL, &error);
+        if (error != NULL) {
+            g_warning ("get partition os:os-prober %s\n", error->message);
+            g_error_free (error);
+        }
+        error = NULL;
+
+        gchar **items = g_strsplit (output, "\n", -1);
+        int i, j;
+        for (i = 0; i < g_strv_length (items); i++) {
+            gchar *item = g_strdup (items[i]);
+            gchar **os = g_strsplit (item, ":", -1);
+
+            if (g_strv_length (os) == 4) {
+                //g_printf ("get partition os:insert key %s value %s\n", os[0], os[2]);
+                g_hash_table_insert (partition_os, g_strdup (os[0]), g_strdup (os[2]));
+            }
+
+            g_strfreev (os);
+            g_free (item);
+        }
+
+        g_strfreev (items);
+        g_free (output);
+    }
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+
+        path = ped_partition_get_path (pedpartition);
+        if (path != NULL) {
+            result = (gchar *) g_hash_table_lookup (partition_os, path);
+
+        } else {
+            g_warning ("get pedpartition os: get %s path failed\n", part);
+        }
+        g_free (path);
+
+    } else {
+        g_warning ("get partition os:find pedpartition %s failed\n", part);
+    }
 
     return result;
 }
