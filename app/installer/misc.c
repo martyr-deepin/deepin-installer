@@ -401,7 +401,7 @@ set_group (const gchar *username)
 
         groups++;
     }
-    //fix me, can't free groups
+    //fix me, can't free groups as groups++ out of the original string array
     //g_strfreev (groups);
     ret = TRUE;
 

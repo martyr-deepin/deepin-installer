@@ -79,6 +79,7 @@ void init_parted ()
                 disk = ped_disk_new_fresh (device, type);
             } else {
                 g_warning ("init parted:ped disk type get failed:%s\n", device->path);
+                continue;
             }
         }
 
@@ -446,7 +447,6 @@ gchar* installer_get_partition_label (const gchar *part)
             } else {
                 g_warning ("get partition label:object path invalid %s\n", object_path);
             }
-
             g_free ((gchar *)object_path);
 
         } else {
@@ -643,14 +643,14 @@ gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk
             return ret;
         }
 
-        if (part_type != PED_PARTITION_EXTENDED) {
-
-            part_fs = ped_file_system_type_get (fs);
-            if (part_fs == NULL) {
-                g_warning("new disk partition:must spec file system %s\n", fs);
-                return ret;
-            }
-        }
+        //fix me, whether need to check fs
+        //if (part_type != PED_PARTITION_EXTENDED) {
+        //    part_fs = ped_file_system_type_get (fs);
+        //    if (part_fs == NULL) {
+        //        g_warning("new disk partition:must spec file system %s\n", fs);
+        //        return ret;
+        //    }
+        //}
 
         part_start = (PedSector) start;
         part_end = (PedSector) end;
@@ -660,33 +660,31 @@ gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk
             //g_printf ("new partition ok, add to the disk\n");
             g_hash_table_insert (partitions,  g_strdup (part_uuid), pedpartition);
 
-            const PedGeometry *pedgeometry = ped_geometry_new (peddisk->dev, part_start, part_end - part_start + 1);
+            PedGeometry *pedgeometry = ped_geometry_new (peddisk->dev, part_start, part_end - part_start + 1);
             if (pedgeometry != NULL) {
                 //g_printf ("new geometry ok, set the constraint\n");
 
-                PedConstraint *pedconstraint = ped_constraint_new_from_max(pedgeometry);
+                PedConstraint *pedconstraint = ped_constraint_new_from_max (pedgeometry);
                 if (pedconstraint != NULL) {
                    // g_printf ("new constraint ok\n");
 
                     if (ped_disk_add_partition (peddisk, pedpartition, pedconstraint) != 0 ) {
                         g_printf ("new disk partition:add partition ok\n");
                         ret = TRUE;
-
                     } else {
                         g_warning ("new disk partition:add disk partition failed\n");
                     }
+                    ped_constraint_destroy (pedconstraint);
                 } else {
                     g_warning ("new disk partitoin:new constraint failed\n");
                 }
-
+                ped_geometry_destroy (pedgeometry);
             } else {
                 g_warning ("new disk partition:new geometry failed\n");
             }
-
         } else {
             g_warning ("new disk partition:new partition failed\n");
         }
-
     } else {
         g_warning ("new disk partition:find peddisk %s failed\n", disk);
     }
@@ -710,11 +708,9 @@ gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part)
         if ((ped_disk_delete_partition (peddisk, pedpartition) != 0)) {
             g_printf("delete disk partition:ok\n");
             ret = TRUE;
-
         } else {
             g_warning ("delete disk partition:failed\n");
         }
-                
     } else {
         g_warning ("delete disk partition:find peddisk %s failed\n", disk);
     }
@@ -853,12 +849,12 @@ gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name
 
         flag = ped_partition_flag_get_by_name (flag_name);
         if (ped_partition_is_flag_available (pedpartition, flag)) {
+
             ped_partition_set_flag (pedpartition, flag, status);
             ret = TRUE;
         } else {
             g_warning ("set partition flag:flag %s is not available\n", flag_name);
         }
-
     } else {
         g_warning ("set partition flag:find pedpartition %s failed\n", part);
     }
@@ -885,7 +881,7 @@ gboolean installer_write_disk (const gchar *disk)
             g_warning ("write disk:commit to dev failed\n");
             return ret;
         }
-                
+
         g_spawn_command_line_async ("sync", NULL);
         ret = TRUE;
         g_debug ("write disk:%s succeed\n", disk);
