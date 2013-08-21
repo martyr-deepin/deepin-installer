@@ -450,3 +450,69 @@ inhibit_disk ()
     return ret;
 }
 
+//attention this test is block, put it in a thread
+gpointer 
+is_slowly_device (gpointer data)
+{
+    struct SpeedHandler *handler = (struct SpeedHandler *)data;
+    if (handler == NULL || handler->path == NULL || handler->uuid == NULL) {
+        g_warning ("is slowly device:parse SpeedHandler failed\n");
+        return NULL;
+    }
+
+    gchar *output = NULL;
+    GError *error = NULL;
+
+    if (g_find_program_in_path ("hdparm") == NULL) {
+        g_warning ("is slowly device:hdparm not installed\n");
+        return NULL;
+    }
+
+    gchar *speed_cmd = g_strdup_printf ("hdparm -t %s", handler->path);
+    g_spawn_command_line_sync (speed_cmd, &output, NULL, NULL, &error); 
+    if (error != NULL) {
+        g_warning ("is slowly device:run hdparm %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    if (output != NULL) {
+
+        gchar *matched = get_matched_string (output, "\\d+(\\.\\d+)?\\sMB/sec");
+        if (matched != NULL) {
+            //g_printf ("is slowly device:matched string-> %s\n", matched);
+            gchar *speed = get_matched_string (matched, "\\d+(\\.\\d+)?");
+            if (speed != NULL) {
+
+                gdouble num = g_ascii_strtod (speed, NULL);
+                g_printf ("is slowly device:speed for %s is %g MB/sec\n", handler->path, num);
+
+                if (num < 10) {
+                    g_warning ("is slowly device:emit slow for %s\n", handler->uuid);
+                    //emit signal here
+                } else {
+                    g_debug ("is slowly device:%s 's speed is ok\n", handler->uuid);
+                }
+            } else {
+                g_warning ("is slowly device:parse speed from %s failed\n", matched);
+            }
+            g_free (speed); 
+
+        } else {
+            g_warning ("is slowly device:get speed failed\n");
+        }
+        g_free (matched);
+
+    } else {
+        g_warning ("is slowly device:get hdparm output failed\n");
+    }
+
+    g_free (speed_cmd);
+    g_free (output);
+    g_free ((gchar *)handler->path);
+    g_free ((gchar *)handler->uuid);
+    g_free (handler);
+
+    return NULL;
+}
+

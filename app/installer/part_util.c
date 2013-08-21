@@ -111,7 +111,6 @@ void init_parted ()
     }
 }
 
-
 JS_EXPORT_API 
 JSObjectRef installer_list_disks()
 {
@@ -141,6 +140,9 @@ gchar *installer_get_disk_path (const gchar *disk)
         g_assert(device != NULL);
 
         result = g_strdup (device->path);
+
+    } else {
+        g_warning ("get disk path:find peddisk by %s failed\n", disk);
     }
 
     return result;
@@ -158,6 +160,9 @@ gchar *installer_get_disk_model (const gchar *disk)
         g_assert(device != NULL);
 
         result = g_strdup (device->model);
+
+    } else {
+        g_warning ("get disk model:find peddisk by %s failed\n", disk);
     }
 
     return result;
@@ -172,6 +177,9 @@ double installer_get_disk_max_primary_count (const gchar *disk)
     peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
     if (peddisk != NULL) {
         count = ped_disk_get_max_primary_partition_count (peddisk);
+
+    } else {
+        g_warning ("get disk max primary count:find peddisk by %s failed\n", disk);
     }
 
     return count;
@@ -189,6 +197,9 @@ double installer_get_disk_length (const gchar *disk)
         g_assert(device != NULL);
 
         length = device->length;
+
+    } else {
+        g_warning ("get disk length:find peddisk by %s failed\n", disk);
     }
     
     return length;
@@ -197,7 +208,6 @@ double installer_get_disk_length (const gchar *disk)
 JS_EXPORT_API
 JSObjectRef installer_get_disk_partitions (const gchar *disk)
 {
-
     JSObjectRef array = json_array_create ();
     int i;
 
@@ -211,6 +221,36 @@ JSObjectRef installer_get_disk_partitions (const gchar *disk)
     }
 
     return array;
+}
+
+//generally, you should get device speed by disk, not partition
+JS_EXPORT_API 
+void installer_is_device_slow (const gchar *uuid)
+{
+    gchar *path = NULL;
+    if (g_str_has_prefix (uuid, "disk")) {
+        path = installer_get_disk_path (uuid);
+
+    } else if (g_str_has_prefix (uuid, "part")) {
+        path = installer_get_partition_path (uuid);
+
+    } else {
+        g_warning ("is device slow:invalid uuid %s\n", uuid);
+    }
+
+    if (path != NULL) {
+        struct SpeedHandler *handler = g_new (struct SpeedHandler, 1);
+        handler->path = g_strdup (path);
+        handler->uuid = g_strdup (uuid);
+
+        GThread *speed_thread = g_thread_new ("speed", (GThreadFunc) is_slowly_device, handler);
+        g_thread_unref (speed_thread);
+
+    } else {
+        g_warning ("is device slow:get device path for %s failed\n", uuid);
+    }
+
+    g_free (path);
 }
 
 JS_EXPORT_API

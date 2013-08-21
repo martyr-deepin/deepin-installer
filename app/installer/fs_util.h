@@ -23,6 +23,11 @@
 #define __FS_UTIL_H
 #include <glib.h>
 
+struct SpeedHandler {
+    const gchar *path;
+    const gchar *uuid;
+};
+
 gchar *get_matched_string (const gchar *target, const gchar *regex_string);
 
 gchar *get_partition_mount_point (const gchar *path);
@@ -34,5 +39,7 @@ gchar *get_partition_used (const gchar *path, const gchar *fs);
 void set_partition_filesystem (const gchar *path, const gchar *fs);
 
 gboolean inhibit_disk ();
+
+gpointer is_slowly_device (gpointer data);
 
 #endif
