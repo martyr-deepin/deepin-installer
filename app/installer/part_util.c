@@ -511,7 +511,6 @@ gboolean installer_get_partition_busy (const gchar *part)
         if ((ped_partition_is_busy (pedpartition)) == 1) { 
             busy = TRUE;
         }
-
     } else {
         g_warning ("get partition busy:find pedpartition %s failed\n", part);
         busy = TRUE;
@@ -818,15 +817,19 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         PedGeometry *geom = ped_geometry_duplicate (&pedpartition->geom);
         //fix me, free the geom object
         PedFileSystemType *fs_type = ped_file_system_probe (geom);
+        ped_geometry_destroy (geom);
+
         if (fs_type != NULL) {
             fs = g_strdup (fs_type->name);
         } else {
             g_warning ("write fs tab:probe filesystem failed\n");
+            g_free (path);
             return ret;
         }
 
         if (fs == NULL) {
             g_warning ("write fs tab:get partition %s fs failed\n", part);
+            g_free (path);
             return ret;
         } else {
             struct mntent mnt;

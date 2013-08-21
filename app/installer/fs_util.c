@@ -332,89 +332,89 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
 
     if (g_strcmp0 (fs, "ext4") == 0) {
         if (g_find_program_in_path ("mkfs.ext4") == NULL) {
-            g_warning ("mkfs.ext4 not installed\n");
+            g_warning ("set partition filesystem:mkfs.ext4 not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.ext4 %s", path);
 
     } else if (g_strcmp0 (fs, "ext3") == 0) {
         if (g_find_program_in_path ("mkfs.ext3") == NULL) {
-            g_warning ("mkfs.ext3 not installed\n");
+            g_warning ("set partition filesystem:mkfs.ext3 not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.ext3 %s", path);
 
     } else if (g_strcmp0 (fs, "ext2") == 0) {
         if (g_find_program_in_path ("mkfs.ext2") == NULL) {
-            g_warning ("mkfs.ext2 not installed\n");
+            g_warning ("set partition filesystem:mkfs.ext2 not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.ext2 %s", path);
 
     } else if (g_strcmp0 (fs, "fat16") == 0) {
         if (g_find_program_in_path ("mkdosfs") == NULL) {
-            g_warning ("mkdosfs not installed\n");
+            g_warning ("set partition filesystem:mkdosfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkdosfs -F16 %s", path);
 
     } else if (g_strcmp0 (fs, "fat32") == 0) {
         if (g_find_program_in_path ("mkdosfs") == NULL) {
-            g_warning ("mkdosfs not installed\n");
+            g_warning ("set partition filesystem:mkdosfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkdosfs -F32 %s", path);
 
     } else if  (g_strcmp0 (fs, "jfs") == 0) {
         if (g_find_program_in_path ("mkfs.jfs") == NULL) {
-            g_warning ("mkfs.jfs not installed\n");
+            g_warning ("set partition filesystem:mkfs.jfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.jfs -q %s", path);
 
     } else if  (g_strcmp0 (fs, "linux-swap") == 0) {
         if (g_find_program_in_path ("mkswap") == NULL) {
-            g_warning ("mkswap not installed\n");
+            g_warning ("set partition filesystem:mkswap not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkswap %s", path);
 
     } else if (g_strcmp0 (fs, "ntfs") == 0) {
         if (g_find_program_in_path ("mkntfs") == NULL) {
-            g_warning ("mkntfs not installed\n");
+            g_warning ("set partition filesystem:mkntfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkntfs -Q -v %s", path);
     
     } else if (g_strcmp0 (fs, "reiserfs") == 0) {
         if (g_find_program_in_path ("mkreiserfs") == NULL) {
-            g_warning ("mkreiserfs not installed\n");
+            g_warning ("set partition filesystem:mkreiserfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkreiserfs -f %s", path);
 
     } else if (g_strcmp0 (fs, "btrfs") == 0) {
         if (g_find_program_in_path ("mkfs.btrfs") == NULL) {
-            g_warning ("mkfs.btrfs not installed\n");
+            g_warning ("set partition filesystem:mkfs.btrfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.btrfs %s", path);
 
     } else if (g_strcmp0 (fs, "xfs") == 0 ) {
         if (g_find_program_in_path ("mkfs.xfs") == NULL) {
-            g_warning ("mkfs.xfs not installed\n");
+            g_warning ("set partition filesystem:mkfs.xfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.xfs -f %s", path);
 
     } else {
-        g_warning ("file system:%s currently not supported\n", fs);
+        g_warning ("set partition filesystem:%s currently not supported\n", fs);
         return ;
     }
 
     g_spawn_command_line_async (cmd, &error);
     if (error != NULL) {
-        g_warning ("%s\n", error->message);
+        g_warning ("set partition filesystem %s\n", error->message);
         g_error_free (error);
     }
     error = NULL;
@@ -465,6 +465,9 @@ is_slowly_device (gpointer data)
 
     if (g_find_program_in_path ("hdparm") == NULL) {
         g_warning ("is slowly device:hdparm not installed\n");
+        g_free ((gchar *)handler->path);
+        g_free ((gchar *)handler->uuid);
+        g_free (handler);
         return NULL;
     }
 

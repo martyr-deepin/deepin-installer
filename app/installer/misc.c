@@ -289,6 +289,7 @@ set_user_password (struct PasswdHandler *handler)
                               &std_out,
                               &std_err,
                               &error);
+    g_strfreev (argv);
     if (error != NULL) {
         g_warning ("set user password:spawn async pipes %s\n", error->message);
         g_error_free (error);
@@ -296,7 +297,6 @@ set_user_password (struct PasswdHandler *handler)
         return ret;
     }
     error = NULL;
-    g_strfreev (argv);
 
     if ((dup2 (std_err, std_out)) == -1) {
         g_warning ("set user password:dup %s\n", strerror (errno));
@@ -544,6 +544,7 @@ init_keyboard_layouts ()
     XklEngine *engine = xkl_engine_get_instance (dpy);
     if (engine == NULL) {
         g_warning ("init keyboard layouts: xkl engine get instance\n");
+        XCloseDisplay (dpy);
         return ;
     }
 
@@ -551,6 +552,8 @@ init_keyboard_layouts ()
     xkl_config_rec_get_from_server (config, engine);
     if (config == NULL) {
         g_warning ("init keyboard layouts: xkl config rec\n");
+        g_object_unref (engine);
+        XCloseDisplay (dpy);
         return ;
     }
 
@@ -558,11 +561,16 @@ init_keyboard_layouts ()
     cfg_reg = xkl_config_registry_get_instance (engine);
     if (cfg_reg == NULL) {
         g_warning ("init keyboard layouts: xkl config registry get instance\n");
+        g_object_unref (engine);
+        XCloseDisplay (dpy);
         return ;
     }
 
     if (!xkl_config_registry_load(cfg_reg, TRUE)) {
         g_warning ("init keyboard layouts: xkl config registry load\n");
+        g_object_unref (engine);
+        g_object_unref (cfg_reg);
+        XCloseDisplay (dpy);
         return ;
     }
 
@@ -688,6 +696,7 @@ void walk_directory (const gchar *root, void *callback (const gchar *))
     if (error != NULL) {
         g_warning ("walk directory:query info %s\n", error->message);
         g_error_free (error);
+        g_object_unref (source_dir);
         return ;
     }
     error = NULL;
@@ -732,7 +741,9 @@ void walk_directory (const gchar *root, void *callback (const gchar *))
         g_object_unref (enumerator);
 
     } else {
-        g_debug ("walk directory:current not support\n");
+        g_debug ("walk directory:current not support for file type not regular or folder\n");
+        g_object_unref (info);
+        g_object_unref (source_dir);
         return ;
     }
 
@@ -749,8 +760,10 @@ walk_timezones (const gchar *path)
     gchar *relative = g_file_get_relative_path (zone_dir, zone);
     if (relative == NULL) {
         g_warning ("walk timezones: relative is NULL\n");
+
     } else if (g_str_has_prefix (relative, "posix") || g_str_has_prefix (relative, "right")) {
         g_debug ("walk timezones: ignore files under posix and right\n");
+
     } else {
         //g_warning ("walk timezones: %s\n", relative);
         timezone_list = g_list_append (timezone_list, g_strdup (relative));
@@ -874,12 +887,15 @@ get_coordinate_target (const gchar *source_root, GFile *src)
     gchar *relative_path = g_file_get_relative_path (source_dir, src);
     if (relative_path == NULL) {
         g_warning ("get coordinate target:get relative path failed\n");
+        g_object_unref (source_dir);
         return coo_target;
     }
 
     target_dir = g_file_new_for_path (target);
     if (target_dir == NULL) {
         g_warning ("get coordinate target:get target file %s failed\n", target);
+        g_free (relative_path);
+        g_object_unref (source_dir);
         return coo_target;
     }
     coo_target = g_file_resolve_relative_path (target_dir, relative_path);
