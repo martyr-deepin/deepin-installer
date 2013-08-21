@@ -33,4 +33,6 @@ gchar *get_partition_used (const gchar *path, const gchar *fs);
 
 void set_partition_filesystem (const gchar *path, const gchar *fs);
 
+gboolean inhibit_disk ();
+
 #endif

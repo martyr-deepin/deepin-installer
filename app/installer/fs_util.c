@@ -422,3 +422,31 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
     g_free (cmd);
 }
 
+gboolean 
+inhibit_disk ()
+{
+    gboolean ret = FALSE;
+
+    GError *error = NULL;
+    //fix me,update program path to deb maintainer
+    gchar *installer = g_find_program_in_path ("deepin-installer");
+    if (installer == NULL) {
+        g_warning ("inhibit disk:find installer failed\n");
+        return ret;
+    }
+
+    gchar* inhibit_cmd = g_strdup_printf ("udisks --inhibit -- %s", installer);
+
+    ret = g_spawn_command_line_async (inhibit_cmd, &error);
+    if (error != NULL) {
+        g_warning ("inhibit disk:%s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+    
+    g_free (inhibit_cmd);
+    g_free (installer);
+ 
+    return ret;
+}
+
