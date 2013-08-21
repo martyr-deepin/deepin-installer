@@ -34,7 +34,9 @@ gchar *get_partition_mount_point (const gchar *path);
 
 gchar *get_mounted_partition_used (const gchar *path);
 
-gchar *get_partition_used (const gchar *path, const gchar *fs);
+//gchar *get_partition_used (const gchar *path, const gchar *fs);
+
+double get_partition_free (const gchar *path, const gchar *fs);
 
 void set_partition_filesystem (const gchar *path, const gchar *fs);
 

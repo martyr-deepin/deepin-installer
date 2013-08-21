@@ -79,6 +79,7 @@ get_partition_mount_point (const gchar *path)
     return mp;
 }
 
+//when command output supply free blocks number and block size
 gdouble 
 _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar *free_num_regex, const gchar *unit_regex, const gchar *unit_num_regex) 
 {
@@ -96,7 +97,7 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar
 
     g_spawn_command_line_sync (cmd, &output, NULL, &exit_status, NULL);
     if (exit_status == -1) {
-        g_warning ("run command %s failed\n", cmd);
+        g_warning ("_get_partition_free_size:run command %s failed\n", cmd);
     }
 
     free_blocks_line = get_matched_string (output, free_regex);
@@ -118,31 +119,32 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar
     return result;
 }
 
-gchar*
-_get_partition_used_size (const gchar *cmd, const gchar *used_regex, const gchar *used_num_regex)
-{
-    gchar *result = NULL;
-    gchar *output = NULL;
-    gint exit_status;
-
-    gchar *space = NULL;
-    gchar *space_num = NULL;
-
-    g_spawn_command_line_sync (cmd, &output, NULL, &exit_status, NULL);
-    if (exit_status == -1) {
-        g_warning ("run command %s failed\n", cmd);
-    }
-
-    space = get_matched_string (output, used_regex);
-    space_num = get_matched_string (space, used_num_regex);
-    result = g_strdup (space_num);
-
-    g_free (space);
-    g_free (space_num);
-    g_free (output);
-
-    return result;
-}
+//gdouble
+//_get_partition_used_size (const gchar *cmd, const gchar *used_regex, const gchar *used_num_regex)
+//{
+//    gdouble result = 0;
+//
+//    gchar *output = NULL;
+//    gint exit_status;
+//    gchar *space = NULL;
+//    gchar *space_num = NULL;
+//
+//    g_spawn_command_line_sync (cmd, &output, NULL, &exit_status, NULL);
+//    if (exit_status == -1) {
+//        g_warning ("run command %s failed\n", cmd);
+//    }
+//
+//    space = get_matched_string (output, used_regex);
+//    space_num = get_matched_string (space, used_num_regex);
+//
+//    result = g_ascii_strtod (space_num, NULL);
+//
+//    g_free (space);
+//    g_free (space_num);
+//    g_free (output);
+//
+//    return result;
+//}
 
 gchar*
 get_mounted_partition_used (const gchar *path) 
@@ -165,163 +167,588 @@ get_mounted_partition_used (const gchar *path)
     return result;
 }
 
-gchar* 
-get_partition_used (const gchar *path, const gchar *fs)
+//gchar* 
+//get_partition_used (const gchar *path, const gchar *fs)
+//{
+//    gchar *used = NULL;
+//
+//    gchar *cmd = NULL;
+//    gchar *free_regex = NULL;
+//    gchar *free_num_regex = NULL;
+//    gchar *unit_regex = NULL;
+//    gchar *unit_num_regex = NULL;
+//    gchar *used_regex = NULL;
+//    gchar *used_num_regex = NULL;
+//
+//    if (g_str_has_prefix (fs, "ext")) {
+//        if (g_find_program_in_path ("dumpe2fs") == NULL) {
+//            g_warning ("dumpe2fs not installed\n");
+//            return used;
+//        }
+//        
+//        cmd = g_strdup_printf ("dumpe2fs -h %s", path);
+//        free_regex = g_strdup ("Free blocks:\\s+\\d+");
+//        free_num_regex = g_strdup ("\\d+");
+//        unit_regex = g_strdup ("Block size:\\s+\\d+");
+//        unit_num_regex = g_strdup("\\d+");
+//
+//        gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
+//        g_free (cmd);
+//        g_free (free_regex);
+//        g_free (free_num_regex);
+//        g_free (unit_regex);
+//        g_free (unit_num_regex);
+//
+//        used = g_strdup_printf ("%g", free);
+//
+//    } else if (g_strcmp0 ("reiserfs", fs) == 0) {
+//        if (g_find_program_in_path ("debugreiserfs") == NULL) {
+//            g_warning ("debugreiserfs not installed\n");
+//            return used;
+//        }
+//        
+//        cmd = g_strdup_printf ("debugreiserfs %s", path);
+//        free_regex = g_strdup ("Free blocks.*");
+//        free_num_regex = g_strdup ("\\d+");
+//        unit_regex = g_strdup ("Blocksize.*");
+//        unit_num_regex = g_strdup ("\\d+");
+//
+//        gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
+//        g_free (cmd);
+//        g_free (free_regex);
+//        g_free (free_num_regex);
+//        g_free (unit_regex);
+//        g_free (unit_num_regex);
+//
+//        used = g_strdup_printf ("%g", free);
+//
+//    } else if (g_strcmp0 ("linux-swap", fs) == 0 ) {
+//        used = NULL;
+//
+//    } else if (g_strcmp0 ("xfs", fs) == 0) {
+//        if (g_find_program_in_path ("xfs_db") == NULL) {
+//            g_warning ("xfs_db not installed\n");
+//            return used;
+//        }
+//            
+//        cmd = g_strdup_printf ("xfs_db -c 'sb 0' -c 'print blocksize' -c 'print fdblocks' -r %s", path);
+//        free_regex = g_strdup ("fdblocks.*");
+//        free_num_regex = g_strdup ("\\d+");
+//        unit_regex = g_strdup ("blocksize.*");
+//        unit_num_regex = g_strdup ("\\d+");
+//
+//        gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
+//        g_free (cmd);
+//        g_free (free_regex);
+//        g_free (free_num_regex);
+//        g_free (unit_regex);
+//        g_free (unit_num_regex);
+//
+//        used = g_strdup_printf ("%g", free);
+//
+//    } else if (g_strcmp0 ("jfs", fs) == 0) {
+//        if (g_find_program_in_path ("jfs_debugfs") == NULL) {
+//            g_warning ("jfs_debugfs not installed\n");
+//            return used;
+//        }
+//            
+//        cmd = g_strdup_printf ("/bin/sh -c 'echo dm | jfs_debugfs %s'", path);
+//        free_regex = g_strdup ("dn_nfree.*0[xX][0-9a-fA-F]+");
+//        free_num_regex = g_strdup ("0[xX][0-9a-fA-F]+");
+//        unit_regex = g_strdup ("Block Size.*");
+//        unit_num_regex = g_strdup ("\\d+");
+//
+//        gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
+//        g_free (cmd);
+//        g_free (free_regex);
+//        g_free (free_num_regex);
+//        g_free (unit_regex);
+//        g_free (unit_num_regex);
+//
+//        used = g_strdup_printf ("%g", free);
+//
+//    } else if ( (g_strcmp0 ("fat16", fs) == 0) || (g_strcmp0 ("fat32", fs) == 0)) {
+//        if (g_find_program_in_path ("dosfsck") == NULL) {
+//            g_warning ("dosfsck not installed\n");
+//            return used;
+//        }
+//            
+//       cmd = g_strdup_printf ("dosfsck -n -v %s", path);
+//        //attention ,in fact this is used space ,not unused
+//       free_regex = g_strdup (".*\\d+/\\d+");
+//       free_num_regex = g_strdup ("\\d+/");
+//       unit_regex = g_strdup ("\\d+ bytes per cluster");
+//       unit_num_regex = g_strdup ("\\d+");
+//
+//       gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
+//       g_free (cmd);
+//       g_free (free_regex);
+//       g_free (free_num_regex);
+//       g_free (unit_regex);
+//       g_free (unit_num_regex);
+//
+//       used = g_strdup_printf ("%g", free);
+//
+//    } else if (g_strcmp0 ("btrfs", fs) == 0 ) {
+//        if (g_find_program_in_path ("btrfs") == NULL) {
+//            g_warning ("btrfs not installed\n");
+//            return used;
+//        }
+//
+//        cmd = g_strdup_printf ("btrfs filesystem show %s", path);
+//        used_regex = g_strdup ("used.*path");
+//        used_num_regex = g_strdup ("\\d+.*MB");
+//
+//        used = _get_partition_used_size (cmd, used_regex, used_num_regex);
+//        g_free (cmd);
+//        g_free (used_regex);
+//        g_free (used_num_regex);
+//
+//    } else if (g_strcmp0 ("ntfs", fs) == 0) {
+//        if (g_find_program_in_path ("ntfsresize") == NULL) {
+//            g_warning ("ntfsresize not installed\n");
+//            return used;
+//        }
+//
+//        cmd = g_strdup_printf ("ntfsresize -i -f -P %s", path);
+//        used_regex = g_strdup ("Space in use.*");
+//        used_num_regex = g_strdup ("\\d+.*MB");
+//
+//        used = _get_partition_used_size (cmd, used_regex, used_num_regex);
+//        g_free (cmd);
+//        g_free (used_regex);
+//        g_free (used_num_regex);
+//
+//    } else {
+//        used =  g_strdup("80G");
+//    }
+//
+//    return used;
+//}
+
+double
+_get_ext4_free (const gchar *path)
 {
-    gchar *used = NULL;
+    double free = 0;
 
-    gchar *cmd = NULL;
-    gchar *free_regex = NULL;
-    gchar *free_num_regex = NULL;
-    gchar *unit_regex = NULL;
-    gchar *unit_num_regex = NULL;
-    gchar *used_regex = NULL;
-    gchar *used_num_regex = NULL;
+    if (g_find_program_in_path ("dumpe2fs") == NULL) {
+        g_warning ("_get_ext4_free:dumpe2fs not installed\n");
+        return free;
+    }
+    
+    gchar *cmd = g_strdup_printf ("dumpe2fs -h %s", path);
+    gchar *free_regex = g_strdup ("Free blocks:\\s+\\d+");
+    gchar *free_num_regex = g_strdup ("\\d+");
+    gchar *unit_regex = g_strdup ("Block size:\\s+\\d+");
+    gchar *unit_num_regex = g_strdup("\\d+");
 
-    if (g_str_has_prefix (fs, "ext")) {
-        if (g_find_program_in_path ("dumpe2fs") == NULL) {
-            g_warning ("dumpe2fs not installed\n");
-            return used;
-        }
+    free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
+
+    g_free (cmd);
+    g_free (free_regex);
+    g_free (free_num_regex);
+    g_free (unit_regex);
+    g_free (unit_num_regex);
+
+    return free;
+}
+
+double
+_get_ext3_free (const gchar *path)
+{
+    return _get_ext4_free (path);
+}
+
+double 
+_get_ext2_free (const gchar *path)
+{
+    return _get_ext4_free (path);
+}
+
+double
+_get_reiserfs_free (const gchar *path)
+{
+    double free = 0;
+
+    if (g_find_program_in_path ("debugreiserfs") == NULL) {
+        g_warning ("_get_reiserfs_free:debugreiserfs not installed\n");
+        return free;
+    }
+    
+    gchar *cmd = g_strdup_printf ("debugreiserfs %s", path);
+    gchar *free_regex = g_strdup ("Free blocks.*");
+    gchar *free_num_regex = g_strdup ("\\d+");
+    gchar *unit_regex = g_strdup ("Blocksize.*");
+    gchar *unit_num_regex = g_strdup ("\\d+");
+
+    free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
+
+    g_free (cmd);
+    g_free (free_regex);
+    g_free (free_num_regex);
+    g_free (unit_regex);
+    g_free (unit_num_regex);
+
+    return free;
+}
+
+double
+_get_swap_free (const gchar *path)
+{
+    double free = 0;
+    g_warning ("_get_swap_free:not implemented\n");
+
+    return free;
+}
+
+double
+_get_xfs_free (const gchar *path)
+{
+    double free = 0;
+
+    if (g_find_program_in_path ("xfs_db") == NULL) {
+        g_warning ("_get_xfs_free:xfs_db not installed\n");
+        return free;
+    }
         
-        cmd = g_strdup_printf ("dumpe2fs -h %s", path);
-        free_regex = g_strdup ("Free blocks:\\s+\\d+");
-        free_num_regex = g_strdup ("\\d+");
-        unit_regex = g_strdup ("Block size:\\s+\\d+");
-        unit_num_regex = g_strdup("\\d+");
+    gchar *cmd = g_strdup_printf ("xfs_db -c 'sb 0' -c 'print blocksize' -c 'print fdblocks' -r %s", path);
+    gchar *free_regex = g_strdup ("fdblocks.*");
+    gchar *free_num_regex = g_strdup ("\\d+");
+    gchar *unit_regex = g_strdup ("blocksize.*");
+    gchar *unit_num_regex = g_strdup ("\\d+");
 
-        gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
-        g_free (cmd);
-        g_free (free_regex);
-        g_free (free_num_regex);
-        g_free (unit_regex);
-        g_free (unit_num_regex);
+    free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
 
-        used = g_strdup_printf ("%g", free);
+    g_free (cmd);
+    g_free (free_regex);
+    g_free (free_num_regex);
+    g_free (unit_regex);
+    g_free (unit_num_regex);
 
-    } else if (g_strcmp0 ("reiserfs", fs) == 0) {
-        if (g_find_program_in_path ("debugreiserfs") == NULL) {
-            g_warning ("debugreiserfs not installed\n");
-            return used;
-        }
+    return free;
+}
+
+double
+_get_jfs_free (const gchar *path)
+{
+    double free = 0;
+
+    if (g_find_program_in_path ("jfs_debugfs") == NULL) {
+        g_warning ("_get_jfs_free:jfs_debugfs not installed\n");
+        return free;
+    }
         
-        cmd = g_strdup_printf ("debugreiserfs %s", path);
-        free_regex = g_strdup ("Free blocks.*");
-        free_num_regex = g_strdup ("\\d+");
-        unit_regex = g_strdup ("Blocksize.*");
-        unit_num_regex = g_strdup ("\\d+");
+    gchar *cmd = g_strdup_printf ("/bin/sh -c 'echo dm | jfs_debugfs %s'", path);
+    gchar *free_regex = g_strdup ("dn_nfree.*0[xX][0-9a-fA-F]+");
+    gchar *free_num_regex = g_strdup ("0[xX][0-9a-fA-F]+");
+    gchar *unit_regex = g_strdup ("Block Size.*");
+    gchar *unit_num_regex = g_strdup ("\\d+");
 
-        gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
+    free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
+
+    g_free (cmd);
+    g_free (free_regex);
+    g_free (free_num_regex);
+    g_free (unit_regex);
+    g_free (unit_num_regex);
+
+    return free;
+}
+
+double
+_get_fat16_free (const gchar *path)
+{
+    double free = 0;
+
+    gchar *output = NULL;
+    GError *error = NULL;
+
+    if (g_find_program_in_path ("dosfsck") == NULL) {
+         g_warning ("_get_fat16_free:dosfsck not installed\n");
+         return free;
+     }
+         
+    gchar *cmd = g_strdup_printf ("dosfsck -n -v %s", path);
+
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("_get_btrfs_free:run cmd %s failed\n", cmd);
         g_free (cmd);
-        g_free (free_regex);
-        g_free (free_num_regex);
-        g_free (unit_regex);
-        g_free (unit_num_regex);
+        g_error_free (error);
+        return free;
+    }
+    g_free (cmd);
+    error = NULL;
 
-        used = g_strdup_printf ("%g", free);
+    double unit_size = 0;
+    double used_size = 0;
+    double total_size = 0;
 
-    } else if (g_strcmp0 ("linux-swap", fs) == 0 ) {
-        used = NULL;
-
-    } else if (g_strcmp0 ("xfs", fs) == 0) {
-        if (g_find_program_in_path ("xfs_db") == NULL) {
-            g_warning ("xfs_db not installed\n");
-            return used;
-        }
-            
-        cmd = g_strdup_printf ("xfs_db -c 'sb 0' -c 'print blocksize' -c 'print fdblocks' -r %s", path);
-        free_regex = g_strdup ("fdblocks.*");
-        free_num_regex = g_strdup ("\\d+");
-        unit_regex = g_strdup ("blocksize.*");
-        unit_num_regex = g_strdup ("\\d+");
-
-        gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
-        g_free (cmd);
-        g_free (free_regex);
-        g_free (free_num_regex);
-        g_free (unit_regex);
-        g_free (unit_num_regex);
-
-        used = g_strdup_printf ("%g", free);
-
-    } else if (g_strcmp0 ("jfs", fs) == 0) {
-        if (g_find_program_in_path ("jfs_debugfs") == NULL) {
-            g_warning ("jfs_debugfs not installed\n");
-            return used;
-        }
-            
-        cmd = g_strdup_printf ("/bin/sh -c 'echo dm | jfs_debugfs %s'", path);
-        free_regex = g_strdup ("dn_nfree.*0[xX][0-9a-fA-F]+");
-        free_num_regex = g_strdup ("0[xX][0-9a-fA-F]+");
-        unit_regex = g_strdup ("Block Size.*");
-        unit_num_regex = g_strdup ("\\d+");
-
-        gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
-        g_free (cmd);
-        g_free (free_regex);
-        g_free (free_num_regex);
-        g_free (unit_regex);
-        g_free (unit_num_regex);
-
-        used = g_strdup_printf ("%g", free);
-
-    } else if ( (g_strcmp0 ("fat16", fs) == 0) || (g_strcmp0 ("fat32", fs) == 0)) {
-        if (g_find_program_in_path ("dosfsck") == NULL) {
-            g_warning ("dosfsck not installed\n");
-            return used;
-        }
-            
-       cmd = g_strdup_printf ("dosfsck -n -v %s", path);
-        //attention ,in fact this is used space ,not unused
-       free_regex = g_strdup (".*\\d+/\\d+");
-       free_num_regex = g_strdup ("\\d+/");
-       unit_regex = g_strdup ("\\d+ bytes per cluster");
-       unit_num_regex = g_strdup ("\\d+");
-
-       gdouble free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
-       g_free (cmd);
-       g_free (free_regex);
-       g_free (free_num_regex);
-       g_free (unit_regex);
-       g_free (unit_num_regex);
-
-       used = g_strdup_printf ("%g", free);
-
-    } else if (g_strcmp0 ("btrfs", fs) == 0 ) {
-        if (g_find_program_in_path ("btrfs") == NULL) {
-            g_warning ("btrfs not installed\n");
-            return used;
-        }
-
-        cmd = g_strdup_printf ("btrfs filesystem show %s", path);
-        used_regex = g_strdup ("used.*path");
-        used_num_regex = g_strdup ("\\d+.*MB");
-
-        used = _get_partition_used_size (cmd, used_regex, used_num_regex);
-        g_free (cmd);
-        g_free (used_regex);
-        g_free (used_num_regex);
-
-    } else if (g_strcmp0 ("ntfs", fs) == 0) {
-        if (g_find_program_in_path ("ntfsresize") == NULL) {
-            g_warning ("ntfsresize not installed\n");
-            return used;
-        }
-
-        cmd = g_strdup_printf ("ntfsresize -i -f -P %s", path);
-        used_regex = g_strdup ("Space in use.*");
-        used_num_regex = g_strdup ("\\d+.*MB");
-
-        used = _get_partition_used_size (cmd, used_regex, used_num_regex);
-        g_free (cmd);
-        g_free (used_regex);
-        g_free (used_num_regex);
-
-    } else {
-        used =  g_strdup("80G");
+    gchar *unit_cluster = get_matched_string (output, "\\d+ bytes per cluster");
+    if (unit_cluster == NULL) {
+        g_warning ("_get_fat16_free:get unit cluster failed\n");
+        g_free (output);
+        return free;
     }
 
-    return used;
+    gchar *unit_num = get_matched_string (unit_cluster, "\\d+");
+    if (unit_num == NULL) {
+        g_warning ("_get_fat16_free:get unit cluster num failed\n");
+        g_free (unit_cluster);
+        g_free (output);
+        return free;
+    }
+
+    unit_size = g_ascii_strtod (unit_num, NULL);
+
+    gchar *space_cluster = get_matched_string (output, "\\d+/\\d+.*clusters");
+    if (space_cluster == NULL) {
+        g_warning ("_get_fat16_free:get space cluster failed\n");
+        g_free (unit_num);
+        g_free (unit_cluster);
+        g_free (output);
+        return free;
+    }
+    
+    gchar *used_cluster = get_matched_string (space_cluster, "\\d+/");
+    if (used_cluster == NULL) {
+        g_warning ("_get_fat16_free:get used cluster failed\n");
+        g_free (space_cluster);
+        g_free (unit_num);
+        g_free (unit_cluster);
+        g_free (output);
+        return free;
+    }
+
+    used_size = g_ascii_strtod (used_cluster, NULL);
+
+    gchar *total_cluster = get_matched_string (output, "\\d+.*clusters");
+    if (total_cluster == NULL) {
+        g_warning ("_get_fat16_free:get total cluster failed\n");
+        g_free (space_cluster);
+        g_free (unit_num);
+        g_free (unit_cluster);
+        g_free (output);
+        return free;
+    }
+
+    total_size = g_ascii_strtod (total_cluster, NULL);
+
+    free = unit_size * (total_size - used_size) / 1024 ;
+
+    g_free (total_cluster);
+    g_free (used_cluster);
+    g_free (space_cluster);
+    g_free (unit_num);
+    g_free (unit_cluster);
+    g_free (output);
+
+    return free;
+}
+
+double
+_get_fat32_free (const gchar *path)
+{
+    return _get_fat16_free (path);
+}
+
+double
+_get_btrfs_free (const gchar *path)
+{
+    double free = 0;
+
+    gchar *output = NULL;
+    GError *error = NULL;
+
+    if (g_find_program_in_path ("btrfs") == NULL) {
+        g_warning ("btrfs not installed\n");
+        return free;
+    }
+    gchar *cmd = g_strdup_printf ("btrfs filesystem show %s", path);
+
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("_get_btrfs_free:run cmd %s failed\n", cmd);
+        g_free (cmd);
+        g_error_free (error);
+        return free;
+    }
+    g_free (cmd);
+    error = NULL;
+
+    double used_size = 0;
+    double total_size = 0;
+
+    gchar *total = get_matched_string (output, "size.*used");
+    if (total == NULL) {
+        g_warning ("_get_btrfs_free:get total failed\n");
+        g_free (output);
+        return free;
+    }
+
+    gchar *total_num = get_matched_string (total, "\\d+");
+    if (total_num == NULL) {
+        g_warning ("_get_btrfs_free:get total num failed\n");
+        g_free (total);
+        g_free (output);
+        return free;
+    }
+
+    total_size = g_ascii_strtod (total_num, NULL);
+
+    gchar *space_inuse = get_matched_string (output, "used.*path");
+    if (space_inuse == NULL) {
+        g_warning ("_get_btrfs_free:get used failed\n");
+        g_free (total_num);
+        g_free (total);
+        g_free (output);
+        return free;
+    }
+
+    gchar *used_num = get_matched_string (space_inuse, "\\d+");
+    if (used_num == NULL) {
+        g_warning ("_get_btrfs_free:parse used num failed\n");
+        g_free (total_num);
+        g_free (total);
+        g_free (space_inuse);
+        g_free (output);
+        return free;
+    }
+    used_size = g_ascii_strtod (used_num, NULL);
+
+    free = total_size - used_size;
+
+    if (g_strrstr (total, "GB") != NULL) {
+        free = free * 1024;
+    }
+
+    g_free (total_num);
+    g_free (total);
+    g_free (used_num);
+    g_free (space_inuse);
+    g_free (output);
+
+    return free;
+}
+
+double
+_get_ntfs_free (const gchar *path)
+{
+    double free = 0;
+
+    gchar *output = NULL;
+    GError *error = NULL;
+
+    if (g_find_program_in_path ("ntfsresize") == NULL) {
+        g_warning ("_get_ntfs_free:ntfsresize not installed\n");
+        return free;
+    }
+    gchar *cmd = g_strdup_printf ("ntfsresize -i -f -P %s", path);
+
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("_get_ntfs_free:run cmd %s failed\n", cmd);
+        g_free (cmd);
+        g_error_free (error);
+        return free;
+    }
+    g_free (cmd);
+    error = NULL;
+
+    double used_size = 0;
+    double total_size = 0;
+
+    gchar *total = get_matched_string (output, "\\d+.*MB");
+    if (total == NULL) {
+        g_warning ("_get_ntfs_free:get total failed\n");
+        g_free (output);
+        return free;
+    }
+
+    gchar *total_num = get_matched_string (total, "\\d+");
+    if (total_num == NULL) {
+        g_warning ("_get_ntfs_free:get total num failed\n");
+        g_free (total);
+        g_free (output);
+        return free;
+    }
+
+    total_size = g_ascii_strtod (total_num, NULL);
+
+    gchar *space_inuse = get_matched_string (output, "Space in use.*MB");
+    if (space_inuse == NULL) {
+        g_warning ("_get_ntfs_free:get used failed\n");
+        g_free (total_num);
+        g_free (total);
+        g_free (output);
+        return free;
+    }
+
+    gchar *used_num = get_matched_string (space_inuse, "\\d+");
+    if (used_num == NULL) {
+        g_warning ("_get_ntfs_free:parse used num failed\n");
+        g_free (total_num);
+        g_free (total);
+        g_free (space_inuse);
+        g_free (output);
+        return free;
+    }
+    used_size = g_ascii_strtod (used_num, NULL);
+
+    g_free (total_num);
+    g_free (total);
+    g_free (used_num);
+    g_free (space_inuse);
+    g_free (output);
+
+    free = total_size - used_size;
+
+    return free;
+}
+
+double 
+get_partition_free (const gchar *path, const gchar *fs)
+{
+    double free = 0;
+
+    if (g_strcmp0 (fs, "ext4") == 0) {
+        free = _get_ext4_free (path);
+
+    } else if (g_strcmp0 (fs, "ext3") == 0) {
+        free = _get_ext3_free (path);
+
+    } else if (g_strcmp0 (fs, "ext2") == 0) {
+        free = _get_ext2_free (path);
+
+    } else if (g_strcmp0 (fs, "reiserfs") == 0) {
+        free = _get_reiserfs_free (path);
+
+    } else if (g_strcmp0 (fs, "swap") == 0) {
+        free = _get_swap_free (path);
+
+    } else if (g_strcmp0 (fs, "xfs") == 0) {
+        free = _get_xfs_free (path);
+
+    } else if (g_strcmp0 (fs, "jfs") == 0) {
+        free = _get_jfs_free (path);
+
+    } else if (g_strcmp0 (fs, "fat16") == 0) {
+        free = _get_fat16_free (path);
+
+    } else if (g_strcmp0 (fs, "fat32") == 0) {
+        free = _get_fat32_free (path);
+
+    } else if (g_strcmp0 (fs, "btrfs") == 0) {
+        free = _get_btrfs_free (path);
+
+    } else if (g_strcmp0 (fs, "ntfs") == 0) {
+        free = _get_ntfs_free (path);
+
+    } else {
+        g_warning ("get partition free:not support for fs %s\n", fs);
+    }
+
+    return free;
 }
 
 void 

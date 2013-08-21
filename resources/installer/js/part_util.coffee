@@ -19,6 +19,9 @@
 
 get_random_color = ->
     return '#'+(Math.random()*0xffffff<<0).toString(16)
+
+sector_to_mb = (sector_length, sector_size) ->
+    return Math.round ((sector_length * sector_size) / (1000 * 1000))
 #
 #Model
 #Model: for origin disk partition table 

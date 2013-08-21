@@ -205,6 +205,26 @@ double installer_get_disk_length (const gchar *disk)
     return length;
 }
 
+JS_EXPORT_API 
+double installer_get_disk_sector_size (const gchar *disk)
+{
+    double sector_size = 0;
+    PedDisk *peddisk = NULL;
+
+    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
+    if (peddisk != NULL) {
+        PedDevice *device = peddisk->dev;
+        g_assert(device != NULL);
+
+        sector_size = device->sector_size;
+
+    } else {
+        g_warning ("get disk sector size:find peddisk by %s failed\n", disk);
+    }
+    
+    return sector_size;
+}
+
 JS_EXPORT_API
 JSObjectRef installer_get_disk_partitions (const gchar *disk)
 {
@@ -549,42 +569,87 @@ gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name
     return result;
 }
 
+//JS_EXPORT_API 
+//gchar* installer_get_partition_used (const gchar *part)
+//{
+//    gchar* result = NULL;
+//
+//    gchar *path = NULL;
+//    const gchar *fs = installer_get_partition_fs (part);
+//    PedPartition *pedpartition = NULL;
+//
+//    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+//    if (pedpartition != NULL) {
+//        PedPartitionType part_type = pedpartition->type;
+//        if (part_type == PED_PARTITION_NORMAL || part_type == PED_PARTITION_LOGICAL || part_type == PED_PARTITION_EXTENDED) {
+//            ;
+//        } else {
+//            g_printf ("get partition used:no meaning for none used\n");
+//            return result;
+//        }
+//
+//        path = ped_partition_get_path (pedpartition);
+//        if (path != NULL) {
+//            if ((ped_partition_is_busy (pedpartition)) == 1) {
+//                result = get_mounted_partition_used (path);
+//
+//            } else {
+//            result = get_partition_used (path, fs);
+//
+//            }
+//        } else {
+//            g_warning ("get pedpartition used: get %s path failed\n", part);
+//        }
+//    } else {
+//        g_warning ("get partition used:find pedpartition %s failed\n", part);
+//    }
+//
+//    g_free (path);
+//
+//    return result;
+//}
+
 JS_EXPORT_API 
-gchar* installer_get_partition_used (const gchar *part)
+double installer_get_partition_free (const gchar *part)
 {
-    gchar* result = NULL;
+    double result = 0;
 
-    gchar *path = NULL;
-    const gchar *fs = installer_get_partition_fs (part);
     PedPartition *pedpartition = NULL;
-
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+
     if (pedpartition != NULL) {
         PedPartitionType part_type = pedpartition->type;
-        if (part_type == PED_PARTITION_NORMAL || part_type == PED_PARTITION_LOGICAL || part_type == PED_PARTITION_EXTENDED) {
-            ;
-        } else {
-            g_printf ("get partition used:no meaning for none used\n");
+
+        if (part_type != PED_PARTITION_NORMAL && part_type != PED_PARTITION_LOGICAL && part_type != PED_PARTITION_EXTENDED) {
+            g_printf ("get partition free:no meaning for none used\n");
             return result;
         }
 
-        path = ped_partition_get_path (pedpartition);
-        if (path != NULL) {
-            if ((ped_partition_is_busy (pedpartition)) == 1) {
-                result = get_mounted_partition_used (path);
-
-            } else {
-            result = get_partition_used (path, fs);
-
-            }
-        } else {
-            g_warning ("get pedpartition used: get %s path failed\n", part);
+        const gchar *fs = NULL;
+        PedGeometry *geom = ped_geometry_duplicate (&pedpartition->geom);
+        PedFileSystemType *fs_type = ped_file_system_probe (geom);
+        if (fs_type != NULL) {
+            fs = fs_type->name;
         }
-    } else {
-        g_warning ("get partition used:find pedpartition %s failed\n", part);
-    }
+        ped_geometry_destroy (geom);
+        if (fs == NULL) {
+            g_warning ("get partition free:get partition file system failed\n");
+            return result;
+        }
 
-    g_free (path);
+        gchar *path = ped_partition_get_path (pedpartition);
+
+        if (path != NULL) {
+            result = get_partition_free (path, fs);
+
+        } else {
+            g_warning ("get pedpartition free: get %s path failed\n", part);
+        }
+        g_free (path);
+
+    } else {
+        g_warning ("get partition free:find pedpartition %s failed\n", part);
+    }
 
     return result;
 }

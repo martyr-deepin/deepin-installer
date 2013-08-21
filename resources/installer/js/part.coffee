@@ -423,7 +423,8 @@ class PartTableItem extends Widget
         @size.innerText = v_part_info[@id]["start"]
         @size.innerText += "-------->" + v_part_info[@id]["end"]
         @size.innerHTML +="</br>"
-        @size.innerText += v_part_info[@id]["length"]
+        #@size.innerText += v_part_info[@id]["length"]
+        @size.innerText += sector_to_mb(v_part_info[@id]["length"], 512)
 
     fill_used: ->
         @used.innerText = v_part_info[@id]["used"]
