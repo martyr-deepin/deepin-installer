@@ -569,46 +569,6 @@ gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name
     return result;
 }
 
-//JS_EXPORT_API 
-//gchar* installer_get_partition_used (const gchar *part)
-//{
-//    gchar* result = NULL;
-//
-//    gchar *path = NULL;
-//    const gchar *fs = installer_get_partition_fs (part);
-//    PedPartition *pedpartition = NULL;
-//
-//    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-//    if (pedpartition != NULL) {
-//        PedPartitionType part_type = pedpartition->type;
-//        if (part_type == PED_PARTITION_NORMAL || part_type == PED_PARTITION_LOGICAL || part_type == PED_PARTITION_EXTENDED) {
-//            ;
-//        } else {
-//            g_printf ("get partition used:no meaning for none used\n");
-//            return result;
-//        }
-//
-//        path = ped_partition_get_path (pedpartition);
-//        if (path != NULL) {
-//            if ((ped_partition_is_busy (pedpartition)) == 1) {
-//                result = get_mounted_partition_used (path);
-//
-//            } else {
-//            result = get_partition_used (path, fs);
-//
-//            }
-//        } else {
-//            g_warning ("get pedpartition used: get %s path failed\n", part);
-//        }
-//    } else {
-//        g_warning ("get partition used:find pedpartition %s failed\n", part);
-//    }
-//
-//    g_free (path);
-//
-//    return result;
-//}
-
 JS_EXPORT_API 
 double installer_get_partition_free (const gchar *part)
 {
