@@ -293,29 +293,29 @@ class PartTableItem extends Widget
         @lineid = "line"+@id
         __selected_item = @
 
-        @device = create_element("div", "PartTableItemCell", @element)
+        @device = create_element("div", "", @element)
         @color = create_element("div", "Color", @device)
         @path = create_element("div", "Path", @device)
 
-        @fs = create_element("div", "PartTableItemCell", @element)
-        @fs_txt = create_element("div", "ItemCellTxt", @fs)
+        @fs = create_element("div", "", @element)
+        @fs_txt = create_element("div", "", @fs)
         @fs_select = create_element("select", "", @fs)
         @fs_select.addEventListener("focus", (e) =>
             if __selected_item != @
                 @focus()
         )
 
-        @mount = create_element("div", "PartTableItemCell", @element)
-        @mount_txt = create_element("div", "ItemCellTxt", @mount)
+        @mount = create_element("div", "", @element)
+        @mount_txt = create_element("div", "", @mount)
         @mount_select = create_element("select", "", @mount)
         @mount_select.addEventListener("focus", (e) =>
             if __selected_item != @
                 @focus()
         )
         
-        @size = create_element("div", "PartTableItemCell", @element)
+        @size = create_element("div", "", @element)
 
-        @used = create_element("div", "PartTableItemCell", @element)
+        @used = create_element("div", "", @element)
 
         @fill_item()
 
@@ -454,57 +454,36 @@ class PartTableItem extends Widget
         #table_btn = document.getElementById("table_btn")
         add_btn = document.getElementById("add_btn")
         delete_btn = document.getElementById("delete_btn")
-        query_btn = document.getElementById("query_btn")
-        mode_btn = document.getElementById("mode_btn")
-        undo_btn = document.getElementById("undo_btn")
 
         if @type == "freespace"
             #table_btn.setAttribute("class", "PartOpBtnDisabled")
             add_btn.setAttribute("class", "PartOpBtn")
             delete_btn.setAttribute("class", "PartOpBtnDisabled")
-            query_btn.setAttribute("class", "PartOpBtnDisabled")
-            mode_btn.setAttribute("class", "PartOpBtn")
-            undo_btn.setAttribute("class", "PartOpBtn")
 
         else if @type == "normal"
             #table_btn.setAttribute("class", "PartOpBtnDisabled")
             add_btn.setAttribute("class", "PartOpBtnDisabled")
             delete_btn.setAttribute("class", "PartOpBtn")
-            query_btn.setAttribute("class", "PartOpBtn")
-            mode_btn.setAttribute("class", "PartOpBtn")
-            undo_btn.setAttribute("class", "PartOpBtn")
 
         else if @type == "logical"
             #table_btn.setAttribute("class", "PartOpBtnDisabled")
             add_btn.setAttribute("class", "PartOpBtnDisabled")
             delete_btn.setAttribute("class", "PartOpBtn")
-            query_btn.setAttribute("class", "PartOpBtn")
-            mode_btn.setAttribute("class", "PartOpBtn")
-            undo_btn.setAttribute("class", "PartOpBtn")
 
         else if @type == "extended"
             #table_btn.setAttribute("class", "PartOpBtnDisabled")
             add_btn.setAttribute("class", "PartOpBtnDisabled")
             delete_btn.setAttribute("class", "PartOpBtnDisabled")
-            query_btn.setAttribute("class", "PartOpBtnDisabled")
-            mode_btn.setAttribute("class", "PartOpBtnDisabled")
-            undo_btn.setAttribute("class", "PartOpBtnDisabled")
 
         else
             echo "invalid type in set btn status"
             #table_btn.setAttribute("class", "PartOpBtnDisabled")
             add_btn.setAttribute("class", "PartOpBtnDisabled")
             delete_btn.setAttribute("class", "PartOpBtnDisabled")
-            query_btn.setAttribute("class", "PartOpBtnDisabled")
-            mode_btn.setAttribute("class", "PartOpBtn")
-            undo_btn.setAttribute("class", "PartOpBtn")
 
         if DCore.Installer.get_partition_flag(@id, "lvm")
             add_btn.setAttribute("class", "PartOpBtnDisabled")
             delete_btn.setAttribute("class", "PartOpBtnDisabled")
-            query_btn.setAttribute("class", "PartOpBtnDisabled")
-            mode_btn.setAttribute("class", "PartOpBtnDisabled")
-            undo_btn.setAttribute("class", "PartOpBtnDisabled")
 
     focus: ->
         __selected_item?.blur()
@@ -543,15 +522,15 @@ class PartTable extends Widget
     constructor: (@id)->
         super
         @header = create_element("div", "PartTableHeader", @element)
-        @device_header = create_element("div", "PartTableHeaderCell", @header)
+        @device_header = create_element("div", "", @header)
         @device_header.innerText = "Device"
-        @fs_header = create_element("div", "PartTableHeaderCell", @header)
+        @fs_header = create_element("div", "", @header)
         @fs_header.innerText = "FileSystem"
-        @mount_header = create_element("div", "PartTableHeaderCell", @header)
+        @mount_header = create_element("div", "", @header)
         @mount_header.innerText = "MountPoint"
-        @size_header = create_element("div", "PartTableHeaderCell", @header)
+        @size_header = create_element("div", "", @header)
         @size_header.innerText = "Size"
-        @used_header = create_element("div", "PartTableHeaderCell", @header)
+        @used_header = create_element("div", "", @header)
         @used_header.innerText = "Used"
 
         @items_part = []
@@ -589,41 +568,35 @@ class PartTable extends Widget
 class Part extends Page
     constructor: (@id)->
         super
-        @title.innerText = "请选择要安装Deepin的磁盘"
-        @mode = "advance"
-
         if __selected_disk == null
             __selected_disk = disks[0]
 
-        @linemap = new PartLineMaps("part_line_maps")
-        @content.appendChild(@linemap.element)
+        @title = create_element("div", "PartTitle", @element)
+        @t_desc = create_element("i", "", @title)
+        @t_desc.innerText = "请选择要安装Deepin的磁盘"
+        @t_help = create_element("span", "", @title)
+        @t_help.innerText = "查看帮助"
+        @t_sep = create_element("span", "", @title)
+        @t_sep.innerText = " | "
+        @t_mode = create_element("span", "", @title)
+        @t_mode.innerText = "精简模式"
+        @mode = "advance"
 
+        #linemap
+        @linemap = new PartLineMaps("part_line_maps")
+        @element.appendChild(@linemap.element)
+
+        #part table
         @table = new PartTable("part_table")
-        @content.appendChild(@table.element)
+        @element.appendChild(@table.element)
 
         if __selected_item == null
             __selected_item = Widget.look_up(@table.items_part?[0])?
+
         #part op buttons
-        @op = create_element("div", "PartOp", @content)
-        @btn_div = create_element("div", "BtnContainer", @op)
-        @part_grub = create_element("div", "PartGrub", @op)
-
-        ##@part_table =create_element("div", "PartOpBtn", @btn_div)
-        #@part_table = create_element("input", "PartOpBtn", @btn_div)
-        #@part_table.setAttribute("type", "button")
-        #@part_table.setAttribute("id", "table_btn")
-        ##@part_table.innerText = "新建分区表"
-        #@part_table.setAttribute("value", "新建分区表")
-        #@part_table.addEventListener("click", (e)=>
-        #    echo "handle table"
-        #)
-
-        #@part_add = create_element("div", "PartOpBtn", @btn_div)
-        @part_add = create_element("input", "PartOpBtn", @btn_div)
-        @part_add.setAttribute("type", "button")
-        @part_add.setAttribute("id", "add_btn")
-        #@part_add.innerText = "新建分区"
-        @part_add.setAttribute("value", "新建分区")
+        @op = create_element("p", "PartOp", @element)
+        @part_add = create_element("div", "", @op)
+        @part_add.innerText = "新建分区"
         @part_add.addEventListener("click", (e)=>
             echo "handle add"
             @add_model = new ModelDialog("AddModel", __selected_item.id)
@@ -640,12 +613,8 @@ class Part extends Page
             )
         )
 
-        #@part_delete = create_element("div", "PartOpBtn", @btn_div)
-        @part_delete = create_element("input", "PartOpBtn", @btn_div)
-        @part_delete.setAttribute("type", "button")
-        @part_delete.setAttribute("id", "delete_btn")
-        #@part_delete.innerText = "删除分区"
-        @part_delete.setAttribute("value", "删除分区")
+        @part_delete = create_element("div", "", @op)
+        @part_delete.innerText = "删除分区"
         @part_delete.addEventListener("click", (e)=>
             echo "handle delete"
             delete_part(__selected_item.id)
@@ -653,51 +622,9 @@ class Part extends Page
             Widget.look_up("part_line_maps")?.fill_linemap()?
         )
 
-        #@part_query = create_element("div", "PartOpBtn", @btn_div)
-        @part_query = create_element("input", "PartOpBtn", @btn_div)
-        @part_query.setAttribute("type", "button")
-        @part_query.setAttribute("id", "query_btn")
-        #@part_query.innerText = "查看分区"
-        @part_query.setAttribute("value", "查看分区")
-        @part_query.addEventListener("click", (e)=>
-            echo "handle query"
-        )
-
-        #@part_mode = create_element("div", "PartOpBtn", @btn_div)
-        @part_mode = create_element("input", "PartOpBtn", @btn_div)
-        @part_mode.setAttribute("type", "button")
-        @part_mode.setAttribute("id", "mode_btn")
-        #@part_mode.innerText = "精简模式"
-        @part_mode.setAttribute("value", "精简模式")
-        @part_mode.addEventListener("click", (e)=>
-            echo "handle mode"
-            if @mode == "advance"
-                @mode = "simple"
-                @part_mode.setAttribute("value", "高级模式")
-            else if @mode == "simple"
-                @mode = "advance"
-                @part_mode.setAttribute("value", "精简模式")
-            else
-                echo "invalid mode"
-            Widget.look_up("part_table")?.update_mode(@mode)?
-        )
-
-        @part_undo = create_element("input", "PartOpBtn", @btn_div)
-        @part_undo.setAttribute("type", "button")
-        @part_undo.setAttribute("id", "undo_btn")
-        @part_undo.setAttribute("value", "撤消操作")
-        @part_undo.addEventListener("click", (e)=>
-            echo "handle undo"
-            for disk in disks
-                undo_table(disk)
-            Widget.look_up("part_table")?.fill_items()
-            Widget.look_up("part_line_maps")?.fill_linemap()?
-        )
-
-        @grub_desc = create_element("div", "GrubDesc", @part_grub)
-        @grub_desc.innerText = "安装启动引导器的设备："
-        @grub_select_div = create_element("div", "GrubSelect", @part_grub)
-        @grub_select = create_element("select", "", @grub_select_div)
+        @part_grub = create_element("p", "PartGrub", @element)
+        @part_grub.innerHTML = "<span>安装启动引导器：</span>"
+        @grub_select = create_element("select", "", @part_grub)
         for disk in disks
             path = v_disk_info[disk]["path"]
             select_opt = create_element("option", "", @grub_select)
@@ -705,57 +632,6 @@ class Part extends Page
             select_opt.innerText = path
             select_opt.innerText += v_disk_info[disk]["model"]
 
-        @error = create_element("div", "Error", @footer)
-        @error.innerText = "磁盘空间已满，无法安装。请整理出30G空白磁盘"
-
-        @next_step = create_element("div", "NextStep", @footer)
-        @next_btn = create_element("button", "", @next_step)
-        @next_btn.innerText = "Next"
-
-        @debug_btn = create_element("button", "", @next_step)
-        @debug_btn.innerText = "debug"
-        @debug_btn.addEventListener("click", (e) =>
-            @debug_part()
-        )
-
-    debug_part: ->
-        @debug_mark()
-
-    debug_mark: ->
-        echo "debug mark"
-        @error.innerText = ""
-        @error.innerText += "original partitions"
-        @error.innerHTML += "</br>"
-        for disk in disks
-            @error.innerText += disk 
-            for part in DCore.Installer.get_disk_partitions(disk)
-                if DCore.Installer.get_partition_type(part) in ["normal", "extended", "logical"]
-                    @error.innerText += part 
-            @error.innerHTML += "</br>"
-
-            if m_disk_info[disk]["change"] == true
-                @error.innerText += "disk changed"
-                @error.innerText += disk
-                @error.innerHTML += "</br>"
-
-                for part in get_modeled_partitions(disk)
-                    if m_part_info[part]["op"] == "delete"
-                        @error.innerText += "delete part"
-                        @error.innerText += part
-                        @error.innerHTML += "</br>"
-
-                for part in get_modeled_partitions(disk)
-                    if m_part_info[part]["op"] == "update"
-                        @error.innerText += "update part"
-                        @error.innerText += part
-                        @error.innerHTML += "</br>"
-
-                for part in get_modeled_partitions(disk)
-                    if m_part_info[part]["op"] == "add"
-                        @error.innerText += "add part"
-                        @error.innerText += part
-                        @error.innerHTML += "</br>"
-            else
-                @error.innerText += "disk not changed"
-                @error.innerText += disk
-                @error.innerHTML += "</br>"
+        @next_step = create_element("p", "NextStep", @element)
+        @next_btn = create_element("span", "", @next_step)
+        @next_btn.innerText = "安装"

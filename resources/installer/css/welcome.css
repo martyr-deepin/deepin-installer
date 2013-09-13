@@ -1,9 +1,9 @@
-p {
+.Welcome p {
     margin:16px 115px;
     font-size:16px;
 }
 
-p span {
+.Welcome p span {
     float:left;
     text-align:right;
     width:120px;
@@ -13,27 +13,26 @@ p span {
     padding:0 5px 0 0;
 }
 
-p input, p select {
+.Welcome p input, p select {
     width:250px;
     height:26px;
     margin-left:8px;
 }
 
-input:focus,select:focus {
+.Welcome input:focus, .Welcome select:focus {
     border:#72ADE4 2px solid;
 }
 
-p i {
-    margin:0 170px;
+.Welcome p i {
+    clear:both;
+    margin:0 170px 5px 170px;
     width:180px;
     height:50px;
     line-height:50px;
     background:#94D3FB;
     display:block;
-    color:red;
-    /*
-    color:#FEFEFE;
-    */
+    color:#FFFFFF;
+    text-align:center;
 }
 
 .Username {
@@ -43,4 +42,3 @@ p i {
 .Keyboard {
     margin-top:38px;
 }
-
