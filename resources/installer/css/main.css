@@ -4,31 +4,25 @@
 @import url(finish.css);
 @import url("../../common/css/animation.css");
 
-Body {
-    width: 80%;
-    margin: 0 10%;
-    background: -webkit-gradient(linear, 0 0, 0 bottom, from(rgba(0, 0, 120, 0.5)), to(rgba(255, 255, 255, 0.1)));
+.PageContainer {
+    width:755px;
+    height:540px;
+    background:#EBF5FE;
+}
+
+.Page {
+    text-align:center;
 }
 
 .Title {
-    width: 100%;
-    height: 10%;
-    text-align: center;
-    line-height: 300%;
-    vertical-align: middle;
-    font-size: 300%;
-}
-
-.Content {
-    width: 100%;
-    height: 70%; 
-    text-align: center;
-}
-
-.Footer {
-    width: 100%;
-    height: 15%;
-    text-align: center;
+    width:755px;
+    height:90px;
+    line-height:90px;
+    background:#DDECF7;
+    text-align:center;
+    color:#12A1E9;
+    font-weight:bold;
+    font-size:24px;
 }
 
 ::-webkit-scrollbar {

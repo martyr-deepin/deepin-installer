@@ -23,22 +23,22 @@ document.body.appendChild(pc.element)
 welcome_page = new Welcome("welcome")
 pc.add_page(welcome_page)
 
-part_page = new Part("part")
-welcome_page.start_install.install_btn.addEventListener("click", (e) =>
-    pc.add_page(part_page)
-    pc.remove_page(welcome_page)
-    __selected_item?.focus()
-)
-
-progress_page = new Progress("progress")
-part_page.next_btn.addEventListener("click", (e) =>
-    do_partition()
-    pc.add_page(progress_page)
-    pc.remove_page(part_page)
-)
-
-finish_page = new Finish("finish")
-progress_page.progressbar.addEventListener("click", (e) =>
-    pc.add_page(finish_page)
-    pc.remove_page(progress_page)
-)
+#part_page = new Part("part")
+#welcome_page.start_install.install_btn.addEventListener("click", (e) =>
+#    pc.add_page(part_page)
+#    pc.remove_page(welcome_page)
+#    __selected_item?.focus()
+#)
+#
+#progress_page = new Progress("progress")
+#part_page.next_btn.addEventListener("click", (e) =>
+#    do_partition()
+#    pc.add_page(progress_page)
+#    pc.remove_page(part_page)
+#)
+#
+#finish_page = new Finish("finish")
+#progress_page.progressbar.addEventListener("click", (e) =>
+#    pc.add_page(finish_page)
+#    pc.remove_page(progress_page)
+#)

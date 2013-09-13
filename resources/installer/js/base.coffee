@@ -17,12 +17,11 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+__current_page = null
+
 class Page extends Widget
     constructor: (@id)->
         super
-        @title = create_element("div", "Title", @element)
-        @content = create_element("div", "Content", @element)
-        @footer = create_element("div", "Footer", @element)
 
 class PageContainer extends Widget
     constructor: (@id)->

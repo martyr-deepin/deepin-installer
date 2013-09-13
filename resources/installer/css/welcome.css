@@ -1,109 +1,46 @@
-.AccountContainer {
-    width: 45%;
-    height: 80%;
-    float: left;
+p {
+    margin:16px 115px;
+    font-size:16px;
 }
 
-.Account {
-    width: 80%;
-    height: 80%;
-    float: right;
-    text-align: left;
-    margin: 10% 0;
-    /*background: #A97777;*/
+p span {
+    float:left;
+    text-align:right;
+    width:120px;
+    height:26px;
+    line-height:26px;
+    display:block;
+    padding:0 5px 0 0;
 }
 
-.AccountTitle{
-    margin: 10% 10% 0 10%;
-    font-size: 300%;
-    width: 40%;
-    height: 10%;
-    color: #CEE8F5;
+p input, p select {
+    width:250px;
+    height:26px;
+    margin-left:8px;
 }
 
-.Account input {
-    position: relative;
-    width: 90%;
-    height: 90%;
-    vertical-align: bottom;
-    border: 2px solid blue;
+input:focus,select:focus {
+    border:#72ADE4 2px solid;
 }
 
-.Account img {
-    position: relative;
-    width: 10%;
-    height: 90%;
-    vertical-align: bottom;
+p i {
+    margin:0 170px;
+    width:180px;
+    height:50px;
+    line-height:50px;
+    background:#94D3FB;
+    display:block;
+    color:red;
+    /*
+    color:#FEFEFE;
+    */
 }
 
-.UserName, .HostName, .Password, .ConfirmPassword {
-    width: 80%;
-    height: 10%;
-    margin: 5% 10%;
+.Username {
+    margin-top:35px;
 }
 
-.Error {
-    width: 100%;
-    height: 10%;
-    margin: 0 10%;
-    text-align: center;
-    color: red;
+.Keyboard {
+    margin-top:38px;
 }
 
-.Dividing {
-    width: 5%;
-    height: 80%;
-    float: left;
-    margin: 10px;
-}
-
-.InstallContainer {
-    width: 45%;
-    height: 80%;
-    float: left;
-}
-
-.InstallType {
-    width: 80%;
-    height: 80%;
-    float: left;
-    font-size: 300%;
-    text-align: left;
-    margin: 10% 0;
-    /*background: #A97777;*/
-}
-
-.InstallTitle {
-    margin: 10% 10% 0 10%;
-    color: #CEE8F5;
-}
-
-.AutoInstall, .CustomInstall {
-    width: 80%;
-    height: 30%;
-    margin: 5%;
-}
-
-.AutoDesc, .CustomDesc {
-    margin: 5%;
-    font-size: 14px;
-}
-
-.InstallBtn: hover, .InstallBtn:focus {
-    background: rgba(255,255,255,0.8);
-    color:#000;
-}
-
-.InstallBtn {
-    background: rgba(255,255,255,0.3);
-    color: #333;
-    border: solid 1px rgba(255,255,255,0.6); 
-    border-radius: 3px;
-    text-align: center;
-    font-size:14px;
-    line-height: 14px;
-    text-shadow: 0px 0px 3px rgba(0,0,0,0.4);
-    box-shadow: 0px 4px 16px rgba(0,0,0,0.4);
-    width: 300px;
-    height: 100px;
-}

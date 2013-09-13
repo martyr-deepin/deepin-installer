@@ -98,22 +98,19 @@ int main(int argc, char **argv)
     installer_container = create_web_container (FALSE, TRUE);
 
     gtk_window_set_decorated (GTK_WINDOW (installer_container), FALSE);
-    gtk_window_set_skip_taskbar_hint (GTK_WINDOW (installer_container), TRUE);
-    gtk_window_set_skip_pager_hint (GTK_WINDOW (installer_container), TRUE);
-    gtk_window_fullscreen (GTK_WINDOW (installer_container));
+    //gtk_window_set_skip_taskbar_hint (GTK_WINDOW (installer_container), TRUE);
+    //gtk_window_set_skip_pager_hint (GTK_WINDOW (installer_container), TRUE);
 
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
+    gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
+    gtk_window_set_default_size (GTK_WINDOW (installer_container), 755, 540);
+
     gtk_widget_realize (installer_container);
-
-    GdkWindow *gdkwindow = gtk_widget_get_window (installer_container);
-    GdkRGBA rgba = { 0, 0, 0, 0.0 };
-    gdk_window_set_background_rgba (gdkwindow, &rgba);
-    gdk_window_set_cursor (gdkwindow, gdk_cursor_new (GDK_LEFT_PTR));
-
     gtk_widget_show_all (installer_container);
 
     monitor_resource_file ("installer", webview);
     gtk_main ();
+
     return 0;
 }
