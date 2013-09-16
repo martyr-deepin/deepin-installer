@@ -313,7 +313,7 @@ for disk in disks
         v_part_info[part]["color"] = get_random_color() 
         v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
         try
-            v_part_info[part]["used"] = DCore.Installer.get_partition_free(part)
+            v_part_info[part]["used"] = Math.round(DCore.Installer.get_partition_free(part))
             #v_part_info[part]["used"] = "80G"
         catch error
             v_part_info[part]["used"] = "unknown"
@@ -879,7 +879,7 @@ undo_table = (disk) ->
         v_part_info[part]["color"] = get_random_color() 
         v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
         try
-            v_part_info[part]["used"] = DCore.Installer.get_partition_free(part)
+            v_part_info[part]["used"] = Math.round(DCore.Installer.get_partition_free(part))
             #v_part_info[part]["used"] = "80G"
         catch error
             v_part_info[part]["used"] = "unknown"
