@@ -170,12 +170,10 @@
     float:right;
 }
 
-.NextStep {
-    width:700px;
-    height:50px;
-}
-
 .NextStep span {
+    position:fixed;
+    bottom:20px;
+    right:30px;
     float:right;
     text-align:center;
     width:175px;

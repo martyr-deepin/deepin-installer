@@ -20,8 +20,7 @@
 __selected_disk = null
 __selected_item = null
 __selected_line = null
-__selected_mode = "advance"
-__selected_part = null
+__selected_mode = null
 
 class ModelDialog extends Widget
     constructor: (@id, @partid)->
@@ -398,13 +397,8 @@ class PartTableItem extends Widget
 
     fill_mount: ->
         @mount.innerHTML = ""
-        if __selected_mode == "simple"
-            @mount_txt = create_element("div", "", @mount)
-            @mount_txt.innerText = v_part_info[@id]["mp"]
-        else if __selected_mode == "advance"
+        if __selected_mode == "advance"
             @fill_mount_select()
-        else
-            echo "fill fs:invalid mode"
 
     fill_mount_select: ->
         @mount_select = create_element("select", "", @mount)
@@ -452,6 +446,9 @@ class PartTableItem extends Widget
         )
 
     set_btn_status: ->
+        if __selected_mode != "advance"
+            return 
+
         if @device_type == "part"
             type = v_part_info[@id]["type"]
         else
@@ -507,6 +504,10 @@ class PartTableItem extends Widget
         else
             @focus()
 
+    update_mode: (mode) ->
+        @fill_fs()
+        @fill_mount()
+
 class PartTable extends Widget
     constructor: (@id)->
         super
@@ -520,7 +521,8 @@ class PartTable extends Widget
         @fs_header = create_element("div", "", @header)
         @fs_header.innerText = "FileSystem"
         @mount_header = create_element("div", "", @header)
-        @mount_header.innerText = "MountPoint"
+        if __selected_mode == "advance"
+            @mount_header.innerText = "MountPoint"
 
         @items_device = []
         @items = create_element("div", "PartTableItems", @element)
@@ -544,14 +546,8 @@ class PartTable extends Widget
                     @items_device.push(part)
 
     update_mode: (mode) ->
-        if mode == "simple"
-            @mount_header.style.display = "none"
-            for child in [@device_header, @fs_header, @mount_header, @size_header, @used_header]
-                child.setAttribute("class", "PartTableHeaderSimple")
-        else if mode == "advance"
-            @mount_header.style.display = "inline"
-            for child in [@device_header, @fs_header, @mount_header, @size_header, @used_header]
-                child.setAttribute("class", "PartTableHeaderCell")
+        if mode == "advance"
+            @mount_header.innerText = "MountPoint"
         for disk in disks
             for part in v_disk_info[disk]["partitions"]
                 Widget.look_up(part)?.update_mode(mode)?
@@ -559,6 +555,9 @@ class PartTable extends Widget
 class Part extends Page
     constructor: (@id)->
         super
+        if __selected_mode == null
+            __selected_mode = "simple"
+
         if __selected_disk == null
             __selected_disk = disks[0]
 
@@ -571,7 +570,6 @@ class Part extends Page
         @t_sep.innerText = " | "
         @t_mode = create_element("span", "", @title)
         @t_mode.innerText = "精简模式"
-        @mode = "advance"
 
         #linemap
         @linemap = new PartLineMaps("part_line_maps")
@@ -584,6 +582,21 @@ class Part extends Page
         if __selected_item == null
             __selected_item = Widget.look_up(@table.items_part?[0])?
 
+        if __selected_mode == "advance"
+            @fill_advance_op()
+
+        @next_step = create_element("p", "NextStep", @element)
+        @next_btn = create_element("span", "", @next_step)
+        @next_btn.innerText = "安装"
+
+        @t_mode.addEventListener("click", (e) =>
+            if __selected_mode != "advance"
+                __selected_mode = "advance"
+                @fill_advance_op()
+                @table.update_mode(__selected_mode)
+        )
+
+    fill_advance_op: ->
         #part op buttons
         @op = create_element("p", "PartOp", @element)
         @part_add = create_element("div", "PartBtn", @op)
@@ -624,7 +637,3 @@ class Part extends Page
             select_opt.setAttribute("value", path)
             select_opt.innerText = path
             select_opt.innerText += v_disk_info[disk]["model"]
-
-        @next_step = create_element("p", "NextStep", @element)
-        @next_btn = create_element("span", "", @next_step)
-        @next_btn.innerText = "安装"
