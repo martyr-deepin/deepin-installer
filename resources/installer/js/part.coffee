@@ -293,7 +293,7 @@ class PartTableItem extends Widget
         @lineid = "line"+@id
         __selected_item = @
 
-        @device = create_element("div", "", @element)
+        @device = create_element("span", "", @element)
         @color = create_element("div", "Color", @device)
         @path = create_element("div", "Path", @device)
 
@@ -522,7 +522,7 @@ class PartTable extends Widget
     constructor: (@id)->
         super
         @header = create_element("div", "PartTableHeader", @element)
-        @device_header = create_element("div", "", @header)
+        @device_header = create_element("span", "", @header)
         @device_header.innerText = "Device"
         @fs_header = create_element("div", "", @header)
         @fs_header.innerText = "FileSystem"
