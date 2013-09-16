@@ -587,7 +587,7 @@ class Part extends Page
 
         @next_step = create_element("p", "NextStep", @element)
         @next_btn = create_element("span", "", @next_step)
-        @next_btn.innerText = "安装"
+        @next_btn.innerText = "开始安装"
 
         @t_mode.addEventListener("click", (e) =>
             if __selected_mode != "advance"
