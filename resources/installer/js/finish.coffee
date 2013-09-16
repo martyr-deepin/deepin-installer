@@ -20,35 +20,35 @@
 class Finish extends Page
     constructor: (@id)->
         super
-        @title.innerText = "安装完成"
+        @title = create_element("div", "Title", @element)
+        @title.innerHTML = "<span>完成Linux Deepin系统安装</span>"
 
-        @finish_desc = create_element("div", "FinishDesc", @content)
+        @sep = create_element("div", "Sep", @element)
+
+        @finish_desc = create_element("p", "", @element)
         @finish_desc.innerText = "完成安装需要重启电脑"
 
-        @restart = create_element("div", "Restart", @content)
-        @restart_now = create_element("div", "", @restart)
+        @restart_now = create_element("p", "", @element)
         @now_radio = create_element("input", "NowRadio", @restart_now)
         @now_radio.setAttribute("type", "radio")
         @now_radio.setAttribute("name", "restart")
         @now_radio.setAttribute("value", "now")
         @now_radio.setAttribute("checked", "true")
-        @now_desc = create_element("div", "NowDesc", @restart_now)
+        @now_desc = create_element("span", "NowDesc", @restart_now)
         @now_desc.innerText = "立即重启电脑"
 
-        @restart_later = create_element("div", "", @restart)
+        @restart_later = create_element("p", "", @element)
         @later_radio = create_element("input", "LaterRadio", @restart_later)
         @later_radio.setAttribute("type", "radio")
         @later_radio.setAttribute("name", "restart")
         @later_radio.setAttribute("value", "later")
         @later_radio.setAttribute("checked", "true")
-        @later_desc = create_element("div", "LaterDesc", @restart_later)
+        @later_desc = create_element("span", "LaterDesc", @restart_later)
         @later_desc.innerText = "稍后重启电脑"
 
-        @finish_install = create_element("div", "FinishInstall", @footer)
-        @finish_btn = create_element("input", "", @finish_install)
-        @finish_btn.setAttribute("type", "button")
-        @finish_btn.setAttribute("value", "完成")
-        @finish_btn.addEventListener("click", (e) =>
+        @finish_install = create_element("div", "FinishBtn", @element)
+        @finish_install.innerText = "完成"
+        @finish_install.addEventListener("click", (e) =>
             echo "finish install"
             DCore.Installer.finish_install()
         )

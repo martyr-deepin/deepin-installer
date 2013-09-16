@@ -1,46 +1,22 @@
-.FinishDesc {
-    width: 100%;
-    height: 30%;
-    vertical-align: bottom;
-    font-size: 300%;
-    line-height: 300%;
+.Sep {
+    margin:80px 275px;
 }
 
-.Restart {
-    width: 100%;
-    height: 70%;
+.Finish p {
+    margin:20px 275px;
+    color:#7F8E9A;
+    width:200px;
+    font-size:16px;
 }
 
-.RestartNow, .RestartLater {
-    width: 100%;
-    height: 50%;
-    border: 5px solid red;
-}
-
-.NowRadio, .LaterRadio {
-    float: left;
-    width: 5%;
-    height: auto;
-    margin-left: 45%;
-    vertical-align: middle;
-    text-align: right;
-}
-
-.NowDesc, .LaterDesc {
-    float: right;
-    width: 50%;
-    height: auto;
-    vertical-align: middle;
-    text-align: left;
-}
-
-.FinishInstall {
-    width: 100%;
-    height: 20%;
-    font-size: 300%;
-    line-height: 300%;
-}
-
-.FinishInstall input {
-    width: 20%;
+.FinishBtn {
+    margin:80px 275px;
+    width:180px;
+    height:50px;
+    line-height:50px;
+    display:block;
+    background:#8BCEFB;
+    color:white;
+    text-align:center;
+    font-size:18px;
 }
