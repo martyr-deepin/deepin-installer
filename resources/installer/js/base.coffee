@@ -19,6 +19,8 @@
 
 __current_page = null
 
+_ppt_list = ["images/deepin.jpg", "images/deepin1.jpg", "images/deepin2.jpg", "images/deepin3.jpg", "images/deepin4.jpg"]
+
 class Page extends Widget
     constructor: (@id)->
         super

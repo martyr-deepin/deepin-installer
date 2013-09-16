@@ -17,27 +17,27 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-_ppt_list = ["images/deepin.jpg", "images/deepin1.jpg", "images/deepin2.jpg", "images/deepin3.jpg", "images/deepin4.jpg"]
-
 class Progress extends Page
     constructor: (@id)->
         super
-        @title.innerText = "欢迎安装Linux Deepin"
+        @title = create_element("div", "Title", @element)
+        @title.innerHTML = "<span>欢迎安装使用 Linux Deepin <sup>12.12</sup></span>"
+
         @current_img = _ppt_list[0]
 
-        @ppt = create_element("div", "PPT", @content)
+        @ppt = create_element("div", "Ppt", @element)
         @ppt_img = create_img("PptImg", @current_img, @ppt)
         @ppt_img.addEventListener("click", (e) =>
-            if e.clientX < screen.width/2
+            if e.offsetX < 377
                 @switch_ppt("prev")
             else 
                 @switch_ppt("next")
         )
 
-        @progress_container = create_element("div", "ProgressContainer", @footer)
+        @progress_container = create_element("div", "ProgressContainer", @element)
         @progressbar = create_element("div", "ProgressBar", @progress_container)
-        @progressdesc = create_element("div", "Progressdesc", @progress_container)
-        @progressdesc.innerText = "Progress Description"
+        #@progressdesc = create_element("div", "Progressdesc", @progress_container)
+        #@progressdesc.innerText = "Progress Description"
 
     switch_ppt: (direction)->
         if direction == "prev"
@@ -54,4 +54,4 @@ class Progress extends Page
         @ppt_img.setAttribute("src", @current_img)
 
     update_progress: (progress) ->
-        echo "pass"
+        echo "update progress"
