@@ -34,7 +34,7 @@
 
 static GtkWidget *installer_container = NULL;
 
-gboolean installer_is_running()
+gboolean installer_is_running ()
 {
     int server_sockfd;
     socklen_t server_len;
@@ -84,6 +84,33 @@ void installer_finish_install ()
     gtk_main_quit ();
 }
 
+static gboolean
+move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
+{
+    g_debug ("installer:move window");
+
+    if ((event->x > 450) && ( event->y < 50|| event->y > 450)) {
+        g_debug ("move window:html click area");
+        return TRUE;
+    }
+
+    if (event->button == 1) {
+        g_debug ("move window:in drag x_root->%g, y_root->%g", event->x_root, event->y_root);
+
+        gtk_widget_set_can_focus (widget, TRUE);
+        gtk_widget_grab_focus (widget);
+
+        gtk_window_begin_move_drag (GTK_WINDOW (widget), 
+                                    event->button, 
+                                    event->x_root,
+                                    event->y_root,
+                                    event->time);
+
+    }
+
+    return FALSE;
+}
+
 int main(int argc, char **argv)
 {
     init_i18n ();
@@ -102,6 +129,9 @@ int main(int argc, char **argv)
     //gtk_window_set_skip_pager_hint (GTK_WINDOW (installer_container), TRUE);
 
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
+
+    g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
+
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
     gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
     gtk_window_set_default_size (GTK_WINDOW (installer_container), 755, 540);
