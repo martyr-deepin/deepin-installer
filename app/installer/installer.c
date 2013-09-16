@@ -29,6 +29,8 @@
 #include "misc.h"
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 #define INSTALLER_HTML_PATH "file://"RESOURCE_DIR"/installer/index.html"
 
@@ -115,6 +117,11 @@ int main(int argc, char **argv)
 {
     init_i18n ();
     gtk_init (&argc, &argv);
+
+    if (geteuid () != 0) {
+        g_warning ("must run installer as root\n");
+        exit (0);
+    }
 
     if (installer_is_running ()) {
         g_warning ("another instance of installer is running\n");
