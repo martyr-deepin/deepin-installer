@@ -313,10 +313,12 @@ for disk in disks
         v_part_info[part]["color"] = get_random_color() 
         v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
         try
-            v_part_info[part]["used"] = DCore.Installer.get_partition_used(part)
+            v_part_info[part]["used"] = DCore.Installer.get_partition_free(part)
             #v_part_info[part]["used"] = "80G"
         catch error
             v_part_info[part]["used"] = "unknown"
+        v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
+        v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
 
 _sort_part_geom = (part_a, part_b) ->
     if v_part_info[part_a]["start"] == v_part_info[part_b]["start"]
@@ -696,7 +698,7 @@ _delete_extended = (disk, part) ->
 
     v_part_info[part]["type"] = "freespace"
     v_part_info[part]["fs"] = ""
-    v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
+    v_part_info[part]["width"] = Math.round((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
 delete_part = (part) ->
     echo "delete part"
@@ -877,7 +879,7 @@ undo_table = (disk) ->
         v_part_info[part]["color"] = get_random_color() 
         v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
         try
-            v_part_info[part]["used"] = DCore.Installer.get_partition_used(part)
+            v_part_info[part]["used"] = DCore.Installer.get_partition_free(part)
             #v_part_info[part]["used"] = "80G"
         catch error
             v_part_info[part]["used"] = "unknown"

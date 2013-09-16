@@ -319,13 +319,17 @@ class PartTableItem extends Widget
 
     fill_device: ->
         @os = create_element("span", "Os", @device)
+        if v_part_info[@id]["os"]?
+            @os.innerText = v_part_info[@id]["os"]
 
         @color = create_element("span", "Color", @device)
         color_value = Widget.look_up(@lineid)?.color or get_random_color()
         @color.style.background = color_value
 
         @lp = create_element("span", "LabelPath", @device)
-        @lable = create_element("div", "Label", @lp)
+        @label = create_element("div", "Label", @lp)
+        if v_part_info[@id]["label"]?
+            @label.innerText = v_part_info[@id]["label"]
 
         @path = create_element("div", "Path", @lp)
         @path.innerText = v_part_info[@id]["path"]
@@ -512,7 +516,7 @@ class PartTable extends Widget
         @size_header = create_element("div", "", @header)
         @size_header.innerText = "Size"
         @used_header = create_element("div", "", @header)
-        @used_header.innerText = "Used"
+        @used_header.innerText = "Free"
         @fs_header = create_element("div", "", @header)
         @fs_header.innerText = "FileSystem"
         @mount_header = create_element("div", "", @header)

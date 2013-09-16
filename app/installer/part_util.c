@@ -663,7 +663,7 @@ gchar* installer_get_partition_os (const gchar *part)
 
         path = ped_partition_get_path (pedpartition);
         if (path != NULL) {
-            result = (gchar *) g_hash_table_lookup (partition_os, path);
+            result = g_strdup (g_hash_table_lookup (partition_os, path));
 
         } else {
             g_warning ("get pedpartition os: get %s path failed\n", part);
