@@ -17,22 +17,26 @@
 .PartLineMaps {
     width:700px;
     height:15px;
-    border:1px solid;
-    text-align:center;
-    margin:0 0 5px 0;
     overflow:hidden;
+    padding:0 1px;
 }
 
 .PartLineItem {
     float:left;
     height:15px;
-    text-align:center;
     opacity:0.4;
+}
+
+.PartLineItemActive {
+    float:left;
+    height:15px;
+    opacity:1.0;
 }
 
 .PartTable {
     width:700px;
     height:300px;
+    margin-top:5px;
     border: 1px solid #000000;
     text-align:center;
 }
@@ -68,8 +72,11 @@
 .PartTableItem {
     width:700px;
     height:50px;
-    margin:5px 0;
     clear:both;
+}
+
+.PartTableItemActive {
+    background:#CADDEF;
 }
 
 .PartTableItem >span {
@@ -83,7 +90,13 @@
     width:100px;
     height:50px;
     line-height:50px;
+    vertical-align:middle;
     float:left;
+}
+
+.PartTableItem select {
+    margin:10px 0;
+    height:30px;
 }
 
 .PartOp {
@@ -91,15 +104,28 @@
     height:30px;
 }
 
-.PartOp div {
+.PartBtn {
     float:left;
     text-align:center;
     width:145px;
     height:30px;
     line-height:30px;
-    background:#8BCEFB;
-    color:white;
     margin-right:20px;
+    background:#EAEAEA;
+    color:#ACACAC;
+    pointer-events:none;
+}
+
+.PartBtnActive {
+    float:left;
+    text-align:center;
+    width:145px;
+    height:30px;
+    line-height:30px;
+    margin-right:20px;
+    background:#8BCEFB;
+    color:#FFFFFF;
+    pointer-events:auto;
 }
 
 .PartGrub {

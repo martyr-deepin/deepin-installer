@@ -20,6 +20,8 @@
 __selected_disk = null
 __selected_item = null
 __selected_line = null
+__selected_mode = "advance"
+__selected_part = null
 
 class ModelDialog extends Widget
     constructor: (@id, @partid)->
@@ -240,12 +242,12 @@ class PartLineItem extends Widget
                 Widget.look_up(@part)?.passive_focus()
         catch error
             echo error
-        @add_css_class("PartLineItemSelected")
+        @add_css_class("PartLineItemActive")
     
     passive_focus: ->
         __selected_line?.blur()
         __selected_line = @
-        @add_css_class("PartLineItemSelected")
+        @add_css_class("PartLineItemActive")
 
     blur: ->
         @element.setAttribute("class", "PartLineItem")
@@ -259,9 +261,6 @@ class PartLineItem extends Widget
     update_item: ->
         @color = v_part_info[@part]["color"]
         @element.style.background = @color
-        @element.innerText = v_part_info[@part]["path"]
-        @element.innerHTML += "</br>"
-        @element.innerText += v_part_info[@part]["type"]
         @element.style.width = v_part_info[@part]["width"]
         if v_part_info[@part]["disk"] != __selected_disk
             @element.style.display = "none"
@@ -287,50 +286,57 @@ class PartLineMaps extends Widget
                     @items_part.push(part)
 
 class PartTableItem extends Widget
-    constructor: (@id)->
+    constructor: (@id, @device_type)->
         super
-        @mode = "advance"
-        @lineid = "line"+@id
         __selected_item = @
+        if @device_type == "part"
+            @lineid = "line" + @id
+            @product_part_item()
+        else if @device_type == "disk"
+            @product_disk_item()
+        else
+            echo "invalid device type"
 
+    product_part_item: ->
         @device = create_element("span", "", @element)
-        @color = create_element("div", "Color", @device)
-        @path = create_element("div", "Path", @device)
+        @fill_device()
 
-        @fs = create_element("div", "", @element)
-        @fs_txt = create_element("div", "", @fs)
-        @fs_select = create_element("select", "", @fs)
-        @fs_select.addEventListener("focus", (e) =>
-            if __selected_item != @
-                @focus()
-        )
-
-        @mount = create_element("div", "", @element)
-        @mount_txt = create_element("div", "", @mount)
-        @mount_select = create_element("select", "", @mount)
-        @mount_select.addEventListener("focus", (e) =>
-            if __selected_item != @
-                @focus()
-        )
-        
         @size = create_element("div", "", @element)
+        @size.innerText += sector_to_mb(v_part_info[@id]["length"], 512)
 
         @used = create_element("div", "", @element)
+        @used.innerText = v_part_info[@id]["used"]
 
-        @fill_item()
+        @fs = create_element("div", "", @element)
+        @fill_fs()
+        
+        @mount = create_element("div", "", @element)
+        @fill_mount()
+
+    product_disk_item: ->
+        @device = create_element("div","", @element)
+        @device.innerText = v_disk_info[@id]["path"]
 
     fill_device: ->
+        @color = create_element("div", "Color", @device)
+        @path = create_element("div", "Path", @device)
         @type = v_part_info[@id]["type"]
         @color_value = Widget.look_up(@lineid)?.color or get_random_color()
         @color.style.background = @color_value
         @path.innerText = v_part_info[@id]["path"]
-        @path.innerHTML += "</br>"
-        @path.innerText += @type
-        @path.innerHTML += "</br>"
-        @path.innerText += @id
 
     fill_fs: ->
-        @fs_txt.innerText = v_part_info[@id]["fs"]
+        @fs.innerHTML = ""
+        if __selected_mode == "simple"
+            @fs_txt = create_element("div", "", @fs)
+            @fs_txt.innerText = v_part_info[@id]["fs"]
+        else if __selected_mode == "advance"
+            @fill_fs_select()
+        else
+            echo "fill fs:invalid mode"
+
+    fill_fs_select: ->
+        @fs_select = create_element("select", "", @fs)
         @ext4_option = create_element("option", "", @fs_select)
         @ext4_option.setAttribute("value", "ext4")
         @ext4_option.innerText = "ext4"
@@ -372,13 +378,27 @@ class PartTableItem extends Widget
             if opt.value == v_part_info[@id]["fs"]
                 @fs_select.selectedIndex = i
 
+        @fs_select.addEventListener("focus", (e) =>
+            if __selected_item != @
+                @focus()
+        )
+
         @fs_select.addEventListener("change", (e) =>
-            @fs_txt.innerText = @fs_select.options[@fs_select.selectedIndex].value
             update_part_fs(@id, @fs_select.options[@fs_select.selectedIndex].value)
         )
 
     fill_mount: ->
-        @mount_txt.innerText = v_part_info[@id]["mp"]
+        @mount.innerHTML = ""
+        if __selected_mode == "simple"
+            @mount_txt = create_element("div", "", @mount)
+            @mount_txt.innerText = v_part_info[@id]["mp"]
+        else if __selected_mode == "advance"
+            @fill_mount_select()
+        else
+            echo "fill fs:invalid mode"
+
+    fill_mount_select: ->
+        @mount_select = create_element("select", "", @mount)
         @root_option = create_element("option", "", @mount_select)
         @root_option.setAttribute("value", "/")
         @root_option.innerText = "/"
@@ -414,100 +434,60 @@ class PartTableItem extends Widget
             if opt.value == v_part_info[@id]["mp"]
                 @mount_select.selectedIndex = i
 
+        @mount_select.addEventListener("focus", (e) =>
+            if __selected_item != @
+                @focus()
+        )
         @mount_select.addEventListener("change", (e) =>
-            @mount_txt.innerText = @mount_select.options[@mount_select.selectedIndex].value
             update_part_mp(@id, @mount_select.options[@mount_select.selectedIndex].value)
         )
 
-    fill_size: ->
-        @size.innerText = v_part_info[@id]["start"]
-        @size.innerText += "-------->" + v_part_info[@id]["end"]
-        @size.innerHTML +="</br>"
-        #@size.innerText += v_part_info[@id]["length"]
-        @size.innerText += sector_to_mb(v_part_info[@id]["length"], 512)
-
-    fill_used: ->
-        @used.innerText = v_part_info[@id]["used"]
-        #@used.innerText = "80G"
-
-    fill_item: ->
-        @fill_device()
-        @fill_fs()
-        @fill_mount()
-        @fill_size()
-        @fill_used()
-        @update_mode(@mode)
-        @element.style.display = "block"
-
-    update_mode: (mode)->
-        if mode == "simple"
-            @mount.style.display = "none"
-            for child in [@device, @fs, @mount, @size, @used]
-                child.setAttribute("class","PartTableItemSimple")
-        else if mode == "advance"
-            @mount.style.display = "inline"
-            for child in [@device, @fs, @mount, @size, @used]
-                child.setAttribute("class", "PartTableItemCell")
-
     set_btn_status: ->
-        @type = v_part_info[@id]["type"]
-        #table_btn = document.getElementById("table_btn")
-        add_btn = document.getElementById("add_btn")
-        delete_btn = document.getElementById("delete_btn")
-
-        if @type == "freespace"
-            #table_btn.setAttribute("class", "PartOpBtnDisabled")
-            add_btn.setAttribute("class", "PartOpBtn")
-            delete_btn.setAttribute("class", "PartOpBtnDisabled")
-
-        else if @type == "normal"
-            #table_btn.setAttribute("class", "PartOpBtnDisabled")
-            add_btn.setAttribute("class", "PartOpBtnDisabled")
-            delete_btn.setAttribute("class", "PartOpBtn")
-
-        else if @type == "logical"
-            #table_btn.setAttribute("class", "PartOpBtnDisabled")
-            add_btn.setAttribute("class", "PartOpBtnDisabled")
-            delete_btn.setAttribute("class", "PartOpBtn")
-
-        else if @type == "extended"
-            #table_btn.setAttribute("class", "PartOpBtnDisabled")
-            add_btn.setAttribute("class", "PartOpBtnDisabled")
-            delete_btn.setAttribute("class", "PartOpBtnDisabled")
-
+        if @device_type == "part"
+            type = v_part_info[@id]["type"]
         else
-            echo "invalid type in set btn status"
-            #table_btn.setAttribute("class", "PartOpBtnDisabled")
-            add_btn.setAttribute("class", "PartOpBtnDisabled")
-            delete_btn.setAttribute("class", "PartOpBtnDisabled")
+            type = "disk"
+        add_btn = document.getElementById("part_add")
+        delete_btn = document.getElementById("part_delete")
 
-        if DCore.Installer.get_partition_flag(@id, "lvm")
-            add_btn.setAttribute("class", "PartOpBtnDisabled")
-            delete_btn.setAttribute("class", "PartOpBtnDisabled")
+        if type == "freespace"
+            add_btn.setAttribute("class", "PartBtnActive")
+            delete_btn.setAttribute("class", "PartBtn")
+        else if type in ["normal", "logical"]
+            add_btn.setAttribute("class", "PartBtn")
+            delete_btn.setAttribute("class", "PartBtnActive")
+        else
+            add_btn.setAttribute("class", "PartBtn")
+            delete_btn.setAttribute("class", "PartBtn")
+
+        if type != "disk" and DCore.Installer.get_partition_flag(@id, "lvm")
+            add_btn.setAttribute("class", "PartBtn")
+            delete_btn.setAttribute("class", "PartBtn")
 
     focus: ->
         __selected_item?.blur()
         __selected_item = @
 
-        if __selected_disk == null or __selected_disk != v_part_info[@id]["disk"]
+        if @device_type == "disk"
+            __selected_disk = @id
+        else
             __selected_disk = v_part_info[@id]["disk"]
-
-        try
-            if __selected_line == null or __selected_item.id != __selected_line?.partid?
-                Widget.look_up("part_line_maps")?.fill_linemap()
-                Widget.look_up(@lineid)?.passive_focus()
-        catch error
-            echo error
+            try
+                if __selected_line == null or __selected_item.id != __selected_line?.partid?
+                    Widget.look_up("part_line_maps")?.fill_linemap()
+                    Widget.look_up(@lineid)?.passive_focus()
+            catch error
+                echo error
 
         @set_btn_status()
-        @add_css_class("PartTableItemSelected")
+        @add_css_class("PartTableItemActive")
 
     passive_focus: ->
         __selected_item?.blur()
         __selected_item = @
 
         @set_btn_status()
-        @add_css_class("PartTableItemSelected")
+        @add_css_class("PartTableItemActive")
 
     blur: ->
         @element.setAttribute("class", "PartTableItem")
@@ -524,33 +504,35 @@ class PartTable extends Widget
         @header = create_element("div", "PartTableHeader", @element)
         @device_header = create_element("span", "", @header)
         @device_header.innerText = "Device"
-        @fs_header = create_element("div", "", @header)
-        @fs_header.innerText = "FileSystem"
-        @mount_header = create_element("div", "", @header)
-        @mount_header.innerText = "MountPoint"
         @size_header = create_element("div", "", @header)
         @size_header.innerText = "Size"
         @used_header = create_element("div", "", @header)
         @used_header.innerText = "Used"
+        @fs_header = create_element("div", "", @header)
+        @fs_header.innerText = "FileSystem"
+        @mount_header = create_element("div", "", @header)
+        @mount_header.innerText = "MountPoint"
 
-        @items_part = []
+        @items_device = []
         @items = create_element("div", "PartTableItems", @element)
         @fill_items()
 
     fill_items: ->
         echo "update part table items"
-        for part in @items_part
-            Widget.look_up(part)?.destroy()
+        for device in @items_device
+            Widget.look_up(device)?.destroy()
             
-        @items_part = []
+        @items_device = []
         for disk in disks
+            item = new PartTableItem(disk, "disk")
+            @items.appendChild(item.element)
+            @items_device.push(disk)
+
             for part in v_disk_info[disk]["partitions"]
-                #if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
-                #display extended for debug use
-                if v_part_info[part]["type"] in ["normal", "logical", "freespace", "extended"]
-                    item = new PartTableItem(part)
+                if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
+                    item = new PartTableItem(part, "part")
                     @items.appendChild(item.element)
-                    @items_part.push(part)
+                    @items_device.push(part)
 
     update_mode: (mode) ->
         if mode == "simple"
@@ -595,7 +577,8 @@ class Part extends Page
 
         #part op buttons
         @op = create_element("p", "PartOp", @element)
-        @part_add = create_element("div", "", @op)
+        @part_add = create_element("div", "PartBtn", @op)
+        @part_add.setAttribute("id", "part_add")
         @part_add.innerText = "新建分区"
         @part_add.addEventListener("click", (e)=>
             echo "handle add"
@@ -613,7 +596,8 @@ class Part extends Page
             )
         )
 
-        @part_delete = create_element("div", "", @op)
+        @part_delete = create_element("div", "PartBtn", @op)
+        @part_delete.setAttribute("id", "part_delete")
         @part_delete.innerText = "删除分区"
         @part_delete.addEventListener("click", (e)=>
             echo "handle delete"
