@@ -17,8 +17,10 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+#get_random_color = ->
+#    return '#'+(Math.random()*0xffffff<<0).toString(16)
 get_random_color = ->
-    return '#'+(Math.random()*0xffffff<<0).toString(16)
+    return _color_list[Math.floor(Math.random() * 24)]
 
 sector_to_mb = (sector_length, sector_size) ->
     return Math.round ((sector_length * sector_size) / (1000 * 1000))

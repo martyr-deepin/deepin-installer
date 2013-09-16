@@ -94,6 +94,30 @@
     float:left;
 }
 
+.PartTableItem .Os {
+    width:75px;
+    height:30px;
+    line-height:30px;
+    margin:10px 0;
+    text-align:right;
+    float:left;
+}
+
+.PartTableItem .Color {
+    width:20px;
+    height:20px;
+    line-height:20px;
+    float:left;
+    margin:15px 5px;
+}
+
+.PartTableItem .LabelPath {
+    width:95px;
+    height:50px;
+    float:right;
+    overflow:hidden;
+}
+
 .PartTableItem select {
     margin:10px 0;
     height:30px;

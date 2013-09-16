@@ -318,11 +318,16 @@ class PartTableItem extends Widget
         @device.innerText = v_disk_info[@id]["path"]
 
     fill_device: ->
-        @color = create_element("div", "Color", @device)
-        @path = create_element("div", "Path", @device)
-        @type = v_part_info[@id]["type"]
-        @color_value = Widget.look_up(@lineid)?.color or get_random_color()
-        @color.style.background = @color_value
+        @os = create_element("span", "Os", @device)
+
+        @color = create_element("span", "Color", @device)
+        color_value = Widget.look_up(@lineid)?.color or get_random_color()
+        @color.style.background = color_value
+
+        @lp = create_element("span", "LabelPath", @device)
+        @lable = create_element("div", "Label", @lp)
+
+        @path = create_element("div", "Path", @lp)
         @path.innerText = v_part_info[@id]["path"]
 
     fill_fs: ->

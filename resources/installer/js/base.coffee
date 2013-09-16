@@ -19,7 +19,14 @@
 
 __current_page = null
 
-_ppt_list = ["images/deepin.jpg", "images/deepin1.jpg", "images/deepin2.jpg", "images/deepin3.jpg", "images/deepin4.jpg"]
+_ppt_list = ["images/deepin.jpg", "images/deepin1.jpg", "images/deepin2.jpg", 
+             "images/deepin3.jpg", "images/deepin4.jpg"]
+
+_color_list = ["#89AFD0","#6D91BC","#E8948A","#DE5F4E","#C2A02D",
+               "#94A92C","#876763","#6AA9B4","#B0823E","#8C3F4D",
+               "#84CfD3","#6E56A1","#9C76A1","#BF92D9","#DFBEEB",
+               "#B59479","#91C9ED","#F06693","#DE4EA3","#3EB0A4",
+               "#A25EE1","#9DD089","#D05793","#D5426C"]
 
 class Page extends Widget
     constructor: (@id)->
