@@ -304,7 +304,14 @@ class PartTableItem extends Widget
     fill_device: ->
         @os = create_element("span", "Os", @device)
         if v_part_info[@id]["os"]?
-            @os.innerText = v_part_info[@id]["os"]
+            #@os.innerText = v_part_info[@id]["os"]
+            if v_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
+                label_img = "images/linux.png"
+            else if v_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
+                label_img = "images/windows.png"
+            else if v_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
+                label_img = "images/apple.png"
+            create_img("labelimg", label_img, @os)
 
         @color = create_element("span", "Color", @device)
         color_value = Widget.look_up(@lineid)?.color or get_random_color()
