@@ -254,20 +254,27 @@ class PartLineItem extends Widget
 class PartLineMaps extends Widget
     constructor: (@id)->
         super
-        @items_part =[]
         @fill_linemap()
 
     fill_linemap: ->
-        for part in @items_part
-            Widget.look_up("line"+part)?.destroy()
+        @element.innerHTML = ""
 
-        @items_part = []
         for disk in disks
+            line = create_element("div", "", @element)
+            line.setAttribute("id", "line"+disk)
             for part in v_disk_info[disk]["partitions"]
                 if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
                     item = new PartLineItem("line"+part)
-                    @element.appendChild(item.element)
-                    @items_part.push(part)
+                    line.appendChild(item.element)
+
+            if disk == __selected_disk
+                line.style.display = "inline"
+            else
+                line.style.display = "none"
+                
+    disk_active: ->
+        line = document.getElementById("line"+__selected_disk)
+        line.setAttribute("class", "PartLineDiskActive")
 
 class PartTableItem extends Widget
     constructor: (@id, @device_type)->
@@ -306,12 +313,12 @@ class PartTableItem extends Widget
         if v_part_info[@id]["os"]?
             #@os.innerText = v_part_info[@id]["os"]
             if v_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
-                label_img = "images/linux.png"
+                os_img = "images/linux.png"
             else if v_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
-                label_img = "images/windows.png"
+                os_img = "images/windows.png"
             else if v_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
-                label_img = "images/apple.png"
-            create_img("labelimg", label_img, @os)
+                os_img = "images/apple.png"
+            create_img("osimg", os_img, @os)
 
         @color = create_element("span", "Color", @device)
         color_value = Widget.look_up(@lineid)?.color or get_random_color()
@@ -468,6 +475,7 @@ class PartTableItem extends Widget
 
         if @device_type == "disk"
             __selected_disk = @id
+            Widget.look_up("part_line_maps")?.disk_active()
         else
             __selected_disk = v_part_info[@id]["disk"]
             try
