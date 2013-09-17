@@ -206,61 +206,41 @@
     font-weight:bold;
 }
 
-/*
-.ModelDialog {
-	position: fixed;
-	font-family: Arial, Helvetica, sans-serif;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-    background: rgba(0,0,0,0.8);
-    z-index: 99999;
-	opacity:0;
-	-webkit-transition: opacity 400ms ease-in;
-	transition: opacity 400ms ease-in;
-	pointer-events: none;
+.AddPartDialog {
+    position:fixed;
+    left:130px;
+    right:130px;
+    top:170px;
+    bottom:120px;
+    width:490px;
+    height:240px;
+    background:#FFFFFF;
+    z-index:99999;
 }
 
-.ModelDialog:target {
-	opacity: 1;
-	pointer-events: auto;
+.AddPartDialog:target {
+	pointer-events:auto;
 }
 
-.ModelDialogShow {
-    opacity: 1;
-    pointer-events: auto;
+.AddPartDialog .DialogContent {
+    padding:0 0 0 110px;
 }
 
-.ModelDialog > div {
-    width: 70%;
-	position: relative;
-	margin: 10% auto;
-	padding: 5px 20px 13px 20px;
-	border-radius: 10px;
-	background: #fff;
-	background: -webkit-linear-gradient(#fff, #999);
-	background: -o-linear-gradient(#fff, #999);
+.DialogBtn span {
+    display:block;
+    float:right;
+    width:100px;
+    height:30px;
+    background:#8BCEFB;
+    color:white;
+    margin:0 5px 5px 5px;
 }
 
-.close {
-	background: #606061;
-	color: #FFFFFF;
-	line-height: 25px;
-	position: absolute;
-	right: -12px;
-	text-align: center;
-	top: -10px;
-	width: 24px;
-	text-decoration: none;
-	font-weight: bold;
-	-webkit-border-radius: 12px;
-	border-radius: 12px;
-	-webkit-box-shadow: 1px 1px 3px #000;
-	box-shadow: 1px 1px 3px #000;
+.DialogTitle {
+    background:#F5FAFE;
+    width:490px;
+    height:40px;
+    line-height:40px;
+    font-size:16px;
+    margin:0;
 }
-
-.close:hover { 
-    background: #00d9ff; 
-}
-*/

@@ -18,6 +18,7 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 __current_page = null
+__in_model = false
 
 _ppt_list = ["images/deepin.jpg", "images/deepin1.jpg", "images/deepin2.jpg", 
              "images/deepin3.jpg", "images/deepin4.jpg"]

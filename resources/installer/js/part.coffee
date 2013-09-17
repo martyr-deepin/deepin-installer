@@ -22,29 +22,41 @@ __selected_item = null
 __selected_line = null
 __selected_mode = null
 
-class ModelDialog extends Widget
-    constructor: (@id, @partid)->
+class AddPartDialog extends Widget
+    constructor: (@id, @partid) ->
         super
-        @wrap = create_element("div", "ModelDialogWrap", @element)
-        @close = create_element("span", "Close", @wrap)
-        @close.innerText = "X" 
-        @close.addEventListener("click", (e) =>
+        @title = create_element("p", "DialogTitle", @element)
+        @title.innerText = "新建分区"
+
+        @content = create_element("div", "DialogContent", @element)
+
+        @foot = create_element("p", "DialogBtn", @element)
+        @ok = create_element("span", "", @foot)
+        @ok.innerText = "OK"
+        @cancel = create_element("span", "", @foot)
+        @cancel.innerText = "Cancel"
+        @cancel.addEventListener("click", (e) =>
             @hide_dialog()
         )
-        @desc = create_element("p", "", @wrap)
-        @desc.innerText = "新建分区"
+
         @fill_type()
         @fill_size()
         @fill_align()
         @fill_fs()
-        @fill_mount()
+        #@fill_mount()
         @fill_tips()
-        @fill_btn()
+
+    show_dialog: ->
+        __in_model = true
+
+    hide_dialog: ->
+        __in_model = false
+        @destroy()
 
     fill_type: ->
-        @type = create_element("p", "", @wrap)
+        @type = create_element("p", "", @content)
         @type_desc = create_element("span", "", @type)
-        @type.innerText = "请选择新建分区类型"
+        @type.innerText = "类型:"
         @type_primary = create_element("input", "", @type)
         @type_primary.setAttribute("type", "radio")
         @type_primary.setAttribute("name", "type")
@@ -66,11 +78,11 @@ class ModelDialog extends Widget
             @type_primary.setAttribute("disabled", "disabled")
         else
             @type_primary.setAttribute("checked", "true")
-        
+
     fill_size: ->
-        @size = create_element("p", "", @wrap)
+        @size = create_element("p", "", @content)
         @size_desc = create_element("span", "", @size)
-        @size_desc.innerText = "新建分区大小"
+        @size_desc.innerText = "大小:"
         @size_input = create_element("input", "", @size)
         @size_input.setAttribute("type", "number")
         @size_input.setAttribute("min", 1)
@@ -88,11 +100,11 @@ class ModelDialog extends Widget
         )
         @size_limit = create_element("span", "", @size)
         @size_limit.innerText = "Limited size:" + v_part_info[@partid]["length"]
-
+        
     fill_align: ->
-        @align = create_element("p", "", @wrap)
+        @align = create_element("p", "", @content)
         @align_desc = create_element("span", "", @align)
-        @align_desc.innerText = "请选择分区对齐方式"
+        @align_desc.innerText = "位置:"
         @align_start = create_element("input", "", @align)
         @align_start.setAttribute("type", "radio")
         @align_start.setAttribute("name", "align")
@@ -106,9 +118,9 @@ class ModelDialog extends Widget
         end_desc.innerText = "End"
 
     fill_fs: ->
-        @fs = create_element("p", "", @wrap)
+        @fs = create_element("p", "", @content)
         @fs_desc = create_element("span", "", @fs)
-        @fs_desc.innerText = "请选择分区文件系统"
+        @fs_desc.innerText = "格式:"
         @fs_select = create_element("select", "", @fs)
         @ext4_option = create_element("option", "", @fs_select)
         @ext4_option.setAttribute("value", "ext4")
@@ -149,9 +161,9 @@ class ModelDialog extends Widget
         @unused_option.innerText = "unused"
 
     fill_mount: ->
-        @mp = create_element("p", "", @wrap)
+        @mp = create_element("p", "", @content)
         @mp_desc = create_element("span", "", @mp)
-        @mp_desc.innerText = "请选择分区挂载点"
+        @mp_desc.innerText = "挂载:"
         @mount_select = create_element("select", "", @mp)
         @root_option = create_element("option", "", @mount_select)
         @root_option.setAttribute("value", "/")
@@ -183,49 +195,7 @@ class ModelDialog extends Widget
         @local_option.innerText = "/local"
 
     fill_tips: ->
-        @tips = create_element("p", "", @wrap)
-
-    fill_btn: ->
-        @op_btn = create_element("p", "", @wrap)
-        @ok = create_element("input", "", @op_btn)
-        @ok.setAttribute("type", "button")
-        @ok.setAttribute("value", "Ok")
-
-        @cancel = create_element("input", "", @op_btn)
-        @cancel.setAttribute("type", "button")
-        @cancel.setAttribute("value", "Cancel")
-        @cancel.addEventListener("click", (e) =>
-            echo "cancel add partition"
-            @hide_dialog()
-        )
-
-    show_dialog: ->
-        echo "show dialog"
-        @add_css_class("ModelDialogShow")
-
-    gather_info: ->
-        if @type_primary.checked
-            @n_type = "normal"
-        else if @type_logical.checked
-            @n_type = "logical"
-
-        @n_size = parseInt(@size_input.value)
-        if not @n_size?
-            @tips.innerText = "请输入合法的分区大小"
-
-        if @align_start.getAttribute("checked")
-            @n_align = "start"
-        else
-            @n_align = "end"
-
-        @n_fs = @fs_select.options[@fs_select.selectedIndex].value
-
-        @n_mp = @mount_select.options[@mount_select.selectedIndex].value
-
-    hide_dialog: ->
-        echo "hide dialog"
-        @element.setAttribute("class", "ModelDialog")
-        @destroy()
+        @tips = create_element("p", "", @content)
 
 class PartLineItem extends Widget
     constructor: (@id) ->
@@ -604,8 +574,13 @@ class Part extends Page
         @part_add.innerText = "新建分区"
         @part_add.addEventListener("click", (e)=>
             echo "handle add"
-            @add_model = new ModelDialog("AddModel", __selected_item.id)
-            @btn_div.appendChild(@add_model.element)
+            if __in_model
+                echo "already had mode dialog"
+                return 
+
+            __in_model = true
+            @add_model = new AddPartDialog("AddModel", __selected_item.id)
+            document.body.appendChild(@add_model.element)
             @add_model.show_dialog()
 
             @add_model.ok.addEventListener("click", (e)=>

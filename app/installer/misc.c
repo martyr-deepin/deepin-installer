@@ -953,8 +953,19 @@ void installer_extract_squashfs ()
     out_channel = g_io_channel_unix_new (std_output);
     err_channel = g_io_channel_unix_new (std_error);
 
-    cb_ids[0] = g_io_add_watch_full (out_channel, G_PRIORITY_LOW, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress, (GDestroyNotify) g_io_channel_unref);
-    cb_ids[1] = g_io_add_watch_full (err_channel, G_PRIORITY_LOW, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress, (GDestroyNotify) g_io_channel_unref);
+    cb_ids[0] = g_io_add_watch_full (out_channel,
+                                     G_PRIORITY_LOW, 
+                                     G_IO_IN | G_IO_HUP, 
+                                     (GIOFunc) cb_out_watch, 
+                                     progress, 
+                                     (GDestroyNotify) g_io_channel_unref);
+
+    cb_ids[1] = g_io_add_watch_full (err_channel, 
+                                     G_PRIORITY_LOW, 
+                                     G_IO_IN | G_IO_HUP, 
+                                     (GIOFunc) cb_err_watch, 
+                                     progress, 
+                                     (GDestroyNotify) g_io_channel_unref);
     //g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress);
     //g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress);
 
