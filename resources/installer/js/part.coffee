@@ -43,7 +43,7 @@ class AddPartDialog extends Widget
         @fill_size()
         @fill_align()
         @fill_fs()
-        #@fill_mount()
+        @fill_mount()
         @fill_tips()
 
     show_dialog: ->
@@ -52,6 +52,21 @@ class AddPartDialog extends Widget
     hide_dialog: ->
         __in_model = false
         @destroy()
+
+    gather_info: ->
+        if @type_primary.checked
+            @n_type = "normal"
+        else if @type_logical.checked
+            @n_type = "logical"
+        @n_size = parseInt(@size_input.value)
+        if not @n_size?
+            @tips.innerText = "请输入合法的分区大小"
+        if @align_start.getAttribute("checked")
+            @n_align = "start"
+        else
+            @n_align = "end"
+        @n_fs = @fs_select.options[@fs_select.selectedIndex].value
+        @n_mp = @mount_select.options[@mount_select.selectedIndex].value
 
     fill_type: ->
         @type = create_element("p", "", @content)
