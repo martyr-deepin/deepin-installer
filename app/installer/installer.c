@@ -128,7 +128,6 @@ int main(int argc, char **argv)
         exit (0);
     }
 
-    init_parted ();
     installer_container = create_web_container (FALSE, TRUE);
 
     gtk_window_set_decorated (GTK_WINDOW (installer_container), FALSE);
@@ -137,7 +136,7 @@ int main(int argc, char **argv)
 
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
 
-    g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
+    //g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
 
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
     gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
@@ -145,6 +144,8 @@ int main(int argc, char **argv)
 
     gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
+
+    init_parted ();
 
     monitor_resource_file ("installer", webview);
     gtk_main ();

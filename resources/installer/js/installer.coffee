@@ -20,31 +20,27 @@
 pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
-#welcome_page = new Welcome("welcome")
-#pc.add_page(welcome_page)
+welcome_page = new Welcome("welcome")
+pc.add_page(welcome_page)
 
 part_page = new Part("part")
-pc.add_page(part_page)
 
-#welcome_page.start.addEventListener("click", (e) =>
-#    pc.add_page(part_page)
-#    pc.remove_page(welcome_page)
-#    __selected_item?.focus()
-#)
+welcome_page.start.addEventListener("click", (e) =>
+    pc.add_page(part_page)
+    pc.remove_page(welcome_page)
+    __selected_item?.focus()
+)
 
-#progress_page = new Progress("progress")
-#pc.add_page(progress_page)
+progress_page = new Progress("progress")
 
-#part_page.next_btn.addEventListener("click", (e) =>
-#    do_partition()
-#    pc.add_page(progress_page)
-#    pc.remove_page(part_page)
-#)
-#
+part_page.next_btn.addEventListener("click", (e) =>
+    #do_partition()
+    pc.add_page(progress_page)
+    pc.remove_page(part_page)
+)
 
-#finish_page = new Finish("finish")
-#pc.add_page (finish_page)
-#progress_page.progressbar.addEventListener("click", (e) =>
-#    pc.add_page(finish_page)
-#    pc.remove_page(progress_page)
-#)
+finish_page = new Finish("finish")
+progress_page.progressbar.addEventListener("click", (e) =>
+    pc.add_page(finish_page)
+    pc.remove_page(progress_page)
+)

@@ -1,31 +1,58 @@
 .Welcome p {
-    margin:16px 115px;
     font-size:16px;
-}
-
-.Welcome p span {
-    float:left;
-    text-align:right;
-    width:120px;
     height:26px;
     line-height:26px;
-    display:block;
-    padding:0 5px 0 0;
+    vertical-align:middle;
 }
 
-.Welcome p input, p select {
+.Welcome .Txt {
+    position:absolute;
+    right:515px;
+    display:block;
+    height:26px;
+    line-height:26px;
+}
+
+.Welcome p input, .Welcome p select {
+    position:absolute;
+    left:252px;
+    right:252px;
     width:250px;
     height:26px;
-    margin-left:8px;
 }
 
 .Welcome input:focus, .Welcome select:focus {
     border:#72ADE4 2px solid;
 }
 
-.Welcome p i {
-    clear:both;
-    margin:0 170px 5px 170px;
+.Welcome .Info {
+    position:absolute;
+    left:515px;
+    display:block;
+    height:26px;
+    line-height:26px;
+    color:red;
+}
+
+.Welcome .Start {
+    position:absolute;
+    left:287px;
+    right:287px;
+    bottom:80px;
+    width:180px;
+    height:50px;
+    line-height:50px;
+    background:#E9E9E9;
+    color:#B6B6B6;
+    text-align:center;
+    font-size:24px;
+}
+
+.Welcome .StartActive {
+    position:absolute;
+    left:287px;
+    right:287px;
+    bottom:80px;
     width:180px;
     height:50px;
     line-height:50px;
@@ -33,12 +60,5 @@
     display:block;
     color:#FFFFFF;
     text-align:center;
-}
-
-.Username {
-    margin-top:35px;
-}
-
-.Keyboard {
-    margin-top:38px;
+    font-size:24px;
 }
