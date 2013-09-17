@@ -685,106 +685,67 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
     g_strfreev (variants);
 }
 
-void walk_directory (const gchar *root, void *callback (const gchar *))
-{
-    GFile *source_dir = NULL;
-    GFileInfo *info = NULL;
-    GError *error = NULL;
-
-    source_dir = g_file_new_for_path (root);
-    info = g_file_query_info (source_dir, "standard::", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
-    if (error != NULL) {
-        g_warning ("walk directory:query info %s\n", error->message);
-        g_error_free (error);
-        g_object_unref (source_dir);
-        return ;
-    }
-    error = NULL;
-
-    if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR) {
-        //g_warning ("walk directory: add file %s\n", root);
-        callback (root);
-
-    } else if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
-
-        GFileEnumerator *enumerator = g_file_enumerate_children (source_dir, "standard::type", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
-        if (error != NULL) {
-            g_warning ("walk directory:enumerate children %s\n", error->message);
-            g_error_free (error);
-        }
-        error = NULL;
-
-        GFileInfo *child_info = g_file_enumerator_next_file (enumerator, NULL, &error);
-        if (error != NULL) {
-            g_warning ("walk directory:enumerate next file%s\n", error->message);
-            g_error_free (error);
-        }
-        error = NULL;
-
-        while (child_info != NULL) {
-            gchar *path = g_strdup_printf ("%s/%s", root, g_file_info_get_name (child_info));
-
-            callback ((const gchar *) path);
-            walk_directory (path, callback);
-
-            g_free (path);
-            child_info = g_file_enumerator_next_file (enumerator, NULL, &error);
-            if (error != NULL) {
-                g_warning ("walk directory:enumerate next in while %s\n", error->message);
-                g_error_free (error);
-            }
-            error = NULL;
-        }
-        if (child_info != NULL) {
-            g_object_unref (child_info);
-        }
-        g_object_unref (enumerator);
-
-    } else {
-        g_debug ("walk directory:current not support for file type not regular or folder\n");
-        g_object_unref (info);
-        g_object_unref (source_dir);
-        return ;
-    }
-
-    g_object_unref (info);
-    g_object_unref (source_dir);
-}
-
-void *
-walk_timezones (const gchar *path)
-{
-    GFile *zone_dir = g_file_new_for_path ("/usr/share/zoneinfo");
-    GFile *zone = g_file_new_for_path (path);
-
-    gchar *relative = g_file_get_relative_path (zone_dir, zone);
-    if (relative == NULL) {
-        g_warning ("walk timezones: relative is NULL\n");
-
-    } else if (g_str_has_prefix (relative, "posix") || g_str_has_prefix (relative, "right")) {
-        g_debug ("walk timezones: ignore files under posix and right\n");
-
-    } else {
-        //g_warning ("walk timezones: %s\n", relative);
-        timezone_list = g_list_append (timezone_list, g_strdup (relative));
-    }
-
-    g_free (relative);
-    g_object_unref (zone);
-    g_object_unref (zone_dir);
-}
-
-JS_EXPORT_API 
+JS_EXPORT_API
 JSObjectRef installer_get_timezone_list ()
 {
     JSObjectRef timezones = json_array_create ();
-
-    walk_directory ("/usr/share/zoneinfo", walk_timezones);
-
     gsize index = 0;
-    for (index = 0; index < g_list_length (timezone_list); index++) {
-        json_array_insert (timezones, index, jsvalue_from_cstr (get_global_context (), (gchar *)g_list_nth_data (timezone_list, index)));
+    GError *error = NULL;
+
+    GFile *file = g_file_new_for_path ("/usr/share/zoneinfo/zone.tab");
+    if (!g_file_query_exists (file, NULL)) {
+        g_warning ("get timezone list:zone.tab not exists\n");
+        return timezones;
     }
+
+    GFileInputStream *input = g_file_read (file, NULL, &error);
+    if (error != NULL){
+        g_warning ("get timezone list:read zone.tab error->%s", error->message);
+        g_error_free (error);
+        g_object_unref (file);
+        return timezones;
+    }
+    error = NULL;
+
+    GDataInputStream *data_input = g_data_input_stream_new ((GInputStream *) input);
+    if (data_input == NULL) {
+        g_warning ("get timezone list:get data input stream failed\n");
+        g_object_unref (input);
+        return timezones;
+    }
+    
+    char *data = (char *) 1;
+    while (data) {
+        gsize length = 0;
+        data = g_data_input_stream_read_line (data_input, &length, NULL, &error);
+        if (error != NULL) {
+            g_warning ("get timezone list:read line error");
+            g_error_free (error);
+            continue;
+        }
+        error = NULL;
+        if (data != NULL) {
+            if (g_str_has_prefix (data, "#")){
+                g_debug ("get timezone list:comment line, just pass");
+                continue;
+            } else {
+                gchar **line = g_strsplit (data, "\t", -1);
+                if (line == NULL) {
+                    g_warning ("get timezone list:split %s failed\n", data);
+                } else {
+                    json_array_insert (timezones, index, jsvalue_from_cstr (get_global_context (), line[2]));
+                    index++;
+                }
+                g_strfreev (line);
+            }
+        } else {
+            break;
+        }
+    }
+
+    g_object_unref (data_input);
+    g_object_unref (input);
+    g_object_unref (file);
 
     return timezones;
 }
@@ -844,159 +805,6 @@ gboolean installer_set_timezone (const gchar *timezone)
     ret = TRUE;
 
     return ret;
-}
-
-void *
-walk_copy (const gchar *path)
-{
-    GFile *file = g_file_new_for_path (path);
-    filelist = g_list_append (filelist, g_file_dup (file));
-    g_object_unref (file);
-}
-
-//fix me, insert the copy file blacklist 
-static GList*
-get_source_file_list (const gchar *source_root)
-{
-    walk_directory (source_root, walk_copy);
-
-    return filelist;
-}
-
-static GFile* 
-get_coordinate_target (const gchar *source_root, GFile *src)
-{
-    GFile *coo_target = NULL;
-
-    GFile *source_dir = NULL;
-    GFile *target_dir = NULL;
-    GError *error = NULL;
-
-    extern const gchar *target;
-    if (target == NULL) {
-        g_warning ("get coordinate target:target is NULL\n");
-        return coo_target;
-    }
-
-    source_dir = g_file_new_for_path (source_root); 
-    if (source_dir == NULL) {
-        g_warning ("get coordinate target:get source root file %s failed\n", source_root);
-        return coo_target;
-    }
-
-    gchar *relative_path = g_file_get_relative_path (source_dir, src);
-    if (relative_path == NULL) {
-        g_warning ("get coordinate target:get relative path failed\n");
-        g_object_unref (source_dir);
-        return coo_target;
-    }
-
-    target_dir = g_file_new_for_path (target);
-    if (target_dir == NULL) {
-        g_warning ("get coordinate target:get target file %s failed\n", target);
-        g_free (relative_path);
-        g_object_unref (source_dir);
-        return coo_target;
-    }
-    coo_target = g_file_resolve_relative_path (target_dir, relative_path);
-
-    g_free (relative_path);
-    g_object_unref (target_dir);
-    g_object_unref (source_dir);
-
-    return coo_target;
-}
-
-static gint
-get_total_size ()
-{
-    g_printf ("get total size\n");
-}
-
-void
-progress_callback (goffset current_num_bytes, goffset total_num_bytes, gpointer user_data)
-{
-    g_printf ("progress callback\n");
-}
-
-void
-finish_callback (GObject *source_object, GAsyncResult *res, gpointer user_data)
-{
-    g_printf ("finish callback\n");
-}
-
-//discard as can't read 3.6G file into memory
-JS_EXPORT_API 
-void installer_copy_file (const gchar *source_root)
-{
-    GError *error = NULL;
-
-    extern const gchar *target;
-    if (target == NULL) {
-        g_warning ("get coordinate target:target is NULL\n");
-        return ;
-    }
-
-    filelist = get_source_file_list (source_root);
-    if (filelist == NULL) {
-        g_warning ("copy file:get source file list failed\n");
-    }
-
-    for (int index = 0; index < g_list_length (filelist); index++) {
-        GFile *src = g_file_dup (g_list_nth_data (filelist, index));
-        GFile *dest = get_coordinate_target (source_root, src); 
-        if (dest == NULL) {
-            g_warning ("copy file:get coordinate target failed\n");
-        }
-
-        GFileInfo *info = g_file_query_info (src, "standard::type", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
-        if (error != NULL) {
-            g_warning ("copy file:query src info failed\n");
-            g_error_free (error);
-        }
-        error = NULL;
-
-        GFileType type = g_file_info_get_file_type (info);
-        if (type == G_FILE_TYPE_DIRECTORY) {
-
-            if (g_file_query_exists (dest, NULL)) {
-                continue;
-            } else {
-                GFile *parent = g_file_get_parent (dest);
-                if (parent == NULL) {
-                   g_file_make_directory_with_parents (dest, NULL, &error);
-                   if (error != NULL) {
-                        g_warning ("copy file:make directory with parents failed %s\n", error->message);
-                        g_error_free (error);
-                   }
-                } else {
-                   g_file_make_directory (dest, NULL, &error);
-                   if (error != NULL) {
-                        g_warning ("copy file:make directory failed %s\n", error->message);
-                        g_error_free (error);
-                   }
-                }
-                error = NULL;
-                g_object_unref (parent);
-            }
-        } else {
-            //fix me :only copy regular and symlink file??? file permissions???
-            g_file_copy_async (src, 
-                               dest, 
-                               G_FILE_COPY_OVERWRITE | G_FILE_COPY_TARGET_DEFAULT_PERMS, 
-                               0, 
-                               NULL,
-                               (GFileProgressCallback) progress_callback,
-                               g_file_dup (dest),
-                               (GAsyncReadyCallback) finish_callback,
-                               g_file_dup (dest)
-                        );
-        }
-
-        g_object_unref (info);
-        g_object_unref (src);
-        g_object_unref (dest);
-    }
 }
 
 static void
