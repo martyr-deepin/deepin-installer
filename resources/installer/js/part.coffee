@@ -260,6 +260,36 @@ class DeletePartDialog extends Widget
         __in_model = false
         @destroy()
 
+class FormatDialog extends Widget
+    constructor: (@id) ->
+        super
+        @title = create_element("p", "DialogTitle", @element)
+        @title.innerText = "安装执行"
+
+        @content = create_element("div", "DialogContent", @element)
+        @content.innerText = "确定执行分区操作并安装LinuxDeepin吗?"
+
+        @foot = create_element("p", "DialogBtn", @element)
+        @ok = create_element("span", "", @foot)
+        @ok.innerText = "OK"
+        @ok.addEventListener("click", (e) =>
+            @hide_dialog()
+        )
+
+        @cancel = create_element("span", "", @foot)
+        @cancel.innerText = "Cancel"
+        @cancel.addEventListener("click", (e) =>
+            @hide_dialog()
+        )
+        @show_dialog()
+
+    show_dialog: ->
+        __in_model = true
+
+    hide_dialog: ->
+        __in_model = false
+        @destroy()
+
 class PartLineItem extends Widget
     constructor: (@id) ->
         super
