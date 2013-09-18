@@ -446,28 +446,21 @@ class PartTable extends Widget
         @mount_header = create_element("div", "", @header)
         if __selected_mode == "advance"
             @mount_header.innerText = "MountPoint"
-
-        @items_device = []
         @items = create_element("div", "PartTableItems", @element)
         @fill_items()
 
     fill_items: ->
         echo "update part table items"
-        for device in @items_device
-            Widget.look_up(device)?.destroy()
-            
-        @items_device = []
+        @items.innerHTML = ""
+
         for disk in disks
             item = new PartTableItem(disk, "disk")
             @items.appendChild(item.element)
-            @items_device.push(disk)
-
             for part in v_disk_info[disk]["partitions"]
                 if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
                     item = new PartTableItem(part, "part")
                     @items.appendChild(item.element)
-                    @items_device.push(part)
-
+            
     update_mode: (mode) ->
         if mode == "advance"
             @mount_header.innerText = "MountPoint"
