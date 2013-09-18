@@ -617,7 +617,7 @@ _delete_logical = (disk, part) ->
         if extended?
             before_extended = get_prev_part(extended)
         else
-            echo "error in delete logical, should already has an extended contains it"
+            echo "handle prev->error in delete logical, should already has an extended contains it"
         if before_extended? and v_part_info[before_extended]["type"] == "freespace"
             echo "merge freespace block just before the extended partition"
             v_part_info[part]["start"] = v_part_info[before_extended]["start"]
@@ -633,36 +633,36 @@ _delete_logical = (disk, part) ->
             v_part_info[extended]["length"] = v_part_info[extended]["end"] - v_part_info[extended]["start"] + 1
             v_part_info[extended]["width"] = Math.floor((v_part_info[extended]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
-   next = get_next_part(part)
-   if next?
-       if v_part_info[next]["type"] == "freespace"
-           echo "directly merge next freespace"
-           v_part_info[part]["end"] = v_part_info[next]["end"]
-           v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
-   
-           next_index = v_disk_info[disk]["partitions"].indexOf(next)
-           v_disk_info[disk]["partitions"].splice(next_index, 1)
-           delete v_part_info[next]
-   else
-       extended = get_extended_partition(disk)
-       if extended?
-           after_extended = get_next_part(extended)
-       else
-           echo "error in delete logical, should already has an extended contains it"
-       if after_extended? and v_part_info[after_extended]["type"] == "freespace"
-           echo "merge freespace block just after the extended partition"
-           v_part_info[part]["end"] = v_part_info[after_extended]["end"]
-           v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
-   
-           after_extended_index = v_disk_info[disk]["partitions"].indexOf(after_extended)
-           v_disk_info[disk]["partitions"].splice(after_extended_index, 1)
-           delete v_part_info[after_extended]
+    next = get_next_part(part)
+    if next?
+        if v_part_info[next]["type"] == "freespace"
+            echo "directly merge next freespace"
+            v_part_info[part]["end"] = v_part_info[next]["end"]
+            v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
+    
+            next_index = v_disk_info[disk]["partitions"].indexOf(next)
+            v_disk_info[disk]["partitions"].splice(next_index, 1)
+            delete v_part_info[next]
+    else
+        extended = get_extended_partition(disk)
+        if extended?
+            after_extended = get_next_part(extended)
+        else
+            echo "handle next->error in delete logical, should already has an extended contains it"
+        if after_extended? and v_part_info[after_extended]["type"] == "freespace"
+            echo "merge freespace block just after the extended partition"
+            v_part_info[part]["end"] = v_part_info[after_extended]["end"]
+            v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
+    
+            after_extended_index = v_disk_info[disk]["partitions"].indexOf(after_extended)
+            v_disk_info[disk]["partitions"].splice(after_extended_index, 1)
+            delete v_part_info[after_extended]
 
-           #always reduce the extended size ,if need delete it, will handle this later 
-           mark_update(extended)
-           v_part_info[extended]["end"] = v_part_info[part]["start"] - 1
-           v_part_info[extended]["length"] = v_part_info[extended]["end"] - v_part_info[extended]["start"] + 1
-           v_part_info[extended]["width"] = Math.floor((v_part_info[extended]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
+            #always reduce the extended size ,if need delete it, will handle this later 
+            mark_update(extended)
+            v_part_info[extended]["end"] = v_part_info[part]["start"] - 1
+            v_part_info[extended]["length"] = v_part_info[extended]["end"] - v_part_info[extended]["start"] + 1
+            v_part_info[extended]["width"] = Math.floor((v_part_info[extended]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
 _delete_extended = (disk, part) ->
     echo "delete extended"
@@ -708,6 +708,7 @@ delete_part = (part) ->
     if v_part_info[part]["type"] == "normal"
         _delete_normal(disk, part)
     else if v_part_info[part]["type"] == "logical"
+        echo "delete part, you called delete logical"
         _delete_logical(disk, part)
     else
         echo "error in delete part, invalid partition type"
