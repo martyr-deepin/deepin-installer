@@ -234,15 +234,24 @@ class DeletePartDialog extends Widget
         @title.innerText = "删除分区"
 
         @content = create_element("div", "DialogContent", @element)
+        @content.innerText = "确定删除分区吗?"
 
         @foot = create_element("p", "DialogBtn", @element)
         @ok = create_element("span", "", @foot)
         @ok.innerText = "OK"
+        @ok.addEventListener("click", (e) =>
+            delete_part(__selected_item.id)
+            @hide_dialog()
+            Widget.look_up("part_table")?.fill_items()
+            Widget.look_up("part_line_maps")?.fill_linemap()?
+        )
+
         @cancel = create_element("span", "", @foot)
         @cancel.innerText = "Cancel"
         @cancel.addEventListener("click", (e) =>
             @hide_dialog()
         )
+        @show_dialog()
 
     show_dialog: ->
         __in_model = true
@@ -647,7 +656,7 @@ class Part extends Page
         @part_add.addEventListener("click", (e)=>
             echo "handle add"
             if __in_model
-                echo "already had mode dialog"
+                echo "already had add part mode dialog"
                 return 
             @add_model = new AddPartDialog("AddModel", __selected_item.id)
             document.body.appendChild(@add_model.element)
@@ -658,9 +667,11 @@ class Part extends Page
         @part_delete.innerText = "删除分区"
         @part_delete.addEventListener("click", (e)=>
             echo "handle delete"
-            delete_part(__selected_item.id)
-            Widget.look_up("part_table")?.fill_items()
-            Widget.look_up("part_line_maps")?.fill_linemap()?
+            if __in_model
+                echo "already had delete part mode dialog"
+                return 
+            @del_model = new DeletePartDialog("DeleteModel", __selected_item.id)
+            document.body.appendChild(@del_model.element)
         )
 
         @part_grub = create_element("p", "PartGrub", @element)

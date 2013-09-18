@@ -217,7 +217,7 @@
     top:170px;
     bottom:120px;
     width:490px;
-    height:240px;
+    height:260px;
     background:#FFFFFF;
     z-index:99999;
 }
@@ -226,20 +226,20 @@
 	pointer-events:auto;
 }
 
-.AddPartDialog .DialogContent {
-    padding:0 0 0 110px;
-    margin:0;
+.DeletePartDialog {
+    position:fixed;
+    left:130px;
+    right:130px;
+    top:170px;
+    bottom:120px;
+    width:490px;
+    height:180px;
+    background:#FFFFFF;
+    z-index:99999;
 }
 
-.DialogBtn span {
-    display:block;
-    float:right;
-    width:100px;
-    height:30px;
-    background:#8BCEFB;
-    color:white;
-    margin:0 10px 10px 10px;
-    text-align:center;
+.DeletePartDialog:target {
+	pointer-events:auto;
 }
 
 .DialogTitle {
@@ -249,4 +249,27 @@
     line-height:40px;
     font-size:16px;
     margin:0;
+}
+
+.DialogContent {
+    padding:0 0 0 110px;
+    margin:0;
+}
+
+.DialogBtn {
+   position:absolute;
+   right:0;
+   bottom:0;
+}
+
+.DialogBtn span {
+    display:block;
+    float:right;
+    width:100px;
+    height:30px;
+    line-height:30px;
+    background:#8BCEFB;
+    color:white;
+    margin:0 10px 10px 10px;
+    text-align:center;
 }
