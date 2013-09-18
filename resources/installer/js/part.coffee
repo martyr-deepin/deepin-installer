@@ -33,18 +33,26 @@ class AddPartDialog extends Widget
         @foot = create_element("p", "DialogBtn", @element)
         @ok = create_element("span", "", @foot)
         @ok.innerText = "OK"
+        @ok.addEventListener("click", (e)=>
+            echo "confirm add partition"
+            @gather_info()
+            add_part(__selected_item.id, @n_type, @n_size, @n_align, @n_fs, @n_mp)
+            @hide_dialog()
+            Widget.look_up("part_table")?.fill_items()
+            Widget.look_up("part_line_maps")?.fill_linemap()?
+        )
         @cancel = create_element("span", "", @foot)
         @cancel.innerText = "Cancel"
         @cancel.addEventListener("click", (e) =>
             @hide_dialog()
         )
-
         @fill_type()
         @fill_size()
         @fill_align()
         @fill_fs()
         @fill_mount()
         @fill_tips()
+        @show_dialog()
 
     show_dialog: ->
         __in_model = true
@@ -219,6 +227,29 @@ class AddPartDialog extends Widget
         @n_fs = @fs_select.options[@fs_select.selectedIndex].value
         @n_mp = @mount_select.options[@mount_select.selectedIndex].value
 
+class DeletePartDialog extends Widget
+    constructor: (@id, @partid) ->
+        super
+        @title = create_element("p", "DialogTitle", @element)
+        @title.innerText = "删除分区"
+
+        @content = create_element("div", "DialogContent", @element)
+
+        @foot = create_element("p", "DialogBtn", @element)
+        @ok = create_element("span", "", @foot)
+        @ok.innerText = "OK"
+        @cancel = create_element("span", "", @foot)
+        @cancel.innerText = "Cancel"
+        @cancel.addEventListener("click", (e) =>
+            @hide_dialog()
+        )
+
+    show_dialog: ->
+        __in_model = true
+
+    hide_dialog: ->
+        __in_model = false
+        @destroy()
 
 class PartLineItem extends Widget
     constructor: (@id) ->
@@ -618,20 +649,8 @@ class Part extends Page
             if __in_model
                 echo "already had mode dialog"
                 return 
-
-            __in_model = true
             @add_model = new AddPartDialog("AddModel", __selected_item.id)
             document.body.appendChild(@add_model.element)
-            @add_model.show_dialog()
-
-            @add_model.ok.addEventListener("click", (e)=>
-                echo "confirm add partition"
-                @add_model.gather_info()
-                add_part(__selected_item.id, @add_model.n_type, @add_model.n_size, @add_model.n_align, @add_model.n_fs, @add_model.n_mp)
-                @add_model.hide_dialog()
-                Widget.look_up("part_table")?.fill_items()
-                Widget.look_up("part_line_maps")?.fill_linemap()?
-            )
         )
 
         @part_delete = create_element("div", "PartBtn", @op)

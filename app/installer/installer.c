@@ -146,6 +146,7 @@ int main(int argc, char **argv)
     gtk_widget_show_all (installer_container);
 
     init_parted ();
+    //inhibit_disk ();
 
     monitor_resource_file ("installer", webview);
     gtk_main ();
