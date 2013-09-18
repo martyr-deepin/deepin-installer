@@ -58,7 +58,7 @@ class AddPartDialog extends Widget
             @n_type = "normal"
         else if @type_logical.checked
             @n_type = "logical"
-        @n_size = parseInt(@size_input.value)
+        @n_size = mb_to_sector(parseInt(@size_input.value), 512)
         if not @n_size?
             @tips.innerText = "请输入合法的分区大小"
         if @align_start.getAttribute("checked")
@@ -98,23 +98,24 @@ class AddPartDialog extends Widget
         @size = create_element("p", "", @content)
         @size_desc = create_element("span", "", @size)
         @size_desc.innerText = "大小:"
+        max_size_mb = sector_to_mb(v_part_info[@partid]["length"], 512)
         @size_input = create_element("input", "", @size)
         @size_input.setAttribute("type", "number")
         @size_input.setAttribute("min", 1)
-        @size_input.setAttribute("max", v_part_info[@partid]["length"])
+        @size_input.setAttribute("max", max_size_mb)
         @size_input.setAttribute("step", 1)
-        @size_input.setAttribute("value", v_part_info[@partid]["length"])
+        @size_input.setAttribute("value", max_size_mb)
         @size_input.addEventListener("blur", (e) =>
             if isNaN(parseInt(@size_input.value))
-                @size_input.value = v_part_info[@partid]["length"]
+                @size_input.value = max_size_mb
             else
                 if parseInt(@size_input.value) < 0
                     @size_input.value = 0
-                else if parseInt(@size_input.value) > v_part_info[@partid]["length"]
-                    @size_input.value = v_part_info[@partid]["length"]
+                else if parseInt(@size_input.value) > max_size_mb
+                    @size_input.value = max_size_mb
         )
         @size_limit = create_element("span", "", @size)
-        @size_limit.innerText = "Limited size:" + v_part_info[@partid]["length"]
+        @size_limit.innerText = "Limited size:" + max_size_mb
         
     fill_align: ->
         @align = create_element("p", "", @content)
@@ -465,7 +466,7 @@ class PartTableItem extends Widget
             add_btn.setAttribute("class", "PartBtn")
             delete_btn.setAttribute("class", "PartBtn")
 
-        if type != "disk" and DCore.Installer.get_partition_flag(@id, "lvm")
+        if type != "disk" and v_part_info[@id]["lvm"]
             add_btn.setAttribute("class", "PartBtn")
             delete_btn.setAttribute("class", "PartBtn")
 

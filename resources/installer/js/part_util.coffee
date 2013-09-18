@@ -23,7 +23,10 @@ get_random_color = ->
     return _color_list[Math.floor(Math.random() * 24)]
 
 sector_to_mb = (sector_length, sector_size) ->
-    return Math.round ((sector_length * sector_size) / (1000 * 1000))
+    return Math.round((sector_length * sector_size) / (1000 * 1000))
+
+mb_to_sector = (mb_size, sector_size) ->
+    return Math.round((mb_size) * 1000 * 1000 / sector_size)
 #
 #Model
 #Model: for origin disk partition table 
@@ -319,6 +322,7 @@ for disk in disks
             v_part_info[part]["used"] = "unknown"
         v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
         v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
+        v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm")
 
 _sort_part_geom = (part_a, part_b) ->
     if v_part_info[part_a]["start"] == v_part_info[part_b]["start"]
@@ -837,6 +841,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
     v_part_info[new_part]["fs"] = fs
     v_part_info[new_part]["mp"] = mp
     v_part_info[new_part]["width"] = Math.floor((v_part_info[new_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
+    v_part_info[new_part]["lvm"] = false
     v_disk_info[disk]["partitions"].push(new_part)
     compute_display_path(disk)
     mark_add(new_part)
@@ -884,6 +889,9 @@ undo_table = (disk) ->
             #v_part_info[part]["used"] = "80G"
         catch error
             v_part_info[part]["used"] = "unknown"
+        v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
+        v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
+        v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm")
 #Control end
 #Control
 #

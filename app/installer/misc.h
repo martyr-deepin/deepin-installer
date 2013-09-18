@@ -69,8 +69,6 @@ JS_EXPORT_API JSObjectRef installer_get_timezone_list ();
 
 JS_EXPORT_API gboolean installer_set_timezone (const gchar *timezone);
 
-JS_EXPORT_API void installer_copy_file (const gchar *source_root);
-
 JS_EXPORT_API void installer_extract_squashfs ();
 
 JS_EXPORT_API gboolean installer_mount_procfs ();

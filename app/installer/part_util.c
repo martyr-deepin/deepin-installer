@@ -557,7 +557,7 @@ gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name
             g_warning ("get partition flag: ped partition flag get by name failed\n");
 
         } else if (ped_partition_is_flag_available (pedpartition, flag)) {
-            result = (gboolean ) ped_partition_get_flag (pedpartition, flag);
+            result = (gboolean) ped_partition_get_flag (pedpartition, flag);
 
         } else {
             g_printf ("get partition flag: flag unavailable\n");

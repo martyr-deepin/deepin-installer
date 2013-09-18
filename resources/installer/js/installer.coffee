@@ -24,7 +24,6 @@ welcome_page = new Welcome("welcome")
 pc.add_page(welcome_page)
 
 part_page = new Part("part")
-
 welcome_page.start.addEventListener("click", (e) =>
     pc.add_page(part_page)
     pc.remove_page(welcome_page)
@@ -32,9 +31,8 @@ welcome_page.start.addEventListener("click", (e) =>
 )
 
 progress_page = new Progress("progress")
-
 part_page.next_btn.addEventListener("click", (e) =>
-    #do_partition()
+    do_partition()
     pc.add_page(progress_page)
     pc.remove_page(part_page)
 )
