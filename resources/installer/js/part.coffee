@@ -22,36 +22,26 @@ __selected_item = null
 __selected_line = null
 __selected_mode = null
 
-class AddPartDialog extends Widget
-    constructor: (@id, @partid) ->
+class Dialog extends Widget
+    constructor: (@id, @cb) ->
         super
         @title = create_element("p", "DialogTitle", @element)
-        @title.innerText = "新建分区"
 
         @content = create_element("div", "DialogContent", @element)
 
         @foot = create_element("p", "DialogBtn", @element)
         @ok = create_element("span", "", @foot)
         @ok.innerText = "OK"
-        @ok.addEventListener("click", (e)=>
-            echo "confirm add partition"
-            @gather_info()
-            add_part(__selected_item.id, @n_type, @n_size, @n_align, @n_fs, @n_mp)
+        @ok.addEventListener("click", (e) =>
+            @cb()
             @hide_dialog()
-            Widget.look_up("part_table")?.fill_items()
-            Widget.look_up("part_line_maps")?.fill_linemap()?
         )
+
         @cancel = create_element("span", "", @foot)
         @cancel.innerText = "Cancel"
         @cancel.addEventListener("click", (e) =>
             @hide_dialog()
         )
-        @fill_type()
-        @fill_size()
-        @fill_align()
-        @fill_fs()
-        @fill_mount()
-        @fill_tips()
         @show_dialog()
 
     show_dialog: ->
@@ -60,6 +50,24 @@ class AddPartDialog extends Widget
     hide_dialog: ->
         __in_model = false
         @destroy()
+
+class AddPartDialog extends Dialog
+    constructor: (@id, @partid) ->
+        super(@id, @add_part_cb)
+        @title.innerText = "新建分区"
+        @fill_type()
+        @fill_size()
+        @fill_align()
+        @fill_fs()
+        @fill_mount()
+        @fill_tips()
+        @show_dialog()
+        
+    add_part_cb: ->
+        @gather_info()
+        add_part(@partid, @n_type, @n_size, @n_align, @n_fs, @n_mp)
+        Widget.look_up("part_table")?.fill_items()
+        Widget.look_up("part_line_maps")?.fill_linemap()?
 
     fill_type: ->
         @type = create_element("p", "", @content)
@@ -227,68 +235,34 @@ class AddPartDialog extends Widget
         @n_fs = @fs_select.options[@fs_select.selectedIndex].value
         @n_mp = @mount_select.options[@mount_select.selectedIndex].value
 
-class DeletePartDialog extends Widget
+class DeletePartDialog extends Dialog
     constructor: (@id, @partid) ->
-        super
-        @title = create_element("p", "DialogTitle", @element)
+        super(@id, @delete_part_cb)
         @title.innerText = "删除分区"
-
-        @content = create_element("div", "DialogContent", @element)
         @content.innerText = "确定删除分区吗?"
 
-        @foot = create_element("p", "DialogBtn", @element)
-        @ok = create_element("span", "", @foot)
-        @ok.innerText = "OK"
-        @ok.addEventListener("click", (e) =>
-            delete_part(__selected_item.id)
-            @hide_dialog()
-            Widget.look_up("part_table")?.fill_items()
-            Widget.look_up("part_line_maps")?.fill_linemap()?
-        )
+    delete_part_cb: ->
+        delete_part(@partid)
+        Widget.look_up("part_table")?.fill_items()
+        Widget.look_up("part_line_maps")?.fill_linemap()?
 
-        @cancel = create_element("span", "", @foot)
-        @cancel.innerText = "Cancel"
-        @cancel.addEventListener("click", (e) =>
-            @hide_dialog()
-        )
-        @show_dialog()
-
-    show_dialog: ->
-        __in_model = true
-
-    hide_dialog: ->
-        __in_model = false
-        @destroy()
-
-class FormatDialog extends Widget
+class UnmountDialog extends Dialog
     constructor: (@id) ->
-        super
-        @title = create_element("p", "DialogTitle", @element)
+        super(@id, @unmount_cb)
         @title.innerText = "安装执行"
+        @content.innerText = " 检测到磁盘已经挂载，确定卸载吗?"
 
-        @content = create_element("div", "DialogContent", @element)
+    unmount_cb: ->
+        echo "unmount partitions"
+
+class FormatDialog extends Dialog
+    constructor: (@id) ->
+        super(@id, @format_cb)
+        @title.innerText = "安装执行"
         @content.innerText = "确定执行分区操作并安装LinuxDeepin吗?"
 
-        @foot = create_element("p", "DialogBtn", @element)
-        @ok = create_element("span", "", @foot)
-        @ok.innerText = "OK"
-        @ok.addEventListener("click", (e) =>
-            @hide_dialog()
-        )
-
-        @cancel = create_element("span", "", @foot)
-        @cancel.innerText = "Cancel"
-        @cancel.addEventListener("click", (e) =>
-            @hide_dialog()
-        )
-        @show_dialog()
-
-    show_dialog: ->
-        __in_model = true
-
-    hide_dialog: ->
-        __in_model = false
-        @destroy()
+    format_cb: ->
+        echo "format to do install"
 
 class PartLineItem extends Widget
     constructor: (@id) ->
