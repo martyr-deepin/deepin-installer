@@ -206,7 +206,13 @@ class PartLineItem extends Widget
     constructor: (@id) ->
         super
         @part = @id[4...16]
-        @update_item()
+        @color = v_part_info[@part]["color"]
+        @element.style.background = @color
+        @element.style.width = v_part_info[@part]["width"]
+        if v_part_info[@part]["disk"] != __selected_disk
+            @element.style.display = "none"
+        else
+            @element.style.display = "inline"
 
     focus: ->
         __selected_line?.blur()
@@ -231,15 +237,6 @@ class PartLineItem extends Widget
             echo "already selected"
         else
             @focus()
-
-    update_item: ->
-        @color = v_part_info[@part]["color"]
-        @element.style.background = @color
-        @element.style.width = v_part_info[@part]["width"]
-        if v_part_info[@part]["disk"] != __selected_disk
-            @element.style.display = "none"
-        else
-            @element.style.display = "inline"
 
 class PartLineMaps extends Widget
     constructor: (@id)->
