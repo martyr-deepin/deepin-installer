@@ -53,21 +53,6 @@ class AddPartDialog extends Widget
         __in_model = false
         @destroy()
 
-    gather_info: ->
-        if @type_primary.checked
-            @n_type = "normal"
-        else if @type_logical.checked
-            @n_type = "logical"
-        @n_size = mb_to_sector(parseInt(@size_input.value), 512)
-        if not @n_size?
-            @tips.innerText = "请输入合法的分区大小"
-        if @align_start.getAttribute("checked")
-            @n_align = "start"
-        else
-            @n_align = "end"
-        @n_fs = @fs_select.options[@fs_select.selectedIndex].value
-        @n_mp = @mount_select.options[@mount_select.selectedIndex].value
-
     fill_type: ->
         @type = create_element("p", "", @content)
         @type_desc = create_element("span", "", @type)
@@ -98,24 +83,24 @@ class AddPartDialog extends Widget
         @size = create_element("p", "", @content)
         @size_desc = create_element("span", "", @size)
         @size_desc.innerText = "大小:"
-        max_size_mb = sector_to_mb(v_part_info[@partid]["length"], 512)
+        @max_size_mb = sector_to_mb(v_part_info[@partid]["length"], 512)
         @size_input = create_element("input", "", @size)
         @size_input.setAttribute("type", "number")
         @size_input.setAttribute("min", 1)
-        @size_input.setAttribute("max", max_size_mb)
+        @size_input.setAttribute("max", @max_size_mb)
         @size_input.setAttribute("step", 1)
-        @size_input.setAttribute("value", max_size_mb)
+        @size_input.setAttribute("value", @max_size_mb)
         @size_input.addEventListener("blur", (e) =>
             if isNaN(parseInt(@size_input.value))
-                @size_input.value = max_size_mb
+                @size_input.value = @max_size_mb
             else
                 if parseInt(@size_input.value) < 0
                     @size_input.value = 0
-                else if parseInt(@size_input.value) > max_size_mb
-                    @size_input.value = max_size_mb
+                else if parseInt(@size_input.value) > @max_size_mb
+                    @size_input.value = @max_size_mb
         )
         @size_limit = create_element("span", "", @size)
-        @size_limit.innerText = "Limited size:" + max_size_mb
+        @size_limit.innerText = "Limited size:" + @max_size_mb
         
     fill_align: ->
         @align = create_element("p", "", @content)
@@ -212,6 +197,25 @@ class AddPartDialog extends Widget
 
     fill_tips: ->
         @tips = create_element("p", "", @content)
+
+    gather_info: ->
+        if @type_primary.checked
+            @n_type = "normal"
+        else if @type_logical.checked
+            @n_type = "logical"
+        if parseInt(@size_input.value) == @max_size_mb
+            @n_size = v_part_info[@partid]["length"]
+        else
+            @n_size = mb_to_sector(parseInt(@size_input.value), 512)
+        if not @n_size?
+            @tips.innerText = "请输入合法的分区大小"
+        if @align_start.getAttribute("checked")
+            @n_align = "start"
+        else
+            @n_align = "end"
+        @n_fs = @fs_select.options[@fs_select.selectedIndex].value
+        @n_mp = @mount_select.options[@mount_select.selectedIndex].value
+
 
 class PartLineItem extends Widget
     constructor: (@id) ->

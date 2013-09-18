@@ -26,7 +26,7 @@ sector_to_mb = (sector_length, sector_size) ->
     return Math.round((sector_length * sector_size) / (1000 * 1000))
 
 mb_to_sector = (mb_size, sector_size) ->
-    return Math.round((mb_size) * 1000 * 1000 / sector_size)
+    return Math.floor((mb_size) * 1000 * 1000 / sector_size)
 #
 #Model
 #Model: for origin disk partition table 
@@ -316,7 +316,7 @@ for disk in disks
         v_part_info[part]["color"] = get_random_color() 
         v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
         try
-            v_part_info[part]["used"] = Math.round(DCore.Installer.get_partition_free(part))
+            v_part_info[part]["used"] = Math.floor(DCore.Installer.get_partition_free(part))
             #v_part_info[part]["used"] = "80G"
         catch error
             v_part_info[part]["used"] = "unknown"
@@ -721,6 +721,7 @@ delete_part = (part) ->
     v_part_info[part]["type"] = "freespace"
     v_part_info[part]["fs"] = ""
     v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
+    v_part_info[part]["used"] = sector_to_mb(v_part_info[part]["length"],512)
 
     extended = get_extended_partition(disk)
     if extended? and get_logical_partitions(disk).length == 0
@@ -842,6 +843,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
     v_part_info[new_part]["mp"] = mp
     v_part_info[new_part]["width"] = Math.floor((v_part_info[new_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
     v_part_info[new_part]["lvm"] = false
+    v_part_info[new_part]["used"] = sector_to_mb(v_part_info[new_part]["length"], 512)
     v_disk_info[disk]["partitions"].push(new_part)
     compute_display_path(disk)
     mark_add(new_part)
@@ -885,7 +887,7 @@ undo_table = (disk) ->
         v_part_info[part]["color"] = get_random_color() 
         v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
         try
-            v_part_info[part]["used"] = Math.round(DCore.Installer.get_partition_free(part))
+            v_part_info[part]["used"] = Math.floor(DCore.Installer.get_partition_free(part))
             #v_part_info[part]["used"] = "80G"
         catch error
             v_part_info[part]["used"] = "unknown"
