@@ -22,13 +22,16 @@ __selected_item = null
 __selected_line = null
 __selected_mode = null
 
+create_option = (select, value, text) ->
+    option = create_element("option", "", select)
+    option.setAttribute("value", value)
+    option.innerText = text
+
 class Dialog extends Widget
     constructor: (@id, @cb) ->
         super
         @title = create_element("p", "DialogTitle", @element)
-
         @content = create_element("div", "DialogContent", @element)
-
         @foot = create_element("p", "DialogBtn", @element)
         @ok = create_element("span", "", @foot)
         @ok.innerText = "OK"
@@ -36,7 +39,6 @@ class Dialog extends Widget
             @cb()
             @hide_dialog()
         )
-
         @cancel = create_element("span", "", @foot)
         @cancel.innerText = "Cancel"
         @cancel.addEventListener("click", (e) =>
@@ -61,7 +63,6 @@ class AddPartDialog extends Dialog
         @fill_fs()
         @fill_mount()
         @fill_tips()
-        @show_dialog()
         
     add_part_cb: ->
         @gather_info()
@@ -139,80 +140,16 @@ class AddPartDialog extends Dialog
         @fs_desc = create_element("span", "", @fs)
         @fs_desc.innerText = "格式:"
         @fs_select = create_element("select", "", @fs)
-        @ext4_option = create_element("option", "", @fs_select)
-        @ext4_option.setAttribute("value", "ext4")
-        @ext4_option.setAttribute("selected", "selected")
-        @ext4_option.innerText = "ext4"
-        @ext3_option = create_element("option", "", @fs_select)
-        @ext3_option.setAttribute("value", "ext3")
-        @ext3_option.innerText = "ext3"
-        @ext2_option = create_element("option", "", @fs_select)
-        @ext2_option.setAttribute("value", "ext2")
-        @ext2_option.innerText = "ext2"
-        @reiserfs_option = create_element("option", "", @fs_select)
-        @reiserfs_option.setAttribute("value", "reiserfs")
-        @reiserfs_option.innerText = "reiserfs"
-        @btrfs_option = create_element("option", "", @fs_select)
-        @btrfs_option.setAttribute("value", "btrfs")
-        @btrfs_option.innerText = "btrfs"
-        @jfs_option = create_element("option", "", @fs_select)
-        @jfs_option.setAttribute("value", "jfs")
-        @jfs_option.innerText = "jfs"
-        @xfs_option = create_element("option", "", @fs_select)
-        @xfs_option.setAttribute("value", "xfs")
-        @xfs_option.innerText = "xfs"
-        @fat16_option = create_element("option", "", @fs_select)
-        @fat16_option.setAttribute("value", "fat16")
-        @fat16_option.innerText = "fat16"
-        @fat32_option = create_element("option", "", @fs_select)
-        @fat32_option.setAttribute("value", "fat32")
-        @fat32_option.innerText = "fat32"
-        @ntfs_option = create_element("option", "", @fs_select)
-        @ntfs_option.setAttribute("value", "ntfs")
-        @ntfs_option.innerText = "ntfs"
-        @swap_option = create_element("option", "", @fs_select)
-        @swap_option.setAttribute("value", "swap")
-        @swap_option.innerText = "swap"
-        @encrypt_option = create_element("option", "", @fs_select)
-        @encrypt_option.setAttribute("value", "encrypt")
-        @encrypt_option.innerText = "encrypt"
-        @unused_option = create_element("option", "", @fs_select)
-        @unused_option.setAttribute("value", "unused")
-        @unused_option.innerText = "unused"
+        for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
+            create_option(@fs_select, opt, opt)
 
     fill_mount: ->
         @mp = create_element("p", "", @content)
         @mp_desc = create_element("span", "", @mp)
         @mp_desc.innerText = "挂载:"
         @mount_select = create_element("select", "", @mp)
-        @root_option = create_element("option", "", @mount_select)
-        @root_option.setAttribute("value", "/")
-        @root_option.setAttribute("selected", "selected")
-        @root_option.innerText = "/"
-        @boot_option = create_element("option", "", @mount_select)
-        @boot_option.setAttribute("value", "/boot")
-        @boot_option.innerText = "/boot"
-        @home_option = create_element("option", "", @mount_select)
-        @home_option.setAttribute("value", "/home")
-        @home_option.innerText = "/home"
-        @tmp_option = create_element("option", "", @mount_select)
-        @tmp_option.setAttribute("value", "/tmp")
-        @tmp_option.innerText = "/tmp"
-        @usr_option = create_element("option", "", @mount_select)
-        @usr_option.setAttribute("value", "/usr")
-        @usr_option.innerText = "/usr"
-        @var_option = create_element("option", "", @mount_select)
-        @var_option.setAttribute("value", "/var")
-        @var_option.innerText = "/var"
-        @srv_option = create_element("option", "", @mount_select)
-        @srv_option.setAttribute("value", "/srv")
-        @srv_option.innerText = "/srv"
-        @opt_option = create_element("option", "", @mount_select)
-        @opt_option.setAttribute("value", "/opt")
-        @opt_option.innerText = "/opt"
-        @local_option = create_element("option", "", @mount_select)
-        @local_option.setAttribute("value", "/local")
-        @local_option.innerText = "/local"
+        for opt in ["/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
+            create_option(@mount_select, opt, opt)
 
     fill_tips: ->
         @tips = create_element("p", "", @content)
@@ -396,46 +333,9 @@ class PartTableItem extends Widget
 
     fill_fs_select: ->
         @fs_select = create_element("select", "", @fs)
-        @ext4_option = create_element("option", "", @fs_select)
-        @ext4_option.setAttribute("value", "ext4")
-        @ext4_option.innerText = "ext4"
-        @ext3_option = create_element("option", "", @fs_select)
-        @ext3_option.setAttribute("value", "ext3")
-        @ext3_option.innerText = "ext3"
-        @ext2_option = create_element("option", "", @fs_select)
-        @ext2_option.setAttribute("value", "ext2")
-        @ext2_option.innerText = "ext2"
-        @reiserfs_option = create_element("option", "", @fs_select)
-        @reiserfs_option.setAttribute("value", "reiserfs")
-        @reiserfs_option.innerText = "reiserfs"
-        @btrfs_option = create_element("option", "", @fs_select)
-        @btrfs_option.setAttribute("value", "btrfs")
-        @btrfs_option.innerText = "btrfs"
-        @jfs_option = create_element("option", "", @fs_select)
-        @jfs_option.setAttribute("value", "jfs")
-        @jfs_option.innerText = "jfs"
-        @xfs_option = create_element("option", "", @fs_select)
-        @xfs_option.setAttribute("value", "xfs")
-        @xfs_option.innerText = "xfs"
-        @fat16_option = create_element("option", "", @fs_select)
-        @fat16_option.setAttribute("value", "fat16")
-        @fat16_option.innerText = "fat16"
-        @fat32_option = create_element("option", "", @fs_select)
-        @fat32_option.setAttribute("value", "fat32")
-        @fat32_option.innerText = "fat32"
-        @ntfs_option = create_element("option", "", @fs_select)
-        @ntfs_option.setAttribute("value", "ntfs")
-        @ntfs_option.innerText = "ntfs"
-        @swap_option = create_element("option", "", @fs_select)
-        @swap_option.setAttribute("value", "swap")
-        @swap_option.innerText = "swap"
-        @encrypt_option = create_element("option", "", @fs_select)
-        @encrypt_option.setAttribute("value", "encrypt")
-        @encrypt_option.innerText = "encrypt"
-        @unused_option = create_element("option", "", @fs_select)
-        @unused_option.setAttribute("value", "unused")
-        @unused_option.innerText = "unused"
-        @unused_option.setAttribute("selected", "selected")
+        for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
+            create_option(@fs_select, opt, opt)
+
         for opt, i in @fs_select
             if opt.value == v_part_info[@id]["fs"]
                 @fs_select.selectedIndex = i
@@ -456,37 +356,9 @@ class PartTableItem extends Widget
 
     fill_mount_select: ->
         @mount_select = create_element("select", "", @mount)
-        @root_option = create_element("option", "", @mount_select)
-        @root_option.setAttribute("value", "/")
-        @root_option.innerText = "/"
-        @boot_option = create_element("option", "", @mount_select)
-        @boot_option.setAttribute("value", "/boot")
-        @boot_option.innerText = "/boot"
-        @home_option = create_element("option", "", @mount_select)
-        @home_option.setAttribute("value", "/home")
-        @home_option.innerText = "/home"
-        @tmp_option = create_element("option", "", @mount_select)
-        @tmp_option.setAttribute("value", "/tmp")
-        @tmp_option.innerText = "/tmp"
-        @usr_option = create_element("option", "", @mount_select)
-        @usr_option.setAttribute("value", "/usr")
-        @usr_option.innerText = "/usr"
-        @var_option = create_element("option", "", @mount_select)
-        @var_option.setAttribute("value", "/var")
-        @var_option.innerText = "/var"
-        @srv_option = create_element("option", "", @mount_select)
-        @srv_option.setAttribute("value", "/srv")
-        @srv_option.innerText = "/srv"
-        @opt_option = create_element("option", "", @mount_select)
-        @opt_option.setAttribute("value", "/opt")
-        @opt_option.innerText = "/opt"
-        @local_option = create_element("option", "", @mount_select)
-        @local_option.setAttribute("value", "/local")
-        @local_option.innerText = "/local"
-        @unused_option = create_element("option", "", @mount_select)
-        @unused_option.setAttribute("value", "unused")
-        @unused_option.innerText = "unused"
-        @unused_option.setAttribute("selected", "selected")
+        for opt in ["/","/boot","/home","/tmp","/usr", "/var","/srv", "/local", "unused"]
+            create_option(@mount_select, opt, opt)
+
         for opt, i in @mount_select
             if opt.value == v_part_info[@id]["mp"]
                 @mount_select.selectedIndex = i
