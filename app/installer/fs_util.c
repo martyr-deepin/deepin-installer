@@ -472,7 +472,7 @@ _get_ntfs_free (const gchar *path)
     double used_size = 0;
     double total_size = 0;
 
-    gchar *total = get_matched_string (output, "\\d+.*MB");
+    gchar *total = get_matched_string (output, "bytes.*\\d+.*MB");
     if (total == NULL) {
         g_warning ("_get_ntfs_free:get total failed\n");
         g_free (output);
