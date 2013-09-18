@@ -348,7 +348,7 @@ _get_fat16_free (const gchar *path)
 
     total_size = g_ascii_strtod (total_cluster, NULL);
 
-    free = unit_size * (total_size - used_size) / 1024 ;
+    free = unit_size * (total_size - used_size) / (1000 * 1000) ;
 
     g_free (total_cluster);
     g_free (used_cluster);
