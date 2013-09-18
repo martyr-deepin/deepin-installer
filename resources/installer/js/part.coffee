@@ -182,6 +182,7 @@ class DeletePartDialog extends Dialog
         delete_part(@partid)
         Widget.look_up("part_table")?.fill_items()
         Widget.look_up("part_line_maps")?.fill_linemap()?
+        Widget.look_up(@partid)?.focus()
 
 class UnmountDialog extends Dialog
     constructor: (@id) ->
@@ -335,16 +336,13 @@ class PartTableItem extends Widget
         @fs_select = create_element("select", "", @fs)
         for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
             create_option(@fs_select, opt, opt)
-
         for opt, i in @fs_select
             if opt.value == v_part_info[@id]["fs"]
                 @fs_select.selectedIndex = i
-
         @fs_select.addEventListener("focus", (e) =>
             if __selected_item != @
                 @focus()
         )
-
         @fs_select.addEventListener("change", (e) =>
             update_part_fs(@id, @fs_select.options[@fs_select.selectedIndex].value)
         )
@@ -358,11 +356,9 @@ class PartTableItem extends Widget
         @mount_select = create_element("select", "", @mount)
         for opt in ["/","/boot","/home","/tmp","/usr", "/var","/srv", "/local", "unused"]
             create_option(@mount_select, opt, opt)
-
         for opt, i in @mount_select
             if opt.value == v_part_info[@id]["mp"]
                 @mount_select.selectedIndex = i
-
         @mount_select.addEventListener("focus", (e) =>
             if __selected_item != @
                 @focus()
@@ -374,11 +370,11 @@ class PartTableItem extends Widget
     set_btn_status: ->
         if __selected_mode != "advance"
             return 
-
         if @device_type == "part"
             type = v_part_info[@id]["type"]
         else
             type = "disk"
+
         add_btn = document.getElementById("part_add")
         delete_btn = document.getElementById("part_delete")
 
