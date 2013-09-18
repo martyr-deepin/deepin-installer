@@ -151,6 +151,9 @@ class AddPartDialog extends Widget
         @fat32_option = create_element("option", "", @fs_select)
         @fat32_option.setAttribute("value", "fat32")
         @fat32_option.innerText = "fat32"
+        @ntfs_option = create_element("option", "", @fs_select)
+        @ntfs_option.setAttribute("value", "ntfs")
+        @ntfs_option.innerText = "ntfs"
         @swap_option = create_element("option", "", @fs_select)
         @swap_option.setAttribute("value", "swap")
         @swap_option.innerText = "swap"
@@ -376,6 +379,9 @@ class PartTableItem extends Widget
         @fat32_option = create_element("option", "", @fs_select)
         @fat32_option.setAttribute("value", "fat32")
         @fat32_option.innerText = "fat32"
+        @ntfs_option = create_element("option", "", @fs_select)
+        @ntfs_option.setAttribute("value", "ntfs")
+        @ntfs_option.innerText = "ntfs"
         @swap_option = create_element("option", "", @fs_select)
         @swap_option.setAttribute("value", "swap")
         @swap_option.innerText = "swap"
