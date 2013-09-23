@@ -246,6 +246,8 @@ class PartLineMaps extends Widget
             if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
                 item = new PartLineItem("line"+part)
                 @disk_line.appendChild(item.element)
+                if __selected_item?.id == __selected_disk
+                    item.element.setAttribute("class", "PartLineItemActive")
 
 class PartTableItem extends Widget
     constructor: (@id, @device_type)->

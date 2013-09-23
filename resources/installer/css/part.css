@@ -29,10 +29,6 @@
     padding:0 1px;
 }
 
-.PartLineDiskActive {
-    border:2px solid red;
-}
-
 .PartLineItem {
     float:left;
     height:15px;
