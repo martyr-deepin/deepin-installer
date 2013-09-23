@@ -45,9 +45,20 @@ gchar* installer_rand_uuid ()
 
 void init_parted ()
 {
-    disks = g_hash_table_new_full ((GHashFunc) g_str_hash, (GEqualFunc) g_str_equal, (GDestroyNotify) g_free, NULL);
-    disk_partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, (GEqualFunc) g_str_equal, (GDestroyNotify) g_free, (GDestroyNotify) g_list_free);
-    partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, (GEqualFunc) g_str_equal, (GDestroyNotify) g_free, NULL);
+    disks = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                   (GEqualFunc) g_str_equal, 
+                                   (GDestroyNotify) g_free, 
+                                   NULL);
+
+    disk_partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                             (GEqualFunc) g_str_equal, 
+                                             (GDestroyNotify) g_free, 
+                                             (GDestroyNotify) g_list_free);
+
+    partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                        (GEqualFunc) g_str_equal, 
+                                        (GDestroyNotify) g_free, 
+                                        NULL);
 
     PedDevice *device = NULL;
     PedDisk *disk = NULL;
@@ -625,7 +636,11 @@ gchar* installer_get_partition_os (const gchar *part)
 
     if (partition_os == NULL) {
         g_printf ("get partition os:init hash table\n");
-        partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, (GEqualFunc) g_str_equal, (GDestroyNotify) g_free, (GDestroyNotify) g_free);
+        partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                              (GEqualFunc) g_str_equal, 
+                                              (GDestroyNotify) g_free, 
+                                              (GDestroyNotify) g_free);
+
         if (g_find_program_in_path ("os-prober") == NULL) {
             g_warning ("get partition os:os-prober not installed\n");
             return result;
@@ -678,7 +693,8 @@ gchar* installer_get_partition_os (const gchar *part)
 }
 
 JS_EXPORT_API 
-gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end)
+gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, 
+                                       const gchar *fs, double start, double end)
 {
     gboolean ret = FALSE;
 

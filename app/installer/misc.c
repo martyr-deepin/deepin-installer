@@ -527,13 +527,19 @@ _foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer d
     GList *variants = NULL;
     g_hash_table_insert (layout_variants_hash, g_strdup (layout), variants);
 
-    xkl_config_registry_foreach_layout_variant(config, g_strdup (layout), _foreach_variant, (gpointer) layout);
+    xkl_config_registry_foreach_layout_variant(config, 
+                                               g_strdup (layout), 
+                                               _foreach_variant, 
+                                               (gpointer) layout);
 }
 
 void
 init_keyboard_layouts () 
 {
-    layout_variants_hash = g_hash_table_new_full ((GHashFunc) g_str_hash, (GEqualFunc) g_str_equal, (GDestroyNotify) g_free, (GDestroyNotify) g_list_free);
+    layout_variants_hash = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                                  (GEqualFunc) g_str_equal, 
+                                                  (GDestroyNotify) g_free, 
+                                                  (GDestroyNotify) g_list_free);
 
     Display *dpy = XOpenDisplay (NULL);
     if (dpy == NULL) {

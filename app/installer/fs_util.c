@@ -20,6 +20,7 @@
  **/
 
 #include "fs_util.h"
+#include "jsextension.h"
 #include <stdio.h>
 #include <glib/gstdio.h>
 #include <mntent.h>
@@ -81,7 +82,8 @@ get_partition_mount_point (const gchar *path)
 
 //when command output supply free blocks number and block size
 gdouble 
-_get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar *free_num_regex, const gchar *unit_regex, const gchar *unit_num_regex) 
+_get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar *free_num_regex, 
+                          const gchar *unit_regex, const gchar *unit_num_regex) 
 {
     gdouble result = 0;
 
@@ -733,7 +735,8 @@ is_slowly_device (gpointer data)
 
                 if (num < 10) {
                     g_warning ("is slowly device:emit slow for %s\n", handler->uuid);
-                    //emit signal here
+                    js_post_message_simply("slow", "{\"uuid\":\"%s\"}", handler->uuid);
+
                 } else {
                     g_debug ("is slowly device:%s 's speed is ok\n", handler->uuid);
                 }
