@@ -209,10 +209,6 @@ class PartLineItem extends Widget
         @color = v_part_info[@part]["color"]
         @element.style.background = @color
         @element.style.width = v_part_info[@part]["width"]
-        if v_part_info[@part]["disk"] != __selected_disk
-            @element.style.display = "none"
-        else
-            @element.style.display = "inline"
 
     focus: ->
         __selected_line?.blur()
@@ -245,23 +241,11 @@ class PartLineMaps extends Widget
 
     fill_linemap: ->
         @element.innerHTML = ""
-
-        for disk in disks
-            line = create_element("div", "", @element)
-            line.setAttribute("id", "line"+disk)
-            for part in v_disk_info[disk]["partitions"]
-                if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
-                    item = new PartLineItem("line"+part)
-                    line.appendChild(item.element)
-
-            if disk == __selected_disk
-                line.style.display = "inline"
-            else
-                line.style.display = "none"
-                
-    disk_active: ->
-        line = document.getElementById("line"+__selected_disk)
-        line.setAttribute("class", "PartLineDiskActive")
+        @disk_line = create_element("div", "", @element)
+        for part in v_disk_info[__selected_disk]["partitions"]
+            if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
+                item = new PartLineItem("line"+part)
+                @disk_line.appendChild(item.element)
 
 class PartTableItem extends Widget
     constructor: (@id, @device_type)->
@@ -346,10 +330,8 @@ class PartTableItem extends Widget
 
     fill_mount: ->
         @mount.innerHTML = ""
-        if __selected_mode == "advance"
-            @fill_mount_select()
-
-    fill_mount_select: ->
+        if __selected_mode != "advance"
+            return
         @mount_select = create_element("select", "", @mount)
         for opt in ["/","/boot","/home","/tmp","/usr", "/var","/srv", "/local", "unused"]
             create_option(@mount_select, opt, opt)
@@ -395,15 +377,13 @@ class PartTableItem extends Widget
 
         if @device_type == "disk"
             __selected_disk = @id
-            Widget.look_up("part_line_maps")?.disk_active()
         else
             __selected_disk = v_part_info[@id]["disk"]
-            try
-                if __selected_line == null or __selected_item.id != __selected_line?.partid?
-                    Widget.look_up("part_line_maps")?.fill_linemap()
-                    Widget.look_up(@lineid)?.passive_focus()
-            catch error
-                echo error
+        try
+            Widget.look_up("part_line_maps")?.fill_linemap()
+            Widget.look_up(@lineid)?.passive_focus()
+        catch error
+            echo error
 
         @set_btn_status()
         @add_css_class("PartTableItemActive")
