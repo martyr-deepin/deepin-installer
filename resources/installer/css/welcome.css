@@ -1,10 +1,29 @@
 .TitleSet {
     position:fixed;
-    top:20px;
-    left:590px;
-    right:30px;
-    bottom:480px;
+    width:160px;
+    height:30px;
+    top:60px;
+    right:0px;
+    bottom:450px;
+    left:600px;
     font-size:14px;
+    color:#B3B3B3;
+}
+
+.KeyboardSet {
+    float:left;
+    width:80px;
+    height:30px;
+    line-height:30px;
+    background:url("../images/keyboard.png") no-repeat;
+}
+
+.TimezoneSet {
+    float:right;
+    width:80px;
+    height:30px;
+    line-height:30px;
+    background:url("../images/timezone.png") no-repeat;
 }
 
 .WelcomeForm {

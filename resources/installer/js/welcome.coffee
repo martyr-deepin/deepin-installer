@@ -27,8 +27,10 @@ class Welcome extends Page
         @start_txt.innerText = "安装向导"
 
         @title_set = create_element("div", "TitleSet", @title)
-        @keyboard_set = create_element("span", "", @title_set)
-        @timezone_set = create_element("span", "", @title_set)
+        @keyboard_set = create_element("span", "KeyboardSet", @title_set)
+        @keyboard_set.innerText = "键盘"
+        @timezone_set = create_element("span", "TimezoneSet", @title_set)
+        @timezone_set.innerText = "时区"
 
         @form = create_element("div", "WelcomeForm", @element)
 
