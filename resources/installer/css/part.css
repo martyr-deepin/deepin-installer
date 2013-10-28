@@ -1,3 +1,12 @@
+.PartHelp {
+    position:fixed;
+    top:20px;
+    left:590px;
+    right:30px;
+    bottom:480px;
+    font-size:14px;
+}
+
 .PartLineMaps {
     width:700px;
     height:12px;
@@ -47,6 +56,14 @@
 .PartTableItems {
     width:700px;
     height:295px;
+    background:#F1F1F1;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.PartTableItemsAdvance {
+    width:700px;
+    height:210px;
     background:#F1F1F1;
     overflow-y:auto;
     overflow-x:hidden;
@@ -117,43 +134,51 @@
 }
 
 .PartOp {
-    width:700px;
+    position:fixed;
+    top:365px;
+    bottom:140px;
+    left:26px;
     height:30px;
 }
 
 .PartBtn {
     float:left;
     text-align:center;
-    width:145px;
-    height:30px;
-    line-height:30px;
-    margin-right:20px;
-    background:#EAEAEA;
-    color:#ACACAC;
+    width:75px;
+    height:22px;
+    line-height:22px;
+    margin-right:10px;
+    background:#1C1D21;
+    border-radius:3px;
+    color:#E4E6E5;
     pointer-events:none;
 }
 
 .PartBtnActive {
     float:left;
     text-align:center;
-    width:145px;
-    height:30px;
-    line-height:30px;
-    margin-right:20px;
+    width:75px;
+    height:22px;
+    line-height:22px;
+    margin-right:10px;
     background:#8BCEFB;
+    broder-radius:3px;
     color:#FFFFFF;
     pointer-events:auto;
     border:1px solid #CFE2F0;
 }
 
 .PartGrub {
-    clear:both;
+    position:fixed;
+    top:410px;
+    bottom:110px;
+    left:26px;
     width:700px;
     height:24px;
 }
 
 .PartGrub span {
-    width:150px;
+    width:140px;
     height:24px;
     line-height:24px;
     overflow:hidden;

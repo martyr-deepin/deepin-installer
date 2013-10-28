@@ -443,6 +443,7 @@ class PartTable extends Widget
     update_mode: (mode) ->
         if mode == "advance"
             @mount_header.innerText = "MountPoint"
+            @items.setAttribute("class", "PartTableItemsAdvance")
         for disk in disks
             for part in v_disk_info[disk]["partitions"]
                 Widget.look_up(part)?.update_mode(mode)?
@@ -456,16 +457,15 @@ class Part extends Page
         if __selected_disk == null
             __selected_disk = disks[0]
 
-            #@t_desc = create_element("i", "", @title)
-            #@t_desc.innerText = "请选择要安装Deepin的磁盘"
-        @title.innerText = "请选择要安装Deepin的磁盘"
+        @title.innerText = "请选择要安装\"Deepin\"的磁盘"
 
-        @t_help = create_element("span", "", @title)
-        #@t_help.innerText = "查看帮助"
-        @t_sep = create_element("span", "", @title)
-        #@t_sep.innerText = " | "
-        @t_mode = create_element("span", "", @title)
-        #@t_mode.innerText = "精简模式"
+        @help = create_element("div", "PartHelp", @title)
+        @t_mode = create_element("span", "", @help)
+        @t_mode.innerText = "精简模式"
+        @t_sep = create_element("span", "", @help)
+        @t_sep.innerText = "  |  "
+        @t_help = create_element("span", "", @help)
+        @t_help.innerText = "查看帮助"
 
         #linemap
         @linemap = new PartLineMaps("part_line_maps")
@@ -520,7 +520,7 @@ class Part extends Page
         )
 
         @part_grub = create_element("p", "PartGrub", @element)
-        @part_grub.innerHTML = "<span>安装启动引导器：</span>"
+        @part_grub.innerHTML = "<span>安装启动引导器的设备：</span>"
         @grub_select = create_element("select", "", @part_grub)
         for disk in disks
             path = v_disk_info[disk]["path"]

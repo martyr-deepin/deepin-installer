@@ -8,13 +8,12 @@
     width:755px;
     height:90px;
     line-height:90px;
-    background:#474747;
+    background:#474747 url("../images/banner.png") no-repeat fixed top;
     color:#FDFFFF;
     text-align:center;
     font-weight:bold;
     font-size:24px;
 }
-
 
 .PageContainer {
     width:755px;
