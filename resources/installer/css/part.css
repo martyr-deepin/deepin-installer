@@ -238,13 +238,22 @@
 	pointer-events:auto;
 }
 
+.Dialog {
+    background:#F1F1F1;
+}
+
 .DialogTitle {
-    background:#F5FAFE;
+    background:#4F4F4F;
     width:490px;
-    height:40px;
-    line-height:40px;
+    height:25px;
+    line-height:25px;
     font-size:16px;
+    color:#E9E9E9;
     margin:0;
+}
+
+.DialogTitle span {
+    margin-left:10px;
 }
 
 .DialogContent {
@@ -252,20 +261,29 @@
     margin:0;
 }
 
+.DialogContent AddDesc {
+    width:50px;
+}
+
+.DialogContent AddValue {
+    width:160px;
+}
+
 .DialogBtn {
-   position:absolute;
-   right:0;
-   bottom:0;
+    position:absolute;
+    text-align:center;
+    right:0;
+    bottom:0;
 }
 
 .DialogBtn span {
     display:block;
     float:right;
-    width:100px;
-    height:30px;
-    line-height:30px;
-    background:#8BCEFB;
-    color:white;
+    width:60px;
+    height:22px;
+    line-height:22px;
+    background:#1D1E20;
+    border-radius:3px;
+    color:#E2E3E5;
     margin:0 10px 10px 10px;
-    text-align:center;
 }

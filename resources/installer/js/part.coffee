@@ -31,6 +31,9 @@ class Dialog extends Widget
     constructor: (@id, @cb) ->
         super
         @title = create_element("p", "DialogTitle", @element)
+        @title_txt = create_element("span", "", @title)
+        @title_close = create_element("i", "", @title)
+
         @content = create_element("div", "DialogContent", @element)
         @foot = create_element("p", "DialogBtn", @element)
         @ok = create_element("span", "", @foot)
@@ -72,18 +75,19 @@ class AddPartDialog extends Dialog
 
     fill_type: ->
         @type = create_element("p", "", @content)
-        @type_desc = create_element("span", "", @type)
-        @type.innerText = "类型:"
-        @type_primary = create_element("input", "", @type)
+        @type_desc = create_element("span", "AddDesc", @type)
+        @type_desc.innerText = "类型:"
+        @type_value = create_element("span", "AddValue", @type)
+        @type_primary = create_element("input", "", @type_value)
         @type_primary.setAttribute("type", "radio")
         @type_primary.setAttribute("name", "type")
-        primary_desc = create_element("span", "", @type)
+        primary_desc = create_element("span", "", @type_value)
         primary_desc.innerText = "Primary"
 
-        @type_logical = create_element("input", "", @type)
+        @type_logical = create_element("input", "", @type_value)
         @type_logical.setAttribute("type", "radio")
         @type_logical.setAttribute("name", "type")
-        logical_desc = create_element("span", "", @type)
+        logical_desc = create_element("span", "", @type_value)
         logical_desc.innerText = "Logical"
 
         if not can_add_logical(@partid)
@@ -98,10 +102,11 @@ class AddPartDialog extends Dialog
 
     fill_size: ->
         @size = create_element("p", "", @content)
-        @size_desc = create_element("span", "", @size)
+        @size_desc = create_element("span", "AddDesc", @size)
         @size_desc.innerText = "大小:"
         @max_size_mb = sector_to_mb(v_part_info[@partid]["length"], 512)
-        @size_input = create_element("input", "", @size)
+        @size_value = create_element("span", "AddValue", @size)
+        @size_input = create_element("input", "", @size_value)
         @size_input.setAttribute("type", "number")
         @size_input.setAttribute("min", 1)
         @size_input.setAttribute("max", @max_size_mb)
@@ -116,38 +121,41 @@ class AddPartDialog extends Dialog
                 else if parseInt(@size_input.value) > @max_size_mb
                     @size_input.value = @max_size_mb
         )
-        @size_limit = create_element("span", "", @size)
+        @size_limit = create_element("span", "", @size_value)
         @size_limit.innerText = "Limited size:" + @max_size_mb
         
     fill_align: ->
         @align = create_element("p", "", @content)
-        @align_desc = create_element("span", "", @align)
+        @align_desc = create_element("span", "AddDesc", @align)
         @align_desc.innerText = "位置:"
-        @align_start = create_element("input", "", @align)
+        @align_value = create_element("span", "AddValue", @align)
+        @align_start = create_element("input", "", @align_value)
         @align_start.setAttribute("type", "radio")
         @align_start.setAttribute("name", "align")
         @align_start.setAttribute("checked", "true")
-        start_desc = create_element("span", "", @align)
+        start_desc = create_element("span", "", @align_value)
         start_desc.innerText = "Start"
-        @align_end = create_element("input", "", @align)
+        @align_end = create_element("input", "", @align_value)
         @align_end.setAttribute("type", "radio")
         @align_end.setAttribute("name", "align")
-        end_desc = create_element("span", "", @align)
+        end_desc = create_element("span", "", @align_value)
         end_desc.innerText = "End"
 
     fill_fs: ->
         @fs = create_element("p", "", @content)
-        @fs_desc = create_element("span", "", @fs)
+        @fs_desc = create_element("span", "AddDesc", @fs)
         @fs_desc.innerText = "格式:"
-        @fs_select = create_element("select", "", @fs)
+        @fs_value = create_element("span", "AddValue", @fs)
+        @fs_select = create_element("select", "", @fs_value)
         for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
             create_option(@fs_select, opt, opt)
 
     fill_mount: ->
         @mp = create_element("p", "", @content)
-        @mp_desc = create_element("span", "", @mp)
+        @mp_desc = create_element("span", "AddDec", @mp)
         @mp_desc.innerText = "挂载:"
-        @mount_select = create_element("select", "", @mp)
+        @mount_value = create_element("span", "AddValue", @mp)
+        @mount_select = create_element("select", "", @mp_value)
         for opt in ["/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
             create_option(@mount_select, opt, opt)
 
