@@ -32,6 +32,7 @@ _color_list = ["#89AFD0","#6D91BC","#E8948A","#DE5F4E","#C2A02D",
 class Page extends Widget
     constructor: (@id)->
         super
+        @title = create_element("div", "Title", @element)
 
 class PageContainer extends Widget
     constructor: (@id)->

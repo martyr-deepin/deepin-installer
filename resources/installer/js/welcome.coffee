@@ -22,78 +22,79 @@ class Welcome extends Page
         super
         @illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
 
-        @title = create_element("div", "Title", @element)
         @title.innerHTML = "<span>欢迎安装使用 Linux Deepin <sup>12.12</sup></span>"
+        @form = create_element("div", "WelcomeForm", @element)
 
-        @username = create_element("p", "Username", @element)
-        @username_txt = create_element("span", "Txt", @username)
+        @username = create_element("div", "WelcomeFormItem", @form)
+        @username_txt = create_element("div", "", @username)
         @username_txt.innerText = "用户名 :"
         @username_input = create_element("input", "", @username)
         @username_input.setAttribute("placeholder", "2-14个字符，英文，数字，中文")
-        @username_info = create_element("span", "Info", @username)
         @username_input.addEventListener("blur", (e) =>
             echo "username blur"
             if @is_username_valid()
                 echo "valid"
-                @username_info.innerText = ""
+                #@username_info.innerText = ""
             else
                 echo "invalid"
-                @username_info.innerText = "请输入合法的用户名"
-                echo @username_info.innerText
+                #@username_info.innerText = "请输入合法的用户名"
         )
 
-        @hostname = create_element("p", "Hostname", @element)
-        @hostname_txt = create_element("span","Txt", @hostname) 
+        @hostname = create_element("div", "WelcomeFormItem", @form)
+        @hostname_txt = create_element("div","", @hostname) 
         @hostname_txt.innerText = "计算机名 :"
         @hostname_input = create_element("input", "", @hostname)
         @hostname_input.setAttribute("placeholder", "请输入计算机名")
-        @hostname_info = create_element("span", "Info", @hostname)
         @hostname_input.addEventListener("blur", (e) =>
             if @is_hostname_valid()
-                @hostname_info.innerText = ""
+                echo "valid"
+                #@hostname_info.innerText = ""
             else
-                @hostname_info.innerText = "请输入合法的计算机名"
+                echo "invalid"
+                #@hostname_info.innerText = "请输入合法的计算机名"
         )
         
-        @password = create_element("p", "Password", @element)
-        @password_txt = create_element("span", "Txt", @password)
+        @password = create_element("div", "WelcomeFormItem", @form)
+        @password_txt = create_element("div", "", @password)
         @password_txt.innerText = "登录密码 :"
         @password_input = create_element("input", "", @password)
         @password_input.setAttribute("placeholder", "请输入密码")
-        @password_info = create_element("span", "Info", @password)
         @password_input.addEventListener("blur", (e) =>
             if @is_password_valid()
-                @password_info.innerText = ""
+                echo "valid"
+                #@password_info.innerText = ""
             else
-                @password_info.innerText = "请输入合法的密码"
+                echo "invalid"
+                #@password_info.innerText = "请输入合法的密码"
         )
         
-        @confirm = create_element("p", "ConfirmPassword", @element)
-        @confirm_txt = create_element("span", "Txt", @confirm)
+        @confirm = create_element("div", "WelcomeFormItem", @form)
+        @confirm_txt = create_element("div", "", @confirm)
         @confirm_txt.innerText = "确认密码 :"
         @confirm_input = create_element("input", "", @confirm)
         @confirm_input.setAttribute("placeholder", "请输入确认密码")
-        @confirm_info = create_element("span", "Info", @confirm)
         @confirm_input.addEventListener("blur", (e) =>
             if @is_confirm_password_valid()
-                @confirm_info.innerText = ""
+                echo "valid"
+                #@confirm_info.innerText = ""
             else
-                @confirm_info.innerText = "请输入合法的确认密码"
+                echo "invalid"
+                #@confirm_info.innerText = "请输入合法的确认密码"
         )
 
-        @keyboard = create_element("p", "Keyboard", @element)
-        @keyboard_txt = create_element("span", "Txt", @keyboard)
-        @keyboard_txt.innerText = "键盘布局 :"
-        @keyboard_select = create_element("select", "", @keyboard)
-        @keyboard_info = create_element("span", "Info", @keyboard)
-        @fill_keyboard()
+        #@keyboard = create_element("p", "Keyboard", @element)
+        #@keyboard_txt = create_element("span", "Txt", @keyboard)
+        #@keyboard_txt.innerText = "键盘布局 :"
+        #@keyboard_select = create_element("select", "", @keyboard)
+        #@keyboard_info = create_element("span", "Info", @keyboard)
+        #@fill_keyboard()
 
-        @timezone = create_element("p", "Timezone", @element)
-        @timezone_txt = create_element("span", "Txt", @timezone)
-        @timezone_txt.innerText = "时区 :"
-        @timezone_select = create_element("select", "", @timezone)
-        @timezone_info = create_element("span", "Info", @timezone)
-        @fill_timezone()
+        #@timezone = create_element("p", "Timezone", @element)
+        #@timezone_txt = create_element("span", "Txt", @timezone)
+        #@timezone_txt.innerText = "时区 :"
+        #@timezone_select = create_element("select", "", @timezone)
+        #@timezone_info = create_element("span", "Info", @timezone)
+        #@fill_timezone()
 
         @start = create_element("div", "Start", @element)
         @start.innerText = "开始安装"

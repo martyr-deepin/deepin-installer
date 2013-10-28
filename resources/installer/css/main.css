@@ -4,10 +4,22 @@
 @import url(finish.css);
 @import url("../../common/css/animation.css");
 
+.Title {
+    width:755px;
+    height:90px;
+    line-height:90px;
+    background:#474747;
+    color:#FDFFFF;
+    text-align:center;
+    font-weight:bold;
+    font-size:24px;
+}
+
+
 .PageContainer {
     width:755px;
     height:540px;
-    background:#EBF5FE;
+    background:#E4E4E4;
     overflow:hidden;
 }
 
@@ -15,17 +27,6 @@
     width:755px;
     height:540px;
     overflow:hidden;
-}
-
-.Title {
-    width:755px;
-    height:90px;
-    line-height:90px;
-    background:#DDECF7;
-    text-align:center;
-    color:#12A1E9;
-    font-weight:bold;
-    font-size:24px;
 }
 
 ::-webkit-scrollbar {

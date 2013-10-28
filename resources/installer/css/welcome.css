@@ -1,63 +1,38 @@
-.Welcome p {
-    font-size:16px;
-    height:26px;
-    line-height:26px;
-    vertical-align:middle;
+.WelcomeForm {
+    position:fixed;
+    left:239px;
+    right:239px;
+    top:164px;
+    bottom:156px;
+    width:272px;
 }
 
-.Welcome .Txt {
-    position:absolute;
-    right:515px;
-    display:block;
-    height:26px;
-    line-height:26px;
+
+.WelcomeFormItem {
+    padding:0 0 22px 0;
+    width:272px;
+    height:38px;
 }
 
-.Welcome p input, .Welcome p select {
-    position:absolute;
-    left:252px;
-    right:252px;
-    width:250px;
+.WelcomeFormItem > div {
+    text-align:left;
+    max-width:272px;
+    height:14px;
 }
 
-.Welcome input:focus, .Welcome select:focus {
-    border:#72ADE4 2px solid;
-}
-
-.Welcome .Info {
-    position:absolute;
-    left:515px;
-    display:block;
-    height:26px;
-    line-height:26px;
-    color:red;
+.WelcomeFormItem input {
+    width:272px;
 }
 
 .Welcome .Start {
-    position:absolute;
-    left:287px;
-    right:287px;
-    bottom:80px;
-    width:180px;
-    height:50px;
-    line-height:50px;
-    background:#E9E9E9;
-    color:#B6B6B6;
+    position:fixed;
+    left:323px;
+    right:325px;
+    top:448px;
+    bottom:63px;
+    background:#222527;
+    color:#848383;
+    height:32px;
+    line-height:32px;
     text-align:center;
-    font-size:24px;
-}
-
-.Welcome .StartActive {
-    position:absolute;
-    left:287px;
-    right:287px;
-    bottom:80px;
-    width:180px;
-    height:50px;
-    line-height:50px;
-    background:#94D3FB;
-    display:block;
-    color:#FFFFFF;
-    text-align:center;
-    font-size:24px;
 }
