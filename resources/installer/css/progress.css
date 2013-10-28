@@ -1,22 +1,24 @@
 .Ppt, .Ppt img {
-    width:755px;
+    width:752px;
     height:450px;
 }
 
 .ProgressContainer {
     position:fixed;
-    width:755px;
-    height:8px;
-    background:rgba(232,232,232,1.0);
     left:0;
     right:0;
-    top:520px;
-    bottom:10px;
-    border:solid 1px white;
+    top:510px;
+    bottom:20px;
+    width:752px;
+    height:12px;
+    background:#E6F3EC;
+    border:solid 1px #A8C2B5;
 }
 
 .ProgressBar {
     width:455px;
-    height:8px;
-    background:rgba(107,176,220,0.5);
+    height:12px;
+    background:#5499DC;
+    border-top-right-radius:5px;
+    border-bottom-right-radius:5px;
 }

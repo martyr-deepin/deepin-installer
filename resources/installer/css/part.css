@@ -1,7 +1,7 @@
 .PartLineMaps {
     width:700px;
     height:12px;
-    margin:11px 23px;
+    margin:11px 26px;
     overflow:hidden;
     background:red;
 }
@@ -19,7 +19,7 @@
 .PartTable {
     width:700px;
     height:320px;
-    margin:0 23px;
+    margin:0 26px;
     text-align:center;
 }
 
@@ -178,6 +178,7 @@
     text-align:center;
     background:#1D1E22;
     color:white;
+    border-radius:5px;
 }
 
 .AddPartDialog {

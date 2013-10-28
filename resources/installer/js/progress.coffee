@@ -20,7 +20,6 @@
 class Progress extends Page
     constructor: (@id)->
         super
-        @title = create_element("div", "Title", @element)
         @title.innerHTML = "<span>欢迎安装使用 Linux Deepin <sup>12.12</sup></span>"
 
         @current_img = _ppt_list[0]
