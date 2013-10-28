@@ -15,6 +15,18 @@
     font-size:24px;
 }
 
+.Title p {
+    float:left;
+    height:40px;
+    line-height:40px;
+    margin-left:28px;
+    vertical-align:middle;
+    font-size:24px;
+    background:url("../images/logo.png") no-repeat;
+    padding-left:245px;
+    padding-top:4px;
+}
+
 .PageContainer {
     width:755px;
     height:540px;

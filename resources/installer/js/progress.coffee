@@ -20,7 +20,8 @@
 class Progress extends Page
     constructor: (@id)->
         super
-        @title.innerHTML = "<span>欢迎安装使用 Linux Deepin <sup>12.12</sup></span>"
+        @progress_txt = create_element("p", "", @title)
+        @progress_txt.innerText = "正在安装"
 
         @current_img = _ppt_list[0]
 

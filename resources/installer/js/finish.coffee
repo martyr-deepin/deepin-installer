@@ -20,14 +20,15 @@
 class Finish extends Page
     constructor: (@id)->
         super
-        @title.innerHTML = "<span>完成Linux Deepin系统安装</span>"
+        @finish_txt = create_element("p", "", @title)
+        @finish_txt.innerText = "安装完成"
 
         @sep = create_element("div", "Sep", @element)
 
-        @finish_desc = create_element("p", "", @element)
+        @finish_desc = create_element("div", "FinishForm", @element)
         @finish_desc.innerText = "完成安装需要重启电脑"
 
-        @restart_now = create_element("p", "", @element)
+        @restart_now = create_element("div", "FinishForm", @element)
         @now_radio = create_element("input", "", @restart_now)
         @now_radio.setAttribute("type", "radio")
         @now_radio.setAttribute("name", "restart")
@@ -36,7 +37,7 @@ class Finish extends Page
         @now_desc = create_element("span", "", @restart_now)
         @now_desc.innerText = "立即重启电脑"
 
-        @restart_later = create_element("p", "", @element)
+        @restart_later = create_element("div", "FinishForm", @element)
         @later_radio = create_element("input", "", @restart_later)
         @later_radio.setAttribute("type", "radio")
         @later_radio.setAttribute("name", "restart")

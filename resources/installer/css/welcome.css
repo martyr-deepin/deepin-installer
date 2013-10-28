@@ -1,3 +1,12 @@
+.TitleSet {
+    position:fixed;
+    top:20px;
+    left:590px;
+    right:30px;
+    bottom:480px;
+    font-size:14px;
+}
+
 .WelcomeForm {
     position:fixed;
     left:239px;
@@ -6,7 +15,6 @@
     bottom:156px;
     width:272px;
 }
-
 
 .WelcomeFormItem {
     padding:0 0 22px 0;
@@ -22,6 +30,33 @@
 
 .WelcomeFormItem input {
     width:272px;
+    height:22px;
+    padding-left:20px;
+    margin-top:5px;
+    border:1px solid #9D9D9D;
+    border-radius:3px;
+}
+
+.WelcomeFormItem input:focus {
+    border:1px solid #1FC5FE;
+    border-radius:3px;
+    border-style:solid;
+}
+
+.Username {
+    background: white url("../images/username.png") no-repeat;
+}
+
+.Password {
+    background: white url("../images/password.png") no-repeat;
+}
+
+.Hostname {
+    background: white url("../images/hostname.png") no-repeat;
+}
+
+.ConfirmPassword {
+    background: white url("../images/confirmpwd.png") no-repeat;
 }
 
 .Welcome .Start {

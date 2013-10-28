@@ -465,7 +465,8 @@ class Part extends Page
         if __selected_disk == null
             __selected_disk = disks[0]
 
-        @title.innerText = "请选择要安装\"Deepin\"的磁盘"
+        @part_txt = create_element("p", "", @title)
+        @part_txt.innerText = "选择磁盘"
 
         @help = create_element("div", "PartHelp", @title)
         @t_mode = create_element("span", "", @help)

@@ -22,13 +22,20 @@ class Welcome extends Page
         super
         @illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
 
-        @title.innerHTML = "<span>欢迎安装使用 Linux Deepin <sup>12.12</sup></span>"
+        @title_start = create_element("div", "", @title)
+        @start_txt = create_element("p", "", @title_start)
+        @start_txt.innerText = "安装向导"
+
+        @title_set = create_element("div", "TitleSet", @title)
+        @keyboard_set = create_element("span", "", @title_set)
+        @timezone_set = create_element("span", "", @title_set)
+
         @form = create_element("div", "WelcomeForm", @element)
 
         @username = create_element("div", "WelcomeFormItem", @form)
         @username_txt = create_element("div", "", @username)
         @username_txt.innerText = "用户名 :"
-        @username_input = create_element("input", "", @username)
+        @username_input = create_element("input", "Username", @username)
         @username_input.setAttribute("placeholder", "2-14个字符，英文，数字，中文")
         @username_input.addEventListener("blur", (e) =>
             echo "username blur"
@@ -43,7 +50,7 @@ class Welcome extends Page
         @hostname = create_element("div", "WelcomeFormItem", @form)
         @hostname_txt = create_element("div","", @hostname) 
         @hostname_txt.innerText = "计算机名 :"
-        @hostname_input = create_element("input", "", @hostname)
+        @hostname_input = create_element("input", "Hostname", @hostname)
         @hostname_input.setAttribute("placeholder", "请输入计算机名")
         @hostname_input.addEventListener("blur", (e) =>
             if @is_hostname_valid()
@@ -57,7 +64,7 @@ class Welcome extends Page
         @password = create_element("div", "WelcomeFormItem", @form)
         @password_txt = create_element("div", "", @password)
         @password_txt.innerText = "登录密码 :"
-        @password_input = create_element("input", "", @password)
+        @password_input = create_element("input", "Password", @password)
         @password_input.setAttribute("placeholder", "请输入密码")
         @password_input.addEventListener("blur", (e) =>
             if @is_password_valid()
@@ -71,7 +78,7 @@ class Welcome extends Page
         @confirm = create_element("div", "WelcomeFormItem", @form)
         @confirm_txt = create_element("div", "", @confirm)
         @confirm_txt.innerText = "确认密码 :"
-        @confirm_input = create_element("input", "", @confirm)
+        @confirm_input = create_element("input", "ConfirmPassword", @confirm)
         @confirm_input.setAttribute("placeholder", "请输入确认密码")
         @confirm_input.addEventListener("blur", (e) =>
             if @is_confirm_password_valid()
