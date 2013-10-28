@@ -1,22 +1,22 @@
 .Sep {
-    margin:80px 275px;
+    margin:120px 275px;
 }
 
 .Finish p {
-    margin:20px 275px;
-    color:#7F8E9A;
+    margin:30px 275px;
+    color:#2E2E2E;
     width:200px;
     font-size:16px;
 }
 
 .FinishBtn {
-    margin:80px 275px;
-    width:180px;
-    height:50px;
-    line-height:50px;
+    margin:90px 320px;
+    width:110px;
+    height:35px;
+    line-height:35px;
     display:block;
-    background:#8BCEFB;
-    color:white;
     text-align:center;
-    font-size:18px;
+    background:#28292D;
+    color:#FCFCFC;
+    border-radius:5px;
 }
