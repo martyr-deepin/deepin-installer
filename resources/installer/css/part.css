@@ -1,103 +1,79 @@
-.Part {
-    padding:0 27px;
-}
-
-.PartTitle {
-    width:700px;
-    height:45px;
-    margin-top:17px;
-    font-size:17px;
-}
-
-.PartTitle i {
-    font-style:normal;
-}
-
-.PartTitle span {
-    float:right;
-    margin:0 5px;
-}
-
-.PartTitle span:hover {
-    color:red;
-}
-
 .PartLineMaps {
     width:700px;
-    height:15px;
+    height:12px;
+    margin:11px 23px;
     overflow:hidden;
-    padding:0 1px;
+    background:red;
 }
 
 .PartLineItem {
     float:left;
-    height:15px;
     opacity:0.4;
 }
 
 .PartLineItemActive {
     float:left;
-    height:15px;
     opacity:1.0;
 }
 
 .PartTable {
     width:700px;
-    height:300px;
-    margin-top:5px;
+    height:320px;
+    margin:0 23px;
     text-align:center;
 }
 
 .PartTableHeader {
     width:700px;
-    height:35px;
-    background:#D8E7F4;
-    border:1px solid #CFE2F0;
+    height:25px;
+    background:#FCFCFC;
+    border:1px solid #B4B4B4;
 }
 
 .PartTableHeader span {
     float:left;
     width:200px;
-    height:35px;
-    line-height:35px;
+    height:25px;
+    line-height:25px;
 }
 
 .PartTableHeader div {
     float:left;
     width:100px;
-    height:35px;
-    line-height:35px;
+    height:25px;
+    line-height:25px;
 }
 
 .PartTableItems {
     width:700px;
-    height:265px;
+    height:295px;
+    background:#F1F1F1;
     overflow-y:auto;
     overflow-x:hidden;
 }
 
 .PartTableItem {
     width:700px;
-    height:50px;
-    border:1px solid #CFE2F0;
+    height:42px;
+    border:1px solid #E1E1E1;
     clear:both;
 }
 
 .PartTableItemActive {
-    background:#CADDEF;
+    background:#27BEFF;
 }
 
 .PartTableItem >span {
     width:200px;
-    height:50px;
-    line-height:50px;
+    height:42px;
+    line-height:42px;
     float:left;
 }
 
 .PartTableItem >div {
     width:100px;
-    height:50px;
-    line-height:50px;
+    height:42px;
+    line-height:42px;
     vertical-align:middle;
     float:left;
 }
@@ -106,7 +82,7 @@
     width:75px;
     height:24px;
     line-height:24px;
-    margin:13px 0;
+    margin:9px 0;
     text-align:right;
     float:left;
 }
@@ -116,12 +92,12 @@
     height:16px;
     line-height:16px;
     float:left;
-    margin:17px 5px;
+    margin:13px 5px;
 }
 
 .PartTableItem .LabelPath {
     width:95px;
-    height:50px;
+    height:42px;
     float:left;
     text-align:left;
     vertical-align:middle;
@@ -130,9 +106,9 @@
 
 .PartTableItem .Label, .PartTableItem .Path {
     width:95px;
-    height:25px;
-    line-height:25px;
-    max-height:50px;
+    height:21px;
+    line-height:21px;
+    max-height:42px;
 }
 
 .PartTableItem select {
@@ -190,20 +166,18 @@
     float:right;
 }
 
-.NextStep span {
+.NextStep {
     position:fixed;
-    bottom:20px;
-    right:30px;
-    float:right;
-    text-align:center;
+    top:470px;
+    left:290px;
+    right:290px;
+    bottom:38px;
     width:175px;
-    height:50px;
-    line-height:50px;
-    background:#8BCEFB;
+    height:35px;
+    line-height:35px;
+    text-align:center;
+    background:#1D1E22;
     color:white;
-    border:1px solid #CFE2F0;
-    font-size:24px;
-    font-weight:bold;
 }
 
 .AddPartDialog {

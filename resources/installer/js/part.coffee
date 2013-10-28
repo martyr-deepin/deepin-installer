@@ -456,15 +456,16 @@ class Part extends Page
         if __selected_disk == null
             __selected_disk = disks[0]
 
-        @title = create_element("div", "PartTitle", @element)
-        @t_desc = create_element("i", "", @title)
-        @t_desc.innerText = "请选择要安装Deepin的磁盘"
+            #@t_desc = create_element("i", "", @title)
+            #@t_desc.innerText = "请选择要安装Deepin的磁盘"
+        @title.innerText = "请选择要安装Deepin的磁盘"
+
         @t_help = create_element("span", "", @title)
-        @t_help.innerText = "查看帮助"
+        #@t_help.innerText = "查看帮助"
         @t_sep = create_element("span", "", @title)
-        @t_sep.innerText = " | "
+        #@t_sep.innerText = " | "
         @t_mode = create_element("span", "", @title)
-        @t_mode.innerText = "精简模式"
+        #@t_mode.innerText = "精简模式"
 
         #linemap
         @linemap = new PartLineMaps("part_line_maps")
@@ -480,8 +481,8 @@ class Part extends Page
         if __selected_mode == "advance"
             @fill_advance_op()
 
-        @next_step = create_element("p", "NextStep", @element)
-        @next_btn = create_element("span", "", @next_step)
+            #@next_step = create_element("p", "NextStep", @element)
+        @next_btn = create_element("div", "NextStep", @element)
         @next_btn.innerText = "开始安装"
 
         @t_mode.addEventListener("click", (e) =>
