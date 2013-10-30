@@ -34,6 +34,8 @@ JS_EXPORT_API gchar* installer_rand_uuid ();
 
 void init_parted (void);
 
+JS_EXPORT_API JSObjectRef installer_get_parted_info();
+
 JS_EXPORT_API JSObjectRef installer_list_disks();
 
 JS_EXPORT_API gchar * installer_get_disk_path (const gchar *disk);
