@@ -106,7 +106,7 @@ void init_parted ()
 
         GList *part_list = NULL;
 
-        if ( uuid != NULL && disk != NULL ) {
+        if (uuid != NULL && disk != NULL ) {
             g_hash_table_insert (disks, g_strdup (uuid), disk);
 
             PedPartition *partition = NULL;
@@ -194,7 +194,7 @@ __fill_partition_type (gchar *part_info, PedPartition *pedpartition)
     if (type != NULL) {
         type_str = g_strdup_printf ("\"type\":\"%s\"", type);
     } else {
-        type_str = g_strdup("\"type\":\"null\"");
+        type_str = g_strdup ("\"type\":\"null\"");
     }
     g_free (type);
 
@@ -266,7 +266,6 @@ __fill_partition_fs (gchar *part_info, PedPartition *pedpartition)
     } else {
         os_str = g_strdup ("\"os\":\"null\"");
     }
-    g_free (os);
 
     g_strlcat (part_info, os_str, PART_INFO_LENGTH);
     g_free (os_str);
@@ -382,7 +381,18 @@ __fill_partition_flag (gchar *part_info, pedpartition)
     gchar *busy_str = g_strdup_printf ("\"busy\":\"%d\"", busy);
     g_strlcat (part_info, busy_str, PART_INFO_LENGTH);
     g_free (busy_str);
-    //fix me,add part lvm flag here
+
+    PedPartitionFlag flag;
+    int lvm = 0;
+    if (ped_partition_is_active (pedpartition)) {
+        flag = ped_partition_flag_get_by_name ("lvm");
+        if (ped_partition_is_flag_available(pedpartition, flag) && ped_partition_get_flag (pedpartition, flag)) {
+            lvm = 1;
+        }
+    }
+    gchar *lvm_str = g_strdup_printf ("\"lvm\":\"%d\"", lvm);
+    g_strlcat (part_info, lvm_str, PART_INFO_LENGTH);
+    g_free (lvm_str);
 }
 
 static gchar *
@@ -417,6 +427,12 @@ __get_partition_info (const gchar *part)
     g_free (end_str);
 
     return part_info;
+}
+
+static void
+__get_disk_info ()
+{
+    ;
 }
 
 static gpointer
