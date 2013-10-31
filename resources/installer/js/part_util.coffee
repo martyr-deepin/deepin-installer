@@ -34,37 +34,39 @@ disks = DCore.Installer.list_disks()
 
 m_disk_info = {}
 #never change the partitions list
-for disk in disks
-    m_disk_info[disk] = {}
-    m_disk_info[disk]["change"] = false
-    m_disk_info[disk]["partitions"] = []
-    for part in DCore.Installer.get_disk_partitions(disk)
-        if DCore.Installer.get_partition_type(part) in ["normal", "extended", "logical"]
-            m_disk_info[disk]["partitions"].push(part)
+init_m_disk_info = ->
+    for disk in disks
+        m_disk_info[disk] = {}
+        m_disk_info[disk]["change"] = false
+        m_disk_info[disk]["partitions"] = []
+        for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["type"] in ["normal", "extended", "logical"]
+                m_disk_info[disk]["partitions"].push(part)
 
 m_part_info = {}
 #may had part not in m_disk_info partitions list
-for disk in disks
-    for part in m_disk_info[disk]["partitions"]
-        m_part_info[part] = {}
-        m_part_info[part]["disk"] = disk
-        m_part_info[part]["type"] = DCore.Installer.get_partition_type(part)
-        m_part_info[part]["start"] = DCore.Installer.get_partition_start(part)
-        m_part_info[part]["length"] = DCore.Installer.get_partition_length(part)
-        m_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
-        if m_part_info[part]["type"] == "extended"
-            m_part_info[part]["fs"] = "extended"
-        else if m_part_info[part]["type"] in ["normal", "logical"]
-            m_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
-        else
-            m_part_info[part]["fs"] = ""
-        m_part_info[part]["format"] = false
-        try
-            m_part_info[part]["mp"] = DCore.Installer.get_partition_mp(part)
-        catch error
-            m_part_info[part]["mp"] = "unused"
-        m_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
-        m_part_info[part]["op"] = "keep"
+init_m_part_info = ->
+    for disk in disks
+        for part in m_disk_info[disk]["partitions"]
+            m_part_info[part] = {}
+            m_part_info[part]["disk"] = disk
+            m_part_info[part]["type"] = v_part_info[part]["type"]
+            m_part_info[part]["start"] = v_part_info[part]["start"]
+            m_part_info[part]["length"] = v_part_info[part]["length"]
+            m_part_info[part]["end"] = v_part_info[part]["end"]
+            if m_part_info[part]["type"] == "extended"
+                m_part_info[part]["fs"] = "extended"
+            else if m_part_info[part]["type"] in ["normal", "logical"]
+                m_part_info[part]["fs"] = v_part_info[part]["fs"]
+            else
+                m_part_info[part]["fs"] = ""
+            m_part_info[part]["format"] = false
+            try
+                m_part_info[part]["mp"] = v_part_info[part]["mp"]
+            catch error
+                m_part_info[part]["mp"] = "unused"
+            m_part_info[part]["path"] = v_part_info[part]["path"]
+            m_part_info[part]["op"] = "keep"
     
 #sort part op flags as below:
 #1)first delete, then update and add
@@ -276,53 +278,55 @@ write_fs_tab = ->
 #View
 #View: for data display in UI
 v_disk_info = {}
-for disk in disks
-    v_disk_info[disk] = {}
-    v_disk_info[disk]["length"] = DCore.Installer.get_disk_length(disk)
-    v_disk_info[disk]["model"] = DCore.Installer.get_disk_model(disk)
-    v_disk_info[disk]["max_primary"] = DCore.Installer.get_disk_max_primary_count(disk)
-    v_disk_info[disk]["path"] = DCore.Installer.get_disk_path(disk)
-    v_disk_info[disk]["partitions"] = []
-    for part in DCore.Installer.get_disk_partitions(disk)
-        if DCore.Installer.get_partition_type(part) == "freespace"
-            if DCore.Installer.get_partition_length(part) > 4096
-                v_disk_info[disk]["partitions"].push(part)
-        else if DCore.Installer.get_partition_type(part) in ["normal", "extended", "logical"]
-            if DCore.Installer.get_partition_path(part).indexOf("/dev/mapper") == -1
-                v_disk_info[disk]["partitions"].push(part)
-
+init_v_disk_info = ->
+    for disk in disks
+        v_disk_info[disk] = {}
+        v_disk_info[disk]["length"] = DCore.Installer.get_disk_length(disk)
+        v_disk_info[disk]["model"] = DCore.Installer.get_disk_model(disk)
+        v_disk_info[disk]["max_primary"] = DCore.Installer.get_disk_max_primary_count(disk)
+        v_disk_info[disk]["path"] = DCore.Installer.get_disk_path(disk)
+        v_disk_info[disk]["partitions"] = []
+        for part in DCore.Installer.get_disk_partitions(disk)
+            if DCore.Installer.get_partition_type(part) == "freespace"
+                if DCore.Installer.get_partition_length(part) > 4096
+                    v_disk_info[disk]["partitions"].push(part)
+            else if DCore.Installer.get_partition_type(part) in ["normal", "extended", "logical"]
+                if DCore.Installer.get_partition_path(part).indexOf("/dev/mapper") == -1
+                    v_disk_info[disk]["partitions"].push(part)
+    
 v_part_info = {}
-for disk in disks
-    for part in v_disk_info[disk]["partitions"]
-        v_part_info[part] = {}
-        v_part_info[part]["disk"] = disk
-        v_part_info[part]["type"] = DCore.Installer.get_partition_type(part)
-        #please fix the return null string
-        #v_part_info[part]["name"] = DCore.Installer.get_partition_name(part)
-        v_part_info[part]["start"] = DCore.Installer.get_partition_start(part)
-        v_part_info[part]["length"] = DCore.Installer.get_partition_length(part)
-        v_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
-        if v_part_info[part]["type"] == "extended"
-            v_part_info[part]["fs"] = "extended"
-        else if v_part_info[part]["type"] in ["normal", "logical"]
-            v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
-        else
-            v_part_info[part]["fs"] = ""
-        try
-            v_part_info[part]["mp"] = DCore.Installer.get_partition_mp(part)
-        catch error
-            v_part_info[part]["mp"] = "unused"
-        v_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
-        v_part_info[part]["color"] = get_random_color() 
-        v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
-        try
-            v_part_info[part]["used"] = Math.floor(DCore.Installer.get_partition_free(part))
-            #v_part_info[part]["used"] = "80G"
-        catch error
-            v_part_info[part]["used"] = "unknown"
-        v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
-        v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
-        v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm")
+init_v_part_info = ->
+    for disk in disks
+        for part in v_disk_info[disk]["partitions"]
+            v_part_info[part] = {}
+            v_part_info[part]["disk"] = disk
+            v_part_info[part]["type"] = DCore.Installer.get_partition_type(part)
+            #please fix the return null string
+            #v_part_info[part]["name"] = DCore.Installer.get_partition_name(part)
+            v_part_info[part]["start"] = DCore.Installer.get_partition_start(part)
+            v_part_info[part]["length"] = DCore.Installer.get_partition_length(part)
+            v_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
+            if v_part_info[part]["type"] == "extended"
+                v_part_info[part]["fs"] = "extended"
+            else if v_part_info[part]["type"] in ["normal", "logical"]
+                v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
+            else
+                v_part_info[part]["fs"] = ""
+            try
+                v_part_info[part]["mp"] = DCore.Installer.get_partition_mp(part)
+            catch error
+                v_part_info[part]["mp"] = "unused"
+            v_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
+            v_part_info[part]["color"] = get_random_color() 
+            v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
+            try
+                #v_part_info[part]["used"] = Math.floor(DCore.Installer.get_partition_free(part))
+                v_part_info[part]["used"] = "80G"
+            catch error
+                v_part_info[part]["used"] = "unknown"
+            v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
+            v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
+            v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm")
 
 _sort_part_geom = (part_a, part_b) ->
     if v_part_info[part_a]["start"] == v_part_info[part_b]["start"]
@@ -887,8 +891,8 @@ undo_table = (disk) ->
         v_part_info[part]["color"] = get_random_color() 
         v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
         try
-            v_part_info[part]["used"] = Math.floor(DCore.Installer.get_partition_free(part))
-            #v_part_info[part]["used"] = "80G"
+            #v_part_info[part]["used"] = Math.floor(DCore.Installer.get_partition_free(part))
+            v_part_info[part]["used"] = "80G"
         catch error
             v_part_info[part]["used"] = "unknown"
         v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
@@ -897,3 +901,8 @@ undo_table = (disk) ->
 #Control end
 #Control
 #
+#
+init_v_disk_info()
+init_v_part_info()
+init_m_disk_info()
+init_m_part_info()

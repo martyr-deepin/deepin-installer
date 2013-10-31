@@ -79,7 +79,8 @@ void init_parted ()
             const PedDiskType *type;
             long long size = device->sector_size;
             PedSector length = device->length;
-            if (size * length > (long long) 2*1024*1024*1024*1024) {
+            //if (size * length > (long long) 2*1024*1024*1024*1024) {
+            if (size * length > (long long) 2 << 40) {
                 type = ped_disk_type_get ("gpt");
             } else {
                 type = ped_disk_type_get ("msdos");
@@ -119,6 +120,46 @@ void init_parted ()
         g_hash_table_insert (disk_partitions, g_strdup (uuid), part_list);
 
         g_free (uuid);
+    }
+
+    GError *error = NULL;
+
+    if (partition_os == NULL) {
+        partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                              (GEqualFunc) g_str_equal, 
+                                              (GDestroyNotify) g_free, 
+                                              (GDestroyNotify) g_free);
+
+        if (g_find_program_in_path ("os-prober") == NULL) {
+            g_warning ("get partition os:os-prober not installed\n");
+            return ;
+        }
+
+        gchar *output = NULL;
+        g_spawn_command_line_sync ("os-prober", &output, NULL, NULL, &error);
+        if (error != NULL) {
+            g_warning ("get partition os:os-prober %s\n", error->message);
+            g_error_free (error);
+        }
+        error = NULL;
+
+        gchar **items = g_strsplit (output, "\n", -1);
+        int i, j;
+        for (i = 0; i < g_strv_length (items); i++) {
+            gchar *item = g_strdup (items[i]);
+            gchar **os = g_strsplit (item, ":", -1);
+
+            if (g_strv_length (os) == 4) {
+                //g_printf ("get partition os:insert key %s value %s\n", os[0], os[2]);
+                g_hash_table_insert (partition_os, g_strdup (os[0]), g_strdup (os[2]));
+            }
+
+            g_strfreev (os);
+            g_free (item);
+        }
+
+        g_strfreev (items);
+        g_free (output);
     }
 }
 
@@ -314,7 +355,7 @@ gchar* installer_get_partition_type (const gchar *part)
                 type = g_strdup ("protected");
                 break;
             default:
-                g_warning("get partition type:invalid type %d\n", part_type);
+                //g_warning("get partition type:invalid type %d\n", part_type);
                 type = g_strdup ("protected");
                 break;
         }
@@ -580,12 +621,13 @@ gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name
     return result;
 }
 
-JS_EXPORT_API 
-double installer_get_partition_free (const gchar *part)
+static double
+do_get_partition_free (gpointer data)
 {
     double result = 0;
-
     PedPartition *pedpartition = NULL;
+
+    gchar *part = (gchar *) data;
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
 
     if (pedpartition != NULL) {
@@ -626,52 +668,22 @@ double installer_get_partition_free (const gchar *part)
 }
 
 JS_EXPORT_API 
+double installer_get_partition_free (const gchar *part)
+{
+    double result = 0;
+
+    GThread *thread = g_thread_new ("get_partition_free", (GThreadFunc) do_get_partition_free, (gpointer) part);
+    result = (double) (GPOINTER_TO_INT(g_thread_join (thread)));
+
+    return result;
+}
+
+JS_EXPORT_API 
 gchar* installer_get_partition_os (const gchar *part)
 {
     gchar* result = NULL;
-
     gchar *path = NULL;
     PedPartition *pedpartition = NULL;
-    GError *error = NULL;
-
-    if (partition_os == NULL) {
-        g_printf ("get partition os:init hash table\n");
-        partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                              (GEqualFunc) g_str_equal, 
-                                              (GDestroyNotify) g_free, 
-                                              (GDestroyNotify) g_free);
-
-        if (g_find_program_in_path ("os-prober") == NULL) {
-            g_warning ("get partition os:os-prober not installed\n");
-            return result;
-        }
-
-        gchar *output = NULL;
-        g_spawn_command_line_sync ("os-prober", &output, NULL, NULL, &error);
-        if (error != NULL) {
-            g_warning ("get partition os:os-prober %s\n", error->message);
-            g_error_free (error);
-        }
-        error = NULL;
-
-        gchar **items = g_strsplit (output, "\n", -1);
-        int i, j;
-        for (i = 0; i < g_strv_length (items); i++) {
-            gchar *item = g_strdup (items[i]);
-            gchar **os = g_strsplit (item, ":", -1);
-
-            if (g_strv_length (os) == 4) {
-                //g_printf ("get partition os:insert key %s value %s\n", os[0], os[2]);
-                g_hash_table_insert (partition_os, g_strdup (os[0]), g_strdup (os[2]));
-            }
-
-            g_strfreev (os);
-            g_free (item);
-        }
-
-        g_strfreev (items);
-        g_free (output);
-    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {

@@ -117,6 +117,7 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar
     g_free (output);
 
     result = (free_double * size_double) / (1024 * 1024);
+    //result = (free_double * size_double) >> 20;
 
     return result;
 }

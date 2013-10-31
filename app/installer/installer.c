@@ -91,7 +91,7 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
     g_debug ("installer:move window");
 
-    if ((event->x > 450) && ( event->y < 50|| event->y > 450)) {
+    if (event->y > 90) {
         g_debug ("move window:html click area");
         return TRUE;
     }
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
 
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
 
-    //g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
+    g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
 
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
     gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
