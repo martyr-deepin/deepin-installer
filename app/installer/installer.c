@@ -91,7 +91,7 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
     g_debug ("installer:move window");
 
-    if (event->y > 90) {
+    if (event->y > 90 || ((event->x > 600) && (event->y > 60) && (90 > event->y))) {
         g_debug ("move window:html click area");
         return TRUE;
     }
