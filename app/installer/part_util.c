@@ -67,6 +67,7 @@ void init_parted ()
                                           (GDestroyNotify) g_free, 
                                           (GDestroyNotify) g_free);
 
+    GError *error = NULL;
     PedDevice *device = NULL;
     PedDisk *disk = NULL;
 
@@ -159,294 +160,6 @@ void init_parted ()
     g_free (output);
 }
 
-static void
-__fill_partition_type (gchar *part_info, PedPartition *pedpartition) 
-{
-    gchar *type = NULL;
-    gchar *type_str = NULL;
-
-    PedPartitionType part_type = pedpartition->type;
-    switch (part_type) {
-        case PED_PARTITION_NORMAL:
-            type = g_strdup ("normal");
-            break;
-        case PED_PARTITION_LOGICAL:
-            type = g_strdup ("logical");
-            break;
-        case PED_PARTITION_EXTENDED:
-            type = g_strdup ("extended");
-            break;
-        case PED_PARTITION_METADATA:
-            type = g_strdup ("metadata");
-            break;
-        case PED_PARTITION_FREESPACE:
-            type = g_strdup ("freespace");
-            break;
-        case PED_PARTITION_PROTECTED:
-            type = g_strdup ("protected");
-            break;
-        default:
-            g_warning ("__get_partition_type:invalid %d\n", part_type);
-            type = g_strdup ("protected");
-            break;
-    }
-
-    if (type != NULL) {
-        type_str = g_strdup_printf ("\"type\":\"%s\"", type);
-    } else {
-        type_str = g_strdup ("\"type\":\"null\"");
-    }
-    g_free (type);
-
-    g_strlcat (part_info, type_str, PART_INFO_LENGTH);
-    g_free (type_str);
-}
-
-static void
-__fill_partition_geom (gchar *part_info, PedPartition *pedpartition)
-{
-    double start = pedpartition->geom.start;
-    gchar *geom_start = g_strdup_printf ("\"start\":%f", start); 
-    g_strlcat (part_info, geom_start, PART_INFO_LENGTH);
-    g_free (geom_start);
-
-    double length = pedpartition->geom.length;
-    gchar *geom_length = g_strdup_printf ("\"length\":%f", length);
-    g_strlcat (part_info, geom_length, PART_INFO_LENGTH);
-    g_free (geom_length);
-
-    double end = pedpartition->geom.end;
-    gchar *geom_end = g_strdup_printf ("\"end\":%f", end);
-    g_strlcat (part_info, geom_length, PART_INFO_LENGTH);
-    g_free (geom_end);
-}
-
-static void
-__fill_partition_fs (gchar *part_info, PedPartition *pedpartition)
-{
-    gchar *fs = NULL;
-    gchar *fs_str = NULL;
-
-    PedGeometry *geom = ped_geometry_duplicate (&pedpartition->geom);
-    PedFileSystemType *fs_type = ped_file_system_probe (geom);
-    if (fs_type != NULL) {
-        fs = g_strdup (fs_type->name);
-    }
-    ped_geometry_destroy (geom);
-
-    if (fs != NULL) {
-        fs_str = g_strdup_printf ("\"fs\":\"%s\"", fs);
-    } else {
-        fs_str = g_strdup ("\"fs\":\"null\"");
-    }
-    g_strlcat (part_info, fs_str, PART_INFO_LENGTH);
-    g_free (fs_str);
-
-    gchar *path = NULL;
-    gchar *path_str = NULL;
-
-    path = ped_partition_get_path (pedpartition);
-    if (path != NULL) {
-        path_str = g_strdup_printf ("\"path\":\"%s\"", path);
-    } else {
-        path_str = g_strdup ("\"path\":\"null\"");
-    }
-
-    g_strlcat (part_info, path_str, PART_INFO_LENGTH);
-    g_free (path_str);
-
-    gchar *os = NULL;
-    gchar *os_str = NULL;
-
-    if (path != NULL) {
-        os = g_hash_table_lookup (partition_os, path);
-    }
-    if (os != NULL) {
-        os_str = g_strdup_printf ("\"os\":\"%s\"", os);
-    } else {
-        os_str = g_strdup ("\"os\":\"null\"");
-    }
-
-    g_strlcat (part_info, os_str, PART_INFO_LENGTH);
-    g_free (os_str);
-
-    gchar *free = NULL;
-    gchar *free_str = NULL;
-    if (fs != NULL && path != NULL) {
-        free = get_partition_free (path, fs);
-    } 
-    if (free != NULL) {
-        free_str = g_strdup_printf ("\"free\":\"%s\"", free);
-    } else {
-        free_str = g_strdup ("\"free\":\"0\"");
-    }
-
-    g_strlcat (part_info, free_str, PART_INFO_LENGTH);
-
-    g_free (path);
-    g_free (fs);
-    g_free (free);
-    g_free (free_str);
-}
-
-static void
-__get_partition_label (PedPartition *pedpartition)
-{
-    gchar *label = NULL;
-    gchar *label_str = NULL;
-
-    gchar *path = NULL;
-    gchar **tmp = NULL;
-    gchar *device = NULL;
-    gchar *object_path = NULL;
-    GDBusProxy *proxy = NULL;
-    GVariant *label_var = NULL;
-    GError *error = NULL;
-
-    path = ped_partition_get_path (pedpartition);
-    if (path == NULL) {
-        g_warning ("__get_partition_label");
-        goto out;
-    }
-
-    tmp = g_strsplit (path, "/", 3);
-    device = g_strdup(tmp[2]);
-    object_path = g_strdup_printf ("/org/freedesktop/UDisks2/block_devices/%s", device);
-    //g_printf ("get partition label: object path %s\n", object_path);
-    g_free (path);
-    g_free (device);
-    g_strfreev (tmp);
-
-    if (!g_variant_is_object_path (object_path)) {
-        g_warning ("__get_partition_label");
-        goto out;
-    }
-
-    proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-        G_DBUS_PROXY_FLAGS_NONE,
-        NULL,
-        "org.freedesktop.UDisks2",
-        object_path,
-        "org.freedesktop.UDisks2.Block",
-        NULL,
-        &error);
-    if (error != NULL) {
-        g_warning ("__get_partition_label");
-        g_error_free (error);
-        goto out;
-    }
-    g_free (object_path);
-
-    label_var = g_dbus_proxy_get_cached_property (proxy, "IdLabel");
-    if (label_var == NULL) {
-        g_warning ("__get_partition_label");
-        goto out;
-    }
-
-    label = g_variant_dup_string (label_var, NULL); 
-
-    g_variant_unref (label_var);
-    g_object_unref (proxy);
-
-    if (label != NULL) {
-        label_str = g_strdup_printf ("\"label\":\"%s\"", label);
-    } else {
-        label_str = g_strdup ("\"label\":\"null\"");
-    }
-    g_free (label);
-
-    g_strlcat (part_info, label_str, PART_INFO_LENGTH);
-    g_free (label_str);
-
-out:
-    g_free (path);
-    g_free (device);
-    g_strfreev (tmp);
-    g_free (object_path);
-    g_free (label);
-    g_free (label_str);
-    if (label_var != NULL) {
-        g_variant_unref (label_var);
-    }
-    if (proxy != NULL) {
-        g_object_unref (proxy);
-    }
-    return NULL;
-}
-
-static void
-__fill_partition_flag (gchar *part_info, pedpartition)
-{
-    int busy = ped_partition_is_busy (pedpartition) ? 1 : 0;
-    gchar *busy_str = g_strdup_printf ("\"busy\":\"%d\"", busy);
-    g_strlcat (part_info, busy_str, PART_INFO_LENGTH);
-    g_free (busy_str);
-
-    PedPartitionFlag flag;
-    int lvm = 0;
-    if (ped_partition_is_active (pedpartition)) {
-        flag = ped_partition_flag_get_by_name ("lvm");
-        if (ped_partition_is_flag_available(pedpartition, flag) && ped_partition_get_flag (pedpartition, flag)) {
-            lvm = 1;
-        }
-    }
-    gchar *lvm_str = g_strdup_printf ("\"lvm\":\"%d\"", lvm);
-    g_strlcat (part_info, lvm_str, PART_INFO_LENGTH);
-    g_free (lvm_str);
-}
-
-static gchar *
-__get_partition_info (const gchar *part)
-{
-    gchar *part_info = NULL;
-    PedPartition *pedpartition = NULL;
-
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition == NULL) {
-        g_warning ("__get_partition_info");
-        return NULL;
-    }
-    
-    part_info = g_new0 (gchar, PART_INFO_LENGTH);
-
-    gchar *start_str = g_strdup_printf ("{\"%s\":{", part);
-    g_strlcat (part_info, start_str, PART_INFO_LENGTH);
-    g_free (start_str);
-
-    __fill_partition_type (part_info, pedpartition);
-    //for start, length and end
-    __fill_partition_geom (part_info, pedpartition);
-    //for filesystem, path, os and freespace
-    __fill_partition_fs (part_info, pedpartition);
-    __fill_partition_label (part_info, pedpartition);
-    //for "busy" and "lvm"
-    __fill_partition_flag (part_info, pedpartition);
-
-    gchar *end_str = g_strdup ("}}");
-    g_strlcat (part_info, end_str, 4096);
-    g_free (end_str);
-
-    return part_info;
-}
-
-static void
-__get_disk_info ()
-{
-    ;
-}
-
-static gpointer
-__get_parted_info (gpointer data)
-{
-    ;
-}
-
-JS_EXPORT_API 
-JSObjectRef installer_get_parted_info()
-{
-    ;
-}
-
 JS_EXPORT_API 
 JSObjectRef installer_list_disks()
 {
@@ -464,11 +177,13 @@ JSObjectRef installer_list_disks()
     return array;
 }
 
-JS_EXPORT_API
-gchar *installer_get_disk_path (const gchar *disk)
+static gchar* 
+do_get_disk_path (gpointer data)
 {
     gchar *result = NULL;
+
     PedDisk *peddisk = NULL;
+    gchar *disk = (gchar *) data;
 
     peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
     if (peddisk != NULL) {
@@ -485,9 +200,53 @@ gchar *installer_get_disk_path (const gchar *disk)
 }
 
 JS_EXPORT_API
+gchar *installer_get_disk_path (const gchar *disk)
+{
+    gchar *result = NULL;
+
+    PedDisk *peddisk = NULL;
+
+    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
+    if (peddisk != NULL) {
+        PedDevice *device = peddisk->dev;
+        g_assert(device != NULL);
+
+        result = g_strdup (device->path);
+
+    } else {
+        g_warning ("get disk path:find peddisk by %s failed\n", disk);
+    }
+
+    return result;
+}
+
+static gchar*
+do_get_disk_model (gpointer data)
+{
+    gchar *result = NULL;
+
+    PedDisk *peddisk = NULL;
+    gchar *disk = (gchar *) data;
+
+    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
+    if (peddisk != NULL) {
+        PedDevice *device = peddisk->dev;
+        g_assert(device != NULL);
+
+        result = g_strdup (device->model);
+
+    } else {
+        g_warning ("get disk model:find peddisk by %s failed\n", disk);
+    }
+
+    return result;
+}
+
+JS_EXPORT_API
 gchar *installer_get_disk_model (const gchar *disk)
 {
     gchar *result = NULL;
+
     PedDisk *peddisk = NULL;
 
     peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
@@ -609,6 +368,48 @@ void installer_is_device_slow (const gchar *uuid)
     g_free (path);
 }
 
+static gchar*
+do_get_partition_type (gpointer data)
+{
+    gchar *type = NULL;
+    PedPartition *pedpartition = NULL;
+    gchar *part = (gchar *) data;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    
+    if (pedpartition != NULL) {
+        PedPartitionType part_type = pedpartition->type;
+        switch (part_type) {
+            case PED_PARTITION_NORMAL:
+                type = g_strdup ("normal");
+                break;
+            case PED_PARTITION_LOGICAL:
+                type = g_strdup ("logical");
+                break;
+            case PED_PARTITION_EXTENDED:
+                type = g_strdup ("extended");
+                break;
+            case PED_PARTITION_METADATA:
+                type = g_strdup ("metadata");
+                break;
+            case PED_PARTITION_FREESPACE:
+                type = g_strdup ("freespace");
+                break;
+            case PED_PARTITION_PROTECTED:
+                type = g_strdup ("protected");
+                break;
+            default:
+                g_warning("get partition type:invalid type %d\n", part_type);
+                type = g_strdup ("protected");
+                break;
+        }
+    } else {
+        g_warning ("get partition type:find pedpartition %s failed\n", part);
+    }
+
+    return type;
+}
+
 JS_EXPORT_API
 gchar* installer_get_partition_type (const gchar *part)
 {
@@ -650,6 +451,25 @@ gchar* installer_get_partition_type (const gchar *part)
     return type;
 }
 
+static gchar*
+do_get_partition_name (gpointer data)
+{
+    gchar *name = NULL;
+    PedPartition *pedpartition = NULL;
+    gchar *part = (gchar *) data;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+        if (ped_disk_type_check_feature (pedpartition->disk->type, PED_DISK_TYPE_PARTITION_NAME)) {
+            name = g_strdup (ped_partition_get_name (pedpartition));
+        }
+    } else {
+        g_warning ("get partition name:find pedpartition %s failed\n", part);
+    }
+
+    return name;
+}
+
 JS_EXPORT_API
 gchar *installer_get_partition_name (const gchar *part)
 {
@@ -668,10 +488,30 @@ gchar *installer_get_partition_name (const gchar *part)
     return name;
 }
 
+static gchar*
+do_get_partition_path (gpointer data)
+{
+    gchar *path = NULL;
+
+    PedPartition *pedpartition = NULL;
+    gchar *part = (gchar *) data;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+        path = ped_partition_get_path (pedpartition);
+
+    } else {
+        g_warning ("get partition path:find pedpartition %s failed\n", part);
+    }
+
+    return path;
+}
+
 JS_EXPORT_API
 gchar* installer_get_partition_path (const gchar *part)
 {
     gchar *path = NULL;
+
     PedPartition *pedpartition = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
@@ -685,10 +525,38 @@ gchar* installer_get_partition_path (const gchar *part)
     return path;
 }
 
+static gchar*
+do_get_partition_mp (gpointer data)
+{
+    gchar *mp = NULL;
+
+    PedPartition *pedpartition = NULL;
+    gchar *part = (gchar *) data;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+
+        gchar *path = ped_partition_get_path (pedpartition);
+        if (path != NULL) {
+            mp = g_strdup (get_partition_mount_point (path));
+
+        } else {
+            g_warning ("get partition mp:get partition path failed\n");
+        }
+        g_free (path);
+
+    } else {
+        g_warning ("get partition mp:find pedpartition %s failed\n", part);
+    }
+
+    return mp;
+}
+
 JS_EXPORT_API 
 gchar* installer_get_partition_mp (const gchar *part)
 {
     gchar *mp = NULL;
+
     PedPartition *pedpartition = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
@@ -905,12 +773,14 @@ gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name
     return result;
 }
 
-JS_EXPORT_API 
-double installer_get_partition_free (const gchar *part)
+static gint
+do_get_partition_free (gpointer data)
 {
-    double result = 0;
+    gint result = 0;
 
     PedPartition *pedpartition = NULL;
+    gchar *part = (gchar *) data;
+
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
 
     if (pedpartition != NULL) {
@@ -951,13 +821,23 @@ double installer_get_partition_free (const gchar *part)
 }
 
 JS_EXPORT_API 
+double installer_get_partition_free (const gchar *part)
+{
+    double result = 0;
+
+    GThread *thread = g_thread_new ("get_partition_free", (GThreadFunc) do_get_partition_free, (gpointer) part);
+    result = (double) (GPOINTER_TO_INT( g_thread_join (thread)));
+
+    return result;
+}
+
+JS_EXPORT_API 
 gchar* installer_get_partition_os (const gchar *part)
 {
     gchar* result = NULL;
 
     gchar *path = NULL;
     PedPartition *pedpartition = NULL;
-    GError *error = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
