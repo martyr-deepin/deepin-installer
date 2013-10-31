@@ -22,6 +22,7 @@
 #define __XDG_MISC_H__
 #include <glib.h>
 #include <gio/gio.h>
+#include <jsextension.h>
 
 // the really icon path is determined by theme
 void set_default_theme(const char* theme);
@@ -32,7 +33,9 @@ void set_desktop_env_name(const char* name);
 gboolean change_desktop_entry_name(const char* path, const char* name);
 
 // get the $XDG_DESKTOP_DIR value
-char* get_desktop_dir(gboolean update);
+#define DESKTOP_DIR() (g_get_user_special_dir(G_USER_DIRECTORY_DESKTOP))
+#define TEMPLATES_DIR() (g_get_user_special_dir(G_USER_DIRECTORY_TEMPLATES))
+#define HOME_DIR() (g_get_home_dir())
 
 // convert the icon name to the really icon path, seea also "set_default_theme"
 char* icon_name_to_path(const char* name, int size);

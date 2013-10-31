@@ -8,5 +8,6 @@
 #endif
 
 #define JS_EXPORT_API
+#define DBUS_EXPORT_API
 
 #endif

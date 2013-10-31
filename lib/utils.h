@@ -26,9 +26,13 @@
 #include <gio/gdesktopappinfo.h>
 
 #define GET_HTML_PATH(name) "file://"RESOURCE_DIR"/"name"/index.html"
+#define STR_EXP(__A) #__A
+#define STR(A) STR_EXP(A)
 
+int binding(int server_sockfd, const char* path);
 char* shell_escape(const char* source);
 int is_application_running(const char* path);
+void singleton(const char* name);
 void log_to_file(const gchar* log_domain, GLogLevelFlags log_level, const gchar* message, char* app_name);
 
 char* dcore_gen_id(const char* seed);
@@ -50,5 +54,11 @@ void parse_cmd_line (int* argc, char*** argv);
 char* to_lower_inplace(char* str);
 gboolean file_filter(const char *file_name);
 char* get_desktop_file_basename(GDesktopAppInfo* file);  // g_free the return value
+GDesktopAppInfo* guess_desktop_file(char const* app_id);
+
+char* get_basename_without_extend_name(char const* path);
+gboolean is_deepin_icon(char const* icon_path);
+char* check_absolute_path_icon(char const* app_id, char const* icon_path);
+gboolean is_chrome_app(char const* name);
 
 #endif

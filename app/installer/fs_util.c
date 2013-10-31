@@ -117,6 +117,7 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar
     g_free (output);
 
     result = (free_double * size_double) / (1024 * 1024);
+    //result = (free_double * size_double) >> 20;
 
     return result;
 }
@@ -522,10 +523,22 @@ _get_ntfs_free (const gchar *path)
     return free;
 }
 
-double 
-get_partition_free (const gchar *path, const gchar *fs)
+gpointer 
+get_partition_free (gpointer data)
 {
     double free = 0;
+
+    struct FsHandler *handler = (struct FsHandler *) data;
+
+    if (handler == NULL) {
+        g_warning ("get partition free:handler NULL\n");
+        return NULL;
+    }
+
+    gchar *path = handler->path;
+    gchar *fs = handler->fs;
+    gchar *part = handler->part;
+    //printf ("path:%s, fs:%s, part:%s\n", path, fs, part);
 
     if (g_strcmp0 (fs, "ext4") == 0) {
         free = _get_ext4_free (path);
@@ -564,7 +577,14 @@ get_partition_free (const gchar *path, const gchar *fs)
         g_warning ("get partition free:not support for fs %s\n", fs);
     }
 
-    return free;
+    js_post_message_simply ("used","{\"part\":\"%s\", \"free\":\"%f\"}", part, free);
+
+    g_free (handler->path);
+    g_free (handler->part);
+    g_free (handler->fs);
+    g_free (handler);
+
+    return NULL;
 }
 
 void 

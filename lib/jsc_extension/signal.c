@@ -23,6 +23,21 @@
 
 static GHashTable* signals = NULL;
 
+typedef struct {
+    JSObjectRef cb;
+    JSValueRef arg;
+} Call;
+
+gboolean _interal_call(Call* call)
+{
+    JSValueRef js_args[1];
+    js_args[0] = call->arg;
+
+    JSObjectCallAsFunction(get_global_context(), call->cb, NULL, 1, js_args, NULL);
+    g_free(call);
+    return FALSE;
+}
+
 void js_post_message(const char* name, JSValueRef json)
 {
     if (signals == NULL) {
@@ -34,11 +49,11 @@ void js_post_message(const char* name, JSValueRef json)
     g_return_if_fail(ctx != NULL);
     JSObjectRef cb = g_hash_table_lookup(signals, name);
 
-    JSValueRef js_args[1];
-    js_args[0] = json;
-
     if (cb != NULL) {
-        JSObjectCallAsFunction(ctx, cb, NULL, 1, js_args, NULL);
+        Call* call = g_new0(Call, 1);
+        call->cb = cb;
+        call->arg = json;
+        g_main_context_invoke(NULL, (GSourceFunc)_interal_call, call);
     } else {
         g_warning("signal %s has not connected!\n", name);
     }
@@ -76,9 +91,10 @@ void dcore_signal_connect(const char* type, JSValueRef value, JSData* js)
     if (signals == NULL) {
         signals = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, unprotect);
     }
-    JSObjectRef cb = JSValueToObject(js->ctx, value, js->exception);
-    if (cb != NULL || !JSObjectIsFunction(js->ctx, cb)) {
-        JSValueProtect(js->ctx, cb);
+    JSContextRef ctx = get_global_context();
+    JSObjectRef cb = JSValueToObject(ctx, value, js->exception);
+    if (cb != NULL || !JSObjectIsFunction(ctx, cb)) {
+        JSValueProtect(ctx, cb);
         g_hash_table_insert(signals, g_strdup(type), (gpointer)value);
         /*g_message("signal connect %s \n", type);*/
     } else {

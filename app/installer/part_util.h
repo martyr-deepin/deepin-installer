@@ -72,7 +72,7 @@ JS_EXPORT_API gboolean installer_get_partition_busy (const gchar *part);
 
 JS_EXPORT_API gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name);
 
-JS_EXPORT_API double installer_get_partition_free (const gchar *part);
+JS_EXPORT_API void installer_get_partition_free (const gchar *part);
 
 JS_EXPORT_API gchar* installer_get_partition_os (const gchar *part);
 

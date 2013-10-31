@@ -48,10 +48,10 @@ gboolean has_atom_property(Display* dsp, Window w, Atom prop);
 #define X_FETCH_16(data, i) *((short*)data + i)
 #define X_FETCH_8(data, i) *((char*)data + i)
 
-void get_atom_value_by_index(gpointer data, gulong n_item, gpointer res, gulong index);
+void get_atom_value_for_index(gpointer data, gulong n_item, gpointer res, gulong index);
 void get_atom_value_for_loop(gpointer data, gulong n_item, gpointer res, gulong start_index);
 
-typedef void* CallbackFunc;
+typedef void (*CallbackFunc)(gpointer, gulong, gpointer, gulong);
 /**
  * For following 2 functions, pass -1 to index, the callback function will be
  * regarded as void (*f)(gpointer data, gulong n_item, gpointer res).

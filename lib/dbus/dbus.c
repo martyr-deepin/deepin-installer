@@ -36,10 +36,10 @@ JSValueRef dbus_sys_object(
         }
         g_assert(sys_con != NULL);
     }
-    JSValueRef value = get_dbus_object(js->ctx, sys_con,
+    JSValueRef value = get_dbus_object(get_global_context(), sys_con,
             bus_name, object_path, interface);
     if (value == NULL) {
-        js_fill_exception(js->ctx, js->exception, "Can't dynamic build this dbus interface)");
+        js_fill_exception(get_global_context(), js->exception, "Can't dynamic build this dbus interface)");
     }
     return value;
 }
@@ -77,10 +77,10 @@ JSValueRef dbus_session_object(
         }
         g_assert(session_con != NULL);
     }
-    JSValueRef value = get_dbus_object(js->ctx, session_con,
+    JSValueRef value = get_dbus_object(get_global_context(), session_con,
             bus_name, object_path, interface);
     if (value == NULL) {
-        js_fill_exception(js->ctx, js->exception, "Can't dynamic build this dbus interface)");
+        js_fill_exception(get_global_context(), js->exception, "Can't dynamic build this dbus interface)");
     }
     return value;
 }

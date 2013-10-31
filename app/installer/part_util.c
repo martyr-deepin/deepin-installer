@@ -87,7 +87,8 @@ void init_parted ()
             const PedDiskType *type;
             long long size = device->sector_size;
             PedSector length = device->length;
-            if (size * length > (long long) 2*1024*1024*1024*1024) {
+            //if (size * length > (long long) 2*1024*1024*1024*1024) {
+            if (size * length > (long long) 2 << 40) {
                 type = ped_disk_type_get ("gpt");
             } else {
                 type = ped_disk_type_get ("msdos");
@@ -158,6 +159,46 @@ void init_parted ()
 
     g_strfreev (items);
     g_free (output);
+
+    GError *error = NULL;
+
+    if (partition_os == NULL) {
+        partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                              (GEqualFunc) g_str_equal, 
+                                              (GDestroyNotify) g_free, 
+                                              (GDestroyNotify) g_free);
+
+        if (g_find_program_in_path ("os-prober") == NULL) {
+            g_warning ("get partition os:os-prober not installed\n");
+            return ;
+        }
+
+        gchar *output = NULL;
+        g_spawn_command_line_sync ("os-prober", &output, NULL, NULL, &error);
+        if (error != NULL) {
+            g_warning ("get partition os:os-prober %s\n", error->message);
+            g_error_free (error);
+        }
+        error = NULL;
+
+        gchar **items = g_strsplit (output, "\n", -1);
+        int i, j;
+        for (i = 0; i < g_strv_length (items); i++) {
+            gchar *item = g_strdup (items[i]);
+            gchar **os = g_strsplit (item, ":", -1);
+
+            if (g_strv_length (os) == 4) {
+                //g_printf ("get partition os:insert key %s value %s\n", os[0], os[2]);
+                g_hash_table_insert (partition_os, g_strdup (os[0]), g_strdup (os[2]));
+            }
+
+            g_strfreev (os);
+            g_free (item);
+        }
+
+        g_strfreev (items);
+        g_free (output);
+    }
 }
 
 JS_EXPORT_API 
@@ -440,7 +481,7 @@ gchar* installer_get_partition_type (const gchar *part)
                 type = g_strdup ("protected");
                 break;
             default:
-                g_warning("get partition type:invalid type %d\n", part_type);
+                //g_warning("get partition type:invalid type %d\n", part_type);
                 type = g_strdup ("protected");
                 break;
         }
@@ -773,11 +814,9 @@ gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name
     return result;
 }
 
-static gint
-do_get_partition_free (gpointer data)
+JS_EXPORT_API 
+void installer_get_partition_free (const gchar *part)
 {
-    gint result = 0;
-
     PedPartition *pedpartition = NULL;
     gchar *part = (gchar *) data;
 
@@ -788,7 +827,7 @@ do_get_partition_free (gpointer data)
 
         if (part_type != PED_PARTITION_NORMAL && part_type != PED_PARTITION_LOGICAL && part_type != PED_PARTITION_EXTENDED) {
             g_printf ("get partition free:no meaning for none used\n");
-            return result;
+            return ;
         }
 
         const gchar *fs = NULL;
@@ -800,13 +839,19 @@ do_get_partition_free (gpointer data)
         ped_geometry_destroy (geom);
         if (fs == NULL) {
             g_warning ("get partition free:get partition file system failed\n");
-            return result;
+            return ;
         }
 
         gchar *path = ped_partition_get_path (pedpartition);
 
         if (path != NULL) {
-            result = get_partition_free (path, fs);
+            struct FsHandler *handler = g_new0 (struct FsHandler, 1);
+            handler->path = g_strdup (path);
+            handler->part = g_strdup (part);
+            handler->fs = g_strdup (fs);
+            GThread *thread = g_thread_new ("get_partition_free", 
+                                            (GThreadFunc) get_partition_free, 
+                                            (gpointer) handler);
 
         } else {
             g_warning ("get pedpartition free: get %s path failed\n", part);
@@ -816,8 +861,6 @@ do_get_partition_free (gpointer data)
     } else {
         g_warning ("get partition free:find pedpartition %s failed\n", part);
     }
-
-    return result;
 }
 
 JS_EXPORT_API 
@@ -835,7 +878,6 @@ JS_EXPORT_API
 gchar* installer_get_partition_os (const gchar *part)
 {
     gchar* result = NULL;
-
     gchar *path = NULL;
     PedPartition *pedpartition = NULL;
 

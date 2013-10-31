@@ -226,6 +226,8 @@ char* get_data_uri_by_path(const char* path)
         g_error_free(error);
         return NULL;
     }
-    return get_data_uri_by_pixbuf(pixbuf);
+    char* c = get_data_uri_by_pixbuf(pixbuf);
+    g_object_unref(pixbuf);
+    return c;
 
 }
