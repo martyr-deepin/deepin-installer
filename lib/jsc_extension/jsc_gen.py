@@ -257,13 +257,14 @@ extern JSValueRef %(name)s(JSContextRef context,
 class Function:
     temp = """
 extern %(raw_return)s %(module_name)s_%(name)s(%(raw_params)s);
-static JSValueRef __%(name)s__ (JSContextRef context,
+static JSValueRef __%(name)s__ (JSContextRef noused_context,
                             JSObjectRef function,
                             JSObjectRef thisObject,
                             size_t argumentCount,
                             const JSValueRef arguments[],
                             JSValueRef *exception)
 {
+    JSContextRef context = get_global_context();
     gboolean _has_fatal_error = FALSE;
     JSValueRef r = NULL;
     if (argumentCount != %(p_num)d) {
@@ -338,7 +339,6 @@ static JSValueRef __%(name)s__ (JSContextRef ctx, JSObjectRef f, JSObjectRef thi
 
     temp_return = """
         JSData* data = g_new0(JSData, 1);
-        data->ctx = context;
         data->exception = exception;
         data->webview = get_global_webview();
 

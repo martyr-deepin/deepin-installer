@@ -285,6 +285,9 @@ class PartTableItem extends Widget
         @mount = create_element("div", "", @element)
         @fill_mount()
 
+    update_part_used: ->
+        @used.innerText = v_part_info[@id]["used"]
+
     product_disk_item: ->
         @device = create_element("div","", @element)
         @device.innerText = v_disk_info[@id]["path"]

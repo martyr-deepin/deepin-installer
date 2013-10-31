@@ -66,6 +66,9 @@ static void
 free_passwd_handler (struct PasswdHandler *handler)
 {
     GError *error = NULL;
+
+    g_free (handler->username);
+    g_free (handler->password);
     
     if (handler->child_watch_id != 0) {
         g_source_remove (handler->child_watch_id);

@@ -133,13 +133,26 @@ gboolean js_to_dbus(JSContextRef ctx, const JSValueRef jsvalue,
                 }
             }
         case DBUS_TYPE_DOUBLE:
-            CASE_NUMBER
             {
                 if (!JSValueIsNumber(ctx, jsvalue)) {
                     js_fill_exception(ctx, exception, "jsvalue is not an number!");
                     return FALSE;
                 }
                 double value = JSValueToNumber(ctx, jsvalue, NULL);
+                if (!dbus_message_iter_append_basic(iter, type, (void*)&value)) {
+                    g_warning("signatuer:%c error!", type);
+                    return FALSE;
+                } else {
+                    return TRUE;
+                }
+            }
+            CASE_NUMBER
+            {
+                if (!JSValueIsNumber(ctx, jsvalue)) {
+                    js_fill_exception(ctx, exception, "jsvalue is not an number!");
+                    return FALSE;
+                }
+                dbus_uint64_t value = JSValueToNumber(ctx, jsvalue, NULL);
                 if (!dbus_message_iter_append_basic(iter, type, (void*)&value)) {
                     g_warning("signatuer:%c error!", type);
                     return FALSE;
@@ -256,11 +269,25 @@ gboolean js_to_dbus(JSContextRef ctx, const JSValueRef jsvalue,
                             break;
                         }
                         case DBUS_TYPE_DOUBLE:
-                        CASE_NUMBER
                         {
                             //TODO detect illegal number format
                             JSValueRef excp;
                             double value = JSValueToNumber(ctx,
+                                    JSValueMakeString(ctx, key_str), &excp);
+
+                            if (excp != NULL) {
+                                js_fill_exception(ctx, exception, "dict_entry's key must be an number to match the signature!");
+                                return FALSE;
+                            }
+
+                            dbus_message_iter_append_basic(&dict_iter, key_type,
+                                    (void*)&value);
+                            break;
+                        }
+                        CASE_NUMBER
+                        {
+                            JSValueRef excp;
+                            dbus_uint64_t value = JSValueToNumber(ctx,
                                     JSValueMakeString(ctx, key_str), &excp);
 
                             if (excp != NULL) {

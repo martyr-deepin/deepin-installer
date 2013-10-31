@@ -143,10 +143,10 @@ dnd_is_deepin_item = (e)->
 dnd_is_file = (e)->
     return e.dataTransfer.getData("text/uri-list").length != 0
 
-ajax = (url,callback,callback_error) ->
+ajax = (url,sync=true,callback,callback_error) ->
     xhr = new XMLHttpRequest()
 
-    xhr.open("GET", url, true)
+    xhr.open("GET", url, sync)
 
     xhr.onload = ->
         # echo "callback： #{typeof callback}"
@@ -171,3 +171,8 @@ get_path_name = (path)->
 remove_element = (obj)->
     _parentElement = obj?.parentNode
     _parentElement?.removeChild(obj)
+
+sortNumber = (a , b) ->
+    return a - b
+array_sort_min2max = (arr) ->
+    arr.sort(sortNumber)

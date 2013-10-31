@@ -28,13 +28,19 @@ struct SpeedHandler {
     const gchar *uuid;
 };
 
+struct FsHandler {
+    gchar *path;
+    gchar *fs;
+    gchar *part;
+};
+
 gchar *get_matched_string (const gchar *target, const gchar *regex_string);
 
 gchar *get_partition_mount_point (const gchar *path);
 
 gchar *get_mounted_partition_used (const gchar *path);
 
-double get_partition_free (const gchar *path, const gchar *fs);
+gpointer get_partition_free (gpointer data);
 
 void set_partition_filesystem (const gchar *path, const gchar *fs);
 

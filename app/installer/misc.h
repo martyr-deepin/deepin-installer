@@ -32,8 +32,8 @@
 #include "jsextension.h"
 
 struct PasswdHandler {
-    const gchar *username;
-    const gchar *password;
+    gchar *username;
+    gchar *password;
     GPid pid;
     GIOChannel *in_channel;
     GIOChannel *out_channel;

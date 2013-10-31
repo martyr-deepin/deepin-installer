@@ -17,6 +17,12 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+DCore.signal_connect("used", (msg) ->
+    echo msg
+    v_part_info[msg.part]["used"] = msg.free
+    Widget.look_up(msg.part)?.update_part_used()
+)
+
 #get_random_color = ->
 #    return '#'+(Math.random()*0xffffff<<0).toString(16)
 get_random_color = ->
@@ -300,6 +306,11 @@ init_v_part_info = ->
         for part in v_disk_info[disk]["partitions"]
             v_part_info[part] = {}
             v_part_info[part]["disk"] = disk
+            try
+                v_part_info[part]["used"] = "unknown"
+                DCore.Installer.get_partition_free (part)
+            catch error
+                echo error
             v_part_info[part]["type"] = DCore.Installer.get_partition_type(part)
             #please fix the return null string
             #v_part_info[part]["name"] = DCore.Installer.get_partition_name(part)
@@ -312,18 +323,13 @@ init_v_part_info = ->
                 v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
             else
                 v_part_info[part]["fs"] = ""
-            try
-                v_part_info[part]["mp"] = DCore.Installer.get_partition_mp(part)
-            catch error
-                v_part_info[part]["mp"] = "unused"
+            #try
+            #    v_part_info[part]["mp"] = DCore.Installer.get_partition_mp(part)
+            #catch error
+            #    v_part_info[part]["mp"] = "unused"
             v_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
             v_part_info[part]["color"] = get_random_color() 
             v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
-            try
-                #v_part_info[part]["used"] = Math.floor(DCore.Installer.get_partition_free(part))
-                v_part_info[part]["used"] = "80G"
-            catch error
-                v_part_info[part]["used"] = "unknown"
             v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
             v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
             v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm")

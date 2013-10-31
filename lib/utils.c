@@ -20,6 +20,8 @@
  **/
 #include "utils.h"
 #include "jsextension.h"
+#include "dentry/entry.h"
+#include "dcore.h"
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <sys/stat.h>
@@ -31,9 +33,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-gboolean is_application_running(const char* path)
+int binding(int server_sockfd, const char* path)
 {
-    int server_sockfd;
     socklen_t server_len;
     struct sockaddr_un server_addr;
 
@@ -42,13 +43,39 @@ gboolean is_application_running(const char* path)
     server_addr.sun_family = AF_UNIX;
     server_len = 1 + path_size + offsetof(struct sockaddr_un, sun_path);
 
-    server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
+    const int reuse = 1;
+    socklen_t val_len = sizeof reuse;
+    setsockopt(server_sockfd, SOL_SOCKET, SO_REUSEADDR, (const void*)&reuse, val_len);
 
-    if (0 == bind(server_sockfd, (struct sockaddr *)&server_addr, server_len)) {
+    // force quit
+    /* const struct linger linger_val = {1, 0}; */
+    /* val_len = sizeof linger_val; */
+    /* setsockopt(server_sockfd, SOL_SOCKET, SO_LINGER, (const void*)&linger_val, val_len); */
+
+    return bind(server_sockfd, (struct sockaddr *)&server_addr, server_len);
+}
+
+
+gboolean is_application_running(const char* path)
+{
+    int server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (0 == binding(server_sockfd, path)) {
+        close(server_sockfd);
         return FALSE;
     } else {
         return TRUE;
     }
+}
+
+void singleton(const char* name)
+{
+    static int sd = 0;
+    if (sd != 0)
+        return;
+
+    sd = socket(AF_UNIX, SOCK_STREAM, 0);
+    while (0 != binding(sd, name))
+        g_debug("binding failed");
 }
 
 char* shell_escape(const char* source)
@@ -171,7 +198,7 @@ char* get_name_by_pid(int pid)
     if (fd == -1) {
         return NULL;
     } else {
-        read(fd, content, LEN);
+        int dump = read(fd, content, LEN);
         close(fd);
     }
     for (int i=0; i<LEN; i++) {
@@ -191,6 +218,7 @@ GKeyFile* load_app_config(const char* name)
     char* path = g_build_filename(g_get_user_config_dir(), name, NULL);
     GKeyFile* key = g_key_file_new();
     g_key_file_load_from_file(key, path, G_KEY_FILE_NONE, NULL);
+    g_free(path);
     /* no need to test file exitstly */
     return key;
 }
@@ -316,8 +344,85 @@ char* to_lower_inplace(char* str)
     return str;
 }
 
+gboolean file_filter(const char *file_name)
+{
+    if((file_name[0] == '.' && !g_str_has_prefix(file_name, DEEPIN_RICH_DIR)) || g_str_has_suffix(file_name, "~"))
+        return TRUE;
+    else
+        return FALSE;
+}
+
 char* get_desktop_file_basename(GDesktopAppInfo* file)
 {
     const char* filename = g_desktop_app_info_get_filename(file);
     return g_path_get_basename(filename);
 }
+
+GDesktopAppInfo* guess_desktop_file(char const* app_id)
+{
+    char* basename = g_strconcat(app_id, ".desktop", NULL);
+    GDesktopAppInfo* desktop_file = g_desktop_app_info_new(basename);
+    g_free(basename);
+    return desktop_file;
+}
+
+
+char* get_basename_without_extend_name(char const* path)
+{
+    g_assert(path!= NULL);
+    char* basename = g_path_get_basename(path);
+    char* ext_sep = strrchr(basename, '.');
+    if (ext_sep != NULL) {
+        char* basename_without_ext = g_strndup(basename, ext_sep - basename);
+        g_free(basename);
+        return basename_without_ext;
+    }
+
+    return basename;
+}
+
+
+gboolean is_deepin_icon(char const* icon_path)
+{
+    return g_str_has_prefix(icon_path, "/usr/share/icons/Deepin/");
+}
+
+
+static char* _check(char const* app_id)
+{
+    char* icon = NULL;
+    char* temp_icon_name_holder = dcore_get_theme_icon(app_id, 48);
+
+    if (temp_icon_name_holder != NULL) {
+        if (!g_str_has_prefix(temp_icon_name_holder, "data:image"))
+            icon = temp_icon_name_holder;
+        else
+            g_free(temp_icon_name_holder);
+    }
+
+    return icon;
+}
+
+
+char* check_absolute_path_icon(char const* app_id, char const* icon_path)
+{
+    char* icon = NULL;
+    if ((icon = _check(app_id)) == NULL) {
+        char* basename = get_basename_without_extend_name(icon_path);
+        if (basename != NULL) {
+            if (g_strcmp0(app_id, basename) == 0
+                || (icon = _check(basename)) == NULL)
+                icon = g_strdup(icon_path);
+            g_free(basename);
+        }
+    }
+
+    return icon;
+}
+
+
+gboolean is_chrome_app(char const* name)
+{
+    return g_str_has_prefix(name, "chrome-");
+}
+

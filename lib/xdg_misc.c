@@ -71,20 +71,24 @@ char* icon_name_to_path(const char* name, int size)
         return g_strdup(name);
     g_return_val_if_fail(name != NULL, NULL);
 
+    int pic_name_len = strlen(name);
     char* ext = strchr(name, '.');
     if (ext != NULL) {
         if (g_ascii_strcasecmp(ext+1, "png") == 0 || g_ascii_strcasecmp(ext+1, "svg") == 0 || g_ascii_strcasecmp(ext+1, "jpg") == 0) {
-            *ext = '\0'; //FIXME: Is it ok to changed it's value? The ext is an part of an gtk_icon_info's path field's allocated memroy.
+            pic_name_len = ext - name;
             g_debug("desktop's Icon name should an absoulte path or an basename without extension");
         }
     }
+
+    char* pic_name = g_strndup(name, pic_name_len);
     GtkIconTheme* them = gtk_icon_theme_get_default(); //do not ref or unref it
 
     // This info must not unref, owned by gtk !!!!!!!!!!!!!!!!!!!!!
-    GtkIconInfo* info = gtk_icon_theme_lookup_icon(them, name, size, GTK_ICON_LOOKUP_GENERIC_FALLBACK);
+    GtkIconInfo* info = gtk_icon_theme_lookup_icon(them, pic_name, size, GTK_ICON_LOOKUP_GENERIC_FALLBACK);
+    g_free(pic_name);
     if (info) {
         char* path = g_strdup(gtk_icon_info_get_filename(info));
-        /*g_object_unref(info);*/
+        g_object_unref(info);
         return path;
     } else {
         return NULL;
@@ -116,19 +120,6 @@ void set_default_theme(const char* theme)
 {
     GtkSettings* setting = gtk_settings_get_default();
     g_object_set(setting, "gtk-icon-theme-name", theme, NULL);
-}
-
-char* get_desktop_dir(gboolean update)
-{
-    static char* dir = NULL;
-    if (update || dir == NULL) {
-        if (dir != NULL)
-            g_free(dir);
-        const char* cmd = "sh -c '. ~/.config/user-dirs.dirs && echo $XDG_DESKTOP_DIR'";
-        g_spawn_command_line_sync(cmd, &dir, NULL, NULL, NULL);
-        g_strchomp(dir);
-    }
-    return g_strdup(dir);
 }
 
 gboolean change_desktop_entry_name(const char* path, const char* name)

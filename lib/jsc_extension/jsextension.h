@@ -25,7 +25,6 @@
 #include <glib.h>
 
 typedef struct JSData {
-    JSContextRef ctx;
     JSValueRef* exception;
     void* webview;
 } JSData;
@@ -34,6 +33,8 @@ typedef struct _ArrayContainer {
     void* data;
     size_t num;
 } ArrayContainer;
+
+
 
 void init_js_extension(JSGlobalContextRef context, void* webview);
 void destroy_js_extension();

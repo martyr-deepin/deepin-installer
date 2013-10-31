@@ -621,13 +621,10 @@ gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name
     return result;
 }
 
-static double
-do_get_partition_free (gpointer data)
+JS_EXPORT_API 
+void installer_get_partition_free (const gchar *part)
 {
-    double result = 0;
     PedPartition *pedpartition = NULL;
-
-    gchar *part = (gchar *) data;
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
 
     if (pedpartition != NULL) {
@@ -635,7 +632,7 @@ do_get_partition_free (gpointer data)
 
         if (part_type != PED_PARTITION_NORMAL && part_type != PED_PARTITION_LOGICAL && part_type != PED_PARTITION_EXTENDED) {
             g_printf ("get partition free:no meaning for none used\n");
-            return result;
+            return ;
         }
 
         const gchar *fs = NULL;
@@ -647,13 +644,19 @@ do_get_partition_free (gpointer data)
         ped_geometry_destroy (geom);
         if (fs == NULL) {
             g_warning ("get partition free:get partition file system failed\n");
-            return result;
+            return ;
         }
 
         gchar *path = ped_partition_get_path (pedpartition);
 
         if (path != NULL) {
-            result = get_partition_free (path, fs);
+            struct FsHandler *handler = g_new0 (struct FsHandler, 1);
+            handler->path = g_strdup (path);
+            handler->part = g_strdup (part);
+            handler->fs = g_strdup (fs);
+            GThread *thread = g_thread_new ("get_partition_free", 
+                                            (GThreadFunc) get_partition_free, 
+                                            (gpointer) handler);
 
         } else {
             g_warning ("get pedpartition free: get %s path failed\n", part);
@@ -663,19 +666,6 @@ do_get_partition_free (gpointer data)
     } else {
         g_warning ("get partition free:find pedpartition %s failed\n", part);
     }
-
-    return result;
-}
-
-JS_EXPORT_API 
-double installer_get_partition_free (const gchar *part)
-{
-    double result = 0;
-
-    GThread *thread = g_thread_new ("get_partition_free", (GThreadFunc) do_get_partition_free, (gpointer) part);
-    result = (double) (GPOINTER_TO_INT(g_thread_join (thread)));
-
-    return result;
 }
 
 JS_EXPORT_API 
