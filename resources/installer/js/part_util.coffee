@@ -18,7 +18,6 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 DCore.signal_connect("used", (msg) ->
-    echo msg
     v_part_info[msg.part]["used"] = msg.free
     Widget.look_up(msg.part)?.update_part_used()
 )

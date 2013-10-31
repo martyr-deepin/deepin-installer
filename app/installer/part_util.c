@@ -160,8 +160,6 @@ void init_parted ()
     g_strfreev (items);
     g_free (output);
 
-    GError *error = NULL;
-
     if (partition_os == NULL) {
         partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
                                               (GEqualFunc) g_str_equal, 
@@ -818,7 +816,6 @@ JS_EXPORT_API
 void installer_get_partition_free (const gchar *part)
 {
     PedPartition *pedpartition = NULL;
-    gchar *part = (gchar *) data;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
 
@@ -861,17 +858,6 @@ void installer_get_partition_free (const gchar *part)
     } else {
         g_warning ("get partition free:find pedpartition %s failed\n", part);
     }
-}
-
-JS_EXPORT_API 
-double installer_get_partition_free (const gchar *part)
-{
-    double result = 0;
-
-    GThread *thread = g_thread_new ("get_partition_free", (GThreadFunc) do_get_partition_free, (gpointer) part);
-    result = (double) (GPOINTER_TO_INT( g_thread_join (thread)));
-
-    return result;
 }
 
 JS_EXPORT_API 
