@@ -29,6 +29,10 @@ class Welcome extends Page
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("span", "KeyboardSet", @title_set)
         @keyboard_set.innerText = "键盘"
+        @init_keyboard()
+        @keyboard_set.addEventListener("click", (e) =>
+            @show_keyboard()
+        )
         @timezone_set = create_element("span", "TimezoneSet", @title_set)
         @timezone_set.innerText = "时区"
 
@@ -173,6 +177,27 @@ class Welcome extends Page
         if @confirm_input.value != @password_input.value
             return false
         return true
+
+    init_keyboard: ->
+        @keyboard = create_element("div", "KeyBoard", @element)
+        @keyboard_current = create_element("div", "KeyBoardCurrent", @keyboard)
+        @keyboard_current.innerText = "Asia/Shanghai"
+        @keyboard_list = create_element("div", "KeyBoardList", @keyboard)
+        for zone in DCore.Installer.get_timezone_list()
+            keyboard_opt = create_element("div", "KeyboardItem", @keyboard_list)
+            keyboard_opt.innerText = zone
+            keyboard_opt.addEventListener("click", (e) =>
+                @keyboard_current.innerText = keyboard_opt.innerText
+            )
+        @keyboard.addEventListener("blur", (e) =>
+            @hide_keyboard()
+        )
+
+    show_keyboard: ->
+        echo "show keyboard"
+
+    hide_keyboard: ->
+        echo "hide keyboard"
 
     fill_keyboard: ->
         echo "fill keyboard"

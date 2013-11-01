@@ -105,6 +105,38 @@
     font-size:14px;
 }
 
+.Keyboard {
+    position:fixed;
+    left:430px;
+    top:90px;
+    bottom:20px;
+    width:312px;
+    height:433px;
+}
+
+.KeyboardCurrent {
+    background:#D0D0D0;
+    padding-left:16px;
+    height:33px;
+    line-height:33px;
+}
+
+.KeyboardList{
+    background:#FFFFFF;
+    margin:0px;
+    overflow-y:scroll;
+}
+
+.KeyboardItem {
+    height:23px;
+    line-height:23px;
+    padding-left:16px;
+}
+
+.KeyboradItem:hover {
+    background:#2FC1FF;
+}
+
 .Welcome .Start {
     position:fixed;
     left:323px;
