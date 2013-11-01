@@ -25,9 +25,10 @@ pc.add_page(welcome_page)
 
 part_page = new Part("part")
 welcome_page.start.addEventListener("click", (e) =>
-    pc.add_page(part_page)
-    pc.remove_page(welcome_page)
-    __selected_item?.focus()
+    if welcome_page.prepare_click_start()
+        pc.add_page(part_page)
+        pc.remove_page(welcome_page)
+        __selected_item?.focus()
 )
 
 progress_page = new Progress("progress")

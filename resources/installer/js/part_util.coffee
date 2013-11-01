@@ -98,7 +98,6 @@ _sort_part_op =  (part_a, part_b) ->
                 return -1
         else
             return -1
-
     else if m_part_info[part_a]["op"] == "add"
         if m_part_info[part_a]["type"] == "extended"
             return -1
@@ -292,10 +291,11 @@ init_v_disk_info = ->
         v_disk_info[disk]["path"] = DCore.Installer.get_disk_path(disk)
         v_disk_info[disk]["partitions"] = []
         for part in DCore.Installer.get_disk_partitions(disk)
-            if DCore.Installer.get_partition_type(part) == "freespace"
+            type = DCore.Installer.get_partition_type(part)
+            if type == "freespace"
                 if DCore.Installer.get_partition_length(part) > 4096
                     v_disk_info[disk]["partitions"].push(part)
-            else if DCore.Installer.get_partition_type(part) in ["normal", "extended", "logical"]
+            else if type in ["normal", "extended", "logical"]
                 if DCore.Installer.get_partition_path(part).indexOf("/dev/mapper") == -1
                     v_disk_info[disk]["partitions"].push(part)
     
@@ -331,6 +331,7 @@ init_v_part_info = ->
             v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
             v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
             v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
+            #v_part_info[part]["label"] = "linux"
             v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm")
 
 _sort_part_geom = (part_a, part_b) ->

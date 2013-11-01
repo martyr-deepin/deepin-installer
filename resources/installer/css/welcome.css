@@ -30,21 +30,16 @@
     position:fixed;
     left:239px;
     right:239px;
-    top:164px;
+    top:184px;
     bottom:156px;
     width:272px;
 }
 
 .WelcomeFormItem {
-    padding:0 0 22px 0;
+    padding:0;
     width:272px;
-    height:38px;
-}
-
-.WelcomeFormItem > div {
-    text-align:left;
-    max-width:272px;
-    height:14px;
+    height:80px;
+    margin-top:-20px;
 }
 
 .WelcomeFormItem input {
@@ -56,26 +51,58 @@
     border-radius:3px;
 }
 
-.WelcomeFormItem input:focus {
-    border:1px solid #1FC5FE;
+.WelcomeFormItem input:hover {
+    border:1px solid #1FC1FA;
     border-radius:3px;
-    border-style:solid;
 }
 
-.Username {
+#WelcomeUsername {
     background: white url("../images/username.png") no-repeat;
 }
 
-.Password {
+#WelcomePassword {
     background: white url("../images/password.png") no-repeat;
 }
 
-.Hostname {
+#WelcomeHostname {
     background: white url("../images/hostname.png") no-repeat;
 }
 
-.ConfirmPassword {
+#WelcomeConfirm {
     background: white url("../images/confirmpwd.png") no-repeat;
+}
+
+.WelcomeTip {
+    display:none;
+}
+
+.WelcomeTipShow {
+    position:relative;
+    left:50px;
+    top:10px;
+    width:120px;
+    height:26px;
+    background:rgba(40,40,40,0.8);
+    color:#D1D1D1;
+    border:1px solid #000;
+    border-radius:5px;
+}
+
+.WelcomeAngle {
+    position:absolute; 
+    border:10px solid transparent; 
+    border-bottom-color:rgba(40,40,40,0.8);
+    left:15px; 
+    top:-20px; 
+}
+
+.WelcomeError {
+    text-align:center;
+    height:14px;
+    line-height:14px;
+    display:block;
+    padding:4px 10px;
+    font-size:14px;
 }
 
 .Welcome .Start {
@@ -85,9 +112,31 @@
     top:448px;
     bottom:63px;
     background:#222527;
-    color:#848383;
     height:32px;
     line-height:32px;
     text-align:center;
     border-radius:5px;
+    color:#ffffff;
+}
+
+.Welcome .Start:hover {
+    color:#00bdff;
+}
+
+.Welcome .StartInActive:hover {
+    color:#00bdff;
+}
+
+.Welcome .StartInActive {
+    position:fixed;
+    left:323px;
+    right:325px;
+    top:448px;
+    bottom:63px;
+    background:#222527;
+    height:32px;
+    line-height:32px;
+    text-align:center;
+    border-radius:5px;
+    color:#848383;
 }

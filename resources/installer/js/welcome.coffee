@@ -37,58 +37,69 @@ class Welcome extends Page
         @username = create_element("div", "WelcomeFormItem", @form)
         @username_txt = create_element("div", "", @username)
         @username_txt.innerText = "用户名 :"
-        @username_input = create_element("input", "Username", @username)
+        @username_input = create_element("input", "", @username)
+        @username_input.setAttribute("id", "WelcomeUsername")
         @username_input.setAttribute("placeholder", "2-14个字符，英文，数字，中文")
+        @username_tip = create_element("div", "WelcomeTip", @username)
+        @username_angle = create_element("span", "WelcomeAngle", @username_tip)
+        @username_error = create_element("span", "WelcomeError", @username_tip)
+        @username_error.innerText = "用户名不合法"
+        @username_input.addEventListener("focus", (e) =>
+            @username_tip.setAttribute("class","WelcomeTip")
+        )
         @username_input.addEventListener("blur", (e) =>
-            echo "username blur"
-            if @is_username_valid()
-                echo "valid"
-                #@username_info.innerText = ""
-            else
-                echo "invalid"
-                #@username_info.innerText = "请输入合法的用户名"
+            @check_username()
         )
 
         @hostname = create_element("div", "WelcomeFormItem", @form)
         @hostname_txt = create_element("div","", @hostname) 
         @hostname_txt.innerText = "计算机名 :"
-        @hostname_input = create_element("input", "Hostname", @hostname)
+        @hostname_input = create_element("input", "", @hostname)
+        @hostname_input.setAttribute("id", "WelcomeHostname")
         @hostname_input.setAttribute("placeholder", "请输入计算机名")
+        @hostname_tip = create_element("div", "WelcomeTip", @hostname)
+        @hostname_angle = create_element("span", "WelcomeAngle", @hostname_tip)
+        @hostname_error = create_element("span", "WelcomeError", @hostname_tip)
+        @hostname_error.innerText = "计算机名不合法"
+        @hostname_input.addEventListener("focus", (e) =>
+            @hostname_tip.setAttribute("class","WelcomeTip")
+        )
         @hostname_input.addEventListener("blur", (e) =>
-            if @is_hostname_valid()
-                echo "valid"
-                #@hostname_info.innerText = ""
-            else
-                echo "invalid"
-                #@hostname_info.innerText = "请输入合法的计算机名"
+            @check_hostname()
         )
         
         @password = create_element("div", "WelcomeFormItem", @form)
         @password_txt = create_element("div", "", @password)
         @password_txt.innerText = "登录密码 :"
-        @password_input = create_element("input", "Password", @password)
+        @password_input = create_element("input", "", @password)
+        @password_input.setAttribute("id", "WelcomePassword")
         @password_input.setAttribute("placeholder", "请输入密码")
+        @password_tip = create_element("div", "WelcomeTip", @password)
+        @password_angle = create_element("span", "WelcomeAngle", @password_tip)
+        @password_error = create_element("span", "WelcomeError", @password_tip)
+        @password_error.innerText = "密码不合法"
+        @password_input.addEventListener("focus", (e) =>
+            @password_tip.setAttribute("class","WelcomeTip")
+        )
         @password_input.addEventListener("blur", (e) =>
-            if @is_password_valid()
-                echo "valid"
-                #@password_info.innerText = ""
-            else
-                echo "invalid"
-                #@password_info.innerText = "请输入合法的密码"
+            @check_password()
         )
         
         @confirm = create_element("div", "WelcomeFormItem", @form)
         @confirm_txt = create_element("div", "", @confirm)
         @confirm_txt.innerText = "确认密码 :"
-        @confirm_input = create_element("input", "ConfirmPassword", @confirm)
+        @confirm_input = create_element("input", "", @confirm)
+        @confirm_input.setAttribute("id", "WelcomeConfirm")
         @confirm_input.setAttribute("placeholder", "请输入确认密码")
+        @confirm_tip = create_element("div", "WelcomeTip", @confirm)
+        @confirm_angle = create_element("span", "WelcomeAngle", @confirm_tip)
+        @confirm_error = create_element("span", "WelcomeError", @confirm_tip)
+        @confirm_error.innerText = "确认密码不合法"
+        @confirm_input.addEventListener("focus", (e) =>
+            @confirm_tip.setAttribute("class","WelcomeTip")
+        )
         @confirm_input.addEventListener("blur", (e) =>
-            if @is_confirm_password_valid()
-                echo "valid"
-                #@confirm_info.innerText = ""
-            else
-                echo "invalid"
-                #@confirm_info.innerText = "请输入合法的确认密码"
+            @check_confirm()
         )
 
         #@keyboard = create_element("p", "Keyboard", @element)
@@ -105,8 +116,15 @@ class Welcome extends Page
         #@timezone_info = create_element("span", "Info", @timezone)
         #@fill_timezone()
 
-        @start = create_element("div", "Start", @element)
+        @start = create_element("div", "StartInActive", @element)
         @start.innerText = "开始安装"
+
+    check_username: ->
+        if @is_username_valid()
+            @username_tip.setAttribute("class","WelcomeTip")
+        else
+            @username_tip.setAttribute("class","WelcomeTipShow")
+        @check_start_ready()
 
     is_username_valid: ->
         if not @username_input.value? or @username_input.value.length == 0
@@ -118,15 +136,36 @@ class Welcome extends Page
                 return false
         return true
 
+    check_hostname: ->
+        if @is_hostname_valid()
+            @hostname_tip.setAttribute("class","WelcomeTip")
+        else
+            @hostname_tip.setAttribute("class","WelcomeTipShow")
+        @check_start_ready()
+
     is_hostname_valid: ->
         if not @hostname_input.value? or @hostname_input.value.length == 0
             return false
         return true
 
+    check_password: ->
+        if @is_password_valid()
+            @password_tip.setAttribute("class","WelcomeTip")
+        else
+            @password_tip.setAttribute("class","WelcomeTipShow")
+        @check_start_ready()
+
     is_password_valid: ->
         if not @password_input.value? or @password_input.value.length == 0
             return false
         return true
+
+    check_confirm: ->
+        if @is_confirm_password_valid()
+            @confirm_tip.setAttribute("class","WelcomeTip")
+        else
+            @confirm_tip.setAttribute("class","WelcomeTipShow")
+        @check_start_ready()
 
     is_confirm_password_valid: ->
         if not @confirm_input.value?  or @confirm_input.value.length == 0
@@ -145,3 +184,20 @@ class Welcome extends Page
             zone_opt.setAttribute("value", zone)
             zone_opt.innerText = zone
 
+    check_start_ready: ->
+        if @is_username_valid() and @is_password_valid() and @is_hostname_valid() and @is_confirm_password_valid()
+            @start.setAttribute("class", "Start")
+            return true
+        else
+            @start.setAttribute("class", "StartInActive")
+            return false
+
+    prepare_click_start: ->
+        if @check_start_ready()
+            return true
+        else
+            @check_username()
+            @check_hostname()
+            @check_password()
+            @check_confirm()
+            return false

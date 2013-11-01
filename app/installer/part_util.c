@@ -159,44 +159,6 @@ void init_parted ()
 
     g_strfreev (items);
     g_free (output);
-
-    if (partition_os == NULL) {
-        partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                              (GEqualFunc) g_str_equal, 
-                                              (GDestroyNotify) g_free, 
-                                              (GDestroyNotify) g_free);
-
-        if (g_find_program_in_path ("os-prober") == NULL) {
-            g_warning ("get partition os:os-prober not installed\n");
-            return ;
-        }
-
-        gchar *output = NULL;
-        g_spawn_command_line_sync ("os-prober", &output, NULL, NULL, &error);
-        if (error != NULL) {
-            g_warning ("get partition os:os-prober %s\n", error->message);
-            g_error_free (error);
-        }
-        error = NULL;
-
-        gchar **items = g_strsplit (output, "\n", -1);
-        int i, j;
-        for (i = 0; i < g_strv_length (items); i++) {
-            gchar *item = g_strdup (items[i]);
-            gchar **os = g_strsplit (item, ":", -1);
-
-            if (g_strv_length (os) == 4) {
-                //g_printf ("get partition os:insert key %s value %s\n", os[0], os[2]);
-                g_hash_table_insert (partition_os, g_strdup (os[0]), g_strdup (os[2]));
-            }
-
-            g_strfreev (os);
-            g_free (item);
-        }
-
-        g_strfreev (items);
-        g_free (output);
-    }
 }
 
 JS_EXPORT_API 
@@ -216,28 +178,6 @@ JSObjectRef installer_list_disks()
     return array;
 }
 
-static gchar* 
-do_get_disk_path (gpointer data)
-{
-    gchar *result = NULL;
-
-    PedDisk *peddisk = NULL;
-    gchar *disk = (gchar *) data;
-
-    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
-    if (peddisk != NULL) {
-        PedDevice *device = peddisk->dev;
-        g_assert(device != NULL);
-
-        result = g_strdup (device->path);
-
-    } else {
-        g_warning ("get disk path:find peddisk by %s failed\n", disk);
-    }
-
-    return result;
-}
-
 JS_EXPORT_API
 gchar *installer_get_disk_path (const gchar *disk)
 {
@@ -254,28 +194,6 @@ gchar *installer_get_disk_path (const gchar *disk)
 
     } else {
         g_warning ("get disk path:find peddisk by %s failed\n", disk);
-    }
-
-    return result;
-}
-
-static gchar*
-do_get_disk_model (gpointer data)
-{
-    gchar *result = NULL;
-
-    PedDisk *peddisk = NULL;
-    gchar *disk = (gchar *) data;
-
-    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
-    if (peddisk != NULL) {
-        PedDevice *device = peddisk->dev;
-        g_assert(device != NULL);
-
-        result = g_strdup (device->model);
-
-    } else {
-        g_warning ("get disk model:find peddisk by %s failed\n", disk);
     }
 
     return result;
@@ -308,7 +226,7 @@ double installer_get_disk_max_primary_count (const gchar *disk)
     double count = 0;
     PedDisk *peddisk = NULL;
 
-    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
+    peddisk = (PedDisk *) g_hash_table_lookup (disks, disk);
     if (peddisk != NULL) {
         count = ped_disk_get_max_primary_partition_count (peddisk);
 
@@ -407,48 +325,6 @@ void installer_is_device_slow (const gchar *uuid)
     g_free (path);
 }
 
-static gchar*
-do_get_partition_type (gpointer data)
-{
-    gchar *type = NULL;
-    PedPartition *pedpartition = NULL;
-    gchar *part = (gchar *) data;
-
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    
-    if (pedpartition != NULL) {
-        PedPartitionType part_type = pedpartition->type;
-        switch (part_type) {
-            case PED_PARTITION_NORMAL:
-                type = g_strdup ("normal");
-                break;
-            case PED_PARTITION_LOGICAL:
-                type = g_strdup ("logical");
-                break;
-            case PED_PARTITION_EXTENDED:
-                type = g_strdup ("extended");
-                break;
-            case PED_PARTITION_METADATA:
-                type = g_strdup ("metadata");
-                break;
-            case PED_PARTITION_FREESPACE:
-                type = g_strdup ("freespace");
-                break;
-            case PED_PARTITION_PROTECTED:
-                type = g_strdup ("protected");
-                break;
-            default:
-                g_warning("get partition type:invalid type %d\n", part_type);
-                type = g_strdup ("protected");
-                break;
-        }
-    } else {
-        g_warning ("get partition type:find pedpartition %s failed\n", part);
-    }
-
-    return type;
-}
-
 JS_EXPORT_API
 gchar* installer_get_partition_type (const gchar *part)
 {
@@ -490,25 +366,6 @@ gchar* installer_get_partition_type (const gchar *part)
     return type;
 }
 
-static gchar*
-do_get_partition_name (gpointer data)
-{
-    gchar *name = NULL;
-    PedPartition *pedpartition = NULL;
-    gchar *part = (gchar *) data;
-
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition != NULL) {
-        if (ped_disk_type_check_feature (pedpartition->disk->type, PED_DISK_TYPE_PARTITION_NAME)) {
-            name = g_strdup (ped_partition_get_name (pedpartition));
-        }
-    } else {
-        g_warning ("get partition name:find pedpartition %s failed\n", part);
-    }
-
-    return name;
-}
-
 JS_EXPORT_API
 gchar *installer_get_partition_name (const gchar *part)
 {
@@ -527,25 +384,6 @@ gchar *installer_get_partition_name (const gchar *part)
     return name;
 }
 
-static gchar*
-do_get_partition_path (gpointer data)
-{
-    gchar *path = NULL;
-
-    PedPartition *pedpartition = NULL;
-    gchar *part = (gchar *) data;
-
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition != NULL) {
-        path = ped_partition_get_path (pedpartition);
-
-    } else {
-        g_warning ("get partition path:find pedpartition %s failed\n", part);
-    }
-
-    return path;
-}
-
 JS_EXPORT_API
 gchar* installer_get_partition_path (const gchar *part)
 {
@@ -562,33 +400,6 @@ gchar* installer_get_partition_path (const gchar *part)
     }
 
     return path;
-}
-
-static gchar*
-do_get_partition_mp (gpointer data)
-{
-    gchar *mp = NULL;
-
-    PedPartition *pedpartition = NULL;
-    gchar *part = (gchar *) data;
-
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition != NULL) {
-
-        gchar *path = ped_partition_get_path (pedpartition);
-        if (path != NULL) {
-            mp = g_strdup (get_partition_mount_point (path));
-
-        } else {
-            g_warning ("get partition mp:get partition path failed\n");
-        }
-        g_free (path);
-
-    } else {
-        g_warning ("get partition mp:find pedpartition %s failed\n", part);
-    }
-
-    return mp;
 }
 
 JS_EXPORT_API 
