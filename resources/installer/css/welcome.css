@@ -108,23 +108,24 @@
 .Keyboard {
     position:fixed;
     left:430px;
-    top:90px;
-    bottom:20px;
+    top:92px;
+    bottom:18px;
     width:312px;
-    height:433px;
+    height:430px;
 }
 
 .KeyboardCurrent {
     background:#D0D0D0;
     padding-left:16px;
-    height:33px;
-    line-height:33px;
+    height:30px;
+    line-height:30px;
 }
 
 .KeyboardList{
     background:#FFFFFF;
     margin:0px;
-    overflow-y:scroll;
+    height:400px;
+    overflow:scroll;
 }
 
 .KeyboardItem {

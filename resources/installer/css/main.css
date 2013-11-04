@@ -43,20 +43,14 @@
 
 ::-webkit-scrollbar {
     width:12px;
-    height:12px;
-    background:#000;
+    background:#FFF;
 }
- 
-::-webkit-scrollbar-track-piece {
-    width:12px;
-    height:300px;
-}
-    
+
 ::-webkit-scrollbar-thumb {
-    width:12px;
-    height:10px;
     background:#C1C1C1;
-    -webkit-box-shadow:inset 1px 1px 0 rgba(193,193,193,0.2);
+    height:190px;
+    border:1px solid black;
+    border-radius:5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

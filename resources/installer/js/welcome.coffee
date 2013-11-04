@@ -17,10 +17,41 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+__selected_layout = "Asia/Shanghai"
+
+class KeyboardItem extends Widget
+    constructor: (@id) ->
+        super
+        @element.innerText = @id
+
+    do_click :(e)->
+        Widget.look_up("keyboard")?.update_layout(@id)
+
+class Keyboard extends Widget
+    constructor: (@id)->
+        super
+        @current = create_element("div", "KeyBoardCurrent", @element)
+        @current.innerText = __selected_layout
+
+        @list = create_element("div", "KeyBoardList", @element)
+        for zone in DCore.Installer.get_timezone_list()
+            opt = new KeyboardItem(zone)
+            @list.appendChild(opt.element)
+
+        @element.addEventListener("DOMFocusOut", (e) =>
+            echo "keyboard dom focus out"
+        )
+
+    update_layout: (layout) ->
+        @current.innerText = layout
+        __selected_layout = layout
+
 class Welcome extends Page
     constructor: (@id)->
         super
         @illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
+        @keyboard_displayed = false
+        @timezone_displayed = false
 
         @title_start = create_element("div", "", @title)
         @start_txt = create_element("p", "", @title_start)
@@ -29,9 +60,10 @@ class Welcome extends Page
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("span", "KeyboardSet", @title_set)
         @keyboard_set.innerText = "键盘"
-        @init_keyboard()
         @keyboard_set.addEventListener("click", (e) =>
-            @show_keyboard()
+            echo "keyboard set clicked"
+            @display_keyboard()
+            echo "keyboard set display keyboard"
         )
         @timezone_set = create_element("span", "TimezoneSet", @title_set)
         @timezone_set.innerText = "时区"
@@ -106,22 +138,13 @@ class Welcome extends Page
             @check_confirm()
         )
 
-        #@keyboard = create_element("p", "Keyboard", @element)
-        #@keyboard_txt = create_element("span", "Txt", @keyboard)
-        #@keyboard_txt.innerText = "键盘布局 :"
-        #@keyboard_select = create_element("select", "", @keyboard)
-        #@keyboard_info = create_element("span", "Info", @keyboard)
-        #@fill_keyboard()
-
-        #@timezone = create_element("p", "Timezone", @element)
-        #@timezone_txt = create_element("span", "Txt", @timezone)
-        #@timezone_txt.innerText = "时区 :"
-        #@timezone_select = create_element("select", "", @timezone)
-        #@timezone_info = create_element("span", "Info", @timezone)
-        #@fill_timezone()
-
         @start = create_element("div", "StartInActive", @element)
         @start.innerText = "开始安装"
+
+    do_click: (e) ->
+        if @keyboard_displayed
+            if e.target.className not in ["KeyboardItem", "Keyboard", "KeyboardSet"]
+                Widget.look_up("keyboard")?.destroy()
 
     check_username: ->
         if @is_username_valid()
@@ -178,29 +201,16 @@ class Welcome extends Page
             return false
         return true
 
-    init_keyboard: ->
-        @keyboard = create_element("div", "KeyBoard", @element)
-        @keyboard_current = create_element("div", "KeyBoardCurrent", @keyboard)
-        @keyboard_current.innerText = "Asia/Shanghai"
-        @keyboard_list = create_element("div", "KeyBoardList", @keyboard)
-        for zone in DCore.Installer.get_timezone_list()
-            keyboard_opt = create_element("div", "KeyboardItem", @keyboard_list)
-            keyboard_opt.innerText = zone
-            keyboard_opt.addEventListener("click", (e) =>
-                @keyboard_current.innerText = keyboard_opt.innerText
-            )
-        @keyboard.addEventListener("blur", (e) =>
-            @hide_keyboard()
-        )
-
-    show_keyboard: ->
-        echo "show keyboard"
+    display_keyboard: ->
+        @hide_keyboard()
+        @keyboard = new Keyboard("keyboard")
+        @element.appendChild(@keyboard.element)
+        @keyboard_displayed = true
 
     hide_keyboard: ->
-        echo "hide keyboard"
-
-    fill_keyboard: ->
-        echo "fill keyboard"
+        @keyboard?.destroy()
+        @keyboard_displayed = false
+        @keyboard = null
 
     fill_timezone: ->
         echo "fill timezone"
