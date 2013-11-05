@@ -26,14 +26,6 @@ __selected_timezone = "Asia/Shanghai"
 
 __database = JSON.parse timezone_json
 
-class KeyboardItem extends Widget
-    constructor: (@id) ->
-        super
-        @element.innerText = @id
-
-    do_click :(e)->
-        Widget.look_up("keyboard")?.update_layout(@id)
-
 class Keyboard extends Widget
     constructor: (@id)->
         super
@@ -42,52 +34,52 @@ class Keyboard extends Widget
 
         @list = create_element("div", "KeyBoardList", @element)
         for zone in DCore.Installer.get_timezone_list()
-            opt = new KeyboardItem(zone)
-            @list.appendChild(opt.element)
+            @construct_item(zone)
 
-        @element.addEventListener("DOMFocusOut", (e) =>
-            echo "keyboard dom focus out"
+    construct_item: (layout) ->
+        opt = create_element("div", "KeyboardItem", @list)
+        opt.innerText = layout
+        opt.addEventListener("click", (e) =>
+            @update_layout(layout)
         )
 
     update_layout: (layout) ->
         @current.innerText = layout
         __selected_layout = layout
 
-class TimezoneMap extends Widget
-    constructor: (@id) ->
-        super
-        @imagemap = create_element("map", "ImageMap", @element)
-        @init_imagemap()
-
-    init_imagemap: ->
-        for key, val of __database
-            area = create_element("area", "TimezoneArea", @imagemap)
-            area.setAttribute("data-timezone", key)
-            area.setAttribute("data-country", __database[key]["country"])
-            area.setAttribute("data-pin", __database[key]["pin"])
-            area.setAttribute("data-offset", __database[key]["offset"])
-            if __database[key]["polys"].length != 0
-                area.setAttribute("shape", "poly")
-                area.setAttribute("coords", __database[key]["polys"])
-            else if __database[key]["rects"].length != 0
-                area.setAttribute("shape", "rect")
-                area.setAttribute("coords", __database[key]["rects"])
-            myarea = area
-            myarea.addEventListener("click", (e) =>
-                echo "area clicked"
-            )
-
-    do_click: (e) ->
-        echo "timezone map do click"
-
 class Timezone extends Widget
     constructor: (@id) ->
         super
         @current = create_element("div", "TimezoneCurrent", @element)
         @current.innerText = __selected_timezone
+        @img = create_img("TimezoneMap", "images/zonemap.png", @element)
+        @img.setAttribute("usemap", "#ImageMap")
+        @img.addEventListener("click", (e) =>
+            echo "image clicked"
+        )
+        @construct_map()
 
-        @map = new TimezoneMap("timezonemap")
-        @element.appendChild(@map.element)
+    construct_map: ->
+        @imagemap = create_element("map", "", @element)
+        @imagemap.setAttribute("id", "ImageMap")
+        for key, val of __database
+            @construct_area(key)
+
+    construct_area: (key) ->
+        area = create_element("area", "TimezoneArea", @imagemap)
+        area.setAttribute("data-timezone", key)
+        area.setAttribute("data-country", __database[key]["country"])
+        area.setAttribute("data-pin", __database[key]["pin"])
+        area.setAttribute("data-offset", __database[key]["offset"])
+        if __database[key]["polys"].length != 0
+            area.setAttribute("shape", "poly")
+            area.setAttribute("coords", __database[key]["polys"])
+        else if __database[key]["rects"].length != 0
+            area.setAttribute("shape", "rect")
+            area.setAttribute("coords", __database[key]["rects"])
+        area.addEventListener("click", (e) =>
+            echo "area clicked"
+        )
 
 class Welcome extends Page
     constructor: (@id)->

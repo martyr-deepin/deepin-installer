@@ -157,7 +157,7 @@
 }
 
 .TimezoneMap {
-    background:#FFF url("../images/zonemap.png") no-repeat;
+    background:#FFF;
     width:736px;
     height:404px;
 }
