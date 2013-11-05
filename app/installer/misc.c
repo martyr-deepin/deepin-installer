@@ -29,6 +29,7 @@
 #include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
 #include <gio/gunixinputstream.h>
+#include <glib.h>
 
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
@@ -1083,4 +1084,3 @@ gboolean installer_chroot_target ()
 
     return ret;
 }
-

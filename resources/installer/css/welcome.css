@@ -138,6 +138,30 @@
     background:#2FC1FF;
 }
 
+.Timezone {
+    position:fixed;
+    left:8px;
+    right:8px;
+    top:92px;
+    bottom:12px;
+    width:738px;
+    height:406px;
+}
+
+.TimezoneCurrent {
+    background:#D0D0D0;
+    padding-left:16px;
+    height:30px;
+    line-height:30px;
+    color:#0870BC;
+}
+
+.TimezoneMap {
+    background:#FFF url("../images/zonemap.png") no-repeat;
+    height:370px;
+    width:736px;
+}
+
 .Welcome .Start {
     position:fixed;
     left:323px;

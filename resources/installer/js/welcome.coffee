@@ -18,6 +18,7 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 __selected_layout = "Asia/Shanghai"
+__selected_timezone = "Asia/Shanghai"
 
 class KeyboardItem extends Widget
     constructor: (@id) ->
@@ -46,6 +47,19 @@ class Keyboard extends Widget
         @current.innerText = layout
         __selected_layout = layout
 
+class TimezoneMap extends Widget
+    constructor: (@id) ->
+        super
+
+class Timezone extends Widget
+    constructor: (@id) ->
+        super
+        @current = create_element("div", "TimezoneCurrent", @element)
+        @current.innerText = __selected_timezone
+
+        @map = new TimezoneMap("timezonemap")
+        @element.appendChild(@map.element)
+
 class Welcome extends Page
     constructor: (@id)->
         super
@@ -61,12 +75,13 @@ class Welcome extends Page
         @keyboard_set = create_element("span", "KeyboardSet", @title_set)
         @keyboard_set.innerText = "键盘"
         @keyboard_set.addEventListener("click", (e) =>
-            echo "keyboard set clicked"
             @display_keyboard()
-            echo "keyboard set display keyboard"
         )
         @timezone_set = create_element("span", "TimezoneSet", @title_set)
         @timezone_set.innerText = "时区"
+        @timezone_set.addEventListener("click", (e) =>
+            @display_timezone()
+        )
 
         @form = create_element("div", "WelcomeForm", @element)
 
@@ -144,7 +159,10 @@ class Welcome extends Page
     do_click: (e) ->
         if @keyboard_displayed
             if e.target.className not in ["KeyboardItem", "Keyboard", "KeyboardSet"]
-                Widget.look_up("keyboard")?.destroy()
+                @hide_keyboard()
+        if @timezone_displayed
+            if e.target.className not in ["TimezoneMap", "Timezone", "TimezoneSet"]
+                @hide_timezone()
 
     check_username: ->
         if @is_username_valid()
@@ -201,24 +219,6 @@ class Welcome extends Page
             return false
         return true
 
-    display_keyboard: ->
-        @hide_keyboard()
-        @keyboard = new Keyboard("keyboard")
-        @element.appendChild(@keyboard.element)
-        @keyboard_displayed = true
-
-    hide_keyboard: ->
-        @keyboard?.destroy()
-        @keyboard_displayed = false
-        @keyboard = null
-
-    fill_timezone: ->
-        echo "fill timezone"
-        for zone in DCore.Installer.get_timezone_list()
-            zone_opt = create_element("option", "", @timezone_select)
-            zone_opt.setAttribute("value", zone)
-            zone_opt.innerText = zone
-
     check_start_ready: ->
         if @is_username_valid() and @is_password_valid() and @is_hostname_valid() and @is_confirm_password_valid()
             @start.setAttribute("class", "Start")
@@ -236,3 +236,25 @@ class Welcome extends Page
             @check_password()
             @check_confirm()
             return false
+
+    display_keyboard: ->
+        @hide_keyboard()
+        @keyboard = new Keyboard("keyboard")
+        @element.appendChild(@keyboard.element)
+        @keyboard_displayed = true
+
+    hide_keyboard: ->
+        @keyboard?.destroy()
+        @keyboard_displayed = false
+        @keyboard = null
+
+    display_timezone: ->
+        @hide_timezone()
+        @timezone = new Timezone("timezone")
+        @element.appendChild(@timezone.element)
+        @timezone_displayed = true
+
+    hide_timezone: ->
+        @timezone?.destroy()
+        @timezone_displayed = false
+        @timezone = null
