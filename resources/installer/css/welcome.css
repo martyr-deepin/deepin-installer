@@ -145,7 +145,7 @@
     top:92px;
     bottom:12px;
     width:738px;
-    height:406px;
+    height:436px;
 }
 
 .TimezoneCurrent {
@@ -156,8 +156,26 @@
     color:#0870BC;
 }
 
+.TimezonePicker {
+    background:url("../images/zonemap.png");
+    width:736px;
+    height:404px;
+    padding:1px;
+}
+
 .TimezoneMap {
-    background:#FFF;
+    position:absolute;
+    top:30px;
+    left:0px;
+    opacity:0;
+    width:736px;
+    height:404px;
+}
+
+.TimezoneCanvas {
+    position:absolute;
+    top:30px;
+    left:0px;
     width:736px;
     height:404px;
 }
