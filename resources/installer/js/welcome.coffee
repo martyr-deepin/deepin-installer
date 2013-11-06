@@ -48,11 +48,15 @@ class Timezone extends Widget
         super
         @current = create_element("div", "TimezoneCurrent", @element)
         @current.innerText = __selected_timezone
-        @picker = create_element("div", "TimezonePicker", @element)
+        @picker_wrap = create_element("div","TmezoneWrap", @element)
+        @picker = create_element("div", "TimezonePicker", @picker_wrap)
         @canvas = create_element("canvas", "TimezoneCanvas", @picker)
+        @canvas.setAttribute("width", 736)
+        @canvas.setAttribute("height", 404)
         @img = create_img("TimezoneMap", "images/zonemap.png", @picker)
         @img.setAttribute("usemap", "#ImageMap")
         @construct_map()
+        @pin = create_img("Pin", "images/pin.png", @picker_wrap)
 
     construct_map: ->
         @imagemap = create_element("map", "", @element)
@@ -75,11 +79,7 @@ class Timezone extends Widget
             area.setAttribute("shape", "rect")
             area.setAttribute("coords", __database[key]["rects"])
         area.addEventListener("click", (e) =>
-            echo "area clicked"
-            echo e.x
-            echo e.y
-            echo area.getAttribute("data-timezone")
-            echo area.getAttribute("data-pin")
+            @show_pin(area)
         )
         area.addEventListener("mouseover", (e) =>
             @draw_canvas(area)
@@ -87,22 +87,30 @@ class Timezone extends Widget
         area.addEventListener("mouseout", (e) =>
             @destroy_canvas(area)
         )
+    
+    show_pin: (area) ->
+        echo "show pin"
+        echo area.getAttribute("data-timezone")
+        echo area.getAttribute("data-pin")
+        pin = area.getAttribute("data-pin").split(",")
+        @pin.setAttribute("left", pin[0])
+        @pin.setAttribute("top", pin[1])
+        @pin.setAttribute("position", "absolute")
+        @pin.setAttribute("display", "block")
+        @pin.setAttribute("background", "black")
 
     draw_canvas: (area) ->
         ctx = @canvas.getContext("2d")
+        poly = area.getAttribute("coords").split(",")
+        ctx.beginPath()
+        ctx.moveTo(poly[0],poly[1])
+        i = 2
+        while i < poly.length - 1
+            ctx.lineTo(poly[i], poly[i+1])
+            i = i + 2
+        ctx.closePath()
         ctx.fillStyle = "#FF0000"
-        poly = area.getAttribute("coords")
-        #echo area.getAttribute("data-timezone")
-        #echo poly
-        #ctx.beginPath()
-        #ctx.moveTo(poly[0],poly[1])
-        #i = 2
-        #while i < poly.length - 1
-        #    ctx.lineTo(poly[i], poly[i+1])
-        #    i = i + 2
-        #ctx.closePath()
-        #ctx.fill()
-        ctx.fillRect(0,0,20,20)
+        ctx.fill()
 
     destroy_canvas: (area) ->
         ctx = @canvas.getContext("2d")

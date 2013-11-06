@@ -156,16 +156,22 @@
     color:#0870BC;
 }
 
+.TimezoneWrap {
+    position:relative;
+    width:736px;
+}
+
 .TimezonePicker {
     background:url("../images/zonemap.png");
+    position:relative;
     width:736px;
     height:404px;
-    padding:1px;
+    padding:0px;
 }
 
 .TimezoneMap {
     position:absolute;
-    top:30px;
+    top:0px;
     left:0px;
     opacity:0;
     width:736px;
@@ -174,10 +180,20 @@
 
 .TimezoneCanvas {
     position:absolute;
-    top:30px;
+    top:0px;
     left:0px;
     width:736px;
     height:404px;
+}
+
+.Pin {
+    position:absolute;
+    top:0px;
+    left:0px;
+    display:none;
+    z-index:1000;
+    width:13px;
+    height:21px;
 }
 
 .Welcome .Start {
