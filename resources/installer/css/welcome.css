@@ -186,16 +186,6 @@
     height:404px;
 }
 
-.Pin {
-    position:absolute;
-    top:0px;
-    left:0px;
-    display:none;
-    z-index:1000;
-    width:13px;
-    height:21px;
-}
-
 .Welcome .Start {
     position:fixed;
     left:323px;

@@ -38,6 +38,10 @@ class Keyboard extends Widget
         opt.addEventListener("click", (e) =>
             @update_layout(layout)
         )
+        opt.addEventListener("mouseover", (e) =>
+            echo "mouse over"
+            opt.setAttribute("background", "#123456")
+        )
 
     update_layout: (layout) ->
         @current.innerText = layout
@@ -56,7 +60,10 @@ class Timezone extends Widget
         @img = create_img("TimezoneMap", "images/zonemap.png", @picker)
         @img.setAttribute("usemap", "#ImageMap")
         @construct_map()
-        @pin = create_img("Pin", "images/pin.png", @picker_wrap)
+
+    update_timezone: (zone) ->
+        @current.innerText = zone
+        __selected_timezone = zone
 
     construct_map: ->
         @imagemap = create_element("map", "", @element)
@@ -80,6 +87,7 @@ class Timezone extends Widget
             area.setAttribute("coords", __database[key]["rects"])
         area.addEventListener("click", (e) =>
             @show_pin(area)
+            @update_timezone(area.getAttribute("data-timezone"))
         )
         area.addEventListener("mouseover", (e) =>
             @draw_timezone(area)
@@ -89,15 +97,15 @@ class Timezone extends Widget
         )
     
     show_pin: (area) ->
-        echo "show pin"
-        echo area.getAttribute("data-timezone")
-        echo area.getAttribute("data-pin")
         pin = area.getAttribute("data-pin").split(",")
-        @pin.setAttribute("left", pin[0])
-        @pin.setAttribute("top", pin[1])
+        @pin?.parentElement?.removeChild(@pin)
+        @pin = null
+        @pin = create_img("", "images/pin.png", @picker_wrap)
         @pin.setAttribute("position", "absolute")
-        @pin.setAttribute("display", "block")
-        @pin.setAttribute("background", "black")
+        @pin.setAttribute("left", pin[0] + "px")
+        @pin.setAttribute("top", pin[1] + "px")
+        @pin.setAttribute("width", "13px")
+        @pin.setAttribute("height", "21px")
 
     draw_timezone: (myarea) ->
         offset = myarea.getAttribute("data-offset")
