@@ -82,7 +82,7 @@ class Timezone extends Widget
             @show_pin(area)
         )
         area.addEventListener("mouseover", (e) =>
-            @draw_canvas(area)
+            @draw_timezone(area)
         )
         area.addEventListener("mouseout", (e) =>
             @destroy_canvas(area)
@@ -98,6 +98,18 @@ class Timezone extends Widget
         @pin.setAttribute("position", "absolute")
         @pin.setAttribute("display", "block")
         @pin.setAttribute("background", "black")
+
+    draw_timezone: (myarea) ->
+        offset = myarea.getAttribute("data-offset")
+        for area in @get_offset_areas(offset)
+            @draw_canvas(area)
+
+    get_offset_areas: (offset) ->
+        areas = []
+        for area in @imagemap.children
+            if area.getAttribute("data-offset") == offset
+                areas.push(area)
+        return areas
 
     draw_canvas: (area) ->
         ctx = @canvas.getContext("2d")
