@@ -12,17 +12,20 @@
     height:12px;
     margin:11px 26px;
     overflow:hidden;
-    background:red;
+    padding-right:1px;
 }
 
 .PartLineItem {
     float:left;
     opacity:0.4;
+    height:12px;
 }
 
 .PartLineItemActive {
     float:left;
     opacity:1.0;
+    height:12px;
+    border:2px solid #6ACAF3;
 }
 
 .PartTable {

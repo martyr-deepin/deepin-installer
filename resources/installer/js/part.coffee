@@ -544,4 +544,9 @@ class Part extends Page
             select_opt = create_element("option", "", @grub_select)
             select_opt.setAttribute("value", path)
             select_opt.innerText = path
+            select_opt.innerText += "\t"
             select_opt.innerText += v_disk_info[disk]["model"]
+            select_opt.innerText += "\t"
+            select_opt.innerText += sector_to_gb(v_disk_info[disk]["length"], 512)
+            select_opt.innerText += "GB"
+

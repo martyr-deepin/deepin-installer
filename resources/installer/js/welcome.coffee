@@ -254,7 +254,7 @@ class Welcome extends Page
         @start = create_element("div", "StartInActive", @element)
         @start.innerText = "开始安装"
         @start.addEventListener("click", (e) =>
-            @do_start()
+            @start_install_cb()
         )
 
     do_click: (e) ->
@@ -328,7 +328,7 @@ class Welcome extends Page
             @start.setAttribute("class", "StartInActive")
             return false
 
-    do_start: ->
+    start_install_cb: ->
         if @check_start_ready()
             pc.add_page(part_page)
             pc.remove_page(welcome_page)
