@@ -752,39 +752,24 @@ gboolean installer_set_timezone (const gchar *timezone)
     error = NULL;
     g_free (timezone_file);
 
-    gchar *zoneinfo_file = g_strdup_printf ("/usr/share/zoneinfo/%s", timezone);
-    gchar *zone_content = NULL;
-    gsize length;
-
-    g_file_get_contents (zoneinfo_file, &zone_content, &length, &error);
+    gchar *zoneinfo_path = g_strdup_printf ("/usr/share/zoneinfo/%s", timezone);
+    gchar *localtime_path = g_strdup ("/etc/localtime");
+    GFile *zoneinfo_file = g_file_new_for_path (zoneinfo_path);
+    GFile *localtime_file = g_file_new_for_path (localtime_path);
+    g_file_copy (zoneinfo_file, localtime_file, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("set timezone:read /usr/share/zoneinfo %s\n", error->message);
-        g_error_free (error);
-        g_free (zoneinfo_file);
+        g_warning ("set timezone:cp /etc/localtime %s\n", error->message);
+        g_free (zoneinfo_path);
+        g_free (localtime_path);
+        g_object_unref (zoneinfo_file);
+        g_object_unref (localtime_file);
         return ret;
     }
     error = NULL;
-    g_free (zoneinfo_file);
-    
-    if (zone_content == NULL) {
-        g_warning ("set timezone:read /usr/share/zoneinfo/%s failed\n", timezone);
-        return ret;
-    }
-
-    gchar *localtime_file = g_strdup ("/etc/localtime");
-    g_file_set_contents (localtime_file, zone_content, -1, &error);
-    if (error != NULL) {
-        g_warning ("set timezone:write localtime %s\n", error->message);
-        g_error_free (error);
-        g_free (zone_content);
-        g_free (localtime_file);
-        return ret;
-    }
-    error = NULL;
-
-    g_free (zone_content);
-    g_free (localtime_file);
-
+    g_free (zoneinfo_path);
+    g_free (localtime_path);
+    g_object_unref (zoneinfo_file);
+    g_object_unref (localtime_file);
     //fix me, set /etc/default/rcS content"
     ret = TRUE;
 
