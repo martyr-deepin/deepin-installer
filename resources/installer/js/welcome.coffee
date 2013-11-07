@@ -25,12 +25,27 @@ __database = JSON.parse timezone_json
 class Keyboard extends Widget
     constructor: (@id)->
         super
+        @init_default_layout()
         @current = create_element("div", "KeyBoardCurrent", @element)
         @current.innerText = __selected_layout
 
         @list = create_element("div", "KeyBoardList", @element)
         for layout in @get_layouts()
             @construct_item(layout)
+
+    init_default_layout: ->
+        lay_var = DCore.Installer.get_current_layout_variant()
+        lay = lay_var["layouts"]
+        if lay.length > 0
+            mylay = lay[0]
+        variant = lay_var["variants"]
+        if variant.length > 0
+            myvar = variant[0]
+        if myvar.length > 0
+            current = mylay + "," + myvar
+        else
+            current = mylay
+        __selected_layout = current
 
     get_layouts: ->
         layouts = []
@@ -45,9 +60,6 @@ class Keyboard extends Widget
         opt.innerText = layout
         opt.addEventListener("click", (e) =>
             @update_layout(layout)
-        )
-        opt.addEventListener("mouseover", (e) =>
-            echo "mouse over"
         )
 
     update_layout: (layout) ->
