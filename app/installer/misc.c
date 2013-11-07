@@ -160,67 +160,39 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
 gboolean 
 add_user (const gchar *username)
 {
-    gboolean ret = FALSE;
-
     GError *error = NULL;
-    gint status = -1;
-
     gchar *useradd_cmd = g_strdup_printf ("useradd -U -m --skel /etc/skel --shell /bin/bash %s", username);
-    g_spawn_command_line_sync (useradd_cmd, NULL, NULL, &status, &error);
+
+    g_spawn_command_line_sync (useradd_cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("create user:useradd %s\n", error->message);
         g_error_free (error);
-    }
-    error = NULL;
-    if (status != 0) {
-        g_warning ("create user:user add failed\n");
+        error = NULL;
         g_free (useradd_cmd);
-        return ret;
+        return FALSE;
     }
     g_free (useradd_cmd);
 
-    ret = TRUE;
-
-    return ret;
+    return TRUE;
 }
 
 gboolean 
 set_user_home (const gchar *username)
 {
-    gboolean ret = FALSE;
-
     GError *error = NULL;
-    gint status = -1;
+    gchar *chown_cmd = g_strdup_printf ("chown -hR %s:%s /home/%s", username, username, username);
 
-    //chown home to user
-    struct passwd *user;
-    user = getpwnam (username);
-    if (user != NULL) {
-        gchar *home = user->pw_dir;
-        uid_t uid = user->pw_uid;
-        gid_t gid = user->pw_gid;
-
-        if (lchown (home, uid, gid) != 0) {
-            g_warning ("create user:lchown failed\n");
-        }
-        g_free (home);
-
-    } else {
-        g_warning ("create user:getpwnam %s\n", strerror (errno));
-
-        gchar *chown_cmd = g_strdup_printf ("chown -hR %s:%s /home/%s", username, username, username);
-        g_spawn_command_line_sync (chown_cmd, NULL, NULL, NULL, &error);
-        if (error != NULL) {
-            g_warning ("create user:chown %s\n", error->message);
-            g_error_free (error);
-        }
+    g_spawn_command_line_sync (chown_cmd, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("create user:chown %s\n", error->message);
+        g_error_free (error);
         error = NULL;
         g_free (chown_cmd);
+        return FALSE;
     }
+    g_free (chown_cmd);
 
-    ret = TRUE;
-
-    return ret;
+    return TRUE;
 }
 
 static void
@@ -443,11 +415,13 @@ write_hostname (const gchar *hostname)
     if (error != NULL) {
         g_warning ("write hostname: set hosts file %s contents failed\n", hosts_file);
         g_error_free (error);
+        g_free ((gchar *)lha);
         g_free (hosts_file);
         g_free (hosts_content);
         return ret;
     }
     error = NULL;
+    g_free ((gchar *)lha);
     g_free (hosts_file);
     g_free (hosts_content);
 
@@ -853,19 +827,21 @@ cb_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
     gsize  size;
 
     if (cond == G_IO_HUP) {
+        //g_printf ("cb out watch: io hup\n");
         g_io_channel_unref (channel);
         return FALSE;
     }
 
     g_io_channel_read_line (channel, &string, &size, NULL, NULL);
 
+    //g_printf ("cb out watch:%s***cb out watch finish\n", string);
     gchar *match = get_matched_string (string, "\\d{1,3}%");
-    //g_printf ("cb out watch:%s\n", string);
     //g_printf ("cb out watch:match->              %s\n", match);
     if (match == NULL) {
         g_debug ("cb out watch:line without extract progress\n");
+    } else {
+        *progress = g_strdup (match);
     }
-    *progress = g_strdup (match);
 
     g_free (match);
     g_free (string);

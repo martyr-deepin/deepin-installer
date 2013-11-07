@@ -19,6 +19,9 @@
 
 __selected_layout = "es"
 __selected_timezone = "Asia/Shanghai"
+__username = null
+__hostname = null
+__password = null
 
 __database = JSON.parse timezone_json
 
