@@ -17,7 +17,7 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-__selected_layout = "Asia/Shanghai"
+__selected_layout = "es"
 __selected_timezone = "Asia/Shanghai"
 
 __database = JSON.parse timezone_json
@@ -29,8 +29,16 @@ class Keyboard extends Widget
         @current.innerText = __selected_layout
 
         @list = create_element("div", "KeyBoardList", @element)
-        for zone in DCore.Installer.get_timezone_list()
-            @construct_item(zone)
+        for layout in @get_layouts()
+            @construct_item(layout)
+
+    get_layouts: ->
+        layouts = []
+        for layout in DCore.Installer.get_keyboard_layouts()
+            layouts.push(layout)
+            for variant in DCore.Installer.get_layout_variants(layout)
+                layouts.push(layout + "," + variant)
+        return layouts
 
     construct_item: (layout) ->
         opt = create_element("div", "KeyboardItem", @list)
@@ -40,7 +48,6 @@ class Keyboard extends Widget
         )
         opt.addEventListener("mouseover", (e) =>
             echo "mouse over"
-            opt.setAttribute("background", "#123456")
         )
 
     update_layout: (layout) ->
