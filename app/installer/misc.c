@@ -752,13 +752,13 @@ gboolean installer_set_timezone (const gchar *timezone)
     error = NULL;
     g_free (timezone_file);
 
-    gchar *zoneinfo_file = g_strdup_printf ("/etc/timezone/%s", timezone);
+    gchar *zoneinfo_file = g_strdup_printf ("/usr/share/zoneinfo/%s", timezone);
     gchar *zone_content = NULL;
     gsize length;
 
     g_file_get_contents (zoneinfo_file, &zone_content, &length, &error);
     if (error != NULL) {
-        g_warning ("set timezone:read /etc/timezone %s\n", error->message);
+        g_warning ("set timezone:read /usr/share/zoneinfo %s\n", error->message);
         g_error_free (error);
         g_free (zoneinfo_file);
         return ret;
@@ -767,7 +767,7 @@ gboolean installer_set_timezone (const gchar *timezone)
     g_free (zoneinfo_file);
     
     if (zone_content == NULL) {
-        g_warning ("set timezone:read /etc/timezone/%s failed\n", timezone);
+        g_warning ("set timezone:read /usr/share/zoneinfo/%s failed\n", timezone);
         return ret;
     }
 
