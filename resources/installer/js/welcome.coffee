@@ -253,6 +253,9 @@ class Welcome extends Page
 
         @start = create_element("div", "StartInActive", @element)
         @start.innerText = "开始安装"
+        @start.addEventListener("click", (e) =>
+            @do_start()
+        )
 
     do_click: (e) ->
         if @keyboard_displayed
@@ -325,15 +328,16 @@ class Welcome extends Page
             @start.setAttribute("class", "StartInActive")
             return false
 
-    prepare_click_start: ->
+    do_start: ->
         if @check_start_ready()
-            return true
+            pc.add_page(part_page)
+            pc.remove_page(welcome_page)
+            __selected_item?.focus()
         else
             @check_username()
             @check_hostname()
             @check_password()
             @check_confirm()
-            return false
 
     display_keyboard: ->
         @hide_keyboard()

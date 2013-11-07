@@ -496,6 +496,11 @@ class Part extends Page
             #@next_step = create_element("p", "NextStep", @element)
         @next_btn = create_element("div", "NextStep", @element)
         @next_btn.innerText = "开始安装"
+        @next_btn.addEventListener("click", (e) =>
+            do_partition()
+            pc.add_page(progress_page)
+            pc.remove_page(part_page)
+        )
 
         @t_mode.addEventListener("click", (e) =>
             if __selected_mode != "advance"

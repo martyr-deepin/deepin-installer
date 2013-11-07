@@ -29,6 +29,12 @@ _color_list = ["#89AFD0","#6D91BC","#E8948A","#DE5F4E","#C2A02D",
                "#B59479","#91C9ED","#F06693","#DE4EA3","#3EB0A4",
                "#A25EE1","#9DD089","#D05793","#D5426C"]
 
+pc = null
+welcome_page = null
+part_page = null
+progress_page = null
+finish_page = null
+
 class Page extends Widget
     constructor: (@id)->
         super
@@ -39,14 +45,12 @@ class PageContainer extends Widget
         super
 
     add_page: (page_id) ->
-        echo "add page"
         try
             @element.appendChild(page_id.element)
         catch error
             echo error
 
     remove_page: (page_id) ->
-        echo "remove page"
         try
             @element.removeChild(page_id.element)
         catch error

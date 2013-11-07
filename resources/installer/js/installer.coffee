@@ -24,28 +24,5 @@ welcome_page = new Welcome("welcome")
 pc.add_page(welcome_page)
 
 part_page = new Part("part")
-welcome_page.start.addEventListener("click", (e) =>
-    if welcome_page.prepare_click_start()
-        pc.add_page(part_page)
-        pc.remove_page(welcome_page)
-        __selected_item?.focus()
-)
-
 progress_page = new Progress("progress")
-part_page.next_btn.addEventListener("click", (e) =>
-    do_partition()
-    pc.add_page(progress_page)
-    pc.remove_page(part_page)
-)
-
 finish_page = new Finish("finish")
-progress_page.progressbar.addEventListener("click", (e) =>
-    pc.add_page(finish_page)
-    pc.remove_page(progress_page)
-)
-
-#DCore.signal_connect("used", (msg) ->
-#    echo msg
-#    v_part_info[msg.part]["used"] = msg.free
-#    Widget.look_up(msg.part)?.update_part_used()
-#)

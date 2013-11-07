@@ -38,6 +38,10 @@ class Progress extends Page
         @progressbar = create_element("div", "ProgressBar", @progress_container)
         #@progressdesc = create_element("div", "Progressdesc", @progress_container)
         #@progressdesc.innerText = "Progress Description"
+        @progressbar.addEventListener("click", (e) =>
+            pc.add_page(finish_page)
+            pc.remove_page(progress_page)
+        )
 
     switch_ppt: (direction)->
         if direction == "prev"
