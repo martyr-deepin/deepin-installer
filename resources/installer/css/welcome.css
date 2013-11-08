@@ -49,6 +49,7 @@
     margin-top:5px;
     border:1px solid #9D9D9D;
     border-radius:3px;
+    outline-style:none;
 }
 
 .WelcomeFormItem input:hover {
