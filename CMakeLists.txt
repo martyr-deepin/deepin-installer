@@ -80,11 +80,11 @@ add_subdirectory(app)
 add_subdirectory(po)
 add_subdirectory(test)
 
-install(
-    DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/glib-2.0
-)
-install(
-    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dde
-    )
+#install(
+#    DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
+#    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/glib-2.0
+#)
+#install(
+#    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
+#    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dde
+#    )

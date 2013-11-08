@@ -1045,3 +1045,34 @@ gboolean installer_chroot_target ()
 
     return ret;
 }
+
+JS_EXPORT_API 
+void installer_show_help ()
+{
+    GError *error = NULL;
+
+    if (g_find_program_in_path ("installerhelp") == NULL) {
+        g_warning ("installerhelp not found\n");
+        return ;
+    }
+
+    g_spawn_command_line_async ("installerhelp", &error);
+    if (error != NULL) {
+        g_warning ("run installerhelp:%s\n", error->message);
+        g_error_free (error);
+    }
+}
+
+JS_EXPORT_API 
+void installer_hide_help ()
+{
+    GError *error = NULL;
+
+    gchar *cmd = g_strdup ("pkill -9 installerhelp");
+    g_spawn_command_line_async (cmd, &error);
+    if (error != NULL) {
+        g_warning ("hide installer help:%s\n", error->message);
+        g_error_free (error);
+    }
+    g_free (cmd);
+}

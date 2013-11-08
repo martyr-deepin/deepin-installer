@@ -478,6 +478,10 @@ class Part extends Page
         @t_sep.innerText = "  |  "
         @t_help = create_element("span", "", @help)
         @t_help.innerText = "查看帮助"
+        @help_displayed = false
+        @t_help.addEventListener("click", (e) =>
+            @toggle_show_help()
+        )
 
         #linemap
         @linemap = new PartLineMaps("part_line_maps")
@@ -550,3 +554,10 @@ class Part extends Page
             select_opt.innerText += sector_to_gb(v_disk_info[disk]["length"], 512)
             select_opt.innerText += "GB"
 
+    toggle_show_help: ->
+        if @help_displayed
+            DCore.Installer.hide_help()
+            @help_displayed = false
+        else
+            DCore.Installer.show_help()
+            @help_displayed = true
