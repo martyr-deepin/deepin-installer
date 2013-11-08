@@ -1,0 +1,22 @@
+body {
+    width:500px;
+    height:540px;
+}
+
+.Title {
+    width:500px;
+    height:90px;
+    line-height:90px;
+    background:#474747 url("../images/banner.png") no-repeat fixed top;
+    color:#FDFFFF;
+    text-align:center;
+    font-weight:bold;
+    font-size:24px;
+}
+
+.Content {
+    width:500px;
+    height:450px;
+    background:#E4E4E4;
+}
+
