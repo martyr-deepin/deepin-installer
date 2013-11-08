@@ -85,7 +85,9 @@ class Timezone extends Widget
         @construct_map()
 
     update_timezone: (zone) ->
-        @current.innerText = zone
+        @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
+        @current.innerHTML += "<span>City:" + zone + "</span>"
+        @current.innerHTML += "<span>Country:" + __database[zone]["country"] = "</span>"
         __selected_timezone = zone
 
     construct_map: ->
@@ -170,11 +172,13 @@ class WelcomeFormItem extends Widget
         @fill_widget()
         @input.addEventListener("focus", (e) =>
             @tip.setAttribute("class", "WelcomeTip")
+            @input.setAttribute("style", "")
         )
         @input.addEventListener("blur", (e) =>
             @check_valid()
         )
         @input.addEventListener("change", (e) =>
+
             Widget.look_up("welcome")?.check_start_ready()
         )
 
@@ -201,6 +205,7 @@ class WelcomeFormItem extends Widget
             @tip.setAttribute("class", "WelcomeTip")
         else
             @tip.setAttribute("class", "WelcomeTipShow")
+            @input.setAttribute("style", "border:2px solid red")
 
     is_valid: ->
         if not @input.value? or @input.value.length == 0

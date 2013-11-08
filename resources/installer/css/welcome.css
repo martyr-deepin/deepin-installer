@@ -57,7 +57,7 @@
 }
 
 .WelcomeFormItem input:hover {
-    border:1px solid #1FC1FA;
+    border:2px solid #1FC1FA;
     border-radius:3px;
 }
 
@@ -125,6 +125,10 @@
     height:30px;
     line-height:30px;
     color:#0870BC;
+}
+
+.Current span {
+    margin-right:10px;
 }
 
 .KeyboardList{
