@@ -10,19 +10,23 @@
     color:#B3B3B3;
 }
 
-.KeyboardSet {
+.TitleSet span {
     float:left;
     width:80px;
     height:30px;
     line-height:30px;
+    color:#FFFFFF;
+}
+
+.TitleSet span:hover {
+    color:#00bdff;
+}
+
+.KeyboardSet {
     background:url("../images/keyboard.png") no-repeat;
 }
 
 .TimezoneSet {
-    float:right;
-    width:80px;
-    height:30px;
-    line-height:30px;
     background:url("../images/timezone.png") no-repeat;
 }
 
@@ -57,19 +61,19 @@
     border-radius:3px;
 }
 
-#WelcomeUsername {
+#username input {
     background: white url("../images/username.png") no-repeat;
 }
 
-#WelcomePassword {
+#password input {
     background: white url("../images/password.png") no-repeat;
 }
 
-#WelcomeHostname {
+#hostname input {
     background: white url("../images/hostname.png") no-repeat;
 }
 
-#WelcomeConfirm {
+#confirmpassword input {
     background: white url("../images/confirmpwd.png") no-repeat;
 }
 
@@ -115,11 +119,12 @@
     height:430px;
 }
 
-.KeyboardCurrent {
+.Current {
     background:#D0D0D0;
     padding-left:16px;
     height:30px;
     line-height:30px;
+    color:#0870BC;
 }
 
 .KeyboardList{
@@ -147,14 +152,6 @@
     bottom:12px;
     width:738px;
     height:436px;
-}
-
-.TimezoneCurrent {
-    background:#D0D0D0;
-    padding-left:16px;
-    height:30px;
-    line-height:30px;
-    color:#0870BC;
 }
 
 .TimezoneWrap {
@@ -202,10 +199,6 @@
 }
 
 .Welcome .Start:hover {
-    color:#00bdff;
-}
-
-.Welcome .StartInActive:hover {
     color:#00bdff;
 }
 

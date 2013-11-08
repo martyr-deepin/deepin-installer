@@ -22,6 +22,7 @@ __selected_timezone = "Asia/Shanghai"
 __username = null
 __hostname = null
 __password = null
+__illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
 
 __database = JSON.parse timezone_json
 
@@ -29,7 +30,7 @@ class Keyboard extends Widget
     constructor: (@id)->
         super
         @init_default_layout()
-        @current = create_element("div", "KeyBoardCurrent", @element)
+        @current = create_element("div", "Current", @element)
         @current.innerText = __selected_layout
 
         @list = create_element("div", "KeyBoardList", @element)
@@ -72,7 +73,7 @@ class Keyboard extends Widget
 class Timezone extends Widget
     constructor: (@id) ->
         super
-        @current = create_element("div", "TimezoneCurrent", @element)
+        @current = create_element("div", "Current", @element)
         @current.innerText = __selected_timezone
         @picker_wrap = create_element("div","TmezoneWrap", @element)
         @picker = create_element("div", "TimezonePicker", @picker_wrap)
@@ -158,10 +159,66 @@ class Timezone extends Widget
         ctx = @canvas.getContext("2d")
         ctx.clearRect(0,0,736,404)
 
+class WelcomeFormItem extends Widget
+    constructor: (@id)->
+        super
+        @text = create_element("div", "", @element)
+        @input = create_element("input", "", @element)
+        @tip = create_element("div", "WelcomeTip", @element)
+        @angle = create_element("span", "WelcomeAngle", @tip)
+        @error = create_element("span", "WelcomeError", @tip)
+        @fill_widget()
+        @input.addEventListener("focus", (e) =>
+            @tip.setAttribute("class", "WelcomeTip")
+        )
+        @input.addEventListener("blur", (e) =>
+            @check_valid()
+        )
+        @input.addEventListener("change", (e) =>
+            Widget.look_up("welcome")?.check_start_ready()
+        )
+
+    fill_widget: ->
+        if @id == "username"
+            @text.innerText = "用户名"
+            @input.setAttribute("placeholder", "2-14个字符，英文，数字，中文")
+            @error.innerText = "用户名不合法"
+        else if @id == "hostname"
+            @text.innerText = "计算机名"
+            @input.setAttribute("placeholder", "2-14个字符，英文，数字，中文")
+            @error.innerText = "计算机不合法"
+        else if @id == "password"
+            @text.innerText = "登录密码"
+            @input.setAttribute("placeholder", "请输入密码")
+            @error.innerText = "密码不合法"
+        else if @id == "confirmpassword"
+            @text.innerText = "确认密码"
+            @input.setAttribute("placeholder", "请再次输入密码")
+            @error.innerText = "确认密码不合法"
+
+    check_valid: ->
+        if @is_valid()
+            @tip.setAttribute("class", "WelcomeTip")
+        else
+            @tip.setAttribute("class", "WelcomeTipShow")
+
+    is_valid: ->
+        if not @input.value? or @input.value.length == 0
+            return false
+        if @id == "username"
+            if @input.value in DCore.Installer.get_system_users()
+                return false
+            for c in @input.value
+                if c in __illegal_keys
+                    return false
+        else if @id == "confirmpassword"
+            if @input.value != Widget.look_up("password")?.input.value
+                return false
+        return true
+
 class Welcome extends Page
     constructor: (@id)->
         super
-        @illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
         @keyboard_displayed = false
         @timezone_displayed = false
 
@@ -183,161 +240,23 @@ class Welcome extends Page
 
         @form = create_element("div", "WelcomeForm", @element)
 
-        @username = create_element("div", "WelcomeFormItem", @form)
-        @username_txt = create_element("div", "", @username)
-        @username_txt.innerText = "用户名 :"
-        @username_input = create_element("input", "", @username)
-        @username_input.setAttribute("id", "WelcomeUsername")
-        @username_input.setAttribute("placeholder", "2-14个字符，英文，数字，中文")
-        @username_tip = create_element("div", "WelcomeTip", @username)
-        @username_angle = create_element("span", "WelcomeAngle", @username_tip)
-        @username_error = create_element("span", "WelcomeError", @username_tip)
-        @username_error.innerText = "用户名不合法"
-        @username_input.addEventListener("focus", (e) =>
-            @username_tip.setAttribute("class","WelcomeTip")
-        )
-        @username_input.addEventListener("blur", (e) =>
-            @check_username()
-        )
+        @username = new WelcomeFormItem("username")
+        @form.appendChild(@username.element)
 
-        @hostname = create_element("div", "WelcomeFormItem", @form)
-        @hostname_txt = create_element("div","", @hostname) 
-        @hostname_txt.innerText = "计算机名 :"
-        @hostname_input = create_element("input", "", @hostname)
-        @hostname_input.setAttribute("id", "WelcomeHostname")
-        @hostname_input.setAttribute("placeholder", "请输入计算机名")
-        @hostname_tip = create_element("div", "WelcomeTip", @hostname)
-        @hostname_angle = create_element("span", "WelcomeAngle", @hostname_tip)
-        @hostname_error = create_element("span", "WelcomeError", @hostname_tip)
-        @hostname_error.innerText = "计算机名不合法"
-        @hostname_input.addEventListener("focus", (e) =>
-            @hostname_tip.setAttribute("class","WelcomeTip")
-        )
-        @hostname_input.addEventListener("blur", (e) =>
-            @check_hostname()
-        )
-        
-        @password = create_element("div", "WelcomeFormItem", @form)
-        @password_txt = create_element("div", "", @password)
-        @password_txt.innerText = "登录密码 :"
-        @password_input = create_element("input", "", @password)
-        @password_input.setAttribute("id", "WelcomePassword")
-        @password_input.setAttribute("placeholder", "请输入密码")
-        @password_tip = create_element("div", "WelcomeTip", @password)
-        @password_angle = create_element("span", "WelcomeAngle", @password_tip)
-        @password_error = create_element("span", "WelcomeError", @password_tip)
-        @password_error.innerText = "密码不合法"
-        @password_input.addEventListener("focus", (e) =>
-            @password_tip.setAttribute("class","WelcomeTip")
-        )
-        @password_input.addEventListener("blur", (e) =>
-            @check_password()
-        )
-        
-        @confirm = create_element("div", "WelcomeFormItem", @form)
-        @confirm_txt = create_element("div", "", @confirm)
-        @confirm_txt.innerText = "确认密码 :"
-        @confirm_input = create_element("input", "", @confirm)
-        @confirm_input.setAttribute("id", "WelcomeConfirm")
-        @confirm_input.setAttribute("placeholder", "请输入确认密码")
-        @confirm_tip = create_element("div", "WelcomeTip", @confirm)
-        @confirm_angle = create_element("span", "WelcomeAngle", @confirm_tip)
-        @confirm_error = create_element("span", "WelcomeError", @confirm_tip)
-        @confirm_error.innerText = "确认密码不合法"
-        @confirm_input.addEventListener("focus", (e) =>
-            @confirm_tip.setAttribute("class","WelcomeTip")
-        )
-        @confirm_input.addEventListener("blur", (e) =>
-            @check_confirm()
-        )
+        @hostname = new WelcomeFormItem("hostname")
+        @form.appendChild(@hostname.element)
+
+        @password = new WelcomeFormItem("password")
+        @form.appendChild(@password.element)
+
+        @confirmpassword = new WelcomeFormItem("confirmpassword")
+        @form.appendChild(@confirmpassword.element)
 
         @start = create_element("div", "StartInActive", @element)
         @start.innerText = "开始安装"
         @start.addEventListener("click", (e) =>
             @start_install_cb()
         )
-
-    do_click: (e) ->
-        if @keyboard_displayed
-            if e.target.className not in ["KeyboardItem", "Keyboard", "KeyboardSet"]
-                @hide_keyboard()
-        if @timezone_displayed
-            if e.target.className not in ["TimezoneMap", "Timezone", "TimezoneSet", "ImageMap", "TimezoneArea"]
-                @hide_timezone()
-
-    check_username: ->
-        if @is_username_valid()
-            @username_tip.setAttribute("class","WelcomeTip")
-        else
-            @username_tip.setAttribute("class","WelcomeTipShow")
-        @check_start_ready()
-
-    is_username_valid: ->
-        if not @username_input.value? or @username_input.value.length == 0
-            return false
-        if @username_input.value in DCore.Installer.get_system_users()
-            return false
-        for c in @username_input.value
-            if c in @illegal_keys
-                return false
-        return true
-
-    check_hostname: ->
-        if @is_hostname_valid()
-            @hostname_tip.setAttribute("class","WelcomeTip")
-        else
-            @hostname_tip.setAttribute("class","WelcomeTipShow")
-        @check_start_ready()
-
-    is_hostname_valid: ->
-        if not @hostname_input.value? or @hostname_input.value.length == 0
-            return false
-        return true
-
-    check_password: ->
-        if @is_password_valid()
-            @password_tip.setAttribute("class","WelcomeTip")
-        else
-            @password_tip.setAttribute("class","WelcomeTipShow")
-        @check_start_ready()
-
-    is_password_valid: ->
-        if not @password_input.value? or @password_input.value.length == 0
-            return false
-        return true
-
-    check_confirm: ->
-        if @is_confirm_password_valid()
-            @confirm_tip.setAttribute("class","WelcomeTip")
-        else
-            @confirm_tip.setAttribute("class","WelcomeTipShow")
-        @check_start_ready()
-
-    is_confirm_password_valid: ->
-        if not @confirm_input.value?  or @confirm_input.value.length == 0
-            return false
-        if @confirm_input.value != @password_input.value
-            return false
-        return true
-
-    check_start_ready: ->
-        if @is_username_valid() and @is_password_valid() and @is_hostname_valid() and @is_confirm_password_valid()
-            @start.setAttribute("class", "Start")
-            return true
-        else
-            @start.setAttribute("class", "StartInActive")
-            return false
-
-    start_install_cb: ->
-        if @check_start_ready()
-            pc.add_page(part_page)
-            pc.remove_page(welcome_page)
-            __selected_item?.focus()
-        else
-            @check_username()
-            @check_hostname()
-            @check_password()
-            @check_confirm()
 
     display_keyboard: ->
         @hide_keyboard()
@@ -360,3 +279,30 @@ class Welcome extends Page
         @timezone?.destroy()
         @timezone_displayed = false
         @timezone = null
+
+    do_click: (e) ->
+        if @keyboard_displayed
+            if e.target.className not in ["KeyboardItem", "Keyboard", "KeyboardSet"]
+                @hide_keyboard()
+        if @timezone_displayed
+            if e.target.className not in ["TimezoneMap", "Timezone", "TimezoneSet", "ImageMap", "TimezoneArea"]
+                @hide_timezone()
+
+    check_start_ready: ->
+        if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
+            @start.setAttribute("class", "Start")
+            return true
+        else
+            @start.setAttribute("class", "StartInActive")
+            return false
+
+    start_install_cb: ->
+        if @check_start_ready()
+            pc.add_page(part_page)
+            pc.remove_page(welcome_page)
+            __selected_item?.focus()
+        else
+            @username.check_valid()
+            @hostname.check_valid()
+            @password.check_valid()
+            @confirmpassword.check_valid()
