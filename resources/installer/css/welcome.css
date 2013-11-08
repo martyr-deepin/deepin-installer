@@ -22,14 +22,6 @@
     color:#00bdff;
 }
 
-.KeyboardSet {
-    background:url("../images/keyboard.png") no-repeat;
-}
-
-.TimezoneSet {
-    background:url("../images/timezone.png") no-repeat;
-}
-
 .WelcomeForm {
     position:fixed;
     left:239px;

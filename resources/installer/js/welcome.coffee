@@ -268,22 +268,26 @@ class Welcome extends Page
         @keyboard = new Keyboard("keyboard")
         @element.appendChild(@keyboard.element)
         @keyboard_displayed = true
+        @keyboard_set.setAttribute("style", "background-color:#D0D0D0;background-image:\"../images/keyboard.png\"")
 
     hide_keyboard: ->
         @keyboard?.destroy()
         @keyboard_displayed = false
         @keyboard = null
+        @keyboard_set.setAttribute("style", "background-image:\"../images/keyboard.png\"")
 
     display_timezone: ->
         @hide_timezone()
         @timezone = new Timezone("timezone")
         @element.appendChild(@timezone.element)
         @timezone_displayed = true
+        @timezone_set.setAttribute("style", "background-color:#D0D0D0;background-image:\"../images/timezone.png\"")
 
     hide_timezone: ->
         @timezone?.destroy()
         @timezone_displayed = false
         @timezone = null
+        @timezone_set.setAttribute("style", "background-image:\"../images/timezone.png\"")
 
     do_click: (e) ->
         if @keyboard_displayed
