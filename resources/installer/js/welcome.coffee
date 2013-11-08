@@ -257,7 +257,7 @@ class Welcome extends Page
         @confirmpassword = new WelcomeFormItem("confirmpassword")
         @form.appendChild(@confirmpassword.element)
 
-        @start = create_element("div", "StartInActive", @element)
+        @start = create_element("div", "Start", @element)
         @start.innerText = "开始安装"
         @start.addEventListener("click", (e) =>
             @start_install_cb()
@@ -299,10 +299,10 @@ class Welcome extends Page
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
-            @start.setAttribute("class", "Start")
+            @start.setAttribute("style", "color:#FFFFFF")
             return true
         else
-            @start.setAttribute("class", "StartInActive")
+            @start.setAttribute("style", "color:848383")
             return false
 
     start_install_cb: ->
