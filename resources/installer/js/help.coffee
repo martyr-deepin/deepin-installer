@@ -21,6 +21,27 @@ class Help extends Widget
     constructor: (@id) ->
         super
         @title = create_element("div", "Title", @element)
+        @text = create_element("p", "", @title)
+        @text.innerText = "安装帮助"
+
+        @link = create_element("div", "Link", @title)
+        @add_link = create_element("span", "", @link)
+        @add_link.innerText = "新建分区"
+        @link_sep = create_element("span", "", @link)
+        @link_sep.innerText = " | "
+        @delete_link = create_element("span", "", @link)
+        @delete_link.innerText = "删除分区"
+
+        @close = create_element("div", "Close", @title)
+        @close.addEventListener("click", (e) =>
+            @exit_help()
+        )
+
         @content = create_element("div", "Content", @element)
+        @content.innerText = "安装帮助"
+
+    exit_help: ->
+        DCore.InstallerHelp.exit()
 
 help = new Help()
+document.body.appendChild(help.element)

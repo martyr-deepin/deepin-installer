@@ -9,9 +9,36 @@ body {
     line-height:90px;
     background:#474747 url("../images/banner.png") no-repeat fixed top;
     color:#FDFFFF;
-    text-align:center;
+    padding-left:20px;
     font-weight:bold;
     font-size:24px;
+}
+
+.Link {
+    position:absolute;
+    top:12px;
+    right:30px;
+    bottom:32px;
+    font-size:14px;
+    font-weight:normal;
+    color:#FFF;
+}
+
+.Close {
+    position:absolute;
+    width:20px;
+    height:20px;
+    top:10px;
+    right:10px;
+    background:url("../images/close.png");
+}
+
+.Close:hover {
+    background:url("../images/close_hot.png");
+}
+
+.Close:visited {
+    background:url("../images/close_pressed.png");
 }
 
 .Content {
