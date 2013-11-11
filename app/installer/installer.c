@@ -119,8 +119,8 @@ adapt_location_for_help ()
     GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (installer_container));
     gint s_width = gdk_screen_get_width (screen);
     gint s_height = gdk_screen_get_height (screen);
-    gint x = (s_width - (755  + 500)) / 2;
-    gint y = (s_height - 540) / 2;
+    gint x = s_width > 1255 ? ((s_width - (755  + 500)) / 2) : 0;
+    gint y = s_height > 540 ? ((s_height - 540) / 2) : 0;
 
     gtk_window_move (GTK_WINDOW (installer_container), x, y);
 }
