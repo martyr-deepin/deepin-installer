@@ -522,6 +522,7 @@ class Part extends Page
         @next_btn = create_element("div", "NextStep", @element)
         @next_btn.innerText = "开始安装"
         @next_btn.addEventListener("click", (e) =>
+            DCore.Installer.hide_help()
             do_partition()
             pc.add_page(progress_page)
             pc.remove_page(part_page)
