@@ -260,6 +260,13 @@ class Welcome extends Page
 
         @start = create_element("div", "Start", @element)
         @start.innerText = "开始安装"
+        @start.addEventListener("mouseover", (e) =>
+            if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
+                @start.setAttribute("style", "color:#00bdff")
+        )
+        @start.addEventListener("mouseout", (e) =>
+            @start.setAttribute("style", "")
+        )
         @start.addEventListener("click", (e) =>
             @start_install_cb()
         )
