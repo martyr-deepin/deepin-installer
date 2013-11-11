@@ -307,7 +307,7 @@ class Welcome extends Page
             if e.target.className not in ["KeyboardItem", "Keyboard", "KeyboardSet"]
                 @hide_keyboard()
         if @timezone_displayed
-            if e.target.className not in ["TimezoneMap", "Timezone", "TimezoneSet", "ImageMap", "TimezoneArea"]
+            if e.target.className not in ["TimezoneMap", "Timezone", "TimezoneSet", "ImageMap", "TimezoneArea", "Pin"]
                 @hide_timezone()
 
     check_start_ready: ->
