@@ -61,12 +61,12 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 
     if (event->y > 90 || ((event->x > 340) && (event->y > 50) && (80 > event->y))
             || ((event->x > 470) && (event->y < 30))) {
-        g_debug ("move window:html click area");
+        //g_debug ("move window:html click area");
         return TRUE;
     }
 
     if (event->button == 1) {
-        g_debug ("move window:in drag x_root->%g, y_root->%g", event->x_root, event->y_root);
+        //g_debug ("move window:in drag x_root->%g, y_root->%g", event->x_root, event->y_root);
 
         gtk_widget_set_can_focus (widget, TRUE);
         gtk_widget_grab_focus (widget);

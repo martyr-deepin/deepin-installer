@@ -32,6 +32,10 @@ body {
     color:#FFF;
 }
 
+.Link span:hover {
+    color:#00bdff;
+}
+
 .Close {
     position:fixed;
     width:20px;
