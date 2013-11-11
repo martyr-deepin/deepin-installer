@@ -233,10 +233,11 @@ class Welcome extends Page
 
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("span", "KeyboardSet", @title_set)
-        @keyboard_set.innerText = "键盘"
+        @keyboard_set.innerHTML += "键盘"
         @keyboard_set.addEventListener("click", (e) =>
             @display_keyboard()
         )
+
         @timezone_set = create_element("span", "TimezoneSet", @title_set)
         @timezone_set.innerText = "时区"
         @timezone_set.addEventListener("click", (e) =>
@@ -268,26 +269,26 @@ class Welcome extends Page
         @keyboard = new Keyboard("keyboard")
         @element.appendChild(@keyboard.element)
         @keyboard_displayed = true
-        @keyboard_set.setAttribute("style", "background-color:#D0D0D0;background-image:\"../images/keyboard.png\"")
+        @keyboard_set.setAttribute("style", "background-color:#D0D0D0")
 
     hide_keyboard: ->
         @keyboard?.destroy()
         @keyboard_displayed = false
         @keyboard = null
-        @keyboard_set.setAttribute("style", "background-image:\"../images/keyboard.png\"")
+        @keyboard_set.setAttribute("style", "")
 
     display_timezone: ->
         @hide_timezone()
         @timezone = new Timezone("timezone")
         @element.appendChild(@timezone.element)
         @timezone_displayed = true
-        @timezone_set.setAttribute("style", "background-color:#D0D0D0;background-image:\"../images/timezone.png\"")
+        @timezone_set.setAttribute("style", "background-color:#D0D0D0")
 
     hide_timezone: ->
         @timezone?.destroy()
         @timezone_displayed = false
         @timezone = null
-        @timezone_set.setAttribute("style", "background-image:\"../images/timezone.png\"")
+        @timezone_set.setAttribute("style", "")
 
     do_click: (e) ->
         if @keyboard_displayed

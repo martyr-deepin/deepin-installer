@@ -1,11 +1,10 @@
 .TitleSet {
-    position:fixed;
+    position:absolute;
     width:160px;
     height:30px;
-    top:60px;
-    right:0px;
-    bottom:450px;
-    left:600px;
+    right:10px;
+    top:61px;
+    bottom:0px;
     font-size:14px;
     color:#B3B3B3;
 }
@@ -16,10 +15,19 @@
     height:30px;
     line-height:30px;
     color:#FFFFFF;
+    text-align:center;
 }
 
 .TitleSet span:hover {
     color:#00bdff;
+}
+
+.KeyboardSet {
+    background:url("../images/keyboard.png") no-repeat;
+}
+
+.TimezoneSet {
+    background:url("../images/timezone.png") no-repeat;
 }
 
 .WelcomeForm {
@@ -49,7 +57,7 @@
 }
 
 .WelcomeFormItem input:hover {
-    border:2px solid #1FC1FA;
+    border:1px solid #1FC1FA;
     border-radius:3px;
 }
 
@@ -103,9 +111,9 @@
 }
 
 .Keyboard {
-    position:fixed;
+    position:absolute;
     left:430px;
-    top:92px;
+    top:90px;
     bottom:18px;
     width:312px;
     height:430px;
@@ -141,10 +149,10 @@
 }
 
 .Timezone {
-    position:fixed;
+    position:absolute;
     left:8px;
     right:8px;
-    top:92px;
+    top:90px;
     bottom:12px;
     width:738px;
     height:436px;
