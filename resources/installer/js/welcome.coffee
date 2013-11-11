@@ -194,10 +194,12 @@ class WelcomeFormItem extends Widget
         else if @id == "password"
             @text.innerText = "登录密码"
             @input.setAttribute("placeholder", "请输入密码")
+            @input.setAttribute("type", "password")
             @error.innerText = "密码不合法"
         else if @id == "confirmpassword"
             @text.innerText = "确认密码"
             @input.setAttribute("placeholder", "请再次输入密码")
+            @input.setAttribute("type", "password")
             @error.innerText = "确认密码不合法"
 
     check_valid: ->
