@@ -264,11 +264,11 @@
     margin:0;
 }
 
-.DialogContent AddDesc {
+.DialogContent .AddDesc {
     width:50px;
 }
 
-.DialogContent AddValue {
+.DialogContent .AddValue {
     width:160px;
 }
 

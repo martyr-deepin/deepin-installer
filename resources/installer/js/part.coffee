@@ -20,7 +20,7 @@
 __selected_disk = null
 __selected_item = null
 __selected_line = null
-__selected_mode = null
+__selected_mode = "simple"
 
 create_option = (select, value, text) ->
     option = create_element("option", "", select)
@@ -436,6 +436,8 @@ class PartTable extends Widget
         @mount_header = create_element("div", "", @header)
         if __selected_mode == "advance"
             @mount_header.innerText = "MountPoint"
+        else
+            @mount_header.innerText = ""
         @items = create_element("div", "PartTableItems", @element)
         @fill_items()
 
@@ -455,6 +457,9 @@ class PartTable extends Widget
         if mode == "advance"
             @mount_header.innerText = "MountPoint"
             @items.setAttribute("class", "PartTableItemsAdvance")
+        else
+            @mount_header.innerText = ""
+            @items.setAttribute("class", "PartTableItems")
         for disk in disks
             for part in v_disk_info[disk]["partitions"]
                 Widget.look_up(part)?.update_mode(mode)?
@@ -473,7 +478,19 @@ class Part extends Page
 
         @help = create_element("div", "PartHelp", @title)
         @t_mode = create_element("span", "", @help)
-        @t_mode.innerText = "精简模式"
+        @t_mode.innerText = "高级模式"
+        @t_mode.addEventListener("click", (e) =>
+            if __selected_mode != "advance"
+                __selected_mode = "advance"
+                @show_advance_op()
+                @table.update_mode(__selected_mode)
+                @t_mode.innerText = "精简模式"
+            else
+                __selected_mode = "simple"
+                @hide_advance_op()
+                @table.update_mode(__selected_mode)
+                @t_mode.innerText ="高级模式" 
+        )
         @t_sep = create_element("span", "", @help)
         @t_sep.innerText = "  |  "
         @t_help = create_element("span", "", @help)
@@ -494,23 +511,18 @@ class Part extends Page
         if __selected_item == null
             __selected_item = Widget.look_up(@table.items_part?[0])?
 
+        @fill_advance_op()
         if __selected_mode == "advance"
-            @fill_advance_op()
+            @show_advance_op()
+        else
+            @hide_advance_op()
 
-            #@next_step = create_element("p", "NextStep", @element)
         @next_btn = create_element("div", "NextStep", @element)
         @next_btn.innerText = "开始安装"
         @next_btn.addEventListener("click", (e) =>
             do_partition()
             pc.add_page(progress_page)
             pc.remove_page(part_page)
-        )
-
-        @t_mode.addEventListener("click", (e) =>
-            if __selected_mode != "advance"
-                __selected_mode = "advance"
-                @fill_advance_op()
-                @table.update_mode(__selected_mode)
         )
 
     fill_advance_op: ->
@@ -553,6 +565,14 @@ class Part extends Page
             select_opt.innerText += "\t"
             select_opt.innerText += sector_to_gb(v_disk_info[disk]["length"], 512)
             select_opt.innerText += "GB"
+
+    show_advance_op: ->
+        @op.setAttribute("style", "display:block")
+        @part_grub.setAttribute("style", "display:block")
+
+    hide_advance_op: ->
+        @op.setAttribute("style", "display:none")
+        @part_grub.setAttribute("style", "display:none")
 
     toggle_show_help: ->
         if @help_displayed
