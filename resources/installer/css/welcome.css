@@ -163,7 +163,7 @@
 }
 
 .TimezonePicker {
-    background:url("../images/zonemap.png");
+    background:#FFF url("../images/zonemap.png");
     position:relative;
     width:736px;
     height:404px;
