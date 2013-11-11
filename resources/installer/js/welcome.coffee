@@ -24,7 +24,7 @@ __hostname = null
 __password = null
 __illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
 
-__database = JSON.parse timezone_json
+__database = JSON.parse(timezone_json)
 
 class Keyboard extends Widget
     constructor: (@id)->
@@ -87,7 +87,7 @@ class Timezone extends Widget
     update_timezone: (zone) ->
         @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
         @current.innerHTML += "<span>City:" + zone + "</span>"
-        @current.innerHTML += "<span>Country:" + __database[zone]["country"] = "</span>"
+        @current.innerHTML += "<span>Country:" + __database[zone]["country"] + "</span>"
         __selected_timezone = zone
 
     construct_map: ->
@@ -122,10 +122,7 @@ class Timezone extends Widget
         )
     
     show_pin: (area) ->
-        echo "show pin"
         pin = area.getAttribute("data-pin").split(",")
-        echo pin[0]
-        echo pin[1]
         @pin?.parentElement?.removeChild(@pin)
         @pin = null
         @pin = create_img("Pin", "images/pin.png", @picker_wrap)
