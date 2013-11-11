@@ -9,27 +9,37 @@ body {
     line-height:90px;
     background:#474747 url("../images/banner.png") no-repeat fixed top;
     color:#FDFFFF;
-    padding-left:20px;
     font-weight:bold;
     font-size:24px;
 }
 
+.Title p {
+    float:left;
+    height:40px;
+    line-height:40px;
+    vertical-align:middle;
+    font-size:24px;
+    padding-left:20px;
+}
+
 .Link {
-    position:absolute;
-    top:12px;
+    position:fixed;
+    top:20px;
     right:30px;
-    bottom:32px;
+    bottom:480px;
     font-size:14px;
     font-weight:normal;
     color:#FFF;
 }
 
 .Close {
-    position:absolute;
+    position:fixed;
     width:20px;
     height:20px;
     top:10px;
     right:10px;
+    bottom:520px;
+    left:470px;
     background:url("../images/close.png");
 }
 
