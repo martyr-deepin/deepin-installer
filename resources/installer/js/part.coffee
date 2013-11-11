@@ -227,14 +227,17 @@ class PartLineItem extends Widget
         catch error
             echo error
         @add_css_class("PartLineItemActive")
+            #@element.setAttribute("style", "border:2px solid #6ACAF3")
     
     passive_focus: ->
         __selected_line?.blur()
         __selected_line = @
         @add_css_class("PartLineItemActive")
+        #@element.setAttribute("style", "border:2px solid #6ACAF3")
 
     blur: ->
         @element.setAttribute("class", "PartLineItem")
+        #@element.setAttribute("style", "")
 
     do_click: (e)->
         if __selected_line == @ 

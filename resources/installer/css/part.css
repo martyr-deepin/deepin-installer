@@ -5,6 +5,11 @@
     right:30px;
     bottom:480px;
     font-size:14px;
+    color:#FFF;
+}
+
+.PartHelp span:hover {
+    color:#00bdff;
 }
 
 .PartLineMaps {
@@ -207,6 +212,10 @@
     background:#1D1E22;
     color:white;
     border-radius:5px;
+}
+
+.NextStep:hover {
+    color:#00bdff;
 }
 
 .AddPartDialog {
