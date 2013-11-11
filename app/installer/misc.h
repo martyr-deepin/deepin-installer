@@ -79,4 +79,6 @@ JS_EXPORT_API void installer_show_help ();
 
 JS_EXPORT_API void installer_hide_help ();
 
+JS_EXPORT_API gboolean installer_is_help_running ();
+
 #endif

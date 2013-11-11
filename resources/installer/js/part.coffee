@@ -498,7 +498,6 @@ class Part extends Page
         @t_sep.innerText = "  |  "
         @t_help = create_element("span", "", @help)
         @t_help.innerText = "查看帮助"
-        @help_displayed = false
         @t_help.addEventListener("click", (e) =>
             @toggle_show_help()
         )
@@ -578,9 +577,7 @@ class Part extends Page
         @part_grub.setAttribute("style", "display:none")
 
     toggle_show_help: ->
-        if @help_displayed
+        if DCore.Installer.is_help_running()
             DCore.Installer.hide_help()
-            @help_displayed = false
         else
             DCore.Installer.show_help()
-            @help_displayed = true

@@ -1076,3 +1076,27 @@ void installer_hide_help ()
     }
     g_free (cmd);
 }
+
+JS_EXPORT_API 
+gboolean installer_is_help_running ()
+{
+    gboolean running = FALSE;
+    GError *error = NULL;
+    gchar *output = NULL;
+
+    gchar *cmd = g_strdup ("sh -c \"ps aux |grep installerhelp\"");
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error); 
+    g_free (cmd);
+    if (error != NULL) {
+        g_warning ("is help running:%s\n", error->message);
+        g_error_free (error);
+    }
+    gchar **items = g_strsplit (output, "\n", -1);
+    if (g_strv_length (items) > 3) {
+        running = TRUE;
+    }
+    g_strfreev (items);
+    g_free (output);
+
+    return running;
+}
