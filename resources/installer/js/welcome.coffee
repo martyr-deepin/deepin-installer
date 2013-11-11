@@ -122,15 +122,15 @@ class Timezone extends Widget
         )
     
     show_pin: (area) ->
+        echo "show pin"
         pin = area.getAttribute("data-pin").split(",")
+        echo pin[0]
+        echo pin[1]
         @pin?.parentElement?.removeChild(@pin)
         @pin = null
-        @pin = create_img("", "images/pin.png", @picker_wrap)
-        @pin.setAttribute("position", "absolute")
-        @pin.setAttribute("left", pin[0] + "px")
-        @pin.setAttribute("top", pin[1] + "px")
-        @pin.setAttribute("width", "13px")
-        @pin.setAttribute("height", "21px")
+        @pin = create_img("Pin", "images/pin.png", @picker_wrap)
+        style = "left:" + (parseInt(pin[0])+8-14) + "px;" + "top:" + (parseInt(pin[1])+30-13) + "px"
+        @pin.setAttribute("style", style)
 
     draw_timezone: (myarea) ->
         offset = myarea.getAttribute("data-offset")
@@ -154,7 +154,8 @@ class Timezone extends Widget
             ctx.lineTo(poly[i], poly[i+1])
             i = i + 2
         ctx.closePath()
-        ctx.fillStyle = "#A2A2A2"
+        #ctx.fillStyle = "#A2A2A2"
+        ctx.fillStyle = "#00bdff"
         ctx.fill()
 
     destroy_canvas: (area) ->
