@@ -87,6 +87,18 @@ installerhelp_exit ()
     gtk_main_quit ();
 }
 
+static void
+adapt_location_with_installer ()
+{
+    GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (help_container));
+    gint s_width = gdk_screen_get_width (screen);
+    gint s_height = gdk_screen_get_height (screen);
+    gint x = (s_width - (755  + 500)) / 2 + 755;
+    gint y = (s_height - 540) / 2;
+
+    gtk_window_move (GTK_WINDOW (help_container), x, y);
+}
+
 int main(int argc, char **argv)
 {
     init_i18n ();
@@ -105,11 +117,13 @@ int main(int argc, char **argv)
     g_signal_connect (help_container, "button-press-event", G_CALLBACK (move_window), NULL);
 
     gtk_container_add (GTK_CONTAINER (help_container), GTK_WIDGET (webview));
-    gtk_window_set_position (GTK_WINDOW (help_container), GTK_WIN_POS_CENTER);
+    //gtk_window_set_position (GTK_WINDOW (help_container), GTK_WIN_POS_CENTER);
     gtk_window_set_default_size (GTK_WINDOW (help_container), 500, 540);
 
     gtk_widget_realize (help_container);
     gtk_widget_show_all (help_container);
+
+    adapt_location_with_installer ();
 
     gtk_main ();
 

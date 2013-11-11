@@ -75,10 +75,4 @@ JS_EXPORT_API gboolean installer_mount_procfs ();
 
 JS_EXPORT_API gboolean installer_chroot_target ();
 
-JS_EXPORT_API void installer_show_help ();
-
-JS_EXPORT_API void installer_hide_help ();
-
-JS_EXPORT_API gboolean installer_is_help_running ();
-
 #endif
