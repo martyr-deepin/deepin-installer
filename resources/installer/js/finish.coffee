@@ -23,6 +23,11 @@ class Finish extends Page
         @finish_txt = create_element("p", "", @title)
         @finish_txt.innerText = "安装完成"
 
+        @close = create_element("div", "Close", @title)
+        @close.addEventListener("click", (e) =>
+            @exit_installer()
+        )
+
         @sep = create_element("div", "Sep", @element)
 
         @finish_desc = create_element("div", "FinishForm", @element)

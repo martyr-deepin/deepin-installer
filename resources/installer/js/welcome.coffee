@@ -154,7 +154,7 @@ class Timezone extends Widget
             ctx.lineTo(poly[i], poly[i+1])
             i = i + 2
         ctx.closePath()
-        ctx.fillStyle = "#FF0000"
+        ctx.fillStyle = "#A2A2A2"
         ctx.fill()
 
     destroy_canvas: (area) ->
@@ -244,6 +244,11 @@ class Welcome extends Page
         @timezone_set.innerText = "时区"
         @timezone_set.addEventListener("click", (e) =>
             @display_timezone()
+        )
+
+        @close = create_element("div", "Close", @title)
+        @close.addEventListener("click", (e) =>
+            @exit_installer()
         )
 
         @form = create_element("div", "WelcomeForm", @element)

@@ -40,6 +40,9 @@ class Page extends Widget
         super
         @title = create_element("div", "Title", @element)
 
+    exit_installer: ->
+        DCore.Installer.finish_install()
+
 class PageContainer extends Widget
     constructor: (@id)->
         super

@@ -502,6 +502,11 @@ class Part extends Page
             @toggle_show_help()
         )
 
+        @close = create_element("div", "Close", @title)
+        @close.addEventListener("click", (e) =>
+            @exit_installer()
+        )
+
         #linemap
         @linemap = new PartLineMaps("part_line_maps")
         @element.appendChild(@linemap.element)

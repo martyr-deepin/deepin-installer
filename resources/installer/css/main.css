@@ -27,6 +27,25 @@
     padding-top:4px;
 }
 
+.Close {
+    position:fixed;
+    width:20px;
+    height:20px;
+    top:10px;
+    right:10px;
+    bottom:520px;
+    left:725px;
+    background:url("../images/close.png");
+}
+
+.Close:hover {
+    background:url("../images/close_hot.png");
+}
+
+.Close:visited {
+    background:url("../images/close_pressed.png");
+}
+
 .PageContainer {
     width:755px;
     height:540px;
