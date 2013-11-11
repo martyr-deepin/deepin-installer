@@ -59,8 +59,8 @@ static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
 
-    if (event->y > 90 || ((event->x > 360) && (event->y > 50) && (90 > event->y))
-            || ((event->x > 480) && (event->y <30))) {
+    if (event->y > 90 || ((event->x > 340) && (event->y > 50) && (80 > event->y))
+            || ((event->x > 470) && (event->y < 30))) {
         g_debug ("move window:html click area");
         return TRUE;
     }
