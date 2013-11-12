@@ -256,11 +256,22 @@
     margin:0;
 }
 
-.DialogTitle span {
+.DialogTxt {
+    float:left;
     margin-left:10px;
 }
 
+.DialogClose {
+    position:absolute;
+    top:3px;
+    right:4px;
+    width:20px;
+    height:20px;
+    background:url("../images/close.png") no-repeat;
+}
+
 .DialogContent {
+    clear:both;
     padding:0 0 0 110px;
     margin:0;
 }

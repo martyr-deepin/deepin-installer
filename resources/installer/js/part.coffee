@@ -31,8 +31,11 @@ class Dialog extends Widget
     constructor: (@id, @cb) ->
         super
         @title = create_element("p", "DialogTitle", @element)
-        @title_txt = create_element("span", "", @title)
-        @title_close = create_element("i", "", @title)
+        @title_txt = create_element("div", "DialogTxt", @title)
+        @title_close = create_element("div", "DialogClose", @title)
+        @title_close.addEventListener("click", (e) =>
+            @hide_dialog()
+        )
 
         @content = create_element("div", "DialogContent", @element)
         @foot = create_element("p", "DialogBtn", @element)
@@ -59,7 +62,7 @@ class Dialog extends Widget
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, @add_part_cb)
-        @title.innerText = "新建分区"
+        @title_txt.innerText = "新建分区"
         @fill_type()
         @fill_size()
         @fill_align()
@@ -183,7 +186,7 @@ class AddPartDialog extends Dialog
 class DeletePartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, @delete_part_cb)
-        @title.innerText = "删除分区"
+        @title_txt.innerText = "删除分区"
         @content.innerText = "确定删除分区吗?"
 
     delete_part_cb: ->
@@ -195,7 +198,7 @@ class DeletePartDialog extends Dialog
 class UnmountDialog extends Dialog
     constructor: (@id) ->
         super(@id, @unmount_cb)
-        @title.innerText = "安装执行"
+        @title_txt.innerText = "安装执行"
         @content.innerText = " 检测到磁盘已经挂载，确定卸载吗?"
 
     unmount_cb: ->
@@ -204,7 +207,7 @@ class UnmountDialog extends Dialog
 class FormatDialog extends Dialog
     constructor: (@id) ->
         super(@id, @format_cb)
-        @title.innerText = "安装执行"
+        @title_txt.innerText = "安装执行"
         @content.innerText = "确定执行分区操作并安装LinuxDeepin吗?"
 
     format_cb: ->
