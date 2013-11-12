@@ -158,7 +158,7 @@ class AddPartDialog extends Dialog
         @mp_desc = create_element("span", "AddDec", @mp)
         @mp_desc.innerText = "挂载:"
         @mount_value = create_element("span", "AddValue", @mp)
-        @mount_select = create_element("select", "", @mp_value)
+        @mount_select = create_element("select", "", @mount_value)
         for opt in ["/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
             create_option(@mount_select, opt, opt)
 
