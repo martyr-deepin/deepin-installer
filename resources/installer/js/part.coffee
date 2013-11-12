@@ -477,9 +477,6 @@ class PartTable extends Widget
             
     update_mode: (mode) ->
         if mode == "advance"
-            if check_has_mount
-                @unmount_model = new UnmountDialog("UnmountModel")
-                document.body.appendChild(@unmount_model.element)
             @mount_header.innerText = "MountPoint"
             @items.setAttribute("style", "height:210px")
         else
@@ -507,11 +504,17 @@ class Part extends Page
         @t_mode.addEventListener("click", (e) =>
             if __selected_mode != "advance"
                 __selected_mode = "advance"
+                if check_has_mount
+                    @unmount_model = new UnmountDialog("UnmountModel")
+                    document.body.appendChild(@unmount_model.element)
                 @show_advance_op()
                 @table.update_mode(__selected_mode)
                 @t_mode.innerText = "精简模式"
             else
                 __selected_mode = "simple"
+                @add_model?.destroy()
+                @delete_model?.destroy()
+                @unmount_model?.destroy()
                 @hide_advance_op()
                 @table.update_mode(__selected_mode)
                 @t_mode.innerText ="高级模式" 
