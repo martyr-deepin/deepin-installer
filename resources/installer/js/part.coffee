@@ -62,6 +62,7 @@ class Dialog extends Widget
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, @add_part_cb)
+        @add_css_class("DialogCommon")
         @title_txt.innerText = "新建分区"
         @fill_type()
         @fill_size()
@@ -186,6 +187,7 @@ class AddPartDialog extends Dialog
 class DeletePartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, @delete_part_cb)
+        @add_css_class("DialogCommon")
         @title_txt.innerText = "删除分区"
         @content.innerText = "确定删除分区吗?"
 
@@ -198,9 +200,9 @@ class DeletePartDialog extends Dialog
 class UnmountDialog extends Dialog
     constructor: (@id) ->
         super(@id, @unmount_cb)
-        @title_txt.innerText = "安装执行"
-        @content.innerText = " 检测到磁盘已经挂载，确定卸载吗?"
-
+        @add_css_class("DialogCommon")
+        @title_txt.innerText = "卸载分区"
+        @content.innerText = " 检测到有磁盘已经挂载，操作对应分区需要卸载,确定卸载吗?"
     unmount_cb: ->
         echo "unmount partitions"
 
@@ -475,6 +477,9 @@ class PartTable extends Widget
             
     update_mode: (mode) ->
         if mode == "advance"
+            if check_has_mount
+                @unmount_model = new UnmountDialog("UnmountModel")
+                document.body.appendChild(@unmount_model.element)
             @mount_header.innerText = "MountPoint"
             @items.setAttribute("style", "height:210px")
         else

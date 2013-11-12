@@ -260,6 +260,18 @@ check_target_part = ->
     else
         return false
 
+#when had partition mount, should attention him unmount first before part operation
+check_has_mount = ->
+    mount = false
+    for disk in disks
+        for part in m_disk_info[disk]["partitions"]
+            if DCore.Installer.get_partition_mp(part)
+                echo part
+                echo DCore.Installer.get_parition_mp(part)
+                mount = true
+                break
+    return mount
+
 #write /etc/fstab
 write_fs_tab = ->
     echo "write fs tab"
@@ -329,12 +341,12 @@ init_v_part_info = ->
             #    v_part_info[part]["mp"] = DCore.Installer.get_partition_mp(part)
             #catch error
             #    v_part_info[part]["mp"] = "unused"
+            v_part_info[part]["mp"] = "unused"
             v_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
             v_part_info[part]["color"] = get_random_color() 
             v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
             v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
             v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
-            #v_part_info[part]["label"] = "linux"
             v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm")
 
 _sort_part_geom = (part_a, part_b) ->

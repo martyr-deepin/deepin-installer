@@ -210,7 +210,7 @@
     color:#00bdff;
 }
 
-.AddPartDialog {
+.DialogCommon {
     position:fixed;
     left:130px;
     right:130px;
@@ -222,28 +222,8 @@
     z-index:99999;
 }
 
-.AddPartDialog:target {
-	pointer-events:auto;
-}
-
-.DeletePartDialog {
-    position:fixed;
-    left:130px;
-    right:130px;
-    top:170px;
-    bottom:120px;
-    width:490px;
-    height:180px;
-    background:#FFFFFF;
-    z-index:99999;
-}
-
-.DeletePartDialog:target {
-	pointer-events:auto;
-}
-
-.Dialog {
-    background:#F1F1F1;
+.DialogCommon:target {
+    pointer-events:auto;
 }
 
 .DialogTitle {
