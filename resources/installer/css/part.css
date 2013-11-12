@@ -276,8 +276,12 @@
     width:60px;
     height:22px;
     line-height:22px;
-    background:#1D1E20;
+    background:#222;
     border-radius:3px;
-    color:#E2E3E5;
+    color:white;
     margin:0 10px 10px 10px;
+}
+
+.DialogBtn span:hover {
+    color:#00bdff;
 }
