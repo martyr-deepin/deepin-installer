@@ -22,6 +22,10 @@ __selected_item = null
 __selected_line = null
 __selected_mode = "simple"
 
+__board = create_element("div", "Board", "")
+__board.setAttribute("id", "board")
+document.body.appendChild(__board)
+
 create_option = (select, value, text) ->
     option = create_element("option", "", select)
     option.setAttribute("value", value)
@@ -55,10 +59,12 @@ class Dialog extends Widget
 
     show_dialog: ->
         __in_model = true
+        __board.setAttribute("style", "display:block")
 
     hide_dialog: ->
         __in_model = false
         @destroy()
+        __board.setAttribute("style", "display:none")
 
     #do_dragstart: (event) ->
     #    echo "do dragstart"
@@ -522,9 +528,9 @@ class Part extends Page
                 @t_mode.innerText = "精简模式"
             else
                 __selected_mode = "simple"
-                @add_model?.destroy()
-                @delete_model?.destroy()
-                @unmount_model?.destroy()
+                @add_model?.hide_dialog()
+                @delete_model?.hide_dialog()
+                @unmount_model?.hide_dialog()
                 @hide_advance_op()
                 @table.update_mode(__selected_mode)
                 @t_mode.innerText ="高级模式" 

@@ -1,3 +1,15 @@
+.Board {
+    position:absolute;
+    width:755px;
+    height:540px;
+    top:0;
+    left:0;
+    z-index:10000;
+    background:white;
+    opacity:0;
+    display:none;
+}
+
 .PartHelp {
     position:fixed;
     top:20px;
@@ -219,10 +231,6 @@
     min-height:140px;
     background:#FFFFFF;
     z-index:99999;
-}
-
-.DialogCommon:target {
-    pointer-events:auto;
 }
 
 .DialogTitle {
