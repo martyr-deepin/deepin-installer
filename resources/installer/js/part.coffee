@@ -227,13 +227,13 @@ class PartLineItem extends Widget
         catch error
             echo error
         @add_css_class("PartLineItemActive")
-            #@element.setAttribute("style", "border:2px solid #6ACAF3")
+            #@element.setAttribute("style", "border:2px solid #6ACAF3;opacity:1.0")
     
     passive_focus: ->
         __selected_line?.blur()
         __selected_line = @
         @add_css_class("PartLineItemActive")
-        #@element.setAttribute("style", "border:2px solid #6ACAF3")
+        #@element.setAttribute("style", "border:2px solid #6ACAF3;opacity:1.0")
 
     blur: ->
         @element.setAttribute("class", "PartLineItem")
@@ -402,18 +402,31 @@ class PartTableItem extends Widget
             echo error
 
         @set_btn_status()
-        @add_css_class("PartTableItemActive")
-        Widget.look_up("part")?.update_next_btn("Install to" + @lineid)
+        @element.setAttribute("style", "background:#27BEFF")
+        @update_install_btn()
+
 
     passive_focus: ->
         __selected_item?.blur()
         __selected_item = @
 
         @set_btn_status()
-        @add_css_class("PartTableItemActive")
+        @element.setAttribute("style", "background:#27BEFF")
+        @update_install_btn()
 
     blur: ->
-        @element.setAttribute("class", "PartTableItem")
+        @element.setAttribute("style", "")
+
+    update_install_btn: ->
+        if @device_type == "disk"
+            txt = v_disk_info[@id]["path"]
+        else
+            if v_part_info[@id]["label"].length > 0
+                txt = v_part_info[@id]["label"]
+            else
+                txt = v_part_info[@id]["path"]
+        install_txt = "Install to " + txt
+        Widget.look_up("part")?.update_next_btn(install_txt)
 
     do_click: (e)->
         if __selected_item == @ 
@@ -460,10 +473,10 @@ class PartTable extends Widget
     update_mode: (mode) ->
         if mode == "advance"
             @mount_header.innerText = "MountPoint"
-            @items.setAttribute("class", "PartTableItemsAdvance")
+            @items.setAttribute("style", "height:210px")
         else
             @mount_header.innerText = ""
-            @items.setAttribute("class", "PartTableItems")
+            @items.setAttribute("style", "")
         for disk in disks
             for part in v_disk_info[disk]["partitions"]
                 Widget.look_up(part)?.update_mode(mode)?

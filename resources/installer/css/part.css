@@ -69,23 +69,11 @@
     overflow-x:hidden;
 }
 
-.PartTableItemsAdvance {
-    width:700px;
-    height:210px;
-    background:#F1F1F1;
-    overflow-y:auto;
-    overflow-x:hidden;
-}
-
 .PartTableItem {
     width:700px;
     height:42px;
     border:1px solid #E1E1E1;
     clear:both;
-}
-
-.PartTableItemActive {
-    background:#27BEFF;
 }
 
 .PartTableItem >span {
@@ -156,8 +144,8 @@
     height:22px;
     line-height:22px;
     margin-right:10px;
-    background:#1C1D21;
     border-radius:3px;
+    background:#1C1D21;
     color:#E4E6E5;
     pointer-events:none;
 }
@@ -169,8 +157,8 @@
     height:22px;
     line-height:22px;
     margin-right:10px;
-    background:#8BCEFB;
     broder-radius:3px;
+    background:#8BCEFB;
     color:#FFFFFF;
     pointer-events:auto;
     border:1px solid #CFE2F0;
