@@ -248,6 +248,13 @@
     height:20px;
     background:url("../images/close.png") no-repeat;
 }
+.DialogClose:hover {
+    background:url("../images/close_hot.png") no-repeat;
+}
+
+.DialogClose:visited {
+    background:url("../images/close_pressed.png") no-repeat;
+}
 
 .DialogContent {
     clear:both;
