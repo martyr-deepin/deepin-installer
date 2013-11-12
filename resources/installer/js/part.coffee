@@ -277,10 +277,10 @@ class PartTableItem extends Widget
         @fill_device()
 
         @size = create_element("div", "", @element)
-        @size.innerText += sector_to_mb(v_part_info[@id]["length"], 512)
+        @size.innerText += sector_to_gb(v_part_info[@id]["length"], 512).toFixed(3) + "GB"
 
         @used = create_element("div", "", @element)
-        @used.innerText = v_part_info[@id]["used"]
+        @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(3) + "GB"
 
         @fs = create_element("div", "", @element)
         @fill_fs()
@@ -289,7 +289,7 @@ class PartTableItem extends Widget
         @fill_mount()
 
     update_part_used: ->
-        @used.innerText = v_part_info[@id]["used"]
+        @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(3) + "GB"
 
     product_disk_item: ->
         @device = create_element("div","", @element)
