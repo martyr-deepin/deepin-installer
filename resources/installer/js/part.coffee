@@ -195,7 +195,8 @@ class DeletePartDialog extends Dialog
         super(@id, @delete_part_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = "删除分区"
-        @content.innerText = "确定删除分区吗?"
+        @delete_tips = create_element("p", "", @content)
+        @delete_tips.innerText = "确定删除分区吗?"
 
     delete_part_cb: ->
         delete_part(@partid)
@@ -208,7 +209,9 @@ class UnmountDialog extends Dialog
         super(@id, @unmount_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = "卸载分区"
-        @content.innerText = " 检测到有磁盘已经挂载，操作对应分区需要卸载,确定卸载吗?"
+        @unmount_tips = create_element("p", "", @content)
+        @unmount_tips.innerText = " 检测到有磁盘已经挂载，操作对应分区需要卸载,确定卸载吗?"
+
     unmount_cb: ->
         echo "unmount partitions"
 
@@ -216,7 +219,8 @@ class FormatDialog extends Dialog
     constructor: (@id) ->
         super(@id, @format_cb)
         @title_txt.innerText = "安装执行"
-        @content.innerText = "确定执行分区操作并安装LinuxDeepin吗?"
+        @format_tips = create_element("p", "", @content)
+        @format_tips.innerText = "确定执行分区操作并安装LinuxDeepin吗?"
 
     format_cb: ->
         echo "format to do install"

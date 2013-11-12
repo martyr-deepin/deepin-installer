@@ -215,9 +215,8 @@
     left:130px;
     right:130px;
     top:170px;
-    bottom:120px;
     width:490px;
-    height:260px;
+    min-height:140px;
     background:#FFFFFF;
     z-index:99999;
 }
@@ -252,7 +251,7 @@
 
 .DialogContent {
     clear:both;
-    padding:0 0 0 110px;
+    padding:0 0 20px 110px;
     margin:0;
 }
 
