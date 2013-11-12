@@ -403,6 +403,7 @@ class PartTableItem extends Widget
 
         @set_btn_status()
         @add_css_class("PartTableItemActive")
+        Widget.look_up("part")?.update_next_btn("Install to" + @lineid)
 
     passive_focus: ->
         __selected_item?.blur()
@@ -525,6 +526,7 @@ class Part extends Page
             @hide_advance_op()
 
         @next_btn = create_element("div", "NextStep", @element)
+        @next_btn.setAttribute("id", "mynextstep")
         @next_btn.innerText = "开始安装"
         @next_btn.addEventListener("click", (e) =>
             DCore.Installer.hide_help()
@@ -532,6 +534,11 @@ class Part extends Page
             pc.add_page(progress_page)
             pc.remove_page(part_page)
         )
+
+    update_next_btn: (txt) ->
+        @next_btn.innerText = txt
+        left = "left:" + (755 - document.getElementById("mynextstep")?.offsetWidth) / 2
+        @next_btn.setAttribute("style", left)
 
     fill_advance_op: ->
         #part op buttons
