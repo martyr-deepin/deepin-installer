@@ -68,10 +68,9 @@
 ::-webkit-scrollbar-thumb {
     background:#C1C1C1;
     height:190px;
-    border:1px solid black;
     border-radius:5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background:red;
+    background:#00bdff;
 }
