@@ -119,6 +119,7 @@ int main(int argc, char **argv)
     gtk_container_add (GTK_CONTAINER (help_container), GTK_WIDGET (webview));
     gtk_window_set_default_size (GTK_WINDOW (help_container), 500, 540);
     adapt_location_with_installer ();
+    gtk_window_set_resizable (GTK_WINDOW (help_container), FALSE);
     gtk_widget_realize (help_container);
     gtk_widget_show_all (help_container);
 
