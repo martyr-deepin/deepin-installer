@@ -32,7 +32,12 @@ body {
     color:#FFF;
 }
 
-.Link span:hover {
+.Link a {
+    color:#FFFFFF;
+    text-decoration:none;
+}
+
+.Link a:hover{
     color:#00bdff;
 }
 
@@ -59,5 +64,10 @@ body {
     width:500px;
     height:450px;
     background:#E4E4E4;
+    overflow-y:scroll;
+    overflow-x:hidden;
 }
 
+.Content p {
+    margin:0 25px 25px 25px;
+}

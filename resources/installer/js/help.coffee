@@ -26,11 +26,11 @@ class Help extends Widget
 
         @link = create_element("div", "Link", @title)
         @add_link = create_element("span", "", @link)
-        @add_link.innerText = "新建分区"
+        @add_link.innerHTML = "<a href=#add>" + "新建分区" + "</a>"
         @link_sep = create_element("span", "", @link)
         @link_sep.innerText = " | "
         @delete_link = create_element("span", "", @link)
-        @delete_link.innerText = "删除分区"
+        @delete_link.innerHTML = "<a href=#delete>" + "删除分区" + "</a>"
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
@@ -38,10 +38,28 @@ class Help extends Widget
         )
 
         @content = create_element("div", "Content", @element)
-        @content.innerText = "安装帮助"
+        @fill_content()
 
     exit_help: ->
         DCore.InstallerHelp.exit()
+
+    fill_content: ->
+        @new = create_element("p", "", @content)
+        @new_txt = create_element("a", "", @new)
+        @new_txt.innerText = "新建分区"
+        @new_txt.setAttribute("name", "add")
+        @new_img = create_img("", "images/new.png", @new)
+
+        @delete = create_element("p", "", @content)
+        @delete_txt = create_element("a", "", @delete)
+        @delete_txt.innerText = "删除分区"
+        @delete_txt.setAttribute("name", "delete")
+        @delete_img = create_img("", "images/delete.png", @delete)
+
+        @confirm_delete = create_element("p", "", @content)
+        @confirm_delete_txt = create_element("div", "", @confirm_delete)
+        @confirm_delete_txt.innerText = "确认删除"
+        @confirm_delete_img = create_img("", "images/confirm_delete.png", @confirm_delete)
 
 help = new Help()
 document.body.appendChild(help.element)
