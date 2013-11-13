@@ -4,7 +4,7 @@
     height:540px;
     top:0;
     left:0;
-    z-index:10000;
+    z-index:100;
     background:white;
     opacity:0;
     display:none;
@@ -223,14 +223,14 @@
 }
 
 .DialogCommon {
-    position:fixed;
+    position:absolute;
     left:130px;
     right:130px;
     top:170px;
     width:490px;
     min-height:140px;
     background:#FFFFFF;
-    z-index:99999;
+    z-index:200;
 }
 
 .DialogTitle {

@@ -213,10 +213,10 @@ class DeletePartDialog extends Dialog
 class UnmountDialog extends Dialog
     constructor: (@id) ->
         super(@id, @unmount_cb)
-        @add_css_class("DialogCommon")
         @title_txt.innerText = "卸载分区"
         @unmount_tips = create_element("p", "", @content)
         @unmount_tips.innerText = " 检测到有磁盘已经挂载，操作对应分区需要卸载,确定卸载吗?"
+        @add_css_class("DialogCommon")
 
     unmount_cb: ->
         echo "unmount partitions"
