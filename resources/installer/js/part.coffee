@@ -55,7 +55,7 @@ class Dialog extends Widget
             @hide_dialog()
         )
         @show_dialog()
-        #@element.setAttribute("draggable", "true")
+        @element.setAttribute("draggable", "true")
 
     show_dialog: ->
         __in_model = true
@@ -66,10 +66,20 @@ class Dialog extends Widget
         @destroy()
         __board.setAttribute("style", "display:none")
 
-    #do_dragstart: (event) ->
-    #    echo "do dragstart"
-    #    echo event.target.id
-    #    event.dataTransfer.setData("Text", event.target.id)
+        #do_dragstart: (event) ->
+        #    echo "do dragstart in dialog"
+        #    event.dataTransfer.setData("Text", event.target.id)
+
+        #do_drop: (event) ->
+        #    echo "do drop in dialog"
+        #    event.preventDefault()
+        #    data = event.dataTransfer.getData("Text")
+        #    style = "top:"+ event.y + "px;" + "left:" + event.x + "px"
+        #    event.target.setAttribute("style", style)
+
+        #do_dragover: (event) ->
+        #    echo "do dragover in dialog"
+        #    event.preventDefault()
 
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
@@ -634,14 +644,3 @@ class Part extends Page
             DCore.Installer.hide_help()
         else
             DCore.Installer.show_help()
-
-    #do_drop: (event) ->
-    #    event.preventDefault()
-    #    data = event.dataTransfer.getData("Text")
-    #    echo "do drop"
-    #    echo data
-    #    event.target.appendChild(document.getElementById(data))
-
-    #do_dragover: (event) ->
-    #    event.preventDefault()
-    #    echo "do dragover"

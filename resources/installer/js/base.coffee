@@ -62,7 +62,7 @@ class PageContainer extends Widget
     switch_page: (old_page, new_page) ->
         echo "switch page"
 
-    current_page:
+    current_page: ->
         echo "current_page"
 
 timezone_json = '
