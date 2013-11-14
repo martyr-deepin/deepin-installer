@@ -355,8 +355,8 @@ class PartTableItem extends Widget
         @label = create_element("div", "Label", @lp)
         @path = create_element("div", "Path", @lp)
 
-        if __selected_mode == "advance"
-            if v_part_info[@id]["os"]?
+        if __selected_mode == "advance" and v_part_info[@id]["type"] != "freespace"
+            if v_part_info[@id]["os"]? 
                 #@os.innerText = v_part_info[@id]["os"]
                 if v_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
                     os_img = "images/linux.png"
@@ -365,11 +365,11 @@ class PartTableItem extends Widget
                 else if v_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
                     os_img = "images/apple.png"
                 create_img("osimg", os_img, @os)
-            if v_part_info[@id]["label"]?
+            if v_part_info[@id]["label"]? and v_part_info[@id]["type"] != "freespace"
                 @label.innerText = v_part_info[@id]["label"]
             @path.innerText = v_part_info[@id]["path"]
-        else
-            if m_part_info[@id]["os"]?
+        else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
+            if m_part_info[@id]["os"]? 
                 #@os.innerText = m_part_info[@id]["os"]
                 if m_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
                     os_img = "images/linux.png"

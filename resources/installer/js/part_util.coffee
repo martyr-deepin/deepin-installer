@@ -731,6 +731,9 @@ _delete_extended = (disk, part) ->
 
     v_part_info[part]["type"] = "freespace"
     v_part_info[part]["fs"] = ""
+    v_part_info[part]["os"] = ""
+    v_part_info[part]["label"] = ""
+    v_part_info[part]["mp"] = "unused"
     v_part_info[part]["width"] = Math.round((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
 delete_part = (part) ->
@@ -749,6 +752,9 @@ delete_part = (part) ->
     #need update part type first to decide whether need delete extended
     v_part_info[part]["type"] = "freespace"
     v_part_info[part]["fs"] = ""
+    v_part_info[part]["os"] = ""
+    v_part_info[part]["label"] = ""
+    v_part_info[part]["mp"] = "unused"
     v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
     v_part_info[part]["used"] = sector_to_mb(v_part_info[part]["length"],512)
 
