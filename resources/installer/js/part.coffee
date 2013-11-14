@@ -406,7 +406,7 @@ class PartTableItem extends Widget
         @fs.innerHTML = ""
         if __selected_mode == "simple"
             @fs_txt = create_element("div", "", @fs)
-            @fs_txt.innerText = v_part_info[@id]["fs"]
+            @fs_txt.innerText = m_part_info[@id]["fs"]
         else if __selected_mode == "advance"
             @fs_select = create_element("select", "", @fs)
             for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
