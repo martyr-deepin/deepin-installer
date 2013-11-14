@@ -245,9 +245,17 @@ class PartLineItem extends Widget
     constructor: (@id) ->
         super
         @part = @id[4...16]
-        @color = v_part_info[@part]["color"]
-        @element.style.background = @color
-        @element.style.width = v_part_info[@part]["width"]
+        @init_line_item()
+
+    init_line_item: ->
+        if __selected_mode == "advance"
+            @color = v_part_info[@part]["color"]
+            @element.style.background = @color
+            @element.style.width = v_part_info[@part]["width"]
+        else
+            @color = m_part_info[@part]["color"]
+            @element.style.background = @color
+            @element.style.width = m_part_info[@part]["width"]
 
     focus: ->
         __selected_line?.blur()
@@ -258,17 +266,14 @@ class PartLineItem extends Widget
         catch error
             echo error
         @add_css_class("PartLineItemActive")
-            #@element.setAttribute("style", "border:2px solid #6ACAF3;opacity:1.0")
     
     passive_focus: ->
         __selected_line?.blur()
         __selected_line = @
         @add_css_class("PartLineItemActive")
-        #@element.setAttribute("style", "border:2px solid #6ACAF3;opacity:1.0")
 
     blur: ->
         @element.setAttribute("class", "PartLineItem")
-        #@element.setAttribute("style", "")
 
     do_click: (e)->
         if __selected_line == @ 
@@ -284,8 +289,22 @@ class PartLineMaps extends Widget
     fill_linemap: ->
         @element.innerHTML = ""
         @disk_line = create_element("div", "", @element)
+        if __selected_mode == "advance"
+            @fill_advance_linemap()
+        else
+            @fill_simple_linemap()
+
+    fill_advance_linemap: ->
         for part in v_disk_info[__selected_disk]["partitions"]
             if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
+                item = new PartLineItem("line"+part)
+                @disk_line.appendChild(item.element)
+                if __selected_item?.id == __selected_disk
+                    item.element.setAttribute("class", "PartLineItemActive")
+
+    fill_simple_linemap: ->
+        for part in m_disk_info[__selected_disk]["partitions"]
+            if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
                 item = new PartLineItem("line"+part)
                 @disk_line.appendChild(item.element)
                 if __selected_item?.id == __selected_disk
@@ -305,50 +324,83 @@ class PartTableItem extends Widget
 
     product_part_item: ->
         @device = create_element("span", "", @element)
-        @fill_device()
-
         @size = create_element("div", "", @element)
-        @size.innerText += sector_to_gb(v_part_info[@id]["length"], 512).toFixed(3) + "GB"
-
         @used = create_element("div", "", @element)
-        @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(3) + "GB"
-
         @fs = create_element("div", "", @element)
-        @fill_fs()
-        
         @mount = create_element("div", "", @element)
+        @fill_device()
+        @fill_size()
+        @fill_used()
+        @fill_fs()
         @fill_mount()
-
-    update_part_used: ->
-        @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(3) + "GB"
 
     product_disk_item: ->
         @device = create_element("div","", @element)
-        @device.innerText = v_disk_info[@id]["path"]
+        @fill_disk_item()
+
+    fill_disk_item: ->
+        @device.innerHTML = ""
+        if __selected_mode == "advance"
+            @device.innerText = v_disk_info[@id]["path"]
+        else
+            @device.innerText = m_disk_info[@id]["path"]
 
     fill_device: ->
+        @device.innerHTML = ""
         @os = create_element("span", "Os", @device)
-        if v_part_info[@id]["os"]?
-            #@os.innerText = v_part_info[@id]["os"]
-            if v_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
-                os_img = "images/linux.png"
-            else if v_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
-                os_img = "images/windows.png"
-            else if v_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
-                os_img = "images/apple.png"
-            create_img("osimg", os_img, @os)
-
         @color = create_element("span", "Color", @device)
         color_value = Widget.look_up(@lineid)?.color or get_random_color()
         @color.style.background = color_value
-
         @lp = create_element("span", "LabelPath", @device)
         @label = create_element("div", "Label", @lp)
-        if v_part_info[@id]["label"]?
-            @label.innerText = v_part_info[@id]["label"]
-
         @path = create_element("div", "Path", @lp)
-        @path.innerText = v_part_info[@id]["path"]
+
+        if __selected_mode == "advance"
+            if v_part_info[@id]["os"]?
+                #@os.innerText = v_part_info[@id]["os"]
+                if v_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
+                    os_img = "images/linux.png"
+                else if v_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
+                    os_img = "images/windows.png"
+                else if v_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
+                    os_img = "images/apple.png"
+                create_img("osimg", os_img, @os)
+            if v_part_info[@id]["label"]?
+                @label.innerText = v_part_info[@id]["label"]
+            @path.innerText = v_part_info[@id]["path"]
+        else
+            if m_part_info[@id]["os"]?
+                #@os.innerText = m_part_info[@id]["os"]
+                if m_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
+                    os_img = "images/linux.png"
+                else if m_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
+                    os_img = "images/windows.png"
+                else if m_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
+                    os_img = "images/apple.png"
+                create_img("osimg", os_img, @os)
+            if m_part_info[@id]["label"]?
+                @label.innerText = m_part_info[@id]["label"]
+            @path.innerText = m_part_info[@id]["path"]
+
+    fill_size: ->
+        @size.innerHTML = ""
+        if __selected_mode == "advance"
+            @size.innerText += sector_to_gb(v_part_info[@id]["length"], 512).toFixed(3) + "GB"
+        else
+            @size.innerText += sector_to_gb(m_part_info[@id]["length"], 512).toFixed(3) + "GB"
+
+    fill_used: ->
+        @used.innerHTML = ""
+        if __selected_mode == "advance"
+            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(3) + "GB"
+        else
+            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(3) + "GB"
+
+    update_part_used: ->
+        if __selected_mode == "advance"
+            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(3) + "GB"
+        else
+            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(3) + "GB"
 
     fill_fs: ->
         @fs.innerHTML = ""
@@ -356,24 +408,21 @@ class PartTableItem extends Widget
             @fs_txt = create_element("div", "", @fs)
             @fs_txt.innerText = v_part_info[@id]["fs"]
         else if __selected_mode == "advance"
-            @fill_fs_select()
+            @fs_select = create_element("select", "", @fs)
+            for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
+                create_option(@fs_select, opt, opt)
+            for opt, i in @fs_select
+                if opt.value == v_part_info[@id]["fs"]
+                    @fs_select.selectedIndex = i
+            @fs_select.addEventListener("focus", (e) =>
+                if __selected_item != @
+                    @focus()
+            )
+            @fs_select.addEventListener("change", (e) =>
+                update_part_fs(@id, @fs_select.options[@fs_select.selectedIndex].value)
+            )
         else
             echo "fill fs:invalid mode"
-
-    fill_fs_select: ->
-        @fs_select = create_element("select", "", @fs)
-        for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
-            create_option(@fs_select, opt, opt)
-        for opt, i in @fs_select
-            if opt.value == v_part_info[@id]["fs"]
-                @fs_select.selectedIndex = i
-        @fs_select.addEventListener("focus", (e) =>
-            if __selected_item != @
-                @focus()
-        )
-        @fs_select.addEventListener("change", (e) =>
-            update_part_fs(@id, @fs_select.options[@fs_select.selectedIndex].value)
-        )
 
     fill_mount: ->
         @mount.innerHTML = ""
@@ -425,7 +474,10 @@ class PartTableItem extends Widget
         if @device_type == "disk"
             __selected_disk = @id
         else
-            __selected_disk = v_part_info[@id]["disk"]
+            if __selected_mode == "advance"
+                __selected_disk = v_part_info[@id]["disk"]
+            else
+                __selected_disk = m_part_info[@id]["disk"]
         try
             Widget.look_up("part_line_maps")?.fill_linemap()
             Widget.look_up(@lineid)?.passive_focus()
@@ -435,7 +487,6 @@ class PartTableItem extends Widget
         @set_btn_status()
         @element.setAttribute("style", "background:#27BEFF")
         @update_install_btn()
-
 
     passive_focus: ->
         __selected_item?.blur()
@@ -449,25 +500,32 @@ class PartTableItem extends Widget
         @element.setAttribute("style", "")
 
     update_install_btn: ->
-        if @device_type == "disk"
-            txt = v_disk_info[@id]["path"]
-        else
-            if v_part_info[@id]["label"].length > 0
-                txt = v_part_info[@id]["label"]
+        if __selected_mode == "advance"
+            if @device_type == "disk"
+                txt = v_disk_info[@id]["path"]
             else
-                txt = v_part_info[@id]["path"]
-        install_txt = "Install to " + txt
-        Widget.look_up("part")?.update_next_btn(install_txt)
+                if v_part_info[@id]["label"].length > 0
+                    txt = v_part_info[@id]["label"]
+                else
+                    txt = v_part_info[@id]["path"]
+            install_txt = "Install to " + txt
+            Widget.look_up("part")?.update_next_btn(install_txt)
+        else
+            if @device_type == "disk"
+                txt = m_disk_info[@id]["path"]
+            else
+                if m_part_info[@id]["label"].length > 0
+                    txt = m_part_info[@id]["label"]
+                else
+                    txt = m_part_info[@id]["path"]
+            install_txt = "Install to " + txt
+            Widget.look_up("part")?.update_next_btn(install_txt)
 
     do_click: (e)->
         if __selected_item == @ 
             echo "already selected"
         else
             @focus()
-
-    update_mode: (mode) ->
-        @fill_fs()
-        @fill_mount()
 
 class PartTable extends Widget
     constructor: (@id)->
@@ -490,16 +548,20 @@ class PartTable extends Widget
         @fill_items()
 
     fill_items: ->
-        echo "update part table items"
         @items.innerHTML = ""
-
         for disk in disks
             item = new PartTableItem(disk, "disk")
             @items.appendChild(item.element)
-            for part in v_disk_info[disk]["partitions"]
-                if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
-                    item = new PartTableItem(part, "part")
-                    @items.appendChild(item.element)
+            if __selected_mode == "advance"
+                for part in v_disk_info[disk]["partitions"]
+                    if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
+                        item = new PartTableItem(part, "part")
+                        @items.appendChild(item.element)
+            else
+                for part in m_disk_info[disk]["partitions"]
+                    if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
+                        item = new PartTableItem(part, "part")
+                        @items.appendChild(item.element)
             
     update_mode: (mode) ->
         if mode == "advance"
@@ -508,9 +570,7 @@ class PartTable extends Widget
         else
             @mount_header.innerText = ""
             @items.setAttribute("style", "")
-        for disk in disks
-            for part in v_disk_info[disk]["partitions"]
-                Widget.look_up(part)?.update_mode(mode)?
+        @fill_items()
 
 class Part extends Page
     constructor: (@id)->
