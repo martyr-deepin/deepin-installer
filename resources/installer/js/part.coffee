@@ -421,7 +421,7 @@ class PartTableItem extends Widget
             @fs_txt.innerText = m_part_info[@id]["fs"]
         else if __selected_mode == "advance"
             @fs_select = create_element("select", "", @fs)
-            for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
+            for opt in ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt"]
                 create_option(@fs_select, opt, opt)
             for opt, i in @fs_select
                 if opt.value == v_part_info[@id]["fs"]

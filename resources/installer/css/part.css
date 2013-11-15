@@ -137,8 +137,9 @@
 }
 
 .PartTableItem select {
-    margin:10px 0;
+    margin:6px 0;
     height:30px;
+    line-height:30px;
 }
 
 .PartOp {
