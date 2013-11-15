@@ -31,6 +31,21 @@ create_option = (select, value, text) ->
     option.setAttribute("value", value)
     option.innerText = text
 
+create_mp_option = (select, value, text) ->
+    option = create_element("option", "", select)
+    option.setAttribute("value", value)
+    option.innerText = text
+    select.addEventListener("focus", (e) =>
+        if value in get_selected_mp()
+            option.setAttribute("disabled", "disabled")
+        else
+            option.removeAttribute("disabled")
+    )
+
+fill_mp_option = (select) ->
+    for opt in ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
+        create_mp_option(select, opt, opt)
+
 class Dialog extends Widget
     constructor: (@id, @cb) ->
         super
@@ -182,8 +197,7 @@ class AddPartDialog extends Dialog
         @mp_desc.innerText = "挂载:"
         @mount_value = create_element("span", "AddValue", @mp)
         @mount_select = create_element("select", "", @mount_value)
-        for opt in ["/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
-            create_option(@mount_select, opt, opt)
+        fill_mp_option(@mount_select)
 
     fill_tips: ->
         @tips = create_element("p", "", @content)
@@ -357,7 +371,6 @@ class PartTableItem extends Widget
 
         if __selected_mode == "advance" and v_part_info[@id]["type"] != "freespace"
             if v_part_info[@id]["os"]? 
-                #@os.innerText = v_part_info[@id]["os"]
                 if v_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
                     os_img = "images/linux.png"
                 else if v_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
@@ -370,7 +383,6 @@ class PartTableItem extends Widget
             @path.innerText = v_part_info[@id]["path"]
         else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
             if m_part_info[@id]["os"]? 
-                #@os.innerText = m_part_info[@id]["os"]
                 if m_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
                     os_img = "images/linux.png"
                 else if m_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
@@ -429,8 +441,7 @@ class PartTableItem extends Widget
         if __selected_mode != "advance"
             return
         @mount_select = create_element("select", "", @mount)
-        for opt in ["/","/boot","/home","/tmp","/usr", "/var","/srv", "/local", "unused"]
-            create_option(@mount_select, opt, opt)
+        fill_mp_option(@mount_select)
         for opt, i in @mount_select
             if opt.value == v_part_info[@id]["mp"]
                 @mount_select.selectedIndex = i
@@ -590,7 +601,7 @@ class Part extends Page
         @t_mode.addEventListener("click", (e) =>
             if __selected_mode != "advance"
                 __selected_mode = "advance"
-                if check_has_mount
+                if check_has_mount()
                     @unmount_model = new UnmountDialog("UnmountModel")
                     document.body.appendChild(@unmount_model.element)
                 @show_advance_op()

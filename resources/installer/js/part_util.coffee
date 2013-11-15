@@ -274,8 +274,6 @@ check_has_mount = ->
     for disk in disks
         for part in m_disk_info[disk]["partitions"]
             if DCore.Installer.get_partition_mp(part)
-                echo part
-                echo DCore.Installer.get_parition_mp(part)
                 mount = true
                 break
     return mount
@@ -566,6 +564,14 @@ compute_display_path = (disk) ->
 
     for part in get_freespace_partitions(disk)
         v_part_info[part]["path"] = ""
+
+get_selected_mp = ->
+    mp_list = []
+    for disk in disks
+        for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused" 
+                mp_list.push(v_part_info[part]["mp"])
+    return mp_list
 
 #delete normal partition, merge slibing freespace
 _delete_normal = (disk, part) ->
