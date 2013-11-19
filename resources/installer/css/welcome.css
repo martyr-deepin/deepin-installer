@@ -1,0 +1,210 @@
+.TitleSet {
+    position:absolute;
+    width:160px;
+    height:30px;
+    right:10px;
+    top:61px;
+    bottom:0px;
+    font-size:14px;
+    color:#B3B3B3;
+}
+
+.TitleSet span {
+    float:left;
+    width:80px;
+    height:30px;
+    line-height:30px;
+    color:#FFFFFF;
+    text-align:center;
+}
+
+.TitleSet span:hover {
+    color:#00bdff;
+}
+
+.KeyboardSet {
+    background:url("../images/keyboard.png") no-repeat;
+}
+
+.TimezoneSet {
+    background:url("../images/timezone.png") no-repeat;
+}
+
+.WelcomeForm {
+    position:absolute;
+    left:239px;
+    right:239px;
+    top:184px;
+    bottom:156px;
+    width:272px;
+}
+
+.WelcomeFormItem {
+    padding:0;
+    width:272px;
+    height:80px;
+    margin-top:-20px;
+}
+
+.WelcomeFormItem input {
+    width:272px;
+    height:22px;
+    padding-left:20px;
+    border:1px solid #9D9D9D;
+    border-radius:3px;
+    outline-style:none;
+}
+
+.WelcomeFormItem input:hover {
+    border:1px solid #1FC1FA;
+    border-radius:3px;
+}
+
+#username input {
+    background: white url("../images/username.png") no-repeat;
+}
+
+#password input {
+    background: white url("../images/password.png") no-repeat;
+}
+
+#hostname input {
+    background: white url("../images/hostname.png") no-repeat;
+}
+
+#confirmpassword input {
+    background: white url("../images/confirmpwd.png") no-repeat;
+}
+
+.WelcomeTip {
+    display:none;
+}
+
+.WelcomeTipShow {
+    position:relative;
+    left:50px;
+    top:10px;
+    width:120px;
+    height:22px;
+    background:rgba(40,40,40,0.8);
+    color:#D1D1D1;
+    border:1px solid #000;
+    border-radius:5px;
+}
+
+.WelcomeAngle {
+    position:absolute; 
+    border:10px solid transparent; 
+    border-bottom-color:rgba(40,40,40,0.8);
+    left:15px; 
+    top:-20px; 
+}
+
+.WelcomeError {
+    text-align:center;
+    height:14px;
+    line-height:14px;
+    display:block;
+    padding:4px 10px;
+    font-size:14px;
+}
+
+.Keyboard {
+    position:absolute;
+    left:430px;
+    top:90px;
+    bottom:18px;
+    width:312px;
+    height:430px;
+}
+
+.Current {
+    background:#D0D0D0;
+    padding-left:16px;
+    height:30px;
+    line-height:30px;
+    color:#0870BC;
+}
+
+.Current span {
+    margin-right:10px;
+}
+
+.KeyboardList{
+    background:#FFFFFF;
+    margin:0px;
+    height:400px;
+    overflow:scroll;
+}
+
+.KeyboardItem {
+    height:23px;
+    line-height:23px;
+    padding-left:16px;
+}
+
+.KeyboardItem:hover {
+    background:#2FC1FF;
+}
+
+.Timezone {
+    position:absolute;
+    left:8px;
+    right:8px;
+    top:90px;
+    bottom:12px;
+    width:738px;
+    height:436px;
+}
+
+.TimezoneWrap {
+    position:relative;
+    width:736px;
+}
+
+.TimezonePicker {
+    background:#FFF url("../images/zonemap.png");
+    position:relative;
+    width:736px;
+    height:404px;
+    padding:0px;
+}
+
+.TimezoneMap {
+    position:absolute;
+    top:0px;
+    left:0px;
+    opacity:0;
+    width:736px;
+    height:404px;
+}
+
+.TimezoneCanvas {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:736px;
+    height:404px;
+}
+
+.Pin {
+    position:absolute;
+    margin:0px;
+    padding:0px;
+    width:14px;
+    height:13px;
+}
+
+.Welcome .Start {
+    position:absolute;
+    left:323px;
+    right:325px;
+    top:448px;
+    bottom:63px;
+    background:#222;
+    height:32px;
+    line-height:32px;
+    text-align:center;
+    border-radius:5px;
+    color:#848383;
+}

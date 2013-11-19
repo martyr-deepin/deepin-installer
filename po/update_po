@@ -1,0 +1,41 @@
+#!/usr/bin/python
+
+coffee_files = [
+"../resources/greeter/js/*.coffee",
+"../resources/desktop/js/*.coffee",
+"../resources/dock/js/*.coffee",
+"../resources/launcher/js/*.coffee",
+]
+
+c_files = [
+"../app/desktop/*.c",
+"../app/desktop/*.h",
+"../app/greeter/*.c",
+"../app/greeter/*.h",
+"../app/launcher/*.c",
+"../app/launcher/*.h",
+"../app/dock/*.c",
+"../app/dock/*.h",
+"../lib/dentry/*.c",
+"../lib/dentry/*.h"
+]
+
+lang = ["zh_CN", "zh_TW"]
+
+
+import os
+
+for l in lang:
+    os.system("touch %s.pot" % l)
+
+    cmd= "xgettext --from-code=utf-8 -L python -j -o %s.pot " % l + " ".join(coffee_files)
+    os.system(cmd)
+
+    cmd = "xgettext --from-code=utf-8 -k_ -j -o %s.pot " % l + " ".join(c_files)
+    os.system(cmd)
+
+    os.system("msgmerge %s.po %s.pot > new_%s.po" % (l, l, l))
+
+    os.system("mv new_%s.po %s.po" % (l, l))
+
+    os.system("rm %s.pot" % l)

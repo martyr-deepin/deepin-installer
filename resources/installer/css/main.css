@@ -1,0 +1,76 @@
+@import url(welcome.css);
+@import url(part.css);
+@import url(progress.css);
+@import url(finish.css);
+@import url("../../common/css/animation.css");
+
+.Title {
+    width:755px;
+    height:90px;
+    line-height:90px;
+    background:#474747 url("../images/banner.png") no-repeat fixed top;
+    color:#FDFFFF;
+    text-align:center;
+    font-weight:bold;
+    font-size:24px;
+}
+
+.Title p {
+    float:left;
+    height:40px;
+    line-height:40px;
+    margin-left:28px;
+    vertical-align:middle;
+    font-size:24px;
+    background:url("../images/logo.png") no-repeat;
+    padding-left:245px;
+    padding-top:4px;
+}
+
+.Close {
+    position:fixed;
+    width:20px;
+    height:20px;
+    top:10px;
+    right:10px;
+    bottom:520px;
+    left:725px;
+    background:url("../images/close.png");
+}
+
+.Close:hover {
+    background:url("../images/close_hot.png");
+}
+
+.Close:visited {
+    background:url("../images/close_pressed.png");
+}
+
+.PageContainer {
+    width:755px;
+    height:540px;
+    background:#E4E4E4;
+    border:1px solid #474747;
+    overflow:hidden;
+}
+
+.Welcome, .Part, .Progress, .Finish {
+    width:755px;
+    height:540px;
+    overflow:hidden;
+}
+
+::-webkit-scrollbar {
+    width:12px;
+    background:#FFF;
+}
+
+::-webkit-scrollbar-thumb {
+    background:#C1C1C1;
+    height:190px;
+    border-radius:5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background:#00bdff;
+}

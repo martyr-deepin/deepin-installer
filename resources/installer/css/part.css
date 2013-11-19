@@ -1,0 +1,303 @@
+.Board {
+    position:absolute;
+    width:755px;
+    height:540px;
+    top:0;
+    left:0;
+    z-index:100;
+    background:white;
+    opacity:0;
+    display:none;
+}
+
+.PartHelp {
+    position:fixed;
+    top:20px;
+    left:590px;
+    right:30px;
+    bottom:480px;
+    font-size:14px;
+    color:#FFF;
+}
+
+.PartHelp span:hover {
+    color:#00bdff;
+}
+
+.PartLineMaps {
+    width:700px;
+    height:12px;
+    margin:11px 26px;
+    overflow:hidden;
+    padding-right:1px;
+}
+
+.PartLineItem {
+    float:left;
+    opacity:0.4;
+    height:12px;
+}
+
+.PartLineItemActive {
+    float:left;
+    opacity:1.0;
+    height:12px;
+    border:2px solid #6ACAF3;
+}
+
+.PartTable {
+    width:700px;
+    height:320px;
+    margin:0 26px;
+    text-align:center;
+}
+
+.PartTableHeader {
+    width:700px;
+    height:25px;
+    background:#FCFCFC;
+    border:1px solid #B4B4B4;
+}
+
+.PartTableHeader span {
+    float:left;
+    width:200px;
+    height:25px;
+    line-height:25px;
+}
+
+.PartTableHeader div {
+    float:left;
+    width:100px;
+    height:25px;
+    line-height:25px;
+}
+
+.PartTableItems {
+    width:700px;
+    height:295px;
+    background:#F1F1F1;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.PartTableItem {
+    width:700px;
+    height:42px;
+    border:1px solid #E1E1E1;
+    clear:both;
+}
+
+.PartTableItem >span {
+    width:200px;
+    height:42px;
+    line-height:42px;
+    float:left;
+}
+
+.PartTableItem >div {
+    width:100px;
+    height:42px;
+    line-height:42px;
+    vertical-align:middle;
+    float:left;
+}
+
+.PartTableItem .Os {
+    width:75px;
+    height:24px;
+    line-height:24px;
+    margin:9px 0;
+    text-align:right;
+    float:left;
+}
+
+.PartTableItem .Color {
+    width:16px;
+    height:16px;
+    line-height:16px;
+    float:left;
+    margin:13px 5px;
+}
+
+.PartTableItem .LabelPath {
+    width:95px;
+    height:42px;
+    float:left;
+    text-align:left;
+    vertical-align:middle;
+    display:table-cell;
+}
+
+.PartTableItem .Label, .PartTableItem .Path {
+    width:95px;
+    height:21px;
+    line-height:21px;
+    max-height:42px;
+}
+
+.PartTableItem select {
+    margin:6px 0;
+    height:30px;
+    line-height:30px;
+}
+
+.PartOp {
+    position:fixed;
+    top:365px;
+    bottom:140px;
+    left:26px;
+    height:30px;
+}
+
+.PartBtn {
+    float:left;
+    text-align:center;
+    width:75px;
+    height:22px;
+    line-height:22px;
+    margin-right:10px;
+    border-radius:3px;
+    background:#222;
+    color:#848383;
+    pointer-events:none;
+}
+
+.PartBtnActive {
+    float:left;
+    text-align:center;
+    width:75px;
+    height:22px;
+    line-height:22px;
+    margin-right:10px;
+    border-radius:3px;
+    background:#222;
+    color:#FFFFFF;
+    pointer-events:auto;
+}
+
+.PartBtnActive:hover {
+    color:#00bdff;
+}
+
+.PartGrub {
+    position:fixed;
+    top:410px;
+    bottom:110px;
+    left:26px;
+    width:700px;
+    height:24px;
+}
+
+.PartGrub span {
+    width:140px;
+    height:24px;
+    line-height:24px;
+    overflow:hidden;
+}
+
+.PartGrub select {
+    width:550px;
+    height:24px;
+    line-height:24px;
+    float:right;
+}
+
+.NextStep {
+    position:fixed;
+    float:left;
+    top:470px;
+    bottom:36px;
+    left:335px;
+    padding:0px 16px;
+    width:auto;
+    height:34px;
+    line-height:34px;
+    text-align:center;
+    background:#222;
+    color:white;
+    border-radius:5px;
+}
+
+.NextStep:hover {
+    color:#00bdff;
+}
+
+.DialogCommon {
+    position:absolute;
+    left:130px;
+    right:130px;
+    top:170px;
+    width:490px;
+    min-height:140px;
+    background:#FFFFFF;
+    z-index:200;
+}
+
+.DialogTitle {
+    background:#4F4F4F;
+    width:490px;
+    height:25px;
+    line-height:25px;
+    font-size:16px;
+    color:#E9E9E9;
+    margin:0;
+}
+
+.DialogTxt {
+    float:left;
+    margin-left:10px;
+}
+
+.DialogClose {
+    position:absolute;
+    top:3px;
+    right:4px;
+    width:20px;
+    height:20px;
+    background:url("../images/close.png") no-repeat;
+}
+.DialogClose:hover {
+    background:url("../images/close_hot.png") no-repeat;
+}
+
+.DialogClose:visited {
+    background:url("../images/close_pressed.png") no-repeat;
+}
+
+.DialogContent {
+    clear:both;
+    padding:0 0 20px 110px;
+    margin:0;
+}
+
+.DialogContent .AddDesc {
+    width:50px;
+}
+
+.DialogContent .AddValue {
+    width:160px;
+}
+
+.DialogBtn {
+    position:absolute;
+    text-align:center;
+    right:0;
+    bottom:0;
+}
+
+.DialogBtn span {
+    display:block;
+    float:right;
+    width:60px;
+    height:22px;
+    line-height:22px;
+    background:#222;
+    border-radius:3px;
+    color:white;
+    margin:0 10px 10px 10px;
+}
+
+.DialogBtn span:hover {
+    color:#00bdff;
+}

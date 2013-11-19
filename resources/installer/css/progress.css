@@ -1,0 +1,25 @@
+.Ppt, .Ppt img {
+    width:752px;
+    height:450px;
+}
+
+.ProgressContainer {
+    position:fixed;
+    left:0;
+    right:0;
+    top:510px;
+    bottom:20px;
+    width:752px;
+    height:12px;
+    background:#E6F3EC;
+    border:solid 1px #A8C2B5;
+    margin-left:1px;
+}
+
+.ProgressBar {
+    width:455px;
+    height:12px;
+    background:-webkit-linear-gradient(#84A6E1, #1C84DA, #84A6E1);
+    border-top-right-radius:5px;
+    border-bottom-right-radius:5px;
+}
