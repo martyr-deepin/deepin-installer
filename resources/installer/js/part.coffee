@@ -667,6 +667,10 @@ class Part extends Page
                 @handle_simple_install()
             else if __selected_mode == "advance"
                 @handle_advance_install()
+            DCore.Installer.hide_help()
+            do_partition()
+            pc.add_page(progress_page)
+            pc.remove_page(part_page)
         )
 
     update_next_btn: (txt) ->
