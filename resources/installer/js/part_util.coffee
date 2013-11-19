@@ -256,8 +256,8 @@ do_partition = ->
 get_target_part = ->
     echo "get target part"
     for disk in disks
-        for part in m_disk_info[disk]["partitions"]
-            if m_part_info[part]["op"] != "delete" and m_part_info[part]["mp"] == "/"
+        for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["mp"] == "/"
                 return part
     return null
 
