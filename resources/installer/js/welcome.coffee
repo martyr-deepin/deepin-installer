@@ -19,9 +19,9 @@
 
 __selected_layout = "es"
 __selected_timezone = "Asia/Shanghai"
-__username = null
-__hostname = null
-__password = null
+__selected_username = null
+__selected_hostname = null
+__selected_password = null
 __illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
 
 __database = JSON.parse(timezone_json)
@@ -68,7 +68,12 @@ class Keyboard extends Widget
 
     update_layout: (layout) ->
         @current.innerText = layout
-        __selected_layout = layout
+        if layout.indexOf(",") != -1
+            __selected_layout = layout.split(",")[0]
+            __selected_variant = layout.split(",")[1]
+        else
+            __selected_layout = layout
+            __selected_variant = null
 
 class Timezone extends Widget
     constructor: (@id) ->
@@ -174,6 +179,7 @@ class WelcomeFormItem extends Widget
         )
         @input.addEventListener("blur", (e) =>
             @check_valid()
+            @fill_item_data()
         )
         @input.addEventListener("change", (e) =>
 
@@ -199,6 +205,14 @@ class WelcomeFormItem extends Widget
             @input.setAttribute("placeholder", "请再次输入密码")
             @input.setAttribute("type", "password")
             @error.innerText = "确认密码不合法"
+
+    fill_item_data: ->
+        if @id == "username"
+            __selected_username = @input.value
+        else if @id == "hostname"
+            __selected_hostname = @input.value
+        else if @id == "password"
+            __selected_password = @input.value
 
     check_valid: ->
         if @is_valid()

@@ -17,6 +17,52 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+__selected_target = null
+
+DCore.signal_connect("extract", (msg) ->
+    echo "extract"
+    echo msg
+    if parseInt(msg.step) == "finish"
+        progress_install()
+)
+
+progress_install = ->
+    try
+        DCore.Installer.mount_procfs()
+    catch error
+        echo "mount procfs failed"
+        return
+    try
+        DCore.Installer.chroot_target(__selected_target)
+    catch error
+        echo "chroot target failed"
+        return
+    try
+        DCore.Installer.write_partition_mp()
+    catch error
+        echo "write partiton mp failed"
+        return
+    try
+        DCore.Installer.set_timezone(__selected_timezone)
+    catch error
+        echo "set timezone failed"
+        return
+    try
+        DCore.Installer.set_keyboard_layout_variant(__selected_layout, __selected_variant)
+    catch error
+        echo "set keyboard layout variant failed"
+        return
+    try
+        DCore.Installer.create_user(__selected_username, __selected_hostname, __selected_password)
+    catch error
+        echo "create user failed"
+        return
+    try
+        DCore.Installer.update_grub(__selected_grub)
+    catch error
+        echo "update grub failed"
+        return
+
 class Progress extends Page
     constructor: (@id)->
         super
@@ -59,3 +105,15 @@ class Progress extends Page
 
     update_progress: (progress) ->
         echo "update progress"
+
+    start_extract: ->
+        try
+            DCore.Installer.mount_target(__selected_target)
+        catch error
+            echo "mount target failed"
+            return
+        try
+            DCore.Installer.extract_squashfs()
+        catch error
+            echo "extract squashfs failed"
+            return

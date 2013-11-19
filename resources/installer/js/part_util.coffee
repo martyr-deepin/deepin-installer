@@ -280,12 +280,6 @@ check_has_mount = ->
 
 #write /etc/fstab
 write_fs_tab = ->
-    echo "write fs tab"
-    target = get_target_part()
-    if not target?
-        echo "get target failed"
-        return 
-
     for disk in disks
         for part in m_disk_info[disk]["partitions"]
             if m_part_info[part]["op"] != "delete"

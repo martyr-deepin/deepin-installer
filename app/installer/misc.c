@@ -799,7 +799,7 @@ watch_extract_child (GPid pid, gint status, gpointer data)
     g_free (cb_ids);
 
     g_printf ("watch extract child:extract finish\n");
-    //emit_progress ("extract", *progress);
+    emit_progress ("extract", "finish");
     g_spawn_close_pid (pid);
 }
 
@@ -863,7 +863,7 @@ cb_timeout (gpointer data)
     if (progress != NULL) {
         if (*progress != NULL) {
             g_printf ("cb timeout: emit extract progress:%s\n", *progress);
-            //emit_progress ("extract", *progress);
+            emit_progress ("extract", *progress);
         } else {
             g_warning ("cb timeout:*progress null\n");
         }
