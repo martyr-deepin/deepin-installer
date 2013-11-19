@@ -68,12 +68,7 @@ class Keyboard extends Widget
 
     update_layout: (layout) ->
         @current.innerText = layout
-        if layout.indexOf(",") != -1
-            __selected_layout = layout.split(",")[0]
-            __selected_variant = layout.split(",")[1]
-        else
-            __selected_layout = layout
-            __selected_variant = null
+        __selected_layout = layout
 
 class Timezone extends Widget
     constructor: (@id) ->
@@ -179,10 +174,9 @@ class WelcomeFormItem extends Widget
         )
         @input.addEventListener("blur", (e) =>
             @check_valid()
-            @fill_item_data()
         )
         @input.addEventListener("change", (e) =>
-
+            @fill_item_data()
             Widget.look_up("welcome")?.check_start_ready()
         )
 

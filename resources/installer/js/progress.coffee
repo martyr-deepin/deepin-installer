@@ -19,45 +19,68 @@
 
 __selected_target = null
 
-DCore.signal_connect("extract", (msg) ->
-    echo "extract"
-    echo msg
-    if parseInt(msg.step) == "finish"
-        progress_install()
+DCore.signal_connect("progress", (msg) ->
+    if msg.stage == "extract"
+        if msg.progress == "finish"
+            progress_install()
+        else
+            progress_page.update_progress(msg.progress)
 )
 
 progress_install = ->
     try
+        echo "mount procfs"
         DCore.Installer.mount_procfs()
     catch error
         echo "mount procfs failed"
         return
     try
+        echo "__selected_target"
+        echo __selected_target
         DCore.Installer.chroot_target(__selected_target)
     catch error
         echo "chroot target failed"
         return
     try
+        echo "write partition mp"
         DCore.Installer.write_partition_mp()
     catch error
         echo "write partiton mp failed"
         return
     try
+        echo "__selected_timezone"
+        echo __selected_timezone
         DCore.Installer.set_timezone(__selected_timezone)
     catch error
         echo "set timezone failed"
         return
     try
-        DCore.Installer.set_keyboard_layout_variant(__selected_layout, __selected_variant)
+        if __selected_layout.indexOf(",") != -1
+            layout = __selected_layout.split(",")[0]
+            variant = __selected_layout.split(",")[1]
+        else
+            layout = __selected_layout
+            variant = null
+        echo "layout"
+        echo layout
+        echo "variant"
+        echo variant
+        DCore.Installer.set_keyboard_layout_variant(layout,variant)
     catch error
         echo "set keyboard layout variant failed"
         return
     try
+        echo "create user"
+        echo __selected_username
+        echo __selected_hostname
+        echo __selected_password
         DCore.Installer.create_user(__selected_username, __selected_hostname, __selected_password)
     catch error
         echo "create user failed"
         return
     try
+        echo "__selected_grub"
+        echo __selected_grub
         DCore.Installer.update_grub(__selected_grub)
     catch error
         echo "update grub failed"
@@ -104,9 +127,12 @@ class Progress extends Page
         @ppt_img.setAttribute("src", @current_img)
 
     update_progress: (progress) ->
-        echo "update progress"
+        @progressbar.style.width = progress
 
     start_extract: ->
+        __selected_target = get_target_part()
+        echo "start extrace selected target"
+        echo __selected_target
         try
             DCore.Installer.mount_target(__selected_target)
         catch error

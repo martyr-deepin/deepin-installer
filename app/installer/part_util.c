@@ -1074,5 +1074,5 @@ gboolean installer_update_grub (const gchar *uuid)
 
 void emit_progress (const gchar *step, const gchar *progress)
 {
-    js_post_message_simply("progress", "{\"%s\":\"%s\"}", step, progress);
+    js_post_message_simply ("progress", "{\"stage\":\"%s\",\"progress\":\"%s\"}", step, progress);
 }

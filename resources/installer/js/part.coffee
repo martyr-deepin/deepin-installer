@@ -686,6 +686,7 @@ class Part extends Page
             DCore.Installer.hide_help()
             pc.add_page(progress_page)
             pc.remove_page(part_page)
+            progress_page.start_extract()
         else
             @root_model = new RootDialog("RootModel")
             document.body.appendChild(@root_model.element)
