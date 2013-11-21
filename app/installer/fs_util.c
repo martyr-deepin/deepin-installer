@@ -276,90 +276,77 @@ double
 _get_fat16_free (const gchar *path)
 {
     double free = 0;
-
     gchar *output = NULL;
     GError *error = NULL;
-
-    if (g_find_program_in_path ("dosfsck") == NULL) {
-         g_warning ("_get_fat16_free:dosfsck not installed\n");
-         return free;
-     }
-         
-    gchar *cmd = g_strdup_printf ("dosfsck -n -v %s", path);
-
-    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("_get_btrfs_free:run cmd %s failed\n", cmd);
-        g_free (cmd);
-        g_error_free (error);
-        return free;
-    }
-    g_free (cmd);
-    error = NULL;
-
     double unit_size = 0;
     double used_size = 0;
     double total_size = 0;
+    gchar *cmd = NULL;
+    gchar *unit_cluster = NULL;
+    gchar *unit_num = NULL;
+    gchar *space_cluster = NULL;
+    gchar *used_cluster = NULL;
+    gchar *total_cluster = NULL;
 
-    gchar *unit_cluster = get_matched_string (output, "\\d+ bytes per cluster");
+    if (g_find_program_in_path ("dosfsck") == NULL) {
+         g_warning ("_get_fat16_free:dosfsck not installed\n");
+         goto out;
+     }
+         
+    cmd = g_strdup_printf ("dosfsck -n -v %s", path);
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("_get_btrfs_free:run cmd %s failed\n", cmd);
+        goto out;
+    }
+
+    unit_cluster = get_matched_string (output, "\\d+ bytes per cluster");
     if (unit_cluster == NULL) {
         g_warning ("_get_fat16_free:get unit cluster failed\n");
-        g_free (output);
-        return free;
+        goto out;
     }
 
-    gchar *unit_num = get_matched_string (unit_cluster, "\\d+");
+    unit_num = get_matched_string (unit_cluster, "\\d+");
     if (unit_num == NULL) {
         g_warning ("_get_fat16_free:get unit cluster num failed\n");
-        g_free (unit_cluster);
-        g_free (output);
-        return free;
+        goto out;
     }
-
     unit_size = g_ascii_strtod (unit_num, NULL);
 
-    gchar *space_cluster = get_matched_string (output, "\\d+/\\d+.*clusters");
+    space_cluster = get_matched_string (output, "\\d+/\\d+.*clusters");
     if (space_cluster == NULL) {
         g_warning ("_get_fat16_free:get space cluster failed\n");
-        g_free (unit_num);
-        g_free (unit_cluster);
-        g_free (output);
-        return free;
+        goto out;
     }
     
-    gchar *used_cluster = get_matched_string (space_cluster, "\\d+/");
+    used_cluster = get_matched_string (space_cluster, "\\d+/");
     if (used_cluster == NULL) {
         g_warning ("_get_fat16_free:get used cluster failed\n");
-        g_free (space_cluster);
-        g_free (unit_num);
-        g_free (unit_cluster);
-        g_free (output);
-        return free;
+        goto out;
     }
-
     used_size = g_ascii_strtod (used_cluster, NULL);
 
-    gchar *total_cluster = get_matched_string (output, "\\d+.*clusters");
+    total_cluster = get_matched_string (output, "\\d+.*clusters");
     if (total_cluster == NULL) {
         g_warning ("_get_fat16_free:get total cluster failed\n");
-        g_free (space_cluster);
-        g_free (unit_num);
-        g_free (unit_cluster);
-        g_free (output);
-        return free;
+        goto out;
     }
-
     total_size = g_ascii_strtod (total_cluster, NULL);
 
     free = unit_size * (total_size - used_size) / (1000 * 1000) ;
+    goto out;
 
+out:
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    g_free (cmd);
     g_free (total_cluster);
     g_free (used_cluster);
     g_free (space_cluster);
     g_free (unit_num);
     g_free (unit_cluster);
     g_free (output);
-
     return free;
 }
 
@@ -373,63 +360,52 @@ double
 _get_btrfs_free (const gchar *path)
 {
     double free = 0;
-
     gchar *output = NULL;
     GError *error = NULL;
+    double used_size = 0;
+    double total_size = 0;
+    gchar *cmd = NULL;
+    gchar *total = NULL;
+    gchar *total_num = NULL;
+    gchar *space_inuse = NULL;
+    gchar *used_num = NULL;
 
     if (g_find_program_in_path ("btrfs") == NULL) {
         g_warning ("btrfs not installed\n");
-        return free;
+        goto out;
     }
-    gchar *cmd = g_strdup_printf ("btrfs filesystem show %s", path);
 
+    cmd = g_strdup_printf ("btrfs filesystem show %s", path);
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("_get_btrfs_free:run cmd %s failed\n", cmd);
-        g_free (cmd);
-        g_error_free (error);
-        return free;
+        goto out;
     }
-    g_free (cmd);
-    error = NULL;
 
-    double used_size = 0;
-    double total_size = 0;
-
-    gchar *total = get_matched_string (output, "size.*used");
+    total = get_matched_string (output, "size.*used");
     if (total == NULL) {
         g_warning ("_get_btrfs_free:get total failed\n");
-        g_free (output);
-        return free;
+        goto out;
     }
 
-    gchar *total_num = get_matched_string (total, "\\d+");
+    total_num = get_matched_string (total, "\\d+");
     if (total_num == NULL) {
         g_warning ("_get_btrfs_free:get total num failed\n");
-        g_free (total);
-        g_free (output);
-        return free;
+        goto out;
     }
 
     total_size = g_ascii_strtod (total_num, NULL);
 
-    gchar *space_inuse = get_matched_string (output, "used.*path");
+    space_inuse = get_matched_string (output, "used.*path");
     if (space_inuse == NULL) {
         g_warning ("_get_btrfs_free:get used failed\n");
-        g_free (total_num);
-        g_free (total);
-        g_free (output);
-        return free;
+        goto out;
     }
 
-    gchar *used_num = get_matched_string (space_inuse, "\\d+");
+    used_num = get_matched_string (space_inuse, "\\d+");
     if (used_num == NULL) {
         g_warning ("_get_btrfs_free:parse used num failed\n");
-        g_free (total_num);
-        g_free (total);
-        g_free (space_inuse);
-        g_free (output);
-        return free;
+        goto out;
     }
     used_size = g_ascii_strtod (used_num, NULL);
 
@@ -438,13 +414,18 @@ _get_btrfs_free (const gchar *path)
     if (g_strrstr (total, "GB") != NULL) {
         free = free * 1024;
     }
+    goto out;
 
+out:
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    g_free (cmd);
     g_free (total_num);
     g_free (total);
     g_free (used_num);
     g_free (space_inuse);
     g_free (output);
-
     return free;
 }
 
@@ -452,74 +433,68 @@ double
 _get_ntfs_free (const gchar *path)
 {
     double free = 0;
-
     gchar *output = NULL;
     GError *error = NULL;
+    double used_size = 0;
+    double total_size = 0;
+    gchar *cmd = NULL;
+    gchar *total = NULL;
+    gchar *total_num = NULL;
+    gchar *space_inuse = NULL;
+    gchar *used_num = NULL;
 
     if (g_find_program_in_path ("ntfsresize") == NULL) {
         g_warning ("_get_ntfs_free:ntfsresize not installed\n");
-        return free;
+        goto out;
     }
-    gchar *cmd = g_strdup_printf ("ntfsresize -i -f -P %s", path);
 
+    cmd = g_strdup_printf ("ntfsresize -i -f -P %s", path);
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("_get_ntfs_free:run cmd %s failed\n", cmd);
-        g_free (cmd);
-        g_error_free (error);
-        return free;
+        goto out;
     }
-    g_free (cmd);
-    error = NULL;
 
-    double used_size = 0;
-    double total_size = 0;
-
-    gchar *total = get_matched_string (output, "bytes.*\\d+.*MB");
+    total = get_matched_string (output, "bytes.*\\d+.*MB");
     if (total == NULL) {
         g_warning ("_get_ntfs_free:get total failed\n");
-        g_free (output);
-        return free;
+        goto out;
     }
 
-    gchar *total_num = get_matched_string (total, "\\d+");
+    total_num = get_matched_string (total, "\\d+");
     if (total_num == NULL) {
         g_warning ("_get_ntfs_free:get total num failed\n");
-        g_free (total);
-        g_free (output);
-        return free;
+        goto out;
     }
 
     total_size = g_ascii_strtod (total_num, NULL);
 
-    gchar *space_inuse = get_matched_string (output, "Space in use.*MB");
+    space_inuse = get_matched_string (output, "Space in use.*MB");
     if (space_inuse == NULL) {
         g_warning ("_get_ntfs_free:get used failed\n");
-        g_free (total_num);
-        g_free (total);
-        g_free (output);
-        return free;
+        goto out;
     }
 
-    gchar *used_num = get_matched_string (space_inuse, "\\d+");
+    used_num = get_matched_string (space_inuse, "\\d+");
     if (used_num == NULL) {
         g_warning ("_get_ntfs_free:parse used num failed\n");
-        g_free (total_num);
-        g_free (total);
-        g_free (space_inuse);
-        g_free (output);
-        return free;
+        goto out;
     }
     used_size = g_ascii_strtod (used_num, NULL);
 
+    free = total_size - used_size;
+    goto out;
+
+out:
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    g_free (cmd);
     g_free (total_num);
     g_free (total);
     g_free (used_num);
     g_free (space_inuse);
     g_free (output);
-
-    free = total_size - used_size;
-
     return free;
 }
 
@@ -782,4 +757,3 @@ is_slowly_device (gpointer data)
 
     return NULL;
 }
-

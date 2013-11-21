@@ -30,6 +30,7 @@
 #include <libxklavier/xklavier.h>
 #include <gio/gunixinputstream.h>
 #include <glib.h>
+#include <errno.h>
 
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
@@ -117,7 +118,6 @@ JS_EXPORT_API
 gboolean installer_create_user (const gchar *username, const gchar *hostname, const gchar *password)
 {
     gboolean ret = FALSE;
-
     GError *error = NULL;
 
     if (!add_user (username)) {
@@ -150,8 +150,7 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
     handler->stdout_watch_id = 0;
 
     set_user_password (handler);
-    free_passwd_handler (handler);
-
+    emit_progress ("user", "finish");
     ret = TRUE;
 
     return ret;
@@ -198,7 +197,8 @@ set_user_home (const gchar *username)
 static void
 watch_passwd_child (GPid pid, gint status, struct PasswdHandler *handler)
 {
-    g_printf ("watch password child:set password finish\n");
+    g_warning ("watch password child:set password finish\n");
+    free_passwd_handler (handler);
 }
 
 static gboolean
@@ -219,10 +219,10 @@ passwd_out_watch (GIOChannel *channel, GIOCondition cond, struct PasswdHandler *
         return TRUE;
     }
     error = NULL;
-    g_printf ("passwd out watch: read %s\n", buf);
+    g_warning ("passwd out watch: read %s\n", buf);
 
     gchar *passwd = g_strdup_printf ("%s\n", handler->password);
-    //g_printf ("passwd out watch:write password %s\n", handler->password);
+    g_warning ("passwd out watch:write password %s\n", handler->password);
     if (passwd != NULL) {
         if (g_io_channel_write_chars (handler->in_channel, passwd, -1, NULL, &error) != G_IO_STATUS_NORMAL) {
             g_warning ("passwd out watch:write %s to channel: %s", passwd, error->message);
@@ -245,6 +245,7 @@ ignore_sigpipe (gpointer data)
 gboolean 
 set_user_password (struct PasswdHandler *handler)
 {
+    g_warning ("set user password");
     gboolean ret = FALSE;
 
     gchar **argv = g_new0 (gchar *, 3);
@@ -274,6 +275,7 @@ set_user_password (struct PasswdHandler *handler)
     }
     error = NULL;
 
+    g_warning ("dup stderr to stdout");
     if ((dup2 (std_err, std_out)) == -1) {
         g_warning ("set user password:dup %s\n", strerror (errno));
         if (handler->pid != -1) {
@@ -302,6 +304,7 @@ set_user_password (struct PasswdHandler *handler)
 
     g_io_channel_set_buffered (handler->in_channel, FALSE);
     g_io_channel_set_buffered (handler->out_channel, FALSE);
+    g_warning ("watch io channel for set password");
 
     handler->stdout_watch_id = g_io_add_watch (handler->out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) passwd_out_watch, handler);
     handler->child_watch_id = g_child_watch_add (handler->pid, (GChildWatchFunc) watch_passwd_child, handler);
@@ -467,9 +470,7 @@ void installer_reboot ()
 
     gboolean can_restart = FALSE;
     g_variant_get (can_restart_var, "(b)", &can_restart);
-
     g_variant_unref (can_restart_var);
-
     if (can_restart) {
         g_dbus_proxy_call (ck_proxy,
                            "Restart",
@@ -519,50 +520,50 @@ init_keyboard_layouts ()
                                                   (GDestroyNotify) g_free, 
                                                   (GDestroyNotify) g_list_free);
 
-    Display *dpy = XOpenDisplay (NULL);
+    Display *dpy = NULL;
+    XklEngine *engine = NULL;
+    XklConfigRegistry *cfg_reg = NULL;
+    
+    dpy = XOpenDisplay (NULL);
     if (dpy == NULL) {
         g_warning ("init keyboard layouts: XOpenDisplay\n");
-        return ;
+        goto out;
     }
 
-    XklEngine *engine = xkl_engine_get_instance (dpy);
+    engine = xkl_engine_get_instance (dpy);
     if (engine == NULL) {
         g_warning ("init keyboard layouts: xkl engine get instance\n");
-        XCloseDisplay (dpy);
-        return ;
+        goto out;
     }
 
     config = xkl_config_rec_new ();
     xkl_config_rec_get_from_server (config, engine);
     if (config == NULL) {
         g_warning ("init keyboard layouts: xkl config rec\n");
-        g_object_unref (engine);
-        XCloseDisplay (dpy);
-        return ;
+        goto out;
     }
 
-    XklConfigRegistry *cfg_reg = NULL;
     cfg_reg = xkl_config_registry_get_instance (engine);
     if (cfg_reg == NULL) {
         g_warning ("init keyboard layouts: xkl config registry get instance\n");
-        g_object_unref (engine);
-        XCloseDisplay (dpy);
-        return ;
+        goto out;
     }
-
     if (!xkl_config_registry_load(cfg_reg, TRUE)) {
         g_warning ("init keyboard layouts: xkl config registry load\n");
-        g_object_unref (engine);
-        g_object_unref (cfg_reg);
-        XCloseDisplay (dpy);
-        return ;
+        goto out;
     }
 
     xkl_config_registry_foreach_layout(cfg_reg, _foreach_layout, NULL);
-
-    g_object_unref (engine);
-    g_object_unref (cfg_reg);
-    XCloseDisplay (dpy);
+out:
+    if (engine != NULL) {
+        g_object_unref (engine);
+    }
+    if (cfg_reg != NULL) {
+        g_object_unref (cfg_reg);
+    }
+    if (dpy != NULL) {
+        XCloseDisplay (dpy);
+    }
 }
 
 JS_EXPORT_API 
@@ -667,6 +668,7 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
 
     g_strfreev (layouts);
     g_strfreev (variants);
+    emit_progress ("keyboard", "finish");
 }
 
 JS_EXPORT_API
@@ -738,41 +740,49 @@ JS_EXPORT_API
 gboolean installer_set_timezone (const gchar *timezone)
 {
     gboolean ret = FALSE;
-
     GError *error = NULL;
+    gchar *timezone_file = NULL;
+    gchar *zoneinfo_path = NULL;
+    gchar *localtime_path = NULL;
+    GFile *zoneinfo_file = NULL;
+    GFile *localtime_file = NULL;
 
-    gchar *timezone_file = g_strdup ("/etc/timezone");
+    timezone_file = g_strdup ("/etc/timezone");
     g_file_set_contents (timezone_file, timezone, -1, &error);
     if (error != NULL) {
         g_warning ("set timezone:write timezone %s\n", error->message);
-        g_error_free (error);
-        g_free (timezone_file);
-        return ret;
+        goto out;
     }
-    error = NULL;
-    g_free (timezone_file);
-
-    gchar *zoneinfo_path = g_strdup_printf ("/usr/share/zoneinfo/%s", timezone);
-    gchar *localtime_path = g_strdup ("/etc/localtime");
-    GFile *zoneinfo_file = g_file_new_for_path (zoneinfo_path);
-    GFile *localtime_file = g_file_new_for_path (localtime_path);
+    zoneinfo_path = g_strdup_printf ("/usr/share/zoneinfo/%s", timezone);
+    localtime_path = g_strdup ("/etc/localtime");
+    zoneinfo_file = g_file_new_for_path (zoneinfo_path);
+    localtime_file = g_file_new_for_path (localtime_path);
     g_file_copy (zoneinfo_file, localtime_file, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("set timezone:cp /etc/localtime %s\n", error->message);
-        g_free (zoneinfo_path);
-        g_free (localtime_path);
-        g_object_unref (zoneinfo_file);
-        g_object_unref (localtime_file);
-        return ret;
+        goto out;
     }
-    error = NULL;
+    ret = TRUE;
+    goto out;
+
+out:
+    g_free (timezone_file);
     g_free (zoneinfo_path);
     g_free (localtime_path);
-    g_object_unref (zoneinfo_file);
-    g_object_unref (localtime_file);
-    //fix me, set /etc/default/rcS content"
-    ret = TRUE;
-
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    if (zoneinfo_file != NULL) {
+        g_object_unref (zoneinfo_file);
+    }
+    if (localtime_file != NULL) {
+        g_object_unref (localtime_file);
+    }
+    if (ret) {
+        emit_progress ("timezone", "finish");
+    } else {
+        emit_progress ("timezone", "terminate");
+    }
     return ret;
 }
 
@@ -818,7 +828,6 @@ cb_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
     }
 
     g_io_channel_read_line (channel, &string, &size, NULL, NULL);
-
     //g_printf ("cb out watch:%s***cb out watch finish\n", string);
     gchar *match = get_matched_string (string, "\\d{1,3}%");
     //g_printf ("cb out watch:match->              %s\n", match);
@@ -950,80 +959,54 @@ JS_EXPORT_API
 gboolean installer_mount_procfs ()
 {
     gboolean ret = FALSE;
-
     GError *error = NULL;
-    gint status = -1;
-
     extern const gchar* target;
+    gchar *mount_dev = NULL;
+    gchar *mount_devpts = NULL;
+    gchar *mount_proc = NULL;
+    gchar *mount_sys = NULL;
+
     if (target == NULL) {
         g_warning ("mount procfs:target is NULL\n");
-        return ret;
+        goto out;
     }
+    mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", target);
+    mount_devpts = g_strdup_printf ("mount -vt devpts devpts %s/dev/pts", target);
+    mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", target);
+    mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sys", target);
 
-    gchar *mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", target);
-    g_spawn_command_line_sync (mount_dev, NULL, NULL, &status, &error);
+    g_spawn_command_line_sync (mount_dev, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("mount procfs:mount dev %s\n", error->message);
-        g_error_free (error);
+        goto out;
     }
-    error = NULL;
-
-    if (status != 0) {
-        g_warning ("mount procfs:mount dev failed\n");
-        g_free (mount_dev);
-        return ret;
-    }
-    g_free (mount_dev);
-
-    gchar *mount_devpts = g_strdup_printf ("mount -vt devpts devpts %s/dev/pts", target);
-    g_spawn_command_line_sync (mount_devpts, NULL, NULL, &status, &error);
+    g_spawn_command_line_sync (mount_devpts, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("mount procfs:mount devpts %s\n", error->message);
-        g_error_free (error);
+        goto out;
     }
-    error = NULL;
-
-    if (status != 0) {
-        g_warning ("mount procfs:mount devpts failed\n");
-        g_free (mount_devpts);
-        return ret;
-    }
-    g_free (mount_devpts);
-
-    gchar *mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", target);
-    g_spawn_command_line_sync (mount_proc, NULL, NULL, &status, &error);
+    g_spawn_command_line_sync (mount_proc, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("mount procfs:mount proc %s\n", error->message);
-        g_error_free (error);
+        goto out;
     }
-    error = NULL;
-
-    if (status != 0) {
-        g_warning ("mount procfs:mount proc failed\n");
-        g_free (mount_proc);
-        return ret;
-    }
-    g_free (mount_proc);
-
-    gchar *mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sys", target);
-    g_spawn_command_line_sync (mount_sys, NULL, NULL, &status, &error);
+    g_spawn_command_line_sync (mount_sys, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("mount procfs:mount sys %s\n", error->message);
+        goto out;
+    }
+    ret = TRUE;
+    goto out;
+
+out:
+    g_free (mount_dev);
+    g_free (mount_devpts);
+    g_free (mount_proc);
+    g_free (mount_sys);
+    if (error != NULL) {
         g_error_free (error);
     }
-    error = NULL;
-
-    if (status != 0) {
-        g_warning ("mount procfs:mount sys failed\n");
-        g_free (mount_sys);
-        return ret;
-    }
-    g_free (mount_sys);
-
-    ret = TRUE;
-
     return ret;
-    //gchar *mount_shm = g_strdup_printf ("mount -vt tmpfs shm %s/dev/shm", target);
 }
 
 JS_EXPORT_API
@@ -1040,8 +1023,9 @@ gboolean installer_chroot_target ()
     if (chroot (target) == 0) {
         ret = TRUE;
     } else {
-        g_warning ("chroot:chroot to %s falied\n", target);
+        g_warning ("chroot:chroot to %s falied:%s\n", target, strerror (errno));
     }
 
+    emit_progress ("chroot", "finish");
     return ret;
 }

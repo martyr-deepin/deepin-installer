@@ -17,6 +17,9 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+__selected_target = null
+__selected_grub = null
+
 __selected_disk = null
 __selected_item = null
 __selected_line = null
@@ -684,9 +687,10 @@ class Part extends Page
         if check_target_part()
             do_partition()
             DCore.Installer.hide_help()
+            __selected_grub = @grub_select.options[@grub_select.selectedIndex].value
             pc.add_page(progress_page)
             pc.remove_page(part_page)
-            progress_page.start_extract()
+            progress_page.handle_extract("start")
         else
             @root_model = new RootDialog("RootModel")
             document.body.appendChild(@root_model.element)
@@ -724,7 +728,7 @@ class Part extends Page
         for disk in disks
             path = v_disk_info[disk]["path"]
             select_opt = create_element("option", "", @grub_select)
-            select_opt.setAttribute("value", path)
+            select_opt.setAttribute("value", disk)
             select_opt.innerText = path
             select_opt.innerText += "\t"
             select_opt.innerText += v_disk_info[disk]["model"]

@@ -171,25 +171,23 @@ void installer_finish_install ()
     extern const gchar *target;
     if (target == NULL) {
         g_warning ("finish install:target is NULL\n");
-        gtk_main_quit ();
-        return ;
+
+    } else {
+        gchar *umount_sys = g_strdup_printf ("umount %s/sys", target);
+        gchar *umount_proc = g_strdup_printf ("umount %s/proc", target);
+        gchar *umount_devpts = g_strdup_printf ("umount %s/dev/pts", target);
+        gchar *umount_dev = g_strdup_printf ("umount %s/dev", target);
+
+        g_spawn_command_line_async (umount_sys, NULL);
+        g_spawn_command_line_async (umount_proc, NULL);
+        g_spawn_command_line_async (umount_devpts, NULL);
+        g_spawn_command_line_async (umount_dev, NULL);
+
+        g_free (umount_dev);
+        g_free (umount_devpts);
+        g_free (umount_proc);
+        g_free (umount_sys);
     }
-
-    //fix me, exit chroot environment first
-    //gchar *umount_sys = g_strdup_printf ("umount %s/sys", target);
-    //gchar *umount_proc = g_strdup_printf ("umount %s/proc", target);
-    //gchar *umount_devpts = g_strdup_printf ("umount %s/dev/pts", target);
-    //gchar *umount_dev = g_strdup_printf ("umount %s/dev", target);
-
-    //g_spawn_command_line_async (umount_sys, NULL);
-    //g_spawn_command_line_async (umount_proc, NULL);
-    //g_spawn_command_line_async (umount_devpts, NULL);
-    //g_spawn_command_line_async (umount_dev, NULL);
-
-    //g_free (umount_dev);
-    //g_free (umount_devpts);
-    //g_free (umount_proc);
-    //g_free (umount_sys);
 
     ped_device_free_all ();
     gtk_main_quit ();

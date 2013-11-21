@@ -17,74 +17,37 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-__selected_target = null
-
 DCore.signal_connect("progress", (msg) ->
     if msg.stage == "extract"
-        if msg.progress == "finish"
-            progress_install()
-        else
-            progress_page.update_progress(msg.progress)
+        progress_page.handle_extract(msg.progress)
+    else if msg.state == "chroot"
+        progress_page.handle_chroot(msg.progress)
+    else if msg.state == "timezone"
+        progress_page.handle_set_timezone(msg.progress)
+    else if msg.state == "keyboard"
+        progress_page.handle_set_keyboard(msg.progress)
+    else if msg.state == "user"
+        progress_page.handle_create_user(msg.progress)
+    else if msg.state == "grub"
+        progress_page.handle_update_grub(msg.progress)
+    else
+        echo msg
 )
 
-progress_install = ->
-    try
-        echo "mount procfs"
-        DCore.Installer.mount_procfs()
-    catch error
-        echo "mount procfs failed"
-        return
-    try
-        echo "__selected_target"
-        echo __selected_target
-        DCore.Installer.chroot_target(__selected_target)
-    catch error
-        echo "chroot target failed"
-        return
-    try
-        echo "write partition mp"
-        DCore.Installer.write_partition_mp()
-    catch error
-        echo "write partiton mp failed"
-        return
-    try
-        echo "__selected_timezone"
-        echo __selected_timezone
-        DCore.Installer.set_timezone(__selected_timezone)
-    catch error
-        echo "set timezone failed"
-        return
-    try
-        if __selected_layout.indexOf(",") != -1
-            layout = __selected_layout.split(",")[0]
-            variant = __selected_layout.split(",")[1]
-        else
-            layout = __selected_layout
-            variant = null
-        echo "layout"
-        echo layout
-        echo "variant"
-        echo variant
-        DCore.Installer.set_keyboard_layout_variant(layout,variant)
-    catch error
-        echo "set keyboard layout variant failed"
-        return
-    try
-        echo "create user"
-        echo __selected_username
-        echo __selected_hostname
-        echo __selected_password
-        DCore.Installer.create_user(__selected_username, __selected_hostname, __selected_password)
-    catch error
-        echo "create user failed"
-        return
-    try
-        echo "__selected_grub"
-        echo __selected_grub
-        DCore.Installer.update_grub(__selected_grub)
-    catch error
-        echo "update grub failed"
-        return
+class ReportDialog extends Dialog
+    constructor: (@id) ->
+        super(@id, @report_cb)
+        @add_css_class("DialogCommon")
+        @title_txt.innerText = "错误报告"
+        @report_tips = create_element("p", "", @content)
+        @report_tips.innerText = "安装失败，请把安装日志信息反馈Deepin社区"
+        @cancel.style.display = "none"
+        @ok.addEventListener("click", (e) =>
+            echo "report dialog exit installer"
+        )
+
+    report_cb: ->
+        echo "report cb"
 
 class Progress extends Page
     constructor: (@id)->
@@ -107,10 +70,6 @@ class Progress extends Page
         @progressbar = create_element("div", "ProgressBar", @progress_container)
         #@progressdesc = create_element("div", "Progressdesc", @progress_container)
         #@progressdesc.innerText = "Progress Description"
-        @progressbar.addEventListener("click", (e) =>
-            pc.add_page(finish_page)
-            pc.remove_page(progress_page)
-        )
 
     switch_ppt: (direction)->
         if direction == "prev"
@@ -129,17 +88,102 @@ class Progress extends Page
     update_progress: (progress) ->
         @progressbar.style.width = progress
 
-    start_extract: ->
-        __selected_target = get_target_part()
-        echo "start extrace selected target"
-        echo __selected_target
-        try
-            DCore.Installer.mount_target(__selected_target)
-        catch error
-            echo "mount target failed"
-            return
-        try
-            DCore.Installer.extract_squashfs()
-        catch error
-            echo "extract squashfs failed"
-            return
+    show_report: ->
+        @report?.hide_dialog()
+        @report =  new ReportDialog("report")
+
+    handle_extract: (progress) ->
+        if progress == "start"
+            echo "start handle extract"
+            __selected_target = get_target_part()
+            try
+                DCore.Installer.mount_target(__selected_target)
+                DCore.Installer.extract_squashfs()
+            catch error
+                echo error
+        else if progress == "finish"
+            @handle_chroot("start")
+        else if progress == "terminate"
+            @show_report()
+        else
+            @update_progress(progress)
+
+    handle_chroot: (progress) ->
+        if progress == "start"
+            echo "start handle chroot"
+            try
+                DCore.Installer.mount_procfs()
+                DCore.Installer.chroot_target()
+                write_fs_tab()
+            catch error
+                echo error
+        else if progress == "finish"
+            @handle_set_timezone("start")
+        else if progress == "terminate"
+            @show_report()
+        else
+            echo "invalid progress for handle chroot"
+
+    handle_set_timezone: (progress) ->
+        if progress == "start"
+            echo "start handle timezone"
+            try
+                DCore.Installer.set_timezone(__selected_timezone)
+            catch error
+                echo error
+        else if progress == "finish"
+            @handle_set_keyboard("start")
+        else if progress == "terminate"
+            @show_report()
+        else
+            echo "invalid progress for handle timezone"
+
+    handle_set_keyboard: (progress) ->
+        if progress == "start"
+            echo "start handle keyboard"
+            try
+                if __selected_layout.indexOf(",") != -1
+                    layout = __selected_layout.split(",")[0]
+                    variant = __selected_layout.split(",")[1]
+                else
+                    layout = __selected_layout
+                    variant = null
+                DCore.Installer.set_keyboard_layout_variant(layout,variant)
+            catch error
+                echo error
+        else if progress == "finish"
+            @handle_create_user("start")
+        else if progress == "terminate"
+            @show_report()
+        else 
+            echo "invalid progress for handle keyboard"
+
+    handle_create_user: (progress) ->
+        if progress == "start"
+            echo "start handle user"
+            try
+                DCore.Installer.create_user(__selected_username, __selected_hostname, __selected_password)
+            catch error
+                echo error
+        else if progress == "finish"
+            @handle_update_grub("start")
+        else if progress == "terminate"
+            @show_report()
+        else
+            echo "invalid progress for handle user"
+    
+    handle_update_grub: (progress) ->
+        if progress == "start"
+            echo "start handle grub"
+            try
+                DCore.Installer.update_grub(__selected_grub)
+            catch error
+                echo error
+        else if progress == "finish"
+            echo "finish update grub"
+            pc.add_page(finish_page)
+            pc.remove_page(progress_page)
+        else if progress == "terminate"
+            @show_report()
+        else
+            echo "invalid progress for handle grub"
