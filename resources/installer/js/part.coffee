@@ -678,8 +678,9 @@ class Part extends Page
         @next_btn.setAttribute("style", left)
 
     handle_simple_install: ->
-        echo "simple"
+        do_simple_partition()
         DCore.Installer.hide_help()
+        __selected_grub = __selected_disk
         pc.add_page(progress_page)
         pc.remove_page(part_page)
 

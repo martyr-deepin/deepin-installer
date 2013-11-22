@@ -44,6 +44,7 @@ disks = DCore.Installer.list_disks()
 m_disk_info = {}
 #never change the partitions list
 init_m_disk_info = ->
+    m_disk_info = {}
     for disk in disks
         m_disk_info[disk] = {}
         m_disk_info[disk]["change"] = false
@@ -56,6 +57,7 @@ init_m_disk_info = ->
 m_part_info = {}
 #may had part not in m_disk_info partitions list
 init_m_part_info = ->
+    m_part_info = {}
     for disk in disks
         for part in m_disk_info[disk]["partitions"]
             m_part_info[part] = {}
@@ -252,6 +254,49 @@ do_partition = ->
         else
             echo "just keep disk"
 
+#auto partition for simple mode
+do_simple_partition: (device, type) ->
+    #fake advance mode operation to keep the hash table uuid
+    undo_part_table_info()
+    if type == "disk"
+        #drop all partition then crate a new one
+        for part in v_disk_info[device]["partitions"]
+            if v_part_info[part]["type"] in ["normal", "logical"]
+                delete_part(part)
+        if v_disk_info[device]["partitions"].length != 1 
+            echo "do simple partiiton, should have only one when delete all"
+        partid = v_disk_info[device]["partitions"][0]
+        if v_part_info[partid]["type"] != "freespace"
+            echo "do simple partiiton, part should be freespace when delete all"
+        type = "normal"
+        size = v_disk_info[device]["length"]
+        align = "start"
+        fs = "ext4"
+        mp = "/"
+        add_part(partid, type, size, align, fs, mp)
+
+    else if type == "partition"
+        #create a new part when install to freespace
+        if m_part_info[device]["type"] == "freespace"
+            partid = device
+            if is_in_extended(partid)
+                type = "logical"
+            else
+                type = "normal"
+            size = v_disk_info[partid]["length"]
+            fs = "ext4"
+            mp = "/"
+            add_part(partid, type, size, align, fs, mp)
+        #just update the part fs and mp to install
+        else if m_part_info[deivce]["type"] in ["normal", "logical"]
+            update_part_fs(device,"ext4")
+            update_part_mp(device,"/")
+        else
+            echo "invalid as extended doesn't show in simple view"
+    else
+        echo "invalid type to do simple partition"
+    do_partition()
+
 #get target part that mount root
 get_target_part = ->
     echo "get target part"
@@ -298,6 +343,7 @@ write_fs_tab = ->
 #View: for data display in UI
 v_disk_info = {}
 init_v_disk_info = ->
+    v_disk_info = {}
     for disk in disks
         v_disk_info[disk] = {}
         v_disk_info[disk]["length"] = DCore.Installer.get_disk_length(disk)
@@ -316,6 +362,7 @@ init_v_disk_info = ->
     
 v_part_info = {}
 init_v_part_info = ->
+    v_part_info = {}
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
             v_part_info[part] = {}
@@ -883,11 +930,14 @@ add_part = (free_part, type, size, align, fs, mp) ->
     compute_display_path(disk)
     mark_add(new_part)
 
+undo_part_table_info = ->
+    init_v_disk_info()
+    init_v_part_info()
+    init_m_disk_info()
+    init_m_part_info()
+
 #Control end
 #Control
 #
 #
-init_v_disk_info()
-init_v_part_info()
-init_m_disk_info()
-init_m_part_info()
+undo_part_table_info()

@@ -185,7 +185,7 @@ gchar *installer_get_disk_path (const gchar *disk)
 
     PedDisk *peddisk = NULL;
 
-    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
+    peddisk = (PedDisk *) g_hash_table_lookup (disks, disk);
     if (peddisk != NULL) {
         PedDevice *device = peddisk->dev;
         g_assert(device != NULL);

@@ -31,13 +31,9 @@ DCore.signal_connect("progress", (msg) ->
     else if msg.stage == "grub"
         progress_page.handle_update_grub(msg.progress)
     else
-        try
-            echo "other message"
-            echo msg.stage
-            echo msg.progress
-        catch error
-            echo error
-            echo msg
+        echo "other message"
+        echo msg.stage
+        echo msg.progress
 )
 
 class ReportDialog extends Dialog
