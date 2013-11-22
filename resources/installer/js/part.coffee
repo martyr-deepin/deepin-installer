@@ -73,7 +73,7 @@ class Dialog extends Widget
             @hide_dialog()
         )
         @show_dialog()
-        @element.setAttribute("draggable", "true")
+        #@element.setAttribute("draggable", "true")
 
     show_dialog: ->
         __in_model = true

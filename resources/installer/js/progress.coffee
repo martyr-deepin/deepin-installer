@@ -36,20 +36,45 @@ DCore.signal_connect("progress", (msg) ->
         echo msg.progress
 )
 
-class ReportDialog extends Dialog
+class ReportDialog extends Widget
     constructor: (@id) ->
-        super(@id, @report_cb)
-        @add_css_class("DialogCommon")
+        super(@id, @cb)
+        @title = create_element("p", "DialogTitle", @element)
+        @title_txt = create_element("div", "DialogTxt", @title)
         @title_txt.innerText = "错误报告"
-        @report_tips = create_element("p", "", @content)
-        @report_tips.innerText = "安装失败，请把安装日志信息反馈Deepin社区"
-        @cancel.style.display = "none"
-        @ok.addEventListener("click", (e) =>
-            echo "report dialog exit installer"
+
+        @title_close = create_element("div", "DialogClose", @title)
+        @title_close.addEventListener("click", (e) =>
+            @hide_dialog()
+            @cb()
         )
 
-    report_cb: ->
-        echo "report cb"
+        @content = create_element("div", "DialogContent", @element)
+        @report_tips = create_element("p", "", @content)
+        @report_tips.innerText = "安装失败，请把安装日志信息反馈Deepin社区"
+
+        @foot = create_element("p", "DialogBtn", @element)
+        @ok = create_element("span", "", @foot)
+        @ok.innerText = "OK"
+        @ok.addEventListener("click", (e) =>
+            @hide_dialog()
+            @cb()
+        )
+
+        @add_css_class("DialogCommon")
+        @show_dialog()
+
+    show_dialog: ->
+        __in_model = true
+        __board.setAttribute("style", "display:block")
+
+    hide_dialog: ->
+        __in_model = false
+        @destroy()
+        __board.setAttribute("style", "display:none")
+
+    cb: ->
+        DCore.Installer.finish_install()
 
 class Progress extends Page
     constructor: (@id)->
@@ -93,6 +118,7 @@ class Progress extends Page
     show_report: ->
         @report?.hide_dialog()
         @report =  new ReportDialog("report")
+        document.body.appendChild(@report.element)
 
     handle_extract: (progress) ->
         if progress == "start"

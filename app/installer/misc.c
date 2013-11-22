@@ -801,6 +801,10 @@ watch_extract_child (GPid pid, gint status, gpointer data)
     if (error != NULL) {
         g_warning ("watch extract child:error->%s\n", error->message);
         g_error_free (error);
+        emit_progress ("extract", "terminate");
+    } else {
+        g_printf ("watch extract child:extract finish\n");
+        emit_progress ("extract", "finish");
     }
 
     guint* cb_ids = (guint *) data;
@@ -818,8 +822,6 @@ watch_extract_child (GPid pid, gint status, gpointer data)
     }
     g_free (cb_ids);
 
-    g_printf ("watch extract child:extract finish\n");
-    emit_progress ("extract", "finish");
     g_spawn_close_pid (pid);
 }
 
