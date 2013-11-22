@@ -862,6 +862,7 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         goto out;
     }
     mount_file = setmntent ("/etc/fstab", "a");
+    
     if (mount_file == NULL) {
         g_warning ("write fs tab: setmntent failed\n");
         goto out;
@@ -896,6 +897,11 @@ out:
     }
     if (mount_file != NULL) {
         endmntent (mount_file);
+    }
+    if (ret) {
+        emit_progress ("chroot", "finish");
+    } else {
+        emit_progress ("chroot", "terminate");
     }
     return ret;
 }
@@ -964,7 +970,6 @@ gboolean installer_mount_target (const gchar *part)
     PedPartition *pedpartition = NULL;
     gchar *path = NULL;
     gchar *target_uuid = NULL;
-    gchar *target = NULL;
     gchar *cmd = NULL;
     GError *error = NULL;
 
@@ -983,10 +988,9 @@ gboolean installer_mount_target (const gchar *part)
     target = g_strdup_printf ("/mnt/target%s", target_uuid);
     if (g_file_test (target, G_FILE_TEST_EXISTS)) {
         g_warning ("mount target:re rand uuid as target exists\n");
-        g_free (target_uuid);
-        target_uuid = NULL;
-        g_free (target);
-        target = NULL;
+        //g_free (target_uuid);
+        //target_uuid = NULL;
+        //target = NULL;
         target_uuid = installer_rand_uuid ();
         target = g_strdup_printf ("/mnt/target%s", target_uuid);
     }
@@ -1005,13 +1009,12 @@ gboolean installer_mount_target (const gchar *part)
 out:
     g_free (path);
     g_free (target_uuid);
-    g_free (target);
     g_free (cmd);
     if (error != NULL) {
         g_error_free (error);
     }
     if (!result) {
-        emit_progress ("chroot", "terminate");
+        emit_progress ("extract", "terminate");
     }
     return result;
 }

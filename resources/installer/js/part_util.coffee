@@ -283,7 +283,7 @@ write_fs_tab = ->
     for disk in disks
         for part in m_disk_info[disk]["partitions"]
             if m_part_info[part]["op"] != "delete"
-                if m_part_info[part]["mp"]? and m_part_info[part]["mp"].length > 0
+                if m_part_info[part]["mp"]? and m_part_info[part]["mp"] != "unused"
                     try
                         DCore.Installer.write_partition_mp(part, m_part_info[part]["mp"])
                     catch error

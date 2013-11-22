@@ -150,7 +150,6 @@ gboolean installer_create_user (const gchar *username, const gchar *hostname, co
     handler->stdout_watch_id = 0;
 
     set_user_password (handler);
-    emit_progress ("user", "finish");
     ret = TRUE;
 
     return ret;
@@ -199,6 +198,11 @@ watch_passwd_child (GPid pid, gint status, struct PasswdHandler *handler)
 {
     g_warning ("watch password child:set password finish\n");
     free_passwd_handler (handler);
+    if (status == -1) {
+        emit_progress ("user", "terminate");
+    } else {
+        emit_progress ("user", "finish");
+    }
 }
 
 static gboolean
@@ -645,7 +649,7 @@ JS_EXPORT_API
 void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant)
 {
     if (config == NULL) {
-        g_warning ("set keyboard layout variant:xkl config null\n");
+        g_warning ("set keyboard layout variant:xkl config null, init it\n");
         init_keyboard_layouts ();
     }
     g_assert (config != NULL);
@@ -789,8 +793,14 @@ out:
 static void
 watch_extract_child (GPid pid, gint status, gpointer data)
 {
+    GError *error = NULL;
     if (data == NULL) {
         g_warning ("watch extract child:arg data is NULL\n");
+    }
+    g_spawn_check_exit_status (status, &error);
+    if (error != NULL) {
+        g_warning ("watch extract child:error->%s\n", error->message);
+        g_error_free (error);
     }
 
     guint* cb_ids = (guint *) data;
