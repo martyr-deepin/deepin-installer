@@ -255,7 +255,7 @@ do_partition = ->
             echo "just keep disk"
 
 #auto partition for simple mode
-do_simple_partition: (device, type) ->
+do_simple_partition = (device, type) ->
     #fake advance mode operation to keep the hash table uuid
     undo_part_table_info()
     if type == "disk"
@@ -275,7 +275,7 @@ do_simple_partition: (device, type) ->
         mp = "/"
         add_part(partid, type, size, align, fs, mp)
 
-    else if type == "partition"
+    else if type == "part"
         #create a new part when install to freespace
         if m_part_info[device]["type"] == "freespace"
             partid = device
@@ -288,7 +288,7 @@ do_simple_partition: (device, type) ->
             mp = "/"
             add_part(partid, type, size, align, fs, mp)
         #just update the part fs and mp to install
-        else if m_part_info[deivce]["type"] in ["normal", "logical"]
+        else if m_part_info[device]["type"] in ["normal", "logical"]
             update_part_fs(device,"ext4")
             update_part_mp(device,"/")
         else

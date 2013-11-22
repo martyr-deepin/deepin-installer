@@ -678,11 +678,12 @@ class Part extends Page
         @next_btn.setAttribute("style", left)
 
     handle_simple_install: ->
-        do_simple_partition()
+        do_simple_partition(__selected_item.id, __selected_item.device_type)
         DCore.Installer.hide_help()
         __selected_grub = __selected_disk
         pc.add_page(progress_page)
         pc.remove_page(part_page)
+        progress_page.handle_extract("start")
 
     handle_advance_install: ->
         if check_target_part()
