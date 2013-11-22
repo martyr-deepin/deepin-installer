@@ -163,6 +163,47 @@ gboolean installer_is_help_running ()
     return running;
 }
 
+static
+void unmount_target (const gchar *target)
+{
+    gboolean flag = FALSE;
+    struct mntent *mnt;
+    FILE *mount_file = NULL;
+
+    mount_file = setmntent ("/etc/mtab", "r");
+    if (mount_file == NULL) {
+        g_warning ("unmount target:setmntent failed\n");
+        return ;
+    }
+    while ((mnt = getmntent (mount_file)) != NULL) {
+        if (g_str_has_prefix (mnt->mnt_dir, target)) {
+            flag = TRUE;
+            break;
+        }
+    }
+    endmntent (mount_file);
+
+    if (flag) {
+        gchar *umount_sys = g_strdup_printf ("umount %s/sys", target);
+        gchar *umount_proc = g_strdup_printf ("umount %s/proc", target);
+        gchar *umount_devpts = g_strdup_printf ("umount %s/dev/pts", target);
+        gchar *umount_dev = g_strdup_printf ("umount %s/dev", target);
+        gchar *umount_target = g_strdup_printf ("umount %s", target);
+
+        g_spawn_command_line_async (umount_sys, NULL);
+        g_spawn_command_line_async (umount_proc, NULL);
+        g_spawn_command_line_async (umount_devpts, NULL);
+        g_spawn_command_line_async (umount_dev, NULL);
+        g_spawn_command_line_async (umount_target, NULL);
+
+        g_free (umount_dev);
+        g_free (umount_devpts);
+        g_free (umount_proc);
+        g_free (umount_sys);
+        g_free (umount_target);
+    }
+}
+
 JS_EXPORT_API
 void installer_finish_install ()
 {
@@ -173,20 +214,7 @@ void installer_finish_install ()
         g_warning ("finish install:target is NULL\n");
 
     } else {
-        gchar *umount_sys = g_strdup_printf ("umount %s/sys", target);
-        gchar *umount_proc = g_strdup_printf ("umount %s/proc", target);
-        gchar *umount_devpts = g_strdup_printf ("umount %s/dev/pts", target);
-        gchar *umount_dev = g_strdup_printf ("umount %s/dev", target);
-
-        g_spawn_command_line_async (umount_sys, NULL);
-        g_spawn_command_line_async (umount_proc, NULL);
-        g_spawn_command_line_async (umount_devpts, NULL);
-        g_spawn_command_line_async (umount_dev, NULL);
-
-        g_free (umount_dev);
-        g_free (umount_devpts);
-        g_free (umount_proc);
-        g_free (umount_sys);
+        unmount_target (target);
     }
 
     ped_device_free_all ();
