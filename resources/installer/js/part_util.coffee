@@ -366,13 +366,14 @@ init_v_part_info = ->
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
             v_part_info[part] = {}
+            v_part_info[part]["type"] = DCore.Installer.get_partition_type(part)
             v_part_info[part]["disk"] = disk
             try
                 v_part_info[part]["used"] = "unknown"
-                DCore.Installer.get_partition_free (part)
+                if v_part_info[part]["type"] != "freespace"
+                    DCore.Installer.get_partition_free (part)
             catch error
                 echo error
-            v_part_info[part]["type"] = DCore.Installer.get_partition_type(part)
             #please fix the return null string
             #v_part_info[part]["name"] = DCore.Installer.get_partition_name(part)
             v_part_info[part]["start"] = DCore.Installer.get_partition_start(part)
