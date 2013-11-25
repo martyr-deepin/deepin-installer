@@ -199,7 +199,7 @@ set_user_home (const gchar *username)
 static void
 watch_passwd_child (GPid pid, gint status, struct PasswdHandler *handler)
 {
-    g_warning ("watch password child:set password finish\n");
+    g_printf ("watch password child:set password finish\n");
     free_passwd_handler (handler);
     if (status == -1) {
         emit_progress ("user", "terminate");

@@ -17,18 +17,20 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+__selected_stage = null
+
 DCore.signal_connect("progress", (msg) ->
-    if msg.stage == "extract"
+    if msg.stage == "extract" and __selected_stage == "extract"
         progress_page.handle_extract(msg.progress)
-    else if msg.stage == "chroot"
+    else if msg.stage == "chroot" and __selected_stage == "chroot"
         progress_page.handle_chroot(msg.progress)
-    else if msg.stage == "timezone"
+    else if msg.stage == "timezone" and __selected_stage == "timezone"
         progress_page.handle_set_timezone(msg.progress)
-    else if msg.stage == "keyboard"
+    else if msg.stage == "keyboard" and __selected_stage == "keyboard"
         progress_page.handle_set_keyboard(msg.progress)
-    else if msg.stage == "user"
+    else if msg.stage == "user" and __selected_stage == "user"
         progress_page.handle_create_user(msg.progress)
-    else if msg.stage == "grub"
+    else if msg.stage == "grub" and __selected_stage == "grub"
         progress_page.handle_update_grub(msg.progress)
     else
         echo "other message"
@@ -132,6 +134,7 @@ class Progress extends Page
         else if progress == "finish"
             echo "extract finish"
             @handle_chroot("start")
+            __selected_stage = "chroot"
         else if progress == "terminate"
             echo "extract terminate"
             @show_report()
@@ -149,6 +152,7 @@ class Progress extends Page
         else if progress == "finish"
             echo "chroot finish"
             @handle_set_timezone("start")
+            __selected_stage = "timezone"
         else if progress == "terminate"
             ehco "chroot terminate"
             @show_report()
@@ -166,6 +170,7 @@ class Progress extends Page
         else if progress == "finish"
             echo "timezone finish"
             @handle_set_keyboard("start")
+            __selected_stage = "keyboard"
         else if progress == "terminate"
             echo "timezone terminate"
             @show_report()
@@ -188,6 +193,7 @@ class Progress extends Page
         else if progress == "finish"
             echo "keyboard finish"
             @handle_create_user("start")
+            __selected_stage = "user"
         else if progress == "terminate"
             echo "keyboard terminate"
             @show_report()
@@ -204,6 +210,7 @@ class Progress extends Page
         else if progress == "finish"
             echo "user finish"
             @handle_update_grub("start")
+            __selected_stage = "grub"
         else if progress == "terminate"
             echo "user terminate"
             @show_report()

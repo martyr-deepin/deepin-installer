@@ -699,6 +699,7 @@ class Part extends Page
         pc.add_page(progress_page)
         pc.remove_page(part_page)
         progress_page.handle_extract("start")
+        __selected_stage = "extract"
 
     handle_advance_install: ->
         if check_target_part()
@@ -708,6 +709,7 @@ class Part extends Page
             pc.add_page(progress_page)
             pc.remove_page(part_page)
             progress_page.handle_extract("start")
+            __selected_stage = "extract"
         else
             @root_model = new RootDialog("RootModel")
             document.body.appendChild(@root_model.element)

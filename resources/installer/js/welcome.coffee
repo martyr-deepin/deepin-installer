@@ -69,6 +69,19 @@ class Keyboard extends Widget
     update_layout: (layout) ->
         @current.innerText = layout
         __selected_layout = layout
+        @set_livecd_layout()
+
+    set_livecd_layout: ->
+        try
+            if __selected_layout.indexOf(",") != -1
+                layout = __selected_layout.split(",")[0]
+                variant = __selected_layout.split(",")[1]
+            else
+                layout = __selected_layout
+                variant = null
+            DCore.Installer.set_keyboard_layout_variant(layout,variant)
+        catch error
+            echo error
 
 class Timezone extends Widget
     constructor: (@id) ->
