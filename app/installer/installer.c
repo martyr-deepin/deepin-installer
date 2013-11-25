@@ -214,7 +214,20 @@ void installer_finish_install ()
         g_warning ("finish install:target is NULL\n");
 
     } else {
-        unmount_target (target);
+        extern gboolean in_chroot;
+        if (in_chroot) {
+            extern int chroot_fd;
+            if (fchdir (chroot_fd) < 0) {
+                g_warning ("finish install:reset to chroot fd dir failed\n");
+            } else {
+                int i = 0;
+                for (i = 0; i < 1024; i++) {
+                    chdir ("..");
+                }
+                chroot (".");
+                unmount_target (target);
+            }
+        }
     }
 
     ped_device_free_all ();

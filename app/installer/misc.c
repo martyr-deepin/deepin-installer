@@ -31,6 +31,9 @@
 #include <gio/gunixinputstream.h>
 #include <glib.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
@@ -908,6 +911,11 @@ void installer_extract_squashfs ()
         g_warning ("extract squash fs:target is NULL\n");
         return ;
     }
+    const gchar *iso = "/cdrom/casper/filesystem.squashfs";
+    if (!g_file_test (iso, G_FILE_TEST_EXISTS)) {
+        g_warning ("extract squashfs:iso not exists\n");
+        return ;
+    }
 
     gchar **argv = g_new0 (gchar *, 6);
     argv[0] = g_strdup ("unsquashfs");
@@ -1031,8 +1039,15 @@ gboolean installer_chroot_target ()
         g_warning ("chroot:target is NULL\n");
         return ret;
     }
+    extern int chroot_fd;
+    if ((chroot_fd = open (".", O_RDONLY)) < 0) {
+        g_warning ("chroot:set chroot fd failed\n");
+        return ret;
+    }
 
+    extern gboolean in_chroot;
     if (chroot (target) == 0) {
+        in_chroot = TRUE;
         ret = TRUE;
     } else {
         g_warning ("chroot:chroot to %s falied:%s\n", target, strerror (errno));

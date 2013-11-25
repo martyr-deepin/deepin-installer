@@ -29,6 +29,8 @@ static GHashTable *partitions;
 static GHashTable *disk_partitions;
 static GHashTable *partition_os = NULL;
 const gchar *target;
+int chroot_fd;
+gboolean in_chroot = FALSE;
 
 JS_EXPORT_API 
 gchar* installer_rand_uuid ()
