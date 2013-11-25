@@ -34,6 +34,10 @@
 
 #define INSTALLER_HTML_PATH "file://"RESOURCE_DIR"/installer/index.html"
 
+extern int chroot(const char *path);
+extern int fchdir(int fd);
+extern int chdir(const char *path);
+
 static GtkWidget *installer_container = NULL;
 
 gboolean installer_is_running ()
@@ -188,7 +192,7 @@ void unmount_target (const gchar *target)
         gchar *umount_proc = g_strdup_printf ("umount %s/proc", target);
         gchar *umount_devpts = g_strdup_printf ("umount %s/dev/pts", target);
         gchar *umount_dev = g_strdup_printf ("umount %s/dev", target);
-        gchar *umount_target = g_strdup_printf ("umount %s", target);
+        gchar *umount_target = g_strdup_printf ("umount -l %s", target);
 
         g_spawn_command_line_async (umount_sys, NULL);
         g_spawn_command_line_async (umount_proc, NULL);

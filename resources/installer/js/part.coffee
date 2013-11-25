@@ -115,7 +115,9 @@ class AddPartDialog extends Dialog
         @gather_info()
         add_part(@partid, @n_type, @n_size, @n_align, @n_fs, @n_mp)
         Widget.look_up("part_table")?.fill_items()
-        Widget.look_up("part_line_maps")?.fill_linemap()?
+        Widget.look_up("part_line_maps")?.fill_linemap()
+        Widget.look_up(@partid)?.focus()
+        Widget.look_up("part")?.fill_grub()
 
     fill_type: ->
         @type = create_element("p", "", @content)
@@ -234,8 +236,9 @@ class DeletePartDialog extends Dialog
     delete_part_cb: ->
         delete_part(@partid)
         Widget.look_up("part_table")?.fill_items()
-        Widget.look_up("part_line_maps")?.fill_linemap()?
+        Widget.look_up("part_line_maps")?.fill_linemap()
         Widget.look_up(@partid)?.focus()
+        Widget.look_up("part")?.fill_grub()
 
 class UnmountDialog extends Dialog
     constructor: (@id) ->
@@ -727,16 +730,16 @@ class Part extends Page
         @part_grub = create_element("p", "PartGrub", @element)
         @part_grub.innerHTML = "<span>安装启动引导器的设备：</span>"
         @grub_select = create_element("select", "", @part_grub)
+        @fill_grub()
+
+    fill_grub: ->
+        @grub_select.innerHTML = ""
         for disk in disks
-            path = v_disk_info[disk]["path"]
-            select_opt = create_element("option", "", @grub_select)
-            select_opt.setAttribute("value", disk)
-            select_opt.innerText = path
-            select_opt.innerText += "\t"
-            select_opt.innerText += v_disk_info[disk]["model"]
-            select_opt.innerText += "\t"
-            select_opt.innerText += sector_to_gb(v_disk_info[disk]["length"], 512)
-            select_opt.innerText += "GB"
+            text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" +sector_to_gb(v_disk_info[disk]["length"], 512) + "GB"
+            create_option(@grub_select, disk, text)
+            for part in v_disk_info[disk]["partitions"]
+                if v_part_info[part]["type"] in ["normal", "logical"]
+                    create_option(@grub_select, part, v_part_info[part]["path"])
 
     show_advance_op: ->
         @op.setAttribute("style", "display:block")
