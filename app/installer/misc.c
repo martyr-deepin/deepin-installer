@@ -849,6 +849,10 @@ cb_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
     if (match == NULL) {
         g_debug ("cb out watch:line without extract progress\n");
     } else {
+        if (*progress != NULL) {
+            g_free (*progress);
+            *progress = NULL;
+        }
         *progress = g_strdup (match);
     }
 

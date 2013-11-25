@@ -24,6 +24,7 @@ __selected_disk = null
 __selected_item = null
 __selected_line = null
 __selected_mode = "simple"
+__selected_stage = null
 
 __board = create_element("div", "Board", "")
 __board.setAttribute("id", "board")

@@ -17,8 +17,6 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-__selected_stage = null
-
 DCore.signal_connect("progress", (msg) ->
     if msg.stage == "extract" and __selected_stage == "extract"
         progress_page.handle_extract(msg.progress)
@@ -133,8 +131,8 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "extract finish"
-            @handle_chroot("start")
             __selected_stage = "chroot"
+            @handle_chroot("start")
         else if progress == "terminate"
             echo "extract terminate"
             @show_report()
@@ -151,8 +149,8 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "chroot finish"
-            @handle_set_timezone("start")
             __selected_stage = "timezone"
+            @handle_set_timezone("start")
         else if progress == "terminate"
             ehco "chroot terminate"
             @show_report()
@@ -169,8 +167,8 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "timezone finish"
-            @handle_set_keyboard("start")
             __selected_stage = "keyboard"
+            @handle_set_keyboard("start")
         else if progress == "terminate"
             echo "timezone terminate"
             @show_report()
@@ -192,8 +190,8 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "keyboard finish"
-            @handle_create_user("start")
             __selected_stage = "user"
+            @handle_create_user("start")
         else if progress == "terminate"
             echo "keyboard terminate"
             @show_report()
@@ -209,8 +207,8 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "user finish"
-            @handle_update_grub("start")
             __selected_stage = "grub"
+            @handle_update_grub("start")
         else if progress == "terminate"
             echo "user terminate"
             @show_report()
