@@ -930,6 +930,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
     v_disk_info[disk]["partitions"].push(new_part)
     compute_display_path(disk)
     mark_add(new_part)
+    return new_part
 
 undo_part_table_info = ->
     init_v_disk_info()

@@ -113,10 +113,10 @@ class AddPartDialog extends Dialog
         
     add_part_cb: ->
         @gather_info()
-        add_part(@partid, @n_type, @n_size, @n_align, @n_fs, @n_mp)
+        new_part = add_part(@partid, @n_type, @n_size, @n_align, @n_fs, @n_mp)
         Widget.look_up("part_table")?.fill_items()
         Widget.look_up("part_line_maps")?.fill_linemap()
-        Widget.look_up(@partid)?.focus()
+        Widget.look_up(new_part)?.focus()
         Widget.look_up("part")?.fill_grub()
 
     fill_type: ->
@@ -388,30 +388,36 @@ class PartTableItem extends Widget
         @label = create_element("div", "Label", @lp)
         @path = create_element("div", "Path", @lp)
 
-        if __selected_mode == "advance" and v_part_info[@id]["type"] != "freespace"
-            if v_part_info[@id]["os"]? 
-                if v_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
-                    os_img = "images/linux.png"
-                else if v_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
-                    os_img = "images/windows.png"
-                else if v_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
-                    os_img = "images/apple.png"
-                create_img("osimg", os_img, @os)
-            if v_part_info[@id]["label"]? and v_part_info[@id]["type"] != "freespace"
-                @label.innerText = v_part_info[@id]["label"]
-            @path.innerText = v_part_info[@id]["path"]
-        else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
-            if m_part_info[@id]["os"]? 
-                if m_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
-                    os_img = "images/linux.png"
-                else if m_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
-                    os_img = "images/windows.png"
-                else if m_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
-                    os_img = "images/apple.png"
-                create_img("osimg", os_img, @os)
-            if m_part_info[@id]["label"]?
-                @label.innerText = m_part_info[@id]["label"]
-            @path.innerText = m_part_info[@id]["path"]
+        if __selected_mode == "advance"
+            if v_part_info[@id]["type"] != "freespace"
+                if v_part_info[@id]["os"]? 
+                    if v_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
+                        os_img = "images/linux.png"
+                    else if v_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
+                        os_img = "images/windows.png"
+                    else if v_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
+                        os_img = "images/apple.png"
+                    create_img("osimg", os_img, @os)
+                if v_part_info[@id]["label"]?
+                    @label.innerText = v_part_info[@id]["label"]
+                @path.innerText = v_part_info[@id]["path"]
+            else
+                @path.innerText = "freespace"
+        else if __selected_mode == "simple"
+            if m_part_info[@id]["type"] != "freespace"
+                if m_part_info[@id]["os"]? 
+                    if m_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
+                        os_img = "images/linux.png"
+                    else if m_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
+                        os_img = "images/windows.png"
+                    else if m_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
+                        os_img = "images/apple.png"
+                    create_img("osimg", os_img, @os)
+                if m_part_info[@id]["label"]?
+                    @label.innerText = m_part_info[@id]["label"]
+                @path.innerText = m_part_info[@id]["path"]
+            else
+                @path.innerText = "freespace"
 
     fill_size: ->
         @size.innerHTML = ""
@@ -422,9 +428,9 @@ class PartTableItem extends Widget
 
     fill_used: ->
         @used.innerHTML = ""
-        if __selected_mode == "advance"
+        if __selected_mode == "advance" and v_part_info[@id]["type"] != "freespace"
             @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(3) + "GB"
-        else
+        else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
             @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(3) + "GB"
 
     update_part_used: ->
@@ -435,29 +441,33 @@ class PartTableItem extends Widget
 
     fill_fs: ->
         @fs.innerHTML = ""
-        if __selected_mode == "simple"
-            @fs_txt = create_element("div", "", @fs)
-            @fs_txt.innerText = m_part_info[@id]["fs"]
+        if __selected_mode == "simple" 
+            if m_part_info[@id]["type"] != "freespace"
+                @fs_txt = create_element("div", "", @fs)
+                @fs_txt.innerText = m_part_info[@id]["fs"]
         else if __selected_mode == "advance"
-            @fs_select = create_element("select", "", @fs)
-            for opt in ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt"]
-                create_option(@fs_select, opt, opt)
-            for opt, i in @fs_select
-                if opt.value == v_part_info[@id]["fs"]
-                    @fs_select.selectedIndex = i
-            @fs_select.addEventListener("focus", (e) =>
-                if __selected_item != @
-                    @focus()
-            )
-            @fs_select.addEventListener("change", (e) =>
-                update_part_fs(@id, @fs_select.options[@fs_select.selectedIndex].value)
-            )
+            if v_part_info[@id]["type"] != "freespace"
+                @fs_select = create_element("select", "", @fs)
+                for opt in ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt"]
+                    create_option(@fs_select, opt, opt)
+                for opt, i in @fs_select
+                    if opt.value == v_part_info[@id]["fs"]
+                        @fs_select.selectedIndex = i
+                @fs_select.addEventListener("focus", (e) =>
+                    if __selected_item != @
+                        @focus()
+                )
+                @fs_select.addEventListener("change", (e) =>
+                    update_part_fs(@id, @fs_select.options[@fs_select.selectedIndex].value)
+                )
         else
             echo "fill fs:invalid mode"
 
     fill_mount: ->
         @mount.innerHTML = ""
-        if __selected_mode != "advance"
+        if __selected_mode != "advance" 
+            return
+        if v_part_info[@id]["type"] == "freespace"
             return
         @mount_select = create_element("select", "", @mount)
         fill_mp_option(@mount_select)
@@ -590,6 +600,8 @@ class PartTable extends Widget
             else
                 for part in m_disk_info[disk]["partitions"]
                     if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
+                        if m_part_info[part]["type"] == "freespace"
+                            echo "create freespace item"
                         item = new PartTableItem(part, "part")
                         @items.appendChild(item.element)
             
