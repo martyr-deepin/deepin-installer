@@ -74,6 +74,7 @@ free_passwd_handler (struct PasswdHandler *handler)
 
     g_free (handler->username);
     g_free (handler->password);
+    g_free (handler->hostname);
     
     if (handler->child_watch_id != 0) {
         g_source_remove (handler->child_watch_id);
@@ -117,45 +118,46 @@ free_passwd_handler (struct PasswdHandler *handler)
     g_free (handler);
 }
 
-JS_EXPORT_API 
-gboolean installer_create_user (const gchar *username, const gchar *hostname, const gchar *password)
+static gpointer
+thread_create_user (gpointer data)
 {
-    gboolean ret = FALSE;
-    GError *error = NULL;
-
-    if (!add_user (username)) {
+    struct PasswdHandler *handler = (struct PasswdHandler *) data;
+    
+    if (!add_user (handler->username)) {
         g_warning ("create user:add user failed\n");
-        //return ret;
     }
 
-    if (!set_user_home (username)) {
+    if (!set_user_home (handler->username)) {
         g_warning ("create user:set user home failed\n");
-        //return ret;
     }
 
-    if (!set_group (username)) {
+    if (!set_group (handler->username)) {
         g_warning ("create user:set group failed\n");
-        //return ret;
     }
     
-    if (!write_hostname (hostname)) {
+    if (!write_hostname (handler->hostname)) {
         g_warning ("create user:write hostname failed\n");
-        //return ret;
     }
+    if (!set_user_password (handler)) {
+        g_warning ("create user:set user password failed\n");
+    }
+}
 
+JS_EXPORT_API 
+void installer_create_user (const gchar *username, const gchar *hostname, const gchar *password)
+{
     struct PasswdHandler *handler = g_new0 (struct PasswdHandler, 1);
     handler->username = g_strdup (username);
     handler->password = g_strdup (password);
+    handler->hostname = g_strdup (hostname);
     handler->pid = -1;
     handler->in_channel = NULL;
     handler->out_channel = NULL;
     handler->child_watch_id = 0;
     handler->stdout_watch_id = 0;
 
-    set_user_password (handler);
-    ret = TRUE;
-
-    return ret;
+    GThread *user_thread = g_thread_new ("user", (GThreadFunc) thread_create_user, handler);
+    g_thread_unref (user_thread);
 }
 
 gboolean 
@@ -252,7 +254,7 @@ ignore_sigpipe (gpointer data)
 gboolean 
 set_user_password (struct PasswdHandler *handler)
 {
-    g_warning ("set user password");
+    g_printf ("set user password");
     gboolean ret = FALSE;
 
     gchar **argv = g_new0 (gchar *, 3);

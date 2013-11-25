@@ -31,9 +31,10 @@ DCore.signal_connect("progress", (msg) ->
     else if msg.stage == "grub" and __selected_stage == "grub"
         progress_page.handle_update_grub(msg.progress)
     else
-        echo "other message"
+        echo "other message or stage"
         echo msg.stage
         echo msg.progress
+        echo __selected_stage
 )
 
 class ReportDialog extends Widget

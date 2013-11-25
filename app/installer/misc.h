@@ -34,6 +34,7 @@
 struct PasswdHandler {
     gchar *username;
     gchar *password;
+    gchar *hostname;
     GPid pid;
     GIOChannel *in_channel;
     GIOChannel *out_channel;
@@ -43,7 +44,7 @@ struct PasswdHandler {
 
 JS_EXPORT_API JSObjectRef installer_get_system_users ();
 
-JS_EXPORT_API gboolean installer_create_user (const gchar *username, const gchar *hostname, const gchar *password);
+JS_EXPORT_API void installer_create_user (const gchar *username, const gchar *hostname, const gchar *password);
 
 gboolean add_user (const gchar *username);
 
