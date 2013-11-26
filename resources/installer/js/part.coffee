@@ -128,22 +128,24 @@ class AddPartDialog extends Dialog
         @type_primary = create_element("input", "", @type_value)
         @type_primary.setAttribute("type", "radio")
         @type_primary.setAttribute("name", "type")
-        primary_desc = create_element("span", "", @type_value)
-        primary_desc.innerText = "Primary"
+        @primary_desc = create_element("span", "", @type_value)
+        @primary_desc.innerText = "Primary"
 
         @type_logical = create_element("input", "", @type_value)
         @type_logical.setAttribute("type", "radio")
         @type_logical.setAttribute("name", "type")
-        logical_desc = create_element("span", "", @type_value)
-        logical_desc.innerText = "Logical"
+        @logical_desc = create_element("span", "", @type_value)
+        @logical_desc.innerText = "Logical"
 
         if not can_add_logical(@partid)
-            @type_logical.setAttribute("disabled", "disabled")
+            @type_logical.style.display = "none"
+            @logical_desc.style.display = "none"
         else
             @type_logical.setAttribute("checked", "true")
 
         if not can_add_normal(@partid)
-            @type_primary.setAttribute("disabled", "disabled")
+            @type_primary.style.display = "none"
+            @primary_desc.style.display = "none"
         else
             @type_primary.setAttribute("checked", "true")
 
@@ -699,8 +701,8 @@ class Part extends Page
         __selected_grub = __selected_disk
         pc.add_page(progress_page)
         pc.remove_page(part_page)
-        progress_page.handle_extract("start")
         __selected_stage = "extract"
+        progress_page.handle_extract("start")
 
     handle_advance_install: ->
         if check_target_part()
@@ -709,8 +711,8 @@ class Part extends Page
             __selected_grub = @grub_select.options[@grub_select.selectedIndex].value
             pc.add_page(progress_page)
             pc.remove_page(part_page)
-            progress_page.handle_extract("start")
             __selected_stage = "extract"
+            progress_page.handle_extract("start")
         else
             @root_model = new RootDialog("RootModel")
             document.body.appendChild(@root_model.element)

@@ -38,6 +38,8 @@ JS_EXPORT_API JSObjectRef installer_list_disks();
 
 JS_EXPORT_API gchar * installer_get_disk_path (const gchar *disk);
 
+JS_EXPORT_API gchar *installer_get_disk_type (const gchar *disk);
+
 JS_EXPORT_API gchar * installer_get_disk_model (const gchar *disk);
 
 JS_EXPORT_API double installer_get_disk_max_primary_count (const char *disk);

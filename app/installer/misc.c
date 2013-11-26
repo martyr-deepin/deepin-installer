@@ -909,17 +909,20 @@ thread_extract_squashfs (gpointer data)
 {
     if (g_find_program_in_path ("unsquashfs") == NULL) {
         g_warning ("extract squashfs: unsquashfs not installed\n");
+        emit_progress ("extract", "terminate");
         return NULL;
     }
 
     extern const gchar *target;
     if (target == NULL) {
         g_warning ("extract squash fs:target is NULL\n");
+        emit_progress ("extract", "terminate");
         return NULL;
     }
     const gchar *iso = "/cdrom/casper/filesystem.squashfs";
     if (!g_file_test (iso, G_FILE_TEST_EXISTS)) {
         g_warning ("extract squashfs:iso not exists\n");
+        emit_progress ("extract", "terminate");
         return NULL;
     }
 

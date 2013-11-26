@@ -202,6 +202,34 @@ gchar *installer_get_disk_path (const gchar *disk)
 }
 
 JS_EXPORT_API
+gchar *installer_get_disk_type (const gchar *disk)
+{
+    gchar *result = NULL;
+    PedDisk *peddisk = NULL;
+    PedDevice *device = NULL;
+    PedDiskType *type = NULL;
+
+    peddisk = (PedDisk *) g_hash_table_lookup (disks, disk);
+    if (peddisk == NULL) {
+        g_warning ("get disk type:find peddisk by %s failed\n", disk);
+        return result;
+    } 
+    device = peddisk->dev;
+    if (device == NULL) {
+        g_warning ("get disk type:get device for %s failed\n", disk);
+        return result;
+    }
+    type = ped_disk_probe (device);
+    if (type == NULL) {
+        g_warning ("get disk type:get PedDiskType for %s failed\n", disk);
+        return result;
+    }
+    result = g_strdup (type->name);
+
+    return result;
+}
+
+JS_EXPORT_API
 gchar *installer_get_disk_model (const gchar *disk)
 {
     gchar *result = NULL;

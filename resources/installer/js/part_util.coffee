@@ -350,6 +350,7 @@ init_v_disk_info = ->
         v_disk_info[disk]["model"] = DCore.Installer.get_disk_model(disk)
         v_disk_info[disk]["max_primary"] = DCore.Installer.get_disk_max_primary_count(disk)
         v_disk_info[disk]["path"] = DCore.Installer.get_disk_path(disk)
+        v_disk_info[disk]["type"] = DCore.Installer.get_disk_type(disk)
         v_disk_info[disk]["partitions"] = []
         for part in DCore.Installer.get_disk_partitions(disk)
             type = DCore.Installer.get_partition_type(part)
@@ -551,6 +552,9 @@ can_add_logical = (part) ->
         return false
 
     disk = v_part_info[part]["disk"]
+    if v_disk_info[disk]["type"] == "gpt"
+        return false
+
     extended = get_extended_partition(disk)
     if extended?
     #whether has a normal between the free and extended part
