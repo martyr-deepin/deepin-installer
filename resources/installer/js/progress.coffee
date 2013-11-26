@@ -219,6 +219,14 @@ class Progress extends Page
     handle_update_grub: (progress) ->
         if progress == "start"
             echo "start handle grub"
+            #if __selected_grub.indexOf("part") != -1
+            #    #only advance mode will install grub to partition
+            #    disk = v_part_info[_selected_grub]["disk"]
+            #    if v_disk_info[disk]["type"] == "gpt"
+            #        try
+            #            DCore.Installer.set_partition_flag(__selected_grub, "bios_grub", 1)
+            #        catch error
+            #            echo error
             try
                 DCore.Installer.update_grub(__selected_grub)
             catch error

@@ -23,7 +23,7 @@ foreach(f ${PO_FILES})
     install(
         FILES ${out}
         DESTINATION ${CMAKE_INSTALL_PREFIX}/share/locale/${f_we}/LC_MESSAGES/
-        RENAME DDE.mo
+        RENAME INSTALLER.mo
         )
 
     set(_outputs ${_outputs} ${out})

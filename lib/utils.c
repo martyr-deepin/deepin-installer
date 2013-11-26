@@ -162,7 +162,7 @@ void run_command2(const char* cmd, const char* p1, const char* p2)
 void init_i18n()
 {
     setlocale(LC_MESSAGES, "");
-    textdomain("DDE");
+    textdomain("INSTALLER");
 }
 
 JS_EXPORT_API

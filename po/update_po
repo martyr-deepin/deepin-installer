@@ -1,23 +1,11 @@
 #!/usr/bin/python
 
 coffee_files = [
-"../resources/greeter/js/*.coffee",
-"../resources/desktop/js/*.coffee",
-"../resources/dock/js/*.coffee",
-"../resources/launcher/js/*.coffee",
+"../resources/installer/js/*.coffee",
 ]
 
 c_files = [
-"../app/desktop/*.c",
-"../app/desktop/*.h",
-"../app/greeter/*.c",
-"../app/greeter/*.h",
-"../app/launcher/*.c",
-"../app/launcher/*.h",
-"../app/dock/*.c",
-"../app/dock/*.h",
-"../lib/dentry/*.c",
-"../lib/dentry/*.h"
+"../app/installer/*.c",
 ]
 
 lang = ["zh_CN", "zh_TW"]

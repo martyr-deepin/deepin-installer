@@ -217,10 +217,8 @@ do_partition = ->
                             DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
                         catch error
                             echo error
-
                     if m_part_info[part]["mp"] != v_part_info[part]["mp"]
                         echo "mp changed"
-
                     try
                         DCore.Installer.write_disk(disk)
                     catch error
@@ -231,18 +229,15 @@ do_partition = ->
                         DCore.Installer.new_disk_partition(part, disk, m_part_info[part]["type"], m_part_info[part]["fs"], m_part_info[part]["start"], m_part_info[part]["end"])
                     catch error
                         echo error
-
                     try
                         DCore.Installer.write_disk(disk)
                     catch error
                         echo error
-
                     if v_part_info[part]["type"] != "extended"
                         try
                             DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
                         catch error
                             echo error
-
                         try
                             DCore.Installer.write_disk(disk)
                         catch error

@@ -771,7 +771,7 @@ gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk
         g_warning ("new disk partitoin:new constraint failed\n");
         goto out;
     }
-    if (ped_disk_add_partition (peddisk, pedpartition, pedconstraint) != 0 ) {
+    if (ped_disk_add_partition (peddisk, pedpartition, pedconstraint) == 0 ) {
         g_warning ("new disk partition:add disk partition failed\n");
         goto out;
     }
