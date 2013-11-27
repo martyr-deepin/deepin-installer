@@ -664,10 +664,8 @@ gboolean
 inhibit_disk ()
 {
     gboolean ret = FALSE;
-
     GError *error = NULL;
-    //fix me,update program path to deb maintainer
-    gchar *installer = g_find_program_in_path ("deepin-installer");
+    gchar *installer = g_find_program_in_path ("installer");
     if (installer == NULL) {
         g_warning ("inhibit disk:find installer failed\n");
         return ret;

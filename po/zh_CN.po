@@ -17,6 +17,228 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../resources/greeter/js/greeter.coffee:57
-msgid "guest"
-msgstr "访客"
+#: ../resources/installer/js/welcome.coffee:198
+msgid "Username"
+msgstr "用户名"
+
+#: ../resources/installer/js/welcome.coffee:198
+msgid "Please enter username"
+msgstr "请输入用户名"
+
+#: ../resources/installer/js/welcome.coffee:200
+msgid "Invalid username"
+msgstr "用户名不合法"
+
+#: ../resources/installer/js/welcome.coffee:202
+msgid "Hostname"
+msgstr "计算机名"
+
+#: ../resources/installer/js/welcome.coffee:202
+msgid "Please enter hostname"
+msgstr "请输入计算机名"
+
+#: ../resources/installer/js/welcome.coffee:204
+msgid "Invalid hostname"
+msgstr "计算机名不合法"
+
+#: ../resources/installer/js/welcome.coffee:206
+msgid "Password"
+msgstr "密码"
+
+#: ../resources/installer/js/welcome.coffee:206
+msgid "Please enter password"
+msgstr "请输入密码"
+
+#: ../resources/installer/js/welcome.coffee:209
+msgid "Invalid password"
+msgstr "密码不合法"
+
+#: ../resources/installer/js/welcome.coffee:211
+msgid "Confirm password"
+msgstr "确认密码"
+
+#: ../resources/installer/js/welcome.coffee:211
+msgid "Please enter confirm password"
+msgstr "请输入确认密码"
+
+#: ../resources/installer/js/welcome.coffee:214
+msgid "Confirm password not match"
+msgstr "密码与确认密码不一致"
+
+#: ../resources/installer/js/welcome.coffee:253
+msgid "Install Guide"
+msgstr "安装向导"
+
+#: ../resources/installer/js/welcome.coffee:257
+msgid "Keyboard"
+msgstr "键盘"
+
+#: ../resources/installer/js/welcome.coffee:263
+msgid "Timezone"
+msgstr "时区"
+
+#: ../resources/installer/js/welcome.coffee:288
+msgid "Start"
+msgstr "开始安装"
+
+
+#: ../resources/installer/js/part.coffee:66
+#: ../resources/installer/js/progress.coffee:59
+msgid "Ok"
+msgstr "确认"
+
+#: ../resources/installer/js/part.coffee:72
+msgid "Cancel"
+msgstr "取消"
+
+#: ../resources/installer/js/part.coffee:107
+#: ../resources/installer/js/part.coffee:725
+msgid "Create partition"
+msgstr "新建分区"
+
+#: ../resources/installer/js/part.coffee:126
+msgid "type:"
+msgstr "类型："
+
+#: ../resources/installer/js/part.coffee:132
+msgid "Primary"
+msgstr "主分区"
+
+#: ../resources/installer/js/part.coffee:138
+msgid "Logical"
+msgstr "逻辑分区"
+
+#: ../resources/installer/js/part.coffee:155
+msgid "Size:"
+msgstr "大小："
+
+#: ../resources/installer/js/part.coffee:179
+msgid "Align:"
+msgstr "对齐："
+
+#: ../resources/installer/js/part.coffee:186
+msgid "Begin:"
+msgstr "起始："
+
+#: ../resources/installer/js/part.coffee:179
+msgid "End:"
+msgstr "结束："
+
+#: ../resources/installer/js/part.coffee:198
+msgid "Format:"
+msgstr "格式："
+
+#: ../resources/installer/js/part.coffee:205
+msgid "Mount point:"
+msgstr "挂载点："
+
+#: ../resources/installer/js/part.coffee:223
+msgid "Please enter invalid partition size"
+msgstr "请输入合法的分区大小"
+
+#: ../resources/installer/js/part.coffee:235
+#: ../resources/installer/js/part.coffee:737
+msgid "Delete partition"
+msgstr "删除分区"
+
+#: ../resources/installer/js/part.coffee:237
+msgid "Confirm to delete?"
+msgstr "确定删除分区吗？"
+
+#: ../resources/installer/js/part.coffee:250
+msgid "Unmount partition"
+msgstr "卸载分区"
+
+#: ../resources/installer/js/part.coffee:252
+msgid "Detected partitions mounted, confirm to unmount them?"
+msgstr "检测到有磁盘已经挂载，操作对应分区需要卸载,确定卸载吗？"
+
+#: ../resources/installer/js/part.coffee:262
+msgid "Format partition"
+msgstr "格式化分区"
+
+#: ../resources/installer/js/part.coffee:264
+msgid "Confirm to format the partition?"
+msgstr "确认格式化分区吗？"
+
+#: ../resources/installer/js/part.coffee:273
+msgid "Install tips"
+msgstr "安装提示"
+
+#: ../resources/installer/js/part.coffee:275
+msgid "Need mount a partition as root"
+msgstr "安装执行需要挂载/分区"
+
+#: ../resources/installer/js/part.coffee:578
+msgid "Device"
+msgstr "设备"
+
+#: ../resources/installer/js/part.coffee:580
+msgid "Size"
+msgstr "大小"
+
+#: ../resources/installer/js/part.coffee:582
+msgid "Freespace"
+msgstr "空余空间"
+
+#: ../resources/installer/js/part.coffee:584
+msgid "Filesystem"
+msgstr "文件系统"
+
+#: ../resources/installer/js/part.coffee:587
+#: ../resources/installer/js/part.coffee:613
+msgid "Mount point"
+msgstr "挂载点"
+
+#: ../resources/installer/js/part.coffee:630
+msgid "Choose partition"
+msgstr "选择分区"
+
+#: ../resources/installer/js/part.coffee:634
+#: ../resources/installer/js/part.coffee:651
+msgid "Advance mode"
+msgstr "高级模式"
+
+#: ../resources/installer/js/part.coffee:643
+msgid "Simple mode"
+msgstr "精简模式"
+
+#: ../resources/installer/js/part.coffee:656
+msgid "Show help"
+msgstr "查看帮助"
+
+#: ../resources/installer/js/part.coffee:685
+msgid "Next step"
+msgstr "下一步"
+
+#: ../resources/installer/js/part.coffee:748
+msgid "Boot loader"
+msgstr "启动引导"
+
+#: ../resources/installer/js/progress.coffee:45
+msgid "Error report"
+msgstr "错误报告"
+
+#: ../resources/installer/js/progress.coffee:55
+msgid "Install failed, please report the log to linux deepin team"
+msgstr "安装失败，请把安装日志信息反馈Deepin社区"
+
+#: ../resources/installer/js/progress.coffee:84
+msgid "Installing"
+msgstr "正在安装"
+
+#: ../resources/installer/js/finish.coffee:24
+msgid "Install complete"
+msgstr "安装完成"
+
+#: ../resources/installer/js/finish.coffee:34
+msgid "Finish install need to reboot your computer"
+msgstr "完成安装需要重启电脑"
+
+#: ../resources/installer/js/finish.coffee:43
+msgid "Restart now"
+msgstr "立即重启电脑"
+
+#: ../resources/installer/js/finish.coffee:55
+msgid "Finish Install"
+msgstr "安装完成"

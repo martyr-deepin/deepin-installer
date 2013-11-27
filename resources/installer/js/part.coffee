@@ -63,13 +63,13 @@ class Dialog extends Widget
         @content = create_element("div", "DialogContent", @element)
         @foot = create_element("p", "DialogBtn", @element)
         @ok = create_element("span", "", @foot)
-        @ok.innerText = "OK"
+        @ok.innerText = _("Ok")
         @ok.addEventListener("click", (e) =>
             @cb()
             @hide_dialog()
         )
         @cancel = create_element("span", "", @foot)
-        @cancel.innerText = "Cancel"
+        @cancel.innerText = _("Cancel")
         @cancel.addEventListener("click", (e) =>
             @hide_dialog()
         )
@@ -104,7 +104,7 @@ class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, @add_part_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = "新建分区"
+        @title_txt.innerText = _("Add partition")
         @fill_type()
         @fill_size()
         @fill_align()
@@ -123,19 +123,19 @@ class AddPartDialog extends Dialog
     fill_type: ->
         @type = create_element("p", "", @content)
         @type_desc = create_element("span", "AddDesc", @type)
-        @type_desc.innerText = "类型:"
+        @type_desc.innerText = _("type:")
         @type_value = create_element("span", "AddValue", @type)
         @type_primary = create_element("input", "", @type_value)
         @type_primary.setAttribute("type", "radio")
         @type_primary.setAttribute("name", "type")
         @primary_desc = create_element("span", "", @type_value)
-        @primary_desc.innerText = "Primary"
+        @primary_desc.innerText = _("Primary")
 
         @type_logical = create_element("input", "", @type_value)
         @type_logical.setAttribute("type", "radio")
         @type_logical.setAttribute("name", "type")
         @logical_desc = create_element("span", "", @type_value)
-        @logical_desc.innerText = "Logical"
+        @logical_desc.innerText = _("Logical")
 
         if not can_add_logical(@partid)
             @type_logical.style.display = "none"
@@ -152,7 +152,7 @@ class AddPartDialog extends Dialog
     fill_size: ->
         @size = create_element("p", "", @content)
         @size_desc = create_element("span", "AddDesc", @size)
-        @size_desc.innerText = "大小:"
+        @size_desc.innerText = _("Size:")
         @max_size_mb = sector_to_mb(v_part_info[@partid]["length"], 512)
         @size_value = create_element("span", "AddValue", @size)
         @size_input = create_element("input", "", @size_value)
@@ -176,24 +176,24 @@ class AddPartDialog extends Dialog
     fill_align: ->
         @align = create_element("p", "", @content)
         @align_desc = create_element("span", "AddDesc", @align)
-        @align_desc.innerText = "位置:"
+        @align_desc.innerText = _("Align:")
         @align_value = create_element("span", "AddValue", @align)
         @align_start = create_element("input", "", @align_value)
         @align_start.setAttribute("type", "radio")
         @align_start.setAttribute("name", "align")
         @align_start.setAttribute("checked", "true")
         start_desc = create_element("span", "", @align_value)
-        start_desc.innerText = "Start"
+        start_desc.innerText = _("Begin")
         @align_end = create_element("input", "", @align_value)
         @align_end.setAttribute("type", "radio")
         @align_end.setAttribute("name", "align")
         end_desc = create_element("span", "", @align_value)
-        end_desc.innerText = "End"
+        end_desc.innerText = _("End")
 
     fill_fs: ->
         @fs = create_element("p", "", @content)
         @fs_desc = create_element("span", "AddDesc", @fs)
-        @fs_desc.innerText = "格式:"
+        @fs_desc.innerText = _("Format:")
         @fs_value = create_element("span", "AddValue", @fs)
         @fs_select = create_element("select", "", @fs_value)
         for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
@@ -202,7 +202,7 @@ class AddPartDialog extends Dialog
     fill_mount: ->
         @mp = create_element("p", "", @content)
         @mp_desc = create_element("span", "AddDec", @mp)
-        @mp_desc.innerText = "挂载:"
+        @mp_desc.innerText = _("Mount point:")
         @mount_value = create_element("span", "AddValue", @mp)
         @mount_select = create_element("select", "", @mount_value)
         fill_mp_option(@mount_select)
@@ -220,7 +220,7 @@ class AddPartDialog extends Dialog
         else
             @n_size = mb_to_sector(parseInt(@size_input.value), 512)
         if not @n_size?
-            @tips.innerText = "请输入合法的分区大小"
+            @tips.innerText = _("Please enter invalid partition size")
         if @align_start.getAttribute("checked")
             @n_align = "start"
         else
@@ -232,9 +232,9 @@ class DeletePartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, @delete_part_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = "删除分区"
+        @title_txt.innerText = _("Delete partition")
         @delete_tips = create_element("p", "", @content)
-        @delete_tips.innerText = "确定删除分区吗?"
+        @delete_tips.innerText = "Confirm to delete?"
 
     delete_part_cb: ->
         delete_part(@partid)
@@ -247,9 +247,9 @@ class UnmountDialog extends Dialog
     constructor: (@id) ->
         super(@id, @unmount_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = "卸载分区"
+        @title_txt.innerText = _("Unmount partition")
         @unmount_tips = create_element("p", "", @content)
-        @unmount_tips.innerText = " 检测到有磁盘已经挂载，操作对应分区需要卸载,确定卸载吗?"
+        @unmount_tips.innerText = _("Detected partitions mounted, confirm to unmount them?")
         @add_css_class("DialogCommon")
 
     unmount_cb: ->
@@ -259,9 +259,9 @@ class FormatDialog extends Dialog
     constructor: (@id) ->
         super(@id, @format_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = "安装执行"
+        @title_txt.innerText = _("Format partition")
         @format_tips = create_element("p", "", @content)
-        @format_tips.innerText = "确定执行分区操作并安装LinuxDeepin吗?"
+        @format_tips.innerText = _("Confirm to format the partition?")
 
     format_cb: ->
         echo "format to do install"
@@ -270,9 +270,9 @@ class RootDialog extends Dialog
     constructor: (@id) ->
         super(@id, @need_root_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = "信息提示"
+        @title_txt.innerText = _("Install tips")
         @root_tips = create_element("p", "", @content)
-        @root_tips.innerText = "安装执行需要挂载/分区"
+        @root_tips.innerText = _("Need mount a partition as root")
 
     need_root_cb: ->
         echo "need mount root to do install"
@@ -575,16 +575,16 @@ class PartTable extends Widget
         super
         @header = create_element("div", "PartTableHeader", @element)
         @device_header = create_element("span", "", @header)
-        @device_header.innerText = "Device"
+        @device_header.innerText = _("Device")
         @size_header = create_element("div", "", @header)
-        @size_header.innerText = "Size"
+        @size_header.innerText = _("Size")
         @used_header = create_element("div", "", @header)
-        @used_header.innerText = "Free"
+        @used_header.innerText = _("Freespace")
         @fs_header = create_element("div", "", @header)
-        @fs_header.innerText = "FileSystem"
+        @fs_header.innerText = _("Filesystem")
         @mount_header = create_element("div", "", @header)
         if __selected_mode == "advance"
-            @mount_header.innerText = "MountPoint"
+            @mount_header.innerText = _("Mount point")
         else
             @mount_header.innerText = ""
         @items = create_element("div", "PartTableItems", @element)
@@ -610,7 +610,7 @@ class PartTable extends Widget
             
     update_mode: (mode) ->
         if mode == "advance"
-            @mount_header.innerText = "MountPoint"
+            @mount_header.innerText = _("Mount point")
             @items.setAttribute("style", "height:210px")
         else
             @mount_header.innerText = ""
@@ -627,11 +627,11 @@ class Part extends Page
             __selected_disk = disks[0]
 
         @part_txt = create_element("p", "", @title)
-        @part_txt.innerText = "选择磁盘"
+        @part_txt.innerText = _("Choose partition")
 
         @help = create_element("div", "PartHelp", @title)
         @t_mode = create_element("span", "", @help)
-        @t_mode.innerText = "高级模式"
+        @t_mode.innerText = _("Advance mode")
         @t_mode.addEventListener("click", (e) =>
             if __selected_mode != "advance"
                 __selected_mode = "advance"
@@ -640,7 +640,7 @@ class Part extends Page
                     document.body.appendChild(@unmount_model.element)
                 @show_advance_op()
                 @table.update_mode(__selected_mode)
-                @t_mode.innerText = "精简模式"
+                @t_mode.innerText = _("Simple mode")
             else
                 __selected_mode = "simple"
                 @add_model?.hide_dialog()
@@ -648,12 +648,12 @@ class Part extends Page
                 @unmount_model?.hide_dialog()
                 @hide_advance_op()
                 @table.update_mode(__selected_mode)
-                @t_mode.innerText ="高级模式" 
+                @t_mode.innerText = _("Advance mode") 
         )
         @t_sep = create_element("span", "", @help)
         @t_sep.innerText = "  |  "
         @t_help = create_element("span", "", @help)
-        @t_help.innerText = "查看帮助"
+        @t_help.innerText = _("Show help")
         @t_help.addEventListener("click", (e) =>
             @toggle_show_help()
         )
@@ -682,7 +682,7 @@ class Part extends Page
 
         @next_btn = create_element("div", "NextStep", @element)
         @next_btn.setAttribute("id", "mynextstep")
-        @next_btn.innerText = "开始安装"
+        @next_btn.innerText = _("Next step")
         @next_btn.addEventListener("click", (e) =>
             if __selected_mode == "simple"
                 @handle_simple_install()
@@ -722,7 +722,7 @@ class Part extends Page
         @op = create_element("p", "PartOp", @element)
         @part_add = create_element("div", "PartBtn", @op)
         @part_add.setAttribute("id", "part_add")
-        @part_add.innerText = "新建分区"
+        @part_add.innerText = _("Create partition")
         @part_add.addEventListener("click", (e)=>
             echo "handle add"
             if __in_model
@@ -734,7 +734,7 @@ class Part extends Page
 
         @part_delete = create_element("div", "PartBtn", @op)
         @part_delete.setAttribute("id", "part_delete")
-        @part_delete.innerText = "删除分区"
+        @part_delete.innerText = _("Delete partition")
         @part_delete.addEventListener("click", (e)=>
             echo "handle delete"
             if __in_model
@@ -745,7 +745,7 @@ class Part extends Page
         )
 
         @part_grub = create_element("p", "PartGrub", @element)
-        @part_grub.innerHTML = "<span>安装启动引导器的设备：</span>"
+        @part_grub.innerHTML = "<span>" + _("Boot loader") + "</span>"
         @grub_select = create_element("select", "", @part_grub)
         @fill_grub()
 

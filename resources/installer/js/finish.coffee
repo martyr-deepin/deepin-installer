@@ -21,7 +21,7 @@ class Finish extends Page
     constructor: (@id)->
         super
         @finish_txt = create_element("p", "", @title)
-        @finish_txt.innerText = "安装完成"
+        @finish_txt.innerText = _("Install completed")
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
@@ -31,7 +31,7 @@ class Finish extends Page
         @sep = create_element("div", "Sep", @element)
 
         @finish_desc = create_element("div", "FinishForm", @element)
-        @finish_desc.innerText = "完成安装需要重启电脑"
+        @finish_desc.innerText = "Finish install need to reboot your computer"
 
         @restart_now = create_element("div", "FinishForm", @element)
         @now_radio = create_element("input", "", @restart_now)
@@ -40,7 +40,7 @@ class Finish extends Page
         @now_radio.setAttribute("value", "now")
         @now_radio.setAttribute("checked", "true")
         @now_desc = create_element("span", "", @restart_now)
-        @now_desc.innerText = "立即重启电脑"
+        @now_desc.innerText = _("Restart now")
 
         @restart_later = create_element("div", "FinishForm", @element)
         @later_radio = create_element("input", "", @restart_later)
@@ -49,10 +49,10 @@ class Finish extends Page
         @later_radio.setAttribute("value", "later")
         @later_radio.setAttribute("checked", "true")
         @later_desc = create_element("span", "", @restart_later)
-        @later_desc.innerText = "稍后重启电脑"
+        @later_desc.innerText = _("Restart later")
 
         @finish_install = create_element("div", "FinishBtn", @element)
-        @finish_install.innerText = "安装完成"
+        @finish_install.innerText = _("Finish install")
         @finish_install.addEventListener("click", (e) =>
             echo "finish install"
             DCore.Installer.finish_install()

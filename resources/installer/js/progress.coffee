@@ -42,7 +42,7 @@ class ReportDialog extends Widget
         super(@id, @cb)
         @title = create_element("p", "DialogTitle", @element)
         @title_txt = create_element("div", "DialogTxt", @title)
-        @title_txt.innerText = "错误报告"
+        @title_txt.innerText = _("Error report")
 
         @title_close = create_element("div", "DialogClose", @title)
         @title_close.addEventListener("click", (e) =>
@@ -52,11 +52,11 @@ class ReportDialog extends Widget
 
         @content = create_element("div", "DialogContent", @element)
         @report_tips = create_element("p", "", @content)
-        @report_tips.innerText = "安装失败，请把安装日志信息反馈Deepin社区"
+        @report_tips.innerText = _("Install failed, please report the log to linux deepin team")
 
         @foot = create_element("p", "DialogBtn", @element)
         @ok = create_element("span", "", @foot)
-        @ok.innerText = "OK"
+        @ok.innerText = _("Ok")
         @ok.addEventListener("click", (e) =>
             @hide_dialog()
             @cb()
@@ -81,7 +81,7 @@ class Progress extends Page
     constructor: (@id)->
         super
         @progress_txt = create_element("p", "", @title)
-        @progress_txt.innerText = "正在安装"
+        @progress_txt.innerText = _("Installing")
 
         @current_img = _ppt_list[0]
 

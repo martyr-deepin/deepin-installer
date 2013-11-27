@@ -195,23 +195,27 @@ class WelcomeFormItem extends Widget
 
     fill_widget: ->
         if @id == "username"
-            @text.innerText = "用户名"
-            @input.setAttribute("placeholder", "2-14个字符，英文，数字，中文")
-            @error.innerText = "用户名不合法"
+            @text.innerText = _("Username")
+            username_holder = _("Please enter username") 
+            @input.setAttribute("placeholder", username_holder)
+            @error.innerText = _("Invalid username")
         else if @id == "hostname"
-            @text.innerText = "计算机名"
-            @input.setAttribute("placeholder", "2-14个字符，英文，数字，中文")
-            @error.innerText = "计算机不合法"
+            @text.innerText = _("Hostname")
+            hostname_holder = _("Please enter hostname")
+            @input.setAttribute("placeholder", hostname_holder)
+            @error.innerText = _("Invalid hostname")
         else if @id == "password"
-            @text.innerText = "登录密码"
-            @input.setAttribute("placeholder", "请输入密码")
+            @text.innerText = _("Password")
+            password_holder = _("Please enter password")
+            @input.setAttribute("placeholder", password_holder)
             @input.setAttribute("type", "password")
-            @error.innerText = "密码不合法"
+            @error.innerText = _("Invalid password")
         else if @id == "confirmpassword"
-            @text.innerText = "确认密码"
-            @input.setAttribute("placeholder", "请再次输入密码")
+            @text.innerText = _("Confirm password")
+            confirm_holder = ("Please enter confirm password")
+            @input.setAttribute("placeholder", confirm_holder)
             @input.setAttribute("type", "password")
-            @error.innerText = "确认密码不合法"
+            @error.innerText = _("Confirm password not match")
 
     fill_item_data: ->
         if @id == "username"
@@ -250,17 +254,17 @@ class Welcome extends Page
 
         @title_start = create_element("div", "", @title)
         @start_txt = create_element("p", "", @title_start)
-        @start_txt.innerText = "安装向导"
+        @start_txt.innerText = _("Install Guide")
 
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("span", "KeyboardSet", @title_set)
-        @keyboard_set.innerHTML += "键盘"
+        @keyboard_set.innerHTML += _("Keyboard")
         @keyboard_set.addEventListener("click", (e) =>
             @display_keyboard()
         )
 
         @timezone_set = create_element("span", "TimezoneSet", @title_set)
-        @timezone_set.innerText = "时区"
+        @timezone_set.innerText = _("Timezone")
         @timezone_set.addEventListener("click", (e) =>
             @display_timezone()
         )
@@ -285,7 +289,7 @@ class Welcome extends Page
         @form.appendChild(@confirmpassword.element)
 
         @start = create_element("div", "Start", @element)
-        @start.innerText = "开始安装"
+        @start.innerText = _("Start")
         @start.addEventListener("mouseover", (e) =>
             if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
                 @start.setAttribute("style", "color:#00bdff")
