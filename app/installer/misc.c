@@ -34,6 +34,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/mount.h>
 
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
@@ -1006,29 +1007,24 @@ gboolean installer_mount_procfs ()
         g_warning ("mount procfs:target is NULL\n");
         goto out;
     }
-    mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", target);
-    mount_devpts = g_strdup_printf ("mount -vt devpts devpts %s/dev/pts", target);
-    mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", target);
-    mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sys", target);
-
-    g_spawn_command_line_sync (mount_dev, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("mount procfs:mount dev %s\n", error->message);
+    mount_dev = g_strdup_printf ("%s/dev", target);
+    if (mount ("/dev", mount_dev, "devtmpfs", MS_BIND, NULL) != 0) {
+        g_warning ("mount procfs:mount dev %s\n", strerror (errno));
         goto out;
     }
-    g_spawn_command_line_sync (mount_devpts, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("mount procfs:mount devpts %s\n", error->message);
+    mount_devpts = g_strdup_printf ("%s/dev/pts", target);
+    if (mount ("/dev/pts", mount_devpts, "devpts", MS_BIND, NULL) != 0) {
+        g_warning ("mount procfs:mount devpts %s\n", strerror (errno));
         goto out;
     }
-    g_spawn_command_line_sync (mount_proc, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("mount procfs:mount proc %s\n", error->message);
+    mount_proc = g_strdup_printf ("%s/proc", target);
+    if (mount ("/proc", mount_proc, "proc", MS_BIND, NULL) != 0) {
+        g_warning ("mount procfs:mount proc %s\n", strerror (errno));
         goto out;
     }
-    g_spawn_command_line_sync (mount_sys, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("mount procfs:mount sys %s\n", error->message);
+    mount_sys = g_strdup_printf ("%s/sys", target);
+    if (mount ("/sys", mount_sys, "sysfs", MS_BIND, NULL) != 0) {
+        g_warning ("mount procfs:mount sys %s\n", strerror (errno));
         goto out;
     }
     ret = TRUE;

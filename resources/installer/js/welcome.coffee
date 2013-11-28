@@ -99,8 +99,8 @@ class Timezone extends Widget
 
     update_timezone: (zone) ->
         @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
-        @current.innerHTML += "<span>City:" + zone + "</span>"
-        @current.innerHTML += "<span>Country:" + __database[zone]["country"] + "</span>"
+        @current.innerHTML += "<span>City:" + _(zone) + "</span>"
+        @current.innerHTML += "<span>Country:" + _(__database[zone]["country"]) + "</span>"
         __selected_timezone = zone
 
     construct_map: ->

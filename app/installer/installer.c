@@ -31,6 +31,8 @@
 #include <sys/un.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/mount.h>
+#include <errno.h>
 
 #define INSTALLER_HTML_PATH "file://"RESOURCE_DIR"/installer/index.html"
 
@@ -188,17 +190,27 @@ void unmount_target (const gchar *target)
     endmntent (mount_file);
 
     if (flag) {
-        gchar *umount_sys = g_strdup_printf ("umount %s/sys", target);
-        gchar *umount_proc = g_strdup_printf ("umount %s/proc", target);
-        gchar *umount_devpts = g_strdup_printf ("umount %s/dev/pts", target);
-        gchar *umount_dev = g_strdup_printf ("umount %s/dev", target);
-        gchar *umount_target = g_strdup_printf ("umount -l %s", target);
+        gchar *umount_sys = g_strdup_printf ("%s/sys", target);
+        gchar *umount_proc = g_strdup_printf ("%s/proc", target);
+        gchar *umount_devpts = g_strdup_printf ("%s/dev/pts", target);
+        gchar *umount_dev = g_strdup_printf ("%s/dev", target);
+        gchar *umount_target = g_strdup (target);
 
-        g_spawn_command_line_async (umount_sys, NULL);
-        g_spawn_command_line_async (umount_proc, NULL);
-        g_spawn_command_line_async (umount_devpts, NULL);
-        g_spawn_command_line_async (umount_dev, NULL);
-        g_spawn_command_line_async (umount_target, NULL);
+        if (umount2 (umount_sys, MNT_DETACH) != 0) {
+            g_warning ("unmount target sys:%s\n", strerror (errno));
+        }
+        if (umount2 (umount_proc, MNT_DETACH) != 0) {
+            g_warning ("unmount target proc:%s\n", strerror (errno));
+        }
+        if (umount2 (umount_devpts, MNT_DETACH) != 0) {
+            g_warning ("unmount target devpts:%s\n", strerror (errno));
+        }
+        if (umount2 (umount_dev, MNT_DETACH) != 0) {
+            g_warning ("unmount target dev:%s\n", strerror (errno));
+        }
+        if (umount2 (umount_target, MNT_DETACH) != 0) {
+            g_warning ("unmount target:%s\n", strerror (errno));
+        }
 
         g_free (umount_dev);
         g_free (umount_devpts);
