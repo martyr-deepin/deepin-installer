@@ -559,7 +559,7 @@ class PartTableItem extends Widget
             if @device_type == "disk"
                 txt = v_disk_info[@id]["path"]
             else
-                if v_part_info[@id]["label"]?
+                if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
                     txt = v_part_info[@id]["label"]
                 else
                     txt = v_part_info[@id]["path"]
@@ -569,7 +569,7 @@ class PartTableItem extends Widget
             if @device_type == "disk"
                 txt = m_disk_info[@id]["path"]
             else
-                if m_part_info[@id]["label"]?
+                if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
                     txt = m_part_info[@id]["label"]
                 else
                     txt = m_part_info[@id]["path"]

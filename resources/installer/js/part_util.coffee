@@ -85,6 +85,7 @@ init_m_part_info = ->
             m_part_info[part]["label"] = v_part_info[part]["label"]
             m_part_info[part]["lvm"] = v_part_info[part]["lvm"]
             m_part_info[part]["op"] = "keep"
+            m_part_info[part]["path"] = v_part_info[part]["path"]
     
 #sort part op flags as below:
 #1)first delete, then update and add
