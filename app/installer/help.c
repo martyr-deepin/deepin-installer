@@ -111,6 +111,8 @@ int main(int argc, char **argv)
 
     help_container = create_web_container (FALSE, TRUE);
     gtk_window_set_decorated (GTK_WINDOW (help_container), FALSE);
+    gtk_window_set_skip_taskbar_hint (GTK_WINDOW (help_container), TRUE);
+    gtk_window_set_skip_pager_hint (GTK_WINDOW (help_container), TRUE);
 
     GtkWidget *webview = d_webview_new_with_uri (HELP_HTML_PATH);
 
