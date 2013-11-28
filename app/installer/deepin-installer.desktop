@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Deepin Installer
+Name[zh_CN]=深度安装器
+Name[zh_TW]=深度安装器
+Name[zh_HK]=深度安装器
+Comment=Deepin Installer
+Comment[zh_CN]=深度安装器
+Comment[zh_TW]=深度安装器
+Comment[zh_HK]=深度安装器
+Exec=pkexec /usr/bin/installer > /tmp/installer.log 2>&1
+Icon=deepin-game-center
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Encoding=UTF-8
+Categories=Application;Game
+StartupNotify=true

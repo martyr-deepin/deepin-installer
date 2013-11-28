@@ -33,6 +33,8 @@
 #include <sys/types.h>
 #include <sys/mount.h>
 #include <errno.h>
+#include <glib.h>
+#include <glib/gstdio.h>
 
 #define INSTALLER_HTML_PATH "file://"RESOURCE_DIR"/installer/index.html"
 #define PACKAGES_LIST_PATH "file://"RESOURCE_DIR"/installer/packageslist.ini"
@@ -230,6 +232,10 @@ remove_packages ()
     gchar **strarray = NULL;
     gchar *packages = NULL;
 
+    if (!g_file_test (PACKAGES_LIST_PATH, G_FILE_TEST_EXISTS)) {
+        g_warning ("remove packages:%s not exists\n", PACKAGES_LIST_PATH);
+        goto out;
+    }
     g_file_get_contents (PACKAGES_LIST_PATH, &contents, NULL, &error);
     if (error != NULL) {
         g_warning ("remove packages:get packages list %s\n", error->message);
@@ -239,7 +245,7 @@ remove_packages ()
         g_warning ("remove packages:contents NULL\n");
         goto out;
     }
-    strarray = g_str_split (contents, "\n", -1);
+    strarray = g_strsplit (contents, "\n", -1);
     if (strarray == NULL) {
        g_warning ("remove packages:strarray NULL\n"); 
        goto out;

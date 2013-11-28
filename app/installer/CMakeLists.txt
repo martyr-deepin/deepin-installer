@@ -36,3 +36,8 @@ install(
     DIRECTORY ${PROJECT_SOURCE_DIR}/resources/${NAME}
     DESTINATION ${RESOURCE_DIR}
     )
+
+install(
+    FILES ${PROJECT_SOURCE_DIR}/app/installer/deepin-installer.desktop
+    DESTINATION /usr/share/applications/
+    )
