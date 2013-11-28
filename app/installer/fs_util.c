@@ -681,7 +681,7 @@ inhibit_disk ()
         return ret;
     }
 
-    gchar* inhibit_cmd = g_strdup_printf ("udisks --inhibit -- %s", installer);
+    gchar* inhibit_cmd = g_strdup_printf ("/usr/lib/udisks2/udisks2-inhibit  %s", installer);
 
     ret = g_spawn_command_line_async (inhibit_cmd, &error);
     if (error != NULL) {

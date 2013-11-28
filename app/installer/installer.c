@@ -169,8 +169,8 @@ gboolean installer_is_help_running ()
     return running;
 }
 
-static
-void unmount_target (const gchar *target)
+static void 
+unmount_target (const gchar *target)
 {
     gboolean flag = FALSE;
     struct mntent *mnt;
@@ -221,9 +221,26 @@ void unmount_target (const gchar *target)
 }
 
 static void
+remove_packages ()
+{
+    GError *error = NULL;
+    gchar *cmd = g_strdup ("apt-get remove -y squashfs-tools");
+
+    g_spawn_command_line_async (cmd, &error);
+    if (error != NULL) {
+        g_warning ("remove packages:%s\n", error->message);
+    }
+    g_free (cmd);
+}
+
+static void
 finish_install_cleanup () 
 {
     installer_hide_help ();
+
+    ped_device_free_all ();
+
+    remove_packages ();
 
     extern const gchar *target;
     if (target == NULL) {
@@ -245,8 +262,6 @@ finish_install_cleanup ()
             }
         }
     }
-
-    ped_device_free_all ();
 }
 
 JS_EXPORT_API
