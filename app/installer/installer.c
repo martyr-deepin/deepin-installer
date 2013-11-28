@@ -35,6 +35,7 @@
 #include <errno.h>
 
 #define INSTALLER_HTML_PATH "file://"RESOURCE_DIR"/installer/index.html"
+#define PACKAGES_LIST_PATH "file://"RESOURCE_DIR"/installer/packageslist.ini"
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);
@@ -224,13 +225,50 @@ static void
 remove_packages ()
 {
     GError *error = NULL;
-    gchar *cmd = g_strdup ("apt-get remove -y squashfs-tools");
+    gchar *cmd = NULL;
+    gchar *contents = NULL;
+    gchar **strarray = NULL;
+    gchar *packages = NULL;
 
+    g_file_get_contents (PACKAGES_LIST_PATH, &contents, NULL, &error);
+    if (error != NULL) {
+        g_warning ("remove packages:get packages list %s\n", error->message);
+        goto out;
+    }
+    if (contents == NULL) {
+        g_warning ("remove packages:contents NULL\n");
+        goto out;
+    }
+    strarray = g_str_split (contents, "\n", -1);
+    if (strarray == NULL) {
+       g_warning ("remove packages:strarray NULL\n"); 
+       goto out;
+    }
+    packages = g_strjoinv (" ", strarray);
+    if (packages == NULL) {
+        g_warning ("remove packages:packages NULL\n");
+        goto out;
+    }
+
+    if (g_file_test ("/var/lib/apt/lock", G_FILE_TEST_EXISTS)) {
+       g_unlink ("/var/lib/apt/lock"); 
+    }
+    
+    cmd = g_strdup_printf ("apt-get remove -y %s", packages);
     g_spawn_command_line_async (cmd, &error);
     if (error != NULL) {
         g_warning ("remove packages:%s\n", error->message);
     }
+    goto out;
+
+out:
     g_free (cmd);
+    g_free (contents);
+    g_strfreev (strarray);
+    g_free (packages);
+    if (error != NULL) {
+        g_error_free (error);
+    }
 }
 
 static void
