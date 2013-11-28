@@ -1033,22 +1033,24 @@ gboolean installer_mount_target (const gchar *part)
     target = g_strdup_printf ("/mnt/target%s", target_uuid);
     if (g_file_test (target, G_FILE_TEST_EXISTS)) {
         g_warning ("mount target:re rand uuid as target exists\n");
-        //g_free (target_uuid);
-        //target_uuid = NULL;
-        //target = NULL;
         target_uuid = installer_rand_uuid ();
         target = g_strdup_printf ("/mnt/target%s", target_uuid);
     }
 
-    if (g_mkdir_with_parents (target, 0777) != -1) {
-        cmd = g_strdup_printf ("mount %s %s", path, target);
-        g_spawn_command_line_async (cmd, &error);
-        if (error != NULL) {
-            g_warning ("mount target:mount failed %s\n", error->message);
-            goto out;
-        } 
-        result = TRUE;
+    if (g_mkdir_with_parents (target, 0777) == -1) {
+        g_warning ("mount target:create target directory %s\n", strerror (errno));
+        goto out;
     }
+    const gchar *fs = installer_get_partition_fs (part);
+    if (fs == NULL) {
+        g_warning ("mount target:partition fs NULL\n");
+        goto out;
+    }
+    if (mount (path, target, fs, MS_MGC_VAL, NULL) != 0) {
+        g_warning ("mount target:mount path %s with fs %s error:%s\n", path, fs, strerror (errno));
+        goto out;
+    }
+    result = TRUE;
     goto out;
 
 out:

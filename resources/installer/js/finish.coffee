@@ -66,7 +66,7 @@ class Finish extends Page
                 echo error
         else if @later_radio.checked
             try
-                DCore.Installer.finish_installer()
+                DCore.Installer.finish_install()
             catch error
                 echo error
         else
