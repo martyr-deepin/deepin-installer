@@ -461,9 +461,14 @@ void installer_unmount_partition (const gchar *part)
     if (mp == NULL) {
         return ;
     }
-    if (umount2 (mp, MNT_DETACH) != 0) {
-        g_warning ("unmount part %s with mp %s error:%s\n", part, mp, strerror (errno));
+    if (umount (mp) != 0) {
+        g_warning ("unmount part:%s\n", strerror (errno));
+        g_debug ("try lazy mount\n");
+        if (umount2 (mp, MNT_DETACH) != 0) {
+            g_warning ("unmount part %s with mp %s error:%s\n", part, mp, strerror (errno));
+        }
     }
+
     g_free (mp);
 }
 
