@@ -536,6 +536,9 @@ const gchar *installer_get_partition_fs (const gchar *part)
     } else {
         g_warning ("get partition fs:find pedpartition %s failed\n", part);
     }
+    if ((fs != NULL) && (g_strrstr (fs, "swap") != NULL)) {
+        fs = "swap";
+    }
 
     return fs;
 }
@@ -694,7 +697,7 @@ void installer_get_partition_free (const gchar *part)
             GThread *thread = g_thread_new ("get_partition_free", 
                                             (GThreadFunc) get_partition_free, 
                                             (gpointer) handler);
-
+            g_thread_unref (thread);
         } else {
             g_warning ("get pedpartition free: get %s path failed\n", part);
         }

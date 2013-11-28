@@ -548,6 +548,9 @@ get_partition_free (gpointer data)
     } else if (g_strcmp0 (fs, "ntfs") == 0) {
         free = _get_ntfs_free (path);
 
+    } else if (g_strrstr (fs, "swap") != NULL) {
+        free = _get_swap_free (path);
+
     } else {
         g_warning ("get partition free:not support for fs %s\n", fs);
     }
@@ -638,12 +641,19 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         }
         cmd = g_strdup_printf ("mkfs.btrfs %s", path);
 
-    } else if (g_strcmp0 (fs, "xfs") == 0 ) {
+    } else if (g_strcmp0 (fs, "xfs") == 0) {
         if (g_find_program_in_path ("mkfs.xfs") == NULL) {
             g_warning ("set partition filesystem:mkfs.xfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.xfs -f %s", path);
+
+    } else if (g_strrstr (fs, "swap") != NULL) {
+        if (g_find_program_in_path ("mkswap") == NULL) {
+            g_warning ("set partition filesystem:mkswap not installed\n");
+            return ;
+        }
+        cmd = g_strdup_printf ("mkswap %s", path);
 
     } else {
         g_warning ("set partition filesystem:%s currently not supported\n", fs);
