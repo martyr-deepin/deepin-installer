@@ -55,5 +55,19 @@ class Finish extends Page
         @finish_install.innerText = _("Finish install")
         @finish_install.addEventListener("click", (e) =>
             echo "finish install"
-            DCore.Installer.finish_install()
+            @finish()
         )
+
+    finish: ->
+        if @now_radio.checked
+            try
+                DCore.Installer.finish_reboot()
+            catch error
+                echo error
+        else if @later_radio.checked
+            try
+                DCore.Installer.finish_installer()
+            catch error
+                echo error
+        else
+            echo "invalid finish, no radio checked"

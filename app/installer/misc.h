@@ -56,7 +56,7 @@ gboolean set_group (const gchar *username);
 
 gboolean write_hostname (const gchar *hostname);
 
-JS_EXPORT_API void installer_reboot ();
+void installer_reboot ();
 
 JS_EXPORT_API JSObjectRef installer_get_keyboard_layouts (); 
 

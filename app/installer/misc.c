@@ -443,11 +443,10 @@ write_hostname (const gchar *hostname)
     return ret;
 }
 
-JS_EXPORT_API 
 void installer_reboot ()
 {
     GError *error = NULL;
-    GDBusProxy *ck_proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
+    GDBusProxy *ck_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
             G_DBUS_PROXY_FLAGS_NONE,
             NULL,
             "org.freedesktop.ConsoleKit",

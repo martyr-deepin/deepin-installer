@@ -220,8 +220,8 @@ void unmount_target (const gchar *target)
     }
 }
 
-JS_EXPORT_API
-void installer_finish_install ()
+static void
+finish_install_cleanup () 
 {
     installer_hide_help ();
 
@@ -247,9 +247,23 @@ void installer_finish_install ()
     }
 
     ped_device_free_all ();
+}
+
+JS_EXPORT_API
+void installer_finish_install ()
+{
+    finish_install_cleanup ();
     gtk_main_quit ();
 }
 
+JS_EXPORT_API
+void installer_finish_reboot ()
+{
+    finish_install_cleanup ();
+    //installer_reboot ();
+    g_spawn_command_line_async ("reboot", NULL);
+    gtk_main_quit ();
+}
 
 int main(int argc, char **argv)
 {

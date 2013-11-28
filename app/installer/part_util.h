@@ -60,6 +60,8 @@ JS_EXPORT_API gchar* installer_get_partition_path (const gchar *part);
 
 JS_EXPORT_API gchar* installer_get_partition_mp (const gchar *part);
 
+JS_EXPORT_API void installer_unmount_partition (const gchar *part);
+
 JS_EXPORT_API double installer_get_partition_start (const gchar *part);
 
 JS_EXPORT_API double installer_get_partition_length (const gchar *part);

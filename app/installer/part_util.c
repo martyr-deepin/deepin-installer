@@ -21,6 +21,8 @@
 
 #include "part_util.h"
 #include "fs_util.h"
+#include <sys/mount.h>
+#include <errno.h>
 
 #define PART_INFO_LENGTH 4096
 
@@ -450,6 +452,19 @@ gchar* installer_get_partition_mp (const gchar *part)
 out:
     g_free (path);
     return mp;
+}
+
+JS_EXPORT_API
+void installer_unmount_partition (const gchar *part)
+{
+    gchar *mp = installer_get_partition_mp (part);
+    if (mp == NULL) {
+        return ;
+    }
+    if (umount2 (mp, MNT_DETACH) != 0) {
+        g_warning ("unmount part %s with mp %s error:%s\n", part, mp, strerror (errno));
+    }
+    g_free (mp);
 }
 
 JS_EXPORT_API
