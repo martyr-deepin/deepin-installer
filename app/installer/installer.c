@@ -93,13 +93,6 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 }
 
 static void
-size_allocate (GtkWidget *widget, GdkRectangle *allocation, gpointer user_data)
-{
-    g_warning ("size allocate triggered\n");
-    gtk_window_resize (GTK_WINDOW (widget), 755, 540);
-}
-
-static void
 adapt_location_for_help ()
 {
     GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (installer_container));
@@ -355,12 +348,19 @@ int main(int argc, char **argv)
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
 
     g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
-    g_signal_connect (installer_container, "size-allocate", G_CALLBACK (size_allocate), NULL);
-
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
     gtk_window_set_default_size (GTK_WINDOW (installer_container), 755, 540);
     gtk_window_set_resizable (GTK_WINDOW (installer_container), FALSE);
     //gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
+    GdkGeometry geometry;
+    geometry.min_width = 755;
+    geometry.max_width = 755;
+    geometry.base_width = 755;
+    geometry.min_height = 540;
+    geometry.max_height = 540;
+    geometry.base_height = 540;
+
+    gtk_window_set_geometry_hints (GTK_WINDOW (installer_container), webview, &geometry, GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE | GDK_HINT_BASE_SIZE);
     move_window_center ();
     gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
