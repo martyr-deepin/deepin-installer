@@ -4,6 +4,12 @@
 @import url(finish.css);
 @import url("../../common/css/animation.css");
 
+body {
+    width:755px;
+    height:540px;
+    overflow:hidden;
+}
+
 .Title {
     width:755px;
     height:90px;

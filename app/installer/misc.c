@@ -501,7 +501,6 @@ _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer
 {
     const gchar *layout = (const gchar *)data;
 
-    //fix me:free glist memory
     GList *variants = g_list_copy (g_hash_table_lookup (layout_variants_hash, layout));
     variants = g_list_append (variants, g_strdup (item->name));
 
@@ -624,8 +623,10 @@ JSObjectRef installer_get_current_layout_variant ()
         g_warning ("get current layout variant: config is NULL\n");
         init_keyboard_layouts ();
     }
-
-    g_assert (config != NULL);
+    if (config == NULL) {
+        g_warning ("get current layout variant:xkl config null after init\n");
+        return current;
+    }
 
     gchar **layouts = g_strdupv (config->layouts);
     gchar **variants = g_strdupv (config->variants);
@@ -657,7 +658,10 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
         g_warning ("set keyboard layout variant:xkl config null, init it\n");
         init_keyboard_layouts ();
     }
-    g_assert (config != NULL);
+    if (config == NULL) {
+        g_warning ("set keyboard layout variant:xkl config null after init\n");
+        return;
+    }
 
     gchar **layouts = g_new0 (char *, 2);
     layouts[0] = g_strdup (layout);
