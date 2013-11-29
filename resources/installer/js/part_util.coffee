@@ -39,7 +39,8 @@ mb_to_sector = (mb_size, sector_size) ->
 #
 #Model
 #Model: for origin disk partition table 
-disks = DCore.Installer.list_disks()
+#disks = DCore.Installer.list_disks()
+disks = null
 
 m_disk_info = {}
 #never change the partitions list
@@ -339,6 +340,7 @@ write_fs_tab = ->
 #View: for data display in UI
 v_disk_info = {}
 init_v_disk_info = ->
+    disks = DCore.Installer.list_disks()
     v_disk_info = {}
     for disk in disks
         v_disk_info[disk] = {}
@@ -942,4 +944,3 @@ undo_part_table_info = ->
 #Control
 #
 #
-undo_part_table_info()

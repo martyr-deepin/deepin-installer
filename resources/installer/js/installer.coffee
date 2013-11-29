@@ -21,9 +21,9 @@ pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
 welcome_page = new Welcome("welcome")
-part_page = new Part("part")
-progress_page = new Progress("progress")
-finish_page = new Finish("finish")
+#part_page = new Part("part")
+#progress_page = new Progress("progress")
+#finish_page = new Finish("finish")
 
 pc.add_page(welcome_page)
 #pc.add_page(part_page)

@@ -233,6 +233,7 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "finish update grub"
+            finish_page = new Finish("finish")
             pc.add_page(finish_page)
             pc.remove_page(progress_page)
         else if progress == "terminate"

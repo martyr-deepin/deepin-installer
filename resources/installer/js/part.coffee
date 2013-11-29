@@ -705,6 +705,7 @@ class Part extends Page
         do_simple_partition(__selected_item.id, __selected_item.device_type)
         DCore.Installer.hide_help()
         __selected_grub = __selected_disk
+        progress_page = new Progress("progress")
         pc.add_page(progress_page)
         pc.remove_page(part_page)
         __selected_stage = "extract"
@@ -715,6 +716,7 @@ class Part extends Page
             do_partition()
             DCore.Installer.hide_help()
             __selected_grub = @grub_select.options[@grub_select.selectedIndex].value
+            progress_page = new Progress("progress")
             pc.add_page(progress_page)
             pc.remove_page(part_page)
             __selected_stage = "extract"

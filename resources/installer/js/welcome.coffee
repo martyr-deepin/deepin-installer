@@ -345,6 +345,8 @@ class Welcome extends Page
 
     start_install_cb: ->
         if @check_start_ready()
+            undo_part_table_info()
+            part_page = new Part("part")
             pc.add_page(part_page)
             pc.remove_page(welcome_page)
             __selected_item?.focus()
