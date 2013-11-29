@@ -78,6 +78,8 @@ class ReportDialog extends Widget
         echo "report dialog cb"
         DCore.Installer.finish_install()
 
+__switch_ppt_id = -1
+
 class Progress extends Page
     constructor: (@id)->
         super
@@ -89,10 +91,14 @@ class Progress extends Page
         @ppt = create_element("div", "Ppt", @element)
         @ppt_img = create_img("PptImg", @current_img, @ppt)
         @ppt_img.addEventListener("click", (e) =>
-            if e.offsetX < 377
-                @switch_ppt("prev")
-            else 
-                @switch_ppt("next")
+            clearTimeout(__switch_ppt_id)
+            __switch_ppt_id = -1
+            __switch_ppt_id = setTimeout( ->
+                    if e.offsetX < 377
+                        @switch_ppt("prev")
+                    else
+                        @switch_ppt("next")
+            , 200)
         )
 
         @progress_container = create_element("div", "ProgressContainer", @element)
