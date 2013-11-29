@@ -523,6 +523,7 @@ _foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer d
 void
 init_keyboard_layouts () 
 {
+    g_printf ("init keyboard layouts");
     layout_variants_hash = g_hash_table_new_full ((GHashFunc) g_str_hash, 
                                                   (GEqualFunc) g_str_equal, 
                                                   (GDestroyNotify) g_free, 
@@ -620,7 +621,7 @@ JSObjectRef installer_get_current_layout_variant ()
     JSObjectRef current = json_create ();
 
     if (config == NULL) {
-        g_warning ("get current layout variant: config is NULL\n");
+        g_warning ("get current layout variant: config is NULL, init it\n");
         init_keyboard_layouts ();
     }
     if (config == NULL) {
@@ -660,7 +661,7 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
     }
     if (config == NULL) {
         g_warning ("set keyboard layout variant:xkl config null after init\n");
-        return;
+        goto out;
     }
 
     gchar **layouts = g_new0 (char *, 2);
@@ -668,7 +669,7 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
 
     if (layouts == NULL) {
         g_warning ("set keyboard layout variant:must specify layout\n");
-        return ;
+        goto out;
     }
     xkl_config_rec_set_layouts (config, (const gchar **)layouts);
 
@@ -681,6 +682,9 @@ void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *va
 
     g_strfreev (layouts);
     g_strfreev (variants);
+    emit_progress ("keyboard", "finish");
+out:
+    g_warning ("set keyboard layout variant failed, just skip this step");
     emit_progress ("keyboard", "finish");
 }
 

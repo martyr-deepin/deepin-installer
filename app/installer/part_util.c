@@ -458,18 +458,13 @@ JS_EXPORT_API
 void installer_unmount_partition (const gchar *part)
 {
     gchar *mp = installer_get_partition_mp (part);
-    if (mp == NULL) {
+    if (mp == NULL || !g_file_test (mp, G_FILE_TEST_EXISTS)) {
         return ;
     }
-    if (umount (mp) != 0) {
-        g_warning ("unmount part:%s\n", strerror (errno));
-        g_debug ("try lazy mount\n");
-        if (umount2 (mp, MNT_DETACH) != 0) {
-            g_warning ("unmount part %s with mp %s error:%s\n", part, mp, strerror (errno));
-        }
-    }
-
+    gchar *cmd = g_strdup_printf ("umount -l %s", mp);
+    g_spawn_command_line_async (cmd, NULL);
     g_free (mp);
+    g_free (cmd);
 }
 
 JS_EXPORT_API

@@ -260,12 +260,6 @@ class UnmountDialog extends Dialog
                     DCore.Installer.unmount_partition(part)
                 catch error
                     echo error
-        for disk in disks
-            for part in m_disk_info[disk]["partitions"]
-                try
-                    DCore.Installer.unmount_partition(part)
-                catch error
-                    echo error
 
 class FormatDialog extends Dialog
     constructor: (@id) ->
