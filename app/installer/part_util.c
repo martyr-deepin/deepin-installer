@@ -164,6 +164,8 @@ thread_init_parted (gpointer data)
 
     g_strfreev (items);
     g_free (output);
+
+    js_post_message_simply ("init_parted", "{\"finish\":\"%s\"}", "finish");
 }
 
 void init_parted ()

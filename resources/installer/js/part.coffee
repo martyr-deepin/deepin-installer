@@ -50,56 +50,6 @@ fill_mp_option = (select) ->
     for opt in ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
         create_mp_option(select, opt, opt)
 
-class Dialog extends Widget
-    constructor: (@id, @cb) ->
-        super
-        @title = create_element("p", "DialogTitle", @element)
-        @title_txt = create_element("div", "DialogTxt", @title)
-        @title_close = create_element("div", "DialogClose", @title)
-        @title_close.addEventListener("click", (e) =>
-            @hide_dialog()
-        )
-
-        @content = create_element("div", "DialogContent", @element)
-        @foot = create_element("p", "DialogBtn", @element)
-        @ok = create_element("span", "", @foot)
-        @ok.innerText = _("Ok")
-        @ok.addEventListener("click", (e) =>
-            @cb()
-            @hide_dialog()
-        )
-        @cancel = create_element("span", "", @foot)
-        @cancel.innerText = _("Cancel")
-        @cancel.addEventListener("click", (e) =>
-            @hide_dialog()
-        )
-        @show_dialog()
-        #@element.setAttribute("draggable", "true")
-
-    show_dialog: ->
-        __in_model = true
-        __board.setAttribute("style", "display:block")
-
-    hide_dialog: ->
-        __in_model = false
-        @destroy()
-        __board.setAttribute("style", "display:none")
-
-        #do_dragstart: (event) ->
-        #    echo "do dragstart in dialog"
-        #    event.dataTransfer.setData("Text", event.target.id)
-
-        #do_drop: (event) ->
-        #    echo "do drop in dialog"
-        #    event.preventDefault()
-        #    data = event.dataTransfer.getData("Text")
-        #    style = "top:"+ event.y + "px;" + "left:" + event.x + "px"
-        #    event.target.setAttribute("style", style)
-
-        #do_dragover: (event) ->
-        #    echo "do dragover in dialog"
-        #    event.preventDefault()
-
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, @add_part_cb)

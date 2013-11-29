@@ -75,6 +75,7 @@ class ReportDialog extends Widget
         __board.setAttribute("style", "display:none")
 
     cb: ->
+        echo "report dialog cb"
         DCore.Installer.finish_install()
 
 class Progress extends Page
