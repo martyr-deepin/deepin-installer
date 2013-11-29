@@ -753,9 +753,10 @@ JSObjectRef installer_get_timezone_list ()
     return timezones;
 }
 
-JS_EXPORT_API 
-gboolean installer_set_timezone (const gchar *timezone)
+static gpointer
+thread_set_timezone (gpointer data)
 {
+    gchar *timezone = (gchar *) data;
     gboolean ret = FALSE;
     GError *error = NULL;
     gchar *timezone_file = NULL;
@@ -764,6 +765,10 @@ gboolean installer_set_timezone (const gchar *timezone)
     GFile *zoneinfo_file = NULL;
     GFile *localtime_file = NULL;
 
+    if (timezone == NULL) {
+        g_warning ("set timezone:timezone NULL\n");
+        goto out;
+    }
     timezone_file = g_strdup ("/etc/timezone");
     g_file_set_contents (timezone_file, timezone, -1, &error);
     if (error != NULL) {
@@ -776,13 +781,14 @@ gboolean installer_set_timezone (const gchar *timezone)
     localtime_file = g_file_new_for_path (localtime_path);
     g_file_copy (zoneinfo_file, localtime_file, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("set timezone:cp /etc/localtime %s\n", error->message);
+        g_warning ("set timezone:cp %s to /etc/localtime %s\n", zoneinfo_path, error->message);
         goto out;
     }
     ret = TRUE;
     goto out;
 
 out:
+    g_free (timezone);
     g_free (timezone_file);
     g_free (zoneinfo_path);
     g_free (localtime_path);
@@ -798,9 +804,17 @@ out:
     if (ret) {
         emit_progress ("timezone", "finish");
     } else {
-        emit_progress ("timezone", "terminate");
+        g_warning ("set timezone failed, just skip this step");
+        emit_progress ("timezone", "finish");
     }
-    return ret;
+    return NULL;
+}
+
+JS_EXPORT_API 
+void installer_set_timezone (const gchar *timezone)
+{
+    GThread *thread = g_thread_new ("timezone", (GThreadFunc) thread_set_timezone, g_strdup (timezone));
+    g_thread_unref (thread);
 }
 
 static void
@@ -986,7 +1000,7 @@ thread_extract_squashfs (gpointer data)
     //g_io_add_watch (out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_out_watch, progress);
     //g_io_add_watch (err_channel, G_IO_IN | G_IO_HUP, (GIOFunc) cb_err_watch, progress);
 
-    cb_ids[2] = g_timeout_add (1500, (GSourceFunc) cb_timeout, progress);
+    cb_ids[2] = g_timeout_add (2000, (GSourceFunc) cb_timeout, progress);
     g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, cb_ids);
     g_strfreev (argv);
     return NULL;

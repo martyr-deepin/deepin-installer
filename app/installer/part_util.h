@@ -94,7 +94,7 @@ JS_EXPORT_API gboolean installer_write_disk (const gchar *disk);
 
 JS_EXPORT_API gboolean installer_mount_target (const gchar *part);
 
-JS_EXPORT_API gboolean installer_update_grub (const gchar *uuid);
+JS_EXPORT_API void installer_update_grub (const gchar *uuid);
 
 void emit_progress (const gchar *step, const gchar *progress);
 

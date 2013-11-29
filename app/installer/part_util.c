@@ -1078,14 +1078,19 @@ out:
     return result;
 }
 
-JS_EXPORT_API 
-gboolean installer_update_grub (const gchar *uuid)
+static gpointer
+thread_update_grub (gpointer data)
 {
+    gchar *uuid = (gchar *) data;
     gboolean ret = FALSE;
     gchar *path = NULL;
     gchar *grub_install = NULL;
     GError *error = NULL;
 
+    if (uuid == NULL) {
+        g_warning ("update grub:destination uuid NULL\n");
+        goto out;
+    }
     if (g_str_has_prefix (uuid, "disk")) {
         path = installer_get_disk_path (uuid);
     } else if (g_str_has_prefix (uuid, "part")) {
@@ -1111,6 +1116,7 @@ gboolean installer_update_grub (const gchar *uuid)
     goto out;
 
 out:
+    g_free (uuid);
     g_free (path);
     g_free (grub_install);
     if (error != NULL) {
@@ -1121,7 +1127,14 @@ out:
     } else {
         emit_progress ("grub", "terminate");
     }
-    return ret;
+    return NULL;
+}
+
+JS_EXPORT_API 
+void installer_update_grub (const gchar *uuid)
+{
+    GThread *thread = g_thread_new ("grub", (GThreadFunc) thread_update_grub, g_strdup (uuid));
+    g_thread_unref (thread);
 }
 
 void emit_progress (const gchar *step, const gchar *progress)

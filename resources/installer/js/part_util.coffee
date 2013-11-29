@@ -329,6 +329,7 @@ check_has_mount = ->
 
 #write /etc/fstab
 write_fs_tab = ->
+    echo "write fs tab"
     for disk in disks
         for part in m_disk_info[disk]["partitions"]
             if m_part_info[part]["op"] != "delete"
