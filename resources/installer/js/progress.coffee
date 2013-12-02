@@ -65,10 +65,10 @@ class Progress extends Page
             clearTimeout(__switch_ppt_id)
             __switch_ppt_id = -1
             __switch_ppt_id = setTimeout( ->
-                    if e.offsetX < 377
-                        @switch_ppt("prev")
-                    else
-                        @switch_ppt("next")
+                if e.offsetX < 377
+                    progress_page?.switch_ppt("prev")
+                else
+                    progress_page?.switch_ppt("next")
             , 200)
         )
 
