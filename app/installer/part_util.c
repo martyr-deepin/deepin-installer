@@ -545,8 +545,11 @@ const gchar *installer_get_partition_fs (const gchar *part)
     } else {
         g_warning ("get partition fs:find pedpartition %s failed\n", part);
     }
-    if ((fs != NULL) && (g_strrstr (fs, "swap") != NULL)) {
-        fs = "swap";
+    if (fs != NULL) {
+        g_debug ("get partition fs:fs is %s\n", fs);
+        if (g_strrstr (fs, "swap") != NULL) {
+            return "swap";
+        }
     }
 
     return fs;
