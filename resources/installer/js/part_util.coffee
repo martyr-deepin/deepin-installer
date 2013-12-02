@@ -327,9 +327,17 @@ check_has_mount = ->
                 break
     return mount
 
+#just cp mp form view to model as in simple mode, we fake the view data operation
+__sync_part_mp = ->
+    for disk in disks
+        for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["type"] in ["normal", "logical"]
+                m_part_info[part]["mp"] = v_part_info[part]["mp"]
+
 #write /etc/fstab
 write_fs_tab = ->
     echo "write fs tab"
+    __sync_part_mp()
     for disk in disks
         for part in m_disk_info[disk]["partitions"]
             if m_part_info[part]["op"] != "delete"
