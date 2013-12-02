@@ -80,3 +80,7 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background:#00bdff;
 }
+
+select {
+    text-indent:10px;
+}
