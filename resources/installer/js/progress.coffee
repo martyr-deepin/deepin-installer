@@ -37,42 +37,13 @@ DCore.signal_connect("progress", (msg) ->
         echo __selected_stage
 )
 
-class ReportDialog extends Widget
+class ReportDialog extends Dialog
     constructor: (@id) ->
-        super(@id, @cb)
-        @title = create_element("p", "DialogTitle", @element)
-        @title_txt = create_element("div", "DialogTxt", @title)
+        super(@id, false, @cb)
+        @add_css_class("DialogCommon")
         @title_txt.innerText = _("Error report")
-
-        @title_close = create_element("div", "DialogClose", @title)
-        @title_close.addEventListener("click", (e) =>
-            @hide_dialog()
-            @cb()
-        )
-
-        @content = create_element("div", "DialogContent", @element)
         @report_tips = create_element("p", "", @content)
         @report_tips.innerText = _("Install failed, please report the log to linux deepin team")
-
-        @foot = create_element("p", "DialogBtn", @element)
-        @ok = create_element("span", "", @foot)
-        @ok.innerText = _("Ok")
-        @ok.addEventListener("click", (e) =>
-            @hide_dialog()
-            @cb()
-        )
-
-        @add_css_class("DialogCommon")
-        @show_dialog()
-
-    show_dialog: ->
-        __in_model = true
-        __board.setAttribute("style", "display:block")
-
-    hide_dialog: ->
-        __in_model = false
-        @destroy()
-        __board.setAttribute("style", "display:none")
 
     cb: ->
         echo "report dialog cb"

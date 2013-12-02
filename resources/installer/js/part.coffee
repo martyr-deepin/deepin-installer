@@ -52,7 +52,7 @@ fill_mp_option = (select) ->
 
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
-        super(@id, @add_part_cb)
+        super(@id, true, @add_part_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Add partition")
         @fill_type()
@@ -179,8 +179,8 @@ class AddPartDialog extends Dialog
         @n_mp = @mount_select.options[@mount_select.selectedIndex].value
 
 class DeletePartDialog extends Dialog
-    constructor: (@id, @partid) ->
-        super(@id, @delete_part_cb)
+    constructor: (@id,@partid) ->
+        super(@id, true, @delete_part_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Delete partition")
         @delete_tips = create_element("p", "", @content)
@@ -195,7 +195,7 @@ class DeletePartDialog extends Dialog
 
 class UnmountDialog extends Dialog
     constructor: (@id) ->
-        super(@id, @unmount_cb)
+        super(@id, true, @unmount_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Unmount partition")
         @unmount_tips = create_element("p", "", @content)
@@ -213,7 +213,7 @@ class UnmountDialog extends Dialog
 
 class FormatDialog extends Dialog
     constructor: (@id) ->
-        super(@id, @format_cb)
+        super(@id, true, @format_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Format partition")
         @format_tips = create_element("p", "", @content)
@@ -224,7 +224,7 @@ class FormatDialog extends Dialog
 
 class RootDialog extends Dialog
     constructor: (@id) ->
-        super(@id, @need_root_cb)
+        super(@id, false, @need_root_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Install tips")
         @root_tips = create_element("p", "", @content)

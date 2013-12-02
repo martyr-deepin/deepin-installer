@@ -36,7 +36,7 @@ progress_page = null
 finish_page = null
 
 class Dialog extends Widget
-    constructor: (@id, @cb) ->
+    constructor: (@id, @with_cancel, @cb) ->
         super
         @title = create_element("p", "DialogTitle", @element)
         @title_txt = create_element("div", "DialogTxt", @title)
@@ -53,11 +53,12 @@ class Dialog extends Widget
             @cb()
             @hide_dialog()
         )
-        @cancel = create_element("span", "", @foot)
-        @cancel.innerText = _("Cancel")
-        @cancel.addEventListener("click", (e) =>
-            @hide_dialog()
-        )
+        if @with_cancel
+            @cancel = create_element("span", "", @foot)
+            @cancel.innerText = _("Cancel")
+            @cancel.addEventListener("click", (e) =>
+                @hide_dialog()
+            )
         @show_dialog()
         #@element.setAttribute("draggable", "true")
 

@@ -33,7 +33,7 @@ DCore.signal_connect("init_parted", (msg) ->
 
 class RequireMatchDialog extends Dialog
     constructor: (@id) ->
-        super(@id, @require_match_cb)
+        super(@id, false, @require_match_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Install require")
         @format_tips = create_element("p", "", @content)
