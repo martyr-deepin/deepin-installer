@@ -190,7 +190,6 @@ class DeletePartDialog extends Dialog
         delete_part(@partid)
         Widget.look_up("part_table")?.fill_items()
         Widget.look_up("part_line_maps")?.fill_linemap()
-        Widget.look_up(@partid)?.focus()
         Widget.look_up("part")?.fill_grub()
 
 class UnmountDialog extends Dialog
@@ -652,23 +651,23 @@ class Part extends Page
         @next_btn.setAttribute("style", left)
 
     handle_simple_install: ->
-        do_simple_partition(__selected_item.id, __selected_item.device_type)
         DCore.Installer.hide_help()
         __selected_grub = __selected_disk
         progress_page = new Progress("progress")
         pc.add_page(progress_page)
         pc.remove_page(part_page)
+        do_simple_partition(__selected_item.id, __selected_item.device_type)
         __selected_stage = "extract"
         progress_page.handle_extract("start")
 
     handle_advance_install: ->
         if check_target_part()
-            do_partition()
             DCore.Installer.hide_help()
             __selected_grub = @grub_select.options[@grub_select.selectedIndex].value
             progress_page = new Progress("progress")
             pc.add_page(progress_page)
             pc.remove_page(part_page)
+            do_partition()
             __selected_stage = "extract"
             progress_page.handle_extract("start")
         else
