@@ -395,9 +395,13 @@ init_v_part_info = ->
             v_part_info[part]["length"] = DCore.Installer.get_partition_length(part)
             v_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
             if v_part_info[part]["type"] == "extended"
-                v_part_info[part]["fs"] = "extended"
+                v_part_info[part]["fs"] = ""
             else if v_part_info[part]["type"] in ["normal", "logical"]
-                v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
+                try
+                    v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
+                catch error
+                    echo error
+                    v_part_info[part]["fs"] = ""
             else
                 v_part_info[part]["fs"] = ""
             v_part_info[part]["mp"] = "unused"
