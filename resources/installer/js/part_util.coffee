@@ -773,8 +773,6 @@ _delete_extended = (disk, part) ->
         v_disk_info[disk]["partitions"].splice(part_index, 1)
         delete v_part_info[block]
 
-    echo "delete parts in extended finish"
-
     prev = get_prev_part(part)
     if prev? and v_part_info[prev]["type"] == "freespace" 
         echo "directly merge prev freespace"

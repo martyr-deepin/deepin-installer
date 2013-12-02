@@ -530,7 +530,7 @@ double installer_get_partition_end (const gchar *part)
 JS_EXPORT_API
 const gchar *installer_get_partition_fs (const gchar *part)
 {
-    const gchar *fs;
+    const gchar *fs = NULL;
     PedPartition *pedpartition = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
