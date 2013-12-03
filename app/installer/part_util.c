@@ -934,7 +934,7 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         g_warning ("write fs tab:get partition %s fs failed\n", part);
         goto out;
     }
-    uuid = get_partition_uuid (path);
+    uuid = g_strstrip(get_partition_uuid (path));
     if (uuid == NULL) {
         g_warning ("write fs tab:uuid NULL\n");
         goto out;

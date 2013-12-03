@@ -1040,7 +1040,7 @@ gboolean installer_mount_procfs ()
     mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", target);
     mount_devpts = g_strdup_printf ("mount -vt devpts devpts %s/dev/pts", target);
     mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", target);
-    mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sysfs", target);
+    mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sys", target);
 
     guint dev_before = get_mount_target_count (dev_target);
     g_spawn_command_line_sync (mount_dev, NULL, NULL, NULL, &error);

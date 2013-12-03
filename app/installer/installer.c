@@ -37,7 +37,7 @@
 #include <glib/gstdio.h>
 
 #define INSTALLER_HTML_PATH "file://"RESOURCE_DIR"/installer/index.html"
-#define PACKAGES_LIST_PATH "file://"RESOURCE_DIR"/installer/packageslist.ini"
+#define PACKAGES_LIST_PATH "file://"RESOURCE_DIR"/installer/blacklist.ini"
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);
