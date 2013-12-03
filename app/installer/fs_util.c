@@ -835,3 +835,26 @@ get_partition_uuid (const gchar *path)
 
     return uuid;
 }
+
+gchar *
+get_partition_label (const gchar *path)
+{
+    gchar *label = NULL;
+    gchar *cmd = NULL;
+    GError *error = NULL;
+
+    if (!g_file_test (path, G_FILE_TEST_EXISTS)) {
+        g_warning ("get partition label:path not exists");
+        return NULL;
+    }
+
+    cmd = g_strdup_printf ("blkid -s LABEL -o value %s", path);
+    g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get partition label:%s\n", error->message);
+        g_error_free (error);
+    }
+    g_free (cmd);
+
+    return label;
+}

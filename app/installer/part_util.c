@@ -572,63 +572,20 @@ gchar* installer_get_partition_label (const gchar *part)
     gchar *label = NULL;
     PedPartition *pedpartition = NULL;
     gchar *path = NULL;
-    GError *error = NULL;
-    gchar **tmp = NULL;
-    gchar *device = NULL;
-    const gchar *object_path = NULL;
-    GDBusProxy *proxy = NULL;
-    GVariant *label_var = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition == NULL) {
         g_warning ("get partition label:find pedpartition %s failed\n", part);
-        goto out;
+        return NULL;
     }
     path = ped_partition_get_path (pedpartition);
     if (path == NULL) {
         g_warning ("get partition label:get part %s path failed\n", part);
-        goto out;
+        return NULL;
     }
-    tmp = g_strsplit (path, "/", 3);
-    device = g_strdup (tmp[2]);
-    object_path = g_strdup_printf ("/org/freedesktop/UDisks2/block_devices/%s", device);
-    if (!g_variant_is_object_path (object_path)) {
-        g_warning ("get partition label:object path invalid %s\n", object_path);
-        goto out;
-    }
-    proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                           G_DBUS_PROXY_FLAGS_NONE,
-                                           NULL,
-                                           "org.freedesktop.UDisks2",
-                                           object_path,
-                                           "org.freedesktop.UDisks2.Block",
-                                           NULL,
-                                           &error);
-    if (error != NULL) {
-        g_warning ("get partition label: dbus proxy %s\n", error->message);
-        goto out;
-    }
-    label_var = g_dbus_proxy_get_cached_property (proxy, "IdLabel");
-    if (error != NULL) {
-        g_warning ("get partition label:get property IdLabel %s\n", error->message);
-        goto out;
-    }
-    label = g_variant_dup_string (label_var, NULL); 
-    goto out;
-
-out:
-    g_free (path);
-    g_strfreev (tmp);
-    g_free (device);
-    g_free ((gchar *) object_path);
-    if (label_var != NULL) {
-        g_variant_unref (label_var);
-    }
-    if (proxy != NULL) {
-        g_object_unref (proxy);
-    }
-    if (error != NULL) {
-        g_error_free (error);
+    label = get_partition_label (path);
+    if (label != NULL) {
+        label = g_strstrip (label);
     }
     return label;
 }
@@ -936,12 +893,12 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         g_warning ("write fs tab:get partition %s fs failed\n", part);
         goto out;
     }
-    uuid = g_strstrip(get_partition_uuid (path));
+    uuid = get_partition_uuid (path);
     if (uuid == NULL) {
         g_warning ("write fs tab:uuid NULL\n");
         goto out;
     }
-    fsname = g_strdup_printf ("UUID=%s", uuid);
+    fsname = g_strdup_printf ("UUID=%s", g_strstrip(uuid));
 
     mount_file = setmntent ("/etc/fstab", "a");
     if (mount_file == NULL) {

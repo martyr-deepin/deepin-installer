@@ -52,4 +52,6 @@ guint get_mount_target_count (const gchar *target);
 
 gchar *get_partition_uuid (const gchar *path);
 
+gchar *get_partition_label (const gchar *path);
+
 #endif
