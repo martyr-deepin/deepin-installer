@@ -1019,6 +1019,10 @@ gboolean installer_mount_procfs ()
     gboolean ret = FALSE;
     GError *error = NULL;
     extern const gchar* target;
+    gchar *dev_target = NULL;
+    gchar *devpts_target = NULL;
+    gchar *proc_target = NULL;
+    gchar *sys_target = NULL;
     gchar *mount_dev = NULL;
     gchar *mount_devpts = NULL;
     gchar *mount_proc = NULL;
@@ -1028,30 +1032,72 @@ gboolean installer_mount_procfs ()
         g_warning ("mount procfs:target is NULL\n");
         goto out;
     }
-    mount_dev = g_strdup_printf ("%s/dev", target);
-    if (mount ("/dev", mount_dev, "devtmpfs", MS_BIND, NULL) != 0) {
-        g_warning ("mount procfs:mount dev %s\n", strerror (errno));
+    dev_target = g_strdup_printf ("%s/dev", target);
+    devpts_target = g_strdup_printf ("%s/dev/pts", target);
+    proc_target = g_strdup_printf ("%s/proc", target);
+    sys_target = g_strdup_printf ("%s/sys", target);
+
+    mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", target);
+    mount_devpts = g_strdup_printf ("mount -vt devpts devpts %s/dev/pts", target);
+    mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", target);
+    mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sysfs", target);
+
+    guint dev_before = get_mount_target_count (dev_target);
+    g_spawn_command_line_sync (mount_dev, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("mount procfs:mount dev %s\n", error->message);
         goto out;
     }
-    mount_devpts = g_strdup_printf ("%s/dev/pts", target);
-    if (mount ("/dev/pts", mount_devpts, "devpts", MS_BIND, NULL) != 0) {
-        g_warning ("mount procfs:mount devpts %s\n", strerror (errno));
+    guint dev_after = get_mount_target_count (dev_target);
+    if (dev_after != dev_before + 1) {
+        g_warning ("mount procfs:mount dev not changed\n");
         goto out;
     }
-    mount_proc = g_strdup_printf ("%s/proc", target);
-    if (mount ("/proc", mount_proc, "proc", MS_BIND, NULL) != 0) {
-        g_warning ("mount procfs:mount proc %s\n", strerror (errno));
+    
+    guint devpts_before = get_mount_target_count (devpts_target);
+    g_spawn_command_line_sync (mount_devpts, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("mount procfs:mount devpts %s\n", error->message);
         goto out;
     }
-    mount_sys = g_strdup_printf ("%s/sys", target);
-    if (mount ("/sys", mount_sys, "sysfs", MS_BIND, NULL) != 0) {
-        g_warning ("mount procfs:mount sys %s\n", strerror (errno));
+    guint devpts_after  = get_mount_target_count (devpts_target);
+    if (devpts_after != devpts_before + 1) {
+        g_warning ("mount procfs:mount devpts not changed\n");
+        goto out;
+    }
+
+    guint proc_before = get_mount_target_count (proc_target);
+    g_spawn_command_line_sync (mount_proc, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("mount procfs:mount proc %s\n", error->message);
+        goto out;
+    }
+    guint proc_after = get_mount_target_count (proc_target);
+    if (proc_after != proc_before + 1) {
+        g_warning ("mount procfs:mount proc not changed\n");
+        goto out;
+    }
+
+    guint sys_before = get_mount_target_count (sys_target);
+    g_spawn_command_line_sync (mount_sys, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("mount procfs:mount sys %s\n", error->message);
+        goto out;
+    }
+    guint sys_after = get_mount_target_count (sys_target);
+    if (sys_after != sys_before + 1) {
+        g_warning ("mount procfs:mount sys not changed\n");
         goto out;
     }
     ret = TRUE;
     goto out;
 
 out:
+    g_free (dev_target);
+    g_free (devpts_target);
+    g_free (proc_target);
+    g_free (sys_target);
+
     g_free (mount_dev);
     g_free (mount_devpts);
     g_free (mount_proc);

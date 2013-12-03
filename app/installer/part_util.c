@@ -891,6 +891,7 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
     PedPartition *pedpartition = NULL;
     gchar *path = NULL;
     gchar *fs = NULL;
+    gchar *mount_cmd = NULL;
     PedGeometry *geom = NULL;
     PedFileSystemType *fs_type = NULL;
     struct mntent mnt;
@@ -946,12 +947,19 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         goto out;
     }
     fflush (mount_file);
+
+    if (g_strcmp0 ("/", mp) != 0) {
+        mount_cmd = g_strdup_printf ("mount -t %s %s %s", fs, path, mp);
+        g_spawn_command_line_async (mount_cmd, NULL);
+    }
+
     ret = TRUE;
     goto out;
 
 out:
     g_free (path);
     g_free (fs);
+    g_free (mount_cmd);
     if (geom != NULL) {
         ped_geometry_destroy (geom);
     }
@@ -1063,11 +1071,20 @@ gboolean installer_mount_target (const gchar *part)
         g_warning ("mount target:partition fs NULL\n");
         goto out;
     }
-    if (mount (path, target, fs, MS_MGC_VAL, NULL) != 0) {
-        g_warning ("mount target:mount path %s with fs %s error:%s\n", path, fs, strerror (errno));
+
+    guint before = get_mount_target_count (target);
+    cmd = g_strdup_printf ("mount %s %s", path, target);
+    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("mount target:mount path %s with fs %s error:%s\n", path, fs, error->message);
         goto out;
     }
-    result = TRUE;
+    guint after = get_mount_target_count (target);
+    if (after != before + 1) {
+        g_warning ("mount target:mount count not changed from %d to %d\n", before, after);
+    } else {
+        result = TRUE;
+    }
     goto out;
 
 out:

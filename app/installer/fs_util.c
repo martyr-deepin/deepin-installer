@@ -765,3 +765,50 @@ is_slowly_device (gpointer data)
 
     return NULL;
 }
+
+guint 
+get_mount_target_count (const gchar *target)
+{
+    guint count = 0;
+    gchar *findcmd = NULL;
+    gchar *output = NULL;
+    gchar **array = NULL;
+    GError *error = NULL;
+
+    if (target == NULL) {
+        g_warning ("get target mount count:target NULL\n");
+        goto out;
+    }
+
+    findcmd = g_strdup_printf ("findmnt --target %s", target);
+    g_spawn_command_line_sync (findcmd, &output, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get target mount count:run %s error->%s\n", findcmd, error->message);
+        goto out;
+    }
+    if (output == NULL || output == "") {
+        goto out;
+    }
+    array = g_strsplit (output, "\n", -1);
+    if (array == NULL) {
+        g_warning ("get target mount count:array NULL\n");
+        goto out;
+    }
+    count = g_strv_length (array);
+    if (count > 2) {
+        count = count - 2;
+    } else {
+        count = 0;
+    }
+    goto out;
+out:
+    g_free (findcmd);
+    g_free (output);
+    if (array != NULL) {
+        g_strfreev (array);
+    }
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    return count;
+}

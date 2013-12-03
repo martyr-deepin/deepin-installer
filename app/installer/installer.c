@@ -172,55 +172,32 @@ gboolean installer_is_help_running ()
     return running;
 }
 
+//unmount after break chroot
 static void 
 unmount_target (const gchar *target)
 {
-    gboolean flag = FALSE;
-    struct mntent *mnt;
-    FILE *mount_file = NULL;
-
-    mount_file = setmntent ("/etc/mtab", "r");
-    if (mount_file == NULL) {
-        g_warning ("unmount target:setmntent failed\n");
-        return ;
+    guint target_before = get_mount_target_count (target);
+    if (target_before < 1) {
+        return;
     }
-    while ((mnt = getmntent (mount_file)) != NULL) {
-        if (g_str_has_prefix (mnt->mnt_dir, target)) {
-            flag = TRUE;
-            break;
-        }
-    }
-    endmntent (mount_file);
 
-    if (flag) {
-        gchar *umount_sys = g_strdup_printf ("%s/sys", target);
-        gchar *umount_proc = g_strdup_printf ("%s/proc", target);
-        gchar *umount_devpts = g_strdup_printf ("%s/dev/pts", target);
-        gchar *umount_dev = g_strdup_printf ("%s/dev", target);
-        gchar *umount_target = g_strdup (target);
+    gchar *umount_sys_cmd = g_strdup_printf ("umount -l %s/sys", target);
+    gchar *umount_proc_cmd = g_strdup_printf ("umount -l %s/proc", target);
+    gchar *umount_devpts_cmd = g_strdup_printf ("umount -l %s/dev/pts", target);
+    gchar *umount_dev_cmd = g_strdup_printf ("umount -l %s/dev", target);
+    gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", target);
 
-        if (umount2 (umount_sys, MNT_DETACH) != 0) {
-            g_warning ("unmount target sys:%s\n", strerror (errno));
-        }
-        if (umount2 (umount_proc, MNT_DETACH) != 0) {
-            g_warning ("unmount target proc:%s\n", strerror (errno));
-        }
-        if (umount2 (umount_devpts, MNT_DETACH) != 0) {
-            g_warning ("unmount target devpts:%s\n", strerror (errno));
-        }
-        if (umount2 (umount_dev, MNT_DETACH) != 0) {
-            g_warning ("unmount target dev:%s\n", strerror (errno));
-        }
-        if (umount2 (umount_target, MNT_DETACH) != 0) {
-            g_warning ("unmount target:%s\n", strerror (errno));
-        }
+    g_spawn_command_line_async (umount_sys_cmd, NULL);
+    g_spawn_command_line_async (umount_proc_cmd, NULL);
+    g_spawn_command_line_async (umount_devpts_cmd, NULL);
+    g_spawn_command_line_async (umount_dev_cmd, NULL);
+    g_spawn_command_line_async (umount_target_cmd, NULL);
 
-        g_free (umount_dev);
-        g_free (umount_devpts);
-        g_free (umount_proc);
-        g_free (umount_sys);
-        g_free (umount_target);
-    }
+    g_free (umount_sys_cmd);
+    g_free (umount_proc_cmd);
+    g_free (umount_devpts_cmd);
+    g_free (umount_dev_cmd);
+    g_free (umount_target_cmd);
 }
 
 static void

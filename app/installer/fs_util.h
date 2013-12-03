@@ -48,4 +48,6 @@ gboolean inhibit_disk ();
 
 gpointer is_slowly_device (gpointer data);
 
+guint get_mount_target_count (const gchar *target);
+
 #endif
