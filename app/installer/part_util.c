@@ -76,6 +76,18 @@ thread_init_parted (gpointer data)
     PedDevice *device = NULL;
     PedDisk *disk = NULL;
 
+    gchar *target_uuid = installer_rand_uuid ();
+    target = g_strdup_printf ("/mnt/target%s", target_uuid);
+    if (g_file_test (target, G_FILE_TEST_EXISTS)) {
+        target_uuid = installer_rand_uuid ();
+        target = g_strdup_printf ("/mnt/target%s", target_uuid);
+    }
+
+    if (g_mkdir_with_parents (target, 0777) == -1) {
+        g_warning ("init parted:create target directory %s\n", strerror (errno));
+    }
+    g_free (target_uuid);
+
     ped_device_probe_all ();
 
     while ((device = ped_device_get_next (device))) {
@@ -463,6 +475,7 @@ out:
     return mp;
 }
 
+//when dectect mount partition, tell user to unmount them
 JS_EXPORT_API
 void installer_unmount_partition (const gchar *part)
 {
@@ -947,12 +960,6 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         goto out;
     }
     fflush (mount_file);
-
-    if (g_strcmp0 ("/", mp) != 0) {
-        mount_cmd = g_strdup_printf ("mount -t %s %s %s", fs, path, mp);
-        g_spawn_command_line_async (mount_cmd, NULL);
-    }
-
     ret = TRUE;
     goto out;
 
@@ -1030,58 +1037,50 @@ gboolean installer_write_disk (const gchar *disk)
     return ret;
 }
 
-JS_EXPORT_API 
-gboolean installer_mount_target (const gchar *part)
+JS_EXPORT_API
+gboolean installer_mount_partition (const gchar *part, const gchar *mp)
 {
     gboolean result = FALSE;
-
     PedPartition *pedpartition = NULL;
     gchar *path = NULL;
-    gchar *target_uuid = NULL;
+    gchar *mount_target = NULL;
     gchar *cmd = NULL;
     gchar *fs = NULL;
     GError *error = NULL;
 
+    if (part == NULL || mp == NULL) {
+        g_warning ("installer mount partition:part or mp NULL\n");
+        goto out;
+    }
+
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition == NULL) {
-        g_warning ("installer mount target:pedpartition for %s NULL", part);
+        g_warning ("mount partition:pedpartition for %s NULL", part);
         goto out;
     }
     path = g_strdup (ped_partition_get_path (pedpartition));
     if (path == NULL) {
-        g_warning ("mount target:%s path is NULL\n", part);
-        goto out;
-    }
-
-    target_uuid = installer_rand_uuid ();
-    target = g_strdup_printf ("/mnt/target%s", target_uuid);
-    if (g_file_test (target, G_FILE_TEST_EXISTS)) {
-        g_warning ("mount target:re rand uuid as target exists\n");
-        target_uuid = installer_rand_uuid ();
-        target = g_strdup_printf ("/mnt/target%s", target_uuid);
-    }
-
-    if (g_mkdir_with_parents (target, 0777) == -1) {
-        g_warning ("mount target:create target directory %s\n", strerror (errno));
+        g_warning ("mount partition:%s path is NULL\n", part);
         goto out;
     }
 
     fs = installer_get_partition_fs (part);
     if (fs == NULL) {
-        g_warning ("mount target:partition fs NULL\n");
+        g_warning ("mount partition:partition fs NULL\n");
         goto out;
     }
 
-    guint before = get_mount_target_count (target);
-    cmd = g_strdup_printf ("mount %s %s", path, target);
+    mount_target = g_strdup_printf ("%s%s", target, mp);
+    guint before = get_mount_target_count (mount_target);
+    cmd = g_strdup_printf ("mount -t %s %s %s", fs, path, mount_target);
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("mount target:mount path %s with fs %s error:%s\n", path, fs, error->message);
+        g_warning ("mount partition:mount path %s with fs %s error:%s\n", path, fs, error->message);
         goto out;
     }
-    guint after = get_mount_target_count (target);
+    guint after = get_mount_target_count (mount_target);
     if (after != before + 1) {
-        g_warning ("mount target:mount count not changed from %d to %d\n", before, after);
+        g_warning ("mount partition:mount path %s wifth fs %s count from %d to %d\n", path, fs, before, after);
     } else {
         result = TRUE;
     }
@@ -1089,13 +1088,13 @@ gboolean installer_mount_target (const gchar *part)
 
 out:
     g_free (path);
-    g_free (target_uuid);
+    g_free (mount_target);
     g_free (cmd);
     g_free (fs);
     if (error != NULL) {
         g_error_free (error);
     }
-    if (!result) {
+    if ((!result) && (g_strcmp0 ("/", mp) == 0)) {
         emit_progress ("extract", "terminate");
     }
     return result;

@@ -334,10 +334,22 @@ __sync_part_mp = ->
             if v_part_info[part]["type"] in ["normal", "logical"]
                 m_part_info[part]["mp"] = v_part_info[part]["mp"]
 
-#write /etc/fstab
+#mount custom partitions, before chroot, before extract iso
+mount_custom_partitions = ->
+    echo "mount custom partitions"
+    __sync_part_mp()
+    for disk in disks
+        for part in m_disk_info[disk]["partitions"]
+            if m_part_info[part]["op"] != "delete"
+                if m_part_info[part]["mp"]? and m_part_info[part]["mp"] != "unused"
+                    try
+                        DCore.Installer.mount_partition(part, m_part_info[part]["mp"])
+                    catch error
+                        echo error
+
+#write /etc/fstab, after extract iso
 write_fs_tab = ->
     echo "write fs tab"
-    __sync_part_mp()
     for disk in disks
         for part in m_disk_info[disk]["partitions"]
             if m_part_info[part]["op"] != "delete"

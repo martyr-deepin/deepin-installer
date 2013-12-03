@@ -92,7 +92,7 @@ JS_EXPORT_API gboolean installer_set_partition_flag (const gchar *part, const gc
 
 JS_EXPORT_API gboolean installer_write_disk (const gchar *disk);
 
-JS_EXPORT_API gboolean installer_mount_target (const gchar *part);
+JS_EXPORT_API gboolean installer_mount_partition (const gchar *part, const gchar *mp);
 
 JS_EXPORT_API void installer_update_grub (const gchar *uuid);
 

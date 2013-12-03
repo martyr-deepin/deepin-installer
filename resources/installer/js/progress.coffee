@@ -102,9 +102,8 @@ class Progress extends Page
     handle_extract: (progress) ->
         if progress == "start"
             echo "start handle extract"
-            __selected_target = get_target_part()
             try
-                DCore.Installer.mount_target(__selected_target)
+                mount_custom_partitions()
                 DCore.Installer.extract_squashfs()
             catch error
                 echo error
