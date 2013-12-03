@@ -143,6 +143,8 @@ thread_init_parted (gpointer data)
         g_free (uuid);
     }
 
+    js_post_message_simply ("init_parted", "{\"finish\":\"%s\"}", "finish");
+
     if (g_find_program_in_path ("os-prober") == NULL) {
         g_warning ("os:os-prober not installed\n");
     }
@@ -172,8 +174,6 @@ thread_init_parted (gpointer data)
 
     g_strfreev (items);
     g_free (output);
-
-    js_post_message_simply ("init_parted", "{\"finish\":\"%s\"}", "finish");
 }
 
 void init_parted ()
