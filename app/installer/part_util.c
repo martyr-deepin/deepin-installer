@@ -528,9 +528,9 @@ double installer_get_partition_end (const gchar *part)
 }
 
 JS_EXPORT_API
-const gchar *installer_get_partition_fs (const gchar *part)
+gchar *installer_get_partition_fs (const gchar *part)
 {
-    const gchar *fs = NULL;
+    gchar *fs = NULL;
     PedPartition *pedpartition = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
@@ -538,7 +538,7 @@ const gchar *installer_get_partition_fs (const gchar *part)
         PedGeometry *geom = ped_geometry_duplicate (&pedpartition->geom);
         PedFileSystemType *fs_type = ped_file_system_probe (geom);
         if (fs_type != NULL) {
-            fs = fs_type->name;
+            fs = g_strdup (fs_type->name);
         }
         ped_geometry_destroy (geom);
 
@@ -548,7 +548,7 @@ const gchar *installer_get_partition_fs (const gchar *part)
     if (fs != NULL) {
         g_debug ("get partition fs:fs is %s\n", fs);
         if (g_strrstr (fs, "swap") != NULL) {
-            return "swap";
+            return g_strdup ("swap");
         }
     }
 
@@ -1031,6 +1031,7 @@ gboolean installer_mount_target (const gchar *part)
     gchar *path = NULL;
     gchar *target_uuid = NULL;
     gchar *cmd = NULL;
+    gchar *fs = NULL;
     GError *error = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
@@ -1056,7 +1057,8 @@ gboolean installer_mount_target (const gchar *part)
         g_warning ("mount target:create target directory %s\n", strerror (errno));
         goto out;
     }
-    const gchar *fs = installer_get_partition_fs (part);
+
+    fs = installer_get_partition_fs (part);
     if (fs == NULL) {
         g_warning ("mount target:partition fs NULL\n");
         goto out;
@@ -1072,6 +1074,7 @@ out:
     g_free (path);
     g_free (target_uuid);
     g_free (cmd);
+    g_free (fs);
     if (error != NULL) {
         g_error_free (error);
     }

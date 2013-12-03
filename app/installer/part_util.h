@@ -68,7 +68,7 @@ JS_EXPORT_API double installer_get_partition_length (const gchar *part);
 
 JS_EXPORT_API double installer_get_partition_end (const gchar *part);
 
-JS_EXPORT_API const gchar* installer_get_partition_fs (const gchar *part);
+JS_EXPORT_API gchar* installer_get_partition_fs (const gchar *part);
 
 JS_EXPORT_API gchar* installer_get_partition_label (const gchar *part);
 
