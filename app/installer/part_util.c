@@ -49,6 +49,46 @@ gchar* installer_rand_uuid ()
     return result;
 }
 
+static void
+init_partition_os ()
+{
+    partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                          (GEqualFunc) g_str_equal, 
+                                          (GDestroyNotify) g_free, 
+                                          (GDestroyNotify) g_free);
+
+    if (g_find_program_in_path ("os-prober") == NULL) {
+        g_warning ("os:os-prober not installed\n");
+    }
+    g_spawn_command_line_async ("pkill -9 os-prober", NULL);
+
+    gchar *output = NULL;
+    GError *error = NULL;
+    g_spawn_command_line_sync ("os-prober", &output, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get partition os:os-prober %s\n", error->message);
+        g_error_free (error);
+    }
+    error = NULL;
+
+    gchar **items = g_strsplit (output, "\n", -1);
+    int i, j;
+    for (i = 0; i < g_strv_length (items); i++) {
+        gchar *item = g_strdup (items[i]);
+        gchar **os = g_strsplit (item, ":", -1);
+
+        if (g_strv_length (os) == 4) {
+            //g_printf ("get partition os:insert key %s value %s\n", os[0], os[2]);
+            g_hash_table_insert (partition_os, g_strdup (os[0]), g_strdup (os[2]));
+        }
+
+        g_strfreev (os);
+        g_free (item);
+    }
+    g_strfreev (items);
+    g_free (output);
+}
+
 static gpointer
 thread_init_parted (gpointer data)
 {
@@ -67,12 +107,6 @@ thread_init_parted (gpointer data)
                                         (GDestroyNotify) g_free, 
                                         NULL);
 
-    partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                          (GEqualFunc) g_str_equal, 
-                                          (GDestroyNotify) g_free, 
-                                          (GDestroyNotify) g_free);
-
-    GError *error = NULL;
     PedDevice *device = NULL;
     PedDisk *disk = NULL;
 
@@ -120,7 +154,6 @@ thread_init_parted (gpointer data)
         g_free (uuid_num);
 
         GList *part_list = NULL;
-
         if (uuid != NULL && disk != NULL ) {
             g_hash_table_insert (disks, g_strdup (uuid), disk);
 
@@ -137,43 +170,12 @@ thread_init_parted (gpointer data)
                 g_free (part_uuid);
             }
         }
-
         g_hash_table_insert (disk_partitions, g_strdup (uuid), part_list);
-
         g_free (uuid);
     }
-
     js_post_message_simply ("init_parted", "{\"finish\":\"%s\"}", "finish");
 
-    if (g_find_program_in_path ("os-prober") == NULL) {
-        g_warning ("os:os-prober not installed\n");
-    }
-
-    gchar *output = NULL;
-    g_spawn_command_line_sync ("os-prober", &output, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("get partition os:os-prober %s\n", error->message);
-        g_error_free (error);
-    }
-    error = NULL;
-
-    gchar **items = g_strsplit (output, "\n", -1);
-    int i, j;
-    for (i = 0; i < g_strv_length (items); i++) {
-        gchar *item = g_strdup (items[i]);
-        gchar **os = g_strsplit (item, ":", -1);
-
-        if (g_strv_length (os) == 4) {
-            //g_printf ("get partition os:insert key %s value %s\n", os[0], os[2]);
-            g_hash_table_insert (partition_os, g_strdup (os[0]), g_strdup (os[2]));
-        }
-
-        g_strfreev (os);
-        g_free (item);
-    }
-
-    g_strfreev (items);
-    g_free (output);
+    init_partition_os ();
 }
 
 void init_parted ()
