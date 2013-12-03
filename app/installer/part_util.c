@@ -82,10 +82,6 @@ thread_init_parted (gpointer data)
         target_uuid = installer_rand_uuid ();
         target = g_strdup_printf ("/mnt/target%s", target_uuid);
     }
-
-    if (g_mkdir_with_parents (target, 0777) == -1) {
-        g_warning ("init parted:create target directory %s\n", strerror (errno));
-    }
     g_free (target_uuid);
 
     ped_device_probe_all ();
@@ -1071,6 +1067,11 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
     }
 
     mount_target = g_strdup_printf ("%s%s", target, mp);
+    if (g_mkdir_with_parents (mount_target, 0755) == -1) {
+        g_warning ("init parted:create target directory failed\n");
+        goto out;
+    }
+
     guint before = get_mount_target_count (mount_target);
     cmd = g_strdup_printf ("mount -t %s %s %s", fs, path, mount_target);
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
