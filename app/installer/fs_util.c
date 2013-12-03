@@ -812,3 +812,26 @@ out:
     }
     return count;
 }
+
+gchar *
+get_partition_uuid (const gchar *path)
+{
+    gchar *uuid = NULL;
+    gchar *cmd = NULL;
+    GError *error = NULL;
+
+    if (!g_file_test (path, G_FILE_TEST_EXISTS)) {
+        g_warning ("get partition uuid:path not exists");
+        return NULL;
+    }
+
+    cmd = g_strdup_printf ("blkid -s UUID -o value %s", path);
+    g_spawn_command_line_sync (cmd, &uuid, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get partition uuid:%s\n", error->message);
+        g_error_free (error);
+    }
+    g_free (cmd);
+
+    return uuid;
+}

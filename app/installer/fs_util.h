@@ -50,4 +50,6 @@ gpointer is_slowly_device (gpointer data);
 
 guint get_mount_target_count (const gchar *target);
 
+gchar *get_partition_uuid (const gchar *path);
+
 #endif

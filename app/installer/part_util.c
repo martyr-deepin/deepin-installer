@@ -900,6 +900,8 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
     PedPartition *pedpartition = NULL;
     gchar *path = NULL;
     gchar *fs = NULL;
+    gchar *uuid = NULL;
+    gchar *fsname = NULL;
     gchar *mount_cmd = NULL;
     PedGeometry *geom = NULL;
     PedFileSystemType *fs_type = NULL;
@@ -920,6 +922,7 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         g_warning ("write fs tab:get partition %s path failed\n", part);
         goto out;
     }
+
     geom = ped_geometry_duplicate (&pedpartition->geom);
     fs_type = ped_file_system_probe (geom);
     if (fs_type == NULL) {
@@ -931,13 +934,19 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         g_warning ("write fs tab:get partition %s fs failed\n", part);
         goto out;
     }
+    uuid = get_partition_uuid (path);
+    if (uuid == NULL) {
+        g_warning ("write fs tab:uuid NULL\n");
+        goto out;
+    }
+    fsname = g_strdup_printf ("UUID=%s", uuid);
+
     mount_file = setmntent ("/etc/fstab", "a");
-    
     if (mount_file == NULL) {
         g_warning ("write fs tab: setmntent failed\n");
         goto out;
     }
-    mnt.mnt_fsname = path;
+    mnt.mnt_fsname = fsname;
     mnt.mnt_dir = g_strdup (mp);
     mnt.mnt_type = fs;
     mnt.mnt_opts = "defaults";
@@ -962,6 +971,8 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
 out:
     g_free (path);
     g_free (fs);
+    g_free (uuid);
+    g_free (fsname);
     g_free (mount_cmd);
     if (geom != NULL) {
         ped_geometry_destroy (geom);
