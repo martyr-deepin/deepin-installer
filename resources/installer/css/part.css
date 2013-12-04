@@ -136,6 +136,7 @@
     height:21px;
     line-height:21px;
     max-height:42px;
+    text-overflow:ellipsis;
 }
 
 .PartTableItem select {

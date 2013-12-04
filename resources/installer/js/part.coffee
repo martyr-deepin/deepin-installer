@@ -284,7 +284,7 @@ class PartLineItem extends Widget
 
     do_click: (e)->
         if __selected_line == @ 
-            echo "already selected"
+            echo "part line item already selected"
         else
             @focus()
 
@@ -361,6 +361,9 @@ class PartTableItem extends Widget
         @lp = create_element("span", "LabelPath", @device)
         @label = create_element("div", "Label", @lp)
         @path = create_element("div", "Path", @lp)
+        @label.addEventListener("hover", (e) =>
+            @show_detail_label()
+        )
 
         if __selected_mode == "advance"
             if v_part_info[@id]["type"] != "freespace"
@@ -377,6 +380,13 @@ class PartTableItem extends Widget
             else
                 @path.innerText = "freespace"
         @update_device_os()
+
+    show_detail_label: ->
+        text = @label.innerText
+        if not text or text.length < 5
+            return
+        else
+            echo "show detail label"
 
     update_device_os: ->
         @os.innerHTML = ""
@@ -534,7 +544,7 @@ class PartTableItem extends Widget
 
     do_click: (e)->
         if __selected_item == @ 
-            echo "already selected"
+            echo "part table item already selected"
         else
             @focus()
 
@@ -639,9 +649,6 @@ class Part extends Page
         @table = new PartTable("part_table")
         @element.appendChild(@table.element)
 
-        if __selected_item == null
-            __selected_item = Widget.look_up(@table.items_part?[0])?
-
         @fill_advance_op()
         if __selected_mode == "advance"
             @show_advance_op()
@@ -655,6 +662,12 @@ class Part extends Page
             @install_model = new InstallDialog("InstallModel")
             document.body.appendChild(@install_model.element)
         )
+
+        try
+            __selected_item = Widget.look_up(disks[0])
+            __selected_item?.focus()
+        catch error
+            echo error
 
     update_next_btn: (txt) ->
         @next_btn.innerText = txt
