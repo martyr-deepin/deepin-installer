@@ -84,3 +84,7 @@ body {
 select {
     text-indent:10px;
 }
+
+div {
+    cursor:default;
+}
