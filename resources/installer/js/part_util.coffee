@@ -25,8 +25,17 @@ DCore.signal_connect("used", (msg) ->
 
 #get_random_color = ->
 #    return '#'+(Math.random()*0xffffff<<0).toString(16)
+#    return _color_list[Math.floor(Math.random() * 24)]
+random_list = []
+
 get_random_color = ->
-    return _color_list[Math.floor(Math.random() * 24)]
+    if random_list.length == 0
+        for item in _color_list
+            random_list.push(item)
+    length = random_list.length
+    index = Math.floor(Math.random() * length)
+    color = random_list[index]
+    random_list.splice(index,1)
 
 sector_to_mb = (sector_length, sector_size) ->
     return Math.round((sector_length * sector_size) / (1000 * 1000))
