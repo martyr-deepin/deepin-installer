@@ -36,6 +36,8 @@
 #include <fcntl.h>
 #include <sys/mount.h>
 
+#define WHITE_LIST_PATH RESOURCE_DIR"/installer/whitelist.ini"
+
 extern struct passwd* getpwent (void);
 extern void endpwent (void);
 extern int chroot (const char *path);
@@ -229,10 +231,10 @@ passwd_out_watch (GIOChannel *channel, GIOCondition cond, struct PasswdHandler *
         return TRUE;
     }
     error = NULL;
-    g_warning ("passwd out watch: read %s\n", buf);
+    g_debug ("passwd out watch: read %s\n", buf);
 
     gchar *passwd = g_strdup_printf ("%s\n", handler->password);
-    g_warning ("passwd out watch:write password %s\n", handler->password);
+    g_debug ("passwd out watch:write password %s\n", handler->password);
     if (passwd != NULL) {
         if (g_io_channel_write_chars (handler->in_channel, passwd, -1, NULL, &error) != G_IO_STATUS_NORMAL) {
             g_warning ("passwd out watch:write %s to channel: %s", passwd, error->message);
@@ -285,7 +287,7 @@ set_user_password (struct PasswdHandler *handler)
     }
     error = NULL;
 
-    g_warning ("dup stderr to stdout");
+    g_debug ("dup stderr to stdout");
     if ((dup2 (std_err, std_out)) == -1) {
         g_warning ("set user password:dup %s\n", strerror (errno));
         if (handler->pid != -1) {
@@ -314,7 +316,7 @@ set_user_password (struct PasswdHandler *handler)
 
     g_io_channel_set_buffered (handler->in_channel, FALSE);
     g_io_channel_set_buffered (handler->out_channel, FALSE);
-    g_warning ("watch io channel for set password");
+    //g_warning ("watch io channel for set password");
 
     handler->stdout_watch_id = g_io_add_watch (handler->out_channel, G_IO_IN | G_IO_HUP, (GIOFunc) passwd_out_watch, handler);
     handler->child_watch_id = g_child_watch_add (handler->pid, (GChildWatchFunc) watch_passwd_child, handler);
@@ -1134,4 +1136,61 @@ gboolean installer_chroot_target ()
 
     emit_progress ("chroot", "finish");
     return ret;
+}
+
+//copy whitelist file just after extract and before chroot
+JS_EXPORT_API 
+void installer_copy_whitelist ()
+{
+    GError *error = NULL;
+    gchar *cmd = NULL;
+    gchar *contents = NULL;
+    gchar **strarray = NULL;
+
+    extern const gchar *target;
+    if (target == NULL) {
+        g_warning ("copy whitelist:target NULL\n");
+        goto out;
+    }
+
+    if (!g_file_test (WHITE_LIST_PATH, G_FILE_TEST_EXISTS)) {
+        g_warning ("copy whitelist:%s not exists\n", WHITE_LIST_PATH);
+        goto out;
+    }
+    g_file_get_contents (WHITE_LIST_PATH, &contents, NULL, &error);
+    if (error != NULL) {
+        g_warning ("copy whitelist:get packages list %s\n", error->message);
+        goto out;
+    }
+    if (contents == NULL) {
+        g_warning ("copy whitelist:contents NULL\n");
+        goto out;
+    }
+    strarray = g_strsplit (contents, "\n", -1);
+    if (strarray == NULL) {
+       g_warning ("copy whitelist:strarray NULL\n"); 
+       goto out;
+    }
+    gchar *item = NULL;
+    for (item = *strarray; item != NULL; item++) {
+        GFile *src = g_file_new_for_path (item);
+        gchar *dest_path = g_strdup_printf ("%s%s", target, item);
+        GFile *dest = g_file_new_for_path (dest_path);
+        if (src == NULL || dest == NULL) {
+           continue; 
+        }
+        g_file_copy_async (src, dest, G_FILE_COPY_NONE, 0, NULL, NULL, NULL, NULL, NULL);
+        g_object_unref (src);
+        g_object_unref (dest);
+        g_free (dest_path);
+    }
+    goto out;
+
+out:
+    g_free (cmd);
+    g_free (contents);
+    g_strfreev (strarray);
+    if (error != NULL) {
+        g_error_free (error);
+    }
 }

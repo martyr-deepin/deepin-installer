@@ -109,6 +109,10 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "extract finish"
+            try
+                DCore.Installer.copy_whitelist()
+            catch error
+                echo error
             __selected_stage = "chroot"
             @handle_chroot("start")
         else if progress == "terminate"

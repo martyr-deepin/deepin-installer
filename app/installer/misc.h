@@ -77,4 +77,6 @@ JS_EXPORT_API gboolean installer_mount_procfs ();
 
 JS_EXPORT_API gboolean installer_chroot_target ();
 
+JS_EXPORT_API void installer_copy_whitelist ();
+
 #endif
