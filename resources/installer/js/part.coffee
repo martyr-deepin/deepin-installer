@@ -320,7 +320,7 @@ class PartLineMaps extends Widget
 class PartTableItem extends Widget
     constructor: (@id, @device_type)->
         super
-        __selected_item = @
+        #__selected_item = @
         if @device_type == "part"
             @lineid = "line" + @id
             @product_part_item()
@@ -611,22 +611,7 @@ class Part extends Page
         @t_mode = create_element("span", "", @help)
         @t_mode.innerText = _("Advance mode")
         @t_mode.addEventListener("click", (e) =>
-            if __selected_mode != "advance"
-                __selected_mode = "advance"
-                if check_has_mount()
-                    @unmount_model = new UnmountDialog("UnmountModel")
-                    document.body.appendChild(@unmount_model.element)
-                @show_advance_op()
-                @table.update_mode(__selected_mode)
-                @t_mode.innerText = _("Simple mode")
-            else
-                __selected_mode = "simple"
-                @add_model?.hide_dialog()
-                @delete_model?.hide_dialog()
-                @unmount_model?.hide_dialog()
-                @hide_advance_op()
-                @table.update_mode(__selected_mode)
-                @t_mode.innerText = _("Advance mode") 
+            @switch_mode()
         )
         @t_sep = create_element("span", "", @help)
         @t_sep.innerText = "  |  "
@@ -663,11 +648,30 @@ class Part extends Page
             document.body.appendChild(@install_model.element)
         )
 
-        try
+        if __selected_item == null
             __selected_item = Widget.look_up(disks[0])
-            __selected_item?.focus()
-        catch error
-            echo error
+        __selected_item?.focus()
+
+    switch_mode: ->
+        id = __selected_item.id
+        if __selected_mode != "advance"
+            __selected_mode = "advance"
+            if check_has_mount()
+                @unmount_model = new UnmountDialog("UnmountModel")
+                document.body.appendChild(@unmount_model.element)
+            @show_advance_op()
+            @table.update_mode(__selected_mode)
+            @t_mode.innerText = _("Simple mode")
+        else
+            __selected_mode = "simple"
+            @add_model?.hide_dialog()
+            @delete_model?.hide_dialog()
+            @unmount_model?.hide_dialog()
+            @hide_advance_op()
+            @table.update_mode(__selected_mode)
+            @t_mode.innerText = _("Advance mode") 
+        __selected_item = Widget.look_up(id)
+        __selected_item?.focus()
 
     update_next_btn: (txt) ->
         @next_btn.innerText = txt
