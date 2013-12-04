@@ -232,6 +232,21 @@ class RootDialog extends Dialog
     need_root_cb: ->
         echo "need mount root to do install"
 
+class InstallDialog extends Dialog
+    constructor: (@id) ->
+        super(@id, true, @confirm_install_cb)
+        @add_css_class("DialogCommon")
+        @title_txt.innerText = _("Confirm Install")
+        @root_tips = create_element("p", "", @content)
+        @root_tips.innerText = _("Confirm Install")
+
+    confirm_install_cb: ->
+        echo "confirm install"
+        if __selected_mode == "simple"
+            Widget.look_up("part")?.handle_simple_install()
+        else if __selected_mode == "advance"
+            Widget.look_up("part")?.handle_advance_install()
+
 class PartLineItem extends Widget
     constructor: (@id) ->
         super
@@ -639,10 +654,8 @@ class Part extends Page
         @next_btn.setAttribute("id", "mynextstep")
         @next_btn.innerText = _("Next step")
         @next_btn.addEventListener("click", (e) =>
-            if __selected_mode == "simple"
-                @handle_simple_install()
-            else if __selected_mode == "advance"
-                @handle_advance_install()
+            @install_model = new InstallDialog("InstallModel")
+            document.body.appendChild(@install_model.element)
         )
 
     update_next_btn: (txt) ->
