@@ -69,7 +69,7 @@ class Keyboard extends Widget
             layouts.push(layout)
             for variant in DCore.Installer.get_layout_variants(layout)
                 layouts.push(layout + "," + variant)
-        return layouts
+        return layouts.sort()
 
     construct_item: (layout) ->
         opt = create_element("div", "KeyboardItem", @list)
