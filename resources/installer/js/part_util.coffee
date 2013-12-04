@@ -359,14 +359,6 @@ write_fs_tab = ->
                     catch error
                         echo error
 
-__sync_os_prober = ->
-    for disk in disks
-        for part in v_disk_info[disk]["partitions"]
-            v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
-    for disk in disks
-        for part in m_disk_info[disk]["partitions"]
-            m_part_info[part]["os"] = v_part_info[part]["os"]
-
 #Model end
 #Model
 #
@@ -826,6 +818,7 @@ _delete_extended = (disk, part) ->
 
 delete_part = (part) ->
     echo "delete part"
+    remain_part = part
     mark_delete(part)
     disk = v_part_info[part]["disk"]
     #update part geometry
@@ -849,8 +842,10 @@ delete_part = (part) ->
     extended = get_extended_partition(disk)
     if extended? and get_logical_partitions(disk).length == 0
         _delete_extended(disk, extended)
+        remain_part = extended
 
     compute_display_path(disk)
+    return remain_part
 
 #add normal partition
 _add_normal = (disk, free_part) ->

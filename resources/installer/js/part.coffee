@@ -187,9 +187,10 @@ class DeletePartDialog extends Dialog
         @delete_tips.innerText = "Confirm to delete?"
 
     delete_part_cb: ->
-        delete_part(@partid)
+        remain_part = delete_part(@partid)
         Widget.look_up("part_table")?.fill_items()
         Widget.look_up("part_line_maps")?.fill_linemap()
+        Widget.look_up(remain_part)?.focus()
         Widget.look_up("part")?.fill_grub()
 
 class UnmountDialog extends Dialog
@@ -379,13 +380,8 @@ class PartTableItem extends Widget
 
     update_device_os: ->
         @os.innerHTML = ""
-        if __selected_mode == "advance" and v_part_info[@id]["type"] != "freespace"
-            os = v_part_info[@id]["os"]
-        else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
-            os = m_part_info[@id]["os"]
-        else
-            os = null
-        if os?
+        os = DCore.Installer.get_partition_os(@id)
+        if os? and os.length > 2
             if os.toLowerCase().indexOf("linux") != -1
                 os_img = "images/linux.png"
             else if os.toLowerCase().indexOf("windows") != -1
@@ -564,8 +560,6 @@ class PartTable extends Widget
 
     fill_items: ->
         @items.innerHTML = ""
-        if __os_prober_finish
-            __sync_os_prober()
         for disk in disks
             item = new PartTableItem(disk, "disk")
             @items.appendChild(item.element)
