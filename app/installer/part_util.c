@@ -49,8 +49,8 @@ gchar* installer_rand_uuid ()
     return result;
 }
 
-static void
-init_partition_os ()
+static gpointer 
+thread_os_prober (gpointer data)
 {
     partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
                                           (GEqualFunc) g_str_equal, 
@@ -87,6 +87,8 @@ init_partition_os ()
     }
     g_strfreev (items);
     g_free (output);
+    js_post_message_simply ("os_prober", "{\"finish\":\"%s\"}", "finish");
+    return NULL;
 }
 
 static gpointer
@@ -174,14 +176,16 @@ thread_init_parted (gpointer data)
         g_free (uuid);
     }
     js_post_message_simply ("init_parted", "{\"finish\":\"%s\"}", "finish");
-
-    init_partition_os ();
+    return NULL;
 }
 
 void init_parted ()
 {
     GThread *thread = g_thread_new ("init-parted", (GThreadFunc) thread_init_parted, NULL);
     g_thread_unref (thread);
+
+    GThread *prober_thread = g_thread_new ("os-prober", (GThreadFunc) thread_os_prober, NULL);
+    g_thread_unref (prober_thread);
 }
 
 JS_EXPORT_API 

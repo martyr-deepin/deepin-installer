@@ -23,13 +23,8 @@ __selected_username = null
 __selected_hostname = null
 __selected_password = null
 __illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
-__init_parted_finish = false
 
 __database = JSON.parse(timezone_json)
-
-DCore.signal_connect("init_parted", (msg) ->
-    __init_parted_finish = true
-)
 
 class RequireMatchDialog extends Dialog
     constructor: (@id) ->
@@ -319,15 +314,6 @@ class Welcome extends Page
         @start.addEventListener("click", (e) =>
             @start_install_cb()
         )
-        setTimeout( ->
-                if __init_parted_finish
-                    if not is_match_install_require()
-                        require_dialog = new RequireMatchDialog("require")
-                        document.body.appendChild(require_dialog.element)
-                else
-                    echo "check require, init parted not finish"
-                return true
-            ,8000)
 
     display_keyboard: ->
         @hide_keyboard()
@@ -372,9 +358,6 @@ class Welcome extends Page
             return false
 
     start_install_cb: ->
-        if not __init_parted_finish
-            echo "init parted not finish"
-            return 
         if @check_start_ready()
             undo_part_table_info()
             part_page = new Part("part")

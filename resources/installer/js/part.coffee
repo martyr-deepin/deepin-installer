@@ -363,14 +363,6 @@ class PartTableItem extends Widget
 
         if __selected_mode == "advance"
             if v_part_info[@id]["type"] != "freespace"
-                if v_part_info[@id]["os"]? 
-                    if v_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
-                        os_img = "images/linux.png"
-                    else if v_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
-                        os_img = "images/windows.png"
-                    else if v_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
-                        os_img = "images/apple.png"
-                    create_img("osimg", os_img, @os)
                 if v_part_info[@id]["label"]?
                     @label.innerText = v_part_info[@id]["label"]
                 @path.innerText = v_part_info[@id]["path"]
@@ -378,19 +370,29 @@ class PartTableItem extends Widget
                 @path.innerText = "freespace"
         else if __selected_mode == "simple"
             if m_part_info[@id]["type"] != "freespace"
-                if m_part_info[@id]["os"]? 
-                    if m_part_info[@id]["os"].toLowerCase().indexOf("linux") != -1
-                        os_img = "images/linux.png"
-                    else if m_part_info[@id]["os"].toLowerCase().indexOf("windows") != -1
-                        os_img = "images/windows.png"
-                    else if m_part_info[@id]["os"].toLowerCase().indexOf("mac") != -1
-                        os_img = "images/apple.png"
-                    create_img("osimg", os_img, @os)
                 if m_part_info[@id]["label"]?
                     @label.innerText = m_part_info[@id]["label"]
                 @path.innerText = m_part_info[@id]["path"]
             else
                 @path.innerText = "freespace"
+        @update_device_os()
+
+    update_device_os: ->
+        @os.innerHTML = ""
+        if __selected_mode == "advance" and v_part_info[@id]["type"] != "freespace"
+            os = v_part_info[@id]["os"]
+        else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
+            os = m_part_info[@id]["os"]
+        else
+            os = null
+        if os?
+            if os.toLowerCase().indexOf("linux") != -1
+                os_img = "images/linux.png"
+            else if os.toLowerCase().indexOf("windows") != -1
+                os_img = "images/windows.png"
+            else if os.toLowerCase().indexOf("mac") != -1
+                os_img = "images/apple.png"
+            create_img("osimg", os_img, @os)
 
     fill_size: ->
         @size.innerHTML = ""
@@ -562,6 +564,8 @@ class PartTable extends Widget
 
     fill_items: ->
         @items.innerHTML = ""
+        if __os_prober_finish
+            __sync_os_prober()
         for disk in disks
             item = new PartTableItem(disk, "disk")
             @items.appendChild(item.element)

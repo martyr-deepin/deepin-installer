@@ -359,6 +359,14 @@ write_fs_tab = ->
                     catch error
                         echo error
 
+__sync_os_prober = ->
+    for disk in disks
+        for part in v_disk_info[disk]["partitions"]
+            v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
+    for disk in disks
+        for part in m_disk_info[disk]["partitions"]
+            m_part_info[part]["os"] = v_part_info[part]["os"]
+
 #Model end
 #Model
 #

@@ -301,6 +301,17 @@ void installer_finish_reboot ()
     gtk_main_quit ();
 }
 
+JS_EXPORT_API
+void installer_emit_webview_ok ()
+{
+    static gboolean inited = FALSE;
+    if (!inited) {
+        inited = TRUE;
+        init_parted ();
+        inhibit_disk ();
+    }
+}
+
 int main(int argc, char **argv)
 {
     init_i18n ();
@@ -341,9 +352,6 @@ int main(int argc, char **argv)
     move_window_center ();
     gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
-
-    init_parted ();
-    inhibit_disk ();
 
     monitor_resource_file ("installer", webview);
     gtk_main ();
