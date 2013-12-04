@@ -504,6 +504,7 @@ class PartTableItem extends Widget
             Widget.look_up(@lineid)?.passive_focus()
         catch error
             echo error
+        @element.scrollIntoView()
 
         @set_btn_status()
         @element.setAttribute("style", "background:#27BEFF")
@@ -512,6 +513,7 @@ class PartTableItem extends Widget
     passive_focus: ->
         __selected_item?.blur()
         __selected_item = @
+        @element.scrollIntoView()
 
         @set_btn_status()
         @element.setAttribute("style", "background:#27BEFF")
