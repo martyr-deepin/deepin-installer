@@ -353,7 +353,7 @@ set_group (const gchar *username)
     
     for (i = 0; i < 14; i++) {
         gchar *groupadd_cmd = g_strdup_printf ("groupadd -r -f %s", groups[i]);
-        g_printf ("create user:groupadd cmd %s\n", groupadd_cmd);
+        g_debug ("create user:groupadd cmd %s\n", groupadd_cmd);
 
         g_spawn_command_line_sync (groupadd_cmd, NULL, NULL, &status, &error);
         if (error != NULL) {
@@ -369,7 +369,7 @@ set_group (const gchar *username)
         g_free (groupadd_cmd);
 
         gchar *gpasswd_cmd = g_strdup_printf ("gpasswd --add %s %s", username, groups[i]);
-        g_printf ("create user:gpasswd cmd %s\n", gpasswd_cmd);
+        g_debug ("create user:gpasswd cmd %s\n", gpasswd_cmd);
 
         g_spawn_command_line_sync (gpasswd_cmd, NULL, NULL, &status, &error);
         if (error != NULL) {
