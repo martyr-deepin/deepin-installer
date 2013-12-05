@@ -35,6 +35,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/mount.h>
+#include <sys/sysinfo.h>
 
 #define WHITE_LIST_PATH RESOURCE_DIR"/installer/whitelist.ini"
 
@@ -1207,4 +1208,16 @@ out:
     if (error != NULL) {
         g_error_free (error);
     }
+}
+
+JS_EXPORT_API 
+double installer_get_memory_size ()
+{
+    struct sysinfo info;
+    if (sysinfo (&info) != 0) {
+        g_warning ("get memory size:%s\n", strerror (errno));
+        return 0;
+    }
+
+    return info.totalram;
 }

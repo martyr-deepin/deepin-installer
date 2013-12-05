@@ -79,4 +79,6 @@ JS_EXPORT_API gboolean installer_chroot_target ();
 
 JS_EXPORT_API void installer_copy_whitelist ();
 
+JS_EXPORT_API double installer_get_memory_size ();
+
 #endif
