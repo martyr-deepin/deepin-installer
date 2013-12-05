@@ -1160,6 +1160,7 @@ void installer_copy_whitelist ()
     g_file_get_contents (WHITE_LIST_PATH, &contents, NULL, &error);
     if (error != NULL) {
         g_warning ("copy whitelist:get packages list %s\n", error->message);
+        g_error_free (error);
         goto out;
     }
     if (contents == NULL) {
@@ -1171,21 +1172,30 @@ void installer_copy_whitelist ()
        g_warning ("copy whitelist:strarray NULL\n"); 
        goto out;
     }
-    gchar *item = NULL;
-    for (item = *strarray; item != NULL; item++) {
+    guint count = g_strv_length (strarray);
+    g_printf ("copy whitelist:file count %d\n", count);
+    guint index = 0;
+    for (index = 0; index < count; index++) {
+        gchar *item = g_strdup (strarray[index]);
+        g_printf ("copy whitelist:start copy file %s\n", item);
+        if (!g_file_test (item, G_FILE_TEST_EXISTS)) {
+            g_warning ("copy whitelist:file %s not exists\n", item);
+            g_free (item);
+            continue;
+        }
         GFile *src = g_file_new_for_path (item);
         gchar *dest_path = g_strdup_printf ("%s%s", target, item);
         GFile *dest = g_file_new_for_path (dest_path);
-        if (src == NULL || dest == NULL) {
-           continue; 
-        }
-        g_file_copy_sync (src, dest, G_FILE_COPY_NONE, NULL, NULL, NULL, &error);
+
+        g_file_copy (src, dest, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
+
+        g_free (item);
         g_free (dest_path);
         g_object_unref (src);
         g_object_unref (dest);
         if (error != NULL) {
             g_warning ("copy whiltelist:file %s error->%s\n", item, error->message);
-            continue;
+            g_error_free (error);
         }
     }
     goto out;
