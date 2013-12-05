@@ -310,6 +310,19 @@ do_simple_partition = (device, type) ->
         echo "invalid type to do simple partition"
     do_partition()
 
+#get recommand part to install target 
+get_recommand_target = ->
+    recommand = null
+    for disk in disks
+        for part in m_disk_info[disk]["partitions"]
+            if m_part_info[part]["type"] != "extended"
+                if recommand?
+                    if m_part_info[part]["length"] > m_part_info[recommand]["length"]
+                        recommand = part 
+                else
+                    recommand = part
+    return recommand
+
 #get target part that mount root
 get_target_part = ->
     echo "get target part"

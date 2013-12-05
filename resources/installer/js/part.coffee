@@ -243,10 +243,23 @@ class InstallDialog extends Dialog
 
     confirm_install_cb: ->
         echo "confirm install"
+        DCore.Installer.hide_help()
+        progress_page = new Progress("progress")
+
         if __selected_mode == "simple"
-            Widget.look_up("part")?.handle_simple_install()
+            __selected_grub = __selected_disk
+            pc.add_page(progress_page)
+            pc.remove_page(part_page)
+            do_simple_partition(__selected_item.id, __selected_item.device_type)
+
         else if __selected_mode == "advance"
-            Widget.look_up("part")?.handle_advance_install()
+            __selected_grub = Widet.look_up("part")?.grub_select.options[@grub_select.selectedIndex].value
+            pc.add_page(progress_page)
+            pc.remove_page(part_page)
+            do_partition()
+
+        __selected_stage = "extract"
+        progress_page.handle_extract("start")
 
 class PartLineItem extends Widget
     constructor: (@id) ->
@@ -489,11 +502,9 @@ class PartTableItem extends Widget
             delete_btn.setAttribute("class", "PartBtn")
 
     can_focus: ->
-        if __selected_mode == "advance"
-            return true
         if @device_type == "part"
             return true
-        if m_disk_info[@id]["partitions"].length == 0
+        if __selected_mode == "simple" and m_disk_info[@id]["partitions"].length == 0
             return true
         return false
 
@@ -515,7 +526,7 @@ class PartTableItem extends Widget
             Widget.look_up(@lineid)?.passive_focus()
         catch error
             echo error
-        @element.scrollIntoView()
+        #@element.scrollIntoView()
 
         @set_btn_status()
         @element.setAttribute("style", "background:#27BEFF")
@@ -527,7 +538,7 @@ class PartTableItem extends Widget
 
         __selected_item?.blur()
         __selected_item = @
-        @element.scrollIntoView()
+        #@element.scrollIntoView()
 
         @set_btn_status()
         @element.setAttribute("style", "background:#27BEFF")
@@ -660,24 +671,16 @@ class Part extends Page
         @next_btn.setAttribute("id", "mynextstep")
         @next_btn.innerText = _("Next step")
         @next_btn.addEventListener("click", (e) =>
-            @install_model = new InstallDialog("InstallModel")
-            document.body.appendChild(@install_model.element)
+            if __selected_mode == "advance" and not check_target_part()
+                @root_model = new RootDialog("RootModel")
+                document.body.appendChild(@root_model.element)
+            else
+                @install_model = new InstallDialog("InstallModel")
+                document.body.appendChild(@install_model.element)
         )
 
-        @focus_default()
-
-    focus_default: ->
-        if __selected_mode == "advance"
-            __selected_item = Widget.look_up(disks[0])
-        else
-            try
-                fparts = m_disk_info[disks[0]]["partitions"]
-                if fparts.length == 0
-                    __selected_item = Widget.look_up(disks[0])
-                else
-                    __selected_item = Widget.look_up(fparts[0])
-            catch error
-                echo error
+        recommand = get_recommand_target()
+        __selected_item = Widget.look_up(recommand)
         __selected_item?.focus()
 
     switch_mode: ->
@@ -705,30 +708,6 @@ class Part extends Page
         @next_btn.innerText = txt
         left = "left:" + (755 - document.getElementById("mynextstep")?.offsetWidth) / 2
         @next_btn.setAttribute("style", left)
-
-    handle_simple_install: ->
-        DCore.Installer.hide_help()
-        __selected_grub = __selected_disk
-        progress_page = new Progress("progress")
-        pc.add_page(progress_page)
-        pc.remove_page(part_page)
-        do_simple_partition(__selected_item.id, __selected_item.device_type)
-        __selected_stage = "extract"
-        progress_page.handle_extract("start")
-
-    handle_advance_install: ->
-        if check_target_part()
-            DCore.Installer.hide_help()
-            __selected_grub = @grub_select.options[@grub_select.selectedIndex].value
-            progress_page = new Progress("progress")
-            pc.add_page(progress_page)
-            pc.remove_page(part_page)
-            do_partition()
-            __selected_stage = "extract"
-            progress_page.handle_extract("start")
-        else
-            @root_model = new RootDialog("RootModel")
-            document.body.appendChild(@root_model.element)
 
     fill_advance_op: ->
         #part op buttons
