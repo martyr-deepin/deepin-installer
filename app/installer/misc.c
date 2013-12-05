@@ -1179,10 +1179,14 @@ void installer_copy_whitelist ()
         if (src == NULL || dest == NULL) {
            continue; 
         }
-        g_file_copy_async (src, dest, G_FILE_COPY_NONE, 0, NULL, NULL, NULL, NULL, NULL);
+        g_file_copy_sync (src, dest, G_FILE_COPY_NONE, NULL, NULL, NULL, &error);
+        g_free (dest_path);
         g_object_unref (src);
         g_object_unref (dest);
-        g_free (dest_path);
+        if (error != NULL) {
+            g_warning ("copy whiltelist:file %s error->%s\n", item, error->message);
+            continue;
+        }
     }
     goto out;
 
