@@ -281,12 +281,15 @@ do_simple_partition = (device, type) ->
         partid = v_disk_info[device]["partitions"][0]
         if v_part_info[partid]["type"] != "freespace"
             echo "do simple partiiton, part should be freespace when delete all"
-        type = "normal"
-        size = v_disk_info[device]["length"]
-        align = "start"
-        fs = "ext4"
-        mp = "/"
-        add_part(partid, type, size, align, fs, mp)
+        memory_size = DCore.Installer.get_memory_size()
+        swap_sector = Math.floor(memory_size / 512) * 2
+        root_sector = v_part_info[partid]["length"] - swap_sector
+
+        if memory_size < 4000000000 and root_sector > 0
+            add_part(partid, "normal", root_sector, "start", "ext4", "/") 
+            add_part(partid, "normal", swap_sector, "start", "swap", null)
+        else
+            add_part(partid, "normal", v_part_info[partid]["length"], "start", "ext4", "/")
 
     else if type == "part"
         #create a new part when install to freespace
