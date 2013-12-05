@@ -203,6 +203,9 @@ unmount_target (const gchar *target)
 static void
 remove_packages ()
 {
+    extern gboolean in_chroot;
+    g_printf ("remove packages, in chroot %d\n", in_chroot);
+
     GError *error = NULL;
     gchar *cmd = NULL;
     gchar *contents = NULL;
@@ -257,11 +260,9 @@ out:
 static void
 finish_install_cleanup () 
 {
-    installer_hide_help ();
-
-    ped_device_free_all ();
-
     remove_packages ();
+    installer_hide_help ();
+    ped_device_free_all ();
 
     extern const gchar *target;
     if (target == NULL) {
