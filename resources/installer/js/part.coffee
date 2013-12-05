@@ -488,7 +488,18 @@ class PartTableItem extends Widget
             add_btn.setAttribute("class", "PartBtn")
             delete_btn.setAttribute("class", "PartBtn")
 
+    can_focus: ->
+        if __selected_mode == "advance"
+            return true
+        if @device_type == "part"
+            return true
+        if m_disk_info[@id]["partitions"].length == 0
+            return true
+        return false
+
     focus: ->
+        if not @can_focus()
+            return
         __selected_item?.blur()
         __selected_item = @
 
@@ -511,6 +522,9 @@ class PartTableItem extends Widget
         @update_install_btn()
 
     passive_focus: ->
+        if not @can_focus()
+            return
+
         __selected_item?.blur()
         __selected_item = @
         @element.scrollIntoView()
@@ -650,8 +664,20 @@ class Part extends Page
             document.body.appendChild(@install_model.element)
         )
 
-        if __selected_item == null
+        @focus_default()
+
+    focus_default: ->
+        if __selected_mode == "advance"
             __selected_item = Widget.look_up(disks[0])
+        else
+            try
+                fparts = m_disk_info[disks[0]]["partitions"]
+                if fparts.length == 0
+                    __selected_item = Widget.look_up(disks[0])
+                else
+                    __selected_item = Widget.look_up(fparts[0])
+            catch error
+                echo error
         __selected_item?.focus()
 
     switch_mode: ->
