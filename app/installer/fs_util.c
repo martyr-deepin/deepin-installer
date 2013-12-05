@@ -59,23 +59,24 @@ gchar *
 get_partition_mount_point (const gchar *path)
 {
     gchar *mp = NULL;
-    struct mntent *ent;
-    FILE *mount_file;
+    gchar *cmd = NULL;
+    GError *error = NULL;
 
-    mount_file = setmntent ("/etc/mtab", "r");
-    if (mount_file != NULL) {
-        while (NULL != (ent = getmntent (mount_file))) {
-            if (g_strcmp0 (path, ent->mnt_fsname) == 0) {
-                mp = ent->mnt_dir;
-                break;
-            }
-        }
-
-    } else {
-        g_warning ("setmntent\n");
+    if (path == NULL || !g_file_test (path, G_FILE_TEST_EXISTS)) {
+        g_warning ("get partition mount point:invalid path %s\n", path);
+        return mp;
     }
 
-    endmntent (mount_file);
+    cmd = g_strdup_printf ("findmnt -k -f -n -o TARGET -S %s", path);
+    g_spawn_command_line_sync (cmd, &mp, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get partition mount point:run cmd error->%s\n", error->message);
+        g_error_free (error);
+    }
+    g_free (cmd);
+    if (mp != NULL) {
+        mp = g_strstrip (mp);
+    }
 
     return mp;
 }
