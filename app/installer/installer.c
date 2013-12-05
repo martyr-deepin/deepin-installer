@@ -204,7 +204,10 @@ static void
 remove_packages ()
 {
     extern gboolean in_chroot;
-    g_printf ("remove packages, in chroot %d\n", in_chroot);
+    if (!in_chroot) {
+        g_warning ("remove packages:not in chroot\n");
+        return ;
+    }
 
     GError *error = NULL;
     gchar *cmd = NULL;
