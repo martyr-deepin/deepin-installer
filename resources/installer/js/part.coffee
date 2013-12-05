@@ -239,7 +239,7 @@ class InstallDialog extends Dialog
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Confirm Install")
         @root_tips = create_element("p", "", @content)
-        @root_tips.innerText = _("Confirm Install")
+        @fill_install_info()
 
     confirm_install_cb: ->
         echo "confirm install"
@@ -260,6 +260,14 @@ class InstallDialog extends Dialog
 
         __selected_stage = "extract"
         progress_page.handle_extract("start")
+
+    fill_install_info: ->
+        if __selected_mode == "advance"
+            target = get_target_part()
+        else
+            target = __selected_item.id
+        path = v_part_info[target]["path"]
+        @root_tips.innerText = "Linux Deepin will be installer to " + path
 
 class PartLineItem extends Widget
     constructor: (@id) ->
