@@ -334,7 +334,7 @@ int main(int argc, char **argv)
     installer_container = create_web_container (FALSE, TRUE);
 
     gtk_window_set_decorated (GTK_WINDOW (installer_container), FALSE);
-    gtk_window_set_skip_taskbar_hint (GTK_WINDOW (installer_container), TRUE);
+    //gtk_window_set_skip_taskbar_hint (GTK_WINDOW (installer_container), TRUE);
     gtk_window_set_skip_pager_hint (GTK_WINDOW (installer_container), TRUE);
 
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);

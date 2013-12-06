@@ -820,6 +820,28 @@ void installer_set_timezone (const gchar *timezone)
     g_thread_unref (thread);
 }
 
+static guint
+get_cpu_num ()
+{
+    guint num = 0;
+    gchar *output = NULL;
+    const gchar *cmd = "sh -c \"cat /proc/cpuinfo |grep processor |wc -l\"";
+    GError *error = NULL;
+
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get cpu num:%s\n", error->message);
+        g_error_free (error);
+    }
+    if (output == NULL) {
+        return num;
+    }
+    num = g_strtod (g_strstrip (output), NULL);
+
+    g_free (output);
+    return num;
+}
+
 static void
 watch_extract_child (GPid pid, gint status, gpointer data)
 {
@@ -951,12 +973,20 @@ thread_extract_squashfs (gpointer data)
         return NULL;
     }
 
-    gchar **argv = g_new0 (gchar *, 6);
+    guint processors = get_cpu_num();
+    guint puse = 1;
+    if (processors > 2) {
+        puse = processors / 2;
+    }
+
+    gchar **argv = g_new0 (gchar *, 8);
     argv[0] = g_strdup ("unsquashfs");
     argv[1] = g_strdup ("-f");
-    argv[2] = g_strdup ("-d");
-    argv[3] = g_strdup (target);
-    argv[4] = g_strdup ("/cdrom/casper/filesystem.squashfs");
+    argv[2] = g_strdup ("-p");
+    argv[3] = g_strdup_printf ("%d", puse);
+    argv[4] = g_strdup ("-d");
+    argv[5] = g_strdup (target);
+    argv[6] = g_strdup ("/cdrom/casper/filesystem.squashfs");
 
     gint std_output;
     gint std_error;

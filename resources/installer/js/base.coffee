@@ -17,7 +17,24 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+
+__init_parted_finish = false
+__os_prober_finish = false
+
 DCore.Installer.emit_webview_ok()
+
+DCore.signal_connect("init_parted", (msg) ->
+    echo "signal tell init parted finish"
+    __init_parted_finish = true
+    if not is_match_install_require()
+        require_dialog = new RequireMatchDialog("require")
+        document.body.appendChild(require_dialog.element)
+)
+
+DCore.signal_connect("os_prober", (msg) ->
+    echo "signal tell os-prober finish"
+    __os_prober_finish = true
+)
 
 __current_page = null
 __in_model = false
@@ -36,22 +53,6 @@ welcome_page = null
 part_page = null
 progress_page = null
 finish_page = null
-
-__init_parted_finish = false
-__os_prober_finish = false
-
-DCore.signal_connect("init_parted", (msg) ->
-    echo "signal tell init parted finish"
-    __init_parted_finish = true
-    if not is_match_install_require()
-        require_dialog = new RequireMatchDialog("require")
-        document.body.appendChild(require_dialog.element)
-)
-
-DCore.signal_connect("os_prober", (msg) ->
-    echo "signal tell os-prober finish"
-    __os_prober_finish = true
-)
 
 class Dialog extends Widget
     constructor: (@id, @with_cancel, @cb) ->
