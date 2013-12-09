@@ -820,6 +820,108 @@ void installer_set_timezone (const gchar *timezone)
     g_thread_unref (thread);
 }
 
+static void 
+copy_file_cb (const gchar *path)
+{
+    extern const gchar *target;
+    if (path == NULL) {
+        return ;
+    }
+    GFile *src = g_file_new_for_path (path);
+    gchar *dest_path = g_strdup_printf ("%s%s", target, path);
+    GFile *dest = g_file_new_for_path (dest_path);
+
+    g_file_copy (src, dest, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, NULL);
+}
+
+static void
+walk_directory (const gchar *path, void cb (const gchar *))
+{
+    if (g_file_test (path, G_FILE_TEST_IS_DIR)) {
+        cb (path);
+        GFile *src = g_file_new_for_path (path);
+        GFileInfo *info = NULL;
+        GError *error = NULL;
+        GFileEnumerator *enumerator = g_file_enumerate_children (src, 
+                                                       "standard::", 
+                                                       G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                       NULL,
+                                                       &error);
+        if (error != NULL) {
+            g_warning ("walk direcotry:enumerate children for %s error->%s\n", path, error->message);
+            g_error_free (error);
+        }
+        g_object_unref (src);
+
+        info = g_file_enumerator_next_file (enumerator, NULL, NULL);
+        while (info != NULL) {
+            gchar *subpath = g_strdup_printf ("%s%s", path, g_file_info_get_name (info));
+            walk_directory (subpath, cb);
+            g_free (subpath);
+            g_object_unref (info);
+            info = g_file_enumerator_next_file (enumerator, NULL, NULL);
+        }
+        g_file_enumerator_close (enumerator, NULL, NULL);
+
+    } else if (g_file_test (path, G_FILE_TEST_IS_REGULAR)) {
+        cb (path);
+    } else {
+        g_warning ("walk directory:invalid path %s\n", path);
+    }
+}
+
+JS_EXPORT_API
+void installer_extract_iso ()
+{
+    gboolean succeed = FALSE;
+    extern const gchar *target;
+    GError *error = NULL;
+    gchar *target_iso;
+    gchar *mount_cmd;
+    gchar *umount_cmd;
+
+    if (target == NULL) {
+        g_warning ("extract iso:target NULL\n");
+        goto out;
+    }
+
+    target_iso = g_strdup_printf ("%s/squashfs", target);
+    if (g_mkdir_with_parents (target_iso, 0755) == -1) {
+        g_warning ("extract iso:mkdir failed\n");
+        goto out;
+    }
+
+    mount_cmd = g_strdup_printf ("mount /cdrom/casper/filesystem.squashfs %s", target_iso);
+    g_spawn_command_line_sync (mount_cmd, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("extract iso:mount squashfs->%s\n", error->message);
+        goto out;
+    }
+
+    walk_directory (target_iso, copy_file_cb);
+
+    umount_cmd  = g_strdup_printf ("umount %s", target_iso);
+    g_spawn_command_line_sync (umount_cmd, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("extract iso:umount squashfs->%s\n", error->message);
+        goto out;
+    }
+    succeed = TRUE;
+    goto out;
+out:
+    g_free (mount_cmd);
+    g_free (umount_cmd);
+    g_free (target_iso);
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    if (succeed) {
+        emit_progress ("extract", "finish");
+    } else {
+        emit_progress ("extract", "terminate");
+    }
+}
+
 static guint
 get_cpu_num ()
 {
