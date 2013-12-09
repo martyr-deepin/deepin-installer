@@ -565,6 +565,8 @@ gchar *installer_get_partition_fs (const gchar *part)
         if (g_strrstr (fs, "swap") != NULL) {
             return g_strdup ("swap");
         }
+    } else {
+        fs = g_strdup (NULL);
     }
 
     return fs;

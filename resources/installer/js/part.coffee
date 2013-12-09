@@ -87,17 +87,16 @@ class AddPartDialog extends Dialog
         @logical_desc = create_element("span", "", @type_value)
         @logical_desc.innerText = _("Logical")
 
-        if not can_add_logical(@partid)
-            @type_logical.style.display = "none"
-            @logical_desc.style.display = "none"
-        else
-            @type_logical.setAttribute("checked", "true")
-
         if not can_add_normal(@partid)
             @type_primary.style.display = "none"
             @primary_desc.style.display = "none"
+            @type_logical.setAttribute("checked", "true")
         else
             @type_primary.setAttribute("checked", "true")
+
+        if not can_add_logical(@partid)
+            @type_logical.style.display = "none"
+            @logical_desc.style.display = "none"
 
     fill_size: ->
         @size = create_element("p", "", @content)
