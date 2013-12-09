@@ -879,19 +879,14 @@ walk_directory (const gchar *path, void cb (const gchar *))
             g_error_free (error);
         }
         g_object_unref (src);
-        g_warning ("walk directory:path %s\n", path);
 
         info = g_file_enumerator_next_file (enumerator, NULL, NULL);
         while (info != NULL) {
-            GFile *child = g_file_enumerator_get_child (enumerator, info);
-            if (child == NULL) {
-                continue;
-            }
-            //g_object_unref (info);
+	    gchar *subpath = g_strdup_printf ("%s/%s", path, g_file_info_get_name (info));
+            g_object_unref (info);
 
-            gchar *subpath = g_file_get_path (child);
-            g_object_unref (child);
-
+    	    g_warning ("walk directory:path %s\n", path);
+	    g_warning ("walk directory:info name->%s\n", g_file_info_get_name (info));
             g_warning ("walk direcotry:subpath %s\n", subpath);
             walk_directory (subpath, cb);
             g_free (subpath);
