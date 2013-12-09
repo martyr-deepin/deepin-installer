@@ -827,16 +827,43 @@ copy_file_cb (const gchar *path)
     if (path == NULL) {
         return ;
     }
-    GFile *src = g_file_new_for_path (path);
-    gchar *dest_path = g_strdup_printf ("%s%s", target, path);
-    GFile *dest = g_file_new_for_path (dest_path);
+    static GFile *target_f; 
+    if (target_f == NULL) {
+        target_f = g_file_new_for_path (target);
+    }
+    static GFile *target_squash_f;
+    if (target_squash_f == NULL) {
+        gchar *squash = g_strdup_printf ("%s/squashfs", target);
+        target_squash_f = g_file_new_for_path (squash);
+        g_free (squash);
+    }
 
-    g_file_copy (src, dest, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, NULL);
+    GFile *src = g_file_new_for_path (path);
+    gchar *origin = g_file_get_relative_path (target_squash_f, src);
+    if (origin == NULL) {
+        g_warning ("copy file cb:origin NULL for %s\n", path);
+        g_object_unref (src);
+        return ;
+    }
+    GFile *dest = g_file_resolve_relative_path (target_f, origin);
+    g_free (origin);
+
+    g_warning ("copy file from %s to %s\n", g_file_get_path (src), g_file_get_path (dest));
+
+    g_file_copy (src, dest, G_FILE_COPY_OVERWRITE | G_FILE_COPY_NOFOLLOW_SYMLINKS,  NULL, NULL, NULL, NULL);
+
+    g_object_unref (src);
+    g_object_unref (dest);
 }
 
 static void
 walk_directory (const gchar *path, void cb (const gchar *))
 {
+    if (!g_file_test (path, G_FILE_TEST_EXISTS)) {
+        g_warning ("walk directory:path %s not exists", path);
+        return;
+    }
+
     if (g_file_test (path, G_FILE_TEST_IS_DIR)) {
         cb (path);
         GFile *src = g_file_new_for_path (path);
@@ -852,21 +879,29 @@ walk_directory (const gchar *path, void cb (const gchar *))
             g_error_free (error);
         }
         g_object_unref (src);
+        g_warning ("walk directory:path %s\n", path);
 
         info = g_file_enumerator_next_file (enumerator, NULL, NULL);
         while (info != NULL) {
-            gchar *subpath = g_strdup_printf ("%s%s", path, g_file_info_get_name (info));
+            GFile *child = g_file_enumerator_get_child (enumerator, info);
+            if (child == NULL) {
+                continue;
+            }
+            //g_object_unref (info);
+
+            gchar *subpath = g_file_get_path (child);
+            g_object_unref (child);
+
+            g_warning ("walk direcotry:subpath %s\n", subpath);
             walk_directory (subpath, cb);
             g_free (subpath);
-            g_object_unref (info);
+
             info = g_file_enumerator_next_file (enumerator, NULL, NULL);
         }
         g_file_enumerator_close (enumerator, NULL, NULL);
 
-    } else if (g_file_test (path, G_FILE_TEST_IS_REGULAR)) {
-        cb (path);
     } else {
-        g_warning ("walk directory:invalid path %s\n", path);
+        cb (path);
     }
 }
 

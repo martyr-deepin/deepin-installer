@@ -30,9 +30,14 @@ get_matched_string (const gchar *target, const gchar *regex_string)
 {
     gchar *result = NULL;
     GError *error = NULL;
-
     GRegex *regex;
     GMatchInfo *match_info;
+
+    if (target == NULL || regex_string == NULL) {
+        g_warning ("get matched string:paramemter NULL\n");
+        return NULL;
+    }
+
     regex = g_regex_new (regex_string, 0, 0, &error);
     if (error != NULL) {
         g_warning ("get matched string:%s\n", error->message);
