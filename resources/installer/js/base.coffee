@@ -21,8 +21,6 @@
 __init_parted_finish = false
 __os_prober_finish = false
 
-DCore.Installer.emit_webview_ok()
-
 DCore.signal_connect("init_parted", (msg) ->
     echo "signal tell init parted finish"
     __init_parted_finish = true
@@ -35,6 +33,8 @@ DCore.signal_connect("os_prober", (msg) ->
     echo "signal tell os-prober finish"
     __os_prober_finish = true
 )
+
+DCore.Installer.emit_webview_ok()
 
 __current_page = null
 __in_model = false
