@@ -36,6 +36,7 @@
 #include <fcntl.h>
 #include <sys/mount.h>
 #include <sys/sysinfo.h>
+#include <ftw.h>
 
 #define WHITE_LIST_PATH RESOURCE_DIR"/installer/whitelist.ini"
 
@@ -820,12 +821,12 @@ void installer_set_timezone (const gchar *timezone)
     g_thread_unref (thread);
 }
 
-static void 
-copy_file_cb (const gchar *path)
+static int 
+copy_file_cb (const char *path, const struct stat *sb, int typeflag)
 {
     extern const gchar *target;
     if (path == NULL) {
-        return ;
+        return 1;
     }
     static GFile *target_f; 
     if (target_f == NULL) {
@@ -842,8 +843,6 @@ copy_file_cb (const gchar *path)
     gchar *origin = g_file_get_relative_path (target_squash_f, src);
     if (origin == NULL) {
         g_warning ("copy file cb:origin NULL for %s\n", path);
-        g_object_unref (src);
-        return ;
     }
     GFile *dest = g_file_resolve_relative_path (target_f, origin);
     g_free (origin);
@@ -854,50 +853,8 @@ copy_file_cb (const gchar *path)
 
     g_object_unref (src);
     g_object_unref (dest);
-}
 
-static void
-walk_directory (const gchar *path, void cb (const gchar *))
-{
-    if (!g_file_test (path, G_FILE_TEST_EXISTS)) {
-        g_warning ("walk directory:path %s not exists", path);
-        return;
-    }
-
-    if (g_file_test (path, G_FILE_TEST_IS_DIR)) {
-        cb (path);
-        GFile *src = g_file_new_for_path (path);
-        GFileInfo *info = NULL;
-        GError *error = NULL;
-        GFileEnumerator *enumerator = g_file_enumerate_children (src, 
-                                                       "standard::", 
-                                                       G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                       NULL,
-                                                       &error);
-        if (error != NULL) {
-            g_warning ("walk direcotry:enumerate children for %s error->%s\n", path, error->message);
-            g_error_free (error);
-        }
-        g_object_unref (src);
-
-        info = g_file_enumerator_next_file (enumerator, NULL, NULL);
-        while (info != NULL) {
-	    gchar *subpath = g_strdup_printf ("%s/%s", path, g_file_info_get_name (info));
-            g_object_unref (info);
-
-    	    g_warning ("walk directory:path %s\n", path);
-	    g_warning ("walk directory:info name->%s\n", g_file_info_get_name (info));
-            g_warning ("walk direcotry:subpath %s\n", subpath);
-            walk_directory (subpath, cb);
-            g_free (subpath);
-
-            info = g_file_enumerator_next_file (enumerator, NULL, NULL);
-        }
-        g_file_enumerator_close (enumerator, NULL, NULL);
-
-    } else {
-        cb (path);
-    }
+    return 0;
 }
 
 JS_EXPORT_API
@@ -928,7 +885,7 @@ void installer_extract_iso ()
         goto out;
     }
 
-    walk_directory (target_iso, copy_file_cb);
+    ftw (target_iso, copy_file_cb, 65536);
 
     umount_cmd  = g_strdup_printf ("umount %s", target_iso);
     g_spawn_command_line_sync (umount_cmd, NULL, NULL, NULL, &error);

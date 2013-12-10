@@ -96,8 +96,8 @@ class Progress extends Page
             echo "start handle extract"
             try
                 mount_custom_partitions()
-                DCore.Installer.extract_squashfs()
-                #DCore.Installer.extract_iso()
+                #DCore.Installer.extract_squashfs()
+                DCore.Installer.extract_iso()
             catch error
                 echo error
         else if progress == "finish"
