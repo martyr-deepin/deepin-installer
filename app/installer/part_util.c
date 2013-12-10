@@ -1057,6 +1057,7 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
         g_warning ("mount partition:mount path %s with fs %s error:%s\n", path, fs, error->message);
         goto out;
     }
+
     guint after = get_mount_target_count (mount_target);
     if (after != before + 1) {
         g_warning ("mount partition:mount path %s wifth fs %s count from %d to %d\n", path, fs, before, after);
@@ -1064,7 +1065,6 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
         result = TRUE;
     }
     goto out;
-
 out:
     g_free (path);
     g_free (mount_target);

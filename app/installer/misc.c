@@ -1040,29 +1040,31 @@ cb_timeout (gpointer data)
     return TRUE;
 }
 
-static gpointer 
-thread_extract_squashfs (gpointer data)
+
+JS_EXPORT_API
+void installer_extract_squashfs ()
 {
+    g_warning ("extract squashfs");
     if (g_find_program_in_path ("unsquashfs") == NULL) {
         g_warning ("extract squashfs: unsquashfs not installed\n");
         emit_progress ("extract", "terminate");
-        return NULL;
+        return;
     }
 
     extern const gchar *target;
     if (target == NULL) {
         g_warning ("extract squash fs:target is NULL\n");
         emit_progress ("extract", "terminate");
-        return NULL;
+        return;
     }
     const gchar *iso = "/cdrom/casper/filesystem.squashfs";
     if (!g_file_test (iso, G_FILE_TEST_EXISTS)) {
         g_warning ("extract squashfs:iso not exists\n");
         emit_progress ("extract", "terminate");
-        return NULL;
+        return;
     }
 
-    guint processors = get_cpu_num();
+    guint processors = get_cpu_num ();
     guint puse = 1;
     if (processors > 2) {
         puse = processors / 2;
@@ -1129,14 +1131,6 @@ thread_extract_squashfs (gpointer data)
     cb_ids[2] = g_timeout_add (2000, (GSourceFunc) cb_timeout, progress);
     g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, cb_ids);
     g_strfreev (argv);
-    return NULL;
-}
-
-JS_EXPORT_API
-void installer_extract_squashfs ()
-{
-    GThread *extract_thread = g_thread_new ("extract", (GThreadFunc) thread_extract_squashfs, NULL);
-    g_thread_unref (extract_thread);
 }
 
 JS_EXPORT_API

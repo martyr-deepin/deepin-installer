@@ -530,7 +530,6 @@ get_partition_free (gpointer data)
     gchar *path = handler->path;
     gchar *fs = handler->fs;
     gchar *part = handler->part;
-    //printf ("path:%s, fs:%s, part:%s\n", path, fs, part);
 
     if (g_strcmp0 (fs, "ext4") == 0) {
         free = _get_ext4_free (path);
@@ -573,6 +572,8 @@ get_partition_free (gpointer data)
     }
 
     g_warning ("post message:used free\n");
+    g_warning ("path:%s, fs:%s, part:%s, free:%f\n", path, fs, part, free);
+
     js_post_message_simply ("used","{\"part\":\"%s\", \"free\":\"%f\"}", part, free);
 
     g_free (handler->path);
@@ -806,6 +807,7 @@ get_mount_target_count (const gchar *target)
         goto out;
     }
     if (output == NULL || output == "") {
+        g_warning ("get target mount count:output invalid\n");
         goto out;
     }
     array = g_strsplit (output, "\n", -1);
