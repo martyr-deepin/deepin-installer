@@ -1068,14 +1068,18 @@ thread_extract_squashfs (gpointer data)
         puse = processors / 2;
     }
 
-    gchar **argv = g_new0 (gchar *, 8);
+    gchar **argv = g_new0 (gchar *, 12);
     argv[0] = g_strdup ("unsquashfs");
     argv[1] = g_strdup ("-f");
     argv[2] = g_strdup ("-p");
     argv[3] = g_strdup_printf ("%d", puse);
-    argv[4] = g_strdup ("-d");
-    argv[5] = g_strdup (target);
-    argv[6] = g_strdup ("/cdrom/casper/filesystem.squashfs");
+    argv[4] = g_strdup ("-da");
+    argv[5] = g_strdup_printf ("%d", 32);
+    argv[6] = g_strdup ("-fr");
+    argv[7] = g_strdup_printf ("%d", 32);
+    argv[8] = g_strdup ("-d");
+    argv[9] = g_strdup (target);
+    argv[10] = g_strdup ("/cdrom/casper/filesystem.squashfs");
 
     gint std_output;
     gint std_error;
