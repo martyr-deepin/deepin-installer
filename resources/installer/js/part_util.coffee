@@ -139,13 +139,12 @@ _sort_part_op =  (part_a, part_b) ->
         return -1
 
 _sort_disk = (disk_a, disk_b) ->
-    echo "sort disk called"
     a_path = DCore.Installer.get_disk_path(disk_a)
     b_path = DCore.Installer.get_disk_path(disk_b)
     if a_path < b_path
-        return 1
-    else
         return -1
+    else
+        return 1
 
 _filter_modeled_delete = (part, index) ->
     return m_part_info[part]["op"] == "delete"
@@ -402,7 +401,8 @@ write_fs_tab = ->
 #View: for data display in UI
 v_disk_info = {}
 init_v_disk_info = ->
-    disks = DCore.Installer.list_disks().sort(_sort_disk)
+    disks = DCore.Installer.list_disks()
+    disks.sort(_sort_disk)
     v_disk_info = {}
     for disk in disks
         v_disk_info[disk] = {}
@@ -410,7 +410,6 @@ init_v_disk_info = ->
         v_disk_info[disk]["model"] = DCore.Installer.get_disk_model(disk)
         v_disk_info[disk]["max_primary"] = DCore.Installer.get_disk_max_primary_count(disk)
         v_disk_info[disk]["path"] = DCore.Installer.get_disk_path(disk)
-        echo v_disk_info[disk]["path"]
         v_disk_info[disk]["type"] = DCore.Installer.get_disk_type(disk)
         v_disk_info[disk]["partitions"] = []
         for part in DCore.Installer.get_disk_partitions(disk)
