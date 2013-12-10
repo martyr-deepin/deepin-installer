@@ -109,15 +109,26 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar
     }
 
     free_blocks_line = get_matched_string (output, free_regex);
-    free_blocks_num = get_matched_string (free_blocks_line, free_num_regex);
+    if (free_blocks_line != NULL) {
+        free_blocks_num = get_matched_string (free_blocks_line, free_num_regex);
+    }
     g_free (free_blocks_line);
-    free_double = g_ascii_strtod (free_blocks_num, NULL);
+    if (free_blocks_num != NULL) {
+        free_double = g_ascii_strtod (free_blocks_num, NULL);
+    }
     g_free (free_blocks_num);
 
-    block_size_line = get_matched_string (output, unit_regex);
-    block_size_num = get_matched_string (block_size_line, unit_num_regex);
+    if (output != NULL) {
+        block_size_line = get_matched_string (output, unit_regex);
+    }
+    if (block_size_line != NULL) {
+        block_size_num = get_matched_string (block_size_line, unit_num_regex);
+    }
     g_free (block_size_line);
-    size_double = g_ascii_strtod(block_size_num, NULL);
+
+    if (block_size_num != NULL) {
+        size_double = g_ascii_strtod(block_size_num, NULL);
+    }
     g_free (block_size_num);
 
     g_free (output);
