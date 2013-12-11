@@ -40,6 +40,8 @@ String::args = ->
     return o
 
 echo = (log) ->
+
+echo1 = (log) ->
     console.log log
 
 assert = (value, msg) ->

@@ -87,7 +87,6 @@ thread_os_prober (gpointer data)
     }
     g_strfreev (items);
     g_free (output);
-    g_warning ("post message:os prober finish\n");
     js_post_message_simply ("os_prober", "{\"finish\":\"%s\"}", "finish");
     return NULL;
 }
@@ -176,7 +175,6 @@ thread_init_parted (gpointer data)
         g_hash_table_insert (disk_partitions, g_strdup (uuid), part_list);
         g_free (uuid);
     }
-    g_warning ("post message:init parted finish\n");
     js_post_message_simply ("init_parted", "{\"finish\":\"%s\"}", "finish");
     return NULL;
 }
@@ -1140,6 +1138,5 @@ void installer_update_grub (const gchar *uuid)
 
 void emit_progress (const gchar *step, const gchar *progress)
 {
-    g_warning ("emit progress:step->%s, progress->%s\n", step, progress);
     js_post_message_simply ("progress", "{\"stage\":\"%s\",\"progress\":\"%s\"}", step, progress);
 }

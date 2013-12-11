@@ -1028,7 +1028,7 @@ cb_timeout (gpointer data)
 
     if (progress != NULL) {
         if (*progress != NULL) {
-            g_printf ("cb timeout: emit extract progress:%s\n", *progress);
+            g_warning ("cb timeout: emit extract progress:%s\n", *progress);
             emit_progress ("extract", *progress);
         } else {
             g_warning ("cb timeout:*progress null\n");
@@ -1044,7 +1044,6 @@ cb_timeout (gpointer data)
 JS_EXPORT_API
 void installer_extract_squashfs ()
 {
-    g_warning ("extract squashfs");
     if (g_find_program_in_path ("unsquashfs") == NULL) {
         g_warning ("extract squashfs: unsquashfs not installed\n");
         emit_progress ("extract", "terminate");
@@ -1104,6 +1103,7 @@ void installer_extract_squashfs ()
                               &std_output,
                               &std_error,
                               &error);
+    g_warning ("func extract squashfs finish spawn pipes");
     if (error != NULL) {
         g_warning ("extract squashfs:spawn async pipes %s\n", error->message);
         g_error_free (error);

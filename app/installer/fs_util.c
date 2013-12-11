@@ -571,9 +571,7 @@ get_partition_free (gpointer data)
         g_warning ("get partition free:not support for fs %s\n", fs);
     }
 
-    g_warning ("post message:used free\n");
-    g_warning ("path:%s, fs:%s, part:%s, free:%f\n", path, fs, part, free);
-
+    g_warning ("js_post message for used:part->%s, free->%f, fs->%s, path->%s", part, free, fs, path);
     js_post_message_simply ("used","{\"part\":\"%s\", \"free\":\"%f\"}", part, free);
 
     g_free (handler->path);
@@ -756,8 +754,6 @@ is_slowly_device (gpointer data)
                 g_printf ("is slowly device:speed for %s is %g MB/sec\n", handler->path, num);
 
                 if (num < 10) {
-                    g_warning ("is slowly device:emit slow for %s\n", handler->uuid);
-                    g_warning ("post message:slow uuid\n");
                     js_post_message_simply("slow", "{\"uuid\":\"%s\"}", handler->uuid);
 
                 } else {
