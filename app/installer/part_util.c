@@ -397,18 +397,26 @@ gchar* installer_get_partition_type (const gchar *part)
             case PED_PARTITION_EXTENDED:
                 type = g_strdup ("extended");
                 break;
-            case PED_PARTITION_METADATA:
-                type = g_strdup ("metadata");
-                break;
             case PED_PARTITION_FREESPACE:
                 type = g_strdup ("freespace");
+                break;
+            case PED_PARTITION_METADATA:
+                type = g_strdup ("metadata");
                 break;
             case PED_PARTITION_PROTECTED:
                 type = g_strdup ("protected");
                 break;
             default:
-                //g_warning("get partition type:invalid type %d\n", part_type);
-                type = g_strdup ("protected");
+                if (part_type > PED_PARTITION_PROTECTED) {
+                    type = g_strdup ("protected");
+                } else if (part_type > PED_PARTITION_METADATA) {
+                    type = g_strdup ("metadata");
+                } else if (part_type > PED_PARTITION_FREESPACE) {
+                    type = g_strdup ("freespace");
+                } else {
+                    g_warning ("invalid type:%d\n", part_type);
+                    type = g_strdup ("protected");
+                }
                 break;
         }
     } else {
