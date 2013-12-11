@@ -571,7 +571,7 @@ get_partition_free (gpointer data)
         g_warning ("get partition free:not support for fs %s\n", fs);
     }
 
-    g_warning ("js_post message for used:part->%s, free->%f, fs->%s, path->%s", part, free, fs, path);
+    //g_warning ("js_post message for used:part->%s, free->%f, fs->%s, path->%s", part, free, fs, path);
     js_post_message_simply ("used","{\"part\":\"%s\", \"free\":\"%f\"}", part, free);
 
     g_free (handler->path);

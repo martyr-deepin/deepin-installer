@@ -58,53 +58,6 @@ void js_post_message(const char* name, JSValueRef json)
         g_warning("signal %s has not connected!\n", name);
     }
 }
-void js_post_message1(const char* name, JSValueRef json)
-{
-    g_warning ("js post message:%s\n", name);
-    if (signals == NULL) {
-        g_warning("signals %s has not init!\n", name);
-        return;
-    }
-
-    JSContextRef ctx = get_global_context();
-    g_return_if_fail(ctx != NULL);
-    JSObjectRef cb = g_hash_table_lookup(signals, name);
-
-    if (cb != NULL) {
-        Call* call = g_new0(Call, 1);
-        call->cb = cb;
-        call->arg = json;
-        g_warning ("js post message:%s before invoke\n", name);
-        g_main_context_invoke(NULL, (GSourceFunc)_interal_call, call);
-        g_warning ("js post message:%s after invoke\n", name);
-    } else {
-        g_warning("signal %s has not connected!\n", name);
-    }
-    g_warning ("js post message:%s finish\n", name);
-}
-
-
-void js_post_message_simply1(const char* name, const char* format, ...)
-{
-    JSContextRef ctx = get_global_context();
-    if (ctx == NULL) {
-        g_warning("send js message [%s] failed beacause js runtime hasn't be prepared.", name);
-        return;
-    }
-    if (format == NULL) {
-        printf("XX:----------------------------------------\n");
-        js_post_message1(name, JSValueMakeNull(ctx));
-    } else {
-        va_list args;
-        va_start(args, format);
-        char* json_str = g_strdup_vprintf(format, args);
-        printf("JJ:----------------------------------------%s\n", json_str);
-        va_end(args);
-
-        js_post_message1(name, json_from_cstr(ctx, json_str));
-        g_free(json_str);
-    }
-}
 
 void js_post_message_simply(const char* name, const char* format, ...)
 {

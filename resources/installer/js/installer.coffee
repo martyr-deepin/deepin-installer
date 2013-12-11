@@ -26,8 +26,3 @@ welcome_page = new Welcome("welcome")
 
 pc.add_page(welcome_page)
 #pc.add_page(part_page)
-welcome_page.username.input.value = 1
-welcome_page.hostname.input.value = 1
-welcome_page.password.input.value = 1
-welcome_page.confirmpassword.input.value = 1
-welcome_page.start_install_cb()
