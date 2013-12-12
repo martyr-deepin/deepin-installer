@@ -1066,7 +1066,7 @@ void installer_extract_squashfs ()
     guint processors = get_cpu_num ();
     guint puse = 1;
     if (processors > 2) {
-        puse = processors / 2;
+        puse = processors - 1;
     }
 
     gchar **argv = g_new0 (gchar *, 12);
@@ -1103,7 +1103,6 @@ void installer_extract_squashfs ()
                               &std_output,
                               &std_error,
                               &error);
-    g_warning ("func extract squashfs finish spawn pipes");
     if (error != NULL) {
         g_warning ("extract squashfs:spawn async pipes %s\n", error->message);
         g_error_free (error);
@@ -1136,14 +1135,37 @@ void installer_extract_squashfs ()
 static gboolean
 is_outdated_machine ()
 {
-    //fix me, when in virtual machine, always return FALSE
+    const gchar *cmd = "udevadm info --query=property --name=/dev/input/mouse0";
+    gchar *output = NULL;
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, NULL);
+    if (output != NULL) {
+        if (g_strrstr (output, "vmware") != NULL || g_strrstr (output, "virtualbox") != NULL) {
+            return FALSE;
+        }
+    } else {
+        g_warning ("is outdated machine:udevadm\n");
+    }
+    g_free (output);
+
+    const gchar *kvm_cmd  = "lscpu";
+    gchar *kvm_output = NULL;
+    g_spawn_command_line_sync (kvm_cmd, &kvm_output, NULL, NULL, NULL);
+    if (kvm_output != NULL) {
+        if (g_strrstr (kvm_output, "KVM") != NULL) {
+            return FALSE;
+        }
+    } else {
+        g_warning ("is outdated machine:lscpu\n");
+    }
+    g_free (kvm_output);
+    
     struct sysinfo info;
     if (sysinfo (&info) != 0) {
-        if (info.freeram < 1<<9) {
+        if (info.freeram < 1024 * 1024 * 1024) {
             return TRUE;
         }
     } else {
-        g_warning ("is outdated machine:%s\n", strerror (errno));
+        g_warning ("is outdated machine:freeram->%s\n", strerror (errno));
     }
 
     guint processors = get_cpu_num ();
