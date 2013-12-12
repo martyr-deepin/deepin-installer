@@ -839,7 +839,6 @@ gboolean installer_update_partition_geometry (const gchar *part, double start, d
         geom = &pedpartition->geom;
         if (geom != NULL) {
             ped_geometry_set (geom, (PedSector) start, (PedSector) length);
-            ped_geometry_sync_fast (geom);
             ret = TRUE;
         }
     } else {

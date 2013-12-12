@@ -85,17 +85,9 @@ init_m_part_info = ->
             m_part_info[part]["start"] = v_part_info[part]["start"]
             m_part_info[part]["length"] = v_part_info[part]["length"]
             m_part_info[part]["end"] = v_part_info[part]["end"]
-            if m_part_info[part]["type"] == "extended"
-                m_part_info[part]["fs"] = "extended"
-            else if m_part_info[part]["type"] in ["normal", "logical"]
-                m_part_info[part]["fs"] = v_part_info[part]["fs"]
-            else
-                m_part_info[part]["fs"] = ""
+            m_part_info[part]["fs"] = v_part_info[part]["fs"]
             m_part_info[part]["format"] = false
-            try
-                m_part_info[part]["mp"] = v_part_info[part]["mp"]
-            catch error
-                m_part_info[part]["mp"] = "unused"
+            m_part_info[part]["mp"] = v_part_info[part]["mp"]
             m_part_info[part]["path"] = v_part_info[part]["path"]
             m_part_info[part]["color"] = v_part_info[part]["color"]
             m_part_info[part]["width"] = v_part_info[part]["width"]
