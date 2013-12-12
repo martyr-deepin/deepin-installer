@@ -74,6 +74,8 @@ JS_EXPORT_API void installer_extract_iso ();
 
 JS_EXPORT_API void installer_extract_squashfs ();
 
+JS_EXPORT_API void installer_extract_intelligent ();
+
 JS_EXPORT_API gboolean installer_mount_procfs ();
 
 JS_EXPORT_API gboolean installer_chroot_target ();

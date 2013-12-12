@@ -1075,9 +1075,9 @@ void installer_extract_squashfs ()
     argv[2] = g_strdup ("-p");
     argv[3] = g_strdup_printf ("%d", puse);
     argv[4] = g_strdup ("-da");
-    argv[5] = g_strdup_printf ("%d", 32);
+    argv[5] = g_strdup_printf ("%d", 128);
     argv[6] = g_strdup ("-fr");
-    argv[7] = g_strdup_printf ("%d", 32);
+    argv[7] = g_strdup_printf ("%d", 128);
     argv[8] = g_strdup ("-d");
     argv[9] = g_strdup (target);
     argv[10] = g_strdup ("/cdrom/casper/filesystem.squashfs");
@@ -1131,6 +1131,39 @@ void installer_extract_squashfs ()
     cb_ids[2] = g_timeout_add (2000, (GSourceFunc) cb_timeout, progress);
     g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, cb_ids);
     g_strfreev (argv);
+}
+
+static gboolean
+is_outdated_machine ()
+{
+    //fix me, when in virtual machine, always return FALSE
+    struct sysinfo info;
+    if (sysinfo (&info) != 0) {
+        if (info.freeram < 1<<9) {
+            return TRUE;
+        }
+    } else {
+        g_warning ("is outdated machine:%s\n", strerror (errno));
+    }
+
+    guint processors = get_cpu_num ();
+    if (processors < 2) {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+JS_EXPORT_API
+void installer_extract_intelligent ()
+{
+    if (is_outdated_machine ()) {
+        g_printf ("extract intelligent:use extract iso\n");
+        installer_extract_iso ();
+    } else {
+        g_printf ("extract intelligent:use extract squashfs\n");
+        installer_extract_squashfs ();
+    }
 }
 
 JS_EXPORT_API
