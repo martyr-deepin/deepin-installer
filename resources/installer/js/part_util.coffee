@@ -540,6 +540,12 @@ get_logical_partitions = (disk) ->
 get_freespace_partitions = (disk) ->
     return v_disk_info[disk]["partitions"].filter(_filter_freespace)
 
+get_part_num = (part) ->
+    if v_part_info[part]["type"] not in ["normal", "logical", "extended"]
+        echo "invalid type to get part num"
+        return -1
+    return parseInt(v_part_info[part]["path"].replace(/\D/g, ''))
+
 is_in_same_block = (part_a, part_b) ->
     disk = v_part_info[part_a]["disk"]
     main_blocks = get_main_blocks(disk)
@@ -658,6 +664,7 @@ update_part_mp = (part, mp) ->
     v_part_info[part]["mp"] = mp
     mark_update(part)
 
+#compute virtual path according to part geometry
 compute_display_path = (disk) ->
     disk_path = v_disk_info[disk]["path"]
     sort_v_disk_info(disk)
@@ -676,6 +683,47 @@ compute_display_path = (disk) ->
 
     for part in get_freespace_partitions(disk)
         v_part_info[part]["path"] = ""
+
+#when add part, set its path to max plus 1, after mark the part type
+#when delete part, set others part minus 1, before mark the part type
+update_part_display_path = (part, op) ->
+    disk = v_part_info[part]["disk"]
+    disk_path = v_disk_info[disk]["path"]
+    if op == "add"
+        maxnum = 0
+        if v_part_info[part]["type"] == "logical"
+            for item in get_logical_partitions(disk)
+                part_num = get_part_num(item)
+                if part_num > maxnum
+                    maxnum = part_num
+            v_part_info[part]["path"] = disk_path + (maxnum + 1)
+
+        else if v_part_info[part]["type"] in ["normal", "extended"]
+            for item in get_primary_partitions(disk)
+                part_num = get_part_num(item)
+                if part_num > maxnum
+                    maxnum = part_num
+            v_part_info[part]["path"] = disk_path + (maxnum + 1)
+        else
+            echo "invalid part type to add for update part display path"
+
+    else if op == "delete"
+        current_num = get_part_num(part)
+        if v_part_info[part]["type"] == "logical"
+            for item in get_logical_partitions(disk)
+                part_num = get_part_num(item)
+                if part_num > current_num
+                    v_part_info[item]["path"] = disk_path + (part_num - 1)
+        else if v_part_info[part]["type"] in ["normal", "extended"]
+            for item in get_primary_partitions(disk)
+                part_num = get_part_num(item)
+                if part_num > current_num
+                    v_part_info[item]["path"] = disk_path + (part_num - 1)
+        else
+            echo "invalid part type to add for update part display path"
+
+    else
+        echo "invalid op in update part display path"
 
 get_selected_mp = ->
     mp_list = []
@@ -845,7 +893,9 @@ _delete_extended = (disk, part) ->
         v_disk_info[disk]["partitions"].splice(next_index, 1)
         delete v_part_info[next]
 
+    update_part_display_path(part, "delete")
     v_part_info[part]["type"] = "freespace"
+    v_part_info[part]["path"] = ""
     v_part_info[part]["fs"] = ""
     v_part_info[part]["os"] = ""
     v_part_info[part]["label"] = ""
@@ -867,7 +917,9 @@ delete_part = (part) ->
         echo "error in delete part, invalid partition type"
 
     #need update part type first to decide whether need delete extended
+    update_part_display_path(part, "delete")
     v_part_info[part]["type"] = "freespace"
+    v_part_info[part]["path"] = ""
     v_part_info[part]["fs"] = ""
     v_part_info[part]["os"] = ""
     v_part_info[part]["label"] = ""
@@ -880,7 +932,8 @@ delete_part = (part) ->
         _delete_extended(disk, extended)
         remain_part = extended
 
-    compute_display_path(disk)
+    #compute_display_path(disk)
+    sort_v_disk_info(disk)
     return remain_part
 
 #add normal partition
@@ -934,6 +987,7 @@ _add_logical = (disk, free_part) ->
         v_part_info[extended]["length"] = v_part_info[free_part]["length"]
         v_part_info[extended]["end"] = v_part_info[free_part]["end"]
         v_part_info[extended]["type"] = "extended"
+        update_part_display_path(extended, "add")
         v_disk_info[disk]["partitions"].push(extended)
         mark_add(extended)
     else
@@ -992,6 +1046,8 @@ add_part = (free_part, type, size, align, fs, mp) ->
             v_part_info[free_part]["width"] = Math.floor((v_part_info[free_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
     v_part_info[new_part]["type"] = type
+    update_part_display_path(new_part, "add")
+
     v_part_info[new_part]["align"] = align
     v_part_info[new_part]["fs"] = fs
     v_part_info[new_part]["mp"] = mp
@@ -999,7 +1055,8 @@ add_part = (free_part, type, size, align, fs, mp) ->
     v_part_info[new_part]["lvm"] = false
     v_part_info[new_part]["used"] = sector_to_mb(v_part_info[new_part]["length"], 512)
     v_disk_info[disk]["partitions"].push(new_part)
-    compute_display_path(disk)
+    #compute_display_path(disk)
+    sort_v_disk_info(disk)
     mark_add(new_part)
     return new_part
 
