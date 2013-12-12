@@ -417,7 +417,8 @@ init_v_disk_info = ->
         for part in DCore.Installer.get_disk_partitions(disk)
             type = DCore.Installer.get_partition_type(part)
             if type == "freespace"
-                if DCore.Installer.get_partition_length(part) > 4096
+                #only show freespace whose size greater than 10 MiB
+                if DCore.Installer.get_partition_length(part) > 20280
                     v_disk_info[disk]["partitions"].push(part)
             else if type in ["normal", "extended", "logical"]
                 if DCore.Installer.get_partition_path(part).indexOf("/dev/mapper") == -1
