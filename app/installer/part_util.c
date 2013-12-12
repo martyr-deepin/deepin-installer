@@ -827,6 +827,28 @@ gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part)
     return ret;
 }
 
+JS_EXPORT_API 
+gboolean installer_update_partition_geometry (const gchar *part, double start, double length) {
+    gboolean ret = FALSE;
+
+    PedPartition *pedpartition = NULL;
+    PedGeometry *geom = NULL;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+    if (pedpartition != NULL) {
+        geom = &pedpartition->geom;
+        if (geom != NULL) {
+            ped_geometry_set (geom, (PedSector) start, (PedSector) length);
+            ped_geometry_sync_fast (geom);
+            ret = TRUE;
+        }
+    } else {
+        g_warning ("update partition geometry:find pedpartition %s failed\n", part);
+    }
+
+    return ret;
+}
+
 JS_EXPORT_API
 gboolean installer_update_partition_fs (const gchar *part, const gchar *fs)
 {

@@ -84,6 +84,8 @@ JS_EXPORT_API gboolean installer_new_disk_partition (const gchar *part_uuid, con
 
 JS_EXPORT_API gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part);
 
+JS_EXPORT_API gboolean installer_update_partition_geometry (const gchar *part, double start, double length);
+
 JS_EXPORT_API gboolean installer_update_partition_fs (const gchar *part, const gchar *fs);
 
 JS_EXPORT_API gboolean installer_write_partition_mp (const gchar *part, const gchar *mp);

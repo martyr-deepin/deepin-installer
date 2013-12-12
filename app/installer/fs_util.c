@@ -838,7 +838,7 @@ get_partition_uuid (const gchar *path)
     GError *error = NULL;
 
     if (!g_file_test (path, G_FILE_TEST_EXISTS)) {
-        g_warning ("get partition uuid:path not exists");
+        g_warning ("get partition uuid:path %s not exists", path);
         return NULL;
     }
 
@@ -861,7 +861,8 @@ get_partition_label (const gchar *path)
     GError *error = NULL;
 
     if (!g_file_test (path, G_FILE_TEST_EXISTS)) {
-        g_warning ("get partition label:path not exists");
+        g_warning ("get partition label:path %s not exists", path);
+
         return NULL;
     }
 

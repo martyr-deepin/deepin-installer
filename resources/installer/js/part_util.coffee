@@ -239,6 +239,16 @@ do_partition = ->
                         echo error
 
                 else if m_part_info[part]["op"] == "update"
+                    if m_part_info[part]["start"] != v_part_info[part]["start"] or m_part_info[part]["length"] != v_part_info[part]["length"]
+                        try
+                            DCore.Installer.update_partition_geometry(part, v_part_info[part]["start"], v_part_info[part]["length"])
+                        catch error
+                            echo error
+                        try
+                            DCore.Installer.write_disk(disk)
+                        catch error
+                            echo error
+
                     if m_part_info[part]["fs"] != v_part_info[part]["fs"]
                         try
                             DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
@@ -269,10 +279,8 @@ do_partition = ->
                             DCore.Installer.write_disk(disk)
                         catch error
                             echo error
-
                 else
                     echo "just keep part"
-
         else
             echo "just keep disk"
 
