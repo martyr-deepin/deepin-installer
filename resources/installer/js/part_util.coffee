@@ -242,10 +242,11 @@ do_partition = ->
                             echo error
 
                     if m_part_info[part]["fs"] != v_part_info[part]["fs"]
-                        try
-                            DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
-                        catch error
-                            echo error
+                        if v_part_info[part]["fs"] not in ["", "unused"]
+                            try
+                                DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
+                            catch error
+                                echo error
                     if m_part_info[part]["mp"] != v_part_info[part]["mp"]
                         echo "mp changed"
                     try
