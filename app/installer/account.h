@@ -22,8 +22,7 @@
 #ifndef __ACCOUNT_H
 #define __ACCOUNT_H
 
-#include "misc.h"
-#include "jsextension.h"
+#include "base.h"
 #include <pwd.h>
 #include <sys/types.h>
 

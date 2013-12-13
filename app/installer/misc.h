@@ -22,22 +22,7 @@
 #ifndef __MISC_H
 #define __MISC_H
 
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/sysinfo.h>
-#include <sys/mount.h>
-#include <unistd.h>
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <gio/gunixinputstream.h>
-#include "utils.h"
-#include "jsextension.h"
+#include "base.h"
 
 void installer_reboot ();
 
@@ -51,10 +36,8 @@ JS_EXPORT_API gboolean installer_chroot_target ();
 
 JS_EXPORT_API void installer_copy_whitelist ();
 
-JS_EXPORT_API double installer_get_memory_size ();
+JS_EXPORT_API void installer_update_grub (const gchar *uuid);
 
-void emit_progress (const gchar *step, const gchar *progress);
-
-gchar *get_matched_string (const gchar *target, const gchar *regex_string);
+void finish_install_cleanup ();
 
 #endif

@@ -22,7 +22,7 @@
 #ifndef __KEYBOARD_H
 #define __KEYBOARD_H
 
-#include "misc.h"
+#include "base.h"
 
 JS_EXPORT_API JSObjectRef installer_get_keyboard_layouts (); 
 

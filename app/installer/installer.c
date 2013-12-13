@@ -20,31 +20,15 @@
  **/
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
-#include "jsextension.h"
-#include "dwebview.h"
-#include "i18n.h"
-#include "utils.h"
-#include "part_util.h"
-#include "fs_util.h"
-#include "misc.h"
-#include "account.h"
-#include "extract.h"
-#include "keyboard.h"
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/mount.h>
-#include <errno.h>
-#include <glib.h>
-#include <glib/gstdio.h>
+#include "dwebview.h"
+#include "i18n.h"
+#include "fs_util.h"
+#include "part_util.h"
+#include "misc.h"
 
 #define INSTALLER_HTML_PATH "file://"RESOURCE_DIR"/installer/index.html"
-#define PACKAGES_LIST_PATH RESOURCE_DIR"/installer/blacklist.ini"
-
-extern int chroot(const char *path);
-extern int fchdir(int fd);
-extern int chdir(const char *path);
 
 static GtkWidget *installer_container = NULL;
 
@@ -96,18 +80,6 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 }
 
 static void
-adapt_location_for_help ()
-{
-    GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (installer_container));
-    gint s_width = gdk_screen_get_width (screen);
-    gint s_height = gdk_screen_get_height (screen);
-    gint x = s_width > 1255 ? ((s_width - (755  + 500)) / 2) : 0;
-    gint y = s_height > 540 ? ((s_height - 540) / 2) : 0;
-
-    gtk_window_move (GTK_WINDOW (installer_container), x, y);
-}
-
-static void
 move_window_center ()
 {
     GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (installer_container));
@@ -116,6 +88,18 @@ move_window_center ()
     gint x = s_width > 1255 ? ((s_width - (755)) / 2) : 0;
     gint y = s_height > 540 ? ((s_height - 540) / 2) : 0;
     
+    gtk_window_move (GTK_WINDOW (installer_container), x, y);
+}
+
+static void
+adapt_location_for_help ()
+{
+    GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (installer_container));
+    gint s_width = gdk_screen_get_width (screen);
+    gint s_height = gdk_screen_get_height (screen);
+    gint x = s_width > 1255 ? ((s_width - (755  + 500)) / 2) : 0;
+    gint y = s_height > 540 ? ((s_height - 540) / 2) : 0;
+
     gtk_window_move (GTK_WINDOW (installer_container), x, y);
 }
 
@@ -175,126 +159,10 @@ gboolean installer_is_help_running ()
     return running;
 }
 
-//unmount after break chroot
-static void 
-unmount_target (const gchar *target)
-{
-    guint target_before = get_mount_target_count (target);
-    if (target_before < 1) {
-        return;
-    }
-
-    gchar *umount_sys_cmd = g_strdup_printf ("umount -l %s/sys", target);
-    gchar *umount_proc_cmd = g_strdup_printf ("umount -l %s/proc", target);
-    gchar *umount_devpts_cmd = g_strdup_printf ("umount -l %s/dev/pts", target);
-    gchar *umount_dev_cmd = g_strdup_printf ("umount -l %s/dev", target);
-    gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", target);
-
-    g_spawn_command_line_async (umount_sys_cmd, NULL);
-    g_spawn_command_line_async (umount_proc_cmd, NULL);
-    g_spawn_command_line_async (umount_devpts_cmd, NULL);
-    g_spawn_command_line_async (umount_dev_cmd, NULL);
-    g_spawn_command_line_async (umount_target_cmd, NULL);
-
-    g_free (umount_sys_cmd);
-    g_free (umount_proc_cmd);
-    g_free (umount_devpts_cmd);
-    g_free (umount_dev_cmd);
-    g_free (umount_target_cmd);
-}
-
-static void
-remove_packages ()
-{
-    extern gboolean in_chroot;
-    if (!in_chroot) {
-        g_warning ("remove packages:not in chroot\n");
-        return ;
-    }
-
-    GError *error = NULL;
-    gchar *cmd = NULL;
-    gchar *contents = NULL;
-    gchar **strarray = NULL;
-    gchar *packages = NULL;
-
-    if (!g_file_test (PACKAGES_LIST_PATH, G_FILE_TEST_EXISTS)) {
-        g_warning ("remove packages:%s not exists\n", PACKAGES_LIST_PATH);
-        goto out;
-    }
-    g_file_get_contents (PACKAGES_LIST_PATH, &contents, NULL, &error);
-    if (error != NULL) {
-        g_warning ("remove packages:get packages list %s\n", error->message);
-        goto out;
-    }
-    if (contents == NULL) {
-        g_warning ("remove packages:contents NULL\n");
-        goto out;
-    }
-    strarray = g_strsplit (contents, "\n", -1);
-    if (strarray == NULL) {
-       g_warning ("remove packages:strarray NULL\n"); 
-       goto out;
-    }
-    packages = g_strjoinv (" ", strarray);
-    if (packages == NULL) {
-        g_warning ("remove packages:packages NULL\n");
-        goto out;
-    }
-
-    if (g_file_test ("/var/lib/apt/lock", G_FILE_TEST_EXISTS)) {
-       g_unlink ("/var/lib/apt/lock"); 
-    }
-    
-    cmd = g_strdup_printf ("apt-get remove -y %s", packages);
-    g_spawn_command_line_async (cmd, &error);
-    if (error != NULL) {
-        g_warning ("remove packages:%s\n", error->message);
-    }
-    goto out;
-
-out:
-    g_free (cmd);
-    g_free (contents);
-    g_strfreev (strarray);
-    g_free (packages);
-    if (error != NULL) {
-        g_error_free (error);
-    }
-}
-
-static void
-finish_install_cleanup () 
-{
-    remove_packages ();
-    installer_hide_help ();
-    ped_device_free_all ();
-
-    extern const gchar *target;
-    if (target == NULL) {
-        g_warning ("finish install:target is NULL\n");
-
-    } else {
-        extern gboolean in_chroot;
-        if (in_chroot) {
-            extern int chroot_fd;
-            if (fchdir (chroot_fd) < 0) {
-                g_warning ("finish install:reset to chroot fd dir failed\n");
-            } else {
-                int i = 0;
-                for (i = 0; i < 1024; i++) {
-                    chdir ("..");
-                }
-                chroot (".");
-                unmount_target (target);
-            }
-        }
-    }
-}
-
 JS_EXPORT_API
 void installer_finish_install ()
 {
+    installer_hide_help ();
     finish_install_cleanup ();
     gtk_main_quit ();
 }
@@ -302,6 +170,7 @@ void installer_finish_install ()
 JS_EXPORT_API
 void installer_finish_reboot ()
 {
+    installer_hide_help ();
     finish_install_cleanup ();
     //installer_reboot ();
     g_spawn_command_line_async ("reboot", NULL);

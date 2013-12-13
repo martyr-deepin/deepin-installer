@@ -19,9 +19,11 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <parted/parted.h>
+#include <mntent.h>
+#include <sys/mount.h>
 #include "part_util.h"
 #include "fs_util.h"
-#include "misc.h"
 
 #define PART_INFO_LENGTH 4096
 
@@ -1104,63 +1106,3 @@ out:
     }
     return result;
 }
-
-static gpointer
-thread_update_grub (gpointer data)
-{
-    gchar *uuid = (gchar *) data;
-    gboolean ret = FALSE;
-    gchar *path = NULL;
-    gchar *grub_install = NULL;
-    GError *error = NULL;
-
-    if (uuid == NULL) {
-        g_warning ("update grub:destination uuid NULL\n");
-        goto out;
-    }
-    if (g_str_has_prefix (uuid, "disk")) {
-        path = installer_get_disk_path (uuid);
-    } else if (g_str_has_prefix (uuid, "part")) {
-        path = installer_get_partition_path (uuid);
-    } else {
-        g_warning ("update grub:invalid uuid %s\n", uuid);
-        goto out;
-    }
-
-    grub_install = g_strdup_printf ("grub-install --no-floppy --force %s", path);
-    g_spawn_command_line_sync (grub_install, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("update grub:grub-install %s\n", error->message);
-        goto out;
-    }
-
-    g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("update grub:update grub %s\n", error->message);
-        goto out;
-    }
-    ret = TRUE;
-    goto out;
-
-out:
-    g_free (uuid);
-    g_free (path);
-    g_free (grub_install);
-    if (error != NULL) {
-        g_error_free (error);
-    }
-    if (ret) {
-        emit_progress ("grub", "finish");
-    } else {
-        emit_progress ("grub", "terminate");
-    }
-    return NULL;
-}
-
-JS_EXPORT_API 
-void installer_update_grub (const gchar *uuid)
-{
-    GThread *thread = g_thread_new ("grub", (GThreadFunc) thread_update_grub, g_strdup (uuid));
-    g_thread_unref (thread);
-}
-

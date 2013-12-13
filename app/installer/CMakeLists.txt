@@ -1,13 +1,12 @@
 SET(NAME "installer")
 
-#GEN_JSC_SOURCE(JSC_GEN "jsc")
 GEN_JSC_SOURCE2(JSC_GEN "jsc" "installer" "installer.cfg")
 GEN_JSC_SOURCE2(JSC_HELP_GEN "jsc" "installerhelp" "help.cfg")
 
 pkg_check_modules(PARTED REQUIRED libparted)
 pkg_check_modules(XKLAVIER REQUIRED libxklavier)
 
-add_executable(${NAME} ${JSC_GEN} misc.c extract.c account.c keyboard.c fs_util.c part_util.c installer.c)
+add_executable(${NAME} ${JSC_GEN} base.c fs_util.c part_util.c misc.c extract.c account.c keyboard.c installer.c)
 
 add_executable(installerhelp ${JSC_HELP_GEN} help.c)
 

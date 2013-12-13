@@ -19,8 +19,9 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <sys/sysinfo.h>
+#include <ftw.h>
 #include "extract.h"
-#include "misc.h"
 
 static int 
 copy_file_cb (const char *path, const struct stat *sb, int typeflag)

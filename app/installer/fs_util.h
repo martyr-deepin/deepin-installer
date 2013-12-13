@@ -22,7 +22,7 @@
 #ifndef __FS_UTIL_H
 #define __FS_UTIL_H
 
-#include "misc.h"
+#include "base.h"
 
 struct SpeedHandler {
     const gchar *path;

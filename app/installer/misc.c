@@ -19,10 +19,21 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
+#include <glib/gstdio.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <parted/parted.h>
 #include "misc.h"
+#include "part_util.h"
 #include "fs_util.h"
 
 #define WHITE_LIST_PATH RESOURCE_DIR"/installer/whitelist.ini"
+#define PACKAGES_LIST_PATH RESOURCE_DIR"/installer/blacklist.ini"
+
+extern int chroot(const char *path);
+extern int fchdir(int fd);
+extern int chdir(const char *path);
 
 static GList *timezone_list = NULL;
 static GList *filelist = NULL;
@@ -405,54 +416,177 @@ out:
     }
 }
 
-JS_EXPORT_API 
-double installer_get_memory_size ()
+static gpointer
+thread_update_grub (gpointer data)
 {
-    struct sysinfo info;
-    if (sysinfo (&info) != 0) {
-        g_warning ("get memory size:%s\n", strerror (errno));
-        return 0;
-    }
-
-    return info.totalram;
-}
-
-void emit_progress (const gchar *step, const gchar *progress)
-{
-    js_post_message_simply ("progress", "{\"stage\":\"%s\",\"progress\":\"%s\"}", step, progress);
-}
-
-gchar *
-get_matched_string (const gchar *target, const gchar *regex_string) 
-{
-    gchar *result = NULL;
+    gchar *uuid = (gchar *) data;
+    gboolean ret = FALSE;
+    gchar *path = NULL;
+    gchar *grub_install = NULL;
     GError *error = NULL;
-    GRegex *regex;
-    GMatchInfo *match_info;
 
-    if (target == NULL || regex_string == NULL) {
-        g_warning ("get matched string:paramemter NULL\n");
-        return NULL;
+    if (uuid == NULL) {
+        g_warning ("update grub:destination uuid NULL\n");
+        goto out;
+    }
+    if (g_str_has_prefix (uuid, "disk")) {
+        path = installer_get_disk_path (uuid);
+    } else if (g_str_has_prefix (uuid, "part")) {
+        path = installer_get_partition_path (uuid);
+    } else {
+        g_warning ("update grub:invalid uuid %s\n", uuid);
+        goto out;
     }
 
-    regex = g_regex_new (regex_string, 0, 0, &error);
+    grub_install = g_strdup_printf ("grub-install --no-floppy --force %s", path);
+    g_spawn_command_line_sync (grub_install, NULL, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("get matched string:%s\n", error->message);
-        g_error_free (error);
-        return NULL;
+        g_warning ("update grub:grub-install %s\n", error->message);
+        goto out;
     }
-    error = NULL;
 
-    g_regex_match (regex, target, 0, &match_info);
-    if (g_match_info_matches (match_info)) {
-        result = g_match_info_fetch (match_info, 0);
+    g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("update grub:update grub %s\n", error->message);
+        goto out;
+    }
+    ret = TRUE;
+    goto out;
+
+out:
+    g_free (uuid);
+    g_free (path);
+    g_free (grub_install);
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    if (ret) {
+        emit_progress ("grub", "finish");
+    } else {
+        emit_progress ("grub", "terminate");
+    }
+    return NULL;
+}
+
+JS_EXPORT_API 
+void installer_update_grub (const gchar *uuid)
+{
+    GThread *thread = g_thread_new ("grub", (GThreadFunc) thread_update_grub, g_strdup (uuid));
+    g_thread_unref (thread);
+}
+
+//unmount after break chroot
+static void 
+unmount_target (const gchar *target)
+{
+    guint target_before = get_mount_target_count (target);
+    if (target_before < 1) {
+        return;
+    }
+
+    gchar *umount_sys_cmd = g_strdup_printf ("umount -l %s/sys", target);
+    gchar *umount_proc_cmd = g_strdup_printf ("umount -l %s/proc", target);
+    gchar *umount_devpts_cmd = g_strdup_printf ("umount -l %s/dev/pts", target);
+    gchar *umount_dev_cmd = g_strdup_printf ("umount -l %s/dev", target);
+    gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", target);
+
+    g_spawn_command_line_async (umount_sys_cmd, NULL);
+    g_spawn_command_line_async (umount_proc_cmd, NULL);
+    g_spawn_command_line_async (umount_devpts_cmd, NULL);
+    g_spawn_command_line_async (umount_dev_cmd, NULL);
+    g_spawn_command_line_async (umount_target_cmd, NULL);
+
+    g_free (umount_sys_cmd);
+    g_free (umount_proc_cmd);
+    g_free (umount_devpts_cmd);
+    g_free (umount_dev_cmd);
+    g_free (umount_target_cmd);
+}
+
+static void
+remove_packages ()
+{
+    extern gboolean in_chroot;
+    if (!in_chroot) {
+        g_warning ("remove packages:not in chroot\n");
+        return ;
+    }
+
+    GError *error = NULL;
+    gchar *cmd = NULL;
+    gchar *contents = NULL;
+    gchar **strarray = NULL;
+    gchar *packages = NULL;
+
+    if (!g_file_test (PACKAGES_LIST_PATH, G_FILE_TEST_EXISTS)) {
+        g_warning ("remove packages:%s not exists\n", PACKAGES_LIST_PATH);
+        goto out;
+    }
+    g_file_get_contents (PACKAGES_LIST_PATH, &contents, NULL, &error);
+    if (error != NULL) {
+        g_warning ("remove packages:get packages list %s\n", error->message);
+        goto out;
+    }
+    if (contents == NULL) {
+        g_warning ("remove packages:contents NULL\n");
+        goto out;
+    }
+    strarray = g_strsplit (contents, "\n", -1);
+    if (strarray == NULL) {
+       g_warning ("remove packages:strarray NULL\n"); 
+       goto out;
+    }
+    packages = g_strjoinv (" ", strarray);
+    if (packages == NULL) {
+        g_warning ("remove packages:packages NULL\n");
+        goto out;
+    }
+
+    if (g_file_test ("/var/lib/apt/lock", G_FILE_TEST_EXISTS)) {
+       g_unlink ("/var/lib/apt/lock"); 
+    }
+    
+    cmd = g_strdup_printf ("apt-get remove -y %s", packages);
+    g_spawn_command_line_async (cmd, &error);
+    if (error != NULL) {
+        g_warning ("remove packages:%s\n", error->message);
+    }
+    goto out;
+
+out:
+    g_free (cmd);
+    g_free (contents);
+    g_strfreev (strarray);
+    g_free (packages);
+    if (error != NULL) {
+        g_error_free (error);
+    }
+}
+
+void
+finish_install_cleanup () 
+{
+    remove_packages ();
+    ped_device_free_all ();
+
+    extern const gchar *target;
+    if (target == NULL) {
+        g_warning ("finish install:target is NULL\n");
 
     } else {
-        g_warning ("get matched string failed!\n");
+        extern gboolean in_chroot;
+        if (in_chroot) {
+            extern int chroot_fd;
+            if (fchdir (chroot_fd) < 0) {
+                g_warning ("finish install:reset to chroot fd dir failed\n");
+            } else {
+                int i = 0;
+                for (i = 0; i < 1024; i++) {
+                    chdir ("..");
+                }
+                chroot (".");
+                unmount_target (target);
+            }
+        }
     }
-
-    g_match_info_free (match_info);
-    g_regex_unref (regex);
-
-    return result;
 }

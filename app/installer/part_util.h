@@ -22,15 +22,7 @@
 #ifndef __PARTED_UTIL_H
 #define __PARTED_UTIL_H
 
-#include <parted/parted.h>
-#include <stdio.h>
-#include <errno.h>
-#include <mntent.h>
-#include <glib.h>
-#include <glib/gprintf.h>
-#include <sys/mount.h>
-#include "utils.h"
-#include "jsextension.h"
+#include "base.h"
 
 JS_EXPORT_API gchar* installer_rand_uuid ();
 
@@ -97,7 +89,5 @@ JS_EXPORT_API gboolean installer_set_partition_flag (const gchar *part, const gc
 JS_EXPORT_API gboolean installer_write_disk (const gchar *disk);
 
 JS_EXPORT_API gboolean installer_mount_partition (const gchar *part, const gchar *mp);
-
-JS_EXPORT_API void installer_update_grub (const gchar *uuid);
 
 #endif

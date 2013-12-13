@@ -19,15 +19,22 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef __EXTRACT_H
-#define __EXTRACT_H
+#ifndef __BASE_H
+#define __BASE_H
 
-#include "base.h"
+#include <glib.h>
+#include <glib/gprintf.h>
+#include <gio/gio.h>
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include "jsextension.h"
+#include "utils.h"
 
-JS_EXPORT_API void installer_extract_iso ();
+void emit_progress (const gchar *step, const gchar *progress);
 
-JS_EXPORT_API void installer_extract_squashfs ();
+gchar *get_matched_string (const gchar *target, const gchar *regex_string);
 
-JS_EXPORT_API void installer_extract_intelligent ();
+JS_EXPORT_API double installer_get_memory_size ();
 
 #endif
