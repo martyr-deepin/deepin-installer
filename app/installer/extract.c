@@ -330,12 +330,14 @@ is_outdated_machine ()
             return FALSE;
         }
     } else {
-        g_warning ("is outdated machine:lscpu\n");
+        g_warning ("is outdated machine:lscpu not kvm\n");
     }
     g_free (kvm_output);
     
-    double freeram = get_free_memory_size ();
-    if (freeram < 1024 * 1024 * 1024) {
+    //double freeram = get_free_memory_size ();
+    double freeram = installer_get_memory_size ();
+    if (freeram > 0 && freeram < 1024 * 1024 * 1024) {
+        g_warning ("is outdated machine:free mem %f less than 1G\n", freeram);
         return TRUE;
     }
 
