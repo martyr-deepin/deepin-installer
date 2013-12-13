@@ -432,34 +432,25 @@ init_v_part_info = ->
             v_part_info[part] = {}
             v_part_info[part]["type"] = DCore.Installer.get_partition_type(part)
             v_part_info[part]["disk"] = disk
-            try
-                v_part_info[part]["used"] = "unknown"
-                if v_part_info[part]["type"] != "freespace"
-                    DCore.Installer.get_partition_free (part)
-            catch error
-                echo error
-            #please fix the return null string
-            #v_part_info[part]["name"] = DCore.Installer.get_partition_name(part)
+            v_part_info[part]["used"] = "unknown"
             v_part_info[part]["start"] = DCore.Installer.get_partition_start(part)
             v_part_info[part]["length"] = DCore.Installer.get_partition_length(part)
             v_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
-            if v_part_info[part]["type"] == "extended"
-                v_part_info[part]["fs"] = ""
-            else if v_part_info[part]["type"] in ["normal", "logical"]
-                try
-                    v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
-                catch error
-                    echo error
-                    v_part_info[part]["fs"] = ""
-            else
-                v_part_info[part]["fs"] = ""
             v_part_info[part]["mp"] = "unused"
             v_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
             v_part_info[part]["color"] = get_random_color() 
             v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
-            v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
-            v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
-            v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm")
+            if v_part_info[part]["type"] != "freespace"
+                DCore.Installer.get_partition_free (part)
+                v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
+                v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
+                v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
+                v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm") 
+            else
+                v_part_info[part]["fs"] = null
+                v_part_info[part]["os"] = null
+                v_part_info[part]["label"] = null
+                v_part_info[part]["lvm"] = null
 
 _sort_part_geom = (part_a, part_b) ->
     if v_part_info[part_a]["start"] == v_part_info[part_b]["start"]
