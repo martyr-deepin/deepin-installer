@@ -698,13 +698,13 @@ update_part_display_path = (part, op) ->
                 if part_num > maxnum
                     maxnum = part_num
             v_part_info[part]["path"] = disk_path + (maxnum + 1)
-
         else if v_part_info[part]["type"] in ["normal", "extended"]
-            for item in get_primary_partitions(disk)
-                part_num = get_part_num(item)
-                if part_num > maxnum
-                    maxnum = part_num
-            v_part_info[part]["path"] = disk_path + (maxnum + 1)
+            echo "just keep others num when add primary"
+            path_list = get_primary_partitions(disk).map(get_part_num).sort()
+            part_num = 1
+            while part_num in path_list
+                part_num++
+            v_part_info[part]["path"] = part_num
         else
             echo "invalid part type to add for update part display path"
 
@@ -715,11 +715,10 @@ update_part_display_path = (part, op) ->
                 part_num = get_part_num(item)
                 if part_num > current_num
                     v_part_info[item]["path"] = disk_path + (part_num - 1)
+            v_part_info[part]["path"] = ""
         else if v_part_info[part]["type"] in ["normal", "extended"]
-            for item in get_primary_partitions(disk)
-                part_num = get_part_num(item)
-                if part_num > current_num
-                    v_part_info[item]["path"] = disk_path + (part_num - 1)
+            echo "just keep others num when delete primary"
+            v_part_info[part]["path"] = ""
         else
             echo "invalid part type to add for update part display path"
 
@@ -896,7 +895,6 @@ _delete_extended = (disk, part) ->
 
     update_part_display_path(part, "delete")
     v_part_info[part]["type"] = "freespace"
-    v_part_info[part]["path"] = ""
     v_part_info[part]["fs"] = ""
     v_part_info[part]["os"] = ""
     v_part_info[part]["label"] = ""
@@ -920,7 +918,6 @@ delete_part = (part) ->
     #need update part type first to decide whether need delete extended
     update_part_display_path(part, "delete")
     v_part_info[part]["type"] = "freespace"
-    v_part_info[part]["path"] = ""
     v_part_info[part]["fs"] = ""
     v_part_info[part]["os"] = ""
     v_part_info[part]["label"] = ""
