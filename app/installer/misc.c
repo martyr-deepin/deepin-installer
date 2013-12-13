@@ -45,8 +45,8 @@ extern void endpwent (void);
 extern int chroot (const char *path);
 extern int lchown (const char *path, uid_t owner, gid_t group);
 
-XklConfigRec *config = NULL;
-GHashTable *layout_variants_hash = NULL;
+static XklConfigRec *config = NULL;
+static GHashTable *layout_variants_hash = NULL;
 static GList *timezone_list = NULL;
 static GList *filelist = NULL;
 
@@ -1069,18 +1069,14 @@ void installer_extract_squashfs ()
         puse = processors - 1;
     }
 
-    gchar **argv = g_new0 (gchar *, 12);
+    gchar **argv = g_new0 (gchar *, 8);
     argv[0] = g_strdup ("unsquashfs");
     argv[1] = g_strdup ("-f");
     argv[2] = g_strdup ("-p");
     argv[3] = g_strdup_printf ("%d", puse);
-    argv[4] = g_strdup ("-da");
-    argv[5] = g_strdup_printf ("%d", 128);
-    argv[6] = g_strdup ("-fr");
-    argv[7] = g_strdup_printf ("%d", 128);
-    argv[8] = g_strdup ("-d");
-    argv[9] = g_strdup (target);
-    argv[10] = g_strdup ("/cdrom/casper/filesystem.squashfs");
+    argv[4] = g_strdup ("-d");
+    argv[5] = g_strdup (target);
+    argv[6] = g_strdup ("/cdrom/casper/filesystem.squashfs");
 
     gint std_output;
     gint std_error;
