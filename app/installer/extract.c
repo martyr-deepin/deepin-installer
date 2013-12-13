@@ -334,13 +334,9 @@ is_outdated_machine ()
     }
     g_free (kvm_output);
     
-    struct sysinfo info;
-    if (sysinfo (&info) != 0) {
-        if (info.freeram < 1024 * 1024 * 1024) {
-            return TRUE;
-        }
-    } else {
-        g_warning ("is outdated machine:freeram->%s\n", strerror (errno));
+    double freeram = get_free_memory_size ();
+    if (freeram < 1024 * 1024 * 1024) {
+        return TRUE;
     }
 
     guint processors = get_cpu_num ();

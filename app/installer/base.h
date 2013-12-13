@@ -37,6 +37,8 @@ gchar *get_matched_string (const gchar *target, const gchar *regex_string);
 
 JS_EXPORT_API double installer_get_memory_size ();
 
+double get_free_memory_size ();
+
 guint get_cpu_num ();
 
 gchar *get_partition_mount_point (const gchar *path);

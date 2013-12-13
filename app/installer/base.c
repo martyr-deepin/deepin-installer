@@ -74,6 +74,17 @@ double installer_get_memory_size ()
     return info.totalram;
 }
 
+double get_free_memory_size ()
+{
+    struct sysinfo info;
+    if (sysinfo (&info) != 0) {
+        g_warning ("get free memory size:%s\n", strerror (errno));
+        return 0;
+    }
+
+    return info.freeram;
+}
+
 guint
 get_cpu_num ()
 {
@@ -84,7 +95,7 @@ get_cpu_num ()
 
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("get cpu num:%s\n", error->message);
+       g_warning ("get cpu num:%s\n", error->message);
         g_error_free (error);
     }
     if (output == NULL) {
