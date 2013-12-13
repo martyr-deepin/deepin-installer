@@ -111,28 +111,6 @@ out:
     }
 }
 
-static guint
-get_cpu_num ()
-{
-    guint num = 0;
-    gchar *output = NULL;
-    const gchar *cmd = "sh -c \"cat /proc/cpuinfo |grep processor |wc -l\"";
-    GError *error = NULL;
-
-    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("get cpu num:%s\n", error->message);
-        g_error_free (error);
-    }
-    if (output == NULL) {
-        return num;
-    }
-    num = g_strtod (g_strstrip (output), NULL);
-
-    g_free (output);
-    return num;
-}
-
 static void
 watch_extract_child (GPid pid, gint status, gpointer data)
 {

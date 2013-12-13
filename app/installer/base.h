@@ -37,4 +37,14 @@ gchar *get_matched_string (const gchar *target, const gchar *regex_string);
 
 JS_EXPORT_API double installer_get_memory_size ();
 
+guint get_cpu_num ();
+
+gchar *get_partition_mount_point (const gchar *path);
+
+guint get_mount_target_count (const gchar *target);
+
+gchar *get_partition_uuid (const gchar *path);
+
+gchar *get_partition_label (const gchar *path);
+
 #endif

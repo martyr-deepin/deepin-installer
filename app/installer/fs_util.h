@@ -35,8 +35,6 @@ struct FsHandler {
     gchar *part;
 };
 
-gchar *get_partition_mount_point (const gchar *path);
-
 gchar *get_mounted_partition_used (const gchar *path);
 
 gpointer get_partition_free (gpointer data);
@@ -46,11 +44,5 @@ void set_partition_filesystem (const gchar *path, const gchar *fs);
 gboolean inhibit_disk ();
 
 gpointer is_slowly_device (gpointer data);
-
-guint get_mount_target_count (const gchar *target);
-
-gchar *get_partition_uuid (const gchar *path);
-
-gchar *get_partition_label (const gchar *path);
 
 #endif
