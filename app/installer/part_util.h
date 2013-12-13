@@ -18,6 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
+
 #ifndef __PARTED_UTIL_H
 #define __PARTED_UTIL_H
 
@@ -27,6 +28,7 @@
 #include <mntent.h>
 #include <glib.h>
 #include <glib/gprintf.h>
+#include <sys/mount.h>
 #include "utils.h"
 #include "jsextension.h"
 
@@ -97,7 +99,5 @@ JS_EXPORT_API gboolean installer_write_disk (const gchar *disk);
 JS_EXPORT_API gboolean installer_mount_partition (const gchar *part, const gchar *mp);
 
 JS_EXPORT_API void installer_update_grub (const gchar *uuid);
-
-void emit_progress (const gchar *step, const gchar *progress);
 
 #endif

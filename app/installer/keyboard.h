@@ -19,38 +19,17 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef __FS_UTIL_H
-#define __FS_UTIL_H
+#ifndef __KEYBOARD_H
+#define __KEYBOARD_H
 
 #include "misc.h"
 
-struct SpeedHandler {
-    const gchar *path;
-    const gchar *uuid;
-};
+JS_EXPORT_API JSObjectRef installer_get_keyboard_layouts (); 
 
-struct FsHandler {
-    gchar *path;
-    gchar *fs;
-    gchar *part;
-};
+JS_EXPORT_API JSObjectRef installer_get_layout_variants (const gchar *layout_name); 
 
-gchar *get_partition_mount_point (const gchar *path);
+JS_EXPORT_API JSObjectRef installer_get_current_layout_variant ();
 
-gchar *get_mounted_partition_used (const gchar *path);
-
-gpointer get_partition_free (gpointer data);
-
-void set_partition_filesystem (const gchar *path, const gchar *fs);
-
-gboolean inhibit_disk ();
-
-gpointer is_slowly_device (gpointer data);
-
-guint get_mount_target_count (const gchar *target);
-
-gchar *get_partition_uuid (const gchar *path);
-
-gchar *get_partition_label (const gchar *path);
+JS_EXPORT_API void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant);
 
 #endif

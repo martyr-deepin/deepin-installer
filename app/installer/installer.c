@@ -27,6 +27,9 @@
 #include "part_util.h"
 #include "fs_util.h"
 #include "misc.h"
+#include "account.h"
+#include "extract.h"
+#include "keyboard.h"
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>

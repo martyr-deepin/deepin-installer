@@ -20,45 +20,6 @@
  **/
 
 #include "fs_util.h"
-#include "jsextension.h"
-#include <stdio.h>
-#include <glib/gstdio.h>
-#include <mntent.h>
-
-gchar *
-get_matched_string (const gchar *target, const gchar *regex_string) 
-{
-    gchar *result = NULL;
-    GError *error = NULL;
-    GRegex *regex;
-    GMatchInfo *match_info;
-
-    if (target == NULL || regex_string == NULL) {
-        g_warning ("get matched string:paramemter NULL\n");
-        return NULL;
-    }
-
-    regex = g_regex_new (regex_string, 0, 0, &error);
-    if (error != NULL) {
-        g_warning ("get matched string:%s\n", error->message);
-        g_error_free (error);
-        return NULL;
-    }
-    error = NULL;
-
-    g_regex_match (regex, target, 0, &match_info);
-    if (g_match_info_matches (match_info)) {
-        result = g_match_info_fetch (match_info, 0);
-
-    } else {
-        g_warning ("get matched string failed!\n");
-    }
-
-    g_match_info_free (match_info);
-    g_regex_unref (regex);
-
-    return result;
-}
 
 gchar *
 get_partition_mount_point (const gchar *path)

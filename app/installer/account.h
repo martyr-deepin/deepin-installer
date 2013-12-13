@@ -19,38 +19,37 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef __FS_UTIL_H
-#define __FS_UTIL_H
+#ifndef __ACCOUNT_H
+#define __ACCOUNT_H
 
 #include "misc.h"
+#include "jsextension.h"
+#include <pwd.h>
+#include <sys/types.h>
 
-struct SpeedHandler {
-    const gchar *path;
-    const gchar *uuid;
+struct PasswdHandler {
+    gchar *username;
+    gchar *password;
+    gchar *hostname;
+    GPid pid;
+    GIOChannel *in_channel;
+    GIOChannel *out_channel;
+    guint child_watch_id;
+    guint stdout_watch_id;
 };
 
-struct FsHandler {
-    gchar *path;
-    gchar *fs;
-    gchar *part;
-};
+JS_EXPORT_API JSObjectRef installer_get_system_users ();
 
-gchar *get_partition_mount_point (const gchar *path);
+JS_EXPORT_API void installer_create_user (const gchar *username, const gchar *hostname, const gchar *password);
 
-gchar *get_mounted_partition_used (const gchar *path);
+gboolean add_user (const gchar *username);
 
-gpointer get_partition_free (gpointer data);
+gboolean set_user_home (const gchar *username);
 
-void set_partition_filesystem (const gchar *path, const gchar *fs);
+gboolean set_user_password (struct PasswdHandler *handler);
 
-gboolean inhibit_disk ();
+gboolean set_group (const gchar *username);
 
-gpointer is_slowly_device (gpointer data);
-
-guint get_mount_target_count (const gchar *target);
-
-gchar *get_partition_uuid (const gchar *path);
-
-gchar *get_partition_label (const gchar *path);
+gboolean write_hostname (const gchar *hostname);
 
 #endif

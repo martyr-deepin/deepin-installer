@@ -21,8 +21,7 @@
 
 #include "part_util.h"
 #include "fs_util.h"
-#include <sys/mount.h>
-#include <errno.h>
+#include "misc.h"
 
 #define PART_INFO_LENGTH 4096
 
@@ -1165,7 +1164,3 @@ void installer_update_grub (const gchar *uuid)
     g_thread_unref (thread);
 }
 
-void emit_progress (const gchar *step, const gchar *progress)
-{
-    js_post_message_simply ("progress", "{\"stage\":\"%s\",\"progress\":\"%s\"}", step, progress);
-}
