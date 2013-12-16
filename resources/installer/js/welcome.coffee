@@ -46,27 +46,27 @@ _sort_layout = (layout_a, layout_b) ->
 class Keyboard extends Widget
     constructor: (@id)->
         super
-        #@init_default_layout()
         @current = create_element("div", "Current", @element)
-        @current.innerText = DCore.Installer.get_layout_description(__selected_layout)
-
         @list = create_element("div", "KeyBoardList", @element)
         for layout in @get_layouts().sort(_sort_layout)
             @construct_item(layout)
+        @init_default_layout()
+        @current.innerText = DCore.Installer.get_layout_description(__selected_layout)
 
     init_default_layout: ->
         lay_var = DCore.Installer.get_current_layout_variant()
         lay = lay_var["layouts"]
-        if lay.length > 0
+        if lay? and lay.length > 0
             mylay = lay[0]
         variant = lay_var["variants"]
-        if variant.length > 0
+        if variant? and variant.length > 0
             myvar = variant[0]
-        if myvar.length > 0
+        if myvar? and myvar.length > 0
             current = mylay + "," + myvar
         else
             current = mylay
-        __selected_layout = current
+        if current?
+            __selected_layout = current
 
     get_layouts: ->
         layouts = []

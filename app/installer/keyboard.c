@@ -25,9 +25,9 @@
 #include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
 
-XklConfigRec *config = NULL;
-GHashTable *layout_variants_hash = NULL;
-GHashTable *layout_desc_hash = NULL;
+static XklConfigRec *config_rec = NULL;
+static GHashTable *layout_variants_hash = NULL;
+static GHashTable *layout_desc_hash = NULL;
 
 static void 
 _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
@@ -58,7 +58,12 @@ _foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer d
 void
 init_keyboard_layouts () 
 {
-    g_printf ("init keyboard layouts");
+    static gboolean inited = FALSE;
+    if (inited) {
+        g_warning ("init keyboard layouts:already inited\n");
+    }
+    inited = TRUE;
+
     layout_variants_hash = g_hash_table_new_full ((GHashFunc) g_str_hash, 
                                                   (GEqualFunc) g_str_equal, 
                                                   (GDestroyNotify) g_free, 
@@ -85,9 +90,9 @@ init_keyboard_layouts ()
         goto out;
     }
 
-    config = xkl_config_rec_new ();
-    xkl_config_rec_get_from_server (config, engine);
-    if (config == NULL) {
+    config_rec = xkl_config_rec_new ();
+    xkl_config_rec_get_from_server (config_rec, engine);
+    if (config_rec == NULL) {
         g_warning ("init keyboard layouts: xkl config rec\n");
         goto out;
     }
@@ -158,6 +163,7 @@ JSObjectRef installer_get_layout_variants (const gchar *layout_name)
 {
     JSObjectRef layout_variants = json_array_create ();
     if (layout_variants_hash == NULL) {
+        g_warning ("get layout variants:layout variants hash NULL\n");
         init_keyboard_layouts ();
     }
 
@@ -178,24 +184,25 @@ JSObjectRef installer_get_current_layout_variant ()
 {
     JSObjectRef current = json_create ();
 
-    if (config == NULL) {
+    if (config_rec == NULL) {
         g_warning ("get current layout variant:xkl config null\n");
+        init_keyboard_layouts ();
         return current;
     }
 
-    gchar **layouts = g_strdupv (config->layouts);
-    gchar **variants = g_strdupv (config->variants);
+    gchar **layouts = g_strdupv (config_rec->layouts);
+    gchar **variants = g_strdupv (config_rec->variants);
 
     JSObjectRef layout_array = json_array_create ();
     JSObjectRef variant_array = json_array_create ();
 
     gsize index = 0;
-    for (index = 0; index < sizeof(layouts)/sizeof(gchar*); index++) {
+    for (index = 0; index < g_strv_length (layouts); index++) {
         json_array_insert (layout_array, index, jsvalue_from_cstr (get_global_context (), layouts[index]));
     }
     json_append_value (current, "layouts", (JSValueRef) layout_array);
 
-    for (index = 0; index < sizeof(variants)/sizeof(gchar*); index++) {
+    for (index = 0; index < g_strv_length (variants); index++) {
         json_array_insert (variant_array, index, jsvalue_from_cstr (get_global_context (), variants[index]));
     }
     json_append_value (current, "variants", (JSValueRef) variant_array);
