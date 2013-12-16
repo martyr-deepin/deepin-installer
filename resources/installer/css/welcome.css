@@ -109,14 +109,17 @@
     font-size:14px;
 }
 
+/*
 .Keyboard {
     position:absolute;
     left:430px;
     top:90px;
     bottom:18px;
     width:312px;
+    width:736px;
     height:430px;
 }
+*/
 
 .Current {
     background:#D0D0D0;
@@ -147,7 +150,7 @@
     background:#2FC1FF;
 }
 
-.Timezone {
+.Timezone, .Keyboard {
     position:absolute;
     left:8px;
     right:8px;

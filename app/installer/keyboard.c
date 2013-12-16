@@ -125,7 +125,7 @@ gchar *installer_get_layout_description (const gchar *layout)
         g_warning ("get layout description:layout desc hash NULL\n");
         init_keyboard_layouts ();
     }
-    desc = (gchar *) g_hash_table_lookup (layout_desc_hash, layout);
+    desc = g_strdup (g_hash_table_lookup (layout_desc_hash, layout));
     if (desc == NULL) {
         desc = g_strdup (layout);
     }

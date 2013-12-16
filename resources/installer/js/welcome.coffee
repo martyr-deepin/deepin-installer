@@ -17,7 +17,7 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-__selected_layout = "es"
+__selected_layout = "cn"
 __selected_timezone = "Asia/Shanghai"
 __selected_username = null
 __selected_hostname = null
@@ -38,15 +38,20 @@ class RequireMatchDialog extends Dialog
         echo "require match cb"
         DCore.Installer.finish_install()
 
+_sort_layout = (layout_a, layout_b) ->
+    a_desc = DCore.Installer.get_layout_description(layout_a)
+    b_desc = DCore.Installer.get_layout_description(layout_b)
+    return a_desc.localeCompare(b_desc)
+
 class Keyboard extends Widget
     constructor: (@id)->
         super
         #@init_default_layout()
         @current = create_element("div", "Current", @element)
-        @current.innerText = __selected_layout
+        @current.innerText = DCore.Installer.get_layout_description(__selected_layout)
 
         @list = create_element("div", "KeyBoardList", @element)
-        for layout in @get_layouts()
+        for layout in @get_layouts().sort(_sort_layout)
             @construct_item(layout)
 
     init_default_layout: ->
@@ -79,7 +84,7 @@ class Keyboard extends Widget
         )
 
     update_layout: (layout) ->
-        @current.innerText = layout
+        @current.innerText = DCore.Installer.get_layout_description(layout)
         __selected_layout = layout
         #@set_livecd_layout()
 
