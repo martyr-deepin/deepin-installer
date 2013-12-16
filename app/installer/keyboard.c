@@ -25,9 +25,9 @@
 #include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
 
-static XklConfigRec *config_rec = NULL;
-static GHashTable *layout_variants_hash = NULL;
-static GHashTable *layout_desc_hash = NULL;
+XklConfigRec *config_rec;
+GHashTable *layout_variants_hash;
+GHashTable *layout_desc_hash;
 
 static void 
 _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)

@@ -22,6 +22,7 @@
 #include <sys/sysinfo.h>
 #include <ftw.h>
 #include "extract.h"
+#include "keyboard.h"
 
 static int 
 copy_file_cb (const char *path, const struct stat *sb, int typeflag)
@@ -352,6 +353,13 @@ is_outdated_machine ()
 JS_EXPORT_API
 void installer_extract_intelligent ()
 {
+    //free memory used by keyboard layout variant to help extract
+    extern GHashTable *layout_variants_hash;
+    g_hash_table_destroy (layout_variants_hash);
+
+    extern GHashTable *layout_desc_hash;
+    g_hash_table_destroy (layout_desc_hash);
+
     if (is_outdated_machine ()) {
         g_printf ("extract intelligent:use extract iso\n");
         installer_extract_iso ();
