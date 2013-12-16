@@ -25,16 +25,17 @@
 #include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
 
+static XklEngine *engine = NULL;
 static XklConfigRec *config = NULL;
 static GHashTable *layout_variants_hash = NULL;
-
 
 static void 
 _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
     const gchar *layout = (const gchar *)data;
     GList *variants = g_list_copy (g_hash_table_lookup (layout_variants_hash, layout));
-    variants = g_list_append (variants, g_strdup (item->description));
+    //variants = g_list_append (variants, g_strdup (item->description));
+    variants = g_list_append (variants, g_strdup (item->name));
     g_hash_table_replace (layout_variants_hash, g_strdup (layout), variants);
 }
 
@@ -42,11 +43,11 @@ static void
 _foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
     GList *variants = NULL;
-    g_hash_table_insert (layout_variants_hash, g_strdup (item->description), variants);
+    g_hash_table_insert (layout_variants_hash, g_strdup (item->name), variants);
     xkl_config_registry_foreach_layout_variant(config, 
                                                item->name,
                                                _foreach_variant, 
-                                               (gpointer) item->description);
+                                               (gpointer) item->name);
 }
 
 void
@@ -59,7 +60,6 @@ init_keyboard_layouts ()
                                                   (GDestroyNotify) g_list_free);
 
     Display *dpy = NULL;
-    XklEngine *engine = NULL;
     XklConfigRegistry *cfg_reg = NULL;
     
     dpy = XOpenDisplay (NULL);
@@ -92,10 +92,9 @@ init_keyboard_layouts ()
     }
 
     xkl_config_registry_foreach_layout(cfg_reg, _foreach_layout, NULL);
+    goto out;
+
 out:
-    if (engine != NULL) {
-        g_object_unref (engine);
-    }
     if (cfg_reg != NULL) {
         g_object_unref (cfg_reg);
     }
@@ -150,10 +149,6 @@ JSObjectRef installer_get_current_layout_variant ()
     JSObjectRef current = json_create ();
 
     if (config == NULL) {
-        g_warning ("get current layout variant: config is NULL, init it\n");
-        init_keyboard_layouts ();
-    }
-    if (config == NULL) {
         g_warning ("get current layout variant:xkl config null after init\n");
         return current;
     }
@@ -184,35 +179,59 @@ JSObjectRef installer_get_current_layout_variant ()
 JS_EXPORT_API 
 void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant)
 {
-    if (config == NULL) {
-        g_warning ("set keyboard layout variant:xkl config null, init it\n");
-        init_keyboard_layouts ();
-    }
-    if (config == NULL) {
-        g_warning ("set keyboard layout variant:xkl config null after init\n");
+    gchar *contents = NULL;
+    gchar **lines = NULL;
+    gchar **new = NULL;
+    gchar *result = NULL;
+    gboolean succeed = FALSE;
+    GError *error = NULL;
+
+    g_file_get_contents ("/etc/default/keyboard", &contents, NULL, &error);
+    if (error != NULL) {
+        g_warning ("set keyboard:get file contents\n");
         goto out;
     }
 
-    gchar **layouts = g_new0 (char *, 2);
-    layouts[0] = g_strdup (layout);
-
-    if (layouts == NULL) {
-        g_warning ("set keyboard layout variant:must specify layout\n");
+    lines = g_strsplit (contents, "\n", -1);
+    if (lines == NULL) {
+        g_warning ("set keyboard:lines NULL\n");
         goto out;
     }
-    xkl_config_rec_set_layouts (config, (const gchar **)layouts);
-
-    gchar **variants = g_new0 (char *, 2);
-    variants[0] = g_strdup (variant);
-
-    if (variants != NULL) {
-        xkl_config_rec_set_variants (config, (const gchar **)variants);
+    new = g_new0 (gchar *, g_strv_length (lines) + 1);
+    int i;
+    for (i = 0; i < g_strv_length (lines); i++) {
+        //g_warning ("line %d:%s\n", i, lines[i]);
+        if (g_str_has_prefix (lines[i], "XKBLAYOUT=")) {
+            new[i] = g_strdup_printf ("XKBLAYOUT=\"%s\"", layout != NULL ? layout : "");
+        } else if (g_str_has_prefix (lines[i], "XKBVARIANT=")) {
+            new[i] = g_strdup_printf ("XKBVARIANT=\"%s\"", variant != NULL ? variant: "");
+        } else {
+            new[i] = g_strdup (lines[i]);
+        }
     }
+    result = g_strjoinv ("\n", new);
+    if (result == NULL) {
+        g_warning ("set keyboard:result NULL\n");
+        goto out;
+    }
+    g_file_set_contents ("/etc/default/keyboard", result, -1, &error);
+    if (error != NULL) {
+        g_warning ("set keyboard:set file contents\n");
+        goto out;
+    }
+    succeed = TRUE;
+    goto out;
 
-    g_strfreev (layouts);
-    g_strfreev (variants);
-    emit_progress ("keyboard", "finish");
 out:
-    g_warning ("set keyboard layout variant failed, just skip this step");
+    g_free (contents);
+    g_strfreev (lines);
+    g_strfreev (new);
+    g_free (result);
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    if (!succeed) {
+        g_warning ("set keyboard failed, just skip\n");
+    }
     emit_progress ("keyboard", "finish");
 }

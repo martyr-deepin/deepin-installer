@@ -41,7 +41,7 @@ class RequireMatchDialog extends Dialog
 class Keyboard extends Widget
     constructor: (@id)->
         super
-        @init_default_layout()
+        #@init_default_layout()
         @current = create_element("div", "Current", @element)
         @current.innerText = __selected_layout
 
