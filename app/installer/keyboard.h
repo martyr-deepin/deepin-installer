@@ -24,6 +24,9 @@
 
 #include "base.h"
 
+//combines layout with layout name and variant name
+JS_EXPORT_API gchar *installer_get_layout_description (const gchar *layout);
+
 JS_EXPORT_API JSObjectRef installer_get_keyboard_layouts (); 
 
 JS_EXPORT_API JSObjectRef installer_get_layout_variants (const gchar *layout_name); 

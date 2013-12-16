@@ -25,18 +25,22 @@
 #include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
 
-static XklEngine *engine = NULL;
-static XklConfigRec *config = NULL;
-static GHashTable *layout_variants_hash = NULL;
+XklConfigRec *config = NULL;
+GHashTable *layout_variants_hash = NULL;
+GHashTable *layout_desc_hash = NULL;
 
 static void 
 _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
-    const gchar *layout = (const gchar *)data;
-    GList *variants = g_list_copy (g_hash_table_lookup (layout_variants_hash, layout));
-    //variants = g_list_append (variants, g_strdup (item->description));
+    XklConfigItem *layout = (XklConfigItem *) data;
+
+    GList *variants = g_list_copy (g_hash_table_lookup (layout_variants_hash, layout->name));
     variants = g_list_append (variants, g_strdup (item->name));
-    g_hash_table_replace (layout_variants_hash, g_strdup (layout), variants);
+    g_hash_table_replace (layout_variants_hash, g_strdup (layout->name), variants);
+
+    gchar *key = g_strdup_printf ("%s,%s", layout->name, item->name);
+    gchar *value = g_strdup_printf ("%s,%s", layout->description, item->description);
+    g_hash_table_insert (layout_desc_hash, key, value);
 }
 
 static void 
@@ -44,10 +48,11 @@ _foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer d
 {
     GList *variants = NULL;
     g_hash_table_insert (layout_variants_hash, g_strdup (item->name), variants);
+    g_hash_table_insert (layout_desc_hash, g_strdup (item->name), g_strdup (item->description));
     xkl_config_registry_foreach_layout_variant(config, 
                                                item->name,
                                                _foreach_variant, 
-                                               (gpointer) item->name);
+                                               (gpointer) item);
 }
 
 void
@@ -59,7 +64,13 @@ init_keyboard_layouts ()
                                                   (GDestroyNotify) g_free, 
                                                   (GDestroyNotify) g_list_free);
 
+    layout_desc_hash = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                                  (GEqualFunc) g_str_equal, 
+                                                  (GDestroyNotify) g_free, 
+                                                  (GDestroyNotify) g_list_free);
+
     Display *dpy = NULL;
+    XklEngine *engine = NULL;
     XklConfigRegistry *cfg_reg = NULL;
     
     dpy = XOpenDisplay (NULL);
@@ -98,9 +109,28 @@ out:
     if (cfg_reg != NULL) {
         g_object_unref (cfg_reg);
     }
+    if (engine != NULL) {
+        g_object_unref (engine);
+    }
     if (dpy != NULL) {
         XCloseDisplay (dpy);
     }
+}
+
+JS_EXPORT_API 
+gchar *installer_get_layout_description (const gchar *layout)
+{
+    gchar *desc = NULL;
+    if (layout_desc_hash == NULL) {
+        g_warning ("get layout description:layout desc hash NULL\n");
+        init_keyboard_layouts ();
+    }
+    desc = (gchar *) g_hash_table_lookup (layout_desc_hash, layout);
+    if (desc == NULL) {
+        desc = g_strdup (layout);
+    }
+
+    return desc;
 }
 
 JS_EXPORT_API 
@@ -149,7 +179,7 @@ JSObjectRef installer_get_current_layout_variant ()
     JSObjectRef current = json_create ();
 
     if (config == NULL) {
-        g_warning ("get current layout variant:xkl config null after init\n");
+        g_warning ("get current layout variant:xkl config null\n");
         return current;
     }
 

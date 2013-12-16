@@ -73,7 +73,7 @@ class Keyboard extends Widget
 
     construct_item: (layout) ->
         opt = create_element("div", "KeyboardItem", @list)
-        opt.innerText = layout
+        opt.innerText = DCore.Installer.get_layout_description(layout)
         opt.addEventListener("click", (e) =>
             @update_layout(layout)
         )
@@ -81,7 +81,7 @@ class Keyboard extends Widget
     update_layout: (layout) ->
         @current.innerText = layout
         __selected_layout = layout
-        @set_livecd_layout()
+        #@set_livecd_layout()
 
     set_livecd_layout: ->
         try
