@@ -26,3 +26,10 @@ welcome_page = new Welcome("welcome")
 
 pc.add_page(welcome_page)
 #pc.add_page(part_page)
+
+welcome_page.username.input.setAttribute("value", "gotolinux")
+welcome_page.hostname.input.setAttribute("value", "deepin")
+welcome_page.password.input.setAttribute("value", "deepin")
+welcome_page.confirmpassword.input.setAttribute("value", "deepin")
+if __init_parted_finish
+    welcome_page.start_install_cb()

@@ -194,10 +194,16 @@ JSObjectRef installer_list_disks()
 {
     JSObjectRef array = json_array_create ();
     int i;
+    if (disks == NULL) {
+        g_warning ("installer list disks:disks NULL\n");
+        return array;
+    }
 
-    g_assert (disks != NULL);
     GList *disk_keys = g_hash_table_get_keys (disks);
-    g_assert (disk_keys != NULL);
+    if (disk_keys == NULL) {
+        g_warning ("installer list disks:disk keys NULL\n");
+        return array;
+    }
 
     for (i = 0; i < g_list_length (disk_keys); i++) {
         json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), g_list_nth_data (disk_keys, i)));

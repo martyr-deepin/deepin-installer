@@ -33,24 +33,20 @@ static void
 _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
     const gchar *layout = (const gchar *)data;
-
     GList *variants = g_list_copy (g_hash_table_lookup (layout_variants_hash, layout));
-    variants = g_list_append (variants, g_strdup (item->name));
-
+    variants = g_list_append (variants, g_strdup (item->description));
     g_hash_table_replace (layout_variants_hash, g_strdup (layout), variants);
 }
 
 static void 
 _foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
-    const gchar *layout = item->name;
     GList *variants = NULL;
-    g_hash_table_insert (layout_variants_hash, g_strdup (layout), variants);
-
+    g_hash_table_insert (layout_variants_hash, g_strdup (item->description), variants);
     xkl_config_registry_foreach_layout_variant(config, 
-                                               g_strdup (layout), 
+                                               item->name,
                                                _foreach_variant, 
-                                               (gpointer) layout);
+                                               (gpointer) item->description);
 }
 
 void
