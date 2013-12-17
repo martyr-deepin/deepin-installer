@@ -24,10 +24,12 @@
 
 void emit_progress (const gchar *step, const gchar *progress)
 {
+    GRAB_CTX ();
     JSObjectRef message = json_create ();
     json_append_string (message, "stage", step);
     json_append_string (message, "progress", progress);
     js_post_message ("progress", message);
+    UNGRAB_CTX ();
 }
 
 gchar *

@@ -192,7 +192,6 @@ JSObjectRef installer_get_current_layout_variant ()
     if (config_rec == NULL) {
         g_warning ("get current layout variant:xkl config null\n");
         init_keyboard_layouts ();
-        return current;
     }
 
     gchar **layouts = g_strdupv (config_rec->layouts);

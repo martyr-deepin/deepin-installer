@@ -694,9 +694,11 @@ is_slowly_device (gpointer data)
                 g_printf ("is slowly device:speed for %s is %g MB/sec\n", handler->path, num);
 
                 if (num < 10) {
+                    GRAB_CTX ();
                     JSObjectRef message = json_create ();
                     json_append_string (message, "uuid", handler->uuid);
                     js_post_message ("slow", message);
+                    UNGRAB_CTX ();
                 } else {
                     g_debug ("is slowly device:%s 's speed is ok\n", handler->uuid);
                 }
