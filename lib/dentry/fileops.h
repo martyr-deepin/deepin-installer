@@ -16,5 +16,6 @@ void fileops_paste	(GFile* dest_dir);
 //@dest is a directory
 gboolean fileops_move		(GFile* file_list[], guint num, GFile* dest_dir, gboolean prompt);
 void fileops_copy		(GFile* file_list[], guint num, GFile* dest_dir);
+void files_copy_via_dbus (GFile *file_list[], guint num, GFile *dest_dir);
 
 #endif

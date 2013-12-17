@@ -51,7 +51,7 @@ GKeyFile* _read_as_key_file(GDesktopAppInfo* app)
     g_key_file_load_from_file(file, filename, G_KEY_FILE_NONE, &error);
 
     if (error != NULL) {
-        g_warning("[get_actions] %s", error->message);
+        g_warning("[%s] %s", __func__, error->message);
         g_error_free(error);
         g_key_file_unref(file);
         return NULL;
@@ -73,7 +73,7 @@ GRegex* _desktop_action_pattern()
                                                 );
 
     if (error != NULL) {
-        g_warning("[get_actions] %s", error->message);
+        g_warning("[%s] %s", __func__, error->message);
         g_error_free(error);
     }
 
@@ -91,7 +91,7 @@ struct Action* _get_action(GKeyFile* file, const char* group_name)
                                                NULL,
                                                &error);
     if (error != NULL) {
-        g_warning("[get_actions] %s", error->message);
+        g_warning("[%s] %s", __func__, error->message);
         g_error_free(error);
         return NULL;
     }
@@ -101,12 +101,12 @@ struct Action* _get_action(GKeyFile* file, const char* group_name)
                                         G_KEY_FILE_DESKTOP_KEY_EXEC,
                                         &error);
     if (error != NULL) {
-        g_warning("[get_actions] %s", error->message);
+        g_warning("[%s] %s", __func__, error->message);
         g_error_free(error);
         g_free(name);
         return NULL;
     }
-    /* g_debug("[_get_action] name: %s, exec: %s", name, exec); */
+    /* g_debug("[%s] name: %s, exec: %s", __func__, name, exec); */
     struct Action* action = action_new(name, exec);
 
     g_free(name);

@@ -61,8 +61,7 @@ GtkWidget* create_web_container(bool normal, bool above)
     return window;
 }
 
-gboolean erase_background(GtkWidget* widget,
-        cairo_t *cr, gpointer data)
+gboolean erase_background(GtkWidget* widget, cairo_t *cr, gpointer data)
 {
     cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
     cairo_paint(cr);
@@ -182,6 +181,7 @@ GType d_webview_get_type(void)
             sizeof(DWebView),
             0,
             (GInstanceInitFunc)d_webview_init,
+            NULL
         };
 
         type = g_type_register_static(WEBKIT_TYPE_WEB_VIEW,  "DWebView", &info, 0);

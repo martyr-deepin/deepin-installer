@@ -57,7 +57,7 @@ class Array(Params):
 
         %(element_type)s* _array = g_new0(%(element_type)s, p_%(pos)d.num);
 
-        for (int i=0; i<p_%(pos)d.num; i++) {
+        for (guint i=0; i<p_%(pos)d.num; i++) {
             JSValueRef value = JSObjectGetPropertyAtIndex(context, (JSObjectRef)arguments[%(pos)d], i, NULL);
             _array[i] = %(element_alloc)s;
         }
@@ -167,7 +167,7 @@ class AString(Array):
     def in_after(self):
         temp_clear = """
     char** to_free_%(pos)d = p_%(pos)d.data;
-    for (int i=0; i<p_%(pos)d.num; i++) {
+    for (guint i=0; i<p_%(pos)d.num; i++) {
         g_free(to_free_%(pos)d[i]);
     }
     g_free(p_%(pos)d.data);
@@ -310,9 +310,9 @@ static JSValueRef __%(name)s__ (JSContextRef ctx, JSObjectRef f, JSObjectRef thi
 
     def str(self):
         if self.name == "test":
-            return Function.test_function % { 
+            return Function.test_function % {
                     "module_name": self.module_name,
-                    "name": "test" 
+                    "name": "test"
                     }
         i = 0
         params_init = ""

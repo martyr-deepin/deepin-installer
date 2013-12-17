@@ -9,6 +9,12 @@
 #include "fileops.h"
 #include "fileops_error_reporting.h"
 
+#define DBUS_NAUTILUS_NAME  "org.gnome.Nautilus"
+#define DBUS_NAUTILUS_PATH  "/org/gnome/Nautilus"
+#define DBUS_NAUTILUS_INFACE    "org.gnome.Nautilus.FileOperations"
+
+#define DBUS_COPY_METHOD    "CopyURIs"
+
 
 static gboolean _dummy_func             (GFile* file, gpointer data);
 
@@ -16,6 +22,11 @@ static gboolean _delete_files_async     (GFile* file, gpointer data);
 static gboolean _trash_files_async      (GFile* file, gpointer data);
 static gboolean _move_files_async       (GFile* file, gpointer data);
 static gboolean _copy_files_async       (GFile* file, gpointer data);
+
+static void dbus_call_method_cb (GObject *source_object,
+        GAsyncResult *res, gpointer user_data);
+static void call_method_via_dbus (const GVariantBuilder *builder,
+        const gchar *dest_uri);
 
 
 /*
@@ -231,8 +242,7 @@ fileops_delete (GFile* file_list[], guint num)
     data->dest_file = NULL;
     data->cancellable = delete_cancellable;
 
-    int i;
-    for (i = 0; i < num; i++)
+    for (guint i = 0; i < num; i++)
     {
         GFile* src = file_list[i];
 #if 1
@@ -264,8 +274,7 @@ fileops_trash (GFile* file_list[], guint num)
     data->dest_file = NULL;
     data->cancellable = trash_cancellable;
 
-    int i;
-    for (i = 0; i < num; i++)
+    for (guint i = 0; i < num; i++)
     {
         GFile* src = file_list[i];
     #if 1
@@ -305,8 +314,7 @@ fileops_move (GFile* file_list[], guint num, GFile* dest_dir, gboolean prompt)
     TDData* data = g_malloc0 (sizeof (TDData));
     data->cancellable = move_cancellable;
 
-    int i;
-    for (i = 0; i < num; i++)
+    for (guint i = 0; i < num; i++)
     {
         GFile* src = file_list[i];
     #if 1
@@ -334,10 +342,10 @@ fileops_move (GFile* file_list[], guint num, GFile* dest_dir, gboolean prompt)
 
         //retval &= _move_files_async (src, data);
         //traverse_directory (dir, _move_files_async, _dummy_func, move_dest_gfile);
-            retval &= traverse_directory (src, _move_files_async, _dummy_func, data);
+        retval &= traverse_directory (src, _move_files_async, _dummy_func, data);
         // here i must check out if dest has the same file or directory ,if true , fileops_delete,else, nothing do
         if (retval)
-                fileops_delete (&src, 1);//ensure original file is removed.
+            fileops_delete (&src, 1);//ensure original file is removed.
 
         g_object_unref (move_dest_file);
     }
@@ -547,73 +555,73 @@ _move_files_async (GFile* src, gpointer data)
         //TEST:
         if (g_prompt == TRUE)
         {
-        FileOpsResponse* response = NULL;
-        if (g_move_response != NULL && g_move_response->apply_to_all)
-        {
-            response = fileops_response_dup (g_move_response); //FIXME:reduce dup calls
-        }
-        else
-        {
-        response = fileops_move_copy_error_show_dialog (_("move"), error, src, dest, NULL);
-        if (response != NULL && response->apply_to_all)
-            g_move_response = fileops_response_dup (response);
-        }
+            FileOpsResponse* response = NULL;
+            if (g_move_response != NULL && g_move_response->apply_to_all)
+            {
+                response = fileops_response_dup (g_move_response); //FIXME:reduce dup calls
+            }
+            else
+            {
+                response = fileops_move_copy_error_show_dialog (_("move"), error, src, dest, NULL);
+                if (response != NULL && response->apply_to_all)
+                    g_move_response = fileops_response_dup (response);
+            }
 
-        if(response != NULL)
-        {
-        switch (response->response_id)
-        {
-            case GTK_RESPONSE_CANCEL:
-                //cancel all operations
-                g_debug ("response : Cancel");
-                retval = FALSE;
-                break;
-
-            case CONFLICT_RESPONSE_SKIP:
-                //skip, imediately return.
-                g_debug ("response : Skip");
-                retval = FALSE;
-                break;
-            case CONFLICT_RESPONSE_RENAME:
-                //rename, redo operations
-                g_debug ("response : Rename");
-
-                GFile* dest_parent = g_file_get_parent (dest);
-                GFile* new_dest = g_file_get_child (dest_parent, response->file_name);
-                g_object_unref (dest_parent);
-
-                g_object_unref (dest);
-                _data->dest_file = new_dest;
-
-                retval = _move_files_async (src, _data);
-                break;
-            case CONFLICT_RESPONSE_REPLACE:
-                if (type == G_FILE_TYPE_DIRECTORY)
+            if(response != NULL)
+            {
+                switch (response->response_id)
                 {
-                    //Merge:
-                    g_debug ("response : Merge");
-                    retval = TRUE;
-                }
-                else
-                {
-                    //replace
-                    g_debug ("response : Replace");
-                    retval = _delete_files_async (dest, _data);
-                    if (retval == TRUE)
+                case GTK_RESPONSE_CANCEL:
+                    //cancel all operations
+                    g_debug ("response : Cancel");
+                    retval = FALSE;
+                    break;
+
+                case CONFLICT_RESPONSE_SKIP:
+                    //skip, imediately return.
+                    g_debug ("response : Skip");
+                    retval = FALSE;
+                    break;
+                case CONFLICT_RESPONSE_RENAME:
+                    //rename, redo operations
+                    g_debug ("response : Rename");
+
+                    GFile* dest_parent = g_file_get_parent (dest);
+                    GFile* new_dest = g_file_get_child (dest_parent, response->file_name);
+                    g_object_unref (dest_parent);
+
+                    g_object_unref (dest);
+                    _data->dest_file = new_dest;
+
+                    retval = _move_files_async (src, _data);
+                    break;
+                case CONFLICT_RESPONSE_REPLACE:
+                    if (type == G_FILE_TYPE_DIRECTORY)
                     {
-                        retval = _move_files_async (src, _data);
+                        //Merge:
+                        g_debug ("response : Merge");
+                        retval = TRUE;
                     }
+                    else
+                    {
+                        //replace
+                        g_debug ("response : Replace");
+                        retval = _delete_files_async (dest, _data);
+                        if (retval == TRUE)
+                        {
+                            retval = _move_files_async (src, _data);
+                        }
+                    }
+
+                    retval = TRUE;
+                    break;
+                default:
+                    retval = FALSE;
+                    break;
                 }
 
-                retval = TRUE;
-                break;
-            default:
-                retval = FALSE;
-                break;
-        }
-
-        fileops_response_free (response);
-        }
+                fileops_response_free (response);
+            }
         }
         else  // g_prompt == FALSE
         {
@@ -862,9 +870,6 @@ _copy_files_async (GFile* src, gpointer data)
                 _copy_files_async_true(src,_data);
                 retval == TRUE;
             }
-
-
-
         }
 
     }
@@ -873,4 +878,68 @@ _copy_files_async (GFile* src, gpointer data)
     return COPY_ASYNC_FINISH;
 }
 
+void
+files_copy_via_dbus (GFile *file_list[], guint num, GFile *dest_dir)
+{
+    g_debug ("files copy start ...\n");
+    guint i = 0;
+    GVariantBuilder builder;
+
+    g_variant_builder_init (&builder, G_VARIANT_TYPE("as"));
+    for ( ; i < num; i++ ) {
+        gchar *src_uri = g_file_get_uri (file_list[i]);
+        g_variant_builder_add (&builder, "s", src_uri);
+        g_free (src_uri);
+    }
+    gchar *dest_uri = g_file_get_uri (dest_dir);
+    call_method_via_dbus (&builder, dest_uri);
+    g_variant_builder_clear (&builder);
+    g_free (dest_uri);
+}
+
+static void
+call_method_via_dbus (const GVariantBuilder *builder, const gchar *dest_uri)
+{
+    GDBusProxy *proxy = NULL;
+    GError *error = NULL;
+
+    proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+            G_DBUS_PROXY_FLAGS_NONE, NULL,
+            DBUS_NAUTILUS_NAME, DBUS_NAUTILUS_PATH,
+            DBUS_NAUTILUS_INFACE, NULL, &error);
+    if ( error ) {
+        g_warning ("get new proxy failed: %s", error->message);
+        g_error_free (error);
+        error = NULL;
+        return ;
+    }
+
+    g_dbus_proxy_call (proxy, DBUS_COPY_METHOD,
+            g_variant_new ("(ass)", builder, dest_uri),
+            G_DBUS_CALL_FLAGS_NONE,
+            -1, NULL, (GAsyncReadyCallback)dbus_call_method_cb,
+            NULL);
+    g_object_unref (proxy);
+}
+
+static void
+dbus_call_method_cb (GObject *source_object,
+        GAsyncResult *res, gpointer user_data)
+{
+    GError *error = NULL;
+    GVariant *retval = NULL;
+    GDBusProxy *proxy = (GDBusProxy*)source_object;
+
+    retval = g_dbus_proxy_call_finish (proxy, res, &error);
+    if ( error ) {
+        g_warning ("call method failed: %s", error->message);
+        g_error_free (error);
+        error = NULL;
+        return ;
+    }
+    if ( retval ) {
+        g_variant_unref (retval);
+    }
+    g_debug ("call method success!\n");
+}
 

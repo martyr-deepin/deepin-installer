@@ -53,6 +53,19 @@ char* dcore_get_theme_icon(const char* name, double size)
 }
 
 
+JS_EXPORT_API
+char* dcore_get_name_by_appid(const char* id)
+{
+    GDesktopAppInfo* a = guess_desktop_file(id);
+    if (a != NULL) {
+        char* name = g_strdup(g_app_info_get_name(G_APP_INFO(a)));
+        g_object_unref(a);
+        return name;
+    }
+    return g_strdup("");
+}
+
+
 #define IS_DIR(path) g_file_test(path, G_FILE_TEST_IS_DIR)
 
 

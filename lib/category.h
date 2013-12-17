@@ -28,18 +28,18 @@
 #define ALL_CATEGORY_ID (-1)
 #define OTHER_CATEGORY_ID (-2)
 
-#define ALL _("all")
-#define INTERNET _("internet")
-#define MULTIMEDIA _("multimedia")
-#define GAMES _("games")
-#define GRAPHICS _("graphics")
-#define PRODUCTIVITY _("productivity")
-#define INDUSTRY _("industry")
-#define EDUCATION _("education")
-#define DEVELOPMENT _("development")
-#define SYSTEM _("system")
-#define UTILITIES _("utilities")
-#define OTHER _("other")
+#define ALL "all"
+#define INTERNET "internet"
+#define MULTIMEDIA "multimedia"
+#define GAMES "games"
+#define GRAPHICS "graphics"
+#define PRODUCTIVITY "productivity"
+#define INDUSTRY "industry"
+#define EDUCATION "education"
+#define DEVELOPMENT "development"
+#define SYSTEM "system"
+#define UTILITIES "utilities"
+#define OTHER "other"
 
 typedef int (*SQLEXEC_CB) (void*, int, char**, char**);
 

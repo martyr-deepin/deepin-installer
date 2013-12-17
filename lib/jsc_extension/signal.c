@@ -59,6 +59,7 @@ void js_post_message(const char* name, JSValueRef json)
     }
 }
 
+static
 void js_post_message_simply(const char* name, const char* format, ...)
 {
     JSContextRef ctx = get_global_context();
@@ -77,6 +78,11 @@ void js_post_message_simply(const char* name, const char* format, ...)
         js_post_message(name, json_from_cstr(ctx, json_str));
         g_free(json_str);
     }
+}
+
+void js_post_signal(const char* signal)
+{
+    js_post_message_simply(signal, NULL);
 }
 
 void unprotect(gpointer data)
@@ -101,3 +107,4 @@ void dcore_signal_connect(const char* type, JSValueRef value, JSData* js)
         g_warning("signal_connect's second parameter must be an function object");
     }
 }
+

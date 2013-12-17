@@ -242,7 +242,7 @@ void get_atom_value_for_index(gpointer data, gulong n_item, gpointer res, gulong
 
 void get_atom_value_for_loop(gpointer data, gulong n_item, gpointer res, gulong start_index)
 {
-    for (int i = start_index; i < n_item; ++i) {
+    for (guint i = start_index; i < n_item; ++i) {
         ((gulong*)res)[i] = X_FETCH_32(data, i);
     }
 }

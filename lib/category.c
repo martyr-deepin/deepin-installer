@@ -36,6 +36,28 @@
 #define CATEGORY_INDEX_DB_PATH   DEEPIN_SOFTWARE_CENTER_DATA_DIR"/update/%s/category/category.db"
 
 
+static
+int for_translate(int argc, char *argv[])
+{
+    const char* const categories[] = {
+        _(ALL),
+        _(INTERNET),
+        _(MULTIMEDIA),
+        _(GAMES),
+        _(GRAPHICS),
+        _(PRODUCTIVITY),
+        _(INDUSTRY),
+        _(EDUCATION),
+        _(DEVELOPMENT),
+        _(SYSTEM),
+        _(UTILITIES),
+        _(OTHER)
+    };
+
+    return 0;
+}
+
+
 PRIVATE
 gboolean _need_to_update(const char* db_path)
 {

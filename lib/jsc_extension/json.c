@@ -1,36 +1,17 @@
 #include "jsextension.h"
 
-typedef struct {
-    JSObjectRef json;
-    const char *key;
-    JSValueRef value;
-} JsonCall;
-
 JSObjectRef json_create()
 {
     return JSObjectMake(get_global_context(), NULL, NULL);
 }
 
-gboolean __internal_append (JsonCall *call)
-{
-    JSStringRef js_key = JSStringCreateWithUTF8CString(call->key);
-    JSObjectSetProperty(get_global_context(), call->json, js_key, call->value, kJSPropertyAttributeNone, NULL);
-    JSStringRelease(js_key);
-    g_free (call);
-    return FALSE;
-}
-
 void json_append_value(JSObjectRef json, const char* key, JSValueRef value)
 {
-    JsonCall *call = g_new0 (JsonCall, 1);
-    call->json = json;
-    call->key = key;
-    call->value = value;
-    g_main_context_invoke (NULL, (GSourceFunc) __internal_append, call);
-    //JSContextRef ctx = get_global_context();
-    //JSStringRef js_key = JSStringCreateWithUTF8CString(key);
-    //JSObjectSetProperty(ctx, json, js_key, value, kJSPropertyAttributeNone, NULL);
-    //JSStringRelease(js_key);
+    JSContextRef ctx = get_global_context();
+
+    JSStringRef js_key = JSStringCreateWithUTF8CString(key);
+    JSObjectSetProperty(ctx, json, js_key, value, kJSPropertyAttributeNone, NULL);
+    JSStringRelease(js_key);
 }
 
 void json_append_string(JSObjectRef json, const char* key, const char* value)

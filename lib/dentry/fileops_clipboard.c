@@ -110,7 +110,7 @@ fileops_paste (GFile* dest_dir)
 	fileops_move (real_info->file_list, real_info->num, dest_dir, TRUE);
         //post messages event paste cancelled or failed.
 	JSObjectRef json = json_array_create();
-	for (int i = 0; i < real_info->num; i++)
+	for (guint i = 0; i < real_info->num; i++)
 	{
 	    json_array_insert_nobject (json, i, real_info->file_list[i],
                                        g_object_ref, g_object_unref);
@@ -131,7 +131,8 @@ fileops_paste (GFile* dest_dir)
     else
     {
 	//copy can be done multiple times. so we should not free real_info;
-	fileops_copy (real_info->file_list, real_info->num, dest_dir);
+	/*fileops_copy (real_info->file_list, real_info->num, dest_dir);*/
+        files_copy_via_dbus (real_info->file_list, real_info->num, dest_dir);
     }
 }
 /*
@@ -157,8 +158,7 @@ init_fileops_clipboard (GFile* file_list[], guint num, gboolean cut)
     __clear_clipboard_info (&clipboard_info_prev);
     __copy_clipboard_info (&clipboard_info, &clipboard_info_prev);
 
-    int j=0;
-    for (j = 0; j < clipboard_info_prev.num; j++)
+    for (guint j = 0; j < clipboard_info_prev.num; j++)
     {
 	g_debug ("init_fileops prev: file_list[%d] = %s", j, g_file_get_uri (clipboard_info_prev.file_list[j]));
     }
@@ -166,8 +166,7 @@ init_fileops_clipboard (GFile* file_list[], guint num, gboolean cut)
     __clear_clipboard_info (&clipboard_info);
 
     clipboard_info.file_list = (GFile**)g_malloc (num * sizeof (GFile*));
-    int i;
-    for (i = 0; i < num; i++)
+    for (guint i = 0; i < num; i++)
     {
 	clipboard_info.file_list[i] = g_object_ref (file_list[i]);
 	g_debug ("init_fileops %s: file_list[%d] = %s", cut? "cut": "paste", i, g_file_get_uri (file_list[i]));
@@ -253,7 +252,7 @@ _get_clipboard_callback	(GtkClipboard*		clipboard,
 	char **uris;
 	uris = g_malloc ((clipboard_info.num + 1) * sizeof (char *));
 
-	int i = 0;
+	guint i = 0;
 	for (i = 0; i < clipboard_info.num; i++)
 	{
 	    uris[i] = g_file_get_uri (clipboard_info.file_list[i]);
@@ -303,7 +302,7 @@ _clear_clipboard_callback (GtkClipboard *clipboard,
     {
 	if (clipboard_info.cut == TRUE)
 	{
-	    for (int i = 0; i < clipboard_info.num; i++)
+	    for (guint i = 0; i < clipboard_info.num; i++)
 	    {
 		file_list = g_list_append (file_list, g_object_ref (clipboard_info.file_list[i]));
 	    }
@@ -502,7 +501,7 @@ __set_diff_clipboard_info (FileOpsClipboardInfo* A, FileOpsClipboardInfo* B)
     //send all files in B
     if (A->cut != B->cut)
     {
-	for (int i = 0; i < B->num; i++)
+	for (guint i = 0; i < B->num; i++)
 	{
 	    GFile* dup_file = g_file_dup (B->file_list[i]);
 	    file_list = g_list_append (file_list, dup_file);
@@ -510,10 +509,10 @@ __set_diff_clipboard_info (FileOpsClipboardInfo* A, FileOpsClipboardInfo* B)
     }
     else
     {
-	for (int i = 0; i < B->num; i++)
+	for (guint i = 0; i < B->num; i++)
 	{
 	    gboolean is_in_A = FALSE;
-	    for (int j = 0; j < A->num; j++)
+	    for (guint j = 0; j < A->num; j++)
 	    {
 	    	if (g_file_equal (B->file_list[i], A->file_list[j]))
 	    	{
@@ -550,8 +549,7 @@ __copy_clipboard_info (FileOpsClipboardInfo* info, FileOpsClipboardInfo* dest)
     else
     {
 	dest->file_list = g_malloc0 (info->num * sizeof(GFile*));
-	int i;
-	for (i = 0; i < info->num; i++)
+	for (guint i = 0; i < info->num; i++)
 	{
 	    dest->file_list[i] = g_object_ref (info->file_list[i]);
 	}
@@ -572,8 +570,7 @@ __clear_clipboard_info	(FileOpsClipboardInfo* info)
     }
 
     g_debug ("free: operation: %s, num: %d", info->cut? "cut": "copy", info->num);
-    int i;
-    for (i = 0; i < info->num; i++)
+    for (guint i = 0; i < info->num; i++)
     {
 	g_debug ("free: file_list[%d] = %s", i, g_file_get_uri (info->file_list[i]));
 	g_object_unref (info->file_list[i]);

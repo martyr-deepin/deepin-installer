@@ -507,7 +507,11 @@ get_partition_free (gpointer data)
     }
 
     //g_warning ("js_post message for used:part->%s, free->%f, fs->%s, path->%s", part, free, fs, path);
-    js_post_message_simply ("used","{\"part\":\"%s\", \"free\":\"%f\"}", part, free);
+    JSObjectRef message = json_create ();
+    json_append_string (message, "part", part);
+    json_append_number (message, "free", free);
+    js_post_message ("used", message);
+    //js_post_message_simply ("used","{\"part\":\"%s\", \"free\":\"%f\"}", part, free);
 
     g_free (handler->path);
     g_free (handler->part);
@@ -689,8 +693,10 @@ is_slowly_device (gpointer data)
                 g_printf ("is slowly device:speed for %s is %g MB/sec\n", handler->path, num);
 
                 if (num < 10) {
-                    js_post_message_simply("slow", "{\"uuid\":\"%s\"}", handler->uuid);
-
+                    JSObjectRef message = json_create ();
+                    json_append_string (message, "uuid", handler->uuid);
+                    js_post_message ("slow", message);
+                    //js_post_message_simply("slow", "{\"uuid\":\"%s\"}", handler->uuid);
                 } else {
                     g_debug ("is slowly device:%s 's speed is ok\n", handler->uuid);
                 }

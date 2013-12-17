@@ -88,7 +88,8 @@ thread_os_prober (gpointer data)
     }
     g_strfreev (items);
     g_free (output);
-    js_post_message_simply ("os_prober", "{\"finish\":\"%s\"}", "finish");
+    js_post_message ("os_prober", NULL);
+    //js_post_message_simply ("os_prober", "{\"finish\":\"%s\"}", "finish");
     return NULL;
 }
 
@@ -176,7 +177,8 @@ thread_init_parted (gpointer data)
         g_hash_table_insert (disk_partitions, g_strdup (uuid), part_list);
         g_free (uuid);
     }
-    js_post_message_simply ("init_parted", "{\"finish\":\"%s\"}", "finish");
+    js_post_message ("init_parted", NULL);
+    //js_post_message_simply ("init_parted", "{\"finish\":\"%s\"}", "finish");
     return NULL;
 }
 

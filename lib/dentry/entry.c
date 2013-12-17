@@ -305,7 +305,7 @@ char* dentry_get_icon_path(Entry* e)
                 const char * invalid_app = "invalid-dock_app";
                 ret = dcore_get_theme_icon(invalid_app, 48);
             }
-            
+
             g_free(icon_str);
         }
         else{
@@ -365,7 +365,6 @@ gboolean dentry_launch(Entry* e, const ArrayContainer fs)
             //ugly hack here. we just read the first GFile*.
             GFile* _file_arg = NULL;
             ArrayContainer _fs;
-            GFile** files = NULL;
             if (fs.num != 0)
             {
                 _fs = _normalize_array_container(fs);
@@ -514,7 +513,7 @@ double dentry_files_compressibility(ArrayContainer fs)
     else if(1 < fs.num)
     {
         gboolean all_compressed = TRUE;
-        for(int i=0; i<fs.num; i++)
+        for(guint i=0; i<fs.num; i++)
         {
             GFile *f = files[i];
             if(NULL == f)
@@ -559,7 +558,7 @@ static gboolean
 _file_is_archive (GFile *file)
 {
     char *mime_type = NULL;
-    int i;
+    guint i;
     static const char * archive_mime_types[] = { "application/x-gtar",
         "application/x-zip",
         "application/x-zip-compressed",
@@ -575,6 +574,7 @@ _file_is_archive (GFile *file)
         "application/x-ear",
         "application/x-arj",
         "application/x-gzip",
+        "application/gzip",
         "application/x-bzip-compressed-tar",
         "application/x-compressed-tar",
         "application/x-archive",
@@ -601,6 +601,9 @@ _file_is_archive (GFile *file)
     GFileInfo* info = g_file_query_info(file, "standard::content-type", G_FILE_QUERY_INFO_NONE, NULL, NULL);
     if (info != NULL) {
         mime_type = (char*)g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+        char* path = g_file_get_path(file);
+        g_debug("[%s] \"%s\" MINE type is: \"%s\"", __func__, path, mime_type);
+        g_free(path);
 
         for (i = 0; i < G_N_ELEMENTS (archive_mime_types); i++) {
             if (!strcmp (mime_type, archive_mime_types[i])) {
@@ -897,7 +900,8 @@ JS_EXPORT_API
 void dentry_copy (ArrayContainer fs, GFile* dest)
 {
     ArrayContainer _fs = _normalize_array_container(fs);
-    fileops_copy (_fs.data, _fs.num, dest);
+    /*fileops_copy (_fs.data, _fs.num, dest);*/
+    files_copy_via_dbus (_fs.data, _fs.num, dest);
     for (size_t i=0; i<_fs.num; i++) {
         g_object_unref(((GObject**)_fs.data)[i]);
     }
@@ -1173,7 +1177,7 @@ ArrayContainer dentry_get_templates_filter(ArrayContainer fs)
 
     _fs = _normalize_array_container(fs);
     files = _fs.data;
-    for(int i=0; i<fs.num; i++)
+    for(guint i=0; i<fs.num; i++)
     {
         GFile *f = files[i];
         GFileType type = g_file_query_file_type (f,G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL);
@@ -1252,7 +1256,7 @@ gboolean _is_valid_category(char const* category)
     gsize size = 0;
     char** filter = g_key_file_get_string_list(filter_file, "Main", "filter", &size, NULL);
 
-    for (int i = 0; i < size; ++i) {
+    for (guint i = 0; i < size; ++i) {
         char* lowcase_filter = g_utf8_casefold(filter[i], -1);
         char* lowcase_category = g_utf8_casefold(category, -1);
 
@@ -1338,13 +1342,13 @@ GHashTable* _count_categories(ArrayContainer const fs)
                                                          g_str_equal,
                                                          g_free, NULL);
 
-    for (int i = 0; i < fs.num; ++i) {
+    for (guint i = 0; i < fs.num; ++i) {
         GHashTable* set = g_hash_table_new_full(g_str_hash, g_str_equal,
                                                 g_free, NULL);
         char** categories =
             _get_desktop_file_category(((GDesktopAppInfo**)fs.data)[i]);
 
-        g_debug("[_count_categories] app: %s",
+        g_debug("[%s] app: %s", __func__,
                 g_desktop_app_info_get_filename(((GDesktopAppInfo**)fs.data)[i]));
 
         if (categories == NULL) {
@@ -1366,8 +1370,8 @@ GHashTable* _count_categories(ArrayContainer const fs)
             g_hash_table_add(set, low_case_category);
 
             if (_is_valid_category(low_case_category)) {
-                g_debug("[_count_categories] === insert category: %s (lowcase:"
-                    " %s)", categories[j], low_case_category);
+                g_debug("[%s] === insert category: %s (lowcase: %s)", __func__,
+                        categories[j], low_case_category);
 
                 int value =
                     GPOINTER_TO_INT(g_hash_table_lookup(categories_count,
@@ -1380,7 +1384,7 @@ GHashTable* _count_categories(ArrayContainer const fs)
 
         g_strfreev(categories);
         g_hash_table_unref(set);
-        g_debug("[_count_categories] ===================");
+        g_debug("[%s] ===================", __func__);
     }
 
     return categories_count;
@@ -1393,7 +1397,7 @@ void _get_cadidate_categories(gpointer key, gpointer value, gpointer user_data)
     ArrayContainer* fs = ((void**)user_data)[0];
     GPtrArray* candidate_categories = ((void**)user_data)[1];
 
-    if (GPOINTER_TO_INT(value) == fs->num) {
+    if ((guint)GPOINTER_TO_INT(value) == fs->num) {
         if (candidate_categories->len > 1) {
             if (!_is_generic_category(key))
                 g_ptr_array_add(candidate_categories, g_strdup(key));
@@ -1424,7 +1428,7 @@ char* _get_group_name_from_category_field(ArrayContainer const fs)
         goto out;
 
     char* candidate = NULL;
-    for (int i = 0; candidate_categories->len > 1
+    for (guint i = 0; candidate_categories->len > 1
          && i < candidate_categories->len; ++i) {
         if (!_is_generic_category(g_ptr_array_index(candidate_categories, i))) {
             g_free(candidate);
@@ -1500,7 +1504,7 @@ char* _get_group_name_from_software_center(ArrayContainer const fs)
     if (category == NULL)
         goto errorout;
 
-    for (int i = 1; i < fs.num; ++i) {
+    for (guint i = 1; i < fs.num; ++i) {
         g_free(another_category);
         another_category = _get_category(datas[i]);
 
@@ -1531,3 +1535,23 @@ char* dentry_get_rich_dir_group_name(ArrayContainer const fs)
     return group_name;
 }
 
+JS_EXPORT_API
+char* dentry_get_default_audio_player_name()
+{
+   GAppInfo* gappinfo = g_app_info_get_default_for_type("audio/mpeg",FALSE);
+   const char* name = g_app_info_get_name(gappinfo);
+   g_object_unref(gappinfo);
+   return name;
+}
+
+
+JS_EXPORT_API
+char* dentry_get_default_audio_player_icon()
+{
+   GAppInfo* gappinfo = g_app_info_get_default_for_type("audio/mpeg",FALSE);
+   GIcon* icon = g_app_info_get_icon(gappinfo);
+   gchar* icon_url = g_icon_to_string(icon);
+   g_object_unref(icon);
+   g_object_unref(gappinfo);
+   return icon_url;
+}

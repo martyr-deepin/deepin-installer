@@ -22,6 +22,7 @@
 #include "jsextension.h"
 #include "dentry/entry.h"
 #include "dcore.h"
+#include "i18n.h"
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <sys/stat.h>
@@ -30,53 +31,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <sys/socket.h>
-#include <sys/un.h>
-
-int binding(int server_sockfd, const char* path)
-{
-    socklen_t server_len;
-    struct sockaddr_un server_addr;
-
-    server_addr.sun_path[0] = '\0'; //make it be an name unix socket
-    int path_size = g_sprintf (server_addr.sun_path+1, "%s%d", path, getuid());
-    server_addr.sun_family = AF_UNIX;
-    server_len = 1 + path_size + offsetof(struct sockaddr_un, sun_path);
-
-    const int reuse = 1;
-    socklen_t val_len = sizeof reuse;
-    setsockopt(server_sockfd, SOL_SOCKET, SO_REUSEADDR, (const void*)&reuse, val_len);
-
-    // force quit
-    /* const struct linger linger_val = {1, 0}; */
-    /* val_len = sizeof linger_val; */
-    /* setsockopt(server_sockfd, SOL_SOCKET, SO_LINGER, (const void*)&linger_val, val_len); */
-
-    return bind(server_sockfd, (struct sockaddr *)&server_addr, server_len);
-}
-
-
-gboolean is_application_running(const char* path)
-{
-    int server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
-    if (0 == binding(server_sockfd, path)) {
-        close(server_sockfd);
-        return FALSE;
-    } else {
-        return TRUE;
-    }
-}
-
-void singleton(const char* name)
-{
-    static int sd = 0;
-    if (sd != 0)
-        return;
-
-    sd = socket(AF_UNIX, SOCK_STREAM, 0);
-    while (0 != binding(sd, name))
-        g_debug("binding failed");
-}
 
 char* shell_escape(const char* source)
 {
@@ -158,12 +112,6 @@ void run_command2(const char* cmd, const char* p1, const char* p2)
     g_free(e_cmd);
 }
 
-#include "i18n.h"
-void init_i18n()
-{
-    setlocale(LC_MESSAGES, "");
-    textdomain("INSTALLER");
-}
 
 JS_EXPORT_API
 const char* dcore_gettext(const char* c)
@@ -424,5 +372,35 @@ char* check_absolute_path_icon(char const* app_id, char const* icon_path)
 gboolean is_chrome_app(char const* name)
 {
     return g_str_has_prefix(name, "chrome-");
+}
+
+
+char* bg_blur_pict_get_dest_path (const char* src_uri)
+{
+    g_debug ("[%s] bg_blur_pict_get_dest_path: src_uri=%s", __func__, src_uri);
+    g_return_val_if_fail (src_uri != NULL, NULL);
+
+    //1. calculate original picture md5
+    GChecksum* checksum;
+    checksum = g_checksum_new (G_CHECKSUM_MD5);
+    g_checksum_update (checksum, (const guchar *) src_uri, strlen (src_uri));
+
+    guint8 digest[16];
+    gsize digest_len = sizeof (digest);
+    g_checksum_get_digest (checksum, digest, &digest_len);
+    g_assert (digest_len == 16);
+
+    //2. build blurred picture path
+    char* file;
+    file = g_strconcat (g_checksum_get_string (checksum), ".png", NULL);
+    g_checksum_free (checksum);
+    char* path;
+    path = g_build_filename (g_get_user_cache_dir (),
+                    BG_BLUR_PICT_CACHE_DIR,
+                    file,
+                    NULL);
+    g_free (file);
+
+    return path;
 }
 

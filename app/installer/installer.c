@@ -190,8 +190,10 @@ void installer_emit_webview_ok ()
 
 int main(int argc, char **argv)
 {
-    init_i18n ();
     gtk_init (&argc, &argv);
+
+    setlocale(LC_MESSAGES, "");
+    textdomain("INSTALLER");
 
     if (geteuid () != 0) {
         g_warning ("must run installer as root\n");
