@@ -22,6 +22,7 @@
 #include <gdk/gdkx.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <signal.h>
 #include "dwebview.h"
 #include "i18n.h"
 #include "fs_util.h"
@@ -188,6 +189,12 @@ void installer_emit_webview_ok ()
     }
 }
 
+static void
+sigterm_cb (int sig)
+{
+    installer_finish_install ();
+}
+
 int main(int argc, char **argv)
 {
     gtk_init (&argc, &argv);
@@ -204,6 +211,12 @@ int main(int argc, char **argv)
         g_warning ("another instance of installer is running\n");
         exit (0);
     }
+
+    signal (SIGTERM, sigterm_cb);
+    signal (SIGINT, sigterm_cb);
+    signal (SIGQUIT, sigterm_cb);
+    signal (SIGKILL, sigterm_cb);
+    signal (SIGTSTP, sigterm_cb);
 
     installer_container = create_web_container (FALSE, TRUE);
 

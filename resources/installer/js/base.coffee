@@ -69,8 +69,8 @@ class Dialog extends Widget
         @ok = create_element("span", "", @foot)
         @ok.innerText = _("Ok")
         @ok.addEventListener("click", (e) =>
-            @cb()
             @hide_dialog()
+            @cb()
         )
         if @with_cancel
             @cancel = create_element("span", "", @foot)
