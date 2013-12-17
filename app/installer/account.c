@@ -30,6 +30,7 @@ extern int lchown (const char *path, uid_t owner, gid_t group);
 JS_EXPORT_API 
 JSObjectRef installer_get_system_users()
 {
+    GRAB_CTX ();
     JSObjectRef array = json_array_create ();
 
     struct passwd *user;
@@ -43,6 +44,7 @@ JSObjectRef installer_get_system_users()
         g_free (username);
     }
     endpwent ();
+    UNGRAB_CTX ();
 
     return array;
 }

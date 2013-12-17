@@ -96,30 +96,31 @@ void installer_reboot ()
 JS_EXPORT_API
 JSObjectRef installer_get_timezone_list ()
 {
-    JSObjectRef timezones = json_array_create ();
+    GRAB_CTX ();
     gsize index = 0;
     GError *error = NULL;
+    GFile *file = NULL;
+    GFileInputStream *input = NULL;
+    GDataInputStream *data_input = NULL;
 
-    GFile *file = g_file_new_for_path ("/usr/share/zoneinfo/zone.tab");
+    JSObjectRef timezones = json_array_create ();
+
+    file = g_file_new_for_path ("/usr/share/zoneinfo/zone.tab");
     if (!g_file_query_exists (file, NULL)) {
         g_warning ("get timezone list:zone.tab not exists\n");
-        return timezones;
+        goto out;
     }
 
-    GFileInputStream *input = g_file_read (file, NULL, &error);
+    input = g_file_read (file, NULL, &error);
     if (error != NULL){
         g_warning ("get timezone list:read zone.tab error->%s", error->message);
-        g_error_free (error);
-        g_object_unref (file);
-        return timezones;
+        goto out;
     }
-    error = NULL;
 
-    GDataInputStream *data_input = g_data_input_stream_new ((GInputStream *) input);
+    data_input = g_data_input_stream_new ((GInputStream *) input);
     if (data_input == NULL) {
         g_warning ("get timezone list:get data input stream failed\n");
-        g_object_unref (input);
-        return timezones;
+        goto out;
     }
     
     char *data = (char *) 1;
@@ -150,18 +151,28 @@ JSObjectRef installer_get_timezone_list ()
             break;
         }
     }
-
-    g_object_unref (data_input);
-    g_object_unref (input);
-    g_object_unref (file);
+    goto out;
+out:
+    if (file != NULL) {
+        g_object_unref (file);
+    }
+    if (data_input != NULL) {
+        g_object_unref (data_input);
+    }
+    if (input != NULL) {
+        g_object_unref (input);
+    }
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    UNGRAB_CTX ();
 
     return timezones;
 }
 
-static gpointer
-thread_set_timezone (gpointer data)
+JS_EXPORT_API 
+void installer_set_timezone (const gchar *timezone)
 {
-    gchar *timezone = (gchar *) data;
     gboolean ret = FALSE;
     GError *error = NULL;
     gchar *timezone_file = NULL;
@@ -193,7 +204,6 @@ thread_set_timezone (gpointer data)
     goto out;
 
 out:
-    g_free (timezone);
     g_free (timezone_file);
     g_free (zoneinfo_path);
     g_free (localtime_path);
@@ -212,14 +222,6 @@ out:
         g_warning ("set timezone failed, just skip this step");
         emit_progress ("timezone", "finish");
     }
-    return NULL;
-}
-
-JS_EXPORT_API 
-void installer_set_timezone (const gchar *timezone)
-{
-    GThread *thread = g_thread_new ("timezone", (GThreadFunc) thread_set_timezone, g_strdup (timezone));
-    g_thread_unref (thread);
 }
 
 JS_EXPORT_API

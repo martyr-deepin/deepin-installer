@@ -25,9 +25,9 @@
 #include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
 
-XklConfigRec *config_rec;
-GHashTable *layout_variants_hash;
-GHashTable *layout_desc_hash;
+XklConfigRec *config_rec = NULL;
+GHashTable *layout_variants_hash = NULL;
+GHashTable *layout_desc_hash = NULL;
 
 static void 
 _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
@@ -141,6 +141,7 @@ gchar *installer_get_layout_description (const gchar *layout)
 JS_EXPORT_API 
 JSObjectRef installer_get_keyboard_layouts ()
 {
+    GRAB_CTX ();
     JSObjectRef layouts = json_array_create ();
     if (layout_variants_hash == NULL) {
         init_keyboard_layouts ();
@@ -155,12 +156,14 @@ JSObjectRef installer_get_keyboard_layouts ()
         g_free (layout);
     }
 
+    UNGRAB_CTX ();
     return layouts;
 }
 
 JS_EXPORT_API 
 JSObjectRef installer_get_layout_variants (const gchar *layout_name) 
 {
+    GRAB_CTX ();
     JSObjectRef layout_variants = json_array_create ();
     if (layout_variants_hash == NULL) {
         g_warning ("get layout variants:layout variants hash NULL\n");
@@ -175,6 +178,7 @@ JSObjectRef installer_get_layout_variants (const gchar *layout_name)
         json_array_insert (layout_variants, index, jsvalue_from_cstr (get_global_context (), variant));
         g_free (variant);
     }
+    UNGRAB_CTX ();
 
     return layout_variants;
 }
@@ -182,6 +186,7 @@ JSObjectRef installer_get_layout_variants (const gchar *layout_name)
 JS_EXPORT_API
 JSObjectRef installer_get_current_layout_variant ()
 {
+    GRAB_CTX ();
     JSObjectRef current = json_create ();
 
     if (config_rec == NULL) {
@@ -209,6 +214,7 @@ JSObjectRef installer_get_current_layout_variant ()
 
     g_strfreev (layouts);
     g_strfreev (variants);
+    UNGRAB_CTX ();
 
     return current;
 }

@@ -507,10 +507,12 @@ get_partition_free (gpointer data)
     }
 
     //g_warning ("js_post message for used:part->%s, free->%f, fs->%s, path->%s", part, free, fs, path);
+    GRAB_CTX ();
     JSObjectRef message = json_create ();
     json_append_string (message, "part", part);
     json_append_number (message, "free", free);
     js_post_message ("used", message);
+    UNGRAB_CTX ();
 
     g_free (handler->path);
     g_free (handler->part);

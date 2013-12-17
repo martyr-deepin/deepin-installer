@@ -88,7 +88,9 @@ thread_os_prober (gpointer data)
     }
     g_strfreev (items);
     g_free (output);
+    GRAB_CTX ();
     js_post_message ("os_prober", NULL);
+    UNGRAB_CTX ();
     return NULL;
 }
 
@@ -176,7 +178,9 @@ thread_init_parted (gpointer data)
         g_hash_table_insert (disk_partitions, g_strdup (uuid), part_list);
         g_free (uuid);
     }
+    GRAB_CTX ();
     js_post_message ("init_parted", NULL);
+    UNGRAB_CTX ();
     return NULL;
 }
 
@@ -192,16 +196,19 @@ void init_parted ()
 JS_EXPORT_API 
 JSObjectRef installer_list_disks()
 {
+    GRAB_CTX ();
     JSObjectRef array = json_array_create ();
     int i;
     if (disks == NULL) {
         g_warning ("installer list disks:disks NULL\n");
+        UNGRAB_CTX ();
         return array;
     }
 
     GList *disk_keys = g_hash_table_get_keys (disks);
     if (disk_keys == NULL) {
         g_warning ("installer list disks:disk keys NULL\n");
+        UNGRAB_CTX ();
         return array;
     }
 
@@ -209,6 +216,7 @@ JSObjectRef installer_list_disks()
         json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), g_list_nth_data (disk_keys, i)));
     }
 
+    UNGRAB_CTX ();
     return array;
 }
 
@@ -340,6 +348,7 @@ double installer_get_disk_sector_size (const gchar *disk)
 JS_EXPORT_API
 JSObjectRef installer_get_disk_partitions (const gchar *disk)
 {
+    GRAB_CTX ();
     JSObjectRef array = json_array_create ();
     int i;
 
@@ -352,6 +361,7 @@ JSObjectRef installer_get_disk_partitions (const gchar *disk)
         }
     }
 
+    UNGRAB_CTX ();
     return array;
 }
 
@@ -664,6 +674,7 @@ out:
 JS_EXPORT_API 
 void installer_get_partition_free (const gchar *part)
 {
+    GRAB_CTX ();
     PedPartition *pedpartition = NULL;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
@@ -689,19 +700,14 @@ void installer_get_partition_free (const gchar *part)
         }
 
         gchar *path = ped_partition_get_path (pedpartition);
-
         if (path != NULL) {
             struct FsHandler *handler = g_new0 (struct FsHandler, 1);
             handler->path = g_strdup (path);
             handler->part = g_strdup (part);
-            handler->fs = g_strdup (fs);
-            GRAB_CTX ();
             GThread *thread = g_thread_new ("get_partition_free", 
                                             (GThreadFunc) get_partition_free, 
                                             (gpointer) handler);
             g_thread_unref (thread);
-
-            UNGRAB_CTX ();
         } else {
             g_warning ("get pedpartition free: get %s path failed\n", part);
         }
@@ -710,6 +716,7 @@ void installer_get_partition_free (const gchar *part)
     } else {
         g_warning ("get partition free:find pedpartition %s failed\n", part);
     }
+    UNGRAB_CTX ();
 }
 
 JS_EXPORT_API 

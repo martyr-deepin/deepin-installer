@@ -19,6 +19,7 @@
 
 DCore.signal_connect("used", (msg) ->
     echo "used msg"
+    echo msg.part
     v_part_info[msg.part]["used"] = msg.free
     m_part_info[msg.part]["used"] = msg.free
     Widget.look_up(msg.part)?.update_part_used()
