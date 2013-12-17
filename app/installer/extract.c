@@ -355,10 +355,14 @@ void installer_extract_intelligent ()
 {
     //free memory used by keyboard layout variant to help extract
     extern GHashTable *layout_variants_hash;
-    g_hash_table_destroy (layout_variants_hash);
+    if (layout_variants_hash != NULL) {
+        g_hash_table_destroy (layout_variants_hash);
+    }
 
     extern GHashTable *layout_desc_hash;
-    g_hash_table_destroy (layout_desc_hash);
+    if (layout_desc_hash != NULL) {
+        g_hash_table_destroy (layout_desc_hash);
+    }
 
     if (is_outdated_machine ()) {
         g_printf ("extract intelligent:use extract iso\n");

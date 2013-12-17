@@ -40,18 +40,19 @@ static
 int for_translate(int argc, char *argv[])
 {
     const char* const categories[] = {
-        _(ALL),
-        _(INTERNET),
-        _(MULTIMEDIA),
-        _(GAMES),
-        _(GRAPHICS),
-        _(PRODUCTIVITY),
-        _(INDUSTRY),
-        _(EDUCATION),
-        _(DEVELOPMENT),
-        _(SYSTEM),
-        _(UTILITIES),
-        _(OTHER)
+        _("all"),
+        _("internet"),
+        _("multimedia"),
+        _("games"),
+        _("graphics"),
+        _("productivity"),
+        _("industry"),
+        _("education"),
+        _("development"),
+        _("system"),
+        _("utilities"),
+        _("other"),
+        NULL
     };
 
     return 0;

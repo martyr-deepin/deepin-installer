@@ -511,7 +511,6 @@ get_partition_free (gpointer data)
     json_append_string (message, "part", part);
     json_append_number (message, "free", free);
     js_post_message ("used", message);
-    //js_post_message_simply ("used","{\"part\":\"%s\", \"free\":\"%f\"}", part, free);
 
     g_free (handler->path);
     g_free (handler->part);
@@ -696,7 +695,6 @@ is_slowly_device (gpointer data)
                     JSObjectRef message = json_create ();
                     json_append_string (message, "uuid", handler->uuid);
                     js_post_message ("slow", message);
-                    //js_post_message_simply("slow", "{\"uuid\":\"%s\"}", handler->uuid);
                 } else {
                     g_debug ("is slowly device:%s 's speed is ok\n", handler->uuid);
                 }

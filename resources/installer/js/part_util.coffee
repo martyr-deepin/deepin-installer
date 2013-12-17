@@ -19,7 +19,6 @@
 
 DCore.signal_connect("used", (msg) ->
     echo "used msg"
-    echo msg.part
     v_part_info[msg.part]["used"] = msg.free
     m_part_info[msg.part]["used"] = msg.free
     Widget.look_up(msg.part)?.update_part_used()
@@ -281,7 +280,7 @@ do_partition = ->
 #auto partition for simple mode
 do_simple_partition = (device, type) ->
     #fake advance mode operation to keep the hash table uuid
-    #undo_part_table_info()
+    undo_part_table_info()
     if type == "disk"
         #drop all partition then crate a new one
         for part in v_disk_info[device]["partitions"]

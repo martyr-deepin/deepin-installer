@@ -89,7 +89,6 @@ thread_os_prober (gpointer data)
     g_strfreev (items);
     g_free (output);
     js_post_message ("os_prober", NULL);
-    //js_post_message_simply ("os_prober", "{\"finish\":\"%s\"}", "finish");
     return NULL;
 }
 
@@ -178,7 +177,6 @@ thread_init_parted (gpointer data)
         g_free (uuid);
     }
     js_post_message ("init_parted", NULL);
-    //js_post_message_simply ("init_parted", "{\"finish\":\"%s\"}", "finish");
     return NULL;
 }
 
@@ -697,10 +695,13 @@ void installer_get_partition_free (const gchar *part)
             handler->path = g_strdup (path);
             handler->part = g_strdup (part);
             handler->fs = g_strdup (fs);
+            GRAB_CTX ();
             GThread *thread = g_thread_new ("get_partition_free", 
                                             (GThreadFunc) get_partition_free, 
                                             (gpointer) handler);
             g_thread_unref (thread);
+
+            UNGRAB_CTX ();
         } else {
             g_warning ("get pedpartition free: get %s path failed\n", part);
         }

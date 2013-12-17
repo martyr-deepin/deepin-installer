@@ -24,7 +24,6 @@
 
 void emit_progress (const gchar *step, const gchar *progress)
 {
-    //js_post_message_simply ("progress", "{\"stage\":\"%s\",\"progress\":\"%s\"}", step, progress);
     JSObjectRef message = json_create ();
     json_append_string (message, "stage", step);
     json_append_string (message, "progress", progress);
