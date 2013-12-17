@@ -34,6 +34,7 @@ gboolean _interal_call(Call* call)
     js_args[0] = call->arg;
 
     JSObjectCallAsFunction(get_global_context(), call->cb, NULL, 1, js_args, NULL);
+    unprotect(call->arg);
     g_free(call);
     return FALSE;
 }
@@ -52,6 +53,7 @@ void js_post_message(const char* name, JSValueRef json)
     if (cb != NULL) {
         Call* call = g_new0(Call, 1);
         call->cb = cb;
+        JSValueProtect(ctx, json);
         call->arg = json;
         g_main_context_invoke(NULL, (GSourceFunc)_interal_call, call);
     } else {
@@ -87,8 +89,10 @@ void js_post_signal(const char* signal)
 
 void unprotect(gpointer data)
 {
+    GRAB_CTX();
     JSContextRef ctx = get_global_context();
     JSValueUnprotect(ctx, (JSValueRef)data);
+    UNGRAB_CTX();
 }
 
 JS_EXPORT_API

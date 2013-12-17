@@ -704,6 +704,7 @@ void installer_get_partition_free (const gchar *part)
             struct FsHandler *handler = g_new0 (struct FsHandler, 1);
             handler->path = g_strdup (path);
             handler->part = g_strdup (part);
+            handler->fs = g_strdup (fs);
             GThread *thread = g_thread_new ("get_partition_free", 
                                             (GThreadFunc) get_partition_free, 
                                             (gpointer) handler);
