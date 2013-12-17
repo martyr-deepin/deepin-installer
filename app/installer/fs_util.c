@@ -100,12 +100,13 @@ _get_ext4_free (const gchar *path)
 {
     double free = 0;
 
-    if (g_find_program_in_path ("dumpe2fs") == NULL) {
+    gchar *ext4_cmd = g_find_program_in_path ("dumpe2fs");
+    if (ext4_cmd == NULL) {
         g_warning ("_get_ext4_free:dumpe2fs not installed\n");
         return free;
     }
     
-    gchar *cmd = g_strdup_printf ("dumpe2fs -h %s", path);
+    gchar *cmd = g_strdup_printf ("%s -h %s", ext4_cmd, path);
     gchar *free_regex = g_strdup ("Free blocks:\\s+\\d+");
     gchar *free_num_regex = g_strdup ("\\d+");
     gchar *unit_regex = g_strdup ("Block size:\\s+\\d+");
@@ -113,6 +114,7 @@ _get_ext4_free (const gchar *path)
 
     free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
 
+    g_free (ext4_cmd);
     g_free (cmd);
     g_free (free_regex);
     g_free (free_num_regex);
@@ -139,12 +141,13 @@ _get_reiserfs_free (const gchar *path)
 {
     double free = 0;
 
-    if (g_find_program_in_path ("debugreiserfs") == NULL) {
+    gchar *reiserfs_cmd = g_find_program_in_path ("debugreiserfs");
+    if (reiserfs_cmd  == NULL) {
         g_warning ("_get_reiserfs_free:debugreiserfs not installed\n");
         return free;
     }
     
-    gchar *cmd = g_strdup_printf ("debugreiserfs %s", path);
+    gchar *cmd = g_strdup_printf ("%s %s", reiserfs_cmd, path);
     gchar *free_regex = g_strdup ("Free blocks.*");
     gchar *free_num_regex = g_strdup ("\\d+");
     gchar *unit_regex = g_strdup ("Blocksize.*");
@@ -152,6 +155,7 @@ _get_reiserfs_free (const gchar *path)
 
     free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
 
+    g_free (reiserfs_cmd);
     g_free (cmd);
     g_free (free_regex);
     g_free (free_num_regex);
@@ -175,12 +179,13 @@ _get_xfs_free (const gchar *path)
 {
     double free = 0;
 
-    if (g_find_program_in_path ("xfs_db") == NULL) {
+    gchar *xfs_cmd = g_find_program_in_path ("xfs_db");
+    if (xfs_cmd == NULL) {
         g_warning ("_get_xfs_free:xfs_db not installed\n");
         return free;
     }
         
-    gchar *cmd = g_strdup_printf ("xfs_db -c 'sb 0' -c 'print blocksize' -c 'print fdblocks' -r %s", path);
+    gchar *cmd = g_strdup_printf ("%s -c 'sb 0' -c 'print blocksize' -c 'print fdblocks' -r %s", xfs_cmd, path);
     gchar *free_regex = g_strdup ("fdblocks.*");
     gchar *free_num_regex = g_strdup ("\\d+");
     gchar *unit_regex = g_strdup ("blocksize.*");
@@ -188,6 +193,7 @@ _get_xfs_free (const gchar *path)
 
     free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
 
+    g_free (xfs_cmd);
     g_free (cmd);
     g_free (free_regex);
     g_free (free_num_regex);
@@ -202,12 +208,13 @@ _get_jfs_free (const gchar *path)
 {
     double free = 0;
 
-    if (g_find_program_in_path ("jfs_debugfs") == NULL) {
+    gchar *jfs_cmd = g_find_program_in_path ("jfs_debugfs");
+    if (jfs_cmd == NULL) {
         g_warning ("_get_jfs_free:jfs_debugfs not installed\n");
         return free;
     }
         
-    gchar *cmd = g_strdup_printf ("/bin/sh -c 'echo dm | jfs_debugfs %s'", path);
+    gchar *cmd = g_strdup_printf ("/bin/sh -c 'echo dm | %s %s'", jfs_cmd, path);
     gchar *free_regex = g_strdup ("dn_nfree.*0[xX][0-9a-fA-F]+");
     gchar *free_num_regex = g_strdup ("0[xX][0-9a-fA-F]+");
     gchar *unit_regex = g_strdup ("Block Size.*");
@@ -215,6 +222,7 @@ _get_jfs_free (const gchar *path)
 
     free = _get_partition_free_size (cmd, free_regex, free_num_regex, unit_regex, unit_num_regex);
 
+    g_free (jfs_cmd);
     g_free (cmd);
     g_free (free_regex);
     g_free (free_num_regex);
@@ -240,12 +248,13 @@ _get_fat16_free (const gchar *path)
     gchar *used_cluster = NULL;
     gchar *total_cluster = NULL;
 
-    if (g_find_program_in_path ("dosfsck") == NULL) {
+    gchar *fat16_cmd = g_find_program_in_path ("dosfsck");
+    if (fat16_cmd  == NULL) {
          g_warning ("_get_fat16_free:dosfsck not installed\n");
          goto out;
      }
          
-    cmd = g_strdup_printf ("dosfsck -n -v %s", path);
+    cmd = g_strdup_printf ("%s -n -v %s", fat16_cmd, path);
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("_get_btrfs_free:run cmd %s failed\n", cmd);
@@ -292,6 +301,7 @@ out:
     if (error != NULL) {
         g_error_free (error);
     }
+    g_free (fat16_cmd);
     g_free (cmd);
     g_free (total_cluster);
     g_free (used_cluster);
@@ -322,12 +332,13 @@ _get_btrfs_free (const gchar *path)
     gchar *space_inuse = NULL;
     gchar *used_num = NULL;
 
-    if (g_find_program_in_path ("btrfs") == NULL) {
+    gchar *btrfs_cmd = g_find_program_in_path ("btrfs");
+    if (btrfs_cmd == NULL) {
         g_warning ("btrfs not installed\n");
         goto out;
     }
 
-    cmd = g_strdup_printf ("btrfs filesystem show %s", path);
+    cmd = g_strdup_printf ("%s filesystem show %s", btrfs_cmd, path);
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("_get_btrfs_free:run cmd %s failed\n", cmd);
@@ -372,6 +383,7 @@ out:
     if (error != NULL) {
         g_error_free (error);
     }
+    g_free (btrfs_cmd);
     g_free (cmd);
     g_free (total_num);
     g_free (total);
@@ -395,12 +407,13 @@ _get_ntfs_free (const gchar *path)
     gchar *space_inuse = NULL;
     gchar *used_num = NULL;
 
-    if (g_find_program_in_path ("ntfsresize") == NULL) {
+    gchar *ntfs_cmd = g_find_program_in_path ("ntfsresize");
+    if (ntfs_cmd == NULL) {
         g_warning ("_get_ntfs_free:ntfsresize not installed\n");
         goto out;
     }
 
-    cmd = g_strdup_printf ("ntfsresize -i -f -P %s", path);
+    cmd = g_strdup_printf ("%s -i -f -P %s", ntfs_cmd, path);
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("_get_ntfs_free:run cmd %s failed\n", cmd);
@@ -441,6 +454,7 @@ out:
     if (error != NULL) {
         g_error_free (error);
     }
+    g_free (ntfs_cmd);
     g_free (cmd);
     g_free (total_num);
     g_free (total);
@@ -526,87 +540,100 @@ void
 set_partition_filesystem (const gchar *path, const gchar *fs)
 {
     gchar *cmd = NULL;
+    gchar *fs_cmd = NULL;
     GError *error = NULL;
 
     if (g_strcmp0 (fs, "ext4") == 0) {
-        if (g_find_program_in_path ("mkfs.ext4") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkfs.ext4");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.ext4 not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.ext4 %s", path);
 
     } else if (g_strcmp0 (fs, "ext3") == 0) {
-        if (g_find_program_in_path ("mkfs.ext3") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkfs.ext3");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.ext3 not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.ext3 %s", path);
 
     } else if (g_strcmp0 (fs, "ext2") == 0) {
-        if (g_find_program_in_path ("mkfs.ext2") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkfs.ext2");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.ext2 not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.ext2 %s", path);
 
     } else if (g_strcmp0 (fs, "fat16") == 0) {
-        if (g_find_program_in_path ("mkdosfs") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkdosfs");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkdosfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkdosfs -F16 %s", path);
 
     } else if (g_strcmp0 (fs, "fat32") == 0) {
-        if (g_find_program_in_path ("mkdosfs") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkdosfs");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkdosfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkdosfs -F32 %s", path);
 
     } else if  (g_strcmp0 (fs, "jfs") == 0) {
-        if (g_find_program_in_path ("mkfs.jfs") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkfs.jfs");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.jfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.jfs -q %s", path);
 
     } else if  (g_strcmp0 (fs, "linux-swap") == 0) {
-        if (g_find_program_in_path ("mkswap") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkswap");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkswap not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkswap %s", path);
 
     } else if (g_strcmp0 (fs, "ntfs") == 0) {
-        if (g_find_program_in_path ("mkntfs") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkntfs");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkntfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkntfs -Q -v %s", path);
     
     } else if (g_strcmp0 (fs, "reiserfs") == 0) {
-        if (g_find_program_in_path ("mkreiserfs") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkreiserfs");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkreiserfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkreiserfs -f %s", path);
 
     } else if (g_strcmp0 (fs, "btrfs") == 0) {
-        if (g_find_program_in_path ("mkfs.btrfs") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkfs.btrfs");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.btrfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.btrfs %s", path);
 
     } else if (g_strcmp0 (fs, "xfs") == 0) {
-        if (g_find_program_in_path ("mkfs.xfs") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkfs.xfs");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.xfs not installed\n");
             return ;
         }
         cmd = g_strdup_printf ("mkfs.xfs -f %s", path);
 
     } else if (g_strrstr (fs, "swap") != NULL) {
-        if (g_find_program_in_path ("mkswap") == NULL) {
+        fs_cmd = g_find_program_in_path ("mkswap");
+        if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkswap not installed\n");
             return ;
         }
@@ -623,7 +650,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         g_error_free (error);
     }
     error = NULL;
-
+    g_free (fs_cmd);
     g_free (cmd);
 }
 
@@ -666,13 +693,15 @@ is_slowly_device (gpointer data)
     gchar *output = NULL;
     GError *error = NULL;
 
-    if (g_find_program_in_path ("hdparm") == NULL) {
+    gchar *hdparm_cmd = g_find_program_in_path ("hdparm");
+    if (hdparm_cmd == NULL) {
         g_warning ("is slowly device:hdparm not installed\n");
         g_free ((gchar *)handler->path);
         g_free ((gchar *)handler->uuid);
         g_free (handler);
         return NULL;
     }
+    g_free (hdparm_cmd);
 
     gchar *speed_cmd = g_strdup_printf ("hdparm -t %s", handler->path);
     g_spawn_command_line_sync (speed_cmd, &output, NULL, NULL, &error); 

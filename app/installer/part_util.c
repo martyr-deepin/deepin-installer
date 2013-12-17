@@ -58,19 +58,19 @@ thread_os_prober (gpointer data)
                                           (GDestroyNotify) g_free, 
                                           (GDestroyNotify) g_free);
 
-    if (g_find_program_in_path ("os-prober") == NULL) {
+    gchar *cmd = g_find_program_in_path ("os-prober");
+    if (cmd == NULL) {
         g_warning ("os:os-prober not installed\n");
     }
     g_spawn_command_line_async ("pkill -9 os-prober", NULL);
 
     gchar *output = NULL;
     GError *error = NULL;
-    g_spawn_command_line_sync ("os-prober", &output, NULL, NULL, &error);
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("get partition os:os-prober %s\n", error->message);
         g_error_free (error);
     }
-    error = NULL;
 
     gchar **items = g_strsplit (output, "\n", -1);
     int i, j;
@@ -88,6 +88,8 @@ thread_os_prober (gpointer data)
     }
     g_strfreev (items);
     g_free (output);
+    g_free (cmd);
+
     GRAB_CTX ();
     js_post_message ("os_prober", NULL);
     UNGRAB_CTX ();
