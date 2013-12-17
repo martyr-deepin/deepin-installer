@@ -689,67 +689,60 @@ is_slowly_device (gpointer data)
         g_warning ("is slowly device:parse SpeedHandler failed\n");
         return NULL;
     }
-
+    gchar *hdparm_cmd = NULL;
     gchar *output = NULL;
+    gchar *matched = NULL;
+    gchar *speed_cmd = NULL;
+    gchar *speed = NULL;
     GError *error = NULL;
 
-    gchar *hdparm_cmd = g_find_program_in_path ("hdparm");
+    hdparm_cmd = g_find_program_in_path ("hdparm");
     if (hdparm_cmd == NULL) {
         g_warning ("is slowly device:hdparm not installed\n");
-        g_free ((gchar *)handler->path);
-        g_free ((gchar *)handler->uuid);
-        g_free (handler);
-        return NULL;
+        goto out;
     }
-    g_free (hdparm_cmd);
 
-    gchar *speed_cmd = g_strdup_printf ("hdparm -t %s", handler->path);
+    speed_cmd = g_strdup_printf ("hdparm -t %s", handler->path);
     g_spawn_command_line_sync (speed_cmd, &output, NULL, NULL, &error); 
     if (error != NULL) {
         g_warning ("is slowly device:run hdparm %s\n", error->message);
-        g_error_free (error);
-    }
-    error = NULL;
-
-    if (output != NULL) {
-
-        gchar *matched = get_matched_string (output, "\\d+(\\.\\d+)?\\sMB/sec");
-        if (matched != NULL) {
-            //g_printf ("is slowly device:matched string-> %s\n", matched);
-            gchar *speed = get_matched_string (matched, "\\d+(\\.\\d+)?");
-            if (speed != NULL) {
-
-                gdouble num = g_ascii_strtod (speed, NULL);
-                g_printf ("is slowly device:speed for %s is %g MB/sec\n", handler->path, num);
-
-                if (num < 10) {
-                    GRAB_CTX ();
-                    JSObjectRef message = json_create ();
-                    json_append_string (message, "uuid", handler->uuid);
-                    js_post_message ("slow", message);
-                    UNGRAB_CTX ();
-                } else {
-                    g_debug ("is slowly device:%s 's speed is ok\n", handler->uuid);
-                }
-            } else {
-                g_warning ("is slowly device:parse speed from %s failed\n", matched);
-            }
-            g_free (speed); 
-
-        } else {
-            g_warning ("is slowly device:get speed failed\n");
-        }
-        g_free (matched);
-
-    } else {
-        g_warning ("is slowly device:get hdparm output failed\n");
+        goto out;
     }
 
+    matched = get_matched_string (output, "\\d+(\\.\\d+)?\\sMB/sec");
+    if (matched == NULL) {
+        g_warning ("is slowly device:get MB/sec failed\n");
+        goto out;
+    }
+    //g_printf ("is slowly device:matched string-> %s\n", matched);
+    speed = get_matched_string (matched, "\\d+(\\.\\d+)?");
+    if (speed == NULL) {
+        g_warning ("is slowly device:parse speed from %s failed\n", matched);
+        goto out;
+    }
+
+    gdouble num = g_ascii_strtod (speed, NULL);
+    //g_printf ("is slowly device:speed for %s is %g MB/sec\n", handler->path, num);
+    if (num < 10) {
+        GRAB_CTX ();
+        JSObjectRef message = json_create ();
+        json_append_string (message, "uuid", handler->uuid);
+        js_post_message ("slow", message);
+        UNGRAB_CTX ();
+    } 
+    goto out;
+
+out:
+    g_free (speed);
+    g_free (hdparm_cmd);
     g_free (speed_cmd);
     g_free (output);
+    g_free (matched);
+    if (error != NULL) {
+        g_error_free (error);
+    }
     g_free ((gchar *)handler->path);
     g_free ((gchar *)handler->uuid);
     g_free (handler);
-
     return NULL;
 }
