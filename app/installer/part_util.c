@@ -489,17 +489,15 @@ gchar* installer_get_partition_mp (const gchar *part)
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition == NULL) {
         g_warning ("get partition mp:find pedpartition %s failed\n", part);
-        goto out;
+        return NULL;
     }
     path = ped_partition_get_path (pedpartition);
     if (path == NULL) {
         g_warning ("get partition mp:get partition path failed\n");
-        goto out;
+        return NULL;
     }
-    mp = g_strdup (get_partition_mount_point (path));
-    goto out;
+    mp = get_partition_mount_point (path);
 
-out:
     g_free (path);
     return mp;
 }
@@ -620,6 +618,8 @@ gchar* installer_get_partition_label (const gchar *part)
     if (label != NULL) {
         label = g_strstrip (label);
     }
+    g_free (path);
+
     return label;
 }
 
@@ -931,7 +931,7 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         g_warning ("write fs tab:find pedpartition %s failed\n", part);
         goto out;
     }
-    path = g_strdup (ped_partition_get_path (pedpartition));
+    path = ped_partition_get_path (pedpartition);
     if (path == NULL) {
         g_warning ("write fs tab:get partition %s path failed\n", part);
         goto out;
@@ -1079,7 +1079,7 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
         g_warning ("mount partition:pedpartition for %s NULL", part);
         goto out;
     }
-    path = g_strdup (ped_partition_get_path (pedpartition));
+    path = ped_partition_get_path (pedpartition);
     if (path == NULL) {
         g_warning ("mount partition:%s path is NULL\n", part);
         goto out;
