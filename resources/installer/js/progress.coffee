@@ -97,8 +97,6 @@ class Progress extends Page
             try
                 mount_custom_partitions()
                 echo "mount custom partitions finish"
-                #DCore.Installer.extract_squashfs()
-                #DCore.Installer.extract_iso()
                 DCore.Installer.extract_intelligent()
             catch error
                 echo error

@@ -316,6 +316,7 @@ is_outdated_machine ()
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, NULL);
     if (output != NULL) {
         if (g_strrstr (output, "vmware") != NULL || g_strrstr (output, "virtualbox") != NULL) {
+            g_free (output);
             return FALSE;
         }
     } else {
@@ -328,6 +329,7 @@ is_outdated_machine ()
     g_spawn_command_line_sync (kvm_cmd, &kvm_output, NULL, NULL, NULL);
     if (kvm_output != NULL) {
         if (g_strrstr (kvm_output, "KVM") != NULL) {
+            g_free (kvm_output);
             return FALSE;
         }
     } else {

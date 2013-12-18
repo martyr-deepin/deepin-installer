@@ -102,6 +102,7 @@ JSObjectRef installer_get_timezone_list ()
     GFile *file = NULL;
     GFileInputStream *input = NULL;
     GDataInputStream *data_input = NULL;
+    gchar **line = NULL;
 
     JSObjectRef timezones = json_array_create ();
 
@@ -138,14 +139,13 @@ JSObjectRef installer_get_timezone_list ()
                 g_debug ("get timezone list:comment line, just pass");
                 continue;
             } else {
-                gchar **line = g_strsplit (data, "\t", -1);
+                line = g_strsplit (data, "\t", -1);
                 if (line == NULL) {
                     g_warning ("get timezone list:split %s failed\n", data);
                 } else {
                     json_array_insert (timezones, index, jsvalue_from_cstr (get_global_context (), line[2]));
                     index++;
                 }
-                g_strfreev (line);
             }
         } else {
             break;
@@ -165,6 +165,7 @@ out:
     if (error != NULL) {
         g_error_free (error);
     }
+    g_strfreev (line);
     UNGRAB_CTX ();
 
     return timezones;
