@@ -50,6 +50,7 @@ class ReportDialog extends Dialog
         DCore.Installer.finish_install()
 
 PPT_IMG_PREFIX = "/usr/share/installer/resources/installer/"
+PPT_TIMEOUT_ID = -1
 
 class Progress extends Page
     constructor: (@id)->
@@ -65,10 +66,16 @@ class Progress extends Page
         @canvas.setAttribute("height", 450)
         DCore.Installer.draw_background(@canvas, PPT_IMG_PREFIX + @current_img)
         @ppt.addEventListener("click", (e) =>
+            clearTimeout(PPT_TIMEOUT_ID)
+            PPT_TIMEOUT_ID = -1
             if e.offsetX < 377
-                @switch_ppt("prev")
+                PPT_TIMEOUT_ID = setTimeout( ->
+                    progress_page?.switch_ppt("prev")
+                , 300)
             else
-                @switch_ppt("next")
+                PPT_TIMEOUT_ID = setTimeout( ->
+                    progress_page?.switch_ppt("next")
+                , 300)
         )
 
         @progress_container = create_element("div", "ProgressContainer", @element)
