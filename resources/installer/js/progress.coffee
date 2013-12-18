@@ -49,6 +49,8 @@ class ReportDialog extends Dialog
         echo "report dialog cb"
         DCore.Installer.finish_install()
 
+PPT_IMG_PREFIX = "/usr/share/installer/resources/installer/"
+
 class Progress extends Page
     constructor: (@id)->
         super
@@ -58,12 +60,15 @@ class Progress extends Page
         @current_img = _ppt_list[0]
 
         @ppt = create_element("div", "Ppt", @element)
-        @ppt_img = create_img("PptImg", @current_img, @ppt)
-        @ppt_img.addEventListener("click", (e) =>
+        @canvas = create_element("canvas", "", @ppt)
+        @canvas.setAttribute("width", 752)
+        @canvas.setAttribute("height", 450)
+        DCore.Installer.draw_background(@canvas, PPT_IMG_PREFIX + @current_img)
+        @ppt.addEventListener("click", (e) =>
             if e.offsetX < 377
-                progress_page?.switch_ppt("prev")
+                @switch_ppt("prev")
             else
-                progress_page?.switch_ppt("next")
+                @switch_ppt("next")
         )
 
         @progress_container = create_element("div", "ProgressContainer", @element)
@@ -80,8 +85,7 @@ class Progress extends Page
                 @current_img = _ppt_list[index + 1]
         else
             echo "invalid direction"
-
-        @ppt_img.setAttribute("src", @current_img)
+        DCore.Installer.draw_background(@canvas, PPT_IMG_PREFIX + @current_img)
 
     update_progress: (progress) ->
         @progressbar.style.width = progress

@@ -27,6 +27,7 @@
 #include "misc.h"
 #include "part_util.h"
 #include "fs_util.h"
+#include "dwebview.h"
 
 #define WHITE_LIST_PATH RESOURCE_DIR"/installer/whitelist.ini"
 #define PACKAGES_LIST_PATH RESOURCE_DIR"/installer/blacklist.ini"
@@ -591,5 +592,37 @@ finish_install_cleanup ()
                 unmount_target (target);
             }
         }
+    }
+}
+
+JS_EXPORT_API 
+void  installer_draw_background (JSValueRef canvas, const gchar *path)
+{
+    GError *error = NULL;
+    cairo_t* cr =  NULL;
+    GdkPixbuf *pixbuf = NULL;
+
+    cr = fetch_cairo_from_html_canvas (get_global_context(), canvas);
+    if (!g_file_test (path, G_FILE_TEST_EXISTS) || g_access (path, R_OK) != 0) {
+        g_warning ("draw background:invalid path %s\n", path); 
+        cairo_set_source_rgba (cr, 0.3, 0.3, 0.3, 0.5);
+        goto draw;
+    }
+
+    pixbuf = gdk_pixbuf_new_from_file_at_scale (path, 752, 450, FALSE, &error);
+    if (error != NULL) {
+        g_warning ("draw background:get pixbuf failed");
+        g_error_free (error);
+        cairo_set_source_rgba (cr, 0.3, 0.3, 0.3, 0.5);
+    } else {
+        gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
+    }
+    goto draw;
+
+draw:
+    cairo_paint (cr);
+    canvas_custom_draw_did (cr, NULL);
+    if (pixbuf != NULL) {
+        g_object_unref (pixbuf);
     }
 }

@@ -40,4 +40,6 @@ JS_EXPORT_API void installer_update_grub (const gchar *uuid);
 
 void finish_install_cleanup ();
 
+JS_EXPORT_API void  installer_draw_background (JSValueRef canvas, const gchar *path);
+
 #endif
