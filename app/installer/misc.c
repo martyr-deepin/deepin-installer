@@ -479,14 +479,37 @@ void installer_update_grub (const gchar *uuid)
     g_thread_unref (thread);
 }
 
+static gboolean
+rm_target (gpointer data) 
+{
+    extern const gchar *target;
+    if (target == NULL) {
+        g_warning ("finish install:target is NULL\n");
+    } 
+    if (!g_file_test (target, G_FILE_TEST_EXISTS)) {
+        return FALSE;
+    }
+    if (g_rmdir (target) != 0) {
+        g_warning ("rm target %s failed\n", target);
+        gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", target);
+        g_spawn_command_line_async (umount_target_cmd, NULL);
+        g_free (umount_target_cmd);
+        return TRUE;
+    }
+    g_printf ("rm target %s succeed\n", target);
+    return FALSE;
+}
+
 //unmount after break chroot
 static void 
-unmount_target (const gchar *target)
+unmount_target ()
 {
-    guint target_before = get_mount_target_count (target);
-    if (target_before < 1) {
+    g_warning ("finish install:unmount target\n");
+    extern const gchar *target;
+    if (target == NULL) {
+        g_warning ("unmount mount:target is NULL\n");
         return;
-    }
+    } 
 
     gchar *umount_sys_cmd = g_strdup_printf ("umount -l %s/sys", target);
     gchar *umount_proc_cmd = g_strdup_printf ("umount -l %s/proc", target);
@@ -494,11 +517,19 @@ unmount_target (const gchar *target)
     gchar *umount_dev_cmd = g_strdup_printf ("umount -l %s/dev", target);
     gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", target);
 
+    //g_timeout_add (100, (GSourceFunc) rm_target, NULL);
+
     g_spawn_command_line_async (umount_sys_cmd, NULL);
     g_spawn_command_line_async (umount_proc_cmd, NULL);
     g_spawn_command_line_async (umount_devpts_cmd, NULL);
     g_spawn_command_line_async (umount_dev_cmd, NULL);
     g_spawn_command_line_async (umount_target_cmd, NULL);
+
+    while (g_file_test (target, G_FILE_TEST_EXISTS)) {
+        if (g_rmdir (target) != 0) {
+            g_spawn_command_line_async (umount_target_cmd, NULL);
+        }
+    }
 
     g_free (umount_sys_cmd);
     g_free (umount_proc_cmd);
@@ -570,29 +601,27 @@ out:
 void
 finish_install_cleanup () 
 {
-    remove_packages ();
-    ped_device_free_all ();
-
     extern const gchar *target;
     if (target == NULL) {
         g_warning ("finish install:target is NULL\n");
+    } 
+    extern gboolean in_chroot;
+    extern int chroot_fd;
 
-    } else {
-        extern gboolean in_chroot;
-        if (in_chroot) {
-            extern int chroot_fd;
-            if (fchdir (chroot_fd) < 0) {
-                g_warning ("finish install:reset to chroot fd dir failed\n");
-            } else {
-                int i = 0;
-                for (i = 0; i < 1024; i++) {
-                    chdir ("..");
-                }
-                chroot (".");
-                unmount_target (target);
+    if (in_chroot) {
+        remove_packages ();
+        if (fchdir (chroot_fd) < 0) {
+            g_warning ("finish install:reset to chroot fd dir failed\n");
+        } else {
+            int i = 0;
+            for (i = 0; i < 1024; i++) {
+                chdir ("..");
             }
+            chroot (".");
         }
     }
+    unmount_target ();
+    ped_device_free_all ();
 }
 
 JS_EXPORT_API 
