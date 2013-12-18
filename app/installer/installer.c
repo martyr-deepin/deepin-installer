@@ -109,16 +109,19 @@ void installer_show_help ()
 {
     GError *error = NULL;
 
-    if (g_find_program_in_path ("installerhelp") == NULL) {
+    gchar *help_cmd = g_find_program_in_path ("installerhelp");
+    if (help_cmd == NULL) {
         g_warning ("installerhelp not found\n");
         return ;
     }
 
-    g_spawn_command_line_async ("installerhelp", &error);
+    g_spawn_command_line_async (help_cmd, &error);
     if (error != NULL) {
         g_warning ("run installerhelp:%s\n", error->message);
         g_error_free (error);
     }
+    g_free (help_cmd);
+
     adapt_location_for_help ();
 }
 

@@ -224,11 +224,13 @@ cb_timeout (gpointer data)
 JS_EXPORT_API
 void installer_extract_squashfs ()
 {
-    if (g_find_program_in_path ("unsquashfs") == NULL) {
+    gchar *squashfs_cmd = g_find_program_in_path ("unsquashfs");
+    if (squashfs_cmd == NULL) {
         g_warning ("extract squashfs: unsquashfs not installed\n");
         emit_progress ("extract", "terminate");
         return;
     }
+    g_free (squashfs_cmd);
 
     extern const gchar *target;
     if (target == NULL) {

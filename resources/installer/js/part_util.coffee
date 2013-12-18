@@ -18,8 +18,8 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 DCore.signal_connect("used", (msg) ->
-    echo "used msg"
-    echo msg.part
+    #echo "used msg"
+    #echo msg.part
     v_part_info[msg.part]["used"] = msg.free
     m_part_info[msg.part]["used"] = msg.free
     Widget.look_up(msg.part)?.update_part_used()
@@ -379,7 +379,7 @@ mount_custom_partitions = ->
         for part in v_disk_info[disk]["partitions"]
             if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused"
                 try
-                    DCore.Installer.mount_partition(part, m_part_info[part]["mp"])
+                    DCore.Installer.mount_partition(part, v_part_info[part]["mp"])
                 catch error
                     echo error
 
@@ -390,7 +390,7 @@ write_fs_tab = ->
         for part in v_disk_info[disk]["partitions"]
             if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused"
                 try
-                    DCore.Installer.write_partition_mp(part, m_part_info[part]["mp"])
+                    DCore.Installer.write_partition_mp(part, v_part_info[part]["mp"])
                 catch error
                     echo error
 

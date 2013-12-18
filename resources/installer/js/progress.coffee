@@ -96,7 +96,7 @@ class Progress extends Page
             echo "start handle extract"
             try
                 mount_custom_partitions()
-                echo "mount custom partitions finish"
+                #echo "mount custom partitions finish"
                 DCore.Installer.extract_intelligent()
             catch error
                 echo error
