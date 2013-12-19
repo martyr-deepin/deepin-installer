@@ -34,7 +34,7 @@
     position:absolute;
     left:239px;
     right:239px;
-    top:184px;
+    top:140px;
     bottom:156px;
     width:272px;
 }
@@ -42,14 +42,13 @@
 .WelcomeFormItem {
     padding:0;
     width:272px;
-    height:80px;
-    margin-top:-20px;
+    height:72px;
 }
 
 .WelcomeFormItem input {
     width:272px;
-    height:22px;
-    padding-left:20px;
+    height:30px;
+    padding-left:50px;
     border:1px solid #9D9D9D;
     border-radius:3px;
     outline-style:none;
@@ -62,6 +61,7 @@
 
 #username input {
     background: white url("../images/username.png") no-repeat;
+    background-position:left center;
 }
 
 #password input {
@@ -200,14 +200,17 @@
 
 .Welcome .Start {
     position:absolute;
-    left:323px;
-    right:325px;
+    left:285px;
+    right:285px;
     top:448px;
-    bottom:63px;
-    background:#222;
-    height:32px;
-    line-height:32px;
+    bottom:70px;
+    width:180px;
+    height:38px;
+    line-height:38px;
+    background:#FBC167;
+    color:#000;
     text-align:center;
     border-radius:5px;
-    color:#848383;
+    font-size:18px;
+    font-style:bold;
 }

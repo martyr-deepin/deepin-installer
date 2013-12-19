@@ -192,7 +192,6 @@ class Timezone extends Widget
 class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
-        @text = create_element("div", "", @element)
         @input = create_element("input", "", @element)
         @tip = create_element("div", "WelcomeTip", @element)
         @angle = create_element("span", "WelcomeAngle", @tip)
@@ -212,24 +211,20 @@ class WelcomeFormItem extends Widget
 
     fill_widget: ->
         if @id == "username"
-            @text.innerText = _("Username")
-            username_holder = _("Please enter username") 
+            username_holder = _("Linuxdeepin") 
             @input.setAttribute("placeholder", username_holder)
             @error.innerText = _("Invalid username")
         else if @id == "hostname"
-            @text.innerText = _("Hostname")
-            hostname_holder = _("Please enter hostname")
+            hostname_holder = _("Computer name")
             @input.setAttribute("placeholder", hostname_holder)
             @error.innerText = _("Invalid hostname")
         else if @id == "password"
-            @text.innerText = _("Password")
-            password_holder = _("Please enter password")
+            password_holder = _("Password")
             @input.setAttribute("placeholder", password_holder)
             @input.setAttribute("type", "password")
             @error.innerText = _("Invalid password")
         else if @id == "confirmpassword"
-            @text.innerText = _("Confirm password")
-            confirm_holder = ("Please enter confirm password")
+            confirm_holder = ("Repeat your password")
             @input.setAttribute("placeholder", confirm_holder)
             @input.setAttribute("type", "password")
             @error.innerText = _("Confirm password not match")
@@ -308,7 +303,7 @@ class Welcome extends Page
         @form.appendChild(@confirmpassword.element)
 
         @start = create_element("div", "Start", @element)
-        @start.innerText = _("Start")
+        @start.innerText = _("Next")
         @start.addEventListener("mouseover", (e) =>
             if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
                 @start.setAttribute("style", "color:#00bdff")
