@@ -9,6 +9,7 @@ body {
     height:540px;
     background: url("../images/background.jpg") no-repeat fixed top;
     overflow:hidden;
+    color:rgb(255,255,255);
 }
 
 .Title {

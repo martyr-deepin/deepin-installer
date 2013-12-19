@@ -14,12 +14,11 @@
 
 .PartHelp {
     position:fixed;
-    top:20px;
-    left:590px;
+    top:60px;
     right:30px;
-    bottom:480px;
     font-size:14px;
     color:#FFF;
+    padding:0 10px;
 }
 
 .PartHelp span:hover {
@@ -48,17 +47,32 @@
 }
 
 .PartTable {
+    position:fixed;
+    top:124px;
+    left:25px;
     width:700px;
-    height:320px;
-    margin:0 26px;
+    height:330px;
     text-align:center;
+}
+
+.PartTab {
+    width:700px;
+    height:20px;
+}
+
+.PartTab div {
+    float:left;
+    width:92px;
+    height:20px;
+    line-height:20px;
+    margin-right:8px;
+    background: rgba(255,255,255,0.5);
 }
 
 .PartTableHeader {
     width:700px;
     height:25px;
-    background:#FCFCFC;
-    border:1px solid #B4B4B4;
+    background: rgba(255,255,255,0.5);
 }
 
 .PartTableHeader span {
@@ -77,30 +91,30 @@
 
 .PartTableItems {
     width:700px;
-    height:295px;
-    background:#F1F1F1;
+    height:280px;
     overflow-y:auto;
     overflow-x:hidden;
+    background: rgba(255,255,255,0.5);
 }
 
 .PartTableItem {
     width:700px;
-    height:42px;
+    height:40px;
     border:1px solid #E1E1E1;
     clear:both;
 }
 
 .PartTableItem >span {
     width:200px;
-    height:42px;
-    line-height:42px;
+    height:40px;
+    line-height:40px;
     float:left;
 }
 
 .PartTableItem >div {
     width:100px;
-    height:42px;
-    line-height:42px;
+    height:40px;
+    line-height:40px;
     vertical-align:middle;
     float:left;
 }
@@ -109,7 +123,7 @@
     width:75px;
     height:24px;
     line-height:24px;
-    margin:9px 0;
+    margin:8px 0;
     text-align:right;
     float:left;
 }
@@ -119,12 +133,12 @@
     height:16px;
     line-height:16px;
     float:left;
-    margin:13px 5px;
+    margin:12px 5px;
 }
 
 .PartTableItem .LabelPath {
     width:95px;
-    height:42px;
+    height:40px;
     float:left;
     text-align:left;
     vertical-align:middle;
@@ -133,9 +147,9 @@
 
 .PartTableItem .Label, .PartTableItem .Path {
     width:95px;
-    height:21px;
-    line-height:21px;
-    max-height:42px;
+    height:20px;
+    line-height:20px;
+    max-height:40px;
     text-overflow:ellipsis;
 }
 
@@ -210,16 +224,18 @@
     position:fixed;
     float:left;
     top:470px;
-    bottom:36px;
-    left:335px;
-    padding:0px 16px;
-    width:auto;
-    height:34px;
-    line-height:34px;
+    bottom:30px;
+    left:285px;
+    right:285px;
+    width:180px;
+    height:38px;
+    line-height:38px;
+    background:#FBC167;
+    color:#000;
     text-align:center;
-    background:#222;
-    color:white;
     border-radius:5px;
+    font-size:18px;
+    font-style:bold;
 }
 
 .NextStep:hover {

@@ -320,12 +320,6 @@ class PartLineMaps extends Widget
     fill_linemap: ->
         @element.innerHTML = ""
         @disk_line = create_element("div", "", @element)
-        if __selected_mode == "advance"
-            @fill_advance_linemap()
-        else
-            @fill_simple_linemap()
-
-    fill_advance_linemap: ->
         for part in v_disk_info[__selected_disk]["partitions"]
             if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
                 item = new PartLineItem("line"+part)
@@ -333,25 +327,12 @@ class PartLineMaps extends Widget
                 if __selected_item?.id == __selected_disk
                     item.element.setAttribute("class", "PartLineItemActive")
 
-    fill_simple_linemap: ->
-        for part in m_disk_info[__selected_disk]["partitions"]
-            if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
-                item = new PartLineItem("line"+part)
-                @disk_line.appendChild(item.element)
-                if __selected_item?.id == __selected_disk
-                    item.element.setAttribute("class", "PartLineItemActive")
-
 class PartTableItem extends Widget
-    constructor: (@id, @device_type)->
+    constructor: (@id)->
         super
         #__selected_item = @
-        if @device_type == "part"
-            @lineid = "line" + @id
-            @product_part_item()
-        else if @device_type == "disk"
-            @product_disk_item()
-        else
-            echo "invalid device type"
+        @lineid = "line" + @id
+        @product_part_item()
 
     product_part_item: ->
         @device = create_element("span", "", @element)
@@ -364,17 +345,6 @@ class PartTableItem extends Widget
         @fill_used()
         @fill_fs()
         @fill_mount()
-
-    product_disk_item: ->
-        @device = create_element("div","", @element)
-        @fill_disk_item()
-
-    fill_disk_item: ->
-        @device.innerHTML = ""
-        if __selected_mode == "advance"
-            @device.innerText = v_disk_info[@id]["path"]
-        else
-            @device.innerText = m_disk_info[@id]["path"]
 
     fill_device: ->
         @device.innerHTML = ""
@@ -490,10 +460,7 @@ class PartTableItem extends Widget
     set_btn_status: ->
         if __selected_mode != "advance"
             return 
-        if @device_type == "part"
-            type = v_part_info[@id]["type"]
-        else
-            type = "disk"
+        type = v_part_info[@id]["type"]
 
         add_btn = document.getElementById("part_add")
         delete_btn = document.getElementById("part_delete")
@@ -512,71 +479,46 @@ class PartTableItem extends Widget
             add_btn.setAttribute("class", "PartBtn")
             delete_btn.setAttribute("class", "PartBtn")
 
-    can_focus: ->
-        if @device_type == "part"
-            return true
-        if __selected_mode == "simple" and m_disk_info[@id]["partitions"].length == 0
-            return true
-        return false
-
     focus: ->
-        if not @can_focus()
-            return
         __selected_item?.blur()
         __selected_item = @
 
-        if @device_type == "disk"
-            __selected_disk = @id
-        else
-            if __selected_mode == "advance"
-                __selected_disk = v_part_info[@id]["disk"]
-            else
-                __selected_disk = m_part_info[@id]["disk"]
-        try
+        if __selected_mode == "advance"
+            __selected_disk = v_part_info[@id]["disk"]
             Widget.look_up("part_line_maps")?.fill_linemap()
             Widget.look_up(@lineid)?.passive_focus()
-        catch error
-            echo error
+        else
+            __selected_disk = m_part_info[@id]["disk"]
         #@element.scrollIntoView()
-
         @set_btn_status()
         @element.setAttribute("style", "background:#27BEFF")
-        @update_install_btn()
+        #@update_install_btn()
 
     passive_focus: ->
-        if not @can_focus()
-            return
-
         __selected_item?.blur()
         __selected_item = @
         #@element.scrollIntoView()
 
         @set_btn_status()
         @element.setAttribute("style", "background:#27BEFF")
-        @update_install_btn()
+        #@update_install_btn()
 
     blur: ->
         @element.setAttribute("style", "")
 
     update_install_btn: ->
         if __selected_mode == "advance"
-            if @device_type == "disk"
-                txt = v_disk_info[@id]["path"]
+            if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
+                txt = v_part_info[@id]["label"]
             else
-                if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
-                    txt = v_part_info[@id]["label"]
-                else
-                    txt = v_part_info[@id]["path"]
+                txt = v_part_info[@id]["path"]
             install_txt = "Install to " + txt
             Widget.look_up("part")?.update_next_btn(install_txt)
         else
-            if @device_type == "disk"
-                txt = m_disk_info[@id]["path"]
+            if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
+                txt = m_part_info[@id]["label"]
             else
-                if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
-                    txt = m_part_info[@id]["label"]
-                else
-                    txt = m_part_info[@id]["path"]
+                txt = m_part_info[@id]["path"]
             install_txt = "Install to " + txt
             Widget.look_up("part")?.update_next_btn(install_txt)
 
@@ -589,6 +531,8 @@ class PartTableItem extends Widget
 class PartTable extends Widget
     constructor: (@id)->
         super
+        @disktab = create_element("div", "PartTab", @element)
+
         @header = create_element("div", "PartTableHeader", @element)
         @device_header = create_element("span", "", @header)
         @device_header.innerText = _("Device")
@@ -602,27 +546,36 @@ class PartTable extends Widget
         if __selected_mode == "advance"
             @mount_header.innerText = _("Mount point")
         else
-            @mount_header.innerText = ""
+            @mount_header.innerText = _("Info")
+
         @items = create_element("div", "PartTableItems", @element)
+        @fill_disk_tab()
         @fill_items()
+
+    fill_disk_tab: ->
+        for disk in disks
+            disktab = create_element("div", "", @disktab)
+            disktab.innerText = v_disk_info[disk]["path"]
+            disktab.addEventListener("click", (e) =>
+                __selected_disk = disk
+                @fill_items()
+            )
 
     fill_items: ->
         @items.innerHTML = ""
-        for disk in disks
-            item = new PartTableItem(disk, "disk")
-            @items.appendChild(item.element)
-            if __selected_mode == "advance"
-                for part in v_disk_info[disk]["partitions"]
-                    if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
-                        item = new PartTableItem(part, "part")
-                        @items.appendChild(item.element)
-            else
-                for part in m_disk_info[disk]["partitions"]
-                    if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
-                        if m_part_info[part]["type"] == "freespace"
-                            echo "create freespace item"
-                        item = new PartTableItem(part, "part")
-                        @items.appendChild(item.element)
+        disk = __selected_disk
+        if __selected_mode == "advance"
+            for part in v_disk_info[disk]["partitions"]
+                if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
+                    item = new PartTableItem(part)
+                    @items.appendChild(item.element)
+        else
+            for part in m_disk_info[disk]["partitions"]
+                if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
+                    if m_part_info[part]["type"] == "freespace"
+                        echo "create freespace item"
+                    item = new PartTableItem(part)
+                    @items.appendChild(item.element)
             
     update_mode: (mode) ->
         if mode == "advance"
@@ -636,25 +589,17 @@ class PartTable extends Widget
 class Part extends Page
     constructor: (@id)->
         super
-        if __selected_mode == null
-            __selected_mode = "simple"
-
-        if __selected_disk == null
-            __selected_disk = disks[0]
-
         @part_txt = create_element("p", "", @title)
         @part_txt.innerText = _("Choose partition")
 
         @help = create_element("div", "PartHelp", @title)
         @t_mode = create_element("span", "", @help)
-        @t_mode.innerText = _("Advance mode")
+        @t_mode.innerText = _("Expert mode")
         @t_mode.addEventListener("click", (e) =>
             @switch_mode()
         )
-        @t_sep = create_element("span", "", @help)
-        @t_sep.innerText = "  |  "
         @t_help = create_element("span", "", @help)
-        @t_help.innerText = _("Show help")
+        @t_help.innerText = _("Help")
         @t_help.addEventListener("click", (e) =>
             @toggle_show_help()
         )
@@ -663,24 +608,14 @@ class Part extends Page
         @close.addEventListener("click", (e) =>
             @exit_installer()
         )
+        @init_part_page()
 
-        #linemap
-        @linemap = new PartLineMaps("part_line_maps")
-        @element.appendChild(@linemap.element)
-
-        #part table
         @table = new PartTable("part_table")
         @element.appendChild(@table.element)
 
-        @fill_advance_op()
-        if __selected_mode == "advance"
-            @show_advance_op()
-        else
-            @hide_advance_op()
-
         @next_btn = create_element("div", "NextStep", @element)
         @next_btn.setAttribute("id", "mynextstep")
-        @next_btn.innerText = _("Next step")
+        @next_btn.innerText = _("Install")
         @next_btn.addEventListener("click", (e) =>
             if __selected_mode == "advance" and not check_target_part()
                 @root_model = new RootDialog("RootModel")
@@ -689,6 +624,21 @@ class Part extends Page
                 @install_model = new InstallDialog("InstallModel")
                 document.body.appendChild(@install_model.element)
         )
+
+    init_part_page: ->
+        if __selected_mode == null
+            __selected_mode = "simple"
+
+        if __selected_disk == null
+            __selected_disk = disks[0]
+        @linemap = null
+        @fill_advance_op()
+        if __selected_mode == "advance"
+            @linemap = new PartLineMaps("part_line_maps")
+            @element.appendChild(@linemap.element)
+            @show_advance_op()
+        else
+            @hide_advance_op()
 
         recommand = get_recommand_target()
         __selected_item = Widget.look_up(recommand)
@@ -711,7 +661,7 @@ class Part extends Page
             @unmount_model?.hide_dialog()
             @hide_advance_op()
             @table.update_mode(__selected_mode)
-            @t_mode.innerText = _("Advance mode") 
+            @t_mode.innerText = _("Expert mode") 
         __selected_item = Widget.look_up(id)
         __selected_item?.focus()
 
