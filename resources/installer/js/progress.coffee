@@ -80,6 +80,7 @@ class Progress extends Page
 
         @progress_container = create_element("div", "ProgressContainer", @element)
         @progressbar = create_element("div", "ProgressBar", @progress_container)
+        @ticker = 0
 
     switch_ppt: (direction)->
         if direction == "prev"
@@ -105,8 +106,10 @@ class Progress extends Page
     handle_extract: (progress) ->
         if progress == "start"
             echo "start handle extract"
+            @update_progress("2%")
             try
                 mount_custom_partitions()
+                @update_progress("5%")
                 #echo "mount custom partitions finish"
                 DCore.Installer.extract_intelligent()
             catch error
@@ -123,11 +126,16 @@ class Progress extends Page
             echo "extract terminate"
             @show_report()
         else
-            @update_progress(progress)
+            @ticker = @ticker + 1
+            pgr = 0.05 + @ticker/120*0.8
+            if pgr > 0.84
+                pgr = 0.84
+            @update_progress(pgr*100.toFixed(2) + "%")
 
     handle_chroot: (progress) ->
         if progress == "start"
             echo "start handle chroot"
+            @update_progress("85%")
             try
                 DCore.Installer.mount_procfs()
                 DCore.Installer.chroot_target()
@@ -146,6 +154,7 @@ class Progress extends Page
     handle_set_timezone: (progress) ->
         if progress == "start"
             echo "start handle timezone"
+            @update_progress("88%")
             try
                 write_fs_tab()
                 DCore.Installer.set_timezone(__selected_timezone)
@@ -164,6 +173,7 @@ class Progress extends Page
     handle_set_keyboard: (progress) ->
         if progress == "start"
             echo "start handle keyboard"
+            @update_progress("91%")
             try
                 if __selected_layout.indexOf(",") != -1
                     layout = __selected_layout.split(",")[0]
@@ -187,6 +197,7 @@ class Progress extends Page
     handle_create_user: (progress) ->
         if progress == "start"
             echo "start handle user"
+            @update_progress("94%")
             try
                 DCore.Installer.create_user(__selected_username, __selected_hostname, __selected_password)
             catch error
@@ -204,6 +215,7 @@ class Progress extends Page
     handle_update_grub: (progress) ->
         if progress == "start"
             echo "start handle grub"
+            @update_progress("97%")
             #if __selected_grub.indexOf("part") != -1
             #    #only advance mode will install grub to partition
             #    disk = v_part_info[_selected_grub]["disk"]
@@ -218,6 +230,7 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "finish update grub"
+            @update_progress("100%")
             finish_page = new Finish("finish")
             pc.add_page(finish_page)
             pc.remove_page(progress_page)

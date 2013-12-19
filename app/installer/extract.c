@@ -141,18 +141,19 @@ watch_extract_child (GPid pid, gint status, gpointer data)
 static gboolean
 timeout_emit_cb (gpointer data)
 {
-    GIOChannel *channel = (GIOChannel *) data;
-    gchar *string;
+    //GIOChannel *channel = (GIOChannel *) data;
+    //gchar *string;
 
-    g_io_channel_read_line (channel, &string, NULL, NULL, NULL);
-    gchar *match = get_matched_string (string, "\\d{1,3}%");
+    //g_io_channel_read_line (channel, &string, NULL, NULL, NULL);
+    //gchar *match = get_matched_string (string, "\\d{1,3}%");
 
-    if (match != NULL) {
-        g_warning ("cb timeout: emit extract progress:%s\n", match);
-        emit_progress ("extract", match);
-    }
-    g_free (match);
-    g_free (string);
+    //if (match != NULL) {
+    //    g_warning ("cb timeout: emit extract progress:%s\n", match);
+    //    emit_progress ("extract", match);
+    //}
+    //g_free (match);
+    //g_free (string);
+    emit_progress ("extract", "50%");
 
     return TRUE;
 }
@@ -218,7 +219,7 @@ void installer_extract_squashfs ()
         g_error_free (error);
     }
     out_channel = g_io_channel_unix_new (std_output);
-    cb_id = g_timeout_add (5000, (GSourceFunc) timeout_emit_cb, out_channel);
+    cb_id = g_timeout_add (1000, (GSourceFunc) timeout_emit_cb, out_channel);
     g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, &cb_id);
 
     g_strfreev (argv);
