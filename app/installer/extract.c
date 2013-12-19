@@ -24,6 +24,8 @@
 #include "extract.h"
 #include "keyboard.h"
 
+static gboolean extract_finish = FALSE;
+
 static int 
 copy_file_cb (const char *path, const struct stat *sb, int typeflag)
 {
@@ -136,6 +138,7 @@ watch_extract_child (GPid pid, gint status, gpointer data)
     }
 
     g_spawn_close_pid (pid);
+    extract_finish = TRUE;
 }
 
 static gboolean
@@ -153,8 +156,10 @@ timeout_emit_cb (gpointer data)
     //}
     //g_free (match);
     //g_free (string);
+    if (extract_finish) {
+        return FALSE;
+    }
     emit_progress ("extract", "50%");
-
     return TRUE;
 }
 

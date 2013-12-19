@@ -233,12 +233,12 @@ class Progress extends Page
         else if progress == "finish"
             echo "finish update grub"
             @update_progress("99%")
-            @update_progress("100%")
             setTimeout( ->
                 finish_page = new Finish("finish")
                 pc.add_page(finish_page)
                 pc.remove_page(progress_page)
-            , 500)
+            , 1000)
+            @update_progress("100%")
         else if progress == "terminate"
             echo "update grub terminate"
             @show_report()
