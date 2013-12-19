@@ -479,27 +479,6 @@ void installer_update_grub (const gchar *uuid)
     g_thread_unref (thread);
 }
 
-static gboolean
-rm_target (gpointer data) 
-{
-    extern const gchar *target;
-    if (target == NULL) {
-        g_warning ("finish install:target is NULL\n");
-    } 
-    if (!g_file_test (target, G_FILE_TEST_EXISTS)) {
-        return FALSE;
-    }
-    if (g_rmdir (target) != 0) {
-        g_warning ("rm target %s failed\n", target);
-        gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", target);
-        g_spawn_command_line_async (umount_target_cmd, NULL);
-        g_free (umount_target_cmd);
-        return TRUE;
-    }
-    g_printf ("rm target %s succeed\n", target);
-    return FALSE;
-}
-
 //unmount after break chroot
 static void 
 unmount_target ()
@@ -510,14 +489,17 @@ unmount_target ()
         g_warning ("unmount mount:target is NULL\n");
         return;
     } 
+    extern gboolean in_chroot;
+    if (in_chroot) {
+        g_warning ("unmount mount:in chroot\n");
+        return;
+    }
 
     gchar *umount_sys_cmd = g_strdup_printf ("umount -l %s/sys", target);
     gchar *umount_proc_cmd = g_strdup_printf ("umount -l %s/proc", target);
     gchar *umount_devpts_cmd = g_strdup_printf ("umount -l %s/dev/pts", target);
     gchar *umount_dev_cmd = g_strdup_printf ("umount -l %s/dev", target);
     gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", target);
-
-    //g_timeout_add (100, (GSourceFunc) rm_target, NULL);
 
     g_spawn_command_line_async (umount_sys_cmd, NULL);
     g_spawn_command_line_async (umount_proc_cmd, NULL);

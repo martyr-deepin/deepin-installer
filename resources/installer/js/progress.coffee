@@ -106,6 +106,7 @@ class Progress extends Page
     handle_extract: (progress) ->
         if progress == "start"
             echo "start handle extract"
+            @update_progress("1%")
             @update_progress("2%")
             try
                 mount_custom_partitions()
@@ -228,12 +229,16 @@ class Progress extends Page
                 DCore.Installer.update_grub(__selected_grub)
             catch error
                 echo error
+            @update_progress("98%")
         else if progress == "finish"
             echo "finish update grub"
+            @update_progress("99%")
             @update_progress("100%")
-            finish_page = new Finish("finish")
-            pc.add_page(finish_page)
-            pc.remove_page(progress_page)
+            setTimeout( ->
+                finish_page = new Finish("finish")
+                pc.add_page(finish_page)
+                pc.remove_page(progress_page)
+            , 500)
         else if progress == "terminate"
             echo "update grub terminate"
             @show_report()
