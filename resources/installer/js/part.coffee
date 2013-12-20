@@ -183,7 +183,7 @@ class DeletePartDialog extends Dialog
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Delete partition")
         @delete_tips = create_element("p", "", @content)
-        @delete_tips.innerText = "Confirm to delete?"
+        @delete_tips.innerText = _("Confirm to delete?")
 
     delete_part_cb: ->
         remain_part = delete_part(@partid)
@@ -244,6 +244,7 @@ class InstallDialog extends Dialog
         echo "confirm install"
         DCore.Installer.hide_help()
         progress_page = new Progress("progress")
+        progress_page.update_progress("0%")
 
         if __selected_mode == "simple"
             __selected_grub = __selected_disk
@@ -260,7 +261,7 @@ class InstallDialog extends Dialog
             pc.add_page(progress_page)
             pc.remove_page(part_page)
             do_partition()
-
+        progress_page.update_progress("2%")
         __selected_stage = "extract"
         progress_page.handle_extract("start")
 
@@ -279,29 +280,18 @@ class PartLineItem extends Widget
         @init_line_item()
 
     init_line_item: ->
-        if __selected_mode == "advance"
-            @color = v_part_info[@part]["color"]
-            @element.style.background = @color
-            @element.style.width = v_part_info[@part]["width"]
-        else
-            @color = m_part_info[@part]["color"]
-            @element.style.background = @color
-            @element.style.width = m_part_info[@part]["width"]
+        @color = v_part_info[@part]["color"]
+        @element.style.background = @color
+        @element.style.width = v_part_info[@part]["width"]
 
     focus: ->
-        __selected_line?.blur()
-        __selected_line = @
-        try
-            if __selected_item == null or __selected_line.id != __selected_item?.lineid?
-                Widget.look_up(@part)?.passive_focus()
-        catch error
-            echo error
-        @add_css_class("PartLineItemActive")
+        @passive_focus()
+        Widget.look_up(@part)?.passive_focus()
     
     passive_focus: ->
         __selected_line?.blur()
         __selected_line = @
-        @add_css_class("PartLineItemActive")
+        @element.setAttribute("class", "PartLineItemActive")
 
     blur: ->
         @element.setAttribute("class", "PartLineItem")
@@ -480,25 +470,14 @@ class PartTableItem extends Widget
             delete_btn.setAttribute("class", "PartBtn")
 
     focus: ->
-        __selected_item?.blur()
-        __selected_item = @
-
-        if __selected_mode == "advance"
-            __selected_disk = v_part_info[@id]["disk"]
-            Widget.look_up("part_line_maps")?.fill_linemap()
-            Widget.look_up(@lineid)?.passive_focus()
-        else
-            __selected_disk = m_part_info[@id]["disk"]
-        #@element.scrollIntoView()
-        @set_btn_status()
-        @element.setAttribute("style", "background:#27BEFF")
-        #@update_install_btn()
+        @passive_focus()
+        Widget.look_up("part_line_maps")?.fill_linemap()
+        Widget.look_up(@lineid)?.passive_focus()
 
     passive_focus: ->
         __selected_item?.blur()
         __selected_item = @
-        #@element.scrollIntoView()
-
+        @element.scrollIntoView()
         @set_btn_status()
         @element.setAttribute("style", "background:#27BEFF")
         #@update_install_btn()
@@ -549,17 +528,17 @@ class PartTable extends Widget
             @mount_header.innerText = _("Info")
 
         @items = create_element("div", "PartTableItems", @element)
-        @fill_disk_tab()
+        for disk in disks
+            @fill_disk_tab_item(disk)
         @fill_items()
 
-    fill_disk_tab: ->
-        for disk in disks
-            disktab = create_element("div", "", @disktab)
-            disktab.innerText = v_disk_info[disk]["path"]
-            disktab.addEventListener("click", (e) =>
-                __selected_disk = disk
-                @fill_items()
-            )
+    fill_disk_tab_item: (disk) ->
+        disktab = create_element("div", "", @disktab)
+        disktab.innerText = v_disk_info[disk]["path"]
+        disktab.addEventListener("click", (e) =>
+            __selected_disk = disk
+            @fill_items()
+        )
 
     fill_items: ->
         @items.innerHTML = ""
@@ -578,13 +557,20 @@ class PartTable extends Widget
                     @items.appendChild(item.element)
             
     update_mode: (mode) ->
+        if __selected_item?
+            id = __selected_item.id
         if mode == "advance"
             @mount_header.innerText = _("Mount point")
-            @items.setAttribute("style", "height:210px")
+            @items.setAttribute("style", "height:180px")
+            @element.setAttribute("style", "top:140px;height:230px;")
         else
             @mount_header.innerText = ""
             @items.setAttribute("style", "")
+            @element.setAttribute("style", "")
         @fill_items()
+        if id?
+            __selected_item = Widget.look_up(id)
+            __selected_item?.focus()
 
 class Part extends Page
     constructor: (@id)->
@@ -610,9 +596,6 @@ class Part extends Page
         )
         @init_part_page()
 
-        @table = new PartTable("part_table")
-        @element.appendChild(@table.element)
-
         @next_btn = create_element("div", "NextStep", @element)
         @next_btn.setAttribute("id", "mynextstep")
         @next_btn.innerText = _("Install")
@@ -628,30 +611,28 @@ class Part extends Page
     init_part_page: ->
         if __selected_mode == null
             __selected_mode = "simple"
-
         if __selected_disk == null
             __selected_disk = disks[0]
-        @linemap = null
+        @linemap = new PartLineMaps("part_line_maps")
+        @element.appendChild(@linemap.element)
+        @table = new PartTable("part_table")
+        @element.appendChild(@table.element)
         @fill_advance_op()
         if __selected_mode == "advance"
-            @linemap = new PartLineMaps("part_line_maps")
-            @element.appendChild(@linemap.element)
-            @show_advance_op()
+            @show_advance_mode()
         else
-            @hide_advance_op()
-
+            @hide_advance_mode()
         recommand = get_recommand_target()
         __selected_item = Widget.look_up(recommand)
         __selected_item?.focus()
 
     switch_mode: ->
-        id = __selected_item.id
         if __selected_mode != "advance"
             __selected_mode = "advance"
             if check_has_mount()
                 @unmount_model = new UnmountDialog("UnmountModel")
                 document.body.appendChild(@unmount_model.element)
-            @show_advance_op()
+            @show_advance_mode()
             @table.update_mode(__selected_mode)
             @t_mode.innerText = _("Simple mode")
         else
@@ -659,11 +640,9 @@ class Part extends Page
             @add_model?.hide_dialog()
             @delete_model?.hide_dialog()
             @unmount_model?.hide_dialog()
-            @hide_advance_op()
+            @hide_advance_mode()
             @table.update_mode(__selected_mode)
             @t_mode.innerText = _("Expert mode") 
-        __selected_item = Widget.look_up(id)
-        __selected_item?.focus()
 
     update_next_btn: (txt) ->
         @next_btn.innerText = txt
@@ -711,11 +690,13 @@ class Part extends Page
                 if v_part_info[part]["type"] in ["normal", "logical"]
                     create_option(@grub_select, part, v_part_info[part]["path"])
 
-    show_advance_op: ->
+    show_advance_mode: ->
+        @linemap.element.setAttribute("style", "display:block")
         @op.setAttribute("style", "display:block")
         @part_grub.setAttribute("style", "display:block")
 
-    hide_advance_op: ->
+    hide_advance_mode: ->
+        @linemap.element.setAttribute("style", "display:none")
         @op.setAttribute("style", "display:none")
         @part_grub.setAttribute("style", "display:none")
 

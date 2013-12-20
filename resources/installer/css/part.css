@@ -13,9 +13,12 @@
 }
 
 .PartHelp {
-    position:fixed;
-    top:60px;
+    position:absolute;
+    top:61px;
+    bottom:0px;
     right:30px;
+    width:200px;
+    height:20px;
     font-size:14px;
     color:#FFF;
     padding:0 10px;
@@ -26,29 +29,30 @@
 }
 
 .PartLineMaps {
+    position:fixed;
+    top:110px;
+    left:25px;
     width:700px;
-    height:12px;
-    margin:11px 26px;
+    height:20px;
+    background:#FFF;
     overflow:hidden;
-    padding-right:1px;
 }
 
 .PartLineItem {
     float:left;
+    height:20px;
     opacity:0.4;
-    height:12px;
 }
 
 .PartLineItemActive {
     float:left;
-    opacity:1.0;
-    height:12px;
-    border:2px solid #6ACAF3;
+    height:20px;
+    opacity:0.4;
 }
 
 .PartTable {
     position:fixed;
-    top:124px;
+    top:120px;
     left:25px;
     width:700px;
     height:330px;
@@ -57,36 +61,36 @@
 
 .PartTab {
     width:700px;
-    height:20px;
+    height:22px;
 }
 
 .PartTab div {
     float:left;
     width:92px;
-    height:20px;
-    line-height:20px;
+    height:22px;
+    line-height:22px;
     margin-right:8px;
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.3);
 }
 
 .PartTableHeader {
     width:700px;
-    height:25px;
-    background: rgba(255,255,255,0.5);
+    height:26px;
+    background: rgba(255,255,255,0.3);
 }
 
 .PartTableHeader span {
     float:left;
     width:200px;
-    height:25px;
-    line-height:25px;
+    height:26px;
+    line-height:26px;
 }
 
 .PartTableHeader div {
     float:left;
     width:100px;
-    height:25px;
-    line-height:25px;
+    height:26px;
+    line-height:26px;
 }
 
 .PartTableItems {
@@ -94,7 +98,7 @@
     height:280px;
     overflow-y:auto;
     overflow-x:hidden;
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.3);
 }
 
 .PartTableItem {

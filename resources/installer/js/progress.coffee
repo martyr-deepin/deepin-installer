@@ -106,8 +106,6 @@ class Progress extends Page
     handle_extract: (progress) ->
         if progress == "start"
             echo "start handle extract"
-            @update_progress("1%")
-            @update_progress("2%")
             try
                 mount_custom_partitions()
                 @update_progress("5%")
