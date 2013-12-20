@@ -652,18 +652,6 @@ class Part extends Page
     fill_advance_op: ->
         #part op buttons
         @op = create_element("p", "PartOp", @element)
-        @part_add = create_element("div", "PartBtn", @op)
-        @part_add.setAttribute("id", "part_add")
-        @part_add.innerText = _("Create partition")
-        @part_add.addEventListener("click", (e)=>
-            echo "handle add"
-            if __in_model
-                echo "already had add part mode dialog"
-                return 
-            @add_model = new AddPartDialog("AddModel", __selected_item.id)
-            document.body.appendChild(@add_model.element)
-        )
-
         @part_delete = create_element("div", "PartBtn", @op)
         @part_delete.setAttribute("id", "part_delete")
         @part_delete.innerText = _("Delete partition")
@@ -674,6 +662,18 @@ class Part extends Page
                 return 
             @del_model = new DeletePartDialog("DeleteModel", __selected_item.id)
             document.body.appendChild(@del_model.element)
+        )
+
+        @part_add = create_element("div", "PartBtn", @op)
+        @part_add.setAttribute("id", "part_add")
+        @part_add.innerText = _("New partition")
+        @part_add.addEventListener("click", (e)=>
+            echo "handle add"
+            if __in_model
+                echo "already had add part mode dialog"
+                return 
+            @add_model = new AddPartDialog("AddModel", __selected_item.id)
+            document.body.appendChild(@add_model.element)
         )
 
         @part_grub = create_element("p", "PartGrub", @element)
