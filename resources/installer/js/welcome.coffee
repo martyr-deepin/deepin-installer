@@ -193,41 +193,33 @@ class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
         @input = create_element("input", "", @element)
-        @tip = create_element("div", "WelcomeTip", @element)
-        @angle = create_element("span", "WelcomeAngle", @tip)
-        @error = create_element("span", "WelcomeError", @tip)
         @fill_widget()
-        @input.addEventListener("focus", (e) =>
-            @tip.setAttribute("class", "WelcomeTip")
-            @input.setAttribute("style", "")
-        )
-        @input.addEventListener("blur", (e) =>
-            @check_valid()
-        )
-        @input.addEventListener("change", (e) =>
-            @fill_item_data()
-            Widget.look_up("welcome")?.check_start_ready()
-        )
+        #@input.addEventListener("focus", (e) =>
+        #    @input.setAttribute("style", "")
+        #)
+        #@input.addEventListener("blur", (e) =>
+        #    @check_valid()
+        #)
+        #@input.addEventListener("change", (e) =>
+        #    @fill_item_data()
+        #    Widget.look_up("welcome")?.check_start_ready()
+        #)
 
     fill_widget: ->
         if @id == "username"
             username_holder = _("Linuxdeepin") 
             @input.setAttribute("placeholder", username_holder)
-            @error.innerText = _("Invalid username")
         else if @id == "hostname"
             hostname_holder = _("Computer name")
             @input.setAttribute("placeholder", hostname_holder)
-            @error.innerText = _("Invalid hostname")
         else if @id == "password"
             password_holder = _("Password")
             @input.setAttribute("placeholder", password_holder)
             @input.setAttribute("type", "password")
-            @error.innerText = _("Invalid password")
         else if @id == "confirmpassword"
             confirm_holder = ("Repeat your password")
             @input.setAttribute("placeholder", confirm_holder)
             @input.setAttribute("type", "password")
-            @error.innerText = _("Confirm password not match")
 
     fill_item_data: ->
         if @id == "username"
@@ -239,9 +231,8 @@ class WelcomeFormItem extends Widget
 
     check_valid: ->
         if @is_valid()
-            @tip.setAttribute("class", "WelcomeTip")
+            echo "valid"
         else
-            @tip.setAttribute("class", "WelcomeTipShow")
             @input.setAttribute("style", "border:2px solid red")
 
     is_valid: ->

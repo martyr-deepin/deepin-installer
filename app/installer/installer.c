@@ -86,7 +86,7 @@ move_window_center ()
     GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (installer_container));
     gint s_width = gdk_screen_get_width (screen);
     gint s_height = gdk_screen_get_height (screen);
-    gint x = s_width > 1255 ? ((s_width - (755)) / 2) : 0;
+    gint x = s_width > 1250 ? ((s_width - (750)) / 2) : 0;
     gint y = s_height > 540 ? ((s_height - 540) / 2) : 0;
     
     gtk_window_move (GTK_WINDOW (installer_container), x, y);
@@ -98,7 +98,7 @@ adapt_location_for_help ()
     GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (installer_container));
     gint s_width = gdk_screen_get_width (screen);
     gint s_height = gdk_screen_get_height (screen);
-    gint x = s_width > 1255 ? ((s_width - (755  + 500)) / 2) : 0;
+    gint x = s_width > 1250 ? ((s_width - (750  + 500)) / 2) : 0;
     gint y = s_height > 540 ? ((s_height - 540) / 2) : 0;
 
     gtk_window_move (GTK_WINDOW (installer_container), x, y);
@@ -231,13 +231,13 @@ int main(int argc, char **argv)
 
     g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
-    gtk_window_set_default_size (GTK_WINDOW (installer_container), 755, 540);
+    gtk_window_set_default_size (GTK_WINDOW (installer_container), 750, 540);
     gtk_window_set_resizable (GTK_WINDOW (installer_container), FALSE);
     //gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
     GdkGeometry geometry;
-    geometry.min_width = 755;
-    geometry.max_width = 755;
-    geometry.base_width = 755;
+    geometry.min_width = 750;
+    geometry.max_width = 750;
+    geometry.base_width = 750;
     geometry.min_height = 540;
     geometry.max_height = 540;
     geometry.base_height = 540;

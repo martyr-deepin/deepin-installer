@@ -1,9 +1,9 @@
 .TitleSet {
     position:absolute;
-    width:160px;
+    width:228px;
     height:30px;
     right:10px;
-    top:61px;
+    top:60px;
     bottom:0px;
     font-size:14px;
     color:#B3B3B3;
@@ -11,11 +11,12 @@
 
 .TitleSet span {
     float:left;
-    width:80px;
+    width:100px;
     height:30px;
     line-height:30px;
     color:#FFFFFF;
     text-align:center;
+    padding-left:14px;
 }
 
 .TitleSet span:hover {
@@ -39,87 +40,35 @@
     width:272px;
 }
 
-.WelcomeFormItem {
-    padding:0;
-    width:272px;
-    height:72px;
-}
-
-.WelcomeFormItem input {
-    width:272px;
-    height:30px;
-    padding-left:50px;
-    border:1px solid #9D9D9D;
-    border-radius:3px;
-    outline-style:none;
-}
-
-.WelcomeFormItem input:hover {
-    border:1px solid #1FC1FA;
-    border-radius:3px;
-}
-
+/*
 #username input {
-    background: white url("../images/username.png") no-repeat;
-    background-position:left center;
-}
-
-#password input {
-    background: white url("../images/password.png") no-repeat;
+    background:url("../images/username.png") no-repeat;
 }
 
 #hostname input {
-    background: white url("../images/hostname.png") no-repeat;
+    background:url("../images/hostname.png") no-repeat;
+}
+
+#password input {
+    background:url("../images/password.png") no-repeat;
 }
 
 #confirmpassword input {
-    background: white url("../images/confirmpwd.png") no-repeat;
-}
-
-.WelcomeTip {
-    display:none;
-}
-
-.WelcomeTipShow {
-    position:relative;
-    left:50px;
-    top:10px;
-    width:120px;
-    height:22px;
-    background:rgba(40,40,40,0.8);
-    color:#D1D1D1;
-    border:1px solid #000;
-    border-radius:5px;
-}
-
-.WelcomeAngle {
-    position:absolute; 
-    border:10px solid transparent; 
-    border-bottom-color:rgba(40,40,40,0.8);
-    left:15px; 
-    top:-20px; 
-}
-
-.WelcomeError {
-    text-align:center;
-    height:14px;
-    line-height:14px;
-    display:block;
-    padding:4px 10px;
-    font-size:14px;
-}
-
-/*
-.Keyboard {
-    position:absolute;
-    left:430px;
-    top:90px;
-    bottom:18px;
-    width:312px;
-    width:736px;
-    height:430px;
+    background:url("../images/password.png") no-repeat;
 }
 */
+
+.WelcomeFormItem input {
+    padding:0;
+    width:272px;
+    height:36px;
+    border:1px solid rgba(0,0,0, 0.3);
+    border-radius:4px;
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
+
+    margin-bottom:30px;
+    padding-left:36px;
+}
 
 .Current {
     background:#D0D0D0;
@@ -134,7 +83,7 @@
 }
 
 .KeyboardList{
-    background:#FFFFFF;
+    background:rgba(255,255,255,0.2);
     margin:0px;
     height:400px;
     overflow:scroll;
@@ -177,7 +126,7 @@
     position:absolute;
     top:0px;
     left:0px;
-    opacity:0;
+    opacity:0.5;
     width:736px;
     height:404px;
 }

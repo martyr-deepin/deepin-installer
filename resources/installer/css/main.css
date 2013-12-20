@@ -5,21 +5,20 @@
 @import url("../../common/css/animation.css");
 
 body {
-    width:755px;
+    width:750px;
     height:540px;
-    background: url("../images/background.jpg") no-repeat fixed top;
+    background: url("../images/background.png") no-repeat fixed top;
     overflow:hidden;
     color:rgb(255,255,255);
+    text-shadow:0 1px rgba(0,0,0,0.5);
 }
 
 .Title {
-    width:755px;
+    width:750px;
     height:90px;
     line-height:90px;
     color:#FDFFFF;
     text-align:center;
-    font-weight:bold;
-    font-size:24px;
 }
 
 .Title p {
@@ -54,14 +53,13 @@ body {
 }
 
 .PageContainer {
-    width:755px;
+    width:750px;
     height:540px;
     overflow:hidden;
-    border-radius:4px solid rgba(255,255,255,0.8);
 }
 
 .Welcome, .Part, .Progress, .Finish {
-    width:755px;
+    width:750px;
     height:540px;
     overflow:hidden;
 }

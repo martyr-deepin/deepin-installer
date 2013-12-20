@@ -22,7 +22,6 @@ document.body.appendChild(pc.element)
 
 welcome_page = new Welcome("welcome")
 #progress_page = new Progress("progress")
-#finish_page = new Finish("finish")
 
 pc.add_page(welcome_page)
 #pc.add_page(part_page)
