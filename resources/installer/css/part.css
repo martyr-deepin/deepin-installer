@@ -195,9 +195,14 @@
     height:22px;
     line-height:22px;
     margin:0 10px 0 20px;
-    border-radius:3px;
-    background:rgba(255,255,255,0.8);
-    color:rgab(255,255,255,0.1);
+    border:1px solid rgba(0,0,0,0.2);
+    border-radius:5px;
+    box-shadow:inset 0 1px rgba(255,255,255,0.2),
+               inset 0 -1px rgba(255,255,255,0.2),
+               inset 1px 0 rgba(255,255,255,0.2),
+               inset -1px 0 rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.2);
+    color:rgba(255,255,255,0.2);
     pointer-events:none;
 }
 
@@ -208,8 +213,13 @@
     height:22px;
     line-height:22px;
     margin:0 10px 0 20px;
-    border-radius:3px;
-    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(0,0,0,0.2);
+    border-radius:5px;
+    box-shadow:inset 0 1px rgba(255,255,255,0.2),
+               inset 0 -1px rgba(255,255,255,0.2),
+               inset 1px 0 rgba(255,255,255,0.2),
+               inset -1px 0 rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.3);
     color:rgba(255,255,255,0.8);
     pointer-events:auto;
 }
@@ -250,7 +260,12 @@
     background:#FBC167;
     color:#000;
     text-align:center;
+    border:1px solid rgba(0,0,0,0.2);
     border-radius:5px;
+    box-shadow:inset 0 1px rgba(255,255,255,0.2),
+               inset 0 -1px rgba(255,255,255,0.2),
+               inset 1px 0 rgba(255,255,255,0.2),
+               inset -1px 0 rgba(255,255,255,0.2);
     font-size:18px;
     font-style:bold;
 }
