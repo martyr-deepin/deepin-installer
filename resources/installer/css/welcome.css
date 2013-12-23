@@ -41,30 +41,42 @@
 }
 
 #username input {
-    background:url("../images/username.png") no-repeat,-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
+    background:url("../images/username.png") no-repeat;
 }
 
 #hostname input {
-    background:url("../images/hostname.png") no-repeat,-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
+    background:url("../images/hostname.png") no-repeat;
 }
 
 #password input {
-    background:url("../images/password.png") no-repeat,-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
+    background:url("../images/password.png") no-repeat;
 }
 
 #confirmpassword input {
-    background:url("../images/password.png") no-repeat,-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
+    background:url("../images/password.png") no-repeat;
+}
+
+.WelcomeFormItem {
+    width:272px;
+    height:36px;
+    border-top:1px solid rgba(0,0,0,0.5);
+    border-left:1px solid rgba(0,0,0,0.5);
+    border-right:1px solid rgba(0,0,0,0.5);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    box-shadow:inset 0 -1px rgba(0,0,0,0.3);
+    border-radius:4px;
+    margin-bottom:30px;
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
 }
 
 .WelcomeFormItem input {
     padding:0;
     width:272px;
     height:36px;
-    border:1px solid rgba(0,0,0, 0.3);
-    border-radius:4px;
-    margin-bottom:30px;
+    border-style:none;
     padding-left:36px;
     outline-style:none;
+    text-shadow:0 1px rgba(0,0,0,0.5);
 }
 
 .Current {
