@@ -514,7 +514,8 @@ class PartTable extends Widget
         super
         @disktab = create_element("div", "PartTab", @element)
 
-        @header = create_element("div", "PartTableHeader", @element)
+        @disk_content = create_element("div", "PartContent", @element)
+        @header = create_element("div", "PartTableHeader", @disk_content)
         @device_header = create_element("span", "", @header)
         @device_header.innerText = _("Device")
         @size_header = create_element("div", "", @header)
@@ -529,7 +530,7 @@ class PartTable extends Widget
         else
             @mount_header.innerText = _("Info")
 
-        @items = create_element("div", "PartTableItems", @element)
+        @items = create_element("div", "PartTableItems", @disk_content)
         for disk in disks
             @fill_disk_tab_item(disk)
         @fill_items()
