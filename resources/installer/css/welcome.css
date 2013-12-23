@@ -40,23 +40,21 @@
     width:272px;
 }
 
-/*
 #username input {
-    background:url("../images/username.png") no-repeat;
+    background:url("../images/username.png") no-repeat,-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
 }
 
 #hostname input {
-    background:url("../images/hostname.png") no-repeat;
+    background:url("../images/hostname.png") no-repeat,-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
 }
 
 #password input {
-    background:url("../images/password.png") no-repeat;
+    background:url("../images/password.png") no-repeat,-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
 }
 
 #confirmpassword input {
-    background:url("../images/password.png") no-repeat;
+    background:url("../images/password.png") no-repeat,-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
 }
-*/
 
 .WelcomeFormItem input {
     padding:0;
@@ -64,10 +62,9 @@
     height:36px;
     border:1px solid rgba(0,0,0, 0.3);
     border-radius:4px;
-    background: -webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
-
     margin-bottom:30px;
     padding-left:36px;
+    outline-style:none;
 }
 
 .Current {
