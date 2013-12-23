@@ -1,6 +1,6 @@
 .Board {
     position:absolute;
-    width:755px;
+    width:750px;
     height:540px;
     top:0;
     left:0;
@@ -9,22 +9,6 @@
     z-index:100;
     background:rgba(255,255,255,0.5);
     display:none;
-}
-
-.PartHelp {
-    position:absolute;
-    top:30px;
-    bottom:0px;
-    right:30px;
-    width:200px;
-    height:20px;
-    font-size:14px;
-    color:#FFF;
-    padding:0 10px;
-}
-
-.PartHelp span:hover {
-    color:#00bdff;
 }
 
 .PartLineMaps {
@@ -38,11 +22,13 @@
 }
 
 .PartLineItem {
+    position:absolute;
     float:left;
     height:20px;
 }
 
 .PartLineItemActive {
+    position:absolute;
     float:left;
     height:20px;
 }

@@ -1,8 +1,9 @@
 .TitleSet {
     position:absolute;
-    width:200px;
+    width:220px;
     height:30px;
-    right:20px;
+    line-height:30px;
+    right:24px;
     top:60px;
     bottom:0px;
     font-size:14px;
@@ -11,12 +12,12 @@
 
 .TitleSet span {
     float:left;
-    width:76px;
+    width:70px;
     height:24px;
     line-height:24px;
     color:#FFFFFF;
     text-align:center;
-    padding-left:24px;
+    padding-left:40px;
     margin:3px 0;
 }
 
@@ -26,10 +27,12 @@
 
 .KeyboardSet {
     background:url("../images/keyboard.png") no-repeat;
+    background-position:8px;
 }
 
 .TimezoneSet {
     background:url("../images/timezone.png") no-repeat;
+    background-position:8px;
 }
 
 .WelcomeForm {
@@ -93,7 +96,6 @@
 }
 
 .KeyboardList{
-    background:rgba(255,255,255,0.2);
     margin:0px;
     height:400px;
     overflow:scroll;
@@ -111,12 +113,13 @@
 
 .Timezone, .Keyboard {
     position:absolute;
-    left:8px;
-    right:8px;
+    left:6px;
+    right:6px;
     top:90px;
     bottom:12px;
     width:738px;
     height:436px;
+    background:rgba(255,255,255,0.2);
 }
 
 .TimezoneWrap {
@@ -172,8 +175,7 @@
 .Welcome .Start input {
     width:180px;
     height:38px;
-    line-height:38px;
-    vertical-align:middle;
+    padding-top:5px;
     background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));
     color:#000;
     border:1px solid rgba(255,255,255,0.3);

@@ -29,7 +29,9 @@
 #include "part_util.h"
 #include "misc.h"
 
-#define INSTALLER_HTML_PATH "file://"RESOURCE_DIR"/installer/index.html"
+#define INSTALLER_HTML_PATH     "file://"RESOURCE_DIR"/installer/index.html"
+#define INSTALLER_WIN_WIDTH     750
+#define INSTALLER_WIN_HEIGHT    540
 
 static GtkWidget *installer_container = NULL;
 
@@ -58,7 +60,7 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
     g_debug ("installer:move window");
 
-    if (event->y > 90 || ((event->x > 600) && (event->y > 60) && (90 > event->y)) || (event->x > 725) && (event->y < 30)) {
+    if (event->y > 90 || ((event->x > 506) && (event->x < 726) && (event->y > 60) && (90 > event->y)) || (event->x > 725) && (event->y < 30)) {
         g_debug ("move window:html click area");
         return TRUE;
     }
@@ -231,19 +233,20 @@ int main(int argc, char **argv)
 
     g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
-    gtk_window_set_default_size (GTK_WINDOW (installer_container), 750, 540);
+    gtk_window_set_default_size (GTK_WINDOW (installer_container), INSTALLER_WIN_WIDTH, INSTALLER_WIN_HEIGHT);
     gtk_window_set_resizable (GTK_WINDOW (installer_container), FALSE);
     //gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
     GdkGeometry geometry;
-    geometry.min_width = 750;
-    geometry.max_width = 750;
-    geometry.base_width = 750;
-    geometry.min_height = 540;
-    geometry.max_height = 540;
-    geometry.base_height = 540;
+    geometry.min_width = INSTALLER_WIN_WIDTH;
+    geometry.max_width = INSTALLER_WIN_WIDTH;
+    geometry.base_width = INSTALLER_WIN_WIDTH;
+    geometry.min_height = INSTALLER_WIN_HEIGHT;
+    geometry.max_height = INSTALLER_WIN_HEIGHT;
+    geometry.base_height = INSTALLER_WIN_HEIGHT;
 
     gtk_window_set_geometry_hints (GTK_WINDOW (installer_container), webview, &geometry, GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE | GDK_HINT_BASE_SIZE);
     move_window_center ();
+    gtk_widget_set_opacity (GTK_WIDGET (installer_container), 0);
     gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
 

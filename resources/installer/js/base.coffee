@@ -114,6 +114,18 @@ class Page extends Widget
     exit_installer: ->
         DCore.Installer.finish_install()
 
+    draw_register: ->
+        echo "draw register"
+
+    draw_part: ->
+        echo "draw part"
+
+    draw_finish: ->
+        echo "draw finish"
+
+    draw_failed: ->
+        echo "failed"
+
 class PageContainer extends Widget
     constructor: (@id)->
         super

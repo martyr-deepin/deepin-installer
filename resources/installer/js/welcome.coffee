@@ -52,6 +52,15 @@ class Keyboard extends Widget
             @construct_item(layout)
         @init_default_layout()
         @current.innerText = DCore.Installer.get_layout_description(__selected_layout)
+        @hide()
+
+    show: ->
+        @displayed = true
+        @element.style.display = "block"
+
+    hide: ->
+        @displayed = false
+        @element.style.display = "none"
 
     init_default_layout: ->
         lay_var = DCore.Installer.get_current_layout_variant()
@@ -113,6 +122,15 @@ class Timezone extends Widget
         @img = create_img("TimezoneMap", "images/zonemap.png", @picker)
         @img.setAttribute("usemap", "#ImageMap")
         @construct_map()
+        @hide()
+
+    show: ->
+        @displayed = true
+        @element.style.display = "block"
+
+    hide: ->
+        @displayed = false
+        @element.style.display = "none"
 
     update_timezone: (zone) ->
         @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
@@ -254,9 +272,6 @@ class WelcomeFormItem extends Widget
 class Welcome extends Page
     constructor: (@id)->
         super
-        @keyboard_displayed = false
-        @timezone_displayed = false
-
         @title_start = create_element("div", "", @title)
         @start_txt = create_element("p", "", @title_start)
         @start_txt.innerText = _("Install Guide")
@@ -265,19 +280,29 @@ class Welcome extends Page
         @keyboard_set = create_element("span", "KeyboardSet", @title_set)
         @keyboard_set.innerHTML += _("Keyboard")
         @keyboard_set.addEventListener("click", (e) =>
-            @display_keyboard()
+            @timezone.hide()
+            @hide_account()
+            @keyboard.show()
         )
 
         @timezone_set = create_element("span", "TimezoneSet", @title_set)
         @timezone_set.innerText = _("Timezone")
         @timezone_set.addEventListener("click", (e) =>
-            @display_timezone()
+            @keyboard.hide()
+            @hide_account()
+            @timezone.show()
         )
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
             @exit_installer()
         )
+
+        @keyboard = new Keyboard("keyboard")
+        @element.appendChild(@keyboard.element)
+
+        @timezone = new Timezone("timezone")
+        @element.appendChild(@timezone.element)
 
         @account = create_element("div", "", @element)
 
@@ -312,49 +337,19 @@ class Welcome extends Page
         )
 
     display_account: ->
+        @keyboard.hide()
+        @timezone.hide()
         @account.style.display = "block"
 
     hide_account: ->
         @account.style.display = "none"
 
-    display_keyboard: ->
-        @hide_timezone()
-        @hide_keyboard()
-        @hide_account()
-        @keyboard = new Keyboard("keyboard")
-        @element.appendChild(@keyboard.element)
-        @keyboard_displayed = true
-        @keyboard_set.setAttribute("style", "background-color:#D0D0D0")
-
-    hide_keyboard: ->
-        @keyboard?.destroy()
-        @keyboard_displayed = false
-        @keyboard = null
-        @keyboard_set.setAttribute("style", "")
-
-    display_timezone: ->
-        @hide_timezone()
-        @hide_keyboard()
-        @hide_account()
-        @timezone = new Timezone("timezone")
-        @element.appendChild(@timezone.element)
-        @timezone_displayed = true
-        @timezone_set.setAttribute("style", "background-color:#D0D0D0")
-
-    hide_timezone: ->
-        @timezone?.destroy()
-        @timezone_displayed = false
-        @timezone = null
-        @timezone_set.setAttribute("style", "")
-
     do_click: (e) ->
-        if @keyboard_displayed
+        if @keyboard.displayed
             if e.target.className not in ["KeyboardItem", "Keyboard", "KeyboardSet"]
-                @hide_keyboard()
                 @display_account()
-        if @timezone_displayed
+        if @timezone.displayed
             if e.target.className not in ["TimezoneMap", "Timezone", "TimezoneSet", "ImageMap", "TimezoneArea", "Pin"]
-                @hide_timezone()
                 @display_account()
 
     check_start_ready: ->

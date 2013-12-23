@@ -283,6 +283,8 @@ class PartLineItem extends Widget
         @color = v_part_info[@part]["color"]
         @element.style.background = @color
         @element.style.width = v_part_info[@part]["width"]
+        disk = v_part_info[@part]["disk"]
+        @element.style.left = v_part_info[@part]["start"]/v_disk_info[disk]["length"] * 700
 
     focus: ->
         @passive_focus()
@@ -537,6 +539,7 @@ class PartTable extends Widget
         disktab.innerText = v_disk_info[disk]["path"]
         disktab.addEventListener("click", (e) =>
             __selected_disk = disk
+            Widget.look_up("part_line_maps")?.fill_linemap()
             @fill_items()
         )
 
@@ -578,7 +581,7 @@ class Part extends Page
         @part_txt = create_element("p", "", @title)
         @part_txt.innerText = _("Choose partition")
 
-        @help = create_element("div", "PartHelp", @title)
+        @help = create_element("div", "TitleSet", @title)
         @t_mode = create_element("span", "", @help)
         @t_mode.innerText = _("Expert mode")
         @t_mode.addEventListener("click", (e) =>
