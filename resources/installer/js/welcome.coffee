@@ -279,7 +279,9 @@ class Welcome extends Page
             @exit_installer()
         )
 
-        @form = create_element("div", "WelcomeForm", @element)
+        @account = create_element("div", "", @element)
+
+        @form = create_element("div", "WelcomeForm", @account)
 
         @username = new WelcomeFormItem("username")
         @form.appendChild(@username.element)
@@ -293,8 +295,11 @@ class Welcome extends Page
         @confirmpassword = new WelcomeFormItem("confirmpassword")
         @form.appendChild(@confirmpassword.element)
 
-        @start = create_element("div", "Start", @element)
-        @start.innerText = _("Next")
+        @start = create_element("div", "Start", @account)
+        @start_input = create_element("input", "", @start)
+        @start_input.setAttribute("type", "submit")
+        next = _("Next")
+        @start_input.setAttribute("value", next)
         @start.addEventListener("mouseover", (e) =>
             if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
                 @start.setAttribute("style", "color:#00bdff")
@@ -306,8 +311,16 @@ class Welcome extends Page
             @start_install_cb()
         )
 
+    display_account: ->
+        @account.style.display = "block"
+
+    hide_account: ->
+        @account.style.display = "none"
+
     display_keyboard: ->
+        @hide_timezone()
         @hide_keyboard()
+        @hide_account()
         @keyboard = new Keyboard("keyboard")
         @element.appendChild(@keyboard.element)
         @keyboard_displayed = true
@@ -321,6 +334,8 @@ class Welcome extends Page
 
     display_timezone: ->
         @hide_timezone()
+        @hide_keyboard()
+        @hide_account()
         @timezone = new Timezone("timezone")
         @element.appendChild(@timezone.element)
         @timezone_displayed = true
@@ -336,9 +351,11 @@ class Welcome extends Page
         if @keyboard_displayed
             if e.target.className not in ["KeyboardItem", "Keyboard", "KeyboardSet"]
                 @hide_keyboard()
+                @display_account()
         if @timezone_displayed
             if e.target.className not in ["TimezoneMap", "Timezone", "TimezoneSet", "ImageMap", "TimezoneArea", "Pin"]
                 @hide_timezone()
+                @display_account()
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 

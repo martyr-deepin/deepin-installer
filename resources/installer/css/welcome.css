@@ -1,8 +1,8 @@
 .TitleSet {
     position:absolute;
-    width:228px;
+    width:200px;
     height:30px;
-    right:10px;
+    right:20px;
     top:60px;
     bottom:0px;
     font-size:14px;
@@ -11,12 +11,13 @@
 
 .TitleSet span {
     float:left;
-    width:100px;
-    height:30px;
-    line-height:30px;
+    width:76px;
+    height:24px;
+    line-height:24px;
     color:#FFFFFF;
     text-align:center;
-    padding-left:14px;
+    padding-left:24px;
+    margin:3px 0;
 }
 
 .TitleSet span:hover {
@@ -124,7 +125,7 @@
 }
 
 .TimezonePicker {
-    background:#FFF url("../images/zonemap.png");
+    background:url("../images/zonemap.png");
     position:relative;
     width:736px;
     height:404px;
@@ -164,11 +165,22 @@
     bottom:60px;
     width:180px;
     height:38px;
+    border:1px solid rgba(0,0,0,0.3);
+    border-radius:5px;
+}
+
+.Welcome .Start input {
+    width:180px;
+    height:38px;
     line-height:38px;
-    background:#FBC167;
+    vertical-align:middle;
+    background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));
     color:#000;
-    text-align:center;
+    border:1px solid rgba(255,255,255,0.3);
+    box-shadow:inset rgba(255,255,255,0.2);
     border-radius:5px;
     font-size:18px;
     font-style:bold;
+    text-align:center;
+    text-shadow:1px rgba(255,255,255,0.15);
 }
