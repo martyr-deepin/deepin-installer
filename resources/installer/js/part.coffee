@@ -26,10 +26,6 @@ __selected_line = null
 __selected_mode = "simple"
 __selected_stage = null
 
-__board = create_element("div", "Board", "")
-__board.setAttribute("id", "board")
-document.body.appendChild(__board)
-
 create_option = (select, value, text) ->
     option = create_element("option", "", select)
     option.setAttribute("value", value)
@@ -49,6 +45,11 @@ create_mp_option = (select, value, text) ->
 fill_mp_option = (select) ->
     for opt in ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
         create_mp_option(select, opt, opt)
+
+class GrubDropDown extends DropDown
+    constructor: (@id, @keys, @values) ->
+        super(@id, @keys, @values)
+
 
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
@@ -598,7 +599,6 @@ class Part extends Page
         @close.addEventListener("click", (e) =>
             @exit_installer()
         )
-        @init_part_page()
 
         @next_btn = create_element("div", "NextStep", @element)
         @next_btn.setAttribute("id", "mynextstep")
@@ -611,6 +611,7 @@ class Part extends Page
                 @install_model = new InstallDialog("InstallModel")
                 document.body.appendChild(@install_model.element)
         )
+        @init_part_page()
 
     init_part_page: ->
         if __selected_mode == null
@@ -655,7 +656,7 @@ class Part extends Page
 
     fill_advance_op: ->
         #part op buttons
-        @op = create_element("p", "PartOp", @element)
+        @op = create_element("div", "PartOp", @element)
         @part_delete = create_element("div", "PartBtn", @op)
         @part_delete.setAttribute("id", "part_delete")
         @part_delete.innerText = _("Delete partition")
@@ -680,10 +681,14 @@ class Part extends Page
             document.body.appendChild(@add_model.element)
         )
 
-        @part_grub = create_element("p", "PartGrub", @element)
-        @part_grub.innerHTML = "<span>" + _("Boot loader") + "</span>"
-        @grub_select = create_element("select", "", @part_grub)
-        @fill_grub()
+        @part_grub = create_element("div", "PartGrub", @element)
+        @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
+        @grub_loader.innerText = _("Boot loader")
+        #@part_grub.innerHTML = "<span>" + _("Boot loader") + "</span>"
+        #@grub_select = create_element("select", "", @part_grub)
+        @grub_select = create_element("div", "PartGrubSelect", @part_grub)
+        @fill_bootloader()
+        #@fill_grub()
 
     fill_grub: ->
         @grub_select.innerHTML = ""
@@ -693,6 +698,23 @@ class Part extends Page
             for part in v_disk_info[disk]["partitions"]
                 if v_part_info[part]["type"] in ["normal", "logical"]
                     create_option(@grub_select, part, v_part_info[part]["path"])
+
+    fill_bootloader: ->
+        echo "fill bootloader"
+        keys = []
+        values = []
+        for disk in disks
+            text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" +sector_to_gb(v_disk_info[disk]["length"], 512) + "GB"
+            keys.push(disk)
+            values.push(text)
+            for part in v_disk_info[disk]["partitions"]
+                if v_part_info[part]["type"] in ["normal", "logical"]
+                    keys.push(part)
+                    values.push(v_part_info[part]["path"])
+
+        @grub_dropdown = new GrubDropDown("grub", keys, values)
+        @grub_select.appendChild(@grub_dropdown.element)
+        @grub_dropdown.set_selected(__selected_disk)
 
     show_advance_mode: ->
         @linemap.element.setAttribute("style", "display:block")

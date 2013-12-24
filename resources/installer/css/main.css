@@ -69,6 +69,19 @@ body {
     overflow:hidden;
 }
 
+.Board {
+    position:absolute;
+    width:750px;
+    height:540px;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    z-index:100;
+    background:rgba(255,255,255,0.5);
+    display:none;
+}
+
 .DialogCommon {
     position:absolute;
     left:175px;
@@ -166,6 +179,57 @@ body {
 
 .DialogBtn span:hover {
     color:#00bdff;
+}
+
+.DropBoard {
+    position:absolute;
+    width:750px;
+    height:540px;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    z-index:200;
+    background:rgba(255,255,255,0.1);
+    display:none;
+}
+
+.DropDownBase {
+    border-top:1px solid rgba(0,0,0,0.5);
+    border-left:1px solid rgba(0,0,0,0.5);
+    border-right:1px solid rgba(0,0,0,0.5);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    box-shadow:inset 0 -1px rgba(0,0,0,0.3);
+    border-radius:4px;
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
+}
+
+.DropDownCurrent {
+    float:left;
+    height:20px;
+    padding-top:2px;
+    padding-left:10px;
+}
+
+.DropDownAngle {
+    float:right;
+    width:20px;
+    height:20px;
+    padding-top:2px;
+    background:url("../images/close.png");
+}
+
+.DropDownList {
+    position:relative;
+    background:url("../images/background.png");
+    max-height:200px;
+    overflow-x:hidden;
+    overflow-y:scroll;
+    z-index:300;
+}
+
+.DropDownItem:hover {
+    background:rgba(255,255,255,0.2);
 }
 
 ::-webkit-scrollbar {

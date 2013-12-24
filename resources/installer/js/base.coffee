@@ -54,6 +54,10 @@ part_page = null
 progress_page = null
 finish_page = null
 
+__board = create_element("div", "Board", "")
+__board.setAttribute("id", "board")
+document.body.appendChild(__board)
+
 class Dialog extends Widget
     constructor: (@id, @with_cancel, @cb) ->
         super
@@ -104,7 +108,69 @@ class Dialog extends Widget
         #do_dragover: (event) ->
         #    echo "do dragover in dialog"
         #    event.preventDefault()
-        
+        #
+__in_drop = false
+__drop_board = create_element("div", "DropBoard", "")
+__drop_board.setAttribute("id", "dropboard")
+document.body.appendChild(__drop_board)
+
+class DropDownItem extends Widget
+    constructor: (@id, @key, @value, @dropdown) ->
+        super
+        @element.innerText = @value
+        @selected = false
+
+    do_click: (e) ->
+        @dropdown.set_selected(@key)
+        @dropdown.hide_dropdown()
+
+    enable: ->
+        echo "enable item"
+
+    disable: ->
+        echo "disable item"
+
+class DropDown extends Widget
+    constructor: (@id, @keys, @values) ->
+        super
+        @selected = null
+        @base = create_element("div", "DropDownBase", @element)
+        @current = create_element("div", "DropDownCurrent", @base)
+        @angle = create_element("div", "DropDownAngle", @base)
+        @base.addEventListener("click", (e) =>
+            @show_dropdown()
+        )
+
+        @dropdown = create_element("div", "DropDownList", @element)
+        @fill_dropdown(@keys, @values)
+        @hide_dropdown()
+
+    fill_dropdown: (keys, values) ->
+        if keys.length != values.length
+            echo "invalid dropdown items"
+        i = 0
+        @items = {}
+        while i < keys.length
+            item = new DropDownItem("dropdown_" + keys[i], keys[i], values[i], @)
+            @dropdown.appendChild(item.element)
+            @items[keys[i]] = values[i]
+            i = i + 1
+
+    show_dropdown: ->
+        @dropdown.style.display = "block"
+        __in_drop = true
+        __drop_board.style.display = "block"
+
+    hide_dropdown: ->
+        @dropdown.style.display = "none"
+        __in_drop = false
+        __drop_board.style.display = "none"
+
+    set_selected: (key) ->
+        @current.innerText = @items[key]
+
+    get_selected: ->
+        echo "get selected"
 
 class Page extends Widget
     constructor: (@id)->
