@@ -57,7 +57,7 @@ finish_page = null
 class Dialog extends Widget
     constructor: (@id, @with_cancel, @cb) ->
         super
-        @title = create_element("p", "DialogTitle", @element)
+        @title = create_element("div", "DialogTitle", @element)
         @title_txt = create_element("div", "DialogTxt", @title)
         @title_close = create_element("div", "DialogClose", @title)
         @title_close.addEventListener("click", (e) =>
@@ -65,7 +65,7 @@ class Dialog extends Widget
         )
 
         @content = create_element("div", "DialogContent", @element)
-        @foot = create_element("p", "DialogBtn", @element)
+        @foot = create_element("div", "DialogBtn", @element)
         @ok = create_element("span", "", @foot)
         @ok.innerText = _("Ok")
         @ok.addEventListener("click", (e) =>
