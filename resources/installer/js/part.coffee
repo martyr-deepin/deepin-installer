@@ -633,7 +633,7 @@ class Part extends Page
 
         @next_btn = create_element("div", "NextStep", @element)
         @next_btn.setAttribute("id", "mynextstep")
-        @next_input = create_element("input", "", @next_btn)
+        @next_input = create_element("input", "InputBtn", @next_btn)
         @next_input.setAttribute("type", "submit")
         next = _("Install")
         @next_input.setAttribute("value", next)
@@ -693,7 +693,10 @@ class Part extends Page
         @op = create_element("div", "PartOp", @element)
         @part_delete = create_element("div", "PartBtn", @op)
         @part_delete.setAttribute("id", "part_delete")
-        @part_delete.innerText = _("Delete partition")
+        @delete_input = create_element("input", "InputBtn", @part_delete)
+        @delete_input.setAttribute("type", "submit")
+        delete_value = _("Delete partition")
+        @delete_input.setAttribute("value", delete_value)
         @part_delete.addEventListener("click", (e)=>
             echo "handle delete"
             if __in_model
@@ -705,7 +708,10 @@ class Part extends Page
 
         @part_add = create_element("div", "PartBtn", @op)
         @part_add.setAttribute("id", "part_add")
-        @part_add.innerText = _("New partition")
+        @add_input = create_element("input", "InputBtn", @part_add)
+        @add_input.setAttribute("type", "submit")
+        new_value = _("New partition")
+        @add_input.setAttribute("value", new_value)
         @part_add.addEventListener("click", (e)=>
             echo "handle add"
             if __in_model

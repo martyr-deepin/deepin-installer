@@ -321,7 +321,7 @@ class Welcome extends Page
         @form.appendChild(@confirmpassword.element)
 
         @start = create_element("div", "Start", @account)
-        @start_input = create_element("input", "", @start)
+        @start_input = create_element("input", "InputBtn", @start)
         @start_input.setAttribute("type", "submit")
         next = _("Next")
         @start_input.setAttribute("value", next)

@@ -178,11 +178,6 @@
     padding-top:5px;
     background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));
     color:#000;
-    border:1px solid rgba(255,255,255,0.3);
-    box-shadow:inset rgba(255,255,255,0.2);
-    border-radius:5px;
     font-size:18px;
     font-style:bold;
-    text-align:center;
-    text-shadow:1px rgba(255,255,255,0.15);
 }

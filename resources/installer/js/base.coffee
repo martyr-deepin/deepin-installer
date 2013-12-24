@@ -70,15 +70,21 @@ class Dialog extends Widget
 
         @content = create_element("div", "DialogContent", @element)
         @foot = create_element("div", "DialogBtn", @element)
-        @ok = create_element("span", "", @foot)
-        @ok.innerText = _("Ok")
+        @ok = create_element("div", "", @foot)
+        @ok_input = create_element("input", "", @ok)
+        @ok_input.setAttribute("type", "submit")
+        value = _("Ok")
+        @ok_input.setAttribute("value", value)
         @ok.addEventListener("click", (e) =>
             @hide_dialog()
             @cb()
         )
         if @with_cancel
-            @cancel = create_element("span", "", @foot)
-            @cancel.innerText = _("Cancel")
+            @cancel = create_element("div", "", @foot)
+            @cancel_input = create_element("input", "", @cancel)
+            @cancel_input.setAttribute("type", "submit")
+            value = _("Cancel")
+            @cancel_input.setAttribute("value", value)
             @cancel.addEventListener("click", (e) =>
                 @hide_dialog()
             )
