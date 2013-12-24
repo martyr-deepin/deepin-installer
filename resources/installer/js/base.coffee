@@ -123,6 +123,8 @@ class DropDownItem extends Widget
     do_click: (e) ->
         @dropdown.set_selected(@key)
         @dropdown.hide_dropdown()
+        if @id != @dropdown.selected
+            @dropdown.on_change_cb(@dropdown.id[9..21],@key)
 
     enable: ->
         echo "enable item"
@@ -131,7 +133,7 @@ class DropDownItem extends Widget
         echo "disable item"
 
 class DropDown extends Widget
-    constructor: (@id, @keys, @values) ->
+    constructor: (@id, @keys, @values, @on_change_cb) ->
         super
         @selected = null
         @base = create_element("div", "DropDownBase", @element)
@@ -151,7 +153,7 @@ class DropDown extends Widget
         i = 0
         @items = {}
         while i < keys.length
-            item = new DropDownItem("dropdown_" + keys[i], keys[i], values[i], @)
+            item = new DropDownItem("dropitem_" + keys[i], keys[i], values[i], @)
             @dropdown.appendChild(item.element)
             @items[keys[i]] = values[i]
             i = i + 1
@@ -167,10 +169,11 @@ class DropDown extends Widget
         __drop_board.style.display = "none"
 
     set_selected: (key) ->
+        @selected = key
         @current.innerText = @items[key]
 
     get_selected: ->
-        echo "get selected"
+        return @selected
 
 class Page extends Widget
     constructor: (@id)->

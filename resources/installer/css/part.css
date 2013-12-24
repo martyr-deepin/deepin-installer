@@ -242,6 +242,8 @@
 
 .GrubDropDown .DropDownCurrent {
     width:530px;
+    padding-top:2px;
+    padding-left:10px;
 }
 
 .GrubDropDown .DropDownList {
@@ -252,6 +254,29 @@
 
 .GrubDropDown .DropDownItem {
     padding-left:20px;
+}
+
+.CommonDropDown .DropDownBase {
+    margin:10px 0;
+    width:100px;
+    height:20px;
+}
+
+.CommonDropDown .DropDownCurrent {
+    width:80px;
+    height:20px;
+    line-height:20px;
+    margin-top:0px;
+}
+
+.CommonDropDown .DropDownList {
+    top:-120px;
+    width:120px;
+    height:200px;
+}
+
+.CommonDropDown .DropDownItem {
+
 }
 
 .NextStep {
