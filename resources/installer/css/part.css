@@ -189,8 +189,9 @@
                inset 0 -1px rgba(255,255,255,0.2),
                inset 1px 0 rgba(255,255,255,0.2),
                inset -1px 0 rgba(255,255,255,0.2);
-    background:rgba(255,255,255,0.2);
-    color:rgba(255,255,255,0.2);
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(#FFF,0.2)), to(rgba(#FFF,0.1)));
+    color:rgba(255,255,255,0.5);
+    text-shadow:0 1px rgba(0,0,0,0.1);
     pointer-events:none;
 }
 
@@ -207,8 +208,9 @@
                inset 0 -1px rgba(255,255,255,0.2),
                inset 1px 0 rgba(255,255,255,0.2),
                inset -1px 0 rgba(255,255,255,0.2);
-    background:rgba(255,255,255,0.3);
-    color:rgba(255,255,255,0.8);
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.4)), to(rgba(255,255,255, 0.2)));
+    color:rgba(255,255,255,1);
+    text-shadow:0 1px rgba(0,0,0,0.3);
     pointer-events:auto;
 }
 

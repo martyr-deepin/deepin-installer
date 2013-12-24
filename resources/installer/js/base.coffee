@@ -124,7 +124,7 @@ class DropDownItem extends Widget
         @dropdown.set_selected(@key)
         @dropdown.hide_dropdown()
         if @id != @dropdown.selected
-            @dropdown.on_change_cb(@dropdown.id[9..21],@key)
+            @dropdown.on_change_cb(@dropdown.id[6..18],@key)
 
     enable: ->
         echo "enable item"

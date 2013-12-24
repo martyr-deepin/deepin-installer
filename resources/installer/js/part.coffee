@@ -50,6 +50,10 @@ __fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat1
 
 __fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
 
+__mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
+
+__mp_values = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
+
 class GrubDropDown extends DropDown
     constructor: (@id, @keys, @values, @on_change_cb) ->
         super(@id, @keys, @values, @on_change_cb)
@@ -339,7 +343,7 @@ class PartTableItem extends Widget
         @size = create_element("div", "", @element)
         @used = create_element("div", "", @element)
         @fs = create_element("div", "", @element)
-        @mount = create_element("div", "", @element)
+        @mount = create_element("span", "", @element)
         @fill_device()
         @fill_size()
         @fill_used()
@@ -445,28 +449,37 @@ class PartTableItem extends Widget
                 @fs_txt.innerText = m_part_info[@id]["fs"]
         else if __selected_mode == "advance"
             if v_part_info[@id]["type"] != "freespace"
-                @fs_select = new CommonDropDown("dropdown_" + @id, __fs_keys, __fs_values, update_part_fs)
+                @fs_select = new CommonDropDown("dd_fs_" + @id, __fs_keys, __fs_values, update_part_fs)
                 @fs.appendChild(@fs_select.element)
                 @fs_select.set_selected(v_part_info[@id]["fs"])
 
+    #fill_mount: ->
+    #    @mount.innerHTML = ""
+    #    if __selected_mode != "advance" 
+    #        return
+    #    if v_part_info[@id]["type"] == "freespace"
+    #        return
+    #    @mount_select = create_element("select", "", @mount)
+    #    fill_mp_option(@mount_select)
+    #    for opt, i in @mount_select
+    #        if opt.value == v_part_info[@id]["mp"]
+    #            @mount_select.selectedIndex = i
+    #    @mount_select.addEventListener("focus", (e) =>
+    #        if __selected_item != @
+    #            @focus()
+    #    )
+    #    @mount_select.addEventListener("change", (e) =>
+    #        update_part_mp(@id, @mount_select.options[@mount_select.selectedIndex].value)
+    #    )
     fill_mount: ->
         @mount.innerHTML = ""
         if __selected_mode != "advance" 
             return
         if v_part_info[@id]["type"] == "freespace"
             return
-        @mount_select = create_element("select", "", @mount)
-        fill_mp_option(@mount_select)
-        for opt, i in @mount_select
-            if opt.value == v_part_info[@id]["mp"]
-                @mount_select.selectedIndex = i
-        @mount_select.addEventListener("focus", (e) =>
-            if __selected_item != @
-                @focus()
-        )
-        @mount_select.addEventListener("change", (e) =>
-            update_part_mp(@id, @mount_select.options[@mount_select.selectedIndex].value)
-        )
+        @mount_select = new CommonDropDown("dd_mp_" + @id, __mp_keys, __mp_values, update_part_mp)
+        @mount.appendChild(@mount_select.element)
+        @mount_select.set_selected(v_part_info[@id]["mp"])
 
     set_btn_status: ->
         if __selected_mode != "advance"
@@ -543,7 +556,7 @@ class PartTable extends Widget
         @used_header.innerText = _("Freespace")
         @fs_header = create_element("div", "", @header)
         @fs_header.innerText = _("Filesystem")
-        @mount_header = create_element("div", "", @header)
+        @mount_header = create_element("span", "", @header)
         if __selected_mode == "advance"
             @mount_header.innerText = _("Mount point")
         else
@@ -730,7 +743,7 @@ class Part extends Page
                     keys.push(part)
                     values.push(v_part_info[part]["path"])
 
-        @grub_dropdown = new GrubDropDown("dropdown_grub", keys, values, null)
+        @grub_dropdown = new GrubDropDown("dd_bt_", keys, values, null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_selected(__selected_disk)
 
