@@ -511,7 +511,7 @@ class PartTableItem extends Widget
     passive_focus: ->
         __selected_item?.blur()
         __selected_item = @
-        @element.scrollIntoView()
+        #@element.scrollIntoView()
         @set_btn_status()
         @element.setAttribute("style", "background:#27BEFF")
         #@update_install_btn()

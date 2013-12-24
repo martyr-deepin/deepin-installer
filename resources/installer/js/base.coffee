@@ -116,9 +116,13 @@ class Dialog extends Widget
         #    event.preventDefault()
         #
 __in_drop = false
+__current_dropdown = null
 __drop_board = create_element("div", "DropBoard", "")
 __drop_board.setAttribute("id", "dropboard")
 document.body.appendChild(__drop_board)
+__drop_board.addEventListener("click", (e) =>
+    __current_dropdown?.hide_dropdown()
+)
 
 class DropDownItem extends Widget
     constructor: (@id, @key, @value, @dropdown) ->
@@ -165,6 +169,9 @@ class DropDown extends Widget
             i = i + 1
 
     show_dropdown: ->
+        if __current_dropdown?
+            __current_dropdown = null
+        __current_dropdown = @
         @dropdown.style.display = "block"
         __in_drop = true
         __drop_board.style.display = "block"
