@@ -633,7 +633,10 @@ class Part extends Page
 
         @next_btn = create_element("div", "NextStep", @element)
         @next_btn.setAttribute("id", "mynextstep")
-        @next_btn.innerText = _("Install")
+        @next_input = create_element("input", "", @next_btn)
+        @next_input.setAttribute("type", "submit")
+        next = _("Install")
+        @next_input.setAttribute("value", next)
         @next_btn.addEventListener("click", (e) =>
             if __selected_mode == "advance" and not check_target_part()
                 @root_model = new RootDialog("RootModel")

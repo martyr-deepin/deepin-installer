@@ -172,7 +172,7 @@
     border-radius:5px;
 }
 
-.Welcome .Start input {
+.Welcome .Start input, .Part .NextStep input {
     width:180px;
     height:38px;
     padding-top:5px;

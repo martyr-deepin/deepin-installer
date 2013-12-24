@@ -283,27 +283,12 @@
 
 .NextStep {
     position:fixed;
-    float:left;
-    top:470px;
-    bottom:30px;
     left:285px;
     right:285px;
+    top:470px;
+    bottom:30px;
     width:180px;
     height:38px;
-    line-height:38px;
-    background:#FBC167;
-    color:#000;
-    text-align:center;
-    border:1px solid rgba(0,0,0,0.2);
+    border:1px solid rgba(0,0,0,0.3);
     border-radius:5px;
-    box-shadow:inset 0 1px rgba(255,255,255,0.2),
-               inset 0 -1px rgba(255,255,255,0.2),
-               inset 1px 0 rgba(255,255,255,0.2),
-               inset -1px 0 rgba(255,255,255,0.2);
-    font-size:18px;
-    font-style:bold;
-}
-
-.NextStep:hover {
-    color:#00bdff;
 }
