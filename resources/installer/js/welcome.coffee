@@ -250,16 +250,16 @@ class WelcomeFormItem extends Widget
         super
         @input = create_element("input", "", @element)
         @fill_widget()
-        #@input.addEventListener("focus", (e) =>
-        #    @input.setAttribute("style", "")
-        #)
-        #@input.addEventListener("blur", (e) =>
-        #    @check_valid()
-        #)
-        #@input.addEventListener("change", (e) =>
-        #    @fill_item_data()
-        #    Widget.look_up("welcome")?.check_start_ready()
-        #)
+        @input.addEventListener("focus", (e) =>
+            @input.setAttribute("style", "")
+        )
+        @input.addEventListener("blur", (e) =>
+            @check_valid()
+        )
+        @input.addEventListener("change", (e) =>
+            @fill_item_data()
+            Widget.look_up("welcome")?.check_start_ready()
+        )
 
     fill_widget: ->
         if @id == "username"
@@ -391,10 +391,10 @@ class Welcome extends Page
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
-            @start.setAttribute("style", "color:#FFFFFF")
+            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
             return true
         else
-            @start.setAttribute("style", "color:848383")
+            @start.setAttribute("style", "")
             return false
 
     start_install_cb: ->
