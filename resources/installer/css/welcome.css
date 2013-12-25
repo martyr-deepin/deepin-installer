@@ -170,7 +170,7 @@
     margin-right:10px;
 }
 
-.KeyboardList{
+.KeyboardContent {
     width:700px;
     height:370px;
     background:rgba(255,255,255,0.2);
@@ -180,20 +180,30 @@
                inset 0 -1px rgba(255,255,255,0.3),
                inset 1px 0 rgba(255,255,255,0.3),
                inset -1px 0 rgba(255,255,255,0.3);
+}
+
+.LayoutList {
+    float:left;
+    width:210px;
+    height:370px;
     overflow-x:hidden;
     overflow-y:scroll;
 }
 
-.KeyboardItem {
+.VariantList {
+    float:left;
+    width:490px;
+    height:370px;
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+.LayoutItem, .VariantItem {
     height:30px;
     line-height:30px;
     padding-left:30px;
     border-bottom:1px solid rgba(0,0,0,0.3);
-    box-shadow:0 1px rgba(255,255,255,0.3);
-}
-
-.KeyboardItem:hover {
-    background:#2FC1FF;
+    box-shadow:outset 0 1px rgba(255,255,255,0.3);
 }
 
 .TimezoneWrap {

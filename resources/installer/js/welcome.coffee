@@ -46,6 +46,9 @@ _sort_layout = (layout_a, layout_b) ->
 class Keyboard extends Widget
     constructor: (@id)->
         super
+        @fetch_layouts()
+        @init_default_layout()
+
         @query = create_element("div", "Query", @element)
         @query_div = create_element("div", "Left", @query)
         @query_wrap = create_element("div", "QueryWrap", @query_div)
@@ -53,12 +56,14 @@ class Keyboard extends Widget
         @query_txt = create_element("div", "Right", @query)
         @query_txt.innerText = _("Please select your keyboard")
 
-        @list = create_element("div", "KeyBoardList", @element)
-        for layout in @get_layouts().sort(_sort_layout)
+        @content = create_element("div", "KeyBoardContent", @element)
+        @layout_list = create_element("div", "LayoutList", @content)
+        @variant_list = create_element("div", "VariantList", @content)
+
+        for layout in @layouts
             @construct_item(layout)
 
         @current = create_element("div", "Current", @element)
-        @init_default_layout()
         @current.innerText = DCore.Installer.get_layout_description(__selected_layout)
 
         @hide()
@@ -88,19 +93,31 @@ class Keyboard extends Widget
         if current?
             __selected_layout = current
 
-    get_layouts: ->
-        layouts = []
+    fetch_layouts: ->
+        @layouts = []
+        @variants = {}
         for layout in DCore.Installer.get_keyboard_layouts()
-            layouts.push(layout)
+            @layouts.push(layout)
+            @variants[layout] = []
+            @variants[layout].push(layout)
             for variant in DCore.Installer.get_layout_variants(layout)
-                layouts.push(layout + "," + variant)
-        return layouts.sort()
+                @variants[layout].push(layout + "," + variant)
+        @layouts.sort(_sort_layout)
 
     construct_item: (layout) ->
-        opt = create_element("div", "KeyboardItem", @list)
+        opt = create_element("div", "LayoutItem", @layout_list)
         opt.innerText = DCore.Installer.get_layout_description(layout)
         opt.addEventListener("click", (e) =>
-            @update_layout(layout)
+            @variant_list.innerHTML = ""
+            for variant in @variants[layout]
+                @construct_variant(variant)
+        )
+
+    construct_variant: (variant) ->
+        opt = create_element("div", "VariantItem", @variant_list)
+        opt.innerText = DCore.Installer.get_layout_description(variant)
+        opt.addEventListener("click", (e) =>
+            @update_layout(variant)
         )
 
     update_layout: (layout) ->
@@ -221,8 +238,7 @@ class Timezone extends Widget
             ctx.lineTo(poly[i], poly[i+1])
             i = i + 2
         ctx.closePath()
-        #ctx.fillStyle = "#A2A2A2"
-        ctx.fillStyle = "#00bdff"
+        ctx.fillStyle = "rgba(255,255,255,0.8)"
         ctx.fill()
 
     destroy_canvas: (area) ->
@@ -296,7 +312,6 @@ class Welcome extends Page
         super
         @title_start = create_element("div", "", @title)
         @start_txt = create_element("p", "", @title_start)
-        @start_txt.innerText = _("Install Guide")
 
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
@@ -321,6 +336,7 @@ class Welcome extends Page
         @close.addEventListener("click", (e) =>
             @exit_installer()
         )
+        @draw_title()
 
         @keyboard = new Keyboard("keyboard")
         @element.appendChild(@keyboard.element)

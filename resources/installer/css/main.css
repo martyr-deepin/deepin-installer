@@ -33,6 +33,7 @@ body {
     text-align:center;
 }
 
+/*
 .Title p {
     float:left;
     height:40px;
@@ -43,6 +44,15 @@ body {
     background:url("../images/logo.png") no-repeat;
     padding-left:245px;
     padding-top:4px;
+}
+*/
+
+.TitleCanvas {
+    position:fixed;
+    top:21px;
+    left:25px;
+    width:242px;
+    height:32px;
 }
 
 .Close {
