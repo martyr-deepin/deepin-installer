@@ -71,7 +71,7 @@ class Dialog extends Widget
         @content = create_element("div", "DialogContent", @element)
         @foot = create_element("div", "DialogBtn", @element)
         @ok = create_element("div", "", @foot)
-        @ok_input = create_element("input", "", @ok)
+        @ok_input = create_element("input", "InputBtn", @ok)
         @ok_input.setAttribute("type", "submit")
         value = _("Ok")
         @ok_input.setAttribute("value", value)
@@ -81,7 +81,7 @@ class Dialog extends Widget
         )
         if @with_cancel
             @cancel = create_element("div", "", @foot)
-            @cancel_input = create_element("input", "", @cancel)
+            @cancel_input = create_element("input", "InputBtn", @cancel)
             @cancel_input.setAttribute("type", "submit")
             value = _("Cancel")
             @cancel_input.setAttribute("value", value)
