@@ -58,9 +58,15 @@ class GrubDropDown extends DropDown
     constructor: (@id, @keys, @values, @on_change_cb) ->
         super(@id, @keys, @values, @on_change_cb)
 
-class CommonDropDown extends DropDown
+class FsDropDown extends DropDown
     constructor: (@id, @keys, @values, @on_change_cb) ->
         super(@id, @keys, @values, @on_change_cb)
+        @add_css_class("CommonDropDown")
+
+class MpDropDown extends DropDown
+    constructor: (@id, @keys, @values, @on_change_cb) ->
+        super(@id, @keys, @values, @on_change_cb)
+        @add_css_class("CommonDropDown")
 
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
@@ -343,7 +349,7 @@ class PartTableItem extends Widget
         @size = create_element("div", "", @element)
         @used = create_element("div", "", @element)
         @fs = create_element("div", "", @element)
-        @mount = create_element("span", "", @element)
+        @mount = create_element("span", "Mount", @element)
         @fill_device()
         @fill_size()
         @fill_used()
@@ -449,7 +455,7 @@ class PartTableItem extends Widget
                 @fs_txt.innerText = m_part_info[@id]["fs"]
         else if __selected_mode == "advance"
             if v_part_info[@id]["type"] != "freespace"
-                @fs_select = new CommonDropDown("dd_fs_" + @id, __fs_keys, __fs_values, update_part_fs)
+                @fs_select = new FsDropDown("dd_fs_" + @id, __fs_keys, __fs_values, update_part_fs)
                 @fs.appendChild(@fs_select.element)
                 @fs_select.set_selected(v_part_info[@id]["fs"])
 
@@ -477,7 +483,7 @@ class PartTableItem extends Widget
             return
         if v_part_info[@id]["type"] == "freespace"
             return
-        @mount_select = new CommonDropDown("dd_mp_" + @id, __mp_keys, __mp_values, update_part_mp)
+        @mount_select = new MpDropDown("dd_mp_" + @id, __mp_keys, __mp_values, update_part_mp)
         @mount.appendChild(@mount_select.element)
         @mount_select.set_selected(v_part_info[@id]["mp"])
 

@@ -313,6 +313,11 @@
 
 }
 
+.MpDropDown {
+    float:right;
+    padding-right:50px;
+}
+
 .NextStep {
     position:fixed;
     left:285px;
