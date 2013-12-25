@@ -614,13 +614,13 @@ class Part extends Page
         @part_txt = create_element("p", "", @title)
         @part_txt.innerText = _("Choose partition")
 
-        @help = create_element("div", "TitleSet", @title)
-        @t_mode = create_element("span", "", @help)
+        @help = create_element("div", "PartTitleSet", @title)
+        @t_mode = create_element("span", "PartTitleMode", @help)
         @t_mode.innerText = _("Expert mode")
         @t_mode.addEventListener("click", (e) =>
             @switch_mode()
         )
-        @t_help = create_element("span", "", @help)
+        @t_help = create_element("span", "PartTitleHelp", @help)
         @t_help.innerText = _("Help")
         @t_help.addEventListener("click", (e) =>
             @toggle_show_help()

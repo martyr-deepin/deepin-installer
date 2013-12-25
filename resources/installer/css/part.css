@@ -1,3 +1,41 @@
+.PartTitleSet {
+    position:absolute;
+    width:220px;
+    height:30px;
+    line-height:30px;
+    right:24px;
+    top:60px;
+    bottom:0px;
+    font-size:14px;
+    color:#B3B3B3;
+}
+
+.PartTitleMode {
+    float:left;
+    width:90px;
+    height:24px;
+    line-height:24px;
+    color:#FFFFFF;
+    text-align:center;
+    padding-left:40px;
+    margin:3px 0;
+    background:url("../images/keyboard.png") no-repeat;
+    background-position:8px;
+}
+
+.PartTitleHelp {
+    float:left;
+    width:50px;
+    height:24px;
+    line-height:24px;
+    color:#FFFFFF;
+    text-align:center;
+    padding-left:40px;
+    margin:3px 0;
+    background:url("../images/timezone.png") no-repeat;
+    background-position:8px;
+}
+
 .PartLineMaps {
     position:fixed;
     top:110px;
