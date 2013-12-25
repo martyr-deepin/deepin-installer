@@ -547,6 +547,27 @@ class PartTableItem extends Widget
         else
             @focus()
 
+class DiskTabItem extends Widget
+    constructor: (@id, @disk)->
+        super
+        @element.innerText = v_disk_info[@disk]["path"]
+
+    do_click: (e) ->
+        __selected_disk = @disk
+        Widget.look_up("part_line_maps")?.fill_linemap()
+        Widget.look_up("part_table")?.fill_items()
+        for item in Widget.look_up("part_table")?.disktabs
+            if item != @
+                item.blur()
+            else
+                item.focus()
+
+    blur: ->
+        @element.setAttribute("style", "")
+
+    focus: ->
+        @element.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.5)), to(rgba(255,255,255, 0.2)));")
+
 class PartTable extends Widget
     constructor: (@id)->
         super
@@ -569,18 +590,15 @@ class PartTable extends Widget
             @mount_header.innerText = _("Info")
 
         @items = create_element("div", "PartTableItems", @disk_content)
-        for disk in disks
-            @fill_disk_tab_item(disk)
+        @fill_disk_tab()
         @fill_items()
 
-    fill_disk_tab_item: (disk) ->
-        disktab = create_element("div", "", @disktab)
-        disktab.innerText = v_disk_info[disk]["path"]
-        disktab.addEventListener("click", (e) =>
-            __selected_disk = disk
-            Widget.look_up("part_line_maps")?.fill_linemap()
-            @fill_items()
-        )
+    fill_disk_tab: ->
+        @disktabs = []
+        for disk in disks
+            item = new DiskTabItem("disk_tab_" + disk, disk)
+            @disktab.appendChild(item.element)
+            @disktabs.push(item)
 
     fill_items: ->
         @items.innerHTML = ""
