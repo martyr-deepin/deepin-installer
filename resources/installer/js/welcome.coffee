@@ -66,10 +66,12 @@ class Keyboard extends Widget
     show: ->
         @displayed = true
         @element.style.display = "block"
+        #$("#my_keyboard_set")?.setAttribute("class", "TitleSetActive")
 
     hide: ->
         @displayed = false
         @element.style.display = "none"
+        #$("#my_keyboard_set")?.setAttribute("class", "KeyboardSet")
 
     init_default_layout: ->
         lay_var = DCore.Installer.get_current_layout_variant()
@@ -145,11 +147,12 @@ class Timezone extends Widget
     show: ->
         @displayed = true
         @element.style.display = "block"
-        Widget.look_up("timezone_set").style = "background:rgba(255,255,255,0.2);"
+        #$("#my_timezone_set").setAttribute("class", "TitleSetActive")
 
     hide: ->
         @displayed = false
         @element.style.display = "none"
+        #$("#my_timezone_set")?.setAttribute("class", "TimezoneSet")
 
     update_timezone: (zone) ->
         @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
@@ -193,7 +196,7 @@ class Timezone extends Widget
         @pin?.parentElement?.removeChild(@pin)
         @pin = null
         @pin = create_img("Pin", "images/pin.png", @picker_wrap)
-        style = "left:" + (parseInt(pin[0])+8-14) + "px;" + "top:" + (parseInt(pin[1])+30-13) + "px"
+        style = "left:" + (parseInt(pin[0]) - 7) + "px;" + "top:" + (parseInt(pin[1]) + 50 -7) + "px"
         @pin.setAttribute("style", style)
 
     draw_timezone: (myarea) ->
@@ -296,8 +299,8 @@ class Welcome extends Page
         @start_txt.innerText = _("Install Guide")
 
         @title_set = create_element("div", "TitleSet", @title)
-        @keyboard_set = create_element("span", "KeyboardSet", @title_set)
-        @keyboard_set.setAttribute("id", "keyboard_set")
+        @keyboard_set = create_element("div", "KeyboardSet", @title_set)
+        @keyboard_set.setAttribute("id", "my_keyboard_set")
         @keyboard_set.innerHTML += _("Keyboard")
         @keyboard_set.addEventListener("click", (e) =>
             @timezone.hide()
@@ -305,8 +308,8 @@ class Welcome extends Page
             @keyboard.show()
         )
 
-        @timezone_set = create_element("span", "TimezoneSet", @title_set)
-        @timezone_set.setAttribute("id", "timezone_set")
+        @timezone_set = create_element("div", "TimezoneSet", @title_set)
+        @timezone_set.setAttribute("id", "my_timezone_set")
         @timezone_set.innerText = _("Timezone")
         @timezone_set.addEventListener("click", (e) =>
             @keyboard.hide()
@@ -366,7 +369,7 @@ class Welcome extends Page
         @account.style.display = "none"
 
     do_click: (e) ->
-        if e.x > 25 and e.x < 515 and e.y > 90
+        if e.x > 25 and e.x < 725 and e.y > 90
 
         else
             if e.target.className not in ["TimezoneSet", "KeyboardSet"]
