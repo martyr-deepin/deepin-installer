@@ -83,34 +83,6 @@
     text-shadow:0 1px rgba(0,0,0,0.5);
 }
 
-.Current {
-    background:#D0D0D0;
-    padding-left:16px;
-    height:30px;
-    line-height:30px;
-    color:#0870BC;
-}
-
-.Current span {
-    margin-right:10px;
-}
-
-.KeyboardList{
-    margin:0px;
-    height:400px;
-    overflow:scroll;
-}
-
-.KeyboardItem {
-    height:23px;
-    line-height:23px;
-    padding-left:16px;
-}
-
-.KeyboardItem:hover {
-    background:#2FC1FF;
-}
-
 .Timezone, .Keyboard {
     position:fixed;
     left:25px;
@@ -121,30 +93,83 @@
     height:450px;
 }
 
-.TimezoneQuery {
+.Query {
     width:700px;
     height:50px;
     background:rgba(255,255,255,0.2);
 }
 
-.TimezoneQuery .Left {
+.Query .Left {
     float:left;
     width:440px;
     height:50px;
-    background:transparent;
 }
 
-.TimezoneQuery input {
+.Query .QueryWrap {
     width:390px;
     height:34px;
-    margin:7px 25px;
+    margin:8px 25px;
+    border-top:1px solid rgba(0,0,0,0.5);
+    border-left:1px solid rgba(0,0,0,0.5);
+    border-right:1px solid rgba(0,0,0,0.5);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    box-shadow:inset 0 -1px rgba(0,0,0,0.3);
+    border-radius:4px;
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.2)), color-stop(0.1, rgba(255,255,255,0.2)), to(rgba(255,255,255,0.2)));
 }
 
-.TimezoneQuery .Right {
+.Query input {
+    width:390px;
+    height:34px;
+    border-style:none;
+    padding-left:36px;
+    outline-style:none;
+    text-shadow:0 1px rgba(0,0,0,0.5);
+    background:url("../images/search.png") no-repeat;
+    background-position:360px 7px;
+}
+
+.Query .Right {
     float:left;
     width:260px;
     height:50px;
     line-height:50px;
+}
+
+.Current {
+    padding-left:16px;
+    height:30px;
+    line-height:30px;
+}
+
+.Current span {
+    margin-right:10px;
+}
+
+.KeyboardList{
+    width:700px;
+    height:370px;
+    background:rgba(255,255,255,0.2);
+    border:1px solid rgba(0,0,0,0.3);
+    border-radius:0 0 5px 5px;
+    box-shadow:inset 0 1px rgba(255,255,255,0.3),
+               inset 0 -1px rgba(255,255,255,0.3),
+               inset 1px 0 rgba(255,255,255,0.3),
+               inset -1px 0 rgba(255,255,255,0.3);
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+.KeyboardItem {
+    height:30px;
+    line-height:30px;
+    padding-left:30px;
+    border-bottom:1px solid rgba(0,0,0,0.3);
+    box-shadow:0 1px rgba(255,255,255,0.3);
+}
+
+.KeyboardItem:hover {
+    background:#2FC1FF;
 }
 
 .TimezoneWrap {
@@ -158,6 +183,12 @@
     width:700px;
     height:370px;
     padding:0px;
+    border:1px solid rgba(0,0,0,0.3);
+    border-radius:0 0 5px 5px;
+    box-shadow:inset 0 1px rgba(255,255,255,0.3),
+               inset 0 -1px rgba(255,255,255,0.3),
+               inset 1px 0 rgba(255,255,255,0.3),
+               inset -1px 0 rgba(255,255,255,0.3);
 }
 
 .TimezoneMap {

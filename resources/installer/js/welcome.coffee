@@ -46,12 +46,21 @@ _sort_layout = (layout_a, layout_b) ->
 class Keyboard extends Widget
     constructor: (@id)->
         super
-        @current = create_element("div", "Current", @element)
+        @query = create_element("div", "Query", @element)
+        @query_div = create_element("div", "Left", @query)
+        @query_wrap = create_element("div", "QueryWrap", @query_div)
+        @query_input = create_element("input", "", @query_wrap)
+        @query_txt = create_element("div", "Right", @query)
+        @query_txt.innerText = _("Please select your keyboard")
+
         @list = create_element("div", "KeyBoardList", @element)
         for layout in @get_layouts().sort(_sort_layout)
             @construct_item(layout)
+
+        @current = create_element("div", "Current", @element)
         @init_default_layout()
         @current.innerText = DCore.Installer.get_layout_description(__selected_layout)
+
         @hide()
 
     show: ->
@@ -112,9 +121,10 @@ class Keyboard extends Widget
 class Timezone extends Widget
     constructor: (@id) ->
         super
-        @query = create_element("div", "TimezoneQuery", @element)
+        @query = create_element("div", "Query", @element)
         @query_div = create_element("div", "Left", @query)
-        @query_input = create_element("input", "", @query_div)
+        @query_wrap = create_element("div", "QueryWrap", @query_div)
+        @query_input = create_element("input", "", @query_wrap)
         @query_txt = create_element("div", "Right", @query)
         @query_txt.innerText = _("Please select or search your location")
 
@@ -127,7 +137,7 @@ class Timezone extends Widget
         @img.setAttribute("usemap", "#ImageMap")
         @construct_map()
 
-        @current = create_element("div", "TimezoneCurrent", @element)
+        @current = create_element("div", "Current", @element)
         @current.innerText = __selected_timezone
 
         @hide()
@@ -135,6 +145,7 @@ class Timezone extends Widget
     show: ->
         @displayed = true
         @element.style.display = "block"
+        Widget.look_up("timezone_set").style = "background:rgba(255,255,255,0.2);"
 
     hide: ->
         @displayed = false
@@ -286,6 +297,7 @@ class Welcome extends Page
 
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("span", "KeyboardSet", @title_set)
+        @keyboard_set.setAttribute("id", "keyboard_set")
         @keyboard_set.innerHTML += _("Keyboard")
         @keyboard_set.addEventListener("click", (e) =>
             @timezone.hide()
@@ -294,6 +306,7 @@ class Welcome extends Page
         )
 
         @timezone_set = create_element("span", "TimezoneSet", @title_set)
+        @timezone_set.setAttribute("id", "timezone_set")
         @timezone_set.innerText = _("Timezone")
         @timezone_set.addEventListener("click", (e) =>
             @keyboard.hide()
@@ -353,11 +366,10 @@ class Welcome extends Page
         @account.style.display = "none"
 
     do_click: (e) ->
-        if @keyboard.displayed
-            if e.target.className not in ["KeyboardItem", "Keyboard", "KeyboardSet"]
-                @display_account()
-        if @timezone.displayed
-            if e.target.className not in ["TimezoneMap", "Timezone", "TimezoneSet", "ImageMap", "TimezoneArea", "Pin"]
+        if e.x > 25 and e.x < 515 and e.y > 90
+
+        else
+            if e.target.className not in ["TimezoneSet", "KeyboardSet"]
                 @display_account()
 
     check_start_ready: ->
