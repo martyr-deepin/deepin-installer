@@ -55,8 +55,7 @@ PPT_TIMEOUT_ID = -1
 class Progress extends Page
     constructor: (@id)->
         super
-        @progress_txt = create_element("p", "", @title)
-        @progress_txt.innerText = _("Installing")
+        @titleimg = create_img("", "images/progress_extract.png", @titleprogress)
 
         @current_img = _ppt_list[0]
 

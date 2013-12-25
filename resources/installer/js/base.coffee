@@ -192,51 +192,10 @@ class Page extends Widget
     constructor: (@id)->
         super
         @title = create_element("div", "Title", @element)
-        @canvaswrap = create_element("div", "TitleCanvas", @title)
+        @titleprogress = create_element("div", "TitleProgress", @title)
 
     exit_installer: ->
         DCore.Installer.finish_install()
-
-    draw_title: ->
-        if @canvas?
-            @destroy_title()
-            @canvas = null
-        @canvas = create_element("canvas", "", @canvaswrap)
-        @canvas.setAttribute("width", 242)
-        @canvas.setAttribute("height", 32)
-        ctx = @canvas.getContext("2d")
-        #@logo = create_img("", "images/logo.png", @element)
-        #@logo.style.display = "none"
-        #ctx.strokeStyle = "rgba(255,255,255,0.2)"
-        ctx.strokeStyle = "#FF0000"
-        #ctx.drawImage(@logo,32,32)
-        ctx.moveTo(33,16)
-        ctx.lineTo(71,16)
-        ctx.stroke()
-
-        ctx.beginPath()
-        ctx.arc(88,16,16,Math.PI,2*Math.Pi)
-        ctx.stroke()
-
-        ctx.moveTo(103,16)
-        ctx.lineTo(141,16)
-        ctx.stroke()
-
-        ctx.beginPath()
-        ctx.arc(158,16,16,0,Math.Pi)
-        ctx.stroke()
-
-        ctx.moveTo(173,16)
-        ctx.lineTo(211,16)
-        ctx.stroke()
-
-
-    destroy_title: ->
-        ctx = @canvas.getContext("2d")
-        ctx.clearRect(0,0,242,32)
-
-    update_title: (step, status) ->
-
 
 class PageContainer extends Widget
     constructor: (@id)->

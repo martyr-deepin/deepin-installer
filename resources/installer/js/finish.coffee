@@ -20,8 +20,7 @@
 class Finish extends Page
     constructor: (@id)->
         super
-        @finish_txt = create_element("p", "", @title)
-        @finish_txt.innerText = _("Install completed")
+        @titleimg = create_img("", "images/progress_succeed.png", @titleprogress)
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>

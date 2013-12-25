@@ -33,21 +33,7 @@ body {
     text-align:center;
 }
 
-/*
-.Title p {
-    float:left;
-    height:40px;
-    line-height:40px;
-    margin-left:28px;
-    vertical-align:middle;
-    font-size:24px;
-    background:url("../images/logo.png") no-repeat;
-    padding-left:245px;
-    padding-top:4px;
-}
-*/
-
-.TitleCanvas {
+.TitleProgress {
     position:fixed;
     top:21px;
     left:25px;

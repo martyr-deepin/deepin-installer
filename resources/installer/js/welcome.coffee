@@ -310,8 +310,7 @@ class WelcomeFormItem extends Widget
 class Welcome extends Page
     constructor: (@id)->
         super
-        @title_start = create_element("div", "", @title)
-        @start_txt = create_element("p", "", @title_start)
+        @titleimg = create_img("", "images/progress_account.png", @titleprogress)
 
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
@@ -336,7 +335,6 @@ class Welcome extends Page
         @close.addEventListener("click", (e) =>
             @exit_installer()
         )
-        @draw_title()
 
         @keyboard = new Keyboard("keyboard")
         @element.appendChild(@keyboard.element)

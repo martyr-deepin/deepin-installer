@@ -617,8 +617,7 @@ class PartTable extends Widget
 class Part extends Page
     constructor: (@id)->
         super
-        @part_txt = create_element("p", "", @title)
-        @part_txt.innerText = _("Choose partition")
+        @titleimg = create_img("", "images/progress_part.png", @titleprogress)
 
         @help = create_element("div", "PartTitleSet", @title)
         @t_mode = create_element("span", "PartTitleMode", @help)
