@@ -519,7 +519,7 @@ class PartTableItem extends Widget
         __selected_item = @
         #@element.scrollIntoView()
         @set_btn_status()
-        @element.setAttribute("style", "background:#27BEFF")
+        @element.setAttribute("style", "background:rgba(255,255,255,0.4);")
         #@update_install_btn()
 
     blur: ->

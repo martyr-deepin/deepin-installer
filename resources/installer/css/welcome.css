@@ -146,7 +146,7 @@
     width:390px;
     height:34px;
     border-style:none;
-    padding-left:36px;
+    padding-left:6px;
     outline-style:none;
     text-shadow:0 1px rgba(0,0,0,0.5);
     background:url("../images/search.png") no-repeat;
@@ -164,6 +164,8 @@
     padding-left:16px;
     height:30px;
     line-height:30px;
+    color:rgba(255,255,255,0.6);
+    text-shadow:0 1px rgba(0,0,0,0.1);
 }
 
 .Current span {
@@ -192,18 +194,25 @@
 
 .VariantList {
     float:left;
-    width:490px;
+    margin-left:9px;
+    width:480px;
     height:370px;
     overflow-x:hidden;
     overflow-y:scroll;
+    border-left:1px solid rgba(0,0,0,0.3);
+    box-shadow:inset 1px 0 rgba(255,255,255,0.3);
 }
 
 .LayoutItem, .VariantItem {
     height:30px;
     line-height:30px;
     padding-left:30px;
-    border-bottom:1px solid rgba(0,0,0,0.2);
-    box-shadow:0 1px rgba(255,255,255,0.3);
+    border-bottom:1px solid rgba(0,0,0,0.1);
+    box-shadow:0 1px rgba(255,255,255,0.2);
+}
+
+.LayoutItem:hover, .VariantItem:hover {
+    background:rgba(255,255,255,0.2);
 }
 
 .TimezoneWrap {
@@ -246,8 +255,6 @@
     position:absolute;
     margin:0px;
     padding:0px;
-    width:14px;
-    height:13px;
 }
 
 .Welcome .Start {
@@ -266,8 +273,12 @@
     width:180px;
     height:38px;
     padding-top:5px;
+    /*
     background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));
-    color:#000;
+    color:rgba(0,0,0,1);
+    */
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(244,198,136, 0.5)), to(rgba(255,190,87,0.5)));
+    color:rgba(0,0,0,0.3);
     font-size:18px;
     font-style:bold;
 }

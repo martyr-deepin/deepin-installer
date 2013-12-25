@@ -65,7 +65,14 @@
     position:absolute;
     float:left;
     height:20px;
-    box-shadow:inset -1px 0 rgba(255,255,255,0.2);
+    box-shadow:inset 1px 0 rgba(255,255,255,0.2),
+               inset -1px 0 rgba(255,255,255,0.2),
+               inset 0 1px rgba(255,255,255,0.2),
+               inset 0 -1px rgba(255,255,255,0.2),
+               inset 2px 0 rgba(255,255,255,0.2),
+               inset -2px 0 rgba(255,255,255,0.2),
+               inset 0 2px rgba(255,255,255,0.2),
+               inset 0 -2px rgba(255,255,255,0.2);
 }
 
 .PartTable {
@@ -88,7 +95,10 @@
     height:21px;
     line-height:20px;
     margin-right:8px;
-    background: rgba(255,255,255,0.3);
+    background:rgba(255,255,255,0.2);
+    /*
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.5)), to(rgba(255,255,255, 0.2)));
+    */
     border-top:1px solid rgba(0,0,0,0.3);
     border-left:1px solid rgba(0,0,0,0.3);
     border-right:1px solid rgba(0,0,0,0.3);

@@ -61,7 +61,7 @@ class Keyboard extends Widget
         @variant_list = create_element("div", "VariantList", @content)
 
         for layout in @layouts
-            @construct_item(layout)
+            @construct_layout(layout)
 
         @current = create_element("div", "Current", @element)
         @current.innerText = DCore.Installer.get_layout_description(__selected_layout)
@@ -104,7 +104,7 @@ class Keyboard extends Widget
                 @variants[layout].push(layout + "," + variant)
         @layouts.sort(_sort_layout)
 
-    construct_item: (layout) ->
+    construct_layout: (layout) ->
         opt = create_element("div", "LayoutItem", @layout_list)
         opt.innerText = DCore.Installer.get_layout_description(layout)
         opt.addEventListener("click", (e) =>
@@ -238,7 +238,7 @@ class Timezone extends Widget
             ctx.lineTo(poly[i], poly[i+1])
             i = i + 2
         ctx.closePath()
-        ctx.fillStyle = "rgba(255,255,255,0.8)"
+        ctx.fillStyle = "rgba(255,255,255,1)"
         ctx.fill()
 
     destroy_canvas: (area) ->
@@ -289,7 +289,7 @@ class WelcomeFormItem extends Widget
         if @is_valid()
             echo "valid"
         else
-            @input.setAttribute("style", "border:2px solid red")
+            @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;")
 
     is_valid: ->
         if not @input.value? or @input.value.length == 0
