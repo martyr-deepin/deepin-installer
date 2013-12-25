@@ -112,26 +112,51 @@
 }
 
 .Timezone, .Keyboard {
-    position:absolute;
-    left:6px;
-    right:6px;
+    position:fixed;
+    left:25px;
+    right:25px;
     top:90px;
-    bottom:12px;
-    width:738px;
-    height:436px;
+    bottom:0;
+    width:700px;
+    height:450px;
+}
+
+.TimezoneQuery {
+    width:700px;
+    height:50px;
     background:rgba(255,255,255,0.2);
 }
 
+.TimezoneQuery .Left {
+    float:left;
+    width:440px;
+    height:50px;
+    background:transparent;
+}
+
+.TimezoneQuery input {
+    width:390px;
+    height:34px;
+    margin:7px 25px;
+}
+
+.TimezoneQuery .Right {
+    float:left;
+    width:260px;
+    height:50px;
+    line-height:50px;
+}
+
 .TimezoneWrap {
-    position:relative;
-    width:736px;
+    width:700px;
+    background:rgba(255,255,255,0.2);
 }
 
 .TimezonePicker {
-    background:url("../images/zonemap.png");
+    background:url("../images/zonemap.png") no-repeat;
     position:relative;
-    width:736px;
-    height:404px;
+    width:700px;
+    height:370px;
     padding:0px;
 }
 
@@ -140,16 +165,16 @@
     top:0px;
     left:0px;
     opacity:0.5;
-    width:736px;
-    height:404px;
+    width:700px;
+    height:370px;
 }
 
 .TimezoneCanvas {
     position:absolute;
     top:0px;
     left:0px;
-    width:736px;
-    height:404px;
+    width:700px;
+    height:370px;
 }
 
 .Pin {

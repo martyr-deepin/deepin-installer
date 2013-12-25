@@ -112,16 +112,24 @@ class Keyboard extends Widget
 class Timezone extends Widget
     constructor: (@id) ->
         super
-        @current = create_element("div", "Current", @element)
-        @current.innerText = __selected_timezone
+        @query = create_element("div", "TimezoneQuery", @element)
+        @query_div = create_element("div", "Left", @query)
+        @query_input = create_element("input", "", @query_div)
+        @query_txt = create_element("div", "Right", @query)
+        @query_txt.innerText = _("Please select or search your location")
+
         @picker_wrap = create_element("div","TmezoneWrap", @element)
         @picker = create_element("div", "TimezonePicker", @picker_wrap)
         @canvas = create_element("canvas", "TimezoneCanvas", @picker)
-        @canvas.setAttribute("width", 736)
-        @canvas.setAttribute("height", 404)
+        @canvas.setAttribute("width", 700)
+        @canvas.setAttribute("height", 370)
         @img = create_img("TimezoneMap", "images/zonemap.png", @picker)
         @img.setAttribute("usemap", "#ImageMap")
         @construct_map()
+
+        @current = create_element("div", "TimezoneCurrent", @element)
+        @current.innerText = __selected_timezone
+
         @hide()
 
     show: ->
@@ -205,7 +213,7 @@ class Timezone extends Widget
 
     destroy_canvas: (area) ->
         ctx = @canvas.getContext("2d")
-        ctx.clearRect(0,0,736,404)
+        ctx.clearRect(0,0,700,370)
 
 class WelcomeFormItem extends Widget
     constructor: (@id)->
