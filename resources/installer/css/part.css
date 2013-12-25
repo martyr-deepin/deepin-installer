@@ -19,7 +19,7 @@
     text-align:center;
     padding-left:40px;
     margin:3px 0;
-    background:url("../images/keyboard.png") no-repeat;
+    background:url("../images/mode.png") no-repeat;
     background-position:8px;
 }
 
@@ -32,7 +32,7 @@
     text-align:center;
     padding-left:40px;
     margin:3px 0;
-    background:url("../images/timezone.png") no-repeat;
+    background:url("../images/help.png") no-repeat;
     background-position:8px;
 }
 
