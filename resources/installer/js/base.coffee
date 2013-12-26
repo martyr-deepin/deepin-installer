@@ -149,9 +149,9 @@ class DropDownItem extends Widget
         echo "value"
         echo @value
         echo "drop id"
-        echo @dropdownlist.dropdonw.id
+        echo @dropdownlist.dropdown.id
         echo "drop id 6-18"
-        echo @dropdownlist.dropdonw.id[6..18]
+        echo @dropdownlist.dropdown.id[6..18]
         if @key != @dropdownlist.dropdown.selected
             @dropdownlist.dropdown.on_change_cb(@dropdownlist.dropdown.id[6..18],@key)
         @dropdownlist.dropdown.set_selected(@key)
@@ -173,7 +173,7 @@ class DropDownList extends Widget
     fill_dropdown: (keys, values) ->
         i = 0
         while i < keys.length
-            item = new DropDownItem("dropitem_" + keys[i], keys[i], values[i], @)
+            item = new DropDownItem("di_" + @id + "_"  + keys[i], keys[i], values[i], @)
             @element.appendChild(item.element)
             i = i + 1
 

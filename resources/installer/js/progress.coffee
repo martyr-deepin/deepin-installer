@@ -59,6 +59,7 @@ class Progress extends Page
 
         @progress_container = create_element("div", "ProgressContainer", @element)
         @progressbar = create_element("div", "ProgressBar", @progress_container)
+        @light = create_element("div", "ProgressLight", @progress_container)
 
         @current_img = _ppt_list[0]
         @ppt = create_element("div", "Ppt", @element)

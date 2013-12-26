@@ -11,12 +11,14 @@
     font-size:30px;
     height:40px;
     line-height:40px;
+    text-shadow:1px 3px 5px rgba(0,0,0,0.35);
 }
 
 .Finish .Detail {
     font-size:14px;
     height:20px;
     line-height:20px;
+    color:rgba(255,255,255,0.7);
 }
 
 .FinishOps {
@@ -36,25 +38,33 @@
     background-position:17px 7px;
 }
 
+/*
 .Finish .Later:hover {
     background:url("../images/later_active.png") no-repeat;
     background-position:17px 7px;
 }
+*/
 
 .Finish .Now {
     float:right;
     width:100px;
     height:90px;
-    background:url("../images/now.png") no-repeat;
+    background:url("../images/now_active.png") no-repeat;
     background-position:17px 7px;
+    color:#FBE90B;
 }
 
+/*
 .Finish .Now:hover {
     background:url("../images/now_active.png") no-repeat;
     background-position:17px 7px;
 }
+*/
 
 .Finish .Txt {
     position:relative;
     top:70px;
+    font-size:14px;
+    font-style:bold;
+    text-shadow:1px 2px 3px rgba(0,0,0,0.35);
 }

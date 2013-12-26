@@ -20,6 +20,7 @@
 }
 
 .ProgressBar {
+    float:left;
     width:0%;
     height:4px;
     background:-webkit-gradient(linear, left top, right top, from(rgba(255,255,255,0.4)), color-stop(0.95, rgba(255,255,255,0.9)), to(rgba(255,255,255,1.0)));
@@ -28,4 +29,13 @@
     border-bottom:1px solid rgba(255,255,255,0.9);
     box-shadow:1px 0 3px rgba(255,255,255,0.5),
                -1px 0 3px rgba(255,255,255,0.5);
+}
+
+.ProgressLight {
+    float:left;
+    background:url("../images/light.png");
+    width:38px;
+    height:10px;
+    margin-left:-22px;
+    margin-top:-2px;
 }
