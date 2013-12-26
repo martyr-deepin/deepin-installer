@@ -137,8 +137,9 @@ class DropDownItem extends Widget
         super
         @element.innerText = @value
         @selected = false
-        @element.style.height = @dropdownlist.dropdown.itemheight
-        @element.style.lineheight = @element.style.height
+        style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
+        style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
+        @element.setAttribute("style", style)
 
     do_click: (e) ->
         echo "item click"
@@ -183,13 +184,13 @@ class DropDownList extends Widget
             __current_dropdown = null
         __current_dropdown = @
         __drop_board.style.display = "block"
-        @element.style.display = "block"
         position = get_position(@dropdown.base)
         offsettop = @dropdown.listofftop
         @element.style.left = position["x"] + "px"
         @element.style.top = position["y"] + offsettop + "px"
         @element.style.width = @dropdown.listwidth + "px"
         @element.style.height = @dropdown.listheight + "px"
+        @element.style.display = "block"
 
     hide: ->
         @element.style.display = "none"
@@ -231,8 +232,10 @@ class DropDown extends Widget
         @dropheight = height
 
     show_drop: ->
-        @base.style.width = @dropwidth + "px"
-        @base.style.height = @dropheight + "px"
+        base_style = "width:" + @dropwidth + "px;"
+        base_style += "height:" + @dropheight + "px;"
+        base_style += "line-height:" + @dropheight + "px;"
+        @base.setAttribute("style", base_style)
 
         @current.style.width = @dropwidth - @dropheight + "px"
         @current.style.height = @dropheight + "px"
@@ -256,10 +259,6 @@ class DropDown extends Widget
         if not @dropdown_list?
             @dropdown_list = new DropDownList("dl_" + @id, @)
         @selected = key
-        echo "itmes"
-        echo @items
-        echo "key"
-        echo key
         @current.innerText = @items[key]
 
     get_selected: ->
