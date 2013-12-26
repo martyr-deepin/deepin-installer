@@ -174,7 +174,7 @@ class DropDownList extends Widget
     fill_dropdown: (keys, values) ->
         i = 0
         while i < keys.length
-            item = new DropDownItem("di_" + @id + "_"  + keys[i], keys[i], values[i], @)
+            item = new DropDownItem("di_" + @id[3..] + "_"  + keys[i], keys[i], values[i], @)
             @element.appendChild(item.element)
             i = i + 1
 
@@ -252,12 +252,12 @@ class DropDown extends Widget
 
     show_list: ->
         if not @dropdown_list?
-            @dropdown_list = new DropDownList("dl_" + @id, @)
+            @dropdown_list = new DropDownList("dl_" + @id[3..], @)
         @dropdown_list.show()
 
     set_selected: (key) ->
         if not @dropdown_list?
-            @dropdown_list = new DropDownList("dl_" + @id, @)
+            @dropdown_list = new DropDownList("dl_" + @id[3..], @)
         @selected = key
         @current.innerText = @items[key]
 
