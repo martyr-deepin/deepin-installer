@@ -27,46 +27,29 @@ class Finish extends Page
             @exit_installer()
         )
 
-        @sep = create_element("div", "Sep", @element)
+        @info = create_element("div", "FinishInfo", @element)
+        @desc = create_element("div", "Desc", @info)
+        @desc.innerText = _("Congratulations")
+        @detail = create_element("div", "Detail", @info)
+        @detail.innerText = _("Complete installation needs reboot")
 
-        @finish_desc = create_element("div", "FinishForm", @element)
-        @finish_desc.innerText = "Finish install need to reboot your computer"
-
-        @restart_now = create_element("div", "FinishForm", @element)
-        @now_radio = create_element("input", "", @restart_now)
-        @now_radio.setAttribute("type", "radio")
-        @now_radio.setAttribute("name", "restart")
-        @now_radio.setAttribute("value", "now")
-        @now_radio.setAttribute("checked", "true")
-        @now_desc = create_element("span", "", @restart_now)
-        @now_desc.innerText = _("Restart now")
-
-        @restart_later = create_element("div", "FinishForm", @element)
-        @later_radio = create_element("input", "", @restart_later)
-        @later_radio.setAttribute("type", "radio")
-        @later_radio.setAttribute("name", "restart")
-        @later_radio.setAttribute("value", "later")
-        @later_radio.setAttribute("checked", "true")
-        @later_desc = create_element("span", "", @restart_later)
-        @later_desc.innerText = _("Restart later")
-
-        @finish_install = create_element("div", "FinishBtn", @element)
-        @finish_install.innerText = _("Finish install")
-        @finish_install.addEventListener("click", (e) =>
-            echo "finish install"
-            @finish()
-        )
-
-    finish: ->
-        if @now_radio.checked
-            try
-                DCore.Installer.finish_reboot()
-            catch error
-                echo error
-        else if @later_radio.checked
+        @ops = create_element("div", "FinishOps", @element)
+        @later = create_element("div", "Later", @ops)
+        @later_txt = create_element("div", "Txt", @later)
+        @later_txt.innerText = _("Reboot later")
+        @later.addEventListener("click", (e) =>
             try
                 DCore.Installer.finish_install()
             catch error
                 echo error
-        else
-            echo "invalid finish, no radio checked"
+        )
+
+        @now = create_element("div", "Now", @ops)
+        @now_txt = create_element("div", "Txt", @now)
+        @now_txt.innerText = _("Reboot now")
+        @now.addEventListener("click", (e) =>
+            try
+                DCore.Installer.finish_reboot()
+            catch error
+                echo error
+        )

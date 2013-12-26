@@ -241,6 +241,7 @@
     opacity:0.5;
     width:700px;
     height:370px;
+    background:rgba(255,255,255,0.2);
 }
 
 .TimezoneCanvas {
