@@ -142,19 +142,9 @@ class DropDownItem extends Widget
         @element.setAttribute("style", style)
 
     do_click: (e) ->
-        echo "item click"
-        echo "id"
-        echo @id
-        echo "key"
-        echo @key
-        echo "value"
-        echo @value
-        echo "drop id"
-        echo @dropdownlist.dropdown.id
-        echo "drop id 6-18"
-        echo @dropdownlist.dropdown.id[6..18]
-        if @key != @dropdownlist.dropdown.selected
-            @dropdownlist.dropdown.on_change_cb(@dropdownlist.dropdown.id[6..18],@key)
+        if @key != @dropdownlist.dropdown.selected 
+            if @dropdownlist.dropdown.on_change_cb?
+                @dropdownlist.dropdown.on_change_cb(@dropdownlist.dropdown.id[6..18],@key)
         @dropdownlist.dropdown.set_selected(@key)
         @dropdownlist.hide()
 
