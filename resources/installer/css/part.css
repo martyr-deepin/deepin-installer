@@ -153,6 +153,7 @@
 .PartTableItem {
     width:700px;
     height:40px;
+    line-height:40px;
     border-bottom:1px solid rgba(0,0,0,0.3);
     box-shadow:0 1px rgba(255,255,255,0.3);
     clear:both;
@@ -207,10 +208,12 @@
     text-overflow:ellipsis;
 }
 
-.PartTableItem select {
-    margin:6px 0;
-    height:30px;
-    line-height:30px;
+.PartTableItem .DropDown {
+    margin:8px 0;
+}
+
+.PartTableItem .Mount {
+
 }
 
 .PartOp {

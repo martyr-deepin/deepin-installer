@@ -20,11 +20,13 @@
 pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
-welcome_page = new Welcome("welcome")
-#progress_page = new Progress("progress")
+#welcome_page = new Welcome("welcome")
+progress_page = new Progress("progress")
 #finish_page = new Finish("finish")
 
-pc.add_page(welcome_page)
+#pc.add_page(welcome_page)
 #pc.add_page(part_page)
-#pc.add_page(progress_page)
+pc.add_page(progress_page)
+progress_page.update_progress("50%")
+
 #pc.add_page(finish_page)

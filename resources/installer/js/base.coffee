@@ -138,8 +138,20 @@ class DropDownItem extends Widget
         @element.innerText = @value
         @selected = false
         @element.style.height = @dropdownlist.dropdown.itemheight
+        @element.style.lineheight = @element.style.height
 
     do_click: (e) ->
+        echo "item click"
+        echo "id"
+        echo @id
+        echo "key"
+        echo @key
+        echo "value"
+        echo @value
+        echo "drop id"
+        echo @dropdownlist.dropdonw.id
+        echo "drop id 6-18"
+        echo @dropdownlist.dropdonw.id[6..18]
         if @key != @dropdownlist.dropdown.selected
             @dropdownlist.dropdown.on_change_cb(@dropdownlist.dropdown.id[6..18],@key)
         @dropdownlist.dropdown.set_selected(@key)
@@ -223,6 +235,7 @@ class DropDown extends Widget
         @base.style.height = @dropheight + "px"
 
         @current.style.width = @dropwidth - @dropheight + "px"
+        @current.style.height = @dropheight + "px"
 
         @angle.style.width = @dropheight + "px"
         @angle.style.height = @dropheight + "px"

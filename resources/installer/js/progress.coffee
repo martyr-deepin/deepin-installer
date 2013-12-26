@@ -57,12 +57,14 @@ class Progress extends Page
         super
         @titleimg = create_img("", "images/progress_extract.png", @titleprogress)
 
-        @current_img = _ppt_list[0]
+        @progress_container = create_element("div", "ProgressContainer", @element)
+        @progressbar = create_element("div", "ProgressBar", @progress_container)
 
+        @current_img = _ppt_list[0]
         @ppt = create_element("div", "Ppt", @element)
         @canvas = create_element("canvas", "", @ppt)
-        @canvas.setAttribute("width", 752)
-        @canvas.setAttribute("height", 450)
+        @canvas.setAttribute("width", 750)
+        @canvas.setAttribute("height", 444)
         DCore.Installer.draw_background(@canvas, PPT_IMG_PREFIX + @current_img)
         @ppt.addEventListener("click", (e) =>
             clearTimeout(PPT_TIMEOUT_ID)
@@ -76,9 +78,6 @@ class Progress extends Page
                     progress_page?.switch_ppt("next")
                 , 300)
         )
-
-        @progress_container = create_element("div", "ProgressContainer", @element)
-        @progressbar = create_element("div", "ProgressBar", @progress_container)
         @ticker = 0
 
     switch_ppt: (direction)->

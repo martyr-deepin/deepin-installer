@@ -226,6 +226,7 @@ input {
     position:fixed;
     background:url("../images/dropdown.png");
     max-height:200px;
+    box-shdow:0 0 0 5px rgba(0,0,0,1);
     overflow-x:hidden;
     overflow-y:scroll;
     z-index:300;
