@@ -159,14 +159,10 @@ class DropDownList extends Widget
         @hide()
 
     fill_dropdown: (keys, values) ->
-        if keys.length != values.length
-            echo "invalid dropdown items"
         i = 0
-        @items = {}
         while i < keys.length
             item = new DropDownItem("dropitem_" + keys[i], keys[i], values[i], @)
             @element.appendChild(item.element)
-            @items[keys[i]] = values[i]
             i = i + 1
 
     show: ->
@@ -190,19 +186,53 @@ class DropDownList extends Widget
 class DropDown extends Widget
     constructor: (@id, @keys, @values, @on_change_cb) ->
         super
+        @init_dropdown_data()
         @dropdown_list = null
-        @listwidth = 100
-        @listheigth = 100
-        @listofftop = -100
-        @itemheight = 30
-        @itemleft = 10
         @selected = null
         @base = create_element("div", "DropDownBase", @element)
-        @current = create_element("div", "DropDownCurrent", @base)
-        @angle = create_element("div", "DropDownAngle", @base)
         @base.addEventListener("click", (e) =>
             @show_list()
         )
+        @current = create_element("div", "DropDownCurrent", @base)
+        @angle = create_element("div", "DropDownAngle", @base)
+        @hide_drop()
+
+    init_dropdown_data: ->
+        @dropwidth = 100
+        @dropheight = 24
+        @listwidth = 120
+        @listheigth = 200
+        @listofftop = -100
+        @itemheight = 30
+        @itemleft = 10
+
+        @items = {}
+        if @keys.length != @values.length
+            echo "invalid dropdown items"
+        i = 0
+        while i < @keys.length
+            @items[@keys[i]] = @values[i]
+            i = i + 1
+
+    set_drop_size: (width, height) ->
+        @dropwidth = width
+        @dropheight = height
+
+    show_drop: ->
+        @base.style.width = @dropwidth + "px"
+        @base.style.height = @dropheight + "px"
+
+        @current.style.width = @dropwidth - @dropheight + "px"
+
+        @angle.style.width = @dropheight + "px"
+        @angle.style.height = @dropheight + "px"
+
+        if @selected == null
+            @set_selected(@keys[0])
+        @element.style.display = "block"
+
+    hide_drop: ->
+        @element.style.display = "none"
 
     show_list: ->
         if not @dropdown_list?
@@ -213,7 +243,11 @@ class DropDown extends Widget
         if not @dropdown_list?
             @dropdown_list = new DropDownList("dl_" + @id, @)
         @selected = key
-        @current.innerText = @dropdown_list.items[key]
+        echo "itmes"
+        echo @items
+        echo "key"
+        echo key
+        @current.innerText = @items[key]
 
     get_selected: ->
         return @selected
@@ -230,7 +264,6 @@ class DropDown extends Widget
 
     set_item_left: (offset) ->
         @itemleft = offset
-
 
 class Page extends Widget
     constructor: (@id)->

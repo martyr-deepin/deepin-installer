@@ -215,21 +215,15 @@ input {
 
 .DropDownCurrent {
     float:left;
-    height:22px;
 }
 
 .DropDownAngle {
     float:right;
-    width:20px;
-    height:20px;
-    padding-top:2px;
     background:url("../images/combox.png");
 }
 
 .DropDownList {
     position:fixed;
-    top:0px;
-    left:0px;
     background:url("../images/dropdown.png");
     max-height:200px;
     overflow-x:hidden;

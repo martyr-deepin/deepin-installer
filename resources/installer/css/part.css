@@ -276,35 +276,6 @@
     float:right;
 }
 
-.GrubDropDown .DropDownBase {
-    width:560px;
-    height:24px;
-}
-
-.GrubDropDown .DropDownCurrent {
-    width:530px;
-    padding-top:2px;
-    padding-left:10px;
-}
-
-.CommonDropDown .DropDownBase {
-    margin:10px 0;
-    width:100px;
-    height:20px;
-}
-
-.CommonDropDown .DropDownCurrent {
-    width:80px;
-    height:20px;
-    line-height:20px;
-    margin-top:0px;
-}
-
-.MpDropDown {
-    float:right;
-    padding-right:50px;
-}
-
 .NextStep {
     position:fixed;
     left:285px;
