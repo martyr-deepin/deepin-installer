@@ -115,26 +115,35 @@ class Dialog extends Widget
         #    echo "do dragover in dialog"
         #    event.preventDefault()
         #
-__in_drop = false
 __current_dropdown = null
 __drop_board = create_element("div", "DropBoard", "")
 __drop_board.setAttribute("id", "dropboard")
 document.body.appendChild(__drop_board)
 __drop_board.addEventListener("click", (e) =>
-    __current_dropdown?.hide_dropdown()
+    __current_dropdown?.hide()
 )
 
+get_position = (el) ->
+    x = 0
+    y = 0
+    while el?
+        x = x + el.offsetLeft
+        y = y + el.offsetTop
+        el = el.offsetParent
+    return {"x":x, "y":y}
+
 class DropDownItem extends Widget
-    constructor: (@id, @key, @value, @dropdown) ->
+    constructor: (@id, @key, @value, @dropdownlist) ->
         super
         @element.innerText = @value
         @selected = false
+        @element.style.height = @dropdownlist.dropdown.itemheight
 
     do_click: (e) ->
-        @dropdown.set_selected(@key)
-        @dropdown.hide_dropdown()
-        if @id != @dropdown.selected
-            @dropdown.on_change_cb(@dropdown.id[6..18],@key)
+        @dropdownlist.dropdown.set_selected(@key)
+        @dropdownlist.hide()
+        if @key != @dropdownlist.dropdown.selected
+            @dropdownlist.dropdown.on_change_cb(@dropdown.id[6..18],@key)
 
     enable: ->
         echo "enable item"
@@ -142,20 +151,12 @@ class DropDownItem extends Widget
     disable: ->
         echo "disable item"
 
-class DropDown extends Widget
-    constructor: (@id, @keys, @values, @on_change_cb) ->
+class DropDownList extends Widget
+    constructor: (@id, @dropdown) ->
         super
-        @selected = null
-        @base = create_element("div", "DropDownBase", @element)
-        @current = create_element("div", "DropDownCurrent", @base)
-        @angle = create_element("div", "DropDownAngle", @base)
-        @base.addEventListener("click", (e) =>
-            @show_dropdown()
-        )
-
-        @dropdown = create_element("div", "DropDownList", @element)
-        @fill_dropdown(@keys, @values)
-        @hide_dropdown()
+        @fill_dropdown(@dropdown.keys, @dropdown.values)
+        document.body.appendChild(@element)
+        @hide()
 
     fill_dropdown: (keys, values) ->
         if keys.length != values.length
@@ -164,29 +165,72 @@ class DropDown extends Widget
         @items = {}
         while i < keys.length
             item = new DropDownItem("dropitem_" + keys[i], keys[i], values[i], @)
-            @dropdown.appendChild(item.element)
+            @element.appendChild(item.element)
             @items[keys[i]] = values[i]
             i = i + 1
 
-    show_dropdown: ->
+    show: ->
         if __current_dropdown?
+            __current_dropdown.hide()
             __current_dropdown = null
         __current_dropdown = @
-        @dropdown.style.display = "block"
-        __in_drop = true
         __drop_board.style.display = "block"
+        @element.style.display = "block"
+        position = get_position(@dropdown.base)
+        offsettop = @dropdown.listofftop
+        @element.style.left = position["x"] + "px"
+        @element.style.top = position["y"] + offsettop + "px"
+        @element.style.width = @dropdown.listwidth + "px"
+        @element.style.height = @dropdown.listheight + "px"
 
-    hide_dropdown: ->
-        @dropdown.style.display = "none"
-        __in_drop = false
+    hide: ->
+        @element.style.display = "none"
         __drop_board.style.display = "none"
 
+class DropDown extends Widget
+    constructor: (@id, @keys, @values, @on_change_cb) ->
+        super
+        @dropdown_list = null
+        @listwidth = 100
+        @listheigth = 100
+        @listofftop = -100
+        @itemheight = 30
+        @itemleft = 10
+        @selected = null
+        @base = create_element("div", "DropDownBase", @element)
+        @current = create_element("div", "DropDownCurrent", @base)
+        @angle = create_element("div", "DropDownAngle", @base)
+        @base.addEventListener("click", (e) =>
+            @show_list()
+        )
+
+    show_list: ->
+        if not @dropdown_list?
+            @dropdown_list = new DropDownList("dl_" + @id, @)
+        @dropdown_list.show()
+
     set_selected: (key) ->
+        if not @dropdown_list?
+            @dropdown_list = new DropDownList("dl_" + @id, @)
         @selected = key
-        @current.innerText = @items[key]
+        @current.innerText = @dropdown_list.items[key]
 
     get_selected: ->
         return @selected
+
+    set_list_size: (width, height) ->
+        @listwidth = width
+        @listheigth = height
+
+    set_list_top: (offset) ->
+        @listofftop = offset
+
+    set_item_height: (itemheight) ->
+        @itemheight = itemheight
+
+    set_item_left: (offset) ->
+        @itemleft = offset
+
 
 class Page extends Widget
     constructor: (@id)->

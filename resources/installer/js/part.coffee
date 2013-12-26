@@ -519,7 +519,7 @@ class PartTableItem extends Widget
         __selected_item = @
         #@element.scrollIntoView()
         @set_btn_status()
-        @element.setAttribute("style", "background:rgba(255,255,255,0.4);")
+        @element.setAttribute("style", "background:rgba(0,0,0,0.3);")
         #@update_install_btn()
 
     blur: ->
@@ -775,8 +775,9 @@ class Part extends Page
                     keys.push(part)
                     values.push(v_part_info[part]["path"])
 
-        @grub_dropdown = new GrubDropDown("dd_bt_", keys, values, null)
+        @grub_dropdown = new GrubDropDown("dd_grub", keys, values, null)
         @grub_select.appendChild(@grub_dropdown.element)
+        @grub_dropdown.set_list_size(560, 200)
         @grub_dropdown.set_selected(__selected_disk)
 
     show_advance_mode: ->

@@ -215,7 +215,7 @@ input {
 
 .DropDownCurrent {
     float:left;
-    height:20px;
+    height:22px;
 }
 
 .DropDownAngle {
@@ -227,12 +227,18 @@ input {
 }
 
 .DropDownList {
-    position:relative;
-    background:url("../images/background.png");
+    position:fixed;
+    top:0px;
+    left:0px;
+    background:url("../images/dropdown.png");
     max-height:200px;
     overflow-x:hidden;
     overflow-y:scroll;
     z-index:300;
+}
+
+.DropDownItem {
+    padding-left:10px;
 }
 
 .DropDownItem:hover {
