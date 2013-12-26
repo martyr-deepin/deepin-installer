@@ -86,7 +86,7 @@ class AddPartDialog extends Dialog
         Widget.look_up("part_table")?.fill_items()
         Widget.look_up("part_line_maps")?.fill_linemap()
         Widget.look_up(new_part)?.focus()
-        Widget.look_up("part")?.fill_grub()
+        Widget.look_up("part")?.fill_bootloader()
 
     fill_type: ->
         @type = create_element("p", "", @content)
@@ -208,7 +208,7 @@ class DeletePartDialog extends Dialog
         Widget.look_up("part_table")?.fill_items()
         Widget.look_up("part_line_maps")?.fill_linemap()
         Widget.look_up(remain_part)?.focus()
-        Widget.look_up("part")?.fill_grub()
+        Widget.look_up("part")?.fill_bootloader()
 
 class UnmountDialog extends Dialog
     constructor: (@id) ->
@@ -424,29 +424,6 @@ class PartTableItem extends Widget
         else
             @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(3) + "GB"
 
-    #fill_fs: ->
-    #    @fs.innerHTML = ""
-    #    if __selected_mode == "simple" 
-    #        if m_part_info[@id]["type"] != "freespace"
-    #            @fs_txt = create_element("div", "", @fs)
-    #            @fs_txt.innerText = m_part_info[@id]["fs"]
-    #    else if __selected_mode == "advance"
-    #        if v_part_info[@id]["type"] != "freespace"
-    #            @fs_select = create_element("select", "", @fs)
-    #            for opt in ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt"]
-    #                create_option(@fs_select, opt, opt)
-    #            for opt, i in @fs_select
-    #                if opt.value == v_part_info[@id]["fs"]
-    #                    @fs_select.selectedIndex = i
-    #            @fs_select.addEventListener("focus", (e) =>
-    #                if __selected_item != @
-    #                    @focus()
-    #            )
-    #            @fs_select.addEventListener("change", (e) =>
-    #                update_part_fs(@id, @fs_select.options[@fs_select.selectedIndex].value)
-    #            )
-    #    else
-    #        echo "fill fs:invalid mode"
     fill_fs: ->
         @fs.innerHTML = ""
         if __selected_mode == "simple" 
@@ -747,23 +724,10 @@ class Part extends Page
         @part_grub = create_element("div", "PartGrub", @element)
         @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
         @grub_loader.innerText = _("Boot loader")
-        #@part_grub.innerHTML = "<span>" + _("Boot loader") + "</span>"
-        #@grub_select = create_element("select", "", @part_grub)
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
         @fill_bootloader()
-        #@fill_grub()
-
-    fill_grub: ->
-        @grub_select.innerHTML = ""
-        for disk in disks
-            text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" +sector_to_gb(v_disk_info[disk]["length"], 512) + "GB"
-            create_option(@grub_select, disk, text)
-            for part in v_disk_info[disk]["partitions"]
-                if v_part_info[part]["type"] in ["normal", "logical"]
-                    create_option(@grub_select, part, v_part_info[part]["path"])
 
     fill_bootloader: ->
-        echo "fill bootloader"
         keys = []
         values = []
         for disk in disks
@@ -774,7 +738,9 @@ class Part extends Page
                 if v_part_info[part]["type"] in ["normal", "logical"]
                     keys.push(part)
                     values.push(v_part_info[part]["path"])
-
+        if @grub_dropdown?
+            @grub_dropdown?.destroy()
+            @grub_dropdown = null
         @grub_dropdown = new GrubDropDown("dd_grub", keys, values, null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_list_size(560, 200)

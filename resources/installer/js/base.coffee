@@ -140,10 +140,10 @@ class DropDownItem extends Widget
         @element.style.height = @dropdownlist.dropdown.itemheight
 
     do_click: (e) ->
+        if @key != @dropdownlist.dropdown.selected
+            @dropdownlist.dropdown.on_change_cb(@dropdownlist.dropdown.id[6..18],@key)
         @dropdownlist.dropdown.set_selected(@key)
         @dropdownlist.hide()
-        if @key != @dropdownlist.dropdown.selected
-            @dropdownlist.dropdown.on_change_cb(@dropdown.id[6..18],@key)
 
     enable: ->
         echo "enable item"
