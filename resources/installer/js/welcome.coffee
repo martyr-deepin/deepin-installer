@@ -317,18 +317,20 @@ class Welcome extends Page
         @keyboard_set.setAttribute("id", "my_keyboard_set")
         @keyboard_set.innerHTML += _("Keyboard")
         @keyboard_set.addEventListener("click", (e) =>
-            @timezone.hide()
-            @hide_account()
-            @keyboard.show()
+            if @keyboard.displayed
+                @display_account()
+            else
+                @display_keyboard()
         )
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
         @timezone_set.setAttribute("id", "my_timezone_set")
         @timezone_set.innerText = _("Timezone")
         @timezone_set.addEventListener("click", (e) =>
-            @keyboard.hide()
-            @hide_account()
-            @timezone.show()
+            if @timezone.displayed
+                @display_account()
+            else
+                @display_timezone()
         )
 
         @close = create_element("div", "Close", @title)
@@ -382,12 +384,22 @@ class Welcome extends Page
     hide_account: ->
         @account.style.display = "none"
 
-    do_click: (e) ->
-        if e.x > 25 and e.x < 725 and e.y > 90
+    display_keyboard: ->
+        @hide_account()
+        @timezone.hide()
+        @keyboard.show()
 
-        else
-            if e.target.className not in ["TimezoneSet", "KeyboardSet"]
-                @display_account()
+    display_timezone: ->
+        @hide_account()
+        @keyboard.hide()
+        @timezone.show()
+
+        #do_click: (e) ->
+        #    if e.x > 25 and e.x < 725 and e.y > 90
+
+        #    else
+        #        if e.target.className not in ["TimezoneSet", "KeyboardSet"]
+        #            @display_account()
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 

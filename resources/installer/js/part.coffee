@@ -289,6 +289,7 @@ class PartLineItem extends Widget
         @element.style.width = v_part_info[@part]["width"]
         disk = v_part_info[@part]["disk"]
         @element.style.left = v_part_info[@part]["start"]/v_disk_info[disk]["length"] * 700
+        @mask = create_element("div", "Mask", @element)
 
     focus: ->
         @passive_focus()
@@ -315,7 +316,7 @@ class PartLineMaps extends Widget
 
     fill_linemap: ->
         @element.innerHTML = ""
-        @disk_line = create_element("div", "", @element)
+        @disk_line = create_element("div", "Line", @element)
         for part in v_disk_info[__selected_disk]["partitions"]
             if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
                 item = new PartLineItem("line"+part)
