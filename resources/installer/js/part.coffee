@@ -26,26 +26,6 @@ __selected_line = null
 __selected_mode = "simple"
 __selected_stage = null
 
-create_option = (select, value, text) ->
-    option = create_element("option", "", select)
-    option.setAttribute("value", value)
-    option.innerText = text
-
-create_mp_option = (select, value, text) ->
-    option = create_element("option", "", select)
-    option.setAttribute("value", value)
-    option.innerText = text
-    select.addEventListener("focus", (e) =>
-        if value in get_selected_mp()
-            option.setAttribute("disabled", "disabled")
-        else
-            option.removeAttribute("disabled")
-    )
-
-fill_mp_option = (select) ->
-    for opt in ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
-        create_mp_option(select, opt, opt)
-
 __fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
 
 __fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
@@ -148,17 +128,20 @@ class AddPartDialog extends Dialog
         @fs_desc = create_element("span", "AddDesc", @fs)
         @fs_desc.innerText = _("Format:")
         @fs_value = create_element("span", "AddValue", @fs)
-        @fs_select = create_element("select", "", @fs_value)
-        for opt in ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap","encrypt","unused"]
-            create_option(@fs_select, opt, opt)
+        @fs_select = new DropDown("dd_fs_" + @partid, __fs_keys, __fs_values, null)
+        @fs.appendChild(@fs_select.element)
+        @fs_select.show_drop()
+        @fs_select.set_selected("ext4")
 
     fill_mount: ->
         @mp = create_element("p", "", @content)
         @mp_desc = create_element("span", "AddDec", @mp)
         @mp_desc.innerText = _("Mount point:")
         @mount_value = create_element("span", "AddValue", @mp)
-        @mount_select = create_element("select", "", @mount_value)
-        fill_mp_option(@mount_select)
+        @mount_select = new DropDown("dd_mp_" + @partid, __mp_keys, __mp_values, null)
+        @mp.appendChild(@mount_select.element)
+        @mount_select.show_drop()
+        @mount_select.set_selected("unused")
 
     fill_tips: ->
         @tips = create_element("p", "", @content)
@@ -178,8 +161,8 @@ class AddPartDialog extends Dialog
             @n_align = "start"
         else
             @n_align = "end"
-        @n_fs = @fs_select.options[@fs_select.selectedIndex].value
-        @n_mp = @mount_select.options[@mount_select.selectedIndex].value
+        @n_fs = @fs_select.get_selected()
+        @n_mp = @mount_select.get_selected()
 
 class DeletePartDialog extends Dialog
     constructor: (@id,@partid) ->
@@ -419,6 +402,7 @@ class PartTableItem extends Widget
                 if @active
                     @fs_select = new DropDown("dd_fs_" + @id, __fs_keys, __fs_values, update_part_fs)
                     @fs.appendChild(@fs_select.element)
+                    @fs_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
                     @fs_select.show_drop()
                     @fs_select.set_selected(v_part_info[@id]["fs"])
                 else
@@ -434,6 +418,7 @@ class PartTableItem extends Widget
         if @active
             @mount_select = new DropDown("dd_mp_" + @id, __mp_keys, __mp_values, update_part_mp)
             @mount.appendChild(@mount_select.element)
+            @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
             @mount_select.show_drop()
             @mount_select.set_selected(v_part_info[@id]["mp"])
         else
