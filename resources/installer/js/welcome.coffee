@@ -79,8 +79,6 @@ class VariantItem extends Widget
     constructor: (@id, @variant, @keyboard)->
         super
         @element.innerText = DCore.Installer.get_layout_description(@variant)
-        if @variant == __selected_layout
-            @focus()
 
     focus: ->
         __selected_variant_item?.blur()
@@ -202,6 +200,8 @@ class Timezone extends Widget
         @query_div = create_element("div", "Left", @query)
         @query_wrap = create_element("div", "QueryWrap", @query_div)
         @query_input = create_element("input", "", @query_wrap)
+        @query_img = create_element("div", "QueryImg", @query_wrap)
+
         @query_txt = create_element("div", "Right", @query)
         @query_txt.innerText = _("Please select or search your location")
 

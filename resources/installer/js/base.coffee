@@ -226,6 +226,7 @@ class DropDown extends Widget
         base_style = "width:" + @dropwidth + "px;"
         base_style += "height:" + @dropheight + "px;"
         base_style += "line-height:" + @dropheight + "px;"
+        @element.setAttribute("style", base_style)
         @base.setAttribute("style", base_style)
 
         @current.style.width = @dropwidth - @dropheight + "px"

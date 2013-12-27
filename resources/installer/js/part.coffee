@@ -329,9 +329,6 @@ class PartTableItem extends Widget
         super
         @lineid = "line" + @id
         @active = false
-        @product_part_item()
-
-    product_part_item: ->
         @device = create_element("span", "", @element)
         @size = create_element("div", "", @element)
         @used = create_element("div", "", @element)
@@ -474,7 +471,6 @@ class PartTableItem extends Widget
         __selected_item?.blur()
         __selected_item = @
         @active = true
-        @element.scrollIntoView()
         @fill_fs()
         @fill_mount()
         @set_btn_status()
@@ -482,6 +478,7 @@ class PartTableItem extends Widget
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
+        @element.scrollIntoView()
         #@update_install_btn()
 
     blur: ->

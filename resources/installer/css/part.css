@@ -179,7 +179,6 @@
     width:100px;
     height:40px;
     line-height:40px;
-    vertical-align:middle;
     float:left;
 }
 
@@ -225,10 +224,6 @@
 
 .PartTableItem .DropDown {
     margin:8px 0;
-}
-
-.PartTableItem .Mount {
-
 }
 
 .PartOp {
