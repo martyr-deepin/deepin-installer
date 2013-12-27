@@ -222,8 +222,12 @@
     text-overflow:ellipsis;
 }
 
-.PartTableItem .DropDown {
+.PartTableItem .Fs .DropDown {
     margin:8px 0;
+}
+
+.PartTableItem .Mount .DropDown {
+    margin:8px 50px;
 }
 
 .PartOp {

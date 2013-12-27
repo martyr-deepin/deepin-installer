@@ -203,10 +203,6 @@ input {
     display:none;
 }
 
-.DropDown {
-    text-align:center;
-}
-
 .DropDownBase {
     border-top:1px solid rgba(0,0,0,0.5);
     border-left:1px solid rgba(0,0,0,0.5);

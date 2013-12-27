@@ -332,7 +332,7 @@ class PartTableItem extends Widget
         @device = create_element("span", "", @element)
         @size = create_element("div", "", @element)
         @used = create_element("div", "", @element)
-        @fs = create_element("div", "", @element)
+        @fs = create_element("div", "Fs", @element)
         @mount = create_element("span", "Mount", @element)
         @fill_device()
         @fill_size()
