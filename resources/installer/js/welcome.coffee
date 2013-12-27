@@ -43,11 +43,54 @@ _sort_layout = (layout_a, layout_b) ->
     b_desc = DCore.Installer.get_layout_description(layout_b)
     return a_desc.localeCompare(b_desc)
 
+__selected_layout_item = null
+__selected_variant_item = null
+
+class LayoutItem extends Widget
+    constructor: (@id, @layout, @keyboard)->
+        super
+        @element.innerText = DCore.Installer.get_layout_description(@layout)
+        if @layout == __selected_layout.split(",")[0]
+            @focus()
+
+    focus: ->
+        __selected_layout_item?.blur()
+        __selected_layout_item = @
+        @keyboard.fill_variants(@layout)
+        @element.style.background = "rgba(255,255,255,0.4)"
+        @element.scrollIntoView()
+
+    blur: ->
+        @element.style.background = ""
+
+    do_click: (e) ->
+        if __selected_layout_item != @
+            @focus()
+
+class VariantItem extends Widget
+    constructor: (@id, @variant, @keyboard)->
+        super
+        @element.innerText = DCore.Installer.get_layout_description(@variant)
+        if @variant == __selected_layout
+            @focus()
+
+    focus: ->
+        __selected_variant_item?.blur()
+        __selected_variant_item = @
+        @keyboard.update_layout(@variant)
+        @element.style.background = "rgba(255,255,255,0.4)"
+
+    blur: ->
+        @element.style.background = ""
+
+    do_click: (e) ->
+        if __selected_variant_item != @
+            @focus()
+
 class Keyboard extends Widget
     constructor: (@id)->
         super
-        @fetch_layouts()
-        @init_default_layout()
+        @init_layouts()
 
         @query = create_element("div", "Query", @element)
         @query_div = create_element("div", "Left", @query)
@@ -59,18 +102,16 @@ class Keyboard extends Widget
         @content = create_element("div", "KeyBoardContent", @element)
         @layout_list = create_element("div", "LayoutList", @content)
         @variant_list = create_element("div", "VariantList", @content)
-
-        for layout in @layouts
-            @construct_layout(layout)
-
         @current = create_element("div", "Current", @element)
         @current.innerText = DCore.Installer.get_layout_description(__selected_layout)
 
+        @fill_layouts(@layouts)
         @hide()
 
     show: ->
         @displayed = true
         @element.style.display = "block"
+        __selected_layout_item?.focus()
         #$("#my_keyboard_set")?.setAttribute("class", "TitleSetActive")
 
     hide: ->
@@ -78,7 +119,7 @@ class Keyboard extends Widget
         @element.style.display = "none"
         #$("#my_keyboard_set")?.setAttribute("class", "KeyboardSet")
 
-    init_default_layout: ->
+    init_layouts: ->
         lay_var = DCore.Installer.get_current_layout_variant()
         lay = lay_var["layouts"]
         if lay? and lay.length > 0
@@ -93,7 +134,6 @@ class Keyboard extends Widget
         if current?
             __selected_layout = current
 
-    fetch_layouts: ->
         @layouts = []
         @variants = {}
         for layout in DCore.Installer.get_keyboard_layouts()
@@ -104,38 +144,21 @@ class Keyboard extends Widget
                 @variants[layout].push(layout + "," + variant)
         @layouts.sort(_sort_layout)
 
-    construct_layout: (layout) ->
-        opt = create_element("div", "LayoutItem", @layout_list)
-        opt.innerText = DCore.Installer.get_layout_description(layout)
-        opt.addEventListener("click", (e) =>
-            @variant_list.innerHTML = ""
-            for variant in @variants[layout]
-                @construct_variant(variant)
-        )
+    fill_layouts: (layouts) -> 
+        @layout_list.innerHTML = ""
+        for layout in layouts
+            item = new LayoutItem("layoutitem_" + layout, layout, @)
+            @layout_list.appendChild(item.element)
 
-    construct_variant: (variant) ->
-        opt = create_element("div", "VariantItem", @variant_list)
-        opt.innerText = DCore.Installer.get_layout_description(variant)
-        opt.addEventListener("click", (e) =>
-            @update_layout(variant)
-        )
+    fill_variants: (layout) ->
+        @variant_list.innerHTML = ""
+        for variant in @variants[layout]
+            item = new VariantItem("variantitem_" + variant, variant, @)
+            @variant_list.appendChild(item.element)
 
     update_layout: (layout) ->
         @current.innerText = DCore.Installer.get_layout_description(layout)
         __selected_layout = layout
-        #@set_livecd_layout()
-
-    set_livecd_layout: ->
-        try
-            if __selected_layout.indexOf(",") != -1
-                layout = __selected_layout.split(",")[0]
-                variant = __selected_layout.split(",")[1]
-            else
-                layout = __selected_layout
-                variant = null
-            DCore.Installer.set_keyboard_layout_variant(layout,variant)
-        catch error
-            echo error
 
 class Timezone extends Widget
     constructor: (@id) ->
