@@ -199,6 +199,7 @@ class DropDown extends Widget
         )
         @current = create_element("div", "DropDownCurrent", @base)
         @angle = create_element("div", "DropDownAngle", @base)
+        @angle_img = create_element("div", "DropDownAngleImg", @angle)
         @hide_drop()
 
     init_dropdown_data: ->
@@ -229,11 +230,17 @@ class DropDown extends Widget
         @element.setAttribute("style", base_style)
         @base.setAttribute("style", base_style)
 
-        @current.style.width = @dropwidth - @dropheight + "px"
+        @current.style.width = @dropwidth - @dropheight - 1 + "px"
         @current.style.height = @dropheight + "px"
 
-        @angle.style.width = @dropheight + "px"
-        @angle.style.height = @dropheight + "px"
+        angle_style = "width:" + @dropheight + "px;"
+        angle_style += "height:" + @dropheight + "px;"
+        @angle.setAttribute("style", angle_style)
+
+        angle_img_style = "width:" + @dropheight + "px;"
+        angle_img_style += "height:" + @dropheight + "px;"
+        angle_img_style += "background-position:" + (@dropheight-12)/2 + "px " + (@dropheight-12)/2 + "px;"
+        @angle_img.setAttribute("style", angle_img_style)
 
         if @selected == null
             @set_selected(@keys[0])
