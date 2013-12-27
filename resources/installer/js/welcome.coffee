@@ -37,7 +37,7 @@ _sort_layout = (layout_a, layout_b) ->
 get_matched_items = (key, list) ->
     matched = []
     for item in list
-        if item.indexof(key) != -1
+        if item.indexOf(key) != -1
             matched.push(item)
     return matched
 
@@ -105,6 +105,10 @@ class Keyboard extends Widget
         @query_div = create_element("div", "Left", @query)
         @query_wrap = create_element("div", "QueryWrap", @query_div)
         @query_input = create_element("input", "", @query_wrap)
+        @query_input.addEventListener("keyup", (e) =>
+            if e.which == 13
+                @execute_query()
+        )
         @query_txt = create_element("div", "Right", @query)
         @query_txt.innerText = _("Please select your keyboard")
 
@@ -153,6 +157,11 @@ class Keyboard extends Widget
                 @variants[layout].push(layout + "," + variant)
         @layouts.sort(_sort_layout)
 
+        @search_list = []
+        for item in @layouts
+            @search_list.push(item)
+            @search_list.push(DCore.Installer.get_layout_description(item))
+
     fill_layouts: (layouts) -> 
         @layout_list.innerHTML = ""
         for layout in layouts
@@ -168,6 +177,19 @@ class Keyboard extends Widget
     update_layout: (layout) ->
         @current.innerText = DCore.Installer.get_layout_description(layout)
         __selected_layout = layout
+
+    execute_query: ->
+        key = @query_input.value
+        matched = get_matched_items(key, @search_list)
+        @layout_list.innerHTML = ""
+        @variant_list.innerHTML = ""
+        matched_layouts = []
+        for item in matched
+            if item in @layouts
+                matched_layouts.push(item)
+        @fill_layouts(matched_layouts)
+        if matched_layouts.length > 0
+            Widget.look_up("layoutitem_" + matched_layouts[0])?.focus()
 
 class Timezone extends Widget
     constructor: (@id) ->
