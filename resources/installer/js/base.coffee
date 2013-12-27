@@ -235,8 +235,8 @@ class DropDown extends Widget
             base_style += "background:" + @basebackground
         @base.setAttribute("style", base_style)
 
-        @current.style.width = @dropwidth - @dropheight - 1 + "px"
-        @current.style.height = @dropheight + "px"
+        @current.style.width = @dropwidth - @dropheight - 2 + "px"
+        @current.style.height = @dropheight - 1 + "px"
 
         angle_style = "width:" + @dropheight + "px;"
         angle_style += "height:" + @dropheight + "px;"

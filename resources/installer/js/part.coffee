@@ -27,11 +27,8 @@ __selected_mode = "simple"
 __selected_stage = null
 
 __fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
-
 __fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
-
 __mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
-
 __mp_values = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
 
 class AddPartDialog extends Dialog
@@ -55,20 +52,23 @@ class AddPartDialog extends Dialog
         Widget.look_up("part")?.fill_bootloader()
 
     fill_type: ->
-        @type = create_element("p", "", @content)
+        @type = create_element("div", "", @content)
         @type_desc = create_element("span", "AddDesc", @type)
-        @type_desc.innerText = _("type:")
+        @type_desc.innerText = _("Type:")
         @type_value = create_element("span", "AddValue", @type)
-        @type_primary = create_element("input", "", @type_value)
+
+        @primary_span = create_element("span", "AddValueItem", @type_value)
+        @type_primary = create_element("input", "", @primary_span)
         @type_primary.setAttribute("type", "radio")
         @type_primary.setAttribute("name", "type")
-        @primary_desc = create_element("span", "", @type_value)
+        @primary_desc = create_element("span", "", @primary_span)
         @primary_desc.innerText = _("Primary")
 
-        @type_logical = create_element("input", "", @type_value)
+        @logical_span = create_element("span", "AddValueItem", @type_value)
+        @type_logical = create_element("input", "", @logical_span)
         @type_logical.setAttribute("type", "radio")
         @type_logical.setAttribute("name", "type")
-        @logical_desc = create_element("span", "", @type_value)
+        @logical_desc = create_element("span", "", @logical_span)
         @logical_desc.innerText = _("Logical")
 
         if not can_add_normal(@partid)
@@ -83,68 +83,85 @@ class AddPartDialog extends Dialog
             @logical_desc.style.display = "none"
 
     fill_size: ->
-        @size = create_element("p", "", @content)
+        @size = create_element("div", "", @content)
         @size_desc = create_element("span", "AddDesc", @size)
         @size_desc.innerText = _("Size:")
         @max_size_mb = sector_to_mb(v_part_info[@partid]["length"], 512)
         @size_value = create_element("span", "AddValue", @size)
-        @size_input = create_element("input", "", @size_value)
-        @size_input.setAttribute("type", "number")
-        @size_input.setAttribute("min", 1)
-        @size_input.setAttribute("max", @max_size_mb)
-        @size_input.setAttribute("step", 1)
-        @size_input.setAttribute("value", @max_size_mb)
-        @size_input.addEventListener("blur", (e) =>
-            if isNaN(parseInt(@size_input.value))
-                @size_input.value = @max_size_mb
-            else
-                if parseInt(@size_input.value) < 0
-                    @size_input.value = 0
-                else if parseInt(@size_input.value) > @max_size_mb
-                    @size_input.value = @max_size_mb
-        )
-        @size_limit = create_element("span", "", @size_value)
-        @size_limit.innerText = "Limited size:" + @max_size_mb
+
+        @size_wrap = create_element("div", "SizeWrap", @size_value)
+        @size_input = create_element("input", "", @size_wrap)
+        #@size_input.setAttribute("type", "number")
+        #@size_input.setAttribute("min", 1)
+        #@size_input.setAttribute("max", @max_size_mb)
+        #@size_input.setAttribute("step", 1)
+        #@size_input.setAttribute("value", @max_size_mb)
+        #@size_input.addEventListener("blur", (e) =>
+        #    if isNaN(parseInt(@size_input.value))
+        #        @size_input.value = @max_size_mb
+        #    else
+        #        if parseInt(@size_input.value) < 0
+        #            @size_input.value = 0
+        #        else if parseInt(@size_input.value) > @max_size_mb
+        #            @size_input.value = @max_size_mb
+        #)
+
+        @minus_img = create_element("div", "SizeMinus", @size_wrap)
+        @minus_img.innerText = "-"
+
+        @add_img = create_element("div", "SizeAdd", @size_wrap)
+        @add_img.innerText = "+"
+
+        #@size_limit = create_element("span", "", @size_value)
+        #@size_limit.innerText = "Limited size:" + @max_size_mb
         
     fill_align: ->
-        @align = create_element("p", "", @content)
+        @align = create_element("div", "", @content)
         @align_desc = create_element("span", "AddDesc", @align)
         @align_desc.innerText = _("Align:")
         @align_value = create_element("span", "AddValue", @align)
-        @align_start = create_element("input", "", @align_value)
+
+        @start_span = create_element("span", "AddValueItem", @align_value)
+        @align_start = create_element("input", "", @start_span)
         @align_start.setAttribute("type", "radio")
         @align_start.setAttribute("name", "align")
         @align_start.setAttribute("checked", "true")
-        start_desc = create_element("span", "", @align_value)
+        start_desc = create_element("span", "", @start_span)
         start_desc.innerText = _("Begin")
-        @align_end = create_element("input", "", @align_value)
+
+        @end_span = create_element("span", "AddValueItem", @align_value)
+        @align_end = create_element("input", "", @end_span)
         @align_end.setAttribute("type", "radio")
         @align_end.setAttribute("name", "align")
-        end_desc = create_element("span", "", @align_value)
+        end_desc = create_element("span", "", @end_span)
         end_desc.innerText = _("End")
 
     fill_fs: ->
-        @fs = create_element("p", "", @content)
+        @fs = create_element("div", "", @content)
         @fs_desc = create_element("span", "AddDesc", @fs)
         @fs_desc.innerText = _("Format:")
         @fs_value = create_element("span", "AddValue", @fs)
         @fs_select = new DropDown("dd_fs_" + @partid, __fs_keys, __fs_values, null)
-        @fs.appendChild(@fs_select.element)
+        @fs_value.appendChild(@fs_select.element)
+        @fs_select.set_drop_size(140,20)
         @fs_select.show_drop()
+        @fs_select.set_list_size(160, 200)
         @fs_select.set_selected("ext4")
 
     fill_mount: ->
-        @mp = create_element("p", "", @content)
+        @mp = create_element("div", "", @content)
         @mp_desc = create_element("span", "AddDec", @mp)
-        @mp_desc.innerText = _("Mount point:")
+        @mp_desc.innerText = _("Mount:")
         @mount_value = create_element("span", "AddValue", @mp)
         @mount_select = new DropDown("dd_mp_" + @partid, __mp_keys, __mp_values, null)
-        @mp.appendChild(@mount_select.element)
+        @mount_value.appendChild(@mount_select.element)
+        @mount_select.set_drop_size(140,20)
         @mount_select.show_drop()
+        @mount_select.set_list_size(160, 200)
         @mount_select.set_selected("unused")
 
     fill_tips: ->
-        @tips = create_element("p", "", @content)
+        @tips = create_element("div", "", @content)
 
     gather_info: ->
         if @type_primary.checked
