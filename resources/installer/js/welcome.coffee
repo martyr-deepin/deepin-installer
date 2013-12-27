@@ -56,6 +56,7 @@ class LayoutItem extends Widget
     focus: ->
         __selected_layout_item?.blur()
         __selected_layout_item = @
+        __selected_layout = @layout
         @keyboard.fill_variants(@layout)
         @element.style.background = "rgba(255,255,255,0.4)"
         @element.scrollIntoView()
@@ -77,6 +78,7 @@ class VariantItem extends Widget
     focus: ->
         __selected_variant_item?.blur()
         __selected_variant_item = @
+        __selected_layout = @variant
         @keyboard.update_layout(@variant)
         @element.style.background = "rgba(255,255,255,0.4)"
 
