@@ -109,6 +109,10 @@ class Keyboard extends Widget
             if e.which == 13
                 @execute_query()
         )
+        @query_img = create_element("div", "QueryImg", @query_wrap)
+        @query_img.addEventListener("click", (e) =>
+            @execute_query()
+        )
         @query_txt = create_element("div", "Right", @query)
         @query_txt.innerText = _("Please select your keyboard")
 

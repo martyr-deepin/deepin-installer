@@ -153,6 +153,14 @@
     background-position:360px 7px;
 }
 
+.Query .QueryImg {
+    position:absolute;
+    top:10px;
+    left:383px;
+    width:34px;
+    height:34px;
+}
+
 .Query .Right {
     float:left;
     width:260px;
