@@ -58,6 +58,23 @@ __board = create_element("div", "Board", "")
 __board.setAttribute("id", "board")
 document.body.appendChild(__board)
 
+__current_dropdown = null
+__drop_board = create_element("div", "DropBoard", "")
+__drop_board.setAttribute("id", "dropboard")
+document.body.appendChild(__drop_board)
+__drop_board.addEventListener("click", (e) =>
+    __current_dropdown?.hide()
+)
+
+get_position = (el) ->
+    x = 0
+    y = 0
+    while el?
+        x = x + el.offsetLeft
+        y = y + el.offsetTop
+        el = el.offsetParent
+    return {"x":x, "y":y}
+
 class Dialog extends Widget
     constructor: (@id, @with_cancel, @cb) ->
         super
@@ -115,22 +132,6 @@ class Dialog extends Widget
         #    echo "do dragover in dialog"
         #    event.preventDefault()
         #
-__current_dropdown = null
-__drop_board = create_element("div", "DropBoard", "")
-__drop_board.setAttribute("id", "dropboard")
-document.body.appendChild(__drop_board)
-__drop_board.addEventListener("click", (e) =>
-    __current_dropdown?.hide()
-)
-
-get_position = (el) ->
-    x = 0
-    y = 0
-    while el?
-        x = x + el.offsetLeft
-        y = y + el.offsetTop
-        el = el.offsetParent
-    return {"x":x, "y":y}
 
 class DropDownItem extends Widget
     constructor: (@id, @key, @value, @dropdownlist) ->

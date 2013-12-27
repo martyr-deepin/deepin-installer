@@ -18,6 +18,9 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 __selected_layout = "cn"
+__selected_layout_item = null
+__selected_variant_item = null
+
 __selected_timezone = "Asia/Shanghai"
 __selected_username = null
 __selected_hostname = null
@@ -25,6 +28,18 @@ __selected_password = null
 __illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
 
 __database = JSON.parse(timezone_json)
+
+_sort_layout = (layout_a, layout_b) ->
+    a_desc = DCore.Installer.get_layout_description(layout_a)
+    b_desc = DCore.Installer.get_layout_description(layout_b)
+    return a_desc.localeCompare(b_desc)
+
+get_matched_items = (key, list) ->
+    matched = []
+    for item in list
+        if item.indexof(key) != -1
+            matched.push(item)
+    return matched
 
 class RequireMatchDialog extends Dialog
     constructor: (@id) ->
@@ -37,14 +52,6 @@ class RequireMatchDialog extends Dialog
     require_match_cb: ->
         echo "require match cb"
         DCore.Installer.finish_install()
-
-_sort_layout = (layout_a, layout_b) ->
-    a_desc = DCore.Installer.get_layout_description(layout_a)
-    b_desc = DCore.Installer.get_layout_description(layout_b)
-    return a_desc.localeCompare(b_desc)
-
-__selected_layout_item = null
-__selected_variant_item = null
 
 class LayoutItem extends Widget
     constructor: (@id, @layout, @keyboard)->
@@ -419,12 +426,12 @@ class Welcome extends Page
         @keyboard.hide()
         @timezone.show()
 
-        #do_click: (e) ->
-        #    if e.x > 25 and e.x < 725 and e.y > 90
+    #do_click: (e) ->
+    #    if e.x > 25 and e.x < 725 and e.y > 90
 
-        #    else
-        #        if e.target.className not in ["TimezoneSet", "KeyboardSet"]
-        #            @display_account()
+    #    else
+    #        if e.target.className not in ["TimezoneSet", "KeyboardSet"]
+    #            @display_account()
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
