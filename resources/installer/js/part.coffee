@@ -327,8 +327,8 @@ class PartLineMaps extends Widget
 class PartTableItem extends Widget
     constructor: (@id)->
         super
-        #__selected_item = @
         @lineid = "line" + @id
+        @active = false
         @product_part_item()
 
     product_part_item: ->
@@ -419,10 +419,14 @@ class PartTableItem extends Widget
                 @fs_txt.innerText = m_part_info[@id]["fs"]
         else if __selected_mode == "advance"
             if v_part_info[@id]["type"] != "freespace"
-                @fs_select = new DropDown("dd_fs_" + @id, __fs_keys, __fs_values, update_part_fs)
-                @fs.appendChild(@fs_select.element)
-                @fs_select.show_drop()
-                @fs_select.set_selected(v_part_info[@id]["fs"])
+                if @active
+                    @fs_select = new DropDown("dd_fs_" + @id, __fs_keys, __fs_values, update_part_fs)
+                    @fs.appendChild(@fs_select.element)
+                    @fs_select.show_drop()
+                    @fs_select.set_selected(v_part_info[@id]["fs"])
+                else
+                    @fs_txt = create_element("div", "", @fs)
+                    @fs_txt.innerText = v_part_info[@id]["fs"]
 
     fill_mount: ->
         @mount.innerHTML = ""
@@ -430,10 +434,14 @@ class PartTableItem extends Widget
             return
         if v_part_info[@id]["type"] == "freespace"
             return
-        @mount_select = new DropDown("dd_mp_" + @id, __mp_keys, __mp_values, update_part_mp)
-        @mount.appendChild(@mount_select.element)
-        @mount_select.show_drop()
-        @mount_select.set_selected(v_part_info[@id]["mp"])
+        if @active
+            @mount_select = new DropDown("dd_mp_" + @id, __mp_keys, __mp_values, update_part_mp)
+            @mount.appendChild(@mount_select.element)
+            @mount_select.show_drop()
+            @mount_select.set_selected(v_part_info[@id]["mp"])
+        else
+            @mount_txt = create_element("div", "", @mount)
+            @mount_txt.innerText = v_part_info[@id]["mp"]
 
     set_btn_status: ->
         if __selected_mode != "advance"
@@ -465,7 +473,10 @@ class PartTableItem extends Widget
     passive_focus: ->
         __selected_item?.blur()
         __selected_item = @
+        @active = true
         @element.scrollIntoView()
+        @fill_fs()
+        @fill_mount()
         @set_btn_status()
         style = "background:rgba(246,178,82,0.5);"
         style += "font-style:bold;"
@@ -474,6 +485,9 @@ class PartTableItem extends Widget
         #@update_install_btn()
 
     blur: ->
+        @active = false
+        @fill_fs()
+        @fill_mount()
         @element.setAttribute("style", "")
 
     update_install_btn: ->
