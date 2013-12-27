@@ -37,7 +37,7 @@ _sort_layout = (layout_a, layout_b) ->
 get_matched_items = (key, list) ->
     matched = []
     for item in list
-        if item.indexOf(key) != -1
+        if item.toLowerCase().indexOf(key.toLowerCase()) != -1
             matched.push(item)
     return matched
 
@@ -196,11 +196,20 @@ class Keyboard extends Widget
 class Timezone extends Widget
     constructor: (@id) ->
         super
+        @search_list = DCore.Installer.get_timezone_list()
+
         @query = create_element("div", "Query", @element)
         @query_div = create_element("div", "Left", @query)
         @query_wrap = create_element("div", "QueryWrap", @query_div)
         @query_input = create_element("input", "", @query_wrap)
+        @query_input.addEventListener("keyup", (e) =>
+            if e.which == 13
+                @execute_query()
+        )
         @query_img = create_element("div", "QueryImg", @query_wrap)
+        @query_img.addEventListener("click", (e) =>
+            @execute_query()
+        )
 
         @query_txt = create_element("div", "Right", @query)
         @query_txt.innerText = _("Please select or search your location")
@@ -302,6 +311,13 @@ class Timezone extends Widget
     destroy_canvas: (area) ->
         ctx = @canvas.getContext("2d")
         ctx.clearRect(0,0,700,370)
+
+    execute_query: ->
+        key = @query_input.value
+        matched = get_matched_items(key, @search_list)
+        if matched.length == 1
+            echo "set timezone"
+            echo matched
 
 class WelcomeFormItem extends Widget
     constructor: (@id)->
