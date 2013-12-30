@@ -231,6 +231,15 @@
     background:rgba(255,255,255,0.2);
 }
 
+.LayoutItemFocus {
+    background:rgba(255,255,255,0.4);
+}
+
+.LayoutItemActive, .VariantItemActive {
+    background:rgba(255,255,255,0.4) url("../images/select.png") no-repeat; 
+    background-position:8px 8px;
+}
+
 .TimezoneWrap {
     width:700px;
     background:rgba(255,255,255,0.2);

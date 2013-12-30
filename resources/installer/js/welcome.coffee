@@ -65,11 +65,16 @@ class LayoutItem extends Widget
         __selected_layout_item = @
         __selected_layout = @layout
         @keyboard.fill_variants(@layout)
-        @element.style.background = "rgba(255,255,255,0.4)"
         @element.scrollIntoView()
+        @add_css_class("LayoutItemFocus", @element)
+
+    active: ->
+        @add_css_class("LayoutItemActive", @element)
+        @remove_css_class("LayoutItemFocus", @element) 
 
     blur: ->
-        @element.style.background = ""
+        @remove_css_class("LayoutItemActive", @element)
+        @remove_css_class("LayoutItemFocus", @element) 
 
     do_click: (e) ->
         if __selected_layout_item != @
@@ -81,14 +86,15 @@ class VariantItem extends Widget
         @element.innerText = DCore.Installer.get_layout_description(@variant)
 
     focus: ->
+        @add_css_class("VariantItemActive", @element)
         __selected_variant_item?.blur()
         __selected_variant_item = @
         __selected_layout = @variant
+        __selected_layout_item?.active()
         @keyboard.update_layout(@variant)
-        @element.style.background = "rgba(255,255,255,0.4)"
 
     blur: ->
-        @element.style.background = ""
+        @remove_css_class("VariantItemActive", @element)
 
     do_click: (e) ->
         if __selected_variant_item != @
