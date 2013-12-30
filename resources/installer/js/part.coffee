@@ -105,12 +105,11 @@ class AddPartDialog extends Dialog
         #        else if parseInt(@size_input.value) > @max_size_mb
         #            @size_input.value = @max_size_mb
         #)
+        @add_img = create_element("div", "SizeAdd", @size_wrap)
+        @add_img.innerText = "+"
 
         @minus_img = create_element("div", "SizeMinus", @size_wrap)
         @minus_img.innerText = "-"
-
-        @add_img = create_element("div", "SizeAdd", @size_wrap)
-        @add_img.innerText = "+"
 
         #@size_limit = create_element("span", "", @size_value)
         #@size_limit.innerText = "Limited size:" + @max_size_mb

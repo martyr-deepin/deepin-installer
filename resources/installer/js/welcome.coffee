@@ -199,31 +199,6 @@ class Keyboard extends Widget
         if matched_layouts.length > 0
             Widget.look_up("layoutitem_" + matched_layouts[0])?.focus()
 
-class Area
-    constructor: (@key, @timezone) ->
-        @area = create_element("area", "TimezoneArea", @timezone.imagemap)
-        @area.setAttribute("data-timezone", @key)
-        @area.setAttribute("data-country", __database[@key]["country"])
-        @area.setAttribute("data-pin", __database[@key]["pin"])
-        @area.setAttribute("data-offset", __database[@key]["offset"])
-        @area.setAttribute("href", "#")
-        if __database[@key]["polys"].length != 0
-            @area.setAttribute("shape", "poly")
-            @area.setAttribute("coords", __database[@key]["polys"])
-        else if __database[@key]["rects"].length != 0
-            @area.setAttribute("shape", "rect")
-            @area.setAttribute("coords", __database[@key]["rects"])
-
-    do_click: (e) ->
-        @timezone.show_pin(@area)
-        @timezone.update_timezone(@area.getAttribute("data-timezone"))
-
-    do_mouseover: (e) ->
-        @timezone.draw_timezone(@area)
-
-    do_mouseout: (e) ->
-        @timezone.destroy_canvas(@area)
-
 class Timezone extends Widget
     constructor: (@id) ->
         super
@@ -326,6 +301,18 @@ class Timezone extends Widget
                 areas.push(area)
         return areas
 
+    get_area: (timezone) ->
+        for area in @imagemap.children
+            if area.getAttribute("data-timezone") == timezone
+                return area
+
+    set_timezone: (timezone) ->
+        area = @get_area(timezone)
+        if area?
+            @draw_timezone(area)
+            @show_pin(area)
+            @update_timezone(timezone)
+
     draw_canvas: (area) ->
         ctx = @canvas.getContext("2d")
         poly = area.getAttribute("coords").split(",")
@@ -347,8 +334,7 @@ class Timezone extends Widget
         key = @query_input.value
         matched = get_matched_items(key, @search_list)
         if matched.length == 1
-            echo "set timezone"
-            echo matched
+            @set_timezone(matched[0])
 
 class WelcomeFormItem extends Widget
     constructor: (@id)->
