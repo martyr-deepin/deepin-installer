@@ -177,15 +177,17 @@ class DropDownList extends Widget
         __drop_board.style.display = "block"
         position = get_position(@dropdown.base)
         offsettop = @dropdown.listofftop
-        @element.style.left = position["x"] + "px"
-        @element.style.top = position["y"] + offsettop + "px"
-        @element.style.width = @dropdown.listwidth + "px"
-        @element.style.height = @dropdown.listheight + "px"
+
+        style = "left:" + position["x"] + "px;"
+        style += "top:" + (position["y"] + offsettop) + "px;"
+        style += "width:" + @dropdown.listwidth + "px;"
+        style += "height:" +  @dropdown.listheight + "px;"
         if @dropdown.keys.length * @dropdown.itemheight > @dropdown.listheight
-            @element.style.overflow = "scroll"
+            style += "overflow-y:scroll;overflow-x:hidden;"
         if @dropdown.listbackground?
-            @element.style.background = @dropdown.listbackground
-        @element.style.display = "block"
+            style += "background:" + @dropdown.listbackground
+        style += "display:block;"
+        @element.setAttribute("style", style)
 
     hide: ->
         @element.style.display = "none"
@@ -210,7 +212,7 @@ class DropDown extends Widget
         @dropwidth = 100
         @dropheight = 24
         @listwidth = 160
-        @listheigth = 364
+        @listheight = 364
         @listofftop = -100
         @itemheight = 30
         @itemleft = 10
@@ -274,7 +276,7 @@ class DropDown extends Widget
 
     set_list_size: (width, height) ->
         @listwidth = width
-        @listheigth = height
+        @listheight = height
 
     set_list_top: (offset) ->
         @listofftop = offset
