@@ -20,6 +20,7 @@
 __selected_layout = "cn"
 __selected_layout_item = null
 __selected_variant_item = null
+__focused_layout_item = null
 
 __selected_timezone = "Asia/Shanghai"
 __selected_username = null
@@ -61,46 +62,78 @@ class LayoutItem extends Widget
             @focus()
 
     focus: ->
-        __selected_layout_item?.blur()
-        __selected_layout_item = @
-        __selected_layout = @layout
+        __focused_layout_item?.blur()
+        __focused_layout_item = @
         @keyboard.fill_variants(@layout)
+        if __focused_layout_item == __selected_layout_item
+            @element.setAttribute("class", "LayoutItem KeyboardActive")
+        else
+            @element.setAttribute("class", "LayoutItem KeyboardFocus")
         @element.scrollIntoView()
-        @add_css_class("LayoutItemFocus", @element)
-
-    active: ->
-        @add_css_class("LayoutItemActive", @element)
-        @remove_css_class("LayoutItemFocus", @element) 
 
     blur: ->
-        @remove_css_class("LayoutItemActive", @element)
-        @remove_css_class("LayoutItemFocus", @element) 
+        if __focused_layout_item == __selected_layout_item
+            @element.setAttribute("class", "LayoutItem KeyboardSelect")
+        else
+            @element.setAttribute("class", "LayoutItem")
+
+    active: ->
+        __selected_layout_item?.unactive()
+        __selected_layout_item = @
+        @element.setAttribute("class", "LayoutItem KeyboardActive")
+
+    unactive: ->
+        @element.setAttribute("class", "LayoutItem")
 
     do_click: (e) ->
-        if __selected_layout_item != @
+        if __focused_layout_item != @
             @focus()
+
+    do_mouseover: (e) ->
+        if __focused_layout_item == @
+            return
+        if __selected_layout_item == @
+            @element.setAttribute("class", "LayoutItem KeyboardSelectHover")
+            return
+        @element.setAttribute("class", "LayoutItem KeyboardHover")
+
+    do_mouseout: (e) ->
+        if __focused_layout_item == @
+            return
+        if __selected_layout_item == @
+            @element.setAttribute("class", "LayoutItem KeyboardSelect")
+            return
+        @element.setAttribute("class", "LayoutItem")
 
 class VariantItem extends Widget
     constructor: (@id, @variant, @keyboard)->
         super
         @element.innerText = DCore.Installer.get_layout_description(@variant)
         if @variant == __selected_layout
-            __selected_variant_item = @
+            @focus()
 
     focus: ->
-        @add_css_class("VariantItemActive", @element)
+        @element.setAttribute("class", "VariantItem KeyboardActive")
         __selected_variant_item?.blur()
         __selected_variant_item = @
         __selected_layout = @variant
-        __selected_layout_item?.active()
+        __focused_layout_item?.active()
         @keyboard.update_layout(@variant)
 
     blur: ->
-        @remove_css_class("VariantItemActive", @element)
+        @element.setAttribute("class", "VariantItem")
 
     do_click: (e) ->
         if __selected_variant_item != @
             @focus()
+
+    do_mouseover: (e) ->
+        if __selected_variant_item != @
+            @element.setAttribute("class", "VariantItem KeyboardHover")
+
+    do_mouseout: (e) ->
+        if __selected_variant_item != @
+            @element.setAttribute("class", "VariantItem")
 
 class Keyboard extends Widget
     constructor: (@id)->
@@ -134,8 +167,7 @@ class Keyboard extends Widget
     show: ->
         @displayed = true
         @element.style.display = "block"
-        __selected_variant_item?.focus()
-        #__selected_layout_item?.focus()
+        __selected_layout_item?.focus()
         #$("#my_keyboard_set")?.setAttribute("class", "TitleSetActive")
 
     hide: ->

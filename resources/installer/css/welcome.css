@@ -219,7 +219,7 @@
     box-shadow:inset 1px 0 rgba(255,255,255,0.3);
 }
 
-.LayoutItem, .VariantItem {
+.LayoutItem, .VariantItem, .KeyboardItem {
     height:30px;
     line-height:30px;
     padding-left:30px;
@@ -227,15 +227,25 @@
     box-shadow:0 1px rgba(255,255,255,0.2);
 }
 
-.LayoutItemFocus {
+.KeyboardFocus {
     background:rgba(255,255,255,0.4);
 }
 
-.LayoutItemHover, .VariantItemHover {
-    background:rgba(255,255,255,0.2);
+.KeyboardHover {
+    background:rgba(255,255,0,0.2);
 }
 
-.LayoutItemActive, .VariantItemActive {
+.KeyboardSelect {
+    background:url("../images/select.png") no-repeat; 
+    background-position:8px 8px;
+}
+
+.KeyboardSelectHover {
+    background:rgba(255,255,0, 0.2) url("../images/select.png") no-repeat; 
+    background-position:8px 8px;
+}
+
+.KeyboardActive {
     background:rgba(255,255,255,0.4) url("../images/select.png") no-repeat; 
     background-position:8px 8px;
 }

@@ -170,7 +170,6 @@ class AddPartDialog extends Dialog
         @fs_value.appendChild(@fs_select.element)
         @fs_select.set_drop_size(140,22)
         @fs_select.show_drop()
-        @fs_select.set_list_size(160, 200)
         @fs_select.set_selected("ext4")
 
     fill_mount: ->
@@ -182,7 +181,6 @@ class AddPartDialog extends Dialog
         @mount_value.appendChild(@mount_select.element)
         @mount_select.set_drop_size(140,22)
         @mount_select.show_drop()
-        @mount_select.set_list_size(160, 200)
         @mount_select.set_selected("unused")
 
     fill_tips: ->
@@ -753,6 +751,7 @@ class Part extends Page
         @grub_dropdown.set_drop_size(560, 20)
         @grub_dropdown.show_drop()
         @grub_dropdown.set_list_size(560, 200)
+        @grub_dropdown.set_list_background("url(\"../images/dropdown.png\")")
 
     show_advance_mode: ->
         @linemap.element.setAttribute("style", "display:block")
