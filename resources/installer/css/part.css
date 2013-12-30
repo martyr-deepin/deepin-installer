@@ -330,6 +330,25 @@
     display:block;
     float:left;
     width:80px;
+    height:24px;
+}
+
+.AddPartDialog .AddValueItem>span {
+    float:left;
+}
+
+.AddPartDialog .RadioChecked {
+    width:24px;
+    height:24px;
+    background:url("../images/checkbox_checked.png") no-repeat;
+    background-position:0 4px;
+}
+
+.AddPartDialog .RadioUnchecked {
+    width:24px;
+    height:24px;
+    background:url("../images/checkbox_unchecked.png") no-repeat;
+    background-position:0 4px;
 }
 
 .AddPartDialog .SizeWrap {

@@ -58,29 +58,39 @@ class AddPartDialog extends Dialog
         @type_value = create_element("span", "AddValue", @type)
 
         @primary_span = create_element("span", "AddValueItem", @type_value)
-        @type_primary = create_element("input", "", @primary_span)
-        @type_primary.setAttribute("type", "radio")
-        @type_primary.setAttribute("name", "type")
+        @type_primary = create_element("span", "", @primary_span)
         @primary_desc = create_element("span", "", @primary_span)
         @primary_desc.innerText = _("Primary")
 
         @logical_span = create_element("span", "AddValueItem", @type_value)
-        @type_logical = create_element("input", "", @logical_span)
-        @type_logical.setAttribute("type", "radio")
-        @type_logical.setAttribute("name", "type")
+        @type_logical = create_element("span", "", @logical_span)
         @logical_desc = create_element("span", "", @logical_span)
         @logical_desc.innerText = _("Logical")
 
+        @type_radio = "primary"
         if not can_add_normal(@partid)
-            @type_primary.style.display = "none"
-            @primary_desc.style.display = "none"
-            @type_logical.setAttribute("checked", "true")
+            @primary_span.style.display = "none"
+            @type_radio = "logical"
+            @type_primary.setAttribute("class", "RadioUnChecked")
+            @type_logical.setAttribute("class", "RadioChecked")
         else
-            @type_primary.setAttribute("checked", "true")
+            @type_radio = "primary"
+            @type_primary.setAttribute("class", "RadioChecked")
+            @type_logical.setAttribute("class", "RadioUnchecked")
 
         if not can_add_logical(@partid)
-            @type_logical.style.display = "none"
-            @logical_desc.style.display = "none"
+            @logical_span.style.display = "none"
+
+        @type_primary.addEventListener("click", (e) =>
+            @type_radio = "primary"
+            @type_primary.setAttribute("class", "RadioChecked")
+            @type_logical.setAttribute("class", "RadioUnchecked")
+        )
+        @type_logical.addEventListener("click", (e) =>
+            @type_radio = "logical"
+            @type_primary.setAttribute("class", "RadioUnChecked")
+            @type_logical.setAttribute("class", "RadioChecked")
+        )
 
     fill_size: ->
         @size = create_element("div", "", @content)
@@ -121,19 +131,29 @@ class AddPartDialog extends Dialog
         @align_value = create_element("span", "AddValue", @align)
 
         @start_span = create_element("span", "AddValueItem", @align_value)
-        @align_start = create_element("input", "", @start_span)
-        @align_start.setAttribute("type", "radio")
-        @align_start.setAttribute("name", "align")
-        @align_start.setAttribute("checked", "true")
-        start_desc = create_element("span", "", @start_span)
-        start_desc.innerText = _("Begin")
+        @align_start = create_element("span", "", @start_span)
+        @start_desc = create_element("span", "", @start_span)
+        @start_desc.innerText = _("Begin")
 
         @end_span = create_element("span", "AddValueItem", @align_value)
-        @align_end = create_element("input", "", @end_span)
-        @align_end.setAttribute("type", "radio")
-        @align_end.setAttribute("name", "align")
-        end_desc = create_element("span", "", @end_span)
-        end_desc.innerText = _("End")
+        @align_end = create_element("span", "", @end_span)
+        @end_desc = create_element("span", "", @end_span)
+        @end_desc.innerText = _("End")
+
+        @align_radio = "start"
+        @align_start.setAttribute("class", "RadioChecked")
+        @align_end.setAttribute("class", "RadioUnchecked")
+
+        @align_start.addEventListener("click", (e) =>
+            @align_radio = "start"
+            @align_start.setAttribute("class", "RadioChecked")
+            @align_end.setAttribute("class", "RadioUnchecked")
+        )
+        @align_end.addEventListener("click", (e) =>
+            @align_radio = "end"
+            @align_start.setAttribute("class", "RadioUnChecked")
+            @align_end.setAttribute("class", "RadioChecked")
+        )
 
     fill_fs: ->
         @fs = create_element("div", "", @content)
@@ -163,20 +183,14 @@ class AddPartDialog extends Dialog
         @tips = create_element("div", "", @content)
 
     gather_info: ->
-        if @type_primary.checked
-            @n_type = "normal"
-        else if @type_logical.checked
-            @n_type = "logical"
+        @n_type = @type_radio
         if parseInt(@size_input.value) == @max_size_mb
             @n_size = v_part_info[@partid]["length"]
         else
             @n_size = mb_to_sector(parseInt(@size_input.value), 512)
         if not @n_size?
             @tips.innerText = _("Please enter invalid partition size")
-        if @align_start.getAttribute("checked")
-            @n_align = "start"
-        else
-            @n_align = "end"
+        @n_align = @align_radio
         @n_fs = @fs_select.get_selected()
         @n_mp = @mount_select.get_selected()
 
