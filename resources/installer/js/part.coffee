@@ -97,32 +97,40 @@ class AddPartDialog extends Dialog
         @size_desc = create_element("span", "AddDesc", @size)
         @size_desc.innerText = _("Size:")
         @max_size_mb = sector_to_mb(v_part_info[@partid]["length"], 512)
-        @size_value = create_element("span", "AddValue", @size)
 
+        @size_value = create_element("span", "AddValue", @size)
         @size_wrap = create_element("div", "SizeWrap", @size_value)
         @size_input = create_element("input", "", @size_wrap)
-        #@size_input.setAttribute("type", "number")
-        #@size_input.setAttribute("min", 1)
-        #@size_input.setAttribute("max", @max_size_mb)
-        #@size_input.setAttribute("step", 1)
-        #@size_input.setAttribute("value", @max_size_mb)
-        #@size_input.addEventListener("blur", (e) =>
-        #    if isNaN(parseInt(@size_input.value))
-        #        @size_input.value = @max_size_mb
-        #    else
-        #        if parseInt(@size_input.value) < 0
-        #            @size_input.value = 0
-        #        else if parseInt(@size_input.value) > @max_size_mb
-        #            @size_input.value = @max_size_mb
-        #)
-        @add_img = create_element("div", "SizeAdd", @size_wrap)
-        @add_img.innerText = "+"
-
+        @size_input.setAttribute("placeholder", @max_size_mb)
+        @size_input.addEventListener("blur", (e) =>
+            if isNaN(parseInt(@size_input.value))
+                @size_input.value = @max_size_mb
+            else
+                if parseInt(@size_input.value) < 0
+                    @size_input.value = 0
+                else if parseInt(@size_input.value) > @max_size_mb
+                    @size_input.value = @max_size_mb
+        )
         @minus_img = create_element("div", "SizeMinus", @size_wrap)
         @minus_img.innerText = "-"
-
-        #@size_limit = create_element("span", "", @size_value)
-        #@size_limit.innerText = "Limited size:" + @max_size_mb
+        @minus_img.addEventListener("click", (e) =>
+            if isNaN(parseInt(@size_input.value))
+                @size_input.value = @max_size_mb
+            else
+                if parseInt(@size_input.value) > 1
+                    @size_input.value = parseInt(@size_input.value) - 1
+        )
+        @add_img = create_element("div", "SizeAdd", @size_wrap)
+        @add_img.innerText = "+"
+        @add_img.addEventListener("click", (e) =>
+            if isNaN(parseInt(@size_input.value))
+                @size_input.value = @max_size_mb
+            else
+                if parseInt(@size_input.value) < @max_size_mb - 1
+                    @size_input.value = parseInt(@size_input.value) + 1
+        )
+        @dw = create_element("div", "SizeDw", @size_wrap)
+        @dw.innerText = "MB"
         
     fill_align: ->
         @align = create_element("div", "", @content)

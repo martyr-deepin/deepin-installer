@@ -84,6 +84,8 @@ class VariantItem extends Widget
     constructor: (@id, @variant, @keyboard)->
         super
         @element.innerText = DCore.Installer.get_layout_description(@variant)
+        if @variant == __selected_layout
+            __selected_variant_item = @
 
     focus: ->
         @add_css_class("VariantItemActive", @element)
@@ -132,7 +134,8 @@ class Keyboard extends Widget
     show: ->
         @displayed = true
         @element.style.display = "block"
-        __selected_layout_item?.focus()
+        __selected_variant_item?.focus()
+        #__selected_layout_item?.focus()
         #$("#my_keyboard_set")?.setAttribute("class", "TitleSetActive")
 
     hide: ->
