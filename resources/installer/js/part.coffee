@@ -411,11 +411,11 @@ class PartTableItem extends Widget
     fill_fs: ->
         @fs.innerHTML = ""
         if __selected_mode == "simple" 
-            if m_part_info[@id]["type"] != "freespace"
+            if m_part_info[@id]? and m_part_info[@id]["type"] != "freespace"
                 @fs_txt = create_element("div", "", @fs)
                 @fs_txt.innerText = m_part_info[@id]["fs"]
         else if __selected_mode == "advance"
-            if v_part_info[@id]["type"] != "freespace"
+            if v_part_info[@id]? and v_part_info[@id]["type"] != "freespace"
                 if @active
                     @fs_select = new DropDown("dd_fs_" + @id, __fs_keys, __fs_values, update_part_fs)
                     @fs.appendChild(@fs_select.element)
@@ -574,15 +574,16 @@ class PartTable extends Widget
                     @items.appendChild(item.element)
         else
             for part in m_disk_info[disk]["partitions"]
-                if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
-                    if m_part_info[part]["type"] == "freespace"
-                        echo "create freespace item"
+                if m_part_info[part]["type"] in ["normal", "logical"] and m_part_info[part]["op"] != "add"
                     item = new PartTableItem(part)
                     @items.appendChild(item.element)
             
     update_mode: (mode) ->
         if __selected_item?
             id = __selected_item.id
+            __selected_item = null
+        else 
+            id = null
         if mode == "advance"
             @mount_header.innerText = _("Mount point")
             @items.setAttribute("style", "height:180px")
