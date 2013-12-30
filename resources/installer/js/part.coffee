@@ -112,21 +112,19 @@ class AddPartDialog extends Dialog
                     @size_input.value = @max_size_mb
         )
         @minus_img = create_element("div", "SizeMinus", @size_wrap)
-        @minus_img.innerText = "-"
         @minus_img.addEventListener("click", (e) =>
             if isNaN(parseInt(@size_input.value))
                 @size_input.value = @max_size_mb
             else
-                if parseInt(@size_input.value) > 1
+                if parseInt(@size_input.value) >= 1
                     @size_input.value = parseInt(@size_input.value) - 1
         )
         @add_img = create_element("div", "SizeAdd", @size_wrap)
-        @add_img.innerText = "+"
         @add_img.addEventListener("click", (e) =>
             if isNaN(parseInt(@size_input.value))
                 @size_input.value = @max_size_mb
             else
-                if parseInt(@size_input.value) < @max_size_mb - 1
+                if parseInt(@size_input.value) <= @max_size_mb - 1
                     @size_input.value = parseInt(@size_input.value) + 1
         )
         @dw = create_element("div", "SizeDw", @size_wrap)

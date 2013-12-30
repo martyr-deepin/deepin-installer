@@ -227,12 +227,12 @@
     box-shadow:0 1px rgba(255,255,255,0.2);
 }
 
-.LayoutItem:hover, .VariantItem:hover {
-    background:rgba(255,255,255,0.2);
-}
-
 .LayoutItemFocus {
     background:rgba(255,255,255,0.4);
+}
+
+.LayoutItemHover, .VariantItemHover {
+    background:rgba(255,255,255,0.2);
 }
 
 .LayoutItemActive, .VariantItemActive {
