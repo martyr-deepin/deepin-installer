@@ -138,9 +138,13 @@ class DropDownItem extends Widget
         super
         @element.innerText = @value
         @selected = false
-        style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
-        style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
-        @element.setAttribute("style", style)
+        #style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
+        #style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
+        #@element.setAttribute("style", style)
+        if @key in get_selected_mp()
+            @disable()
+        else
+            @enable()
 
     do_click: (e) ->
         if @key != @dropdownlist.dropdown.selected 
@@ -150,10 +154,17 @@ class DropDownItem extends Widget
         @dropdownlist.hide()
 
     enable: ->
-        echo "enable item"
+        style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
+        style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
+        style += "pointer-events:auto;"
+        @element.setAttribute("style", style)
 
     disable: ->
-        echo "disable item"
+        style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
+        style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
+        style += "color:rgba(0,0,0,0.1);"
+        style += "pointer-events:none;"
+        @element.setAttribute("style", style)
 
 class DropDownList extends Widget
     constructor: (@id, @dropdown) ->
