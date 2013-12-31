@@ -102,31 +102,37 @@ class AddPartDialog extends Dialog
         @size_value = create_element("span", "AddValue", @size)
         @size_wrap = create_element("div", "SizeWrap", @size_value)
         @size_input = create_element("input", "", @size_wrap)
-        @size_input.setAttribute("placeholder", @max_size_mb)
+        #@size_input.setAttribute("placeholder", @max_size_mb)
+        @size_input.setAttribute("value", @max_size_mb)
         @size_input.addEventListener("blur", (e) =>
-            if isNaN(parseInt(@size_input.value))
-                @size_input.value = @max_size_mb
+            parse = parseInt(@size_input.value)
+            if isNaN(parse)
+                @size_input.value = @max_size_mb 
             else
-                if parseInt(@size_input.value) < 0
-                    @size_input.value = 0
-                else if parseInt(@size_input.value) > @max_size_mb
-                    @size_input.value = @max_size_mb
+                if parse < 0
+                    @size_input.value = 0 
+                else if parse > @max_size_mb
+                    @size_input.value = @max_size_mb 
+                else
+                    @size_input.value = parse 
         )
         @minus_img = create_element("div", "SizeMinus", @size_wrap)
         @minus_img.addEventListener("click", (e) =>
-            if isNaN(parseInt(@size_input.value))
-                @size_input.value = @max_size_mb
+            parse = parseInt(@size_input.value)
+            if isNaN(parse)
+                @size_input.value = @max_size_mb 
             else
-                if parseInt(@size_input.value) >= 1
-                    @size_input.value = parseInt(@size_input.value) - 1
+                if parse >= 1
+                    @size_input.value = parse - 1 
         )
         @add_img = create_element("div", "SizeAdd", @size_wrap)
         @add_img.addEventListener("click", (e) =>
-            if isNaN(parseInt(@size_input.value))
-                @size_input.value = @max_size_mb
+            parse = parseInt(@size_input.value)
+            if isNaN(parse)
+                @size_input.value = @max_size_mb 
             else
-                if parseInt(@size_input.value) <= @max_size_mb - 1
-                    @size_input.value = parseInt(@size_input.value) + 1
+                if parse <= @max_size_mb - 1 
+                    @size_input.value = parse + 1 
         )
         @dw = create_element("div", "SizeDw", @size_wrap)
         @dw.innerText = "MB"
@@ -447,7 +453,7 @@ class PartTableItem extends Widget
         @mount.innerHTML = ""
         if __selected_mode != "advance" 
             return
-        if v_part_info[@id]["type"] == "freespace"
+        if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
         if @active
             @mount_select = new DropDown("dd_mp_" + @id, __mp_keys, __mp_values, update_part_mp)
