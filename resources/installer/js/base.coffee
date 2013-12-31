@@ -176,13 +176,44 @@ class DropDownList extends Widget
         __current_dropdown = @
         __drop_board.style.display = "block"
         position = get_position(@dropdown.base)
-        offsettop = @dropdown.listofftop
 
-        style = "left:" + position["x"] + "px;"
-        style += "top:" + (position["y"] + offsettop) + "px;"
-        style += "width:" + @dropdown.listwidth + "px;"
-        style += "height:" +  @dropdown.listheight + "px;"
-        if @dropdown.keys.length * @dropdown.itemheight > @dropdown.listheight
+        left = position["x"] 
+        totalheight = @dropdown.keys.length * @dropdown.itemheight + 4
+        pageheight = document.body.clientHeight
+        scroll_flag = false
+
+        if totalheight > pageheight
+            @dropdown.scrollable = true
+            if not @dropdown.maxheight?
+                @dropdown.maxheight = pageheight
+
+        width = @dropdown.dropwidth
+
+        if @dropdown.scrollable
+            if totalheight > @dropdown.maxheight
+                height = @dropdown.maxheight
+                scroll_flag = true
+            else
+                height = totalheight
+                scroll_flag = false
+        else
+            height = @dropdown.maxheight
+
+        if position["y"] < pageheight / 4
+            top = position["y"]
+        else if position["y"] < 3 * pageheight / 4
+            if position["y"] < height 
+                top = position["y"] - 1 * height / 3
+            else
+                top = position["y"] - 2 * height / 3
+        else
+            top = position["y"]  - height
+
+        style = "left:" + left + "px;"
+        style += "top:" + top + "px;"
+        style += "width:" + width + "px;"
+        style += "height:" + height + "px;"
+        if scroll_flag
             style += "overflow-y:scroll;overflow-x:hidden;"
         if @dropdown.listbackground?
             style += "background:" + @dropdown.listbackground
@@ -211,11 +242,10 @@ class DropDown extends Widget
     init_dropdown_data: ->
         @dropwidth = 100
         @dropheight = 24
-        @listwidth = 120
-        @listheight = 364
-        @listofftop = -100
         @itemheight = 30
         @itemleft = 10
+        @scrollable = false
+        @maxheight = 200
 
         @items = {}
         if @keys.length != @values.length
@@ -274,12 +304,9 @@ class DropDown extends Widget
     get_selected: ->
         return @selected
 
-    set_list_size: (width, height) ->
-        @listwidth = width
-        @listheight = height
-
-    set_list_top: (offset) ->
-        @listofftop = offset
+    set_list_scroll_height: (scrollable, maxheight) ->
+        @scrollable = scrollable
+        @maxheight = maxheight
 
     set_list_background: (background) ->
         @listbackground = background

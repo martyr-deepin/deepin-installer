@@ -180,7 +180,6 @@ class AddPartDialog extends Dialog
         @mount_select = new DropDown("dd_mp_" + @partid, __mp_keys, __mp_values, null)
         @mount_value.appendChild(@mount_select.element)
         @mount_select.set_drop_size(130,22)
-        @mount_select.set_list_size(274, 120)
         @mount_select.show_drop()
         @mount_select.set_selected("unused")
 
@@ -498,7 +497,7 @@ class PartTableItem extends Widget
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
-        @element.scrollIntoView()
+        #@element.scrollIntoView()
         #@update_install_btn()
 
     blur: ->
@@ -753,7 +752,6 @@ class Part extends Page
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_size(560, 20)
         @grub_dropdown.show_drop()
-        @grub_dropdown.set_list_size(560, 200)
         @grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
 
     show_advance_mode: ->
