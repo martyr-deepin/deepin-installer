@@ -381,8 +381,6 @@ class WelcomeFormItem extends Widget
         )
         @input.addEventListener("blur", (e) =>
             @check_valid()
-        )
-        @input.addEventListener("change", (e) =>
             @fill_item_data()
             Widget.look_up("welcome")?.check_start_ready()
         )
@@ -391,6 +389,9 @@ class WelcomeFormItem extends Widget
         if @id == "username"
             username_holder = _("Linuxdeepin") 
             @input.setAttribute("placeholder", username_holder)
+            @input.addEventListener("input", (e) =>
+                Widget.look_up("welcome")?.hostname.input.value = @input.value + "-pc"
+            )
         else if @id == "hostname"
             hostname_holder = _("Computer name")
             @input.setAttribute("placeholder", hostname_holder)
@@ -412,9 +413,7 @@ class WelcomeFormItem extends Widget
             __selected_password = @input.value
 
     check_valid: ->
-        if @is_valid()
-            echo "valid"
-        else
+        if not @is_valid()
             @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;")
 
     is_valid: ->
