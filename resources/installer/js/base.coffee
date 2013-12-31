@@ -44,6 +44,13 @@ _color_list = ["#89AFD0","#6D91BC","#E8948A","#DE5F4E","#C2A02D",
                "#B59479","#91C9ED","#F06693","#DE4EA3","#3EB0A4",
                "#A25EE1","#9DD089","#D05793","#D5426C"]
 
+__fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
+__fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
+__filter_fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
+__filter_fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
+__mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
+__mp_values = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
+
 __current_page = null
 pc = null
 welcome_page = null
@@ -136,35 +143,28 @@ class DropDownItem extends Widget
         super
         @element.innerText = @value
         @selected = false
-        #style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
-        #style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
-        #@element.setAttribute("style", style)
-        if @key in get_selected_mp()
-            @disable()
-        else
-            @enable()
+        style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
+        style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
+        @element.setAttribute("style", style)
 
     do_click: (e) ->
+        if @id.indexOf("di_mp") != -1 
+            if @key in get_selected_mp()
+                part = get_mp_partition(@key)
+                if part?
+                    v_part_info[part]["mp"] = "unused"
+                    Widget.look_up(part)?.fill_mount()
+                else
+                    echo "error in get mp partition"
+
+            if @key != "unused"
+                Widget.look_up("dd_fs_"+@id[6..17])?.set_drop_items(__filter_fs_keys, __filter_fs_values)
+
         if @key != @dropdownlist.dropdown.selected 
             if @dropdownlist.dropdown.on_change_cb?
                 @dropdownlist.dropdown.on_change_cb(@dropdownlist.dropdown.id[6..18],@key)
         @dropdownlist.dropdown.set_selected(@key)
         @dropdownlist.hide()
-
-    enable: ->
-        style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
-        style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
-        style += "pointer-events:auto;"
-        @element.setAttribute("style", style)
-
-    disable: ->
-        style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
-        style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
-        style += "pointer-events:none;"
-        style += "color:rgba(255,255,255,0.6);"
-        style += "text-shadow:0 1px rgba(0,0,0,0.1);"
-        @element.setAttribute("style", style)
-        @element.innerText = @value + "(Unavailable)"
 
 class DropDownList extends Widget
     constructor: (@id, @dropdown) ->
@@ -233,7 +233,7 @@ class DropDownList extends Widget
         __drop_board.style.display = "none"
 
 class DropDown extends Widget
-    constructor: (@id, @keys, @values, @on_change_cb) ->
+    constructor: (@id, @on_change_cb) ->
         super
         @init_dropdown_data()
         @dropdown_list = null
@@ -255,6 +255,11 @@ class DropDown extends Widget
         @scrollable = false
         @maxheight = 200
 
+    set_drop_items: (keys, values) ->
+        @keys = []
+        @values = []
+        @keys = keys
+        @values = values
         @items = {}
         if @keys.length != @values.length
             echo "invalid dropdown items"
@@ -304,8 +309,6 @@ class DropDown extends Widget
         @dropdown_list.show()
 
     set_selected: (key) ->
-        if not @dropdown_list?
-            @dropdown_list = new DropDownList("dl_" + @id[3..], @)
         @selected = key
         @current.innerText = @items[key]
 

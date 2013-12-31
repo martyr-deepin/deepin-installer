@@ -724,6 +724,13 @@ get_selected_mp = ->
                 mp_list.push(v_part_info[part]["mp"])
     return mp_list
 
+get_mp_partition = (mp) ->
+    for disk in disks
+        for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["mp"]? and v_part_info[part]["mp"] == mp
+                return part
+    return null
+
 #delete normal partition, merge slibing freespace
 _delete_normal = (disk, part) ->
     echo "delete normal"

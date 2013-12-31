@@ -26,11 +26,6 @@ __selected_line = null
 __selected_mode = "simple"
 __selected_stage = null
 
-__fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
-__fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
-__mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
-__mp_values = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
-
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, true, @add_part_cb)
@@ -173,8 +168,9 @@ class AddPartDialog extends Dialog
         @fs_desc = create_element("span", "AddDesc", @fs)
         @fs_desc.innerText = _("Format:")
         @fs_value = create_element("span", "AddValue", @fs)
-        @fs_select = new DropDown("dd_fs_" + @partid, __fs_keys, __fs_values, null)
+        @fs_select = new DropDown("dd_fs_" + @partid, null)
         @fs_value.appendChild(@fs_select.element)
+        @fs_select.set_drop_items(__fs_keys, __fs_values)
         @fs_select.set_drop_size(130,22)
         @fs_select.show_drop()
         @fs_select.set_selected("ext4")
@@ -184,8 +180,9 @@ class AddPartDialog extends Dialog
         @mp_desc = create_element("span", "AddDec", @mp)
         @mp_desc.innerText = _("Mount:")
         @mount_value = create_element("span", "AddValue", @mp)
-        @mount_select = new DropDown("dd_mp_" + @partid, __mp_keys, __mp_values, null)
+        @mount_select = new DropDown("dd_mp_" + @partid, null)
         @mount_value.appendChild(@mount_select.element)
+        @mount_select.set_drop_items(__mp_keys, __mp_values)
         @mount_select.set_drop_size(130,22)
         @mount_select.show_drop()
         @mount_select.set_selected("unused")
@@ -440,8 +437,12 @@ class PartTableItem extends Widget
         else if __selected_mode == "advance"
             if v_part_info[@id]? and v_part_info[@id]["type"] != "freespace"
                 if @active
-                    @fs_select = new DropDown("dd_fs_" + @id, __fs_keys, __fs_values, update_part_fs)
+                    @fs_select = new DropDown("dd_fs_" + @id, update_part_fs)
                     @fs.appendChild(@fs_select.element)
+                    if v_part_info[@id]["mp"]? and v_part_info[@id]["mp"] != "unused"
+                        @fs_select.set_drop_items(__filter_fs_keys, __filter_fs_values)
+                    else
+                        @fs_select.set_drop_items(__fs_keys, __fs_values)
                     @fs_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
                     @fs_select.show_drop()
                     @fs_select.set_selected(v_part_info[@id]["fs"])
@@ -455,12 +456,14 @@ class PartTableItem extends Widget
             return
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
-        if @active
-            @mount_select = new DropDown("dd_mp_" + @id, __mp_keys, __mp_values, update_part_mp)
-            @mount.appendChild(@mount_select.element)
-            @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
-            @mount_select.show_drop()
-            @mount_select.set_selected(v_part_info[@id]["mp"])
+        if @active and v_part_info[@id]["fs"] not in ["fat16", "fat32", "ntfs", "swap"]
+                @mount_select = new DropDown("dd_mp_" + @id, update_part_mp)
+                @mount.appendChild(@mount_select.element)
+                @mount_select.set_drop_items(__mp_keys, __mp_values)
+                @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
+                @mount_select.show_drop()
+                @mount_select.set_selected(v_part_info[@id]["mp"])
+                return
         else
             @mount_txt = create_element("div", "", @mount)
             @mount_txt.innerText = v_part_info[@id]["mp"]
@@ -787,8 +790,9 @@ class Part extends Page
         if @grub_dropdown?
             @grub_dropdown?.destroy()
             @grub_dropdown = null
-        @grub_dropdown = new DropDown("dd_grub", keys, values, null)
+        @grub_dropdown = new DropDown("dd_grub", null)
         @grub_select.appendChild(@grub_dropdown.element)
+        @grub_dropdown.set_drop_items(keys, values)
         @grub_dropdown.set_drop_size(560, 20)
         @grub_dropdown.show_drop()
         @grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
