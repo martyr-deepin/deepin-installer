@@ -168,7 +168,7 @@ class AddPartDialog extends Dialog
         @fs_value = create_element("span", "AddValue", @fs)
         @fs_select = new DropDown("dd_fs_" + @partid, __fs_keys, __fs_values, null)
         @fs_value.appendChild(@fs_select.element)
-        @fs_select.set_drop_size(140,22)
+        @fs_select.set_drop_size(130,22)
         @fs_select.show_drop()
         @fs_select.set_selected("ext4")
 
@@ -179,7 +179,8 @@ class AddPartDialog extends Dialog
         @mount_value = create_element("span", "AddValue", @mp)
         @mount_select = new DropDown("dd_mp_" + @partid, __mp_keys, __mp_values, null)
         @mount_value.appendChild(@mount_select.element)
-        @mount_select.set_drop_size(140,22)
+        @mount_select.set_drop_size(130,22)
+        @mount_select.set_list_size(274, 120)
         @mount_select.show_drop()
         @mount_select.set_selected("unused")
 

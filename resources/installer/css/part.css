@@ -224,10 +224,14 @@
 
 .PartTableItem .Fs .DropDown {
     margin:8px 0;
+    color:rgba(0,0,0,0.8);
+    text-shadow:0 1px rgba(0,0,0,0.2);
 }
 
 .PartTableItem .Mount .DropDown {
     margin:8px 50px;
+    color:rgba(0,0,0,0.8);
+    text-shadow:0 1px rgba(0,0,0,0.2);
 }
 
 .PartOp {
@@ -352,6 +356,7 @@
 }
 
 .AddPartDialog .SizeWrap {
+    position:relative;
     width:140px;
     height:22px;
     float:left;
@@ -372,6 +377,7 @@
     color:#FFFFFF;
     text-shadow:0 1px rgba(0,0,0,0.5);
     background:transparent;
+    padding-left:10px;
 }
 
 .AddPartDialog .SizeMinus {

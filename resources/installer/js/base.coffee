@@ -211,7 +211,7 @@ class DropDown extends Widget
     init_dropdown_data: ->
         @dropwidth = 100
         @dropheight = 24
-        @listwidth = 160
+        @listwidth = 120
         @listheight = 364
         @listofftop = -100
         @itemheight = 30

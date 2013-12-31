@@ -145,11 +145,6 @@ input {
     min-height:20px;
 }
 
-.DialogContent div {
-    position:relative;
-    clear:both;
-}
-
 .DialogBtn {
     width:400px;
     height:85px;
