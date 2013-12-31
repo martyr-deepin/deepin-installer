@@ -214,7 +214,7 @@
 }
 
 .PartTableItem .Os {
-    width:75px;
+    width:70px;
     height:24px;
     line-height:24px;
     margin:8px 0;
@@ -227,7 +227,7 @@
     width:12px;
     height:12px;
     line-height:12px;
-    margin:14px 7px;
+    margin:14px 14px 14px 0;
     border:1px solid rgba(0,0,0,0.6);
     border-radius:3px;
     box-shadow:inset 0 1px rgba(255,255,255,0.4),
@@ -237,7 +237,7 @@
 }
 
 .PartTableItem .LabelPath {
-    width:95px;
+    width:100px;
     height:40px;
     float:left;
     text-align:left;
@@ -246,7 +246,7 @@
 }
 
 .PartTableItem .Label, .PartTableItem .Path {
-    width:95px;
+    width:100px;
     height:20px;
     line-height:20px;
     max-height:40px;
