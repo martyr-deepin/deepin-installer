@@ -178,7 +178,7 @@ class DropDownList extends Widget
         position = get_position(@dropdown.base)
 
         left = position["x"] 
-        totalheight = @dropdown.keys.length * @dropdown.itemheight + 4
+        totalheight = @dropdown.keys.length * @dropdown.itemheight 
         pageheight = document.body.clientHeight
         scroll_flag = false
 
@@ -187,7 +187,7 @@ class DropDownList extends Widget
             if not @dropdown.maxheight?
                 @dropdown.maxheight = pageheight
 
-        width = @dropdown.dropwidth
+        width = @dropdown.dropwidth + 20
 
         if @dropdown.scrollable
             if totalheight > @dropdown.maxheight
@@ -197,17 +197,14 @@ class DropDownList extends Widget
                 height = totalheight
                 scroll_flag = false
         else
-            height = @dropdown.maxheight
+            height = totalheight
 
-        if position["y"] < pageheight / 4
-            top = position["y"]
-        else if position["y"] < 3 * pageheight / 4
-            if position["y"] < height 
-                top = position["y"] - 1 * height / 3
-            else
-                top = position["y"] - 2 * height / 3
+        if position["y"] < height / 2
+            top =  position["y"] - height / 3
+        else if position["y"] + height / 2 > pageheight
+            top = position["y"] - height
         else
-            top = position["y"]  - height
+            top = position["y"] -  height / 2 
 
         style = "left:" + left + "px;"
         style += "top:" + top + "px;"

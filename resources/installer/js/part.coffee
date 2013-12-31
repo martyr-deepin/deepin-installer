@@ -753,6 +753,7 @@ class Part extends Page
         @grub_dropdown.set_drop_size(560, 20)
         @grub_dropdown.show_drop()
         @grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
+        @grub_dropdown.set_list_scroll_height(true, 200)
 
     show_advance_mode: ->
         @linemap.element.setAttribute("style", "display:block")
