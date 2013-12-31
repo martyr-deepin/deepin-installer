@@ -635,12 +635,10 @@ class Help extends Widget
         @hide()
 
     show: ->
-        echo "show help"
         @displayed = true
         @element.style.display = "block"
 
     hide: ->
-        echo "hide help"
         @displayed = false
         @element.style.display = "none"
 

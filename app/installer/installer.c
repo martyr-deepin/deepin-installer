@@ -94,81 +94,9 @@ move_window_center ()
     gtk_window_move (GTK_WINDOW (installer_container), x, y);
 }
 
-static void
-adapt_location_for_help ()
-{
-    GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (installer_container));
-    gint s_width = gdk_screen_get_width (screen);
-    gint s_height = gdk_screen_get_height (screen);
-    gint x = s_width > 1250 ? ((s_width - (750  + 500)) / 2) : 0;
-    gint y = s_height > 540 ? ((s_height - 540) / 2) : 0;
-
-    gtk_window_move (GTK_WINDOW (installer_container), x, y);
-}
-
-JS_EXPORT_API 
-void installer_show_help ()
-{
-    GError *error = NULL;
-
-    gchar *help_cmd = g_find_program_in_path ("installerhelp");
-    if (help_cmd == NULL) {
-        g_warning ("installerhelp not found\n");
-        return ;
-    }
-
-    g_spawn_command_line_async (help_cmd, &error);
-    if (error != NULL) {
-        g_warning ("run installerhelp:%s\n", error->message);
-        g_error_free (error);
-    }
-    g_free (help_cmd);
-
-    adapt_location_for_help ();
-}
-
-JS_EXPORT_API 
-void installer_hide_help ()
-{
-    GError *error = NULL;
-
-    gchar *cmd = g_strdup ("pkill -9 installerhelp");
-    g_spawn_command_line_async (cmd, &error);
-    if (error != NULL) {
-        g_warning ("hide installer help:%s\n", error->message);
-        g_error_free (error);
-    }
-    g_free (cmd);
-}
-
-JS_EXPORT_API 
-gboolean installer_is_help_running ()
-{
-    gboolean running = FALSE;
-    GError *error = NULL;
-    gchar *output = NULL;
-
-    gchar *cmd = g_strdup ("sh -c \"ps aux |grep installerhelp\"");
-    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error); 
-    g_free (cmd);
-    if (error != NULL) {
-        g_warning ("is help running:%s\n", error->message);
-        g_error_free (error);
-    }
-    gchar **items = g_strsplit (output, "\n", -1);
-    if (g_strv_length (items) > 3) {
-        running = TRUE;
-    }
-    g_strfreev (items);
-    g_free (output);
-
-    return running;
-}
-
 JS_EXPORT_API
 void installer_finish_install ()
 {
-    installer_hide_help ();
     finish_install_cleanup ();
     gtk_main_quit ();
 }
@@ -176,7 +104,6 @@ void installer_finish_install ()
 JS_EXPORT_API
 void installer_finish_reboot ()
 {
-    installer_hide_help ();
     finish_install_cleanup ();
     //installer_reboot ();
     g_spawn_command_line_async ("reboot", NULL);
