@@ -36,24 +36,22 @@ DCore.signal_connect("os_prober", (msg) ->
 
 DCore.Installer.emit_webview_ok()
 
-__current_page = null
-__in_model = false
-
 _ppt_list = ["images/deepin.jpg", "images/deepin1.jpg", "images/deepin2.jpg", 
              "images/deepin3.jpg", "images/deepin4.jpg"]
-
 _color_list = ["#89AFD0","#6D91BC","#E8948A","#DE5F4E","#C2A02D",
                "#94A92C","#876763","#6AA9B4","#B0823E","#8C3F4D",
                "#84CfD3","#6E56A1","#9C76A1","#BF92D9","#DFBEEB",
                "#B59479","#91C9ED","#F06693","#DE4EA3","#3EB0A4",
                "#A25EE1","#9DD089","#D05793","#D5426C"]
 
+__current_page = null
 pc = null
 welcome_page = null
 part_page = null
 progress_page = null
 finish_page = null
 
+__in_model = false
 __board = create_element("div", "Board", "")
 __board.setAttribute("id", "board")
 document.body.appendChild(__board)
@@ -117,21 +115,21 @@ class Dialog extends Widget
         @destroy()
         __board.setAttribute("style", "display:none")
 
-        #do_dragstart: (event) ->
-        #    echo "do dragstart in dialog"
-        #    event.dataTransfer.setData("Text", event.target.id)
+    #do_dragstart: (event) ->
+    #    echo "do dragstart in dialog"
+    #    event.dataTransfer.setData("Text", event.target.id)
 
-        #do_drop: (event) ->
-        #    echo "do drop in dialog"
-        #    event.preventDefault()
-        #    data = event.dataTransfer.getData("Text")
-        #    style = "top:"+ event.y + "px;" + "left:" + event.x + "px"
-        #    event.target.setAttribute("style", style)
+    #do_drop: (event) ->
+    #    echo "do drop in dialog"
+    #    event.preventDefault()
+    #    data = event.dataTransfer.getData("Text")
+    #    style = "top:"+ event.y + "px;" + "left:" + event.x + "px"
+    #    event.target.setAttribute("style", style)
 
-        #do_dragover: (event) ->
-        #    echo "do dragover in dialog"
-        #    event.preventDefault()
-        #
+    #do_dragover: (event) ->
+    #    echo "do dragover in dialog"
+    #    event.preventDefault()
+    #
 
 class DropDownItem extends Widget
     constructor: (@id, @key, @value, @dropdownlist) ->

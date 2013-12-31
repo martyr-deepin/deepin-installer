@@ -98,9 +98,8 @@ input {
     position:absolute;
     left:175px;
     right:175px;
-    top:100px;
     width:400px;
-    min-height:140px;
+    top:170px;
     background:#FFF url("../images/dialog.png");
     z-index:200;
     border:1px solid rgba(0,0,0,0.2);
@@ -148,7 +147,8 @@ input {
 
 .DialogContent {
     text-align:center;
-    min-height:20px;
+    min-height:30px;
+    line-height:30px;
 }
 
 .DialogBtn {

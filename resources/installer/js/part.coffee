@@ -35,6 +35,7 @@ class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, true, @add_part_cb)
         @add_css_class("DialogCommon")
+        @element.style.top = "85px"
         @title_txt.innerText = _("Add partition")
         @fill_type()
         @fill_size()
@@ -203,7 +204,7 @@ class DeletePartDialog extends Dialog
         super(@id, true, @delete_part_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Delete partition")
-        @delete_tips = create_element("p", "", @content)
+        @delete_tips = create_element("div", "", @content)
         @delete_tips.innerText = _("Confirm to delete?")
 
     delete_part_cb: ->
@@ -218,9 +219,8 @@ class UnmountDialog extends Dialog
         super(@id, true, @unmount_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Unmount partition")
-        @unmount_tips = create_element("p", "", @content)
+        @unmount_tips = create_element("div", "", @content)
         @unmount_tips.innerText = _("Detected partitions mounted, confirm to unmount them?")
-        @add_css_class("DialogCommon")
 
     unmount_cb: ->
         echo "unmount all partitions"
@@ -236,7 +236,7 @@ class FormatDialog extends Dialog
         super(@id, true, @format_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Format partition")
-        @format_tips = create_element("p", "", @content)
+        @format_tips = create_element("div", "", @content)
         @format_tips.innerText = _("Confirm to format the partition?")
 
     format_cb: ->
@@ -247,7 +247,7 @@ class RootDialog extends Dialog
         super(@id, false, @need_root_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Install tips")
-        @root_tips = create_element("p", "", @content)
+        @root_tips = create_element("div", "", @content)
         @root_tips.innerText = _("Need mount a partition as root")
 
     need_root_cb: ->
@@ -258,7 +258,7 @@ class InstallDialog extends Dialog
         super(@id, true, @confirm_install_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Confirm Install")
-        @root_tips = create_element("p", "", @content)
+        @root_tips = create_element("div", "", @content)
         @fill_install_info()
 
     confirm_install_cb: ->
