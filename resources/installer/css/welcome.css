@@ -99,7 +99,7 @@
     text-shadow:0 1px rgba(0,0,0,0.5);
 }
 
-.Timezone, .Keyboard {
+.Timezone, .Keyboard, .Help {
     position:fixed;
     left:25px;
     right:25px;

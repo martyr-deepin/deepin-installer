@@ -160,9 +160,11 @@ class DropDownItem extends Widget
     disable: ->
         style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
         style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
-        style += "color:rgba(0,0,0,0.1);"
         style += "pointer-events:none;"
+        style += "color:rgba(255,255,255,0.6);"
+        style += "text-shadow:0 1px rgba(0,0,0,0.1);"
         @element.setAttribute("style", style)
+        @element.innerText = @value + "(Unavailable)"
 
 class DropDownList extends Widget
     constructor: (@id, @dropdown) ->

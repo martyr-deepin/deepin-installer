@@ -503,30 +503,13 @@ class PartTableItem extends Widget
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
-        #@element.scrollIntoView()
-        #@update_install_btn()
+        @element.scrollIntoView()
 
     blur: ->
         @active = false
         @fill_fs()
         @fill_mount()
         @element.setAttribute("style", "")
-
-    update_install_btn: ->
-        if __selected_mode == "advance"
-            if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
-                txt = v_part_info[@id]["label"]
-            else
-                txt = v_part_info[@id]["path"]
-            install_txt = "Install to " + txt
-            Widget.look_up("part")?.update_next_btn(install_txt)
-        else
-            if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
-                txt = m_part_info[@id]["label"]
-            else
-                txt = m_part_info[@id]["path"]
-            install_txt = "Install to " + txt
-            Widget.look_up("part")?.update_next_btn(install_txt)
 
     do_click: (e)->
         if __selected_item == @ 
@@ -622,29 +605,78 @@ class PartTable extends Widget
             __selected_item = Widget.look_up(id)
             __selected_item?.focus()
 
+class Help extends Widget
+    constructor: (@id)->
+        super
+        @displayed = false
+        @title = create_element("div", "HelpTitle", @element)
+        @title.innerText = _("Installation Help")
+
+        @content = create_element("div", "HelpContent", @element)
+
+        @step1 = create_element("p", "HelpStep", @content)
+        @step1_desc = create_element("div", "StepDesc", @step1)
+        @step1_desc.innerText = _("1.Set up partition")
+        @step1_detail = create_element("div", "StepDetail", @step1)
+        @step1_detail.innerText = _("step 1 content") 
+
+        @step2 = create_element("p", "HelpStep", @content)
+        @step2_desc = create_element("div", "StepDesc", @step2)
+        @step2_desc.innerText = _("2.Set up grub")
+        @step2_detail = create_element("div", "StepDetail", @step2)
+        @step2_detail.innerText = _("step 2 content") 
+
+        @step3 = create_element("p", "HelpStep", @content)
+        @step3_desc = create_element("div", "StepDesc", @step3)
+        @step3_desc.innerText = _("3.Click to install")
+        @step3_detail = create_element("div", "StepDetail", @step3)
+        @step3_detail.innerText = _("step 3 content") 
+
+        @hide()
+
+    show: ->
+        echo "show help"
+        @displayed = true
+        @element.style.display = "block"
+
+    hide: ->
+        echo "hide help"
+        @displayed = false
+        @element.style.display = "none"
+
 class Part extends Page
     constructor: (@id)->
         super
         @titleimg = create_img("", "images/progress_part.png", @titleprogress)
 
         @help = create_element("div", "PartTitleSet", @title)
+        @t_help = create_element("span", "PartTitleHelp", @help)
+        @t_help.innerText = _("Help")
+        @t_help.addEventListener("click", (e) =>
+            if @help.displayed
+                @hide_help()
+            else
+                @show_help()
+        )
+        @t_help.style.display = "none"
+
         @t_mode = create_element("span", "PartTitleMode", @help)
         @t_mode.innerText = _("Expert mode")
         @t_mode.addEventListener("click", (e) =>
             @switch_mode()
         )
-        @t_help = create_element("span", "PartTitleHelp", @help)
-        @t_help.innerText = _("Help")
-        @t_help.addEventListener("click", (e) =>
-            @toggle_show_help()
-        )
+
+        @help = new Help("help")
+        @element.appendChild(@help.element)
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
             @exit_installer()
         )
 
-        @next_btn = create_element("div", "NextStep", @element)
+        @wrap = create_element("div", "", @element)
+
+        @next_btn = create_element("div", "NextStep", @wrap)
         @next_btn.setAttribute("id", "mynextstep")
         @next_input = create_element("input", "InputBtn", @next_btn)
         @next_input.setAttribute("type", "submit")
@@ -666,9 +698,9 @@ class Part extends Page
         if __selected_disk == null
             __selected_disk = disks[0]
         @linemap = new PartLineMaps("part_line_maps")
-        @element.appendChild(@linemap.element)
+        @wrap.appendChild(@linemap.element)
         @table = new PartTable("part_table")
-        @element.appendChild(@table.element)
+        @wrap.appendChild(@table.element)
         @fill_advance_op()
         if __selected_mode == "advance"
             @show_advance_mode()
@@ -689,6 +721,7 @@ class Part extends Page
             @t_mode.innerText = _("Simple mode")
         else
             __selected_mode = "simple"
+            @hide_help()
             @add_model?.hide_dialog()
             @delete_model?.hide_dialog()
             @unmount_model?.hide_dialog()
@@ -696,14 +729,16 @@ class Part extends Page
             @table.update_mode(__selected_mode)
             @t_mode.innerText = _("Expert mode") 
 
-    update_next_btn: (txt) ->
-        @next_btn.innerText = txt
-        left = "left:" + (755 - document.getElementById("mynextstep")?.offsetWidth) / 2
-        @next_btn.setAttribute("style", left)
+    show_help: ->
+        @help.show()
+        @wrap.style.display = "none"
+
+    hide_help: ->
+        @help.hide()
+        @wrap.style.display = "block"
 
     fill_advance_op: ->
-        #part op buttons
-        @op = create_element("div", "PartOp", @element)
+        @op = create_element("div", "PartOp", @wrap)
         @part_delete = create_element("div", "PartBtn", @op)
         @part_delete.setAttribute("id", "part_delete")
         @delete_input = create_element("input", "InputBtn", @part_delete)
@@ -734,7 +769,7 @@ class Part extends Page
             document.body.appendChild(@add_model.element)
         )
 
-        @part_grub = create_element("div", "PartGrub", @element)
+        @part_grub = create_element("div", "PartGrub", @wrap)
         @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
         @grub_loader.innerText = _("Boot loader")
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
@@ -762,17 +797,13 @@ class Part extends Page
         @grub_dropdown.set_list_scroll_height(true, 200)
 
     show_advance_mode: ->
+        @t_help.style.display = "block"
         @linemap.element.setAttribute("style", "display:block")
         @op.setAttribute("style", "display:block")
         @part_grub.setAttribute("style", "display:block")
 
     hide_advance_mode: ->
+        @t_help.style.display = "none"
         @linemap.element.setAttribute("style", "display:none")
         @op.setAttribute("style", "display:none")
         @part_grub.setAttribute("style", "display:none")
-
-    toggle_show_help: ->
-        if DCore.Installer.is_help_running()
-            DCore.Installer.hide_help()
-        else
-            DCore.Installer.show_help()

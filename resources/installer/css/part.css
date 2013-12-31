@@ -11,7 +11,7 @@
 }
 
 .PartTitleMode {
-    float:left;
+    float:right;
     width:90px;
     height:24px;
     line-height:24px;
@@ -24,7 +24,7 @@
 }
 
 .PartTitleHelp {
-    float:left;
+    float:right;
     width:50px;
     height:24px;
     line-height:24px;
@@ -34,6 +34,37 @@
     margin:3px 0;
     background:url("../images/help.png") no-repeat;
     background-position:8px;
+}
+
+.Help {
+    background:rgba(255,255,255,0.2);
+}
+
+.HelpTitle {
+    font-size:30px;
+    height:50px;
+    line-height:50px;
+    text-align:center;
+}
+
+.HelpContent {
+    width:540px;
+    height:370px;
+    margin:0 80px;
+    text-align:left;
+}
+
+.HelpStep {
+    margin:10px 0;
+}
+
+.Help .StepDesc {
+    font-size:18px;
+}
+
+.Help .StepDetail {
+    font-size:14px;
+    padding-left:10px;
 }
 
 .PartLineMaps {
