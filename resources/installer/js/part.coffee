@@ -533,6 +533,8 @@ class DiskTabItem extends Widget
     constructor: (@id, @disk)->
         super
         @element.innerText = v_disk_info[@disk]["path"]
+        if __selected_disk == @disk
+            @focus()
 
     do_click: (e) ->
         __selected_disk = @disk
