@@ -168,12 +168,10 @@ class Keyboard extends Widget
         @displayed = true
         @element.style.display = "block"
         __selected_layout_item?.focus()
-        #$("#my_keyboard_set")?.setAttribute("class", "TitleSetActive")
 
     hide: ->
         @displayed = false
         @element.style.display = "none"
-        #$("#my_keyboard_set")?.setAttribute("class", "KeyboardSet")
 
     init_layouts: ->
         lay_var = DCore.Installer.get_current_layout_variant()
@@ -272,12 +270,10 @@ class Timezone extends Widget
     show: ->
         @displayed = true
         @element.style.display = "block"
-        #$("#my_timezone_set").setAttribute("class", "TitleSetActive")
 
     hide: ->
         @displayed = false
         @element.style.display = "none"
-        #$("#my_timezone_set")?.setAttribute("class", "TimezoneSet")
 
     update_timezone: (zone) ->
         @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
@@ -439,17 +435,18 @@ class Welcome extends Page
 
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
-        @keyboard_set.setAttribute("id", "my_keyboard_set")
-        @keyboard_set.innerHTML += _("Keyboard")
+        @keyboard_set.innerText = _("Keyboard")
         @keyboard_set.addEventListener("click", (e) =>
             if @keyboard.displayed
                 @display_account()
             else
                 @display_keyboard()
         )
+        @keyboard_glue = create_element("div", "TitleGlue", @keyboard_set) 
+        @keyboard_glue_bg = create_element("div", "", @keyboard_glue)
+        @keyboard_glue.style.display = "none"
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
-        @timezone_set.setAttribute("id", "my_timezone_set")
         @timezone_set.innerText = _("Timezone")
         @timezone_set.addEventListener("click", (e) =>
             if @timezone.displayed
@@ -457,6 +454,9 @@ class Welcome extends Page
             else
                 @display_timezone()
         )
+        @timezone_glue = create_element("div", "TitleGlue", @timezone_set) 
+        @timezone_glue_bg = create_element("div", "", @timezone_glue)
+        @timezone_glue.style.display = "none"
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
@@ -505,6 +505,10 @@ class Welcome extends Page
         @keyboard.hide()
         @timezone.hide()
         @account.style.display = "block"
+        @keyboard_set.setAttribute("class", "KeyboardSet")
+        @timezone_set.setAttribute("class", "TimezoneSet")
+        @keyboard_glue.style.display = "none"
+        @timezone_glue.style.display = "none"
 
     hide_account: ->
         @account.style.display = "none"
@@ -513,18 +517,19 @@ class Welcome extends Page
         @hide_account()
         @timezone.hide()
         @keyboard.show()
+        @timezone_set.setAttribute("class", "TimezoneSet") 
+        @keyboard_set.setAttribute("class", "KeyboardSet TitleSetActive")
+        @keyboard_glue.style.display = "block"
+        @timezone_glue.style.display = "none"
 
     display_timezone: ->
         @hide_account()
         @keyboard.hide()
         @timezone.show()
-
-    #do_click: (e) ->
-    #    if e.x > 25 and e.x < 725 and e.y > 90
-
-    #    else
-    #        if e.target.className not in ["TimezoneSet", "KeyboardSet"]
-    #            @display_account()
+        @keyboard_set.setAttribute("class", "KeyboardSet")
+        @timezone_set.setAttribute("class", "TimezoneSet TitleSetActive")
+        @keyboard_glue.style.display = "none"
+        @timezone_glue.style.display = "block"
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 

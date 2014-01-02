@@ -1,37 +1,38 @@
 .TitleSet {
     position:absolute;
-    width:220px;
+    width:224px;
     height:30px;
     line-height:30px;
     right:24px;
-    top:60px;
-    bottom:0px;
+    top:62px;
+    bottom:-2px;
     font-size:14px;
     color:#B3B3B3;
 }
 
 .KeyboardSet, .TimezoneSet {
     float:left;
+    position:relative;
     width:70px;
     height:24px;
     line-height:24px;
     color:#FFFFFF;
     text-align:center;
-    padding-left:40px;
-    margin:3px 0;
+    padding-left:30px;
+    padding-right:10px;
+    margin:3px 1px 3px 0;
     background-position:8px;
 }
 
+.KeyboardSet {
+    background:url("../images/keyboard.png") no-repeat;
+}
+
+.TimezoneSet {
+    background:url("../images/timezone.png") no-repeat;
+}
+
 .TitleSetActive {
-    float:left;
-    width:70px;
-    height:24px;
-    line-height:24px;
-    color:#FFFFFF;
-    text-align:center;
-    padding-left:40px;
-    margin:3px 0;
-    background-position:8px;
     background-color: rgba(255,255,255,0.3);
     border-top:1px solid rgba(0,0,0,0.3);
     border-left:1px solid rgba(0,0,0,0.3);
@@ -41,14 +42,28 @@
                inset 1px 0 rgba(255,255,255,0.3);
     border-top-left-radius:5px;
     border-top-right-radius:5px;
+    z-index:80;
 }
 
-#my_keyboard_set {
-    background:url("../images/keyboard.png") no-repeat;
+.TitleGlue {
+    position:absolute;
+    left:0;
+    bottom:-4px;
+    width:110px;
+    height:4px;
+    background-color: rgba(65,47,109,1.0);
+    z-index:60;
 }
 
-#my_timezone_set {
-    background:url("../images/timezone.png") no-repeat;
+.TimezoneSet .TitleGlue {
+    box-shadow:inset -1px 0 rgba(255,255,255,0.3);
+}
+
+.TitleGlue div {
+    width:110px;
+    height:4px;
+    z-index:70;
+    background-color: rgba(255,255,255,0.3);
 }
 
 .WelcomeForm {
@@ -232,7 +247,7 @@
 }
 
 .KeyboardHover {
-    background:rgba(255,255,0,0.2);
+    background:rgba(255,255,255,0.2);
 }
 
 .KeyboardSelect {
@@ -241,7 +256,7 @@
 }
 
 .KeyboardSelectHover {
-    background:rgba(255,255,0, 0.2) url("../images/select.png") no-repeat; 
+    background:rgba(255,255,255, 0.2) url("../images/select.png") no-repeat; 
     background-position:8px 8px;
 }
 
