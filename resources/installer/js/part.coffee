@@ -375,15 +375,21 @@ class PartTableItem extends Widget
 
         if __selected_mode == "advance"
             if v_part_info[@id]["type"] != "freespace"
-                if v_part_info[@id]["label"]?
+                if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
                     @label.innerText = v_part_info[@id]["label"]
+                else
+                    @label.style.display = "none"
+                    @path.setAttribute("style", "margin-bottom:10px;")
                 @path.innerText = v_part_info[@id]["path"]
             else
                 @path.innerText = "freespace"
         else if __selected_mode == "simple"
             if m_part_info[@id]["type"] != "freespace"
-                if m_part_info[@id]["label"]?
+                if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
                     @label.innerText = m_part_info[@id]["label"]
+                else
+                    @label.style.display = "none"
+                    @path.setAttribute("style", "margin:10px 0;")
                 @path.innerText = m_part_info[@id]["path"]
             else
                 @path.innerText = "freespace"
@@ -400,7 +406,9 @@ class PartTableItem extends Widget
         @os.innerHTML = ""
         os = DCore.Installer.get_partition_os(@id)
         if os? and os.length > 2
-            if os.toLowerCase().indexOf("linux") != -1
+            if os.toLowerCase().indexOf("deepin") != -1
+                os_img = "images/deepin.png"
+            else if os.toLowerCase().indexOf("linux") != -1
                 os_img = "images/linux.png"
             else if os.toLowerCase().indexOf("windows") != -1
                 os_img = "images/windows.png"

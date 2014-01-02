@@ -159,6 +159,8 @@ class DropDownItem extends Widget
 
             if @key != "unused"
                 Widget.look_up("dd_fs_"+@id[6..17])?.set_drop_items(__filter_fs_keys, __filter_fs_values)
+            else
+                Widget.look_up("dd_fs_"+@id[6..17])?.set_drop_items(__fs_keys, __fs_values)
 
         if @key != @dropdownlist.dropdown.selected 
             if @dropdownlist.dropdown.on_change_cb?

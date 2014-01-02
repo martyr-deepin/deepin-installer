@@ -215,10 +215,10 @@
 
 .PartTableItem .Os {
     width:70px;
-    height:24px;
-    line-height:24px;
-    margin:8px 0;
-    text-align:right;
+    height:16px;
+    line-height:16px;
+    margin:12px 0;
+    text-align:center;
     float:left;
 }
 
