@@ -82,6 +82,23 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
     return FALSE;
 }
 
+static gboolean 
+expose_cb (GtkWidget *widget, GdkEventExpose *event, gpointer data)
+{
+    GdkWindow *gdkwindow = gtk_widget_get_window (installer_container);
+    GdkScreen *screen = gdk_window_get_screen (gdkwindow);
+    GdkVisual *visual = gdk_screen_get_rgba_visual (screen);
+    gtk_widget_set_visual (installer_container, visual);
+
+    cairo_t *cr = gdk_cairo_create (gdkwindow); 
+    cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.0);
+    cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+    cairo_paint (cr);
+    cairo_destroy (cr);
+
+    return TRUE;
+}
+
 static void
 move_window_center ()
 {
@@ -151,18 +168,19 @@ int main(int argc, char **argv)
     signal (SIGTSTP, sigterm_cb);
 
     installer_container = create_web_container (FALSE, TRUE);
+    g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
+    g_signal_connect (GTK_WIDGET (installer_container), "draw", G_CALLBACK (expose_cb), NULL);
 
     gtk_window_set_decorated (GTK_WINDOW (installer_container), FALSE);
     //gtk_window_set_skip_taskbar_hint (GTK_WINDOW (installer_container), TRUE);
-    gtk_window_set_skip_pager_hint (GTK_WINDOW (installer_container), TRUE);
-
+    //gtk_window_set_skip_pager_hint (GTK_WINDOW (installer_container), TRUE);
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
 
-    g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
     gtk_window_set_default_size (GTK_WINDOW (installer_container), INSTALLER_WIN_WIDTH, INSTALLER_WIN_HEIGHT);
     gtk_window_set_resizable (GTK_WINDOW (installer_container), FALSE);
-    //gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
+    gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
+
     GdkGeometry geometry;
     geometry.min_width = INSTALLER_WIN_WIDTH;
     geometry.max_width = INSTALLER_WIN_WIDTH;
@@ -170,10 +188,9 @@ int main(int argc, char **argv)
     geometry.min_height = INSTALLER_WIN_HEIGHT;
     geometry.max_height = INSTALLER_WIN_HEIGHT;
     geometry.base_height = INSTALLER_WIN_HEIGHT;
-
     gtk_window_set_geometry_hints (GTK_WINDOW (installer_container), webview, &geometry, GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE | GDK_HINT_BASE_SIZE);
-    move_window_center ();
-    gtk_widget_set_opacity (GTK_WIDGET (installer_container), 0);
+    //move_window_center ();
+
     gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
 
