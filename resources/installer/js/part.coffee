@@ -464,10 +464,13 @@ class PartTableItem extends Widget
             return
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
-        if @active and v_part_info[@id]["fs"] not in ["fat16", "fat32", "ntfs", "swap"]
+        if @active 
                 @mount_select = new DropDown("dd_mp_" + @id, update_part_mp)
                 @mount.appendChild(@mount_select.element)
-                @mount_select.set_drop_items(__mp_keys, __mp_values)
+                if v_part_info[@id]["fs"]? and v_part_info[@id]["fs"] not in ["fat16", "fat32", "ntfs", "swap"]
+                    @mount_select.set_drop_items(__mp_keys, __mp_values)
+                else 
+                    @mount_select.set_drop_items(__filter_mp_keys, __filter_mp_values)
                 @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
                 @mount_select.show_drop()
                 @mount_select.set_selected(v_part_info[@id]["mp"])
@@ -506,6 +509,7 @@ class PartTableItem extends Widget
     passive_focus: ->
         __selected_item?.blur()
         __selected_item = @
+        #@element.scrollIntoView()
         @active = true
         @fill_fs()
         @fill_mount()
@@ -514,7 +518,6 @@ class PartTableItem extends Widget
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
-        @element.scrollIntoView()
 
     blur: ->
         @active = false

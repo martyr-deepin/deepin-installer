@@ -50,6 +50,8 @@ __filter_fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs
 __filter_fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
 __mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
 __mp_values = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
+__filter_mp_keys = ["unused"]
+__filter_mp_values = ["unused"]
 
 __current_page = null
 pc = null
@@ -79,6 +81,14 @@ get_position = (el) ->
         y = y + el.offsetTop
         el = el.offsetParent
     return {"x":x, "y":y}
+
+get_scroll_height = (el) ->
+    scroll = 0
+    while el?
+        if el.scrollHeight > el.offsetHeight
+            scroll += el.scrollTop
+        el = el.parentElement
+    return scroll
 
 class Dialog extends Widget
     constructor: (@id, @with_cancel, @cb) ->
@@ -162,6 +172,12 @@ class DropDownItem extends Widget
             else
                 Widget.look_up("dd_fs_"+@id[6..17])?.set_drop_items(__fs_keys, __fs_values)
 
+        if @id.indexOf("di_fs") != -1 
+            if @key in ["fat16", "fat32", "ntfs", "swap"]
+                Widget.look_up("dd_mp_"+@id[6..17])?.set_drop_items(__filter_mp_keys, __filter_mp_values)
+            else
+                Widget.look_up("dd_mp_"+@id[6..17])?.set_drop_items(__mp_keys, __mp_values)
+
         if @key != @dropdownlist.dropdown.selected 
             if @dropdownlist.dropdown.on_change_cb?
                 @dropdownlist.dropdown.on_change_cb(@dropdownlist.dropdown.id[6..18],@key)
@@ -188,7 +204,7 @@ class DropDownList extends Widget
             __current_dropdown = null
         __current_dropdown = @
         __drop_board.style.display = "block"
-        position = get_position(@dropdown.base)
+        position = get_position(@dropdown.element)
 
         left = position["x"] 
         totalheight = @dropdown.keys.length * @dropdown.itemheight 
@@ -211,6 +227,9 @@ class DropDownList extends Widget
                 scroll_flag = false
         else
             height = totalheight
+
+        scroll_height = get_scroll_height(@dropdown.element)
+        position["y"] -= scroll_height
 
         if position["y"] < height / 2
             top =  position["y"] - height / 3
