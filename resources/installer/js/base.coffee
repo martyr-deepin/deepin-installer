@@ -234,6 +234,10 @@ class DropDownList extends Widget
         @element.style.display = "none"
         __drop_board.style.display = "none"
 
+    clear: ->
+        @element.innerHTML = ""
+        @fill_dropdown(@dropdown.keys, @dropdown.values)
+
 class DropDown extends Widget
     constructor: (@id, @on_change_cb) ->
         super
@@ -269,6 +273,8 @@ class DropDown extends Widget
         while i < @keys.length
             @items[@keys[i]] = @values[i]
             i = i + 1
+        if @dropdown_list?
+            @dropdown_list.clear()
 
     set_drop_size: (width, height) ->
         @dropwidth = width
