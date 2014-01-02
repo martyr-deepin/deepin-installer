@@ -13,8 +13,20 @@ body {
     text-shadow:0 1px rgba(0,0,0,0.5);
 }
 
+div {
+    cursor:default;
+}
+
+div:focus {
+    outline:none; 
+}
+
 input {
     color:rgba(255,255,255,1);
+}
+
+input:focus {
+    outline:none;
 }
 
 .InputBtn {
@@ -256,8 +268,4 @@ input {
 
 ::-webkit-scrollbar-thumb:hover {
     background:rgba(0,0,0,0.6);
-}
-
-div {
-    cursor:default;
 }
