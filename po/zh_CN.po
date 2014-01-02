@@ -1,0 +1,231 @@
+#: ../resources/installer/js/base.coffee:107
+msgid "Ok"
+msgstr ""
+
+#: ../resources/installer/js/base.coffee:117
+msgid "Cancel"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:32
+msgid "Congratulations"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:34
+msgid "Complete installation needs reboot"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:39
+msgid "Reboot later"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:49
+msgid "Reboot now"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:34
+msgid "Add partition"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:53
+msgid "Type:"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:59
+msgid "Primary"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:64
+msgid "Logical"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:94
+msgid "Size:"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:138
+msgid "Align:"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:144
+msgid "Begin"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:149
+msgid "End"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:169
+msgid "Format:"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:181
+msgid "Mount:"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:200
+msgid "Please enter invalid partition size"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:209
+#: ../resources/installer/js/part.coffee:758
+msgid "Delete partition"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:211
+msgid "Confirm to delete?"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:224
+msgid "Unmount partition"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:226
+msgid "Detected partitions mounted, confirm to unmount them?"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:241
+msgid "Format partition"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:243
+msgid "Confirm to format the partition?"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:252
+msgid "Install tips"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:254
+msgid "Need mount a partition as root"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:263
+msgid "Confirm Install"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:565
+msgid "Device"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:567
+msgid "Size"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:569
+msgid "Freespace"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:571
+msgid "Filesystem"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:574
+#: ../resources/installer/js/part.coffee:610
+msgid "Mount point"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:576
+msgid "Info"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:627
+msgid "Installation Help"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:633
+msgid "1.Set up partition"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:635
+msgid "step 1 content"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:639
+msgid "2.Set up grub"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:641
+msgid "step 2 content"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:645
+msgid "3.Click to install"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:647
+msgid "step 3 content"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:666
+msgid "Help"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:676
+#: ../resources/installer/js/part.coffee:742
+msgid "Expert mode"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:695
+msgid "Install"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:733
+msgid "Simple mode"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:773
+msgid "New partition"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:786
+msgid "Boot loader"
+msgstr ""
+
+#: ../resources/installer/js/progress.coffee:44
+msgid "Error report"
+msgstr ""
+
+#: ../resources/installer/js/progress.coffee:46
+msgid "Install failed, please report the log to linux deepin team"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:49
+msgid "Install require"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:51
+msgid ""
+"To install Linux Deepin, you need have a disk whose space larger than 15G"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:156
+msgid "Please select your keyboard"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:254
+msgid "Please select or search your location"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:386
+msgid "Linuxdeepin"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:392
+msgid "Computer name"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:395
+msgid "Password"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:438
+msgid "Keyboard"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:450
+msgid "Timezone"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:491
+msgid "Next"
+msgstr ""
