@@ -375,24 +375,24 @@ class PartTableItem extends Widget
 
         if __selected_mode == "advance"
             if v_part_info[@id]["type"] != "freespace"
-                if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
-                    @label.innerText = v_part_info[@id]["label"]
-                else
-                    @label.style.display = "none"
-                    @path.setAttribute("style", "margin-bottom:10px;")
                 @path.innerText = v_part_info[@id]["path"]
             else
                 @path.innerText = "freespace"
+            if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
+                @label.innerText = v_part_info[@id]["label"]
+            else
+                @label.style.display = "none"
+                @path.setAttribute("style", "margin:10px 0;")
         else if __selected_mode == "simple"
             if m_part_info[@id]["type"] != "freespace"
-                if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
-                    @label.innerText = m_part_info[@id]["label"]
-                else
-                    @label.style.display = "none"
-                    @path.setAttribute("style", "margin:10px 0;")
                 @path.innerText = m_part_info[@id]["path"]
             else
                 @path.innerText = "freespace"
+            if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
+                @label.innerText = m_part_info[@id]["label"]
+            else
+                @label.style.display = "none"
+                @path.setAttribute("style", "margin:10px 0;")
         @update_device_os()
 
     show_detail_label: ->

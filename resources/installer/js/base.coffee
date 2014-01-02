@@ -85,8 +85,7 @@ get_position = (el) ->
 get_scroll_height = (el) ->
     scroll = 0
     while el?
-        if el.scrollHeight > el.offsetHeight
-            scroll += el.scrollTop
+        scroll += el.scrollTop
         el = el.parentElement
     return scroll
 
@@ -229,7 +228,7 @@ class DropDownList extends Widget
             height = totalheight
 
         scroll_height = get_scroll_height(@dropdown.element)
-        position["y"] -= scroll_height
+        position["y"] = position["y"] - scroll_height + @dropdown.itemheight/2
 
         if position["y"] < height / 2
             top =  position["y"] - height / 3
