@@ -264,13 +264,16 @@ class DropDown extends Widget
         @dropdown_list = null
         @selected = null
         @base = create_element("div", "DropDownBase", @element)
-        @base.addEventListener("click", (e) =>
+        @current = create_element("div", "DropDownCurrent", @base)
+        @current.addEventListener("click", (e) =>
             @show_list()
         )
-        @current = create_element("div", "DropDownCurrent", @base)
         @angle = create_element("div", "DropDownAngle", @base)
         @angle_img = create_element("div", "DropDownAngleImg", @angle)
         @hide_drop()
+        @angle.addEventListener("click", (e) =>
+            @show_list()
+        )
 
     init_dropdown_data: ->
         @dropwidth = 100
