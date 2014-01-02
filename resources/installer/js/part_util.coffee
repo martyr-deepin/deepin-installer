@@ -536,7 +536,11 @@ get_part_num = (part) ->
     if v_part_info[part]["type"] not in ["normal", "logical", "extended"]
         echo "invalid type to get part num"
         return -1
-    return parseInt(v_part_info[part]["path"].replace(/\D/g, ''))
+    if v_part_info[part]["path"]?
+        return parseInt(v_part_info[part]["path"].replace(/\D/g, ''))
+    else
+        echo "invalid part path"
+        return -1
 
 is_in_same_block = (part_a, part_b) ->
     disk = v_part_info[part_a]["disk"]
@@ -695,7 +699,7 @@ update_part_display_path = (part, op) ->
             part_num = 1
             while part_num in path_list
                 part_num++
-            v_part_info[part]["path"] = part_num
+            v_part_info[part]["path"] = disk_path + part_num
         else
             echo "invalid part type to add for update part display path"
 
@@ -957,10 +961,10 @@ _add_normal = (disk, free_part) ->
             sort_v_disk_info(disk)
             secondary_blocks = get_secondary_blocks(disk)
             if secondary_blocks?
-                if secondary_blocks[0] == free_part
+                if secondary_blocks.indexOf(free_part) == 0
                     v_part_info[extended]["start"] = v_part_info[free_part]["end"] + 1
                     mark_update(extended)
-                else if secondary_blocks[-1] == free_part
+                else if secondary_blocks.indexOf(free_part) == secondary_blocks.length - 1
                     v_part_info[extended]["end"] = v_part_info[free_part]["start"] - 1
                     mark_update(extended)
                 else

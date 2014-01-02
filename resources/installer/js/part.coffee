@@ -191,7 +191,10 @@ class AddPartDialog extends Dialog
         @tips = create_element("div", "", @content)
 
     gather_info: ->
-        @n_type = @type_radio
+        if @type_radio == "primary"
+            @n_type = "normal"
+        else 
+            @n_type = "logical"
         if parseInt(@size_input.value) == @max_size_mb
             @n_size = v_part_info[@partid]["length"]
         else
