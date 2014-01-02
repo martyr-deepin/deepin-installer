@@ -443,7 +443,6 @@ class Welcome extends Page
                 @display_keyboard()
         )
         @keyboard_glue = create_element("div", "TitleGlue", @keyboard_set) 
-        @keyboard_glue_bg = create_element("div", "", @keyboard_glue)
         @keyboard_glue.style.display = "none"
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
@@ -455,7 +454,6 @@ class Welcome extends Page
                 @display_timezone()
         )
         @timezone_glue = create_element("div", "TitleGlue", @timezone_set) 
-        @timezone_glue_bg = create_element("div", "", @timezone_glue)
         @timezone_glue.style.display = "none"
 
         @close = create_element("div", "Close", @title)

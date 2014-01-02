@@ -33,16 +33,16 @@
 }
 
 .TitleSetActive {
-    background-color: rgba(255,255,255,0.3);
-    border-top:1px solid rgba(0,0,0,0.3);
-    border-left:1px solid rgba(0,0,0,0.3);
-    border-right:1px solid rgba(0,0,0,0.3);
-    box-shadow:inset 0 1px rgba(255,255,255,0.3),
-               inset -1px 0 rgba(255,255,255,0.3),
-               inset 1px 0 rgba(255,255,255,0.3);
+    background-color:rgba(255,255,255,0.2);
+    border-top:1px solid rgba(0,0,0,0.2);
+    border-left:1px solid rgba(0,0,0,0.2);
+    border-right:1px solid rgba(0,0,0,0.2);
+    box-shadow:inset 0 1px rgba(255,255,255,0.2),
+               inset -1px 0 rgba(255,255,255,0.2),
+               inset 1px 0 rgba(255,255,255,0.2);
     border-top-left-radius:5px;
     border-top-right-radius:5px;
-    z-index:80;
+    z-index:60;
 }
 
 .TitleGlue {
@@ -50,20 +50,13 @@
     left:0;
     bottom:-4px;
     width:110px;
-    height:4px;
-    background-color: rgba(65,47,109,1.0);
-    z-index:60;
+    height:5px;
+    background:rgba(255,255,255,0.2) url("../images/glue.png");
+    z-index:170;
 }
 
 .TimezoneSet .TitleGlue {
-    box-shadow:inset -1px 0 rgba(255,255,255,0.3);
-}
-
-.TitleGlue div {
-    width:110px;
-    height:4px;
-    z-index:70;
-    background-color: rgba(255,255,255,0.3);
+    box-shadow:inset -1px 0 rgba(255,255,255,0.2);
 }
 
 .WelcomeForm {
