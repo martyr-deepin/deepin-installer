@@ -1,9 +1,9 @@
 .TitleSet {
     position:absolute;
-    width:224px;
+    width:222px;
     height:30px;
     line-height:30px;
-    right:24px;
+    right:25px;
     top:62px;
     bottom:-2px;
     font-size:14px;
@@ -13,23 +13,23 @@
 .KeyboardSet, .TimezoneSet {
     float:left;
     position:relative;
-    width:70px;
+    width:100px;
     height:24px;
     line-height:24px;
-    color:#FFFFFF;
-    text-align:center;
-    padding-left:30px;
+    margin:3px 0;
     padding-right:10px;
-    margin:3px 1px 3px 0;
-    background-position:8px;
+    color:#FFFFFF;
+    text-align:right;
 }
 
 .KeyboardSet {
     background:url("../images/keyboard.png") no-repeat;
+    background-position:10px 0;
 }
 
 .TimezoneSet {
     background:url("../images/timezone.png") no-repeat;
+    background-position:10px 0;
 }
 
 .TitleSetActive {
@@ -51,11 +51,15 @@
     bottom:-4px;
     width:110px;
     height:5px;
-    background:rgba(255,255,255,0.2) url("../images/glue.png");
     z-index:170;
 }
 
+.KeyboardSet .TitleGlue {
+    background:rgba(255,255,255,0.2) url("../images/keyboard_glue.png");
+}
+
 .TimezoneSet .TitleGlue {
+    background:rgba(255,255,255,0.2) url("../images/timezone_glue.png");
     box-shadow:inset -1px 0 rgba(255,255,255,0.2);
 }
 
