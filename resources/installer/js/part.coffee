@@ -716,7 +716,6 @@ class Part extends Page
         next = _("Install")
         @next_input.setAttribute("value", next)
         @next_btn.addEventListener("click", (e) =>
-            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
             if __selected_mode == "advance" and not check_target_part()
                 @root_model = new RootDialog("RootModel")
                 document.body.appendChild(@root_model.element)
@@ -747,6 +746,7 @@ class Part extends Page
         else
             Widget.look_up("disk_tab" + __selected_disk)?.focus()
         if  __selected_item?
+            @next_btn.setAttribute("style", "pointer-events:auto")
             @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
 
     switch_mode: ->

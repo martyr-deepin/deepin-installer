@@ -324,6 +324,7 @@
     height:38px;
     border:1px solid rgba(0,0,0,0.3);
     border-radius:5px;
+    pointer-events:none;
 }
 
 .Welcome .Start input, .Part .NextStep input {

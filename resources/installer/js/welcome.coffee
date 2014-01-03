@@ -496,7 +496,7 @@ class Welcome extends Page
         @start_input.setAttribute("value", next)
         @start.addEventListener("mouseover", (e) =>
             if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
-                @start.setAttribute("style", "color:#00bdff")
+                @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
         )
         @start.addEventListener("mouseout", (e) =>
             @start.setAttribute("style", "")
@@ -538,6 +538,7 @@ class Welcome extends Page
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
+            @start.setAttribute("style", "pointer-events:auto")
             @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
             return true
         else
