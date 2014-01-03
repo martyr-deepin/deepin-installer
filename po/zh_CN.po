@@ -153,6 +153,22 @@ msgstr "分区信息"
 msgid "Installation Help"
 msgstr "安装帮助"
 
+#: ../resource/installer/js/part.coffee:654
+msgid "1. Please select partitions for installation, specify a root partition and partition types."
+msgstr "1.选择安装所需分区，定义根分区和分区格式"
+
+#: ../resource/installer/js/part.coffee:659
+msgid "Note: to install Linux Deepin, you'll have to set up a root partition. An Ext4 filesystem is recommended."
+msgstr "说明：安装Deepin系统至少需要一个定义一个根分区，挂载点为/,推荐格式为ext4"
+
+#: ../resource/installer/js/part.coffee:660
+msgid "Setting up separate partitions for /home, /var, or /boot is optional."
+msgstr "其它分区包括/home,/var,/boot等均为可选"
+
+#: ../resource/installer/js/part.coffee:661
+msgid "If there are no existing partitions on your disk, please refer to Set ting up a new partition."
+msgstr "如果硬盘没有分区，请参见新建分区"
+
 #: ../resources/installer/js/part.coffee:666
 msgid "Help"
 msgstr "帮助"

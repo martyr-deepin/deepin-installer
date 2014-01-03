@@ -651,21 +651,29 @@ class Help extends Widget
 
         @step1 = create_element("p", "HelpStep", @content)
         @step1_desc = create_element("div", "StepDesc", @step1)
-        @step1_desc.innerText = _("1.Set up partition")
+        @step1_desc.innerText = _("1. Please select partitions for installation, specify a root partition and partition types.") 
+
+        @step1_img = create_img("", "images/help1.png", @step1)
+
         @step1_detail = create_element("div", "StepDetail", @step1)
-        @step1_detail.innerText = _("step 1 content") 
+        @step1_detail.innerHTML = "<p>" + _("Note: to install Linux Deepin, you'll have to set up a root partition. An Ext4 filesystem is recommended.") + "</p>"
+        @step1_detail.innerHTML += "<p>" +  _("Setting up separate partitions for /home, /var, or /boot is optional.") + "</p>"
+        @step1_detail.innerHTML += "<p>" +  _("If there are no existing partitions on your disk, please refer to Set ting up a new partition.") + "</p>"
 
         @step2 = create_element("p", "HelpStep", @content)
         @step2_desc = create_element("div", "StepDesc", @step2)
-        @step2_desc.innerText = _("2.Set up grub")
+        @step2_desc.innerText = _("2. Select where GRUB will be installed.")
+
         @step2_detail = create_element("div", "StepDetail", @step2)
-        @step2_detail.innerText = _("step 2 content") 
+        @step2_detail.innerText = _("Note: You can simply ignore this step. The default location is recommended.")
+
+        @step2_img = create_img("", "images/help2.png", @step2)
 
         @step3 = create_element("p", "HelpStep", @content)
         @step3_desc = create_element("div", "StepDesc", @step3)
-        @step3_desc.innerText = _("3.Click to install")
+        @step3_desc.innerText = _("3. Click \"install\" to proceed with installation, and your system will be ready to use after that.") 
+
         @step3_detail = create_element("div", "StepDetail", @step3)
-        @step3_detail.innerText = _("step 3 content") 
 
         @hide()
 
