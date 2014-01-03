@@ -237,6 +237,7 @@
 }
 
 .PartTableItem .LabelPath {
+    position:relative;
     width:100px;
     height:40px;
     float:left;
@@ -251,6 +252,16 @@
     line-height:20px;
     max-height:40px;
     text-overflow:ellipsis;
+}
+
+.PartTableItem .LabelDetail {
+    position:absolute;
+    top:0;
+    left:0;
+    width:auto;
+    height:auto;
+    background:rgba(0,0,0,1);
+    border-radius:2px;
 }
 
 .PartTableItem .Fs .DropDown {

@@ -371,8 +371,11 @@ class PartTableItem extends Widget
         @lp = create_element("span", "LabelPath", @device)
         @label = create_element("div", "Label", @lp)
         @path = create_element("div", "Path", @lp)
-        @label.addEventListener("hover", (e) =>
+        @label.addEventListener("mouseover", (e) =>
             @show_detail_label()
+        )
+        @label.addEventListener("mouseout", (e) =>
+            @hide_detail_label()
         )
 
         if __selected_mode == "advance"
@@ -381,7 +384,10 @@ class PartTableItem extends Widget
             else
                 @path.innerText = "freespace"
             if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
-                @label.innerText = v_part_info[@id]["label"]
+                if v_part_info[@id]["label"].length > 12
+                    @label.innerText = v_part_info[@id]["label"].substring(0,12) + "..."
+                else
+                    @label.innerText = v_part_info[@id]["label"]
             else
                 @label.style.display = "none"
                 @path.setAttribute("style", "margin:10px 0;")
@@ -391,18 +397,27 @@ class PartTableItem extends Widget
             else
                 @path.innerText = "freespace"
             if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
-                @label.innerText = m_part_info[@id]["label"]
+                if m_part_info[@id]["label"].length > 12
+                    @label.innerText = m_part_info[@id]["label"].substring(0,12) + "..."
+                else
+                    @label.innerText = m_part_info[@id]["label"]
             else
                 @label.style.display = "none"
                 @path.setAttribute("style", "margin:10px 0;")
         @update_device_os()
 
     show_detail_label: ->
-        text = @label.innerText
-        if not text or text.length < 5
-            return
-        else
-            echo "show detail label"
+        if not @label_detail?
+            @label_detail = create_element("div", "LabelDetail", @label)
+            if __selected_mode == "advance"
+                @label_detail.innerText = v_part_info[@id]["label"] 
+            else
+                @label_detail.innerText = m_part_info[@id]["label"]
+        @label_detail.style.display = "block"
+
+    hide_detail_label: ->
+        if @label_detail?
+            @label_detail.style.display = "none"
 
     update_device_os: ->
         @os.innerHTML = ""
