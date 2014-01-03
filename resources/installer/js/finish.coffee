@@ -31,7 +31,7 @@ class Finish extends Page
         @desc = create_element("div", "Desc", @info)
         @desc.innerText = _("Congratulations")
         @detail = create_element("div", "Detail", @info)
-        @detail.innerText = _("Complete installation needs reboot")
+        @detail.innerText = _("You need to restart the computer to complete installation.")
 
         @ops = create_element("div", "FinishOps", @element)
         @later = create_element("div", "Later", @ops)

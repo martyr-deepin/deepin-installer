@@ -201,7 +201,7 @@ class AddPartDialog extends Dialog
         else
             @n_size = mb_to_sector(parseInt(@size_input.value), 512)
         if not @n_size?
-            @tips.innerText = _("Please enter invalid partition size")
+            @tips.innerText = _("Please enter a valid partition size.")
         @n_align = @align_radio
         @n_fs = @fs_select.get_selected()
         @n_mp = @mount_select.get_selected()
@@ -212,7 +212,7 @@ class DeletePartDialog extends Dialog
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Delete partition")
         @delete_tips = create_element("div", "", @content)
-        @delete_tips.innerText = _("Confirm to delete?")
+        @delete_tips.innerText = _("Are you sure you want to delete this partition?")
 
     delete_part_cb: ->
         remain_part = delete_part(@partid)
@@ -227,7 +227,7 @@ class UnmountDialog extends Dialog
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Unmount partition")
         @unmount_tips = create_element("div", "", @content)
-        @unmount_tips.innerText = _("Detected partitions mounted, confirm to unmount them?")
+        @unmount_tips.innerText = _("Partition is already mounted. Do you want to unmount it?")
 
     unmount_cb: ->
         echo "unmount all partitions"
@@ -244,7 +244,7 @@ class FormatDialog extends Dialog
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Format partition")
         @format_tips = create_element("div", "", @content)
-        @format_tips.innerText = _("Confirm to format the partition?")
+        @format_tips.innerText = _("Are you sure you want to format this partition?")
 
     format_cb: ->
         echo "format to do install"
@@ -264,7 +264,7 @@ class InstallDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @confirm_install_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Confirm Install")
+        @title_txt.innerText = _("Proceed with installation")
         @root_tips = create_element("div", "", @content)
         @fill_install_info()
 
@@ -587,7 +587,7 @@ class PartTable extends Widget
         @size_header = create_element("div", "", @header)
         @size_header.innerText = _("Size")
         @used_header = create_element("div", "", @header)
-        @used_header.innerText = _("Freespace")
+        @used_header.innerText = _("Free Space")
         @fs_header = create_element("div", "", @header)
         @fs_header.innerText = _("Filesystem")
         @mount_header = create_element("span", "", @header)

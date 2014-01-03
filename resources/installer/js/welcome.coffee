@@ -46,9 +46,9 @@ class RequireMatchDialog extends Dialog
     constructor: (@id) ->
         super(@id, false, @require_match_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Install require")
+        @title_txt.innerText = _("Installation requirements")
         @format_tips = create_element("p", "", @content)
-        @format_tips.innerText = _("To install Linux Deepin, you need have a disk whose space larger than 15G")
+        @format_tips.innerText = _("To install Linux Deepin, you need to have at least 15GB disk space.")
 
     require_match_cb: ->
         echo "require match cb"
@@ -153,7 +153,7 @@ class Keyboard extends Widget
             @execute_query()
         )
         @query_txt = create_element("div", "Right", @query)
-        @query_txt.innerText = _("Please select your keyboard")
+        @query_txt.innerText = _("Please select your keyboard layout")
 
         @content = create_element("div", "KeyBoardContent", @element)
         @layout_list = create_element("div", "LayoutList", @content)
@@ -389,7 +389,7 @@ class WelcomeFormItem extends Widget
 
     fill_widget: ->
         if @id == "username"
-            username_holder = _("Linuxdeepin") 
+            username_holder = _("Linux Deepin") 
             @input.setAttribute("placeholder", username_holder)
             @input.addEventListener("input", (e) =>
                 Widget.look_up("welcome")?.hostname.input.value = @input.value + "-pc"
@@ -402,7 +402,7 @@ class WelcomeFormItem extends Widget
             @input.setAttribute("placeholder", password_holder)
             @input.setAttribute("type", "password")
         else if @id == "confirmpassword"
-            confirm_holder = ("Repeat your password")
+            confirm_holder = _("Repeat your password")
             @input.setAttribute("placeholder", confirm_holder)
             @input.setAttribute("type", "password")
 
@@ -452,7 +452,7 @@ class Welcome extends Page
         @keyboard_glue.style.display = "none"
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
-        @timezone_set.innerText = _("Timezone")
+        @timezone_set.innerText = _("Time Zone")
         @timezone_set.addEventListener("click", (e) =>
             if @timezone.displayed
                 @display_account()

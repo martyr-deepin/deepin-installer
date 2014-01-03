@@ -18,7 +18,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../resources/installer/js/base.coffee:107
-#msgid "Ok"
 msgid "OK"
 msgstr "确定"
 
@@ -32,7 +31,6 @@ msgid "Congratulations!"
 msgstr "祝贺您！"
 
 #: ../resources/installer/js/finish.coffee:34
-#msgid "Complete installation needs reboot"
 msgid "You need to restart the computer to complete installation."
 msgstr "需要重新启动以完成安装"
 
@@ -85,7 +83,6 @@ msgid "Mount:"
 msgstr "挂载："
 
 #: ../resources/installer/js/part.coffee:200
-#msgid "Please enter invalid partition size"
 msgid "Please enter a valid partition size."
 msgstr "请输入一个有效的分区大小数值"
 
@@ -95,7 +92,6 @@ msgid "Delete partition"
 msgstr "删除分区"
 
 #: ../resources/installer/js/part.coffee:211
-#msgid "Confirm to delete?"
 msgid "Are you sure you want to delete this partition?"
 msgstr "确认要删除该分区？"
 
@@ -104,7 +100,6 @@ msgid "Unmount partition"
 msgstr "卸载分区"
 
 #: ../resources/installer/js/part.coffee:226
-#msgid "Detected partitions mounted, confirm to unmount them?"
 msgid "Partition is already mounted. Do you want to unmount it?"
 msgstr "检测到分区已挂载，确定要卸载已挂载分区？"
 
@@ -113,7 +108,6 @@ msgid "Format partition"
 msgstr "格式化分区"
 
 #: ../resources/installer/js/part.coffee:243
-#msgid "Confirm to format the partition?"
 msgid "Are you sure you want to format this partition?"
 msgstr "确定要格式化该分区？"
 
@@ -127,7 +121,6 @@ msgid "you need root privileges to mount a partition."
 msgstr "需要以root权限挂载分区"
 
 #: ../resources/installer/js/part.coffee:263
-#msgid "Confirm Install"
 msgid "Proceed with installation"
 msgstr "确认安装"
 
@@ -140,7 +133,6 @@ msgid "Size"
 msgstr "大小"
 
 #: ../resources/installer/js/part.coffee:569
-#msgid "Freespace"
 msgid "Free Space"
 msgstr "可用空间"
 
@@ -160,32 +152,6 @@ msgstr "分区信息"
 #: ../resources/installer/js/part.coffee:627
 msgid "Installation Help"
 msgstr "安装帮助"
-
-#: ../resources/installer/js/part.coffee:633
-#msgid "1.Set up partition"
-msgid "1. Set up partition"
-msgstr "1. 创建分区"
-
-#: ../resources/installer/js/part.coffee:635
-msgid "step 1 content"
-msgstr ""
-
-#: ../resources/installer/js/part.coffee:639
-#msgid "2.Set up grub"
-msgid "2. Set up grub"
-msgstr "2. 配置GRUB"
-
-#: ../resources/installer/js/part.coffee:641
-msgid "step 2 content"
-msgstr ""
-
-#: ../resources/installer/js/part.coffee:645
-msgid "3.Click to install"
-msgstr "3. 点击安装"
-
-#: ../resources/installer/js/part.coffee:647
-msgid "step 3 content"
-msgstr ""
 
 #: ../resources/installer/js/part.coffee:666
 msgid "Help"
@@ -217,24 +183,19 @@ msgid "Error report"
 msgstr "错误报告"
 
 #: ../resources/installer/js/progress.coffee:46
-#msgid "Install failed, please report the log to linux deepin team"
 msgid "Installation failed. Please send the log to Linux Deepin Team."
 msgstr "安装失败，请将安装日志反馈至Linux Deepin团队"
 
 #: ../resources/installer/js/welcome.coffee:49
-#msgid "Install require"
 msgid "Installation requirements"
 msgstr "安装需求"
 
 #: ../resources/installer/js/welcome.coffee:51
-#msgid ""
-#"To install Linux Deepin, you need have a disk whose space larger than 15G"
 msgid ""
 "To install Linux Deepin, you need to have at least 15GB disk space."
 msgstr "要安装Linux Deepin，必须有15G以上的可用磁盘空间"
 
 #: ../resources/installer/js/welcome.coffee:156
-#msgid "Please select your keyboard"
 msgid "Please select your keyboard layout"
 msgstr "请选择您的键盘布局"
 
@@ -243,7 +204,6 @@ msgid "Please select or search your location"
 msgstr "请选择或搜索您所在的区域"
 
 #: ../resources/installer/js/welcome.coffee:386
-#msgid "Linuxdeepin"
 msgid "Linux Deepin"
 msgstr "Linux Deepin"
 
@@ -260,7 +220,6 @@ msgid "Keyboard"
 msgstr "键盘"
 
 #: ../resources/installer/js/welcome.coffee:450
-#msgid "Timezone"
 msgid "Time Zone"
 msgstr "时区"
 

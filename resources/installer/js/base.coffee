@@ -104,7 +104,7 @@ class Dialog extends Widget
         @ok = create_element("div", "", @foot)
         @ok_input = create_element("input", "InputBtn", @ok)
         @ok_input.setAttribute("type", "submit")
-        value = _("Ok")
+        value = _("OK")
         @ok_input.setAttribute("value", value)
         @ok.addEventListener("click", (e) =>
             @hide_dialog()

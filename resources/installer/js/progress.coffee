@@ -43,7 +43,7 @@ class ReportDialog extends Dialog
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Error report")
         @report_tips = create_element("p", "", @content)
-        @report_tips.innerText = _("Install failed, please report the log to linux deepin team")
+        @report_tips.innerText = _("Installation failed. Please send the log to Linux Deepin Team.")
 
     cb: ->
         echo "report dialog cb"
