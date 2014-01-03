@@ -305,6 +305,15 @@
     padding:0px;
 }
 
+.TimezoneTip {
+    position:absolute;
+    width:auto;
+    height:auto;
+    margin:0px;
+    padding:0px;
+    color:rgba(0,0,0,0.5);
+}
+
 .Welcome .Start {
     position:absolute;
     left:285px;

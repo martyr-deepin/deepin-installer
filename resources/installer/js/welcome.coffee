@@ -317,8 +317,14 @@ class Timezone extends Widget
         @pin?.parentElement?.removeChild(@pin)
         @pin = null
         @pin = create_img("Pin", "images/pin.png", @picker_wrap)
-        style = "left:" + (parseInt(pin[0]) - 7) + "px;" + "top:" + (parseInt(pin[1]) + 50 -7) + "px"
+        style = "left:" + (parseInt(pin[0]) - 7) + "px;" + "top:" + (parseInt(pin[1]) + 50 - 7) + "px"
         @pin.setAttribute("style", style)
+
+        if not @tip?
+            @tip = create_element("div", "TimezoneTip", @picker_wrap)
+        @tip.innerText = area.getAttribute("data-timezone").split("/")[1]
+        tip_style = "left:" + (parseInt(pin[0]) - 7) + "px;" + "top:" + (parseInt(pin[1]) + 50 - 7) + "px"
+        @tip.setAttribute("style", tip_style)
 
     draw_timezone: (myarea) ->
         offset = myarea.getAttribute("data-offset")
@@ -496,6 +502,7 @@ class Welcome extends Page
             @start.setAttribute("style", "")
         )
         @start.addEventListener("click", (e) =>
+            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
             @start_install_cb()
         )
 

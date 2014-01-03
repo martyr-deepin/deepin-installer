@@ -18,11 +18,14 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 DCore.signal_connect("used", (msg) ->
-    #echo "used msg"
-    #echo msg.part
     v_part_info[msg.part]["used"] = msg.free
     m_part_info[msg.part]["used"] = msg.free
     Widget.look_up(msg.part)?.update_part_used()
+)
+
+DCore.signal_connect("slow", (msg) ->
+    v_part_info[msg.uuid]["slow"] = true
+    Widget.look_up(msg.uuid)?.update_part_slow()
 )
 
 #get_random_color = ->
