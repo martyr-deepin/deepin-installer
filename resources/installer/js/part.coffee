@@ -20,6 +20,7 @@
 __selected_target = null
 __selected_grub = null
 
+__selected_disk_item = null
 __selected_disk = null
 __selected_item = null
 __selected_line = null
@@ -344,8 +345,6 @@ class PartLineMaps extends Widget
             if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
                 item = new PartLineItem("line"+part)
                 @disk_line.appendChild(item.element)
-                if __selected_item?.id == __selected_disk
-                    item.element.setAttribute("class", "PartLineItemActive")
 
 class PartTableItem extends Widget
     constructor: (@id)->
@@ -537,25 +536,29 @@ class PartTableItem extends Widget
 class DiskTabItem extends Widget
     constructor: (@id, @disk)->
         super
+        @focuspart = null
         @element.innerText = v_disk_info[@disk]["path"]
         if __selected_disk == @disk
             @focus()
 
     do_click: (e) ->
-        __selected_disk = @disk
-        Widget.look_up("part_line_maps")?.fill_linemap()
-        Widget.look_up("part_table")?.fill_items()
-        for item in Widget.look_up("part_table")?.disktabs
-            if item != @
-                item.blur()
-            else
-                item.focus()
+        if __selected_disk_item != @
+            @focus()
+        else
+            echo "disk tab item already selected"
 
     blur: ->
+        __selected_disk_item = null
         @element.setAttribute("style", "")
 
     focus: ->
+        __selected_disk_item?.blur()
+        __selected_disk_item = @
+        __selected_disk = @disk
         @element.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.5)), to(rgba(255,255,255, 0.2)));")
+        Widget.look_up("part_line_maps")?.fill_linemap()
+        Widget.look_up("part_table")?.fill_items()
+        Widget.look_up(__selected_item?.id)?.focus()
 
 class PartTable extends Widget
     constructor: (@id)->
@@ -722,8 +725,11 @@ class Part extends Page
         else
             @hide_advance_mode()
         recommand = get_recommand_target()
-        __selected_item = Widget.look_up(recommand)
-        __selected_item?.focus()
+        if recommand?
+            Widget.look_up("disk_tab_"+ m_part_info[recommand]["disk"])?.focus()
+            Widget.look_up(recommand)?.focus()
+        else
+            Widget.look_up("disk_tab" + __selected_disk)?.focus()
 
     switch_mode: ->
         if __selected_mode != "advance"
