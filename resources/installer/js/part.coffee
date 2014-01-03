@@ -421,22 +421,22 @@ class PartTableItem extends Widget
     fill_size: ->
         @size.innerHTML = ""
         if __selected_mode == "advance"
-            @size.innerText += sector_to_gb(v_part_info[@id]["length"], 512).toFixed(3) + "GB"
+            @size.innerText += sector_to_gb(v_part_info[@id]["length"], 512).toFixed(2) + "GB"
         else
-            @size.innerText += sector_to_gb(m_part_info[@id]["length"], 512).toFixed(3) + "GB"
+            @size.innerText += sector_to_gb(m_part_info[@id]["length"], 512).toFixed(2) + "GB"
 
     fill_used: ->
         @used.innerHTML = ""
         if __selected_mode == "advance" and v_part_info[@id]["type"] != "freespace"
-            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(3) + "GB"
+            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(2) + "GB"
         else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
-            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(3) + "GB"
+            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(2) + "GB"
 
     update_part_used: ->
         if __selected_mode == "advance"
-            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(3) + "GB"
+            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(2) + "GB"
         else
-            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(3) + "GB"
+            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(2) + "GB"
 
     fill_fs: ->
         @fs.innerHTML = ""
