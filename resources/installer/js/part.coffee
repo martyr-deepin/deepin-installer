@@ -658,7 +658,7 @@ class Help extends Widget
         @step1_detail = create_element("div", "StepDetail", @step1)
         @step1_detail.innerHTML = "<p>" + _("Note: to install Linux Deepin, you'll have to set up a root partition. An Ext4 filesystem is recommended.") + "</p>"
         @step1_detail.innerHTML += "<p>" +  _("Setting up separate partitions for /home, /var, or /boot is optional.") + "</p>"
-        @step1_detail.innerHTML += "<p>" +  _("If there are no existing partitions on your disk, please refer to Set ting up a new partition.") + "</p>"
+        @step1_detail.innerHTML += "<p>" +  _("If there are no existing partitions on your disk, please refer to Setting up a new partition.") + "</p>"
 
         @step2 = create_element("p", "HelpStep", @content)
         @step2_desc = create_element("div", "StepDesc", @step2)

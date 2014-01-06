@@ -155,7 +155,7 @@ msgstr "安装帮助"
 
 #: ../resource/installer/js/part.coffee:654
 msgid "1. Please select partitions for installation, specify a root partition and partition types."
-msgstr "1.选择安装所需分区，定义根分区和分区格式"
+msgstr "1. 选择安装所需分区，定义根分区和分区格式"
 
 #: ../resource/installer/js/part.coffee:659
 msgid "Note: to install Linux Deepin, you'll have to set up a root partition. An Ext4 filesystem is recommended."
@@ -166,8 +166,20 @@ msgid "Setting up separate partitions for /home, /var, or /boot is optional."
 msgstr "其它分区包括/home,/var,/boot等均为可选"
 
 #: ../resource/installer/js/part.coffee:661
-msgid "If there are no existing partitions on your disk, please refer to Set ting up a new partition."
+msgid "If there are no existing partitions on your disk, please refer to Setting up a new partition."
 msgstr "如果硬盘没有分区，请参见新建分区"
+
+#: ../resource/installer/js/part.coffee:665
+msgid "2. Select where GRUB will be installed."
+msgstr "2. 选择Grub位置"
+
+#: ../resource/installer/js/part.coffee:668
+msgid "Note: You can simply ignore this step. The default location is recommended."
+msgstr "说明：用户可以跳过这一步骤，默认勾选的就是推荐的"
+
+#: ../resource/installer/js/part.coffee:674
+msgid "3. Click \"install\" to proceed with installation, and your system will be ready to use after that."
+msgstr "3. 点击安装进入安装，等待安装完成即可"
 
 #: ../resources/installer/js/part.coffee:666
 msgid "Help"
