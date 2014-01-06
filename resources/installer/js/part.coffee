@@ -280,9 +280,9 @@ class InstallDialog extends Dialog
             do_simple_partition(__selected_item.id, __selected_item.device_type)
 
         else if __selected_mode == "advance"
-            grub = Widget.look_up("part")?.grub_select
+            grub = Widget.look_up("part")?.grub_dropdown
             if grub?
-                __selected_grub = grub.options[grub.selectedIndex].value
+                __selected_grub = grub.get_selected()
             else
                 __selected_grub = __selected_disk
             pc.add_page(progress_page)
