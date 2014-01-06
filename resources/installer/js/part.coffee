@@ -664,10 +664,10 @@ class Help extends Widget
         @step2_desc = create_element("div", "StepDesc", @step2)
         @step2_desc.innerText = _("2. Select where GRUB will be installed.")
 
-        @step2_detail = create_element("div", "StepDetail", @step2)
-        @step2_detail.innerText = _("Note: You can simply ignore this step. The default location is recommended.")
-
         @step2_img = create_img("", "images/help2.png", @step2)
+
+        @step2_detail = create_element("div", "StepDetail", @step2)
+        @step2_detail.innerHTML = "<p>" +  _("Note: You can simply ignore this step. The default location is recommended.") + "</p>"
 
         @step3 = create_element("p", "HelpStep", @content)
         @step3_desc = create_element("div", "StepDesc", @step3)
