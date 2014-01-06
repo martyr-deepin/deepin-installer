@@ -404,7 +404,7 @@ class WelcomeFormItem extends Widget
             @input.setAttribute("placeholder", password_holder)
             @input.setAttribute("type", "password")
         else if @id == "confirmpassword"
-            confirm_holder = _("Repeat your password")
+            confirm_holder = _("Retype password")
             @input.setAttribute("placeholder", confirm_holder)
             @input.setAttribute("type", "password")
 

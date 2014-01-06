@@ -115,9 +115,8 @@ msgid "Install tips"
 msgstr "安装提示"
 
 #: ../resources/installer/js/part.coffee:254
-#msgid "Need mount a partition as root"
-msgid "you need root privileges to mount a partition."
-msgstr "需要以root权限挂载分区"
+msgid "A root partition is required."
+msgstr "至少需要一个根分区"
 
 #: ../resources/installer/js/part.coffee:263
 msgid "Proceed with installation"
@@ -241,6 +240,10 @@ msgstr "计算机名称"
 #: ../resources/installer/js/welcome.coffee:395
 msgid "Password"
 msgstr "密码"
+
+#: ../resources/installer/js/welcome.coffee:407
+msgid "Retype password"
+msgstr "确认密码"
 
 #: ../resources/installer/js/welcome.coffee:438
 msgid "Keyboard"

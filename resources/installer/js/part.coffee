@@ -255,7 +255,7 @@ class RootDialog extends Dialog
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Install tips")
         @root_tips = create_element("div", "", @content)
-        @root_tips.innerText = _("Need mount a partition as root")
+        @root_tips.innerText = _("A root partition is required.")
 
     need_root_cb: ->
         echo "need mount root to do install"
@@ -631,7 +631,7 @@ class PartTable extends Widget
             @items.setAttribute("style", "height:180px")
             @element.setAttribute("style", "top:140px;height:230px;")
         else
-            @mount_header.innerText = _("Info")
+            @mount_header.innerText = _("Information")
             @items.setAttribute("style", "")
             @element.setAttribute("style", "")
         @fill_items()
