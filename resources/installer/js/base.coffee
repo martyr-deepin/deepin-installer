@@ -215,7 +215,7 @@ class DropDownList extends Widget
             if not @dropdown.maxheight?
                 @dropdown.maxheight = pageheight
 
-        width = @dropdown.dropwidth + 20
+        width = @dropdown.dropwidth + 10
 
         if @dropdown.scrollable
             if totalheight > @dropdown.maxheight

@@ -26,7 +26,6 @@ msgid "Cancel"
 msgstr "取消"
 
 #: ../resources/installer/js/finish.coffee:32
-#msgid "Congratulations"
 msgid "Congratulations!"
 msgstr "祝贺您！"
 
@@ -146,7 +145,7 @@ msgid "Mount point"
 msgstr "挂载点"
 
 #: ../resources/installer/js/part.coffee:576
-msgid "Info"
+msgid "Information"
 msgstr "分区信息"
 
 #: ../resources/installer/js/part.coffee:627
@@ -178,7 +177,7 @@ msgid "Note: You can simply ignore this step. The default location is recommende
 msgstr "说明：用户可以跳过这一步骤，默认勾选的就是推荐的"
 
 #: ../resource/installer/js/part.coffee:674
-msgid "3. Click \"install\" to proceed with installation, and your system will be ready to use after that."
+msgid "3. Click \"install\" to proceed with installation, and your system will be ready to use after that." 
 msgstr "3. 点击安装进入安装，等待安装完成即可"
 
 #: ../resources/installer/js/part.coffee:666
@@ -232,8 +231,8 @@ msgid "Please select or search your location"
 msgstr "请选择或搜索您所在的区域"
 
 #: ../resources/installer/js/welcome.coffee:386
-msgid "Linux Deepin"
-msgstr "Linux Deepin"
+msgid "User name"
+msgstr "用户名"
 
 #: ../resources/installer/js/welcome.coffee:392
 msgid "Computer name"

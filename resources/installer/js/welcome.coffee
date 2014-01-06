@@ -394,7 +394,7 @@ class WelcomeFormItem extends Widget
 
     fill_widget: ->
         if @id == "username"
-            username_holder = _("Linux Deepin") 
+            username_holder = _("User name") 
             @input.setAttribute("placeholder", username_holder)
         else if @id == "hostname"
             hostname_holder = _("Computer name")

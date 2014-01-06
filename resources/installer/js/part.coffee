@@ -593,7 +593,7 @@ class PartTable extends Widget
         if __selected_mode == "advance"
             @mount_header.innerText = _("Mount point")
         else
-            @mount_header.innerText = _("Info")
+            @mount_header.innerText = _("Information")
 
         @items = create_element("div", "PartTableItems", @disk_content)
         @fill_disk_tab()

@@ -32,7 +32,7 @@ class Finish extends Page
 
         @info = create_element("div", "FinishInfo", @element)
         @desc = create_element("div", "Desc", @info)
-        @desc.innerText = _("Congratulations")
+        @desc.innerText = _("Congratulations!")
         @detail = create_element("div", "Detail", @info)
         @detail.innerText = _("You need to restart the computer to complete installation.")
 
