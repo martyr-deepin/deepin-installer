@@ -18,9 +18,12 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 class Finish extends Page
-    constructor: (@id)->
+    constructor: (@id, @succeed)->
         super
-        @titleimg = create_img("", "images/progress_succeed.png", @titleprogress)
+        if @succeed
+            @titleimg = create_img("", "images/progress_succeed.png", @titleprogress)
+        else
+            @titleimg = create_img("", "images/progress_failed.png", @titleprogress)
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>

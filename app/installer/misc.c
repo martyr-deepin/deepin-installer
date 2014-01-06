@@ -469,6 +469,7 @@ out:
     } else {
         emit_progress ("grub", "terminate");
     }
+    finish_install_cleanup ();
     return NULL;
 }
 
@@ -584,6 +585,12 @@ out:
 void
 finish_install_cleanup () 
 {
+    static gboolean cleaned = FALSE;
+    if (cleaned) {
+        return;
+    }
+    cleaned = TRUE;
+
     extern const gchar *target;
     if (target == NULL) {
         g_warning ("finish install:target is NULL\n");

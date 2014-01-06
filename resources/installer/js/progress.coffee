@@ -213,7 +213,7 @@ class Progress extends Page
     handle_update_grub: (progress) ->
         if progress == "start"
             echo "start handle grub"
-            @update_progress("97%")
+            @update_progress("95%")
             #if __selected_grub.indexOf("part") != -1
             #    #only advance mode will install grub to partition
             #    disk = v_part_info[_selected_grub]["disk"]
@@ -231,7 +231,7 @@ class Progress extends Page
             echo "finish update grub"
             @update_progress("99%")
             setTimeout( ->
-                finish_page = new Finish("finish")
+                finish_page = new Finish("finish", true)
                 pc.add_page(finish_page)
                 pc.remove_page(progress_page)
             , 1000)
