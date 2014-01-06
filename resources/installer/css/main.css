@@ -5,9 +5,12 @@
 @import url("../../common/css/animation.css");
 
 body {
-    width:750px;
-    height:540px;
+    position:relative;
+    margin:14px 16px 18px 16px;
+    width:752px;
+    height:542px;
     background: url("../images/background.png") no-repeat fixed top;
+    background-position:17px 15px;
     overflow:hidden;
     color:rgb(255,255,255);
     text-shadow:0 1px rgba(0,0,0,0.5);
@@ -31,12 +34,6 @@ input:focus {
 
 .InputBtn {
     border:1px solid rgba(255,255,255,0.3);
-    /*
-    box-shadow:inset 0 1px rgba(255,255,255,0.2),
-               inset 1px 0 rgba(255,255,255,0.2),
-               inset -1px 0 rgba(255,255,255,0.2),
-               inset 0 -1px rgba(255,255,255,0.2);
-               */
     border-radius:5px;
     text-align:center;
     text-shadow:1px rgba(255,255,255,0.15);
@@ -52,7 +49,7 @@ input:focus {
 }
 
 .TitleProgress {
-    position:fixed;
+    position:absolute;
     top:21px;
     left:25px;
     width:242px;
@@ -60,7 +57,7 @@ input:focus {
 }
 
 .Close {
-    position:fixed;
+    position:absolute;
     width:12px;
     height:12px;
     top:10px;
@@ -80,12 +77,13 @@ input:focus {
     width:750px;
     height:540px;
     overflow:hidden;
-    border:1px rgba(0,0,0,0.3) solid;
+    border:1px rgba(0,0,0,0.75) solid;
     border-radius:5px;
     box-shadow:inset 0 1px rgba(255,255,255,0.2),
                inset 1px 0 rgba(255,255,255,0.2),
                inset -1px 0 rgba(255,255,255,0.2),
-               inset 0 -1px rgba(255,255,255,0.2);
+               inset 0 -1px rgba(255,255,255,0.2),
+               0 2px 16px rgba(0,0,0,0.6);
 }
 
 .Welcome, .Part, .Progress, .Finish {
@@ -232,7 +230,7 @@ input:focus {
 }
 
 .DropDownList {
-    position:fixed;
+    position:absolute;
     background:url("../images/dropdown_long.png") no-repeat;
     z-index:300;
     border:1px solid rgba(0,0,0,0.4);

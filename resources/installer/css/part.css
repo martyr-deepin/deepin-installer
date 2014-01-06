@@ -71,7 +71,7 @@
 }
 
 .PartLineMaps {
-    position:fixed;
+    position:absolute;
     top:110px;
     left:25px;
     width:700px;
@@ -119,7 +119,7 @@
 }
 
 .PartTable {
-    position:fixed;
+    position:absolute;
     top:120px;
     left:25px;
     width:700px;
@@ -280,7 +280,7 @@
 }
 
 .PartOp {
-    position:fixed;
+    position:absolute;
     top:380px;
     bottom:130px;
     left:26px;
@@ -321,7 +321,7 @@
 }
 
 .PartGrub {
-    position:fixed;
+    position:absolute;
     top:420px;
     bottom:100px;
     left:26px;
@@ -344,7 +344,7 @@
 }
 
 .NextStep {
-    position:fixed;
+    position:absolute;
     left:285px;
     right:285px;
     top:470px;

@@ -30,8 +30,8 @@
 #include "misc.h"
 
 #define INSTALLER_HTML_PATH     "file://"RESOURCE_DIR"/installer/index.html"
-#define INSTALLER_WIN_WIDTH     750
-#define INSTALLER_WIN_HEIGHT    540
+#define INSTALLER_WIN_WIDTH     786
+#define INSTALLER_WIN_HEIGHT    576
 
 static GtkWidget *installer_container = NULL;
 

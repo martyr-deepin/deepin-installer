@@ -1,5 +1,5 @@
 .Ppt {
-    position:fixed;
+    position:absolute;
     top:96px;
     left:0;
     width:750px;
@@ -7,7 +7,7 @@
 }
 
 .ProgressContainer {
-    position:fixed;
+    position:absolute;
     left:0;
     top:90px;
     width:750px;
