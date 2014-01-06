@@ -386,14 +386,16 @@ class WelcomeFormItem extends Widget
             @fill_item_data()
             Widget.look_up("welcome")?.check_start_ready()
         )
+        @input.addEventListener("input", (e) =>
+            if @id == "username"
+                Widget.look_up("welcome")?.hostname.input.value = @input.value + "-pc"
+            Widget.look_up("welcome")?.check_start_ready()
+        )
 
     fill_widget: ->
         if @id == "username"
             username_holder = _("Linux Deepin") 
             @input.setAttribute("placeholder", username_holder)
-            @input.addEventListener("input", (e) =>
-                Widget.look_up("welcome")?.hostname.input.value = @input.value + "-pc"
-            )
         else if @id == "hostname"
             hostname_holder = _("Computer name")
             @input.setAttribute("placeholder", hostname_holder)
@@ -494,17 +496,18 @@ class Welcome extends Page
         @start_input.setAttribute("type", "submit")
         next = _("Next")
         @start_input.setAttribute("value", next)
-        @start.addEventListener("mouseover", (e) =>
-            if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
-                @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
-        )
-        @start.addEventListener("mouseout", (e) =>
-            @start.setAttribute("style", "")
-        )
+        #@start.addEventListener("mouseover", (e) =>
+        #    if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
+        #        @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
+        #)
+        #@start.addEventListener("mouseout", (e) =>
+        #    @start.setAttribute("style", "pointer-events:none")
+        #)
         @start.addEventListener("click", (e) =>
             @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
             @start_install_cb()
         )
+        @start.setAttribute("style", "pointer-events:none")
 
     display_account: ->
         @keyboard.hide()
@@ -538,11 +541,11 @@ class Welcome extends Page
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
-            @start.setAttribute("style", "pointer-events:auto")
+            @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
             @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
             return true
         else
-            @start.setAttribute("style", "")
+            @start.setAttribute("style", "pointer-events:none")
             return false
 
     start_install_cb: ->
