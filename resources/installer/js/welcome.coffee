@@ -541,6 +541,7 @@ class Welcome extends Page
             return true
         else
             @start.setAttribute("style", "pointer-events:none")
+            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(244,198,136, 0.5)), to(rgba(255,190,87,0.5)))")
             return false
 
     start_install_cb: ->

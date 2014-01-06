@@ -112,7 +112,7 @@
 }
 
 .Timezone, .Keyboard, .Help {
-    position:fixed;
+    position:absolute;
     left:25px;
     right:25px;
     top:90px;
