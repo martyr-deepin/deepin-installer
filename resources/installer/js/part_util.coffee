@@ -284,6 +284,7 @@ do_partition = ->
 #auto partition for simple mode
 do_simple_partition = (device, type) ->
     #fake advance mode operation to keep the hash table uuid
+    echo "------------------------update part mp in simple mode"
     undo_part_table_info()
     if type == "disk"
         #drop all partition then crate a new one
@@ -321,6 +322,7 @@ do_simple_partition = (device, type) ->
         else if m_part_info[device]["type"] in ["normal", "logical"]
             update_part_fs(device,"ext4")
             update_part_mp(device,"/")
+            echo "------------------------update part mp in simple mode"
         else
             echo "invalid as extended doesn't show in simple view"
     else

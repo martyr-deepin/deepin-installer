@@ -510,6 +510,7 @@ unmount_target ()
     while (g_file_test (target, G_FILE_TEST_EXISTS)) {
         if (g_rmdir (target) != 0) {
             g_spawn_command_line_async (umount_target_cmd, NULL);
+            g_usleep (1000);
         }
     }
 
