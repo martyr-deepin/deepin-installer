@@ -270,7 +270,6 @@ class InstallDialog extends Dialog
 
     confirm_install_cb: ->
         echo "confirm install"
-        DCore.Installer.hide_help()
         progress_page = new Progress("progress")
         progress_page.update_progress("0%")
 
