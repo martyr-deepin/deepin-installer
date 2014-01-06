@@ -722,6 +722,9 @@ class Part extends Page
         @next_input.setAttribute("type", "submit")
         next = _("Install")
         @next_input.setAttribute("value", next)
+        @next_btn.addEventListener("mousedown", (e) =>
+            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
+        )
         @next_btn.addEventListener("click", (e) =>
             if __selected_mode == "advance" and not check_target_part()
                 @root_model = new RootDialog("RootModel")
@@ -838,7 +841,7 @@ class Part extends Page
         @grub_dropdown = new DropDown("dd_grub", null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
-        @grub_dropdown.set_drop_size(560, 20)
+        @grub_dropdown.set_drop_size(550, 20)
         @grub_dropdown.show_drop()
         @grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
         @grub_dropdown.set_list_scroll_height(true, 200)

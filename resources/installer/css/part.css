@@ -37,9 +37,18 @@
 }
 
 .Help {
-    background:rgba(255,255,255,0.2);
+    position:absolute;
+    left:25px;
+    top:90px;
+    background:rgba(255,255,255,0.15);
     width:700px;
     height:420px;
+    border:1px solid rgba(0,0,0,0.4);
+    border-radius:4px;
+    box-shadow:0 1px rgba(255,255,255,0.2) inset,
+               0 -1px rgba(255,255,255,0.2) inset,
+               1px 0 rgba(255,255,255,0.2) inset,
+               -1px 0 rgba(255,255,255,0.2) inset;
 }
 
 .HelpTitle {
@@ -136,7 +145,7 @@
     float:left;
     width:92px;
     height:21px;
-    line-height:20px;
+    line-height:21px;
     margin-right:8px;
     background:rgba(255,255,255,0.2);
     border-top:1px solid rgba(0,0,0,0.3);
@@ -172,7 +181,7 @@
     float:left;
     width:199px;
     height:26px;
-    line-height:26px;
+    line-height:27px;
     border-right:1px solid rgba(0,0,0,0.2);
     box-shadow:inset 1px 0 rgba(255,255,255,0.2);
 }
@@ -181,7 +190,7 @@
     float:left;
     width:99px;
     height:26px;
-    line-height:26px;
+    line-height:27px;
     border-right:1px solid rgba(0,0,0,0.2);
     box-shadow:inset 1px 0 rgba(255,255,255,0.2);
 }
@@ -261,10 +270,13 @@
     position:absolute;
     top:0;
     left:0;
+    padding:1px 6px;
     width:auto;
     height:auto;
-    background:rgba(0,0,0,1);
-    border-radius:2px;
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.7)), to(rgba(0,0,0,0.8)));
+    border:1px solid rgba(255,255,255,0.4);
+    border-radius:4px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.7);
 }
 
 .PartTableItem .Fs .DropDown {
@@ -324,7 +336,8 @@
     position:absolute;
     top:420px;
     bottom:100px;
-    left:26px;
+    left:25px;
+    right:25px;
     width:700px;
     height:24px;
 }
@@ -340,7 +353,7 @@
     width:560px;
     height:24px;
     line-height:24px;
-    float:right;
+    float:left;
 }
 
 .NextStep {

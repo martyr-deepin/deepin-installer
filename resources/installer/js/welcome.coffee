@@ -496,15 +496,10 @@ class Welcome extends Page
         @start_input.setAttribute("type", "submit")
         next = _("Next")
         @start_input.setAttribute("value", next)
-        #@start.addEventListener("mouseover", (e) =>
-        #    if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
-        #        @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
-        #)
-        #@start.addEventListener("mouseout", (e) =>
-        #    @start.setAttribute("style", "pointer-events:none")
-        #)
-        @start.addEventListener("click", (e) =>
+        @start.addEventListener("mousedown", (e) =>
             @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
+        )
+        @start.addEventListener("click", (e) =>
             @start_install_cb()
         )
         @start.setAttribute("style", "pointer-events:none")
