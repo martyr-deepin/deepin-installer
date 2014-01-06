@@ -119,6 +119,8 @@ class Dialog extends Widget
             @cancel.addEventListener("click", (e) =>
                 @hide_dialog()
             )
+        else
+            @ok.setAttribute("style", "margin:31px 145px 0 0")
         @show_dialog()
         #@element.setAttribute("draggable", "true")
 
