@@ -535,7 +535,12 @@ class PartTableItem extends Widget
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
-        if DCore.Installer.get_partition_busy(@id)
+        if __selected_mode == "advance"
+            lvm = v_part_info[@id]["lvm"]?
+        else
+            lvm = m_part_info[@id]["lvm"]?
+
+        if DCore.Installer.get_partition_busy(@id) or lvm
             @lock_busy()
         else
             @unbusy()
