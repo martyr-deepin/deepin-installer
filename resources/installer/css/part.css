@@ -319,6 +319,14 @@
     border-radius:5px;
 }
 
+.PartBtn {
+    pointer-events:none;
+}
+
+.PartBtnActive {
+    pointer-events:auto;
+}
+
 .PartBtn input {
     width:110px;
     height:22px;

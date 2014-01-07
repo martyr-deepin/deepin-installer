@@ -536,9 +536,11 @@ class PartTableItem extends Widget
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
         if __selected_mode == "advance"
-            lvm = v_part_info[@id]["lvm"]?
+            if v_part_info[@id]["lvm"]? and v_part_info[@id]["lvm"] == true
+                lvm = true
         else
-            lvm = m_part_info[@id]["lvm"]?
+            if m_part_info[@id]["lvm"]? and m_part_info[@id]["lvm"] == true
+                lvm = true
 
         if DCore.Installer.get_partition_busy(@id) or lvm
             @lock_busy()
@@ -562,14 +564,18 @@ class PartTableItem extends Widget
         @lock.innerHTML = ""
         create_img("", "images/lock.png", @lock)
         if __selected_mode == "advance"
-            @fs_select.set_list_enable(false)
-            @mount_select.set_list_enable(false)
+            delete_btn = document.getElementById("part_delete")
+            delete_btn.setAttribute("class", "PartBtn")
+            @fs_select?.set_list_enable(false)
+            @mount_select?.set_list_enable(false)
 
     unbusy: ->
         @lock.innerHTML = ""
         if __selected_mode == "advance"
-            @fs_select.set_list_enable(true)
-            @mount_select.set_list_enable(true)
+            delete_btn = document.getElementById("part_delete")
+            delete_btn.setAttribute("class", "PartBtnActive")
+            @fs_select?.set_list_enable(true)
+            @mount_select?.set_list_enable(true)
 
 class DiskTabItem extends Widget
     constructor: (@id, @disk)->
