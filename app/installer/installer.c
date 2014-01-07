@@ -60,7 +60,7 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
     g_debug ("installer:move window");
 
-    if (event->y > 50 || (event->x > 725) && (event->y < 30)) {
+    if (event->y > 50 || (event->x > 740) && (event->y < 50)) {
         return TRUE;
     }
 

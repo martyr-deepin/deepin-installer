@@ -178,7 +178,7 @@ class AddPartDialog extends Dialog
 
     fill_mount: ->
         @mp = create_element("div", "", @content)
-        @mp_desc = create_element("span", "AddDec", @mp)
+        @mp_desc = create_element("span", "AddDesc", @mp)
         @mp_desc.innerText = _("Mount:")
         @mount_value = create_element("span", "AddValue", @mp)
         @mount_select = new DropDown("dd_mp_" + @partid, null)

@@ -388,8 +388,8 @@
 .AddPartDialog .AddDesc {
     display:block;
     float:left;
-    width:110px;
-    padding-left:60px;
+    width:170px;
+    text-indent:60px;
     text-align:left;
     height:24px;
     line-height:24px;
