@@ -572,8 +572,6 @@ class PartTableItem extends Widget
     unbusy: ->
         @lock.innerHTML = ""
         if __selected_mode == "advance"
-            delete_btn = document.getElementById("part_delete")
-            delete_btn.setAttribute("class", "PartBtnActive")
             @fs_select?.set_list_enable(true)
             @mount_select?.set_list_enable(true)
 
