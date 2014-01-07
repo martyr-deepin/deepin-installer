@@ -310,8 +310,15 @@
     width:auto;
     height:auto;
     margin:0px;
-    padding:0px;
-    color:rgba(0,0,0,0.5);
+    padding:5px;
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.6)), to(rgba(0,0,0,0.9)));
+    color:#FFFFFF;
+    border:1px solid rgba(0,0,0,0.2);
+    border-radius:5px;
+    box-shadow:0 1px rgba(255,255,255,0.2) inset,
+               0 -1px rgba(255,255,255,0.2) inset,
+               1px 0 rgba(255,255,255,0.2) inset,
+               -1px 0 rgba(255,255,255,0.2) inset;
 }
 
 .Welcome .Start {

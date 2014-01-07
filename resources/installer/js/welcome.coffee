@@ -316,15 +316,17 @@ class Timezone extends Widget
         pin = area.getAttribute("data-pin").split(",")
         @pin?.parentElement?.removeChild(@pin)
         @pin = null
-        @pin = create_img("Pin", "images/pin.png", @picker_wrap)
-        style = "left:" + (parseInt(pin[0]) - 7) + "px;" + "top:" + (parseInt(pin[1]) + 50 - 7) + "px"
+        @pin = create_element("div", "Pin", @picker_wrap)
+        @pin_img = create_img("", "images/pin.png", @pin)
+        x = parseInt(pin[0]) - 7
+        y = parseInt(pin[1]) + 50 - 7
+        style = "left:" + x + "px;" + "top:" + y + "px"
         @pin.setAttribute("style", style)
 
-        if not @tip?
-            @tip = create_element("div", "TimezoneTip", @picker_wrap)
+        @tip = create_element("div", "TimezoneTip", @pin)
         @tip.innerText = area.getAttribute("data-timezone").split("/")[1]
-        tip_style = "left:" + (parseInt(pin[0]) - 7) + "px;" + "top:" + (parseInt(pin[1]) + 50 - 7) + "px"
-        @tip.setAttribute("style", tip_style)
+        @tip.style.top = "-30px"
+        @tip.style.left = (0 - @tip.offsetWidth/2 + 7) + "px"
 
     draw_timezone: (myarea) ->
         offset = myarea.getAttribute("data-offset")
