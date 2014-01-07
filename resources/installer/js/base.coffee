@@ -46,8 +46,8 @@ _color_list = ["#89AFD0","#6D91BC","#E8948A","#DE5F4E","#C2A02D",
 
 __fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
 __fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
-__filter_fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
-__filter_fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
+__filter_fs_keys = ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
+__filter_fs_values = ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
 __mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
 __mp_values = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
 __filter_mp_keys = ["unused"]

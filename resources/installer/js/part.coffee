@@ -484,7 +484,7 @@ class PartTableItem extends Widget
         if @active 
                 @mount_select = new DropDown("dd_mp_" + @id, update_part_mp)
                 @mount.appendChild(@mount_select.element)
-                if v_part_info[@id]["fs"]? and v_part_info[@id]["fs"] not in ["fat16", "fat32", "ntfs", "swap"]
+                if v_part_info[@id]["fs"]? and v_part_info[@id]["fs"] not in ["fat16", "fat32", "ntfs", "swap", "unused"]
                     @mount_select.set_drop_items(__mp_keys, __mp_values)
                 else 
                     @mount_select.set_drop_items(__filter_mp_keys, __filter_mp_values)
