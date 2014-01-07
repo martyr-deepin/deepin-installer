@@ -33,6 +33,14 @@ msgstr "祝贺您！"
 msgid "You need to restart the computer to complete installation."
 msgstr "需要重新启动以完成安装"
 
+#: ../resources/installer/js/finish.coffee:46
+msgid "Installation failed!"
+msgstr "安装失败"
+
+#: ../resources/installer/js/finish.coffee:41
+msgid "Please send the log to Linux Deepin Team."
+msgstr "请将安装日志反馈至Linux Deepin团队"
+
 #: ../resources/installer/js/finish.coffee:39
 msgid "Reboot later"
 msgstr "稍后重启"

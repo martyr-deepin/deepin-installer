@@ -98,9 +98,12 @@ class Progress extends Page
         @progressbar.style.width = progress
 
     show_report: ->
-        @report?.hide_dialog()
-        @report =  new ReportDialog("report")
-        document.body.appendChild(@report.element)
+        #@report?.hide_dialog()
+        #@report =  new ReportDialog("report")
+        #document.body.appendChild(@report.element)
+        finish_page = new Finish("finish", false)
+        pc.add_page(finish_page)
+        pc.remove_page(progress_page)
 
     handle_extract: (progress) ->
         if progress == "start"

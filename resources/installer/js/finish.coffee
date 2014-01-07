@@ -32,9 +32,13 @@ class Finish extends Page
 
         @info = create_element("div", "FinishInfo", @element)
         @desc = create_element("div", "Desc", @info)
-        @desc.innerText = _("Congratulations!")
         @detail = create_element("div", "Detail", @info)
-        @detail.innerText = _("You need to restart the computer to complete installation.")
+        if @succeed
+            @desc.innerText = _("Congratulations!")
+            @detail.innerText = _("You need to restart the computer to complete installation.")
+        else
+            @desc.innerText = _("Installation failed!")
+            @detail.innerText = _("Please send the log to Linux Deepin Team.")
 
         @ops = create_element("div", "FinishOps", @element)
         @later = create_element("div", "Later", @ops)
@@ -56,3 +60,10 @@ class Finish extends Page
             catch error
                 echo error
         )
+
+        if @succeed
+            @now.setAttribute("class", "NowActive")
+            @later.setAttribute("class", "Later")
+        else
+            @now.setAttribute("class", "Now")
+            @later.setAttribute("class", "LaterActive")

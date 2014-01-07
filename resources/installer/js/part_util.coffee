@@ -284,7 +284,6 @@ do_partition = ->
 #auto partition for simple mode
 do_simple_partition = (device, type) ->
     #fake advance mode operation to keep the hash table uuid
-    echo "------------------------update part mp in simple mode"
     undo_part_table_info()
     if type == "disk"
         #drop all partition then crate a new one

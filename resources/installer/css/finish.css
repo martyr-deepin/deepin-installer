@@ -1,5 +1,5 @@
 .FinishInfo {
-    position:fixed;
+    position:absolute;
     top:160px;
     left:225px;
     width:300px;
@@ -22,7 +22,7 @@
 }
 
 .FinishOps {
-    position:fixed;
+    position:absolute;
     top:300px;
     left:200px;
     width:350px;
@@ -38,14 +38,24 @@
     background-position:17px 7px;
 }
 
-/*
-.Finish .Later:hover {
+.Finish .LaterActive {
+    float:right;
+    width:100px;
+    height:90px;
     background:url("../images/later_active.png") no-repeat;
     background-position:17px 7px;
+    color:#FBE90B;
 }
-*/
 
 .Finish .Now {
+    float:left;
+    width:100px;
+    height:90px;
+    background:url("../images/now.png") no-repeat;
+    background-position:17px 7px;
+}
+
+.Finish .NowActive {
     float:right;
     width:100px;
     height:90px;
@@ -53,13 +63,6 @@
     background-position:17px 7px;
     color:#FBE90B;
 }
-
-/*
-.Finish .Now:hover {
-    background:url("../images/now_active.png") no-repeat;
-    background-position:17px 7px;
-}
-*/
 
 .Finish .Txt {
     position:relative;
