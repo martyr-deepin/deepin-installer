@@ -225,13 +225,21 @@
     float:left;
 }
 
+.PartTableItem .Lock {
+    float:left;
+    width:12px;
+    height:12px;
+    line-height:12px;
+    margin:14px 0 14px 18px;
+}
+
 .PartTableItem .Os {
-    width:70px;
+    float:left;
+    width:40px;
     height:16px;
     line-height:16px;
     margin:12px 0;
     text-align:center;
-    float:left;
 }
 
 .PartTableItem .Color {

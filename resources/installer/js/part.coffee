@@ -363,6 +363,7 @@ class PartTableItem extends Widget
 
     fill_device: ->
         @device.innerHTML = ""
+        @lock = create_element("span", "Lock", @device)
         @os = create_element("span", "Os", @device)
         @color = create_element("span", "Color", @device)
         color_value = Widget.look_up(@lineid)?.color or get_random_color()
@@ -430,7 +431,7 @@ class PartTableItem extends Widget
                 os_img = "images/windows.png"
             else if os.toLowerCase().indexOf("mac") != -1
                 os_img = "images/apple.png"
-            create_img("osimg", os_img, @os)
+            create_img("", os_img, @os)
 
     fill_size: ->
         @size.innerHTML = ""
@@ -534,11 +535,16 @@ class PartTableItem extends Widget
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
+        if DCore.Installer.get_partition_busy(@id)
+            @lock_busy()
+        else
+            @unbusy()
 
     blur: ->
         @active = false
         @fill_fs()
         @fill_mount()
+        @lock.innerHTML = ""
         @element.setAttribute("style", "")
 
     do_click: (e)->
@@ -546,6 +552,19 @@ class PartTableItem extends Widget
             echo "part table item already selected"
         else
             @focus()
+
+    lock_busy: ->
+        @lock.innerHTML = ""
+        create_img("", "images/lock.png", @lock)
+        if __selected_mode == "advance"
+            @fs_select.set_list_enable(false)
+            @mount_select.set_list_enable(false)
+
+    unbusy: ->
+        @lock.innerHTML = ""
+        if __selected_mode == "advance"
+            @fs_select.set_list_enable(true)
+            @mount_select.set_list_enable(true)
 
 class DiskTabItem extends Widget
     constructor: (@id, @disk)->
@@ -841,7 +860,7 @@ class Part extends Page
         @grub_dropdown = new DropDown("dd_grub", null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
-        @grub_dropdown.set_drop_size(550, 20)
+        @grub_dropdown.set_drop_size(560, 20)
         @grub_dropdown.show_drop()
         @grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
         @grub_dropdown.set_list_scroll_height(true, 200)

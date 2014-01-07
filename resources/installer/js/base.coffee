@@ -194,6 +194,7 @@ class DropDownList extends Widget
 
     fill_dropdown: (keys, values) ->
         i = 0
+        @length = keys.length
         while i < keys.length
             item = new DropDownItem("di_" + @id[3..] + "_"  + keys[i], keys[i], values[i], @)
             @element.appendChild(item.element)
@@ -208,7 +209,7 @@ class DropDownList extends Widget
         position = get_position(@dropdown.element)
 
         left = position["x"] 
-        totalheight = @dropdown.keys.length * @dropdown.itemheight 
+        totalheight = @length * @dropdown.itemheight 
         pageheight = document.body.clientHeight
         scroll_flag = false
 
@@ -217,7 +218,7 @@ class DropDownList extends Widget
             if not @dropdown.maxheight?
                 @dropdown.maxheight = pageheight
 
-        width = @dropdown.dropwidth + 10
+        width = @dropdown.dropwidth 
 
         if @dropdown.scrollable
             if totalheight > @dropdown.maxheight
@@ -269,16 +270,13 @@ class DropDown extends Widget
         @dropdown_list = null
         @selected = null
         @base = create_element("div", "DropDownBase", @element)
-        @current = create_element("div", "DropDownCurrent", @base)
-        @current.addEventListener("click", (e) =>
+        @base.addEventListener("click", (e) =>
             @show_list()
         )
+        @current = create_element("div", "DropDownCurrent", @base)
         @angle = create_element("div", "DropDownAngle", @base)
         @angle_img = create_element("div", "DropDownAngleImg", @angle)
         @hide_drop()
-        @angle.addEventListener("click", (e) =>
-            @show_list()
-        )
 
     init_dropdown_data: ->
         @dropwidth = 100
@@ -287,6 +285,7 @@ class DropDown extends Widget
         @itemleft = 10
         @scrollable = false
         @maxheight = 200
+        @listenable = true
 
     set_drop_items: (keys, values) ->
         @keys = []
@@ -341,6 +340,13 @@ class DropDown extends Widget
     show_list: ->
         if not @dropdown_list?
             @dropdown_list = new DropDownList("dl_" + @id[3..], @)
+        if not @listenable
+            @dropdown_list.element.innerHTML = ""
+            keys = []
+            values = []
+            keys.push(@get_selected())
+            values.push(@get_selected())
+            @dropdown_list.fill_dropdown(keys, values)
         @dropdown_list.show()
 
     set_selected: (key) ->
@@ -349,6 +355,9 @@ class DropDown extends Widget
 
     get_selected: ->
         return @selected
+
+    set_list_enable: (enable) ->
+        @listenable = enable
 
     set_list_scroll_height: (scrollable, maxheight) ->
         @scrollable = scrollable
