@@ -1,3 +1,33 @@
+.ProgressContainer {
+    position:absolute;
+    left:0;
+    top:90px;
+    width:750px;
+    height:5px;
+    line-height:5px;
+    background:rgba(255,255,255,0.1);
+    border-top:1px solid rgba(0,0,0,0.3);
+    border-bottom:1px solid rgba(0,0,0,0.3);
+    margin-left:1px;
+}
+
+.ProgressBar {
+    float:left;
+    width:0%;
+    height:5px;
+    background:-webkit-gradient(linear, left top, right top, from(rgba(255,255,255,0.4)), color-stop(0.95, rgba(255,255,255,0.9)), to(rgba(255,255,255,1.0)));
+}
+
+.ProgressLight {
+    float:left;
+    width:8px;
+    height:3px;
+    border:1px solid rgba(255,255,255,1.0);
+    border-radius:4px;
+    background:rgba(255,255,255,1.0);
+    margin-left:-4px;
+}
+
 .Ppt {
     position:absolute;
     top:96px;
@@ -6,37 +36,105 @@
     height:444px;
 }
 
-.ProgressContainer {
-    position:absolute;
-    left:0;
-    top:90px;
+.Slides {
+    position:relative;
     width:750px;
-    height:6px;
-    line-height:6px;
-    background:rgba(255,255,255,0.1);
-    border-top:1px solid rgba(255,255,255,0.2);
-    border-bottom:transparent;
-    z-index:50;
-    overflow-x:hidden;
+    height:444px;
+    margin:0 auto;
+    padding:0;
+    display:block;
 }
 
-.ProgressBar {
-    float:left;
-    width:0%;
-    height:4px;
-    background:-webkit-gradient(linear, left top, right top, from(rgba(255,255,255,0.4)), color-stop(0.95, rgba(255,255,255,0.9)), to(rgba(255,255,255,1.0)));
-    border-top:1px solid rgba(255,255,255,0.9);
-    border-right:1px solid rgba(255,255,255,0.9);
-    border-bottom:1px solid rgba(255,255,255,0.9);
-    box-shadow:1px 0 3px rgba(255,255,255,0.5),
-               -1px 0 3px rgba(255,255,255,0.5);
+.Slides * {
+    -webkit-user-select:none;
+    -webkit-touch-callout:none;
 }
 
-.ProgressLight {
-    float:left;
-    background:url("../images/light.png");
-    width:38px;
-    height:10px;
-    margin-left:-22px;
-    margin-top:-2px;
+.SlideInput {
+    display:none;
+}
+
+.SlideContainer {
+    display:block;
+}
+
+.Slide {
+    position:absolute;
+    width:750px;
+    height:444px;
+    top:0;
+    opacity:0;
+    display:block;
+    -webkit-transform:scale(0);
+    transition:all 0.7s ease-in-out;
+}
+
+.Slide img {
+    width:100%;
+    height:100%;
+}
+
+.SlideNav label {
+    position:absolute;
+    width:60px;
+    height:200px;
+    line-height:200px;
+    margin:122px 0;
+    display:none;
+    opacity:0;
+    z-index:9;
+    cursor:pointer;
+    transition:opacity 0.2s;
+    color:#FFF;
+    font-size:50px;
+    text-align:center;
+    background-color:rgba(255,255,255,0.3);
+    text-shadow:0 0 15px rgba(120,120,120,0.8);
+}
+
+.Slide:hover + .SlideNav label {
+    opacity:0.5;
+}
+
+.SlideNav label:hover {
+    opacity:1;
+}
+
+.SlideNav .SlidePrev {
+    left:60px;
+}
+
+.SlideNav .SlideNext {
+    right:70px;
+}
+
+input:checked + .SlideContainer .Slide {
+    opacity:1;
+    -webkit-transform:scale(1);
+    transition:opacity 1s ease-in-out;
+}
+
+input:checked + .SlideContainer .SlideNav label {
+    display:block;
+}
+
+@-webkit-keyframes progressflash {
+    0% { 
+        box-shadow: 0px 0px 16px #FFFFFF;
+    }
+    20% {
+        box-shadow: 0px 0px 2px #FFFFFF;
+    }
+    40% { 
+        box-shadow: 0px 0px 16px #FFFFFF;
+    }
+    60% {
+        box-shadow: 0px 0px 2px #FFFFFF;
+    }
+    80% { 
+        box-shadow: 0px 0px 16px #FFFFFF;
+    }
+    100% {
+        box-shadow: 0px 0px 2px #FFFFFF;
+    }
 }

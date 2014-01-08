@@ -49,8 +49,47 @@ class ReportDialog extends Dialog
         echo "report dialog cb"
         DCore.Installer.finish_install()
 
-PPT_IMG_PREFIX = "/usr/share/installer/resources/installer/"
-PPT_TIMEOUT_ID = -1
+apply_progress_flash = (el, time)->
+    apply_animation(el, "progressflash", "#{time}s", "cubic-bezier(0, 0, 0.35, -1)")
+
+class SlideItem
+    constructor: (@id, @src, @slides) ->
+        index = parseInt(@id[10..])
+        if index == @slides.images.length
+            @nextid = @id[..9] + 1
+        else
+            @nextid = @id[..9] + (index + 1)
+        if index == 1
+            @previd = @id[..9] + @slides.images.length
+        else
+            @previd = @id[..9] + (index - 1)
+
+        @input = create_element("input", "SlideInput", @slides.ul)
+        @input.setAttribute("type", "radio")
+        @input.setAttribute("name", "slide")
+        @input.setAttribute("id", @id)
+        if index == 1
+            @input.setAttribute("checked", "checked")
+
+        @container = create_element("li", "SlideContainer", @slides.ul)
+        @slide = create_element("div", "Slide", @container)
+        @slide_img = create_img("", @src, @slide)
+        @navigator = create_element("div", "SlideNav", @container)
+        @prev = create_element("label", "SlidePrev", @navigator)
+        @prev.setAttribute("for", @previd)
+        @prev.innerText = "<"
+
+        @next = create_element("label", "SlideNext", @navigator)
+        @next.setAttribute("for", @nextid)
+        @next.innerText = ">"
+
+class PPtSlides
+    constructor: (@id, @images, @parent) ->
+        @ul = create_element("ul", "Slides", @parent)
+        i = 1
+        for img in @images
+            item = new SlideItem("slideitem_" + i, img, @)
+            i = i + 1
 
 class Progress extends Page
     constructor: (@id)->
@@ -63,36 +102,12 @@ class Progress extends Page
 
         @current_img = _ppt_list[0]
         @ppt = create_element("div", "Ppt", @element)
-        @canvas = create_element("canvas", "", @ppt)
-        @canvas.setAttribute("width", 750)
-        @canvas.setAttribute("height", 444)
-        DCore.Installer.draw_background(@canvas, PPT_IMG_PREFIX + @current_img)
-        @ppt.addEventListener("click", (e) =>
-            clearTimeout(PPT_TIMEOUT_ID)
-            PPT_TIMEOUT_ID = -1
-            if e.offsetX < 377
-                PPT_TIMEOUT_ID = setTimeout( ->
-                    progress_page?.switch_ppt("prev")
-                , 300)
-            else
-                PPT_TIMEOUT_ID = setTimeout( ->
-                    progress_page?.switch_ppt("next")
-                , 300)
-        )
+        ppt_slides = new PPtSlides("ppt", _ppt_list, @ppt)
         @ticker = 0
-
-    switch_ppt: (direction)->
-        if direction == "prev"
-            index = _ppt_list.indexOf(@current_img)
-            if index > 0
-                @current_img = _ppt_list[index - 1]
-        else if direction == "next"
-            index = _ppt_list.indexOf(@current_img)
-            if index < 4
-                @current_img = _ppt_list[index + 1]
-        else
-            echo "invalid direction"
-        DCore.Installer.draw_background(@canvas, PPT_IMG_PREFIX + @current_img)
+        @light.style.webkitAnimationName = "progressflash"
+        @light.style.webkitAnimationDuration = "5s"
+        @light.style.webkitAnimationIterationCount = 1000
+        @light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
 
     update_progress: (progress) ->
         @progressbar.style.width = progress
@@ -128,7 +143,7 @@ class Progress extends Page
             @show_report()
         else
             @ticker = @ticker + 1
-            pgr = 0.05 + @ticker/120*0.8
+            pgr = 0.05 + @ticker/180*0.8
             if pgr > 0.84
                 pgr = 0.84
             @update_progress(pgr*100.toFixed(2) + "%")

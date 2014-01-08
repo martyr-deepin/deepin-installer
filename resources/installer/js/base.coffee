@@ -241,8 +241,8 @@ class DropDownList extends Widget
             top = position["y"] -  height / 2 
 
         #top 30px reserved for gtk click area
-        if top < 30
-            top = 30
+        if top < 50
+            top = 50
 
         style = "left:" + left + "px;"
         style += "top:" + top + "px;"
