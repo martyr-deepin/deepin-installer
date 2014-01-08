@@ -9,6 +9,7 @@
     border-top:1px solid rgba(0,0,0,0.3);
     border-bottom:1px solid rgba(0,0,0,0.3);
     margin-left:1px;
+    overflow-x:hidden;
 }
 
 .ProgressBar {
@@ -66,7 +67,7 @@
     opacity:0;
     display:block;
     -webkit-transform:scale(0);
-    transition:all 0.7s ease-in-out;
+    -webkit-transition:all 0.7s ease-in-out;
 }
 
 .Slide img {
@@ -77,14 +78,14 @@
 .SlideNav label {
     position:absolute;
     width:60px;
-    height:200px;
-    line-height:200px;
-    margin:122px 0;
+    height:100px;
+    line-height:100px;
+    margin-top:124px;
     display:none;
     opacity:0;
     z-index:9;
     cursor:pointer;
-    transition:opacity 0.2s;
+    -webkit-transition:opacity 0.2s;
     color:#FFF;
     font-size:50px;
     text-align:center;
@@ -92,26 +93,34 @@
     text-shadow:0 0 15px rgba(120,120,120,0.8);
 }
 
+.SlideNav .SlidePrev {
+    background:url("../images/previous_normal.png") no-repeat;
+    left:0;
+}
+
+.SlideNav .SlideNext {
+    background:url("../images/next_normal.png") no-repeat;
+    right:0;
+}
+
 .Slide:hover + .SlideNav label {
     opacity:0.5;
 }
 
-.SlideNav label:hover {
+.SlideNav .SlidePrev:hover {
     opacity:1;
+    background:url("../images/previous_hover.png") no-repeat;
 }
 
-.SlideNav .SlidePrev {
-    left:60px;
-}
-
-.SlideNav .SlideNext {
-    right:70px;
+.SlideNav .SlideNext:hover {
+    opacity:1;
+    background:url("../images/next_hover.png") no-repeat;
 }
 
 input:checked + .SlideContainer .Slide {
     opacity:1;
     -webkit-transform:scale(1);
-    transition:opacity 1s ease-in-out;
+    -webkit-transition:opacity 1s ease-in-out;
 }
 
 input:checked + .SlideContainer .SlideNav label {

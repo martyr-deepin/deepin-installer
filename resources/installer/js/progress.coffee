@@ -77,11 +77,9 @@ class SlideItem
         @navigator = create_element("div", "SlideNav", @container)
         @prev = create_element("label", "SlidePrev", @navigator)
         @prev.setAttribute("for", @previd)
-        @prev.innerText = "<"
 
         @next = create_element("label", "SlideNext", @navigator)
         @next.setAttribute("for", @nextid)
-        @next.innerText = ">"
 
 class PPtSlides
     constructor: (@id, @images, @parent) ->
@@ -248,12 +246,9 @@ class Progress extends Page
         else if progress == "finish"
             echo "finish update grub"
             @update_progress("99%")
-            setTimeout( ->
-                finish_page = new Finish("finish", true)
-                pc.add_page(finish_page)
-                pc.remove_page(progress_page)
-            , 1000)
-            @update_progress("100%")
+            finish_page = new Finish("finish", true)
+            pc.add_page(finish_page)
+            pc.remove_page(progress_page)
         else if progress == "terminate"
             echo "update grub terminate"
             @show_report()
