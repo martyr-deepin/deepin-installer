@@ -37,94 +37,54 @@
     height:444px;
 }
 
-.Slides {
-    position:relative;
-    width:750px;
-    height:444px;
-    margin:0 auto;
-    padding:0;
-    display:block;
-}
-
-.Slides * {
-    -webkit-user-select:none;
-    -webkit-touch-callout:none;
-}
-
-.SlideInput {
-    display:none;
-}
-
-.SlideContainer {
-    display:block;
-}
-
-.Slide {
+.Ppt .Container {
     position:absolute;
     width:750px;
     height:444px;
-    top:0;
-    opacity:0;
-    display:block;
-    -webkit-transform:scale(0);
-    -webkit-transition:all 0.7s ease-in-out;
+    overflow:hidden;
 }
 
-.Slide img {
+.PptItem {
+    position:absolute;
+    width:750px;
+    height:444px;
+}
+
+.PptItem img {
     width:100%;
     height:100%;
 }
 
-.SlideNav label {
+.Ppt .PrevBtn {
     position:absolute;
     width:60px;
     height:100px;
-    line-height:100px;
     margin-top:124px;
-    display:none;
-    opacity:0;
-    z-index:9;
-    cursor:pointer;
-    -webkit-transition:opacity 0.2s;
-    color:#FFF;
-    font-size:50px;
-    text-align:center;
-    background-color:rgba(255,255,255,0.3);
-    text-shadow:0 0 15px rgba(120,120,120,0.8);
-}
-
-.SlideNav .SlidePrev {
     background:url("../images/previous_normal.png") no-repeat;
     left:0;
+    opacity:0;
+    z-index:100;
 }
 
-.SlideNav .SlideNext {
-    background:url("../images/next_normal.png") no-repeat;
-    right:0;
-}
-
-.Slide:hover + .SlideNav label {
+.Ppt .PrevBtn:hover {
+    background:url("../images/previous_hover.png") no-repeat;
     opacity:0.5;
 }
 
-.SlideNav .SlidePrev:hover {
-    opacity:1;
-    background:url("../images/previous_hover.png") no-repeat;
+.Ppt .NextBtn {
+    position:absolute;
+    width:60px;
+    height:100px;
+    margin-top:124px;
+    background:url("../images/next_normal.png") no-repeat;
+    right:0;
+    opacity:0;
+    z-index:100;
 }
 
-.SlideNav .SlideNext:hover {
-    opacity:1;
+.Ppt .NextBtn:hover {
     background:url("../images/next_hover.png") no-repeat;
-}
-
-input:checked + .SlideContainer .Slide {
-    opacity:1;
-    -webkit-transform:scale(1);
-    -webkit-transition:opacity 1s ease-in-out;
-}
-
-input:checked + .SlideContainer .SlideNav label {
-    display:block;
+    opacity:0.5;
 }
 
 @-webkit-keyframes progressflash {

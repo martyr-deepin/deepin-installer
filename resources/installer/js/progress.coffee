@@ -52,42 +52,113 @@ class ReportDialog extends Dialog
 apply_progress_flash = (el, time)->
     apply_animation(el, "progressflash", "#{time}s", "cubic-bezier(0, 0, 0.35, -1)")
 
-class SlideItem
-    constructor: (@id, @src, @slides) ->
-        index = parseInt(@id[10..])
-        if index == @slides.images.length
-            @nextid = @id[..9] + 1
+update_style_attr = (style, name, value) ->
+    array = style.split(";")
+    list = []
+    found = false
+    for item in array
+        if item.indexOf(name + ":") != -1
+            list.push(name + ":" + value)
+            found = true
         else
-            @nextid = @id[..9] + (index + 1)
-        if index == 1
-            @previd = @id[..9] + @slides.images.length
+            list.push(item)
+    if not found
+        list.push(name + ":" + value)
+    return list.join(";")
+
+delete_style_attr = (style, name) ->
+    array = style.split(";")
+    list = []
+    for item in array
+        if item.indexOf(name + ":") == -1
+            list.push(item)
+    return list.join(";")
+
+update_el_attr = (el, name, value) ->
+    origin = el.getAttribute("style") or ""
+    style = update_style_attr(origin, name, value)
+    el.setAttribute("style", style)
+
+delete_el_attr = (el, name) ->
+    origin = el.getAttribute("style") or ""
+    style = delete_style_attr(origin, name)
+    el.setAttribute("style", style)
+
+class PptItem extends Widget
+    constructor: (@id, @src, @ppt) ->
+        super
+        @index = parseInt(@id[7..])
+        @length = @ppt.images.length
+        @img = create_img("", @src, @element)
+        @init_position()
+
+    init_position: ->
+        if @index == 1 
+            update_el_attr(@element, "z-index", 50)
+        else if @index == @length
+            update_el_attr(@element, "z-index", 50)
         else
-            @previd = @id[..9] + (index - 1)
+            update_el_attr(@element, "z-index", 70)
+        left =  (@index + 1 - @length) * 750
+        update_el_attr(@element, "-webkit-transform", "translateX(0)")
+        update_el_attr(@element, "left", left + "px")
 
-        @input = create_element("input", "SlideInput", @slides.ul)
-        @input.setAttribute("type", "radio")
-        @input.setAttribute("name", "slide")
-        @input.setAttribute("id", @id)
-        if index == 1
-            @input.setAttribute("checked", "checked")
+    switch_prev: ->
+        if @index == 1
+            @index = @length
+        else
+            @index = @index - 1
+        update_el_attr(@element, "-webkit-transform", "translateX(-750px)")
+        update_el_attr(@element, "-webkit-transition", "all 1s linear")
 
-        @container = create_element("li", "SlideContainer", @slides.ul)
-        @slide = create_element("div", "Slide", @container)
-        @slide_img = create_img("", @src, @slide)
-        @navigator = create_element("div", "SlideNav", @container)
-        @prev = create_element("label", "SlidePrev", @navigator)
-        @prev.setAttribute("for", @previd)
+    switch_next: ->
+        if @index == @length
+            @index = 1
+        else
+            @index = @index + 1
+        update_el_attr(@element, "-webkit-transform", "translateX(750px)")
+        update_el_attr(@element, "-webkit-transition", "all 1s linear")
 
-        @next = create_element("label", "SlideNext", @navigator)
-        @next.setAttribute("for", @nextid)
-
-class PPtSlides
-    constructor: (@id, @images, @parent) ->
-        @ul = create_element("ul", "Slides", @parent)
+class Ppt extends Widget
+    constructor: (@id, @images)->
+        super
+        @container = create_element("div", "Container", @element)
+        @itemwidth = 750
+        @itemheight = 444
+        @items = []
         i = 1
         for img in @images
-            item = new SlideItem("slideitem_" + i, img, @)
+            @create_item(i, img)
             i = i + 1
+
+        @prev_btn = create_element("div", "PrevBtn", @element)
+        @prev_btn.addEventListener("click", (e) =>
+            @switch_prev()
+        )
+
+        @next_btn = create_element("div", "NextBtn", @element)
+        @next_btn.addEventListener("click", (e) =>
+            @switch_next()
+        )
+
+    create_item: (index, img) ->
+        item = new PptItem("pptitem" + index, img, @)
+        @container.appendChild(item.element)
+        @items.push(item)
+
+    switch_prev: ->
+        for item in @items
+            item.switch_next()
+            setTimeout(
+                Widget.look_up(item.id)?.init_position()
+            , 1000)
+
+    switch_next: ->
+        for item in @items
+            item.switch_prev()
+            setTimeout(
+                Widget.look_up(item.id)?.init_position()
+            , 1000)
 
 class Progress extends Page
     constructor: (@id)->
@@ -97,15 +168,15 @@ class Progress extends Page
         @progress_container = create_element("div", "ProgressContainer", @element)
         @progressbar = create_element("div", "ProgressBar", @progress_container)
         @light = create_element("div", "ProgressLight", @progress_container)
-
-        @current_img = _ppt_list[0]
-        @ppt = create_element("div", "Ppt", @element)
-        ppt_slides = new PPtSlides("ppt", _ppt_list, @ppt)
-        @ticker = 0
         @light.style.webkitAnimationName = "progressflash"
         @light.style.webkitAnimationDuration = "5s"
         @light.style.webkitAnimationIterationCount = 1000
         @light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
+
+        @ppt = new Ppt("pptslider", _ppt_list)
+        @element.appendChild(@ppt.element)
+
+        @ticker = 0
 
     update_progress: (progress) ->
         @progressbar.style.width = progress
