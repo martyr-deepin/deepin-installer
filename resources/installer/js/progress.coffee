@@ -84,6 +84,8 @@ delete_el_attr = (el, name) ->
     style = delete_style_attr(origin, name)
     el.setAttribute("style", style)
 
+__ppt_in_switch = false
+
 class PptItem extends Widget
     constructor: (@id, @src, @ppt) ->
         super
@@ -109,7 +111,7 @@ class PptItem extends Widget
         else
             @index = @index - 1
         update_el_attr(@element, "-webkit-transform", "translateX(-750px)")
-        update_el_attr(@element, "-webkit-transition", "all 1s linear")
+        update_el_attr(@element, "-webkit-transition", "all 0.5s ease-out")
 
     switch_next: ->
         if @index == @length
@@ -117,7 +119,7 @@ class PptItem extends Widget
         else
             @index = @index + 1
         update_el_attr(@element, "-webkit-transform", "translateX(750px)")
-        update_el_attr(@element, "-webkit-transition", "all 1s linear")
+        update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
 
 class Ppt extends Widget
     constructor: (@id, @images)->
@@ -133,12 +135,22 @@ class Ppt extends Widget
 
         @prev_btn = create_element("div", "PrevBtn", @element)
         @prev_btn.addEventListener("click", (e) =>
-            @switch_prev()
+            if not __ppt_in_switch
+                __ppt_in_switch = true
+                @switch_prev()
+                setTimeout(->
+                    __ppt_in_switch = false
+                , 1000)
         )
 
         @next_btn = create_element("div", "NextBtn", @element)
         @next_btn.addEventListener("click", (e) =>
-            @switch_next()
+            if not __ppt_in_switch
+                __ppt_in_switch = true
+                @switch_next()
+                setTimeout(->
+                    __ppt_in_switch = false
+                , 1000)
         )
 
     create_item: (index, img) ->
