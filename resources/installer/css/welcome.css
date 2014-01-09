@@ -311,14 +311,43 @@
     height:auto;
     margin:0px;
     padding:3px 5px;
-    background:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.6)), to(rgba(0,0,0,0.9)));
     color:#FFFFFF;
-    border:1px solid rgba(0,0,0,0.2);
     border-radius:5px;
+    background:rgba(0,0,0,1);
+    border:1px solid rgba(255,255,255,1);
+    /*
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.6)), to(rgba(0,0,0,0.9)));
     box-shadow:0 1px rgba(255,255,255,0.2) inset,
                0 -1px rgba(255,255,255,0.2) inset,
-               1px 0 rgba(255,255,255,0.2) inset,
+               1px 0 rgba(255,255,255,0.2) inset;
                -1px 0 rgba(255,255,255,0.2) inset;
+    */
+}
+
+.TimezoneTip:after, .TimezoneTip:before {
+    top:100%;
+    border:solid transparent;
+    content:"";
+    height:0;
+    width:0;
+    position:absolute;
+    pointer-events:none;
+}
+
+.TimezoneTip:after {
+    left:50%;
+    border-color:rgba(0,0,0,0);
+    border-top-color:rgba(0,0,0,1);
+    border-width:9px;
+    margin-left:-9px;
+}
+
+.TimezoneTip:before {
+    left:50%;
+    border-color:rgba(0,0,0,0);
+    border-top-color:rgba(255,255,255,1);
+    border-width:10px;
+    margin-left:-10px;
 }
 
 .Welcome .Start {
