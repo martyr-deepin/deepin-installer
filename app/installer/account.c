@@ -321,7 +321,7 @@ set_group (const gchar *username)
     groups[4] = g_strdup ("video");
     groups[5] = g_strdup ("plugdev");
     groups[6] = g_strdup ("sambashare");
-    groups[7] = g_strdup ("admin");
+    groups[7] = g_strdup ("adm");
     groups[8] = g_strdup ("wheel");
     groups[9] = g_strdup ("netdev");
     groups[10] = g_strdup ("lp");
