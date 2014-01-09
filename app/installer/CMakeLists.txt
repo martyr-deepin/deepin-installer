@@ -30,3 +30,8 @@ install(
     FILES ${PROJECT_SOURCE_DIR}/app/installer/deepin-installer.desktop
     DESTINATION /usr/share/applications/
     )
+
+install(
+    FILES ${PROJECT_SOURCE_DIR}/app/installer/com.deepin.pkexec.installer.policy
+    DESTINATION /usr/share/polkit-1/actions/
+    )

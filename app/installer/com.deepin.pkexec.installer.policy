@@ -5,7 +5,7 @@
 <policyconfig>
 
   <action id="com.deepin.pkexec.installer">
-    <message gettext-domain="installer">Authentication is required to run the Deepin Installer</message>
+    <message gettext-domain="INSTALLER">Authentication is required to run the Deepin Installer</message>
     <icon_name>installer</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
