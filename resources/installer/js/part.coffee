@@ -432,6 +432,10 @@ class PartTableItem extends Widget
                 os_img = "images/windows.png"
             else if os.toLowerCase().indexOf("mac") != -1
                 os_img = "images/apple.png"
+            else
+                echo "--------upate device os--------"
+                echo os
+                os_img = "images/linux.png"
             create_img("", os_img, @os)
 
     fill_size: ->
