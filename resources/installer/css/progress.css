@@ -46,12 +46,13 @@
 
 .PptItem {
     position:absolute;
-    width:750px;
+    width:748px;
     height:444px;
+    margin:0 0 0 2px;
 }
 
 .PptItem img {
-    width:750px;
+    width:748px;
     height:444px;
 }
 
