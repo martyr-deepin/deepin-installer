@@ -144,22 +144,10 @@ watch_extract_child (GPid pid, gint status, gpointer data)
 static gboolean
 timeout_emit_cb (gpointer data)
 {
-    //GIOChannel *channel = (GIOChannel *) data;
-    //gchar *string;
-
-    //g_io_channel_read_line (channel, &string, NULL, NULL, NULL);
-    //gchar *match = get_matched_string (string, "\\d{1,3}%");
-
-    //if (match != NULL) {
-    //    g_warning ("cb timeout: emit extract progress:%s\n", match);
-    //    emit_progress ("extract", match);
-    //}
-    //g_free (match);
-    //g_free (string);
     if (extract_finish) {
         return FALSE;
     }
-    emit_progress ("extract", "50%");
+    emit_progress ("extract", "ticker");
     return TRUE;
 }
 
@@ -193,38 +181,33 @@ void installer_extract_squashfs ()
         puse = processors - 1;
     }
 
-    gchar **argv = g_new0 (gchar *, 8);
+    gchar **argv = g_new0 (gchar *, 9);
     argv[0] = g_strdup ("unsquashfs");
     argv[1] = g_strdup ("-f");
-    argv[2] = g_strdup ("-p");
-    argv[3] = g_strdup_printf ("%d", puse);
-    argv[4] = g_strdup ("-d");
-    argv[5] = g_strdup (target);
-    argv[6] = g_strdup ("/cdrom/casper/filesystem.squashfs");
+    argv[2] = g_strdup ("-n");
+    argv[3] = g_strdup ("-p");
+    argv[4] = g_strdup_printf ("%d", puse);
+    argv[5] = g_strdup ("-d");
+    argv[6] = g_strdup (target);
+    argv[7] = g_strdup ("/cdrom/casper/filesystem.squashfs");
 
-    gint std_output;
     GError *error = NULL;
     GPid pid;
-    GIOChannel *out_channel = NULL;
     guint cb_id = 0;
 
-    g_spawn_async_with_pipes (NULL,
-                              argv,
-                              NULL,
-                              G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
-                              NULL,
-                              NULL,
-                              &pid,
-                              NULL,
-                              &std_output,
-                              NULL,
-                              &error);
+    g_spawn_async (NULL,
+                   argv,
+                   NULL,
+                   G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
+                   NULL,
+                   NULL,
+                   &pid,
+                   &error);
     if (error != NULL) {
         g_warning ("extract squashfs:spawn async pipes %s\n", error->message);
         g_error_free (error);
     }
-    out_channel = g_io_channel_unix_new (std_output);
-    cb_id = g_timeout_add (1000, (GSourceFunc) timeout_emit_cb, out_channel);
+    cb_id = g_timeout_add (1000, (GSourceFunc) timeout_emit_cb, NULL);
     g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, &cb_id);
 
     g_strfreev (argv);

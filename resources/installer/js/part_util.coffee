@@ -321,7 +321,6 @@ do_simple_partition = (device, type) ->
         else if m_part_info[device]["type"] in ["normal", "logical"]
             update_part_fs(device,"ext4")
             update_part_mp(device,"/")
-            echo "------------------------update part mp in simple mode"
         else
             echo "invalid as extended doesn't show in simple view"
     else
