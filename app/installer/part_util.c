@@ -62,7 +62,7 @@ thread_os_prober (gpointer data)
     if (cmd == NULL) {
         g_warning ("os:os-prober not installed\n");
     }
-    g_spawn_command_line_async ("pkill -9 os-prober", NULL);
+    g_spawn_command_line_sync ("pkill -9 os-prober", NULL, NULL, NULL, NULL);
 
     gchar *output = NULL;
     GError *error = NULL;
@@ -79,7 +79,7 @@ thread_os_prober (gpointer data)
         gchar **os = g_strsplit (item, ":", -1);
 
         if (g_strv_length (os) == 4) {
-            //g_printf ("get partition os:insert key %s value %s\n", os[0], os[2]);
+            //g_warning ("get partition os:insert key %s value %s\n", os[0], os[2]);
             g_hash_table_insert (partition_os, g_strdup (os[0]), g_strdup (os[2]));
         }
 

@@ -456,6 +456,17 @@ init_v_part_info = ->
                 v_part_info[part]["label"] = null
                 v_part_info[part]["lvm"] = null
 
+sync_part_os = ->
+    for disk in disks
+        for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["type"] != "freespace"
+                v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
+        for part in m_disk_info[disk]["partitions"]
+            m_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
+        if Widget.look_up("part_table")?
+            for item in Widget.look_up("part_table").partitems
+                item.update_device_os()
+
 _sort_part_geom = (part_a, part_b) ->
     if v_part_info[part_a]["start"] == v_part_info[part_b]["start"]
         if v_part_info[part_a]["type"] == "extended"

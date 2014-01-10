@@ -421,7 +421,10 @@ class PartTableItem extends Widget
 
     update_device_os: ->
         @os.innerHTML = ""
-        os = DCore.Installer.get_partition_os(@id)
+        if __selected_mode == "simple"
+            os = m_part_info[@id]["os"]
+        else
+            os = v_part_info[@id]["os"]
         if os? and os.length > 2
             if os.toLowerCase().indexOf("deepin") != -1
                 os_img = "images/deepin.png"
@@ -636,17 +639,20 @@ class PartTable extends Widget
 
     fill_items: ->
         @items.innerHTML = ""
+        @partitems = []
         disk = __selected_disk
         if __selected_mode == "advance"
             for part in v_disk_info[disk]["partitions"]
                 if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
                     item = new PartTableItem(part)
                     @items.appendChild(item.element)
+                    @partitems.push(item)
         else
             for part in m_disk_info[disk]["partitions"]
                 if m_part_info[part]["type"] in ["normal", "logical"] and m_part_info[part]["op"] != "add"
                     item = new PartTableItem(part)
                     @items.appendChild(item.element)
+                    @partitems.push(item)
             
     update_mode: (mode) ->
         if __selected_item?

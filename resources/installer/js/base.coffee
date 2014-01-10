@@ -32,6 +32,8 @@ DCore.signal_connect("init_parted", (msg) ->
 DCore.signal_connect("os_prober", (msg) ->
     echo "signal tell os-prober finish"
     __os_prober_finish = true
+    if __init_parted_finish
+        sync_part_os()
 )
 
 DCore.Installer.emit_webview_ok()
