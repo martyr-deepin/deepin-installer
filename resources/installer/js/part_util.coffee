@@ -1040,6 +1040,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
     disk = v_part_info[free_part]["disk"]
     v_part_info[new_part] = {}
     v_part_info[new_part]["disk"] = disk
+    v_part_info[new_part]["color"] = v_part_info[free_part]["color"]
 
     if type == "normal"
         _add_normal(disk, free_part)

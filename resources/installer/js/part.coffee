@@ -364,8 +364,6 @@ class PartTableItem extends Widget
         @lock = create_element("span", "Lock", @device)
         @os = create_element("span", "Os", @device)
         @color = create_element("span", "Color", @device)
-        color_value = Widget.look_up(@lineid)?.color or get_random_color()
-        @color.style.background = color_value
         @lp = create_element("span", "LabelPath", @device)
         @label = create_element("div", "Label", @lp)
         @path = create_element("div", "Path", @lp)
@@ -389,6 +387,8 @@ class PartTableItem extends Widget
             else
                 @label.style.display = "none"
                 @path.setAttribute("style", "margin:10px 0;")
+            color_value = v_part_info[@id]["color"]
+            @color.style.background = color_value
         else if __selected_mode == "simple"
             if m_part_info[@id]["type"] != "freespace"
                 @path.innerText = m_part_info[@id]["path"]
@@ -402,6 +402,8 @@ class PartTableItem extends Widget
             else
                 @label.style.display = "none"
                 @path.setAttribute("style", "margin:10px 0;")
+            color_value = m_part_info[@id]["color"]
+            @color.style.background = color_value
         @update_device_os()
 
     show_detail_label: ->
@@ -547,8 +549,11 @@ class PartTableItem extends Widget
             if m_part_info[@id]["lvm"]? and m_part_info[@id]["lvm"] == true
                 lvm = true
 
-        if DCore.Installer.get_partition_busy(@id) or lvm
+        if lvm
             @lock_busy()
+        else if @id in m_disk_info[__selected_disk]["partitions"]
+            if DCore.Installer.get_partition_busy(@id)
+                @lock_busy()
         else
             @unbusy()
 
