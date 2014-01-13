@@ -637,7 +637,6 @@ gboolean installer_get_partition_busy (const gchar *part)
         }
     } else {
         g_warning ("get partition busy:find pedpartition %s failed\n", part);
-        busy = TRUE;
     }
 
     return busy;
