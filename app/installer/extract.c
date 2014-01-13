@@ -168,6 +168,11 @@ void installer_extract_squashfs ()
         emit_progress ("extract", "terminate");
         return;
     }
+
+    gchar *share = g_strdup_printf ("%s%s", target, "/usr/share");
+    g_rmdir (share);
+    g_free (share);
+
     const gchar *iso = "/cdrom/casper/filesystem.squashfs";
     if (!g_file_test (iso, G_FILE_TEST_EXISTS)) {
         g_warning ("extract squashfs:iso not exists\n");

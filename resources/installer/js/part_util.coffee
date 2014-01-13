@@ -378,9 +378,19 @@ __sync_part_mp = ->
 #don't need to __sync_part_mp as we manuly operate the view table
 mount_custom_partitions = ->
     echo "mount custom partitions"
+    target = get_target_part()
+    if target?
+        try
+            DCore.Installer.mount_partition(target, "/")
+        catch error
+            echo error
+    else
+        echo "mount custom partitions must have root"
+        return
+
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
-            if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused"
+            if v_part_info[part]["mp"]? and v_part_info[part]["mp"] not in ["unused", "/"]
                 try
                     DCore.Installer.mount_partition(part, v_part_info[part]["mp"])
                 catch error
