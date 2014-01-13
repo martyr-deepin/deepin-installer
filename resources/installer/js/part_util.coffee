@@ -251,8 +251,8 @@ do_partition = ->
                                 DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
                             catch error
                                 echo error
-                    if m_part_info[part]["mp"] != v_part_info[part]["mp"]
-                        echo "mp changed"
+                    #if m_part_info[part]["mp"] != v_part_info[part]["mp"]
+                        #echo "--------mp changed--------"
                     try
                         DCore.Installer.write_disk(disk)
                     catch error
@@ -673,6 +673,10 @@ can_add_logical = (part) ->
 #Control
 #Control: communicate with model and view
 update_part_fs = (part, fs) ->
+    echo "--------update part fs--------"
+    echo part
+    echo v_part_info[part]["path"]
+    echo fs
     v_part_info[part]["fs"] = fs
     mark_update(part)
 
@@ -681,6 +685,10 @@ update_part_format = (part, format) ->
     mark_update(part)
 
 update_part_mp = (part, mp) ->
+    echo "--------update part mp--------"
+    echo part
+    echo v_part_info[part]["path"]
+    echo mp 
     v_part_info[part]["mp"] = mp
     mark_update(part)
 

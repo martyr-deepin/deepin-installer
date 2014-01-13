@@ -152,6 +152,9 @@ class Ppt extends Widget
                     __ppt_in_switch = false
                 , 1000)
         )
+        setInterval(->
+            Widget.look_up("pptslider")?.switch_next()
+        ,5000)
 
     create_item: (index, img) ->
         item = new PptItem("pptitem" + index, img, @)

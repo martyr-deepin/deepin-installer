@@ -327,9 +327,7 @@ class PartLineItem extends Widget
         @element.setAttribute("class", "PartLineItem")
 
     do_click: (e)->
-        if __selected_line == @ 
-            echo "part line item already selected"
-        else
+        if __selected_line != @ 
             @focus()
 
 class PartLineMaps extends Widget
@@ -434,6 +432,10 @@ class PartTableItem extends Widget
                 os_img = "images/windows.png"
             else if os.toLowerCase().indexOf("mac") != -1
                 os_img = "images/apple.png"
+            else
+                echo "--------upate device os--------"
+                echo os
+                os_img = "images/linux.png"
             create_img("", os_img, @os)
 
     fill_size: ->
@@ -558,9 +560,7 @@ class PartTableItem extends Widget
         @element.setAttribute("style", "")
 
     do_click: (e)->
-        if __selected_item == @ 
-            echo "part table item already selected"
-        else
+        if __selected_item != @ 
             @focus()
 
     lock_busy: ->
@@ -589,8 +589,6 @@ class DiskTabItem extends Widget
     do_click: (e) ->
         if __selected_disk_item != @
             @focus()
-        else
-            echo "disk tab item already selected"
 
     blur: ->
         __selected_disk_item = null

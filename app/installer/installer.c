@@ -133,7 +133,7 @@ void installer_emit_webview_ok ()
     if (!inited) {
         inited = TRUE;
         init_parted ();
-        inhibit_disk ();
+        //inhibit_disk ();
     }
 }
 

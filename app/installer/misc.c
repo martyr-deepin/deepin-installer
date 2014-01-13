@@ -609,6 +609,7 @@ finish_install_cleanup ()
             }
             chroot (".");
         }
+        in_chroot = FALSE;
     }
     unmount_target ();
     ped_device_free_all ();
