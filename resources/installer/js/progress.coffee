@@ -208,10 +208,10 @@ class Progress extends Page
         if progress == "start"
             echo "start handle extract"
             try
-                mount_custom_partitions()
-                @update_progress("5%")
-                #echo "mount custom partitions finish"
-                DCore.Installer.extract_intelligent()
+                if mount_custom_partitions()
+                    @update_progress("5%")
+                    #echo "mount custom partitions finish"
+                    DCore.Installer.extract_intelligent()
             catch error
                 echo error
         else if progress == "finish"

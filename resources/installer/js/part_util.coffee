@@ -381,12 +381,14 @@ mount_custom_partitions = ->
     target = get_target_part()
     if target?
         try
-            DCore.Installer.mount_partition(target, "/")
+            ret = DCore.Installer.mount_partition(target, "/")
         catch error
-            echo error
+            return false
+        if not ret
+            return false
     else
         echo "mount custom partitions must have root"
-        return
+        return false
 
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
@@ -395,6 +397,7 @@ mount_custom_partitions = ->
                     DCore.Installer.mount_partition(part, v_part_info[part]["mp"])
                 catch error
                     echo error
+    return true
 
 #write /etc/fstab, after extract iso
 write_fs_tab = ->
