@@ -380,10 +380,7 @@ class PartTableItem extends Widget
             else
                 @path.innerText = "freespace"
             if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
-                if v_part_info[@id]["label"].length > 12
-                    @label.innerText = v_part_info[@id]["label"].substring(0,12) + "..."
-                else
-                    @label.innerText = v_part_info[@id]["label"]
+                @label.innerText = v_part_info[@id]["label"]
             else
                 @label.style.display = "none"
                 @path.setAttribute("style", "margin:10px 0;")
@@ -395,10 +392,7 @@ class PartTableItem extends Widget
             else
                 @path.innerText = "freespace"
             if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
-                if m_part_info[@id]["label"].length > 12
-                    @label.innerText = m_part_info[@id]["label"].substring(0,12) + "..."
-                else
-                    @label.innerText = m_part_info[@id]["label"]
+                @label.innerText = m_part_info[@id]["label"]
             else
                 @label.style.display = "none"
                 @path.setAttribute("style", "margin:10px 0;")

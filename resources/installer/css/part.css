@@ -272,6 +272,7 @@
     line-height:20px;
     max-height:40px;
     text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 .PartTableItem .LabelDetail {
