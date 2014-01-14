@@ -644,7 +644,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         return ;
     }
 
-    g_spawn_command_line_async (cmd, &error);
+    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("set partition filesystem %s\n", error->message);
         g_error_free (error);
