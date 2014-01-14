@@ -367,6 +367,33 @@ JSObjectRef installer_get_disk_partitions (const gchar *disk)
     return array;
 }
 
+JS_EXPORT_API 
+gboolean installer_is_support_uefi ()
+{
+    gboolean support = FALSE;
+    GList *peddisks;
+    if (!g_file_test ("/sys/firmware/efi", G_FILE_TEST_IS_DIR)) {
+        goto out;
+    }
+
+    peddisks = g_hash_table_get_values (disks);
+    int i;
+    for (i = 0; i < g_list_length (peddisks); i++) {
+        PedDisk *disk = (PedDisk *) g_list_nth_data (peddisks, i);
+        if ((disk->type != NULL) && (g_strcmp0 ("gpt", disk->type->name) == 0)) {
+            support = TRUE;
+            goto out;
+        }
+    }
+    goto out;
+
+out:
+    if (peddisks != NULL) { 
+       g_list_free (peddisks);
+    }
+    return support;
+}
+
 //generally, you should get device speed by disk, not partition
 JS_EXPORT_API 
 void installer_is_device_slow (const gchar *uuid)
@@ -500,20 +527,6 @@ gchar* installer_get_partition_mp (const gchar *part)
 
     g_free (path);
     return mp;
-}
-
-//when dectect mount partition, tell user to unmount them
-JS_EXPORT_API
-void installer_unmount_partition (const gchar *part)
-{
-    gchar *mp = installer_get_partition_mp (part);
-    if (mp == NULL || !g_file_test (mp, G_FILE_TEST_EXISTS)) {
-        return ;
-    }
-    gchar *cmd = g_strdup_printf ("umount -l %s", mp);
-    g_spawn_command_line_async (cmd, NULL);
-    g_free (mp);
-    g_free (cmd);
 }
 
 JS_EXPORT_API
@@ -1124,3 +1137,18 @@ out:
     }
     return result;
 }
+
+//when dectect mount partition, tell user to unmount them
+JS_EXPORT_API
+void installer_unmount_partition (const gchar *part)
+{
+    gchar *mp = installer_get_partition_mp (part);
+    if (mp == NULL || !g_file_test (mp, G_FILE_TEST_EXISTS)) {
+        return ;
+    }
+    gchar *cmd = g_strdup_printf ("umount -l %s", mp);
+    g_spawn_command_line_async (cmd, NULL);
+    g_free (mp);
+    g_free (cmd);
+}
+

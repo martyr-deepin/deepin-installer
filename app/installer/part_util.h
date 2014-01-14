@@ -44,6 +44,8 @@ JS_EXPORT_API double installer_get_disk_sector_size (const gchar *disk);
 
 JS_EXPORT_API JSObjectRef installer_get_disk_partitions (const gchar *disk);
 
+JS_EXPORT_API gboolean installer_is_support_uefi ();
+
 JS_EXPORT_API void installer_is_device_slow (const gchar *uuid);
 
 JS_EXPORT_API gchar* installer_get_partition_type (const gchar *part);
@@ -53,8 +55,6 @@ JS_EXPORT_API gchar* installer_get_partition_name (const gchar *part);
 JS_EXPORT_API gchar* installer_get_partition_path (const gchar *part);
 
 JS_EXPORT_API gchar* installer_get_partition_mp (const gchar *part);
-
-JS_EXPORT_API void installer_unmount_partition (const gchar *part);
 
 JS_EXPORT_API double installer_get_partition_start (const gchar *part);
 
@@ -89,5 +89,7 @@ JS_EXPORT_API gboolean installer_set_partition_flag (const gchar *part, const gc
 JS_EXPORT_API gboolean installer_write_disk (const gchar *disk);
 
 JS_EXPORT_API gboolean installer_mount_partition (const gchar *part, const gchar *mp);
+
+JS_EXPORT_API void installer_unmount_partition (const gchar *part);
 
 #endif
