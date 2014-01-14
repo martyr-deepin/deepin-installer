@@ -34,6 +34,7 @@ static GHashTable *partition_os = NULL;
 const gchar *target;
 int chroot_fd;
 gboolean in_chroot = FALSE;
+GList *mounted_list = NULL;
 
 JS_EXPORT_API 
 gchar* installer_rand_uuid ()
@@ -1113,6 +1114,7 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
     if (after != before + 1) {
         g_warning ("mount partition:mount path %s wifth fs %s count from %d to %d\n", path, fs, before, after);
     } else {
+        mounted_list = g_list_append (mounted_list, g_strdup (mount_target));
         result = TRUE;
     }
     goto out;

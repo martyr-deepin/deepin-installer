@@ -506,6 +506,13 @@ unmount_target ()
     g_spawn_command_line_async (umount_proc_cmd, NULL);
     g_spawn_command_line_async (umount_devpts_cmd, NULL);
     g_spawn_command_line_async (umount_dev_cmd, NULL);
+    extern GList *mounted_list;
+    int i;
+    for (i = 0 ; i < g_list_length (mounted_list); i++) {
+        gchar *umount_cmd = g_strdup_printf ("umount -l %s", (gchar *) g_list_nth_data (mounted_list, i));
+        g_spawn_command_line_async (umount_cmd, NULL);
+        g_free (umount_cmd);
+    }
     g_spawn_command_line_async (umount_target_cmd, NULL);
 
     while (g_file_test (target, G_FILE_TEST_EXISTS)) {
@@ -515,6 +522,7 @@ unmount_target ()
         }
     }
 
+    g_list_free_full (mounted_list, g_free);
     g_free (umount_sys_cmd);
     g_free (umount_proc_cmd);
     g_free (umount_devpts_cmd);
