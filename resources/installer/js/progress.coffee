@@ -85,6 +85,7 @@ delete_el_attr = (el, name) ->
     el.setAttribute("style", style)
 
 __ppt_in_switch = false
+__ppt_switch_id = -1
 
 class PptItem extends Widget
     constructor: (@id, @src, @ppt) ->
@@ -152,7 +153,7 @@ class Ppt extends Widget
                     __ppt_in_switch = false
                 , 1000)
         )
-        setInterval(->
+        __ppt_switch_id = setInterval(->
             Widget.look_up("pptslider")?.switch_next()
         ,5000)
 
@@ -162,18 +163,26 @@ class Ppt extends Widget
         @items.push(item)
 
     switch_prev: ->
+        clearInterval(__ppt_switch_id)
         for item in @items
             item.switch_next()
             setTimeout(
                 Widget.look_up(item.id)?.init_position()
             , 1000)
+        __ppt_switch_id = setInterval(->
+            Widget.look_up("pptslider")?.switch_next()
+        ,5000)
 
     switch_next: ->
+        clearInterval(__ppt_switch_id)
         for item in @items
             item.switch_prev()
             setTimeout(
                 Widget.look_up(item.id)?.init_position()
             , 1000)
+        __ppt_switch_id = setInterval(->
+            Widget.look_up("pptslider")?.switch_next()
+        ,5000)
 
 class Progress extends Page
     constructor: (@id)->
