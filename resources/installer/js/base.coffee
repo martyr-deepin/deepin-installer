@@ -374,6 +374,69 @@ class DropDown extends Widget
     set_item_left: (offset) ->
         @itemleft = offset
 
+class TimezoneToolTip extends Widget
+    constructor: (@id)->
+        super
+        @container = create_element("div", "Container", @element)
+        @canvas = create_element("canvas", "Canvas", @container)
+        @content = create_element("div", "Content", @container)
+
+        @arrowwidth = 18
+        @arrowheight = 10
+        @xpadding = 5
+        @ypadding = 0
+        @radius = 8
+        @offshadow = 5
+        @offradius = 4
+
+        @height = @content.clientHeight - 2 * @offradius
+        @canvas.width = content.clientWidth + 2 * (@xpadding + @radius + @offshadow)
+        @canvas.height = @height + 2 * (@ypadding + @radius + @offshadow) + @arrowheight
+
+        @ytop = @offshadow + @radius
+        @ybottom = @ytop + @height + 2 * @ypadding
+        @xleft = @offshadow + @radius
+        @xright = @xleft + 2 * @xpadding + content.clientWidth
+
+    draw: ->
+        ctx = @canvas.getContext("2d")
+        ctx.save()
+        ctx.beginPath()
+
+        #top left radius
+        ctx.moveTo(@offshadow, @ytop)
+        ctx.arc(@xleft, @ytop, @radius, Math.PI, Math.PI * 1.5)
+        #top right radius
+        ctx.lineTo(@xright, @offshadow)
+        ctx.arc(@xright, @ytop, @radius, Math.PI * 1.5, Math.PI * 2)
+        #bottom right radius
+        ctx.lineTo(@xright + @radius, @ybottom)
+        ctx.arc(@xright, @ybottom, @radius, 0, Math.PI * 0.5)
+        #bottom right line
+        ctx.lineTo(@xleft + @xpadding + (@content.clientWidth + @arrowwidth) / 2, @ybottom + @radius)
+        #arrow
+        ctx.lineTo(@xleft + @xpadding + @content.clientWidth / 2, @ybottom + @radius + @arrowheight)
+        ctx.lineTo(@xleft + @xpadding + (@content.clientWidth - @arrowwidth) / 2, @ybottom + @radius)
+        #bottom left line
+        ctx.lineTo(@xleft, @ybottom + @radius)
+        #bottom left radius
+        ctx.arc(@xleft, @ybottom, @radius, Math.PI * 0.5, Math.PI)
+
+        ctx.closePath()
+        ctx.shadowBlur = 7
+        ctx.shadowColor = "rgba(0,0,0,0.5)"
+        ctx.shadowOffsetY = 1
+        ctx.strokeStyle = "rgba(255,255,255,0.7)"
+        ctx.lineWidth = 1
+        ctx.stroke()
+
+        grd = ctx.createLinearGradient(0,0,0, @height + 2 * (@ypadding + @radius) + @arrowheight)
+        grd.addColorStop(0, "rgba(0,0,0,0.7)")
+        grd.addColorStop(1, "rgba(0,0,0,0.9)")
+        ctx.fillStyle = grd
+        ctx.fill()
+        ctx.restore()
+
 class Page extends Widget
     constructor: (@id)->
         super
