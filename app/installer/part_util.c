@@ -370,10 +370,9 @@ JSObjectRef installer_get_disk_partitions (const gchar *disk)
 JS_EXPORT_API 
 gboolean installer_is_support_uefi ()
 {
-    gboolean support = FALSE;
     GList *peddisks;
     if (!g_file_test ("/sys/firmware/efi", G_FILE_TEST_IS_DIR)) {
-        goto out;
+        return FALSE;
     }
 
     peddisks = g_hash_table_get_values (disks);
@@ -381,17 +380,10 @@ gboolean installer_is_support_uefi ()
     for (i = 0; i < g_list_length (peddisks); i++) {
         PedDisk *disk = (PedDisk *) g_list_nth_data (peddisks, i);
         if ((disk->type != NULL) && (g_strcmp0 ("gpt", disk->type->name) == 0)) {
-            support = TRUE;
-            goto out;
+            return TRUE;
         }
     }
-    goto out;
-
-out:
-    if (peddisks != NULL) { 
-       g_list_free (peddisks);
-    }
-    return support;
+    return FALSE;
 }
 
 //generally, you should get device speed by disk, not partition
