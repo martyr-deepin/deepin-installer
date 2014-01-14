@@ -255,6 +255,22 @@ input:focus {
     background:rgba(255,255,255,0.2);
 }
 
+.TimezoneToolTip {
+    position:absolute;
+    text-align:center;
+}
+
+.TimezoneToolTip .Canvas {
+    position:relative;
+}
+
+.TimezoneToolTip .Content {
+    color:white;
+    position:absolute;
+    width:auto;
+    height:auto;
+}
+
 ::-webkit-scrollbar {
     background:rgba(255,255,255,0.15);
 }

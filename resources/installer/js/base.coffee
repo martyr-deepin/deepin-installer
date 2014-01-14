@@ -375,11 +375,11 @@ class DropDown extends Widget
         @itemleft = offset
 
 class TimezoneToolTip extends Widget
-    constructor: (@id)->
+    constructor: (@id, @text)->
         super
-        @container = create_element("div", "Container", @element)
-        @canvas = create_element("canvas", "Canvas", @container)
-        @content = create_element("div", "Content", @container)
+        @canvas = create_element("canvas", "Canvas", @element)
+        @content = create_element("div", "Content", @element)
+        @content.innerText = @text
 
         @arrowwidth = 18
         @arrowheight = 10
@@ -389,16 +389,19 @@ class TimezoneToolTip extends Widget
         @offshadow = 5
         @offradius = 4
 
+    draw: ->
         @height = @content.clientHeight - 2 * @offradius
-        @canvas.width = content.clientWidth + 2 * (@xpadding + @radius + @offshadow)
+        @canvas.width = @content.clientWidth + 2 * (@xpadding + @radius + @offshadow)
         @canvas.height = @height + 2 * (@ypadding + @radius + @offshadow) + @arrowheight
 
         @ytop = @offshadow + @radius
         @ybottom = @ytop + @height + 2 * @ypadding
         @xleft = @offshadow + @radius
-        @xright = @xleft + 2 * @xpadding + content.clientWidth
+        @xright = @xleft + 2 * @xpadding + @content.clientWidth
 
-    draw: ->
+        @content.style.top = @offshadow + @ypadding + @radius - @offradius
+        @content.style.left = @offshadow + @xpadding + @radius
+
         ctx = @canvas.getContext("2d")
         ctx.save()
         ctx.beginPath()
@@ -436,6 +439,7 @@ class TimezoneToolTip extends Widget
         ctx.fillStyle = grd
         ctx.fill()
         ctx.restore()
+
 
 class Page extends Widget
     constructor: (@id)->

@@ -323,13 +323,14 @@ class Timezone extends Widget
         style = "left:" + x + "px;" + "top:" + y + "px"
         @pin.setAttribute("style", style)
 
-        #@tip = create_element("div", "TimezoneTip", @pin)
-        #@tip.innerText = area.getAttribute("data-timezone").split("/")[1]
-        #@tip.style.top = "-30px"
-        #@tip.style.left = (0 - @tip.offsetWidth/2 + 7) + "px"
-        @tip = new TimezoneToolTip("timezone")
-        @tip.content.innerText = area.getAttribute("data-timezone").split("/")[1]
+        text = area.getAttribute("data-timezone").split("/")[1]
+        if @tip?
+            @tip.destroy()
+        @tip = new TimezoneToolTip("timezone", text)
         @pin.appendChild(@tip.element)
+        left = @tip.content.clientWidth + 2 * (@tip.radius + @tip.xpadding) - 2
+        @tip.element.style.top = "-40px"
+        @tip.element.style.left = (0 - left / 2) + "px"
         @tip.draw()
 
     draw_timezone: (myarea) ->
