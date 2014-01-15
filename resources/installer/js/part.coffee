@@ -260,6 +260,17 @@ class RootDialog extends Dialog
     need_root_cb: ->
         echo "need mount root to do install"
 
+class UefiDialog extends Dialog
+    constructor: (@id) ->
+        super(@id, false, @uefi_require_cb)
+        @add_css_class("DialogCommon")
+        @title_txt.innerText = _("Install tips")
+        @root_tips = create_element("div", "", @content)
+        @root_tips.innerText = _("Uefi needs mount a fat32 part to /boot whose size less than 200M.")
+
+    uefi_require_cb: ->
+        echo "uefi require cb"
+
 class InstallDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @confirm_install_cb)
@@ -273,20 +284,11 @@ class InstallDialog extends Dialog
         progress_page = new Progress("progress")
         progress_page.update_progress("0%")
 
+        pc.remove_page(part_page)
+        pc.add_page(progress_page)
         if __selected_mode == "simple"
-            __selected_grub = __selected_disk
-            pc.remove_page(part_page)
-            pc.add_page(progress_page)
             do_simple_partition(__selected_item.id, "part")
-
         else if __selected_mode == "advance"
-            grub = Widget.look_up("part")?.grub_dropdown
-            if grub?
-                __selected_grub = grub.get_selected()
-            else
-                __selected_grub = __selected_disk
-            pc.remove_page(part_page)
-            pc.add_page(progress_page)
             do_partition()
         progress_page.update_progress("2%")
         __selected_stage = "extract"
@@ -781,12 +783,25 @@ class Part extends Page
             @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
         )
         @next_btn.addEventListener("click", (e) =>
-            if __selected_mode == "advance" and not check_target_part()
-                @root_model = new RootDialog("RootModel")
-                document.body.appendChild(@root_model.element)
+            if __selected_mode == "advance"
+                target = get_target_part()
+                if not target?
+                    @root_model = new RootDialog("RootModel")
+                    document.body.appendChild(@root_model.element)
+                    return
+                __selected_grub = @grubdropdown?.get_selected()
+                if not __selected_grub
+                    __selected_grub = v_part_info[target]["disk"]
+                if __selected_grub == "uefi"
+                    if not check_part_for_uefi()
+                        @uefi_model = new UefiDialog("UefiModel")
+                        document.body.appendChild(@root_model.element)
+                        return
             else
-                @install_model = new InstallDialog("InstallModel")
-                document.body.appendChild(@install_model.element)
+                __selected_grub = __selected_disk
+
+            @install_model = new InstallDialog("InstallModel")
+            document.body.appendChild(@install_model.element)
         )
         @init_part_page()
 
