@@ -334,6 +334,15 @@ class Progress extends Page
                 boot = get_boot_part()
                 if boot?
                     try
+                        DCore.Installer.set_partition_flag(boot, "boot", 1)
+                    catch error
+                        echo error
+                    disk = v_part_info[boot]["disk"]
+                    try
+                        DCore.Installer.write_disk(disk)
+                    catch error
+                        echo error
+                    try
                         DCore.Installer.update_bootloader(boot, true)
                     catch error
                         echo error
