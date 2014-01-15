@@ -348,14 +348,16 @@ class PartTableItem extends Widget
         super
         @lineid = "line" + @id
         @active = false
-        @device = create_element("span", "", @element)
-        @size = create_element("div", "", @element)
-        @used = create_element("div", "", @element)
-        @fs = create_element("div", "Fs", @element)
-        @mount = create_element("span", "Mount", @element)
+        @device = create_element("div", "Fat", @element)
+        @size = create_element("div", "Thin", @element)
+        @used = create_element("div", "Thin", @element)
+        @format = create_element("div", "Thin", @element)
+        @fs = create_element("div", "Thin", @element)
+        @mount = create_element("div", "Thin", @element)
         @fill_device()
         @fill_size()
         @fill_used()
+        @fill_format()
         @fill_fs()
         @fill_mount()
 
@@ -459,6 +461,13 @@ class PartTableItem extends Widget
             @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(2) + "GB"
         else
             @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(2) + "GB"
+
+    fill_format: ->
+        @format.innerText = "format"
+        if __selected_mode == "advance"
+            @format.style.display = "block"
+        else
+            @format.style.display = "none"
 
     fill_fs: ->
         @fs.innerHTML = ""
@@ -615,18 +624,23 @@ class PartTable extends Widget
 
         @disk_content = create_element("div", "PartContent", @element)
         @header = create_element("div", "PartTableHeader", @disk_content)
-        @device_header = create_element("span", "", @header)
+        @device_header = create_element("div", "Fat", @header)
         @device_header.innerText = _("Device")
-        @size_header = create_element("div", "", @header)
+        @size_header = create_element("div", "Thin", @header)
         @size_header.innerText = _("Size")
-        @used_header = create_element("div", "", @header)
+        @used_header = create_element("div", "Thin", @header)
         @used_header.innerText = _("Free Space")
-        @fs_header = create_element("div", "", @header)
+        @format_header = create_element("div", "Thin", @header)
+        @format_header.innerText = _("Format")
+        @fs_header = create_element("div", "Thin", @header)
         @fs_header.innerText = _("Filesystem")
-        @mount_header = create_element("span", "", @header)
         if __selected_mode == "advance"
+            @format_header.style.display = "block"
+            @mount_header = create_element("div", "Thin", @header)
             @mount_header.innerText = _("Mount point")
         else
+            @format_header.style.display = "none"
+            @mount_header = create_element("div", "Fat", @header)
             @mount_header.innerText = _("Information")
 
         @items = create_element("div", "PartTableItems", @disk_content)
@@ -664,10 +678,14 @@ class PartTable extends Widget
         else 
             id = null
         if mode == "advance"
+            @format_header.style.display = "block"
+            @mount_header.setAttribute("class", "Thin")
             @mount_header.innerText = _("Mount point")
             @items.setAttribute("style", "height:180px")
             @element.setAttribute("style", "top:140px;height:230px;")
         else
+            @format_header.style.display = "none"
+            @mount_header.setAttribute("class", "Fat")
             @mount_header.innerText = _("Information")
             @items.setAttribute("style", "")
             @element.setAttribute("style", "")

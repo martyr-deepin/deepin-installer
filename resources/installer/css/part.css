@@ -177,7 +177,7 @@
     box-shadow:0 1px rgba(255,255,255,0.2);
 }
 
-.PartTableHeader span {
+.PartTableHeader .Fat {
     float:left;
     width:199px;
     height:26px;
@@ -186,7 +186,7 @@
     box-shadow:inset 1px 0 rgba(255,255,255,0.2);
 }
 
-.PartTableHeader div {
+.PartTableHeader .Thin {
     float:left;
     width:99px;
     height:26px;
@@ -211,14 +211,14 @@
     clear:both;
 }
 
-.PartTableItem >span {
+.PartTableItem .Fat {
     width:200px;
     height:40px;
     line-height:40px;
     float:left;
 }
 
-.PartTableItem >div {
+.PartTableItem .Thin {
     width:100px;
     height:40px;
     line-height:40px;
@@ -288,14 +288,8 @@
     box-shadow:0 1px 3px rgba(0,0,0,0.7);
 }
 
-.PartTableItem .Fs .DropDown {
+.PartTableItem .DropDown {
     margin:8px 0;
-    color:rgba(0,0,0,0.8);
-    text-shadow:0 1px rgba(0,0,0,0.2);
-}
-
-.PartTableItem .Mount .DropDown {
-    margin:8px 50px;
     color:rgba(0,0,0,0.8);
     text-shadow:0 1px rgba(0,0,0,0.2);
 }
