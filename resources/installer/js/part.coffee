@@ -380,24 +380,30 @@ class PartTableItem extends Widget
             else
                 @path.innerText = "freespace"
             if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
-                @label.innerText = v_part_info[@id]["label"]
+                if v_part_info[@id]["label"].length > 12
+                    @label.innerText = v_part_info[@id]["label"].substring(0,12) + "..."
+                else
+                    @label.innerText = v_part_info[@id]["label"]
             else
                 @label.style.display = "none"
                 @path.setAttribute("style", "margin:10px 0;")
             color_value = v_part_info[@id]["color"]
             @color.style.background = color_value
+            @color.style.display = "block"
         else if __selected_mode == "simple"
             if m_part_info[@id]["type"] != "freespace"
                 @path.innerText = m_part_info[@id]["path"]
             else
                 @path.innerText = "freespace"
             if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
-                @label.innerText = m_part_info[@id]["label"]
+                if m_part_info[@id]["label"].length > 12
+                    @label.innerText = m_part_info[@id]["label"].substring(0,12) + "..."
+                else
+                    @label.innerText = m_part_info[@id]["label"]
             else
                 @label.style.display = "none"
                 @path.setAttribute("style", "margin:10px 0;")
-            color_value = m_part_info[@id]["color"]
-            @color.style.background = color_value
+            @color.style.display = "none"
         @update_device_os()
 
     show_detail_label: ->
@@ -564,8 +570,8 @@ class PartTableItem extends Widget
 
     lock_busy: ->
         @lock.innerHTML = ""
-        create_img("", "images/lock.png", @lock)
         if __selected_mode == "advance"
+            create_img("", "images/lock.png", @lock)
             delete_btn = document.getElementById("part_delete")
             delete_btn.setAttribute("class", "PartBtn")
             @fs_select?.set_list_enable(false)
@@ -874,8 +880,8 @@ class Part extends Page
         @grub_dropdown.set_drop_items(keys, values)
         @grub_dropdown.set_drop_size(564, 20)
         @grub_dropdown.show_drop()
-        @grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
-        @grub_dropdown.set_list_scroll_height(true, 200)
+        #@grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
+        @grub_dropdown.set_list_scroll_height(true, 180)
 
     show_advance_mode: ->
         @t_help.style.display = "block"

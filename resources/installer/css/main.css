@@ -231,20 +231,24 @@ input:focus {
 
 .DropDownList {
     position:absolute;
-    background:url("../images/dropdown_long.png") no-repeat;
+    background:rgba(255,255,255,0.9);
+    color:rgba(0,0,0,0.9);
+    text-shadow:none;
     z-index:300;
     border:1px solid rgba(0,0,0,0.4);
     border-left:1px solid rgba(0,0,0,0.7);
     border-radius:4px;
+    /*
     box-shadow:inset 0 1px rgba(255,255,255,0.2),
                inset 0 -1px rgba(255,255,255,0.2),
                inset 1px 0 rgba(255,255,255,0.2),
                inset -1px 0 rgba(255,255,255,0.2),
-               0 3px 6px rgba(0,0,0,0.1),
+               */
+    box-shadow:0 3px 6px rgba(0,0,0,0.1),
                1px 0px 6px rgba(0,0,0,0.1),
                0 -3px 6px rgba(0,0,0,0.1),
                -1px 0px 6px rgba(0,0,0,0.1);
-    padding-top:2px;
+    padding:2px 0;
 }
 
 .DropDownItem {
@@ -252,7 +256,8 @@ input:focus {
 }
 
 .DropDownItem:hover {
-    background:rgba(255,255,255,0.2);
+    background:#4F3A7B;
+    color:#FFF;
 }
 
 .TimezoneToolTip {
