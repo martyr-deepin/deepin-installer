@@ -35,24 +35,26 @@
     left:0;
     width:750px;
     height:444px;
+    text-align:center;
 }
 
 .Ppt .Container {
     position:absolute;
     width:750px;
     height:444px;
+    margin:0 1px;
+    text-align:center;
     overflow:hidden;
 }
 
 .PptItem {
     position:absolute;
-    width:748px;
+    width:750px;
     height:444px;
-    margin:0 0 0 2px;
 }
 
 .PptItem img {
-    width:748px;
+    width:750px;
     height:444px;
 }
 
