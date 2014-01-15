@@ -855,15 +855,30 @@ class Part extends Page
             document.body.appendChild(@add_model.element)
         )
 
+        @part_loader = create_element("div", "PartBtn", @op)
+        @part_loader.setAttribute("id", "part_loader")
+        @loader_input = create_element("input", "InputBtn", @part_loader)
+        @loader_input.setAttribute("type", "submit")
+        loader_value = _("Setup loader")
+        @loader_input.setAttribute("value", loader_value)
+        @part_loader.addEventListener("click", (e) =>
+            echo "show part loader"
+            @part_grub.style.display = "block"
+        )
+
         @part_grub = create_element("div", "PartGrub", @wrap)
         @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
         @grub_loader.innerText = _("Boot loader")
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
+        @part_grub.style.display = "none"
         @fill_bootloader()
 
     fill_bootloader: ->
         keys = []
         values = []
+        if DCore.Installer.is_support_uefi()
+            keys.push("uefi")
+            values.push("uefi")
         for disk in disks
             text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" +sector_to_gb(v_disk_info[disk]["length"], 512) + "GB"
             keys.push(disk)
