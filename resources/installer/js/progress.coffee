@@ -28,8 +28,8 @@ DCore.signal_connect("progress", (msg) ->
         progress_page.handle_set_keyboard(msg.progress)
     else if msg.stage == "user" and __selected_stage == "user"
         progress_page.handle_create_user(msg.progress)
-    else if msg.stage == "grub" and __selected_stage == "grub"
-        progress_page.handle_update_grub(msg.progress)
+    else if msg.stage == "bootloader" and __selected_stage == "bootloader"
+        progress_page.handle_update_bootloader(msg.progress)
     else
         echo "other message or stage"
         echo msg.stage
@@ -313,17 +313,17 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "user finish"
-            __selected_stage = "grub"
-            @handle_update_grub("start")
+            __selected_stage = "bootloader"
+            @handle_update_bootloader("start")
         else if progress == "terminate"
             echo "user terminate"
             @show_report()
         else
             echo "invalid progress for handle user"
     
-    handle_update_grub: (progress) ->
+    handle_update_bootloader: (progress) ->
         if progress == "start"
-            echo "start handle grub"
+            echo "start handle bootloader"
             @update_progress("95%")
             #if __selected_grub.indexOf("part") != -1
             #    #only advance mode will install grub to partition
@@ -334,18 +334,18 @@ class Progress extends Page
             #        catch error
             #            echo error
             try
-                DCore.Installer.update_grub(__selected_grub)
+                DCore.Installer.update_bootloader(__selected_grub, false)
             catch error
                 echo error
             @update_progress("98%")
         else if progress == "finish"
-            echo "finish update grub"
+            echo "finish update bootloader"
             @update_progress("99%")
             finish_page = new Finish("finish", true)
             pc.remove_page(progress_page)
             pc.add_page(finish_page)
         else if progress == "terminate"
-            echo "update grub terminate"
+            echo "update bootloader terminate"
             @show_report()
         else
-            echo "invalid progress for handle grub"
+            echo "invalid progress for handle bootloader"

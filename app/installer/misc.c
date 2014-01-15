@@ -465,18 +465,75 @@ out:
         g_error_free (error);
     }
     if (ret) {
-        emit_progress ("grub", "finish");
+        emit_progress ("bootloader", "finish");
     } else {
-        emit_progress ("grub", "terminate");
+        emit_progress ("bootloader", "terminate");
+    }
+    finish_install_cleanup ();
+    return NULL;
+}
+
+static gpointer
+thread_update_gummiboot (gpointer data)
+{
+    gchar *uuid = (gchar *) data;
+    gboolean ret = FALSE;
+    gchar *path = NULL;
+    gchar *gummiboot_cmd = NULL;
+    GError *error = NULL;
+
+    if (uuid == NULL) {
+        g_warning ("update gummiboot:destination uuid NULL\n");
+        goto out;
+    }
+
+    if (g_str_has_prefix (uuid, "part")) {
+        path = installer_get_partition_path (uuid);
+    } else {
+        g_warning ("update gummiboot:invalid uuid %s\n", uuid);
+        goto out;
+    }
+
+    g_spawn_command_line_sync ("mount -t efivarfs efivarfs /sys/firmware/efi/efivars", NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("update gummiboot:moutn efivarfs %s\n", error->message);
+        goto out;
+    }
+
+    gummiboot_cmd = g_strdup_printf ("gummiboot --path=%s install", path);
+    g_spawn_command_line_sync (gummiboot_cmd, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("update gummiboot:gummiboot cmd %s\n", error->message);
+        goto out;
+    }
+    ret = TRUE;
+    goto out;
+
+out:
+    g_free (uuid);
+    g_free (path);
+    g_free (gummiboot_cmd);
+    if (error != NULL) {
+        g_error_free (error);
+    }
+    if (ret) {
+        emit_progress ("bootloader", "finish");
+    } else {
+        emit_progress ("bootloader", "terminate");
     }
     finish_install_cleanup ();
     return NULL;
 }
 
 JS_EXPORT_API 
-void installer_update_grub (const gchar *uuid)
+void installer_update_bootloader (const gchar *uuid, gboolean uefi)
 {
-    GThread *thread = g_thread_new ("grub", (GThreadFunc) thread_update_grub, g_strdup (uuid));
+    GThread *thread = NULL;
+    if (uefi) {
+        thread = g_thread_new ("bootloader", (GThreadFunc) thread_update_gummiboot, g_strdup (uuid));
+    } else {
+        thread = g_thread_new ("bootloader", (GThreadFunc) thread_update_grub, g_strdup (uuid));
+    }
     g_thread_unref (thread);
 }
 

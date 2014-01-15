@@ -36,7 +36,7 @@ JS_EXPORT_API gboolean installer_chroot_target ();
 
 JS_EXPORT_API void installer_copy_whitelist ();
 
-JS_EXPORT_API void installer_update_grub (const gchar *uuid);
+JS_EXPORT_API void installer_update_bootloader (const gchar *uuid, gboolean uefi);
 
 void finish_install_cleanup ();
 
