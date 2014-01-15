@@ -275,8 +275,8 @@ class InstallDialog extends Dialog
 
         if __selected_mode == "simple"
             __selected_grub = __selected_disk
-            pc.add_page(progress_page)
             pc.remove_page(part_page)
+            pc.add_page(progress_page)
             do_simple_partition(__selected_item.id, "part")
 
         else if __selected_mode == "advance"
@@ -285,8 +285,8 @@ class InstallDialog extends Dialog
                 __selected_grub = grub.get_selected()
             else
                 __selected_grub = __selected_disk
-            pc.add_page(progress_page)
             pc.remove_page(part_page)
+            pc.add_page(progress_page)
             do_partition()
         progress_page.update_progress("2%")
         __selected_stage = "extract"

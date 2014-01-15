@@ -342,8 +342,8 @@ class Progress extends Page
             echo "finish update grub"
             @update_progress("99%")
             finish_page = new Finish("finish", true)
-            pc.add_page(finish_page)
             pc.remove_page(progress_page)
+            pc.add_page(finish_page)
         else if progress == "terminate"
             echo "update grub terminate"
             @show_report()
