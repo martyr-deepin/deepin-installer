@@ -325,18 +325,20 @@ class Progress extends Page
         if progress == "start"
             echo "start handle bootloader"
             @update_progress("95%")
-            #if __selected_grub.indexOf("part") != -1
-            #    #only advance mode will install grub to partition
-            #    disk = v_part_info[_selected_grub]["disk"]
-            #    if v_disk_info[disk]["type"] == "gpt"
-            #        try
-            #            DCore.Installer.set_partition_flag(__selected_grub, "bios_grub", 1)
-            #        catch error
-            #            echo error
-            try
-                DCore.Installer.update_bootloader(__selected_grub, false)
-            catch error
-                echo error
+            if __selected_grub != "uefi"
+                try
+                    DCore.Installer.update_bootloader(__selected_grub, false)
+                catch error
+                    echo error
+            else
+                boot = get_boot_part()
+                if boot?
+                    try
+                        DCore.Installer.update_bootloader(boot, true)
+                    catch error
+                        echo error
+                else
+                    echo "in uefi but no boot part"
             @update_progress("98%")
         else if progress == "finish"
             echo "finish update bootloader"

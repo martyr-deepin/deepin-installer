@@ -366,13 +366,19 @@ check_has_mount = ->
                 break
     return mount
 
-check_part_for_uefi = ->
+get_boot_part = ->
+    echo "get target part"
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
             if v_part_info[part]["mp"] == "/boot"
-                if v_part_info[part]["fs"] == "fat32"
-                    if v_part_info[part]["length"] <= mb_to_sector(200, 512)
-                        return true
+                return part
+    return null
+
+check_part_for_uefi = ->
+    boot = get_boot_part()
+    if boot?
+        if v_part_info[boot]["fs"] == "fat32" and v_part_info[part]["length"] <= mb_to_sector(200, 512)
+            return true
     return false
 
 #just cp mp form view to model as in simple mode, we fake the view data operation
