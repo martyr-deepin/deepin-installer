@@ -549,7 +549,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkfs.ext4 not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkfs.ext4 -F %s", path);
+        cmd = g_strdup_printf ("mkfs.ext4 -F -F %s", path);
 
     } else if (g_strcmp0 (fs, "ext3") == 0) {
         fs_cmd = g_find_program_in_path ("mkfs.ext3");
@@ -557,7 +557,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkfs.ext3 not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkfs.ext3 -F %s", path);
+        cmd = g_strdup_printf ("mkfs.ext3 -F -F %s", path);
 
     } else if (g_strcmp0 (fs, "ext2") == 0) {
         fs_cmd = g_find_program_in_path ("mkfs.ext2");
@@ -565,7 +565,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkfs.ext2 not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkfs.ext2 -F %s", path);
+        cmd = g_strdup_printf ("mkfs.ext2 -F -F %s", path);
 
     } else if (g_strcmp0 (fs, "fat16") == 0) {
         fs_cmd = g_find_program_in_path ("mkdosfs");
@@ -573,7 +573,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkdosfs not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkdosfs -F16 %s", path);
+        cmd = g_strdup_printf ("mkdosfs -F16 -I %s", path);
 
     } else if (g_strcmp0 (fs, "fat32") == 0) {
         fs_cmd = g_find_program_in_path ("mkdosfs");
@@ -581,7 +581,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkdosfs not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkdosfs -F32 %s", path);
+        cmd = g_strdup_printf ("mkdosfs -F32 -I %s", path);
 
     } else if  (g_strcmp0 (fs, "jfs") == 0) {
         fs_cmd = g_find_program_in_path ("mkfs.jfs");
@@ -613,7 +613,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkreiserfs not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkreiserfs -f %s", path);
+        cmd = g_strdup_printf ("mkreiserfs -f -f %s", path);
 
     } else if (g_strcmp0 (fs, "btrfs") == 0) {
         fs_cmd = g_find_program_in_path ("mkfs.btrfs");
@@ -621,7 +621,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkfs.btrfs not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkfs.btrfs %s", path);
+        cmd = g_strdup_printf ("mkfs.btrfs -f %s", path);
 
     } else if (g_strcmp0 (fs, "xfs") == 0) {
         fs_cmd = g_find_program_in_path ("mkfs.xfs");
