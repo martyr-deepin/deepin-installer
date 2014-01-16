@@ -67,13 +67,14 @@
     background-position:0 10px;
     left:0;
     opacity:0;
-    z-index:100;
+    z-index:500;
 }
 
 .Ppt .PrevBtn:hover {
     background:url("../images/previous_hover.png") no-repeat;
     background-position:0 10px;
     opacity:0.5;
+    z-index:500;
 }
 
 .Ppt .NextBtn {
@@ -85,13 +86,14 @@
     background-position:20px 10px;
     right:0;
     opacity:0;
-    z-index:100;
+    z-index:500;
 }
 
 .Ppt .NextBtn:hover {
     background:url("../images/next_hover.png") no-repeat;
     background-position:20px 10px;
     opacity:0.5;
+    z-index:500;
 }
 
 @-webkit-keyframes progressflash {
