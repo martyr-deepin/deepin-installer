@@ -50,8 +50,8 @@ __fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat1
 __fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
 __filter_fs_keys = ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
 __filter_fs_values = ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
-__mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
-__mp_values = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/local"]
+__mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/opt", "/usr/local"]
+__mp_values = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv","/opt", "/usr/local"]
 __filter_mp_keys = ["unused"]
 __filter_mp_values = ["unused"]
 
