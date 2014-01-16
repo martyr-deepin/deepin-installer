@@ -471,6 +471,7 @@ init_v_part_info = ->
             v_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
             v_part_info[part]["color"] = get_random_color() 
             v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
+            v_part_info[part]["format"] = false
             if v_part_info[part]["type"] != "freespace"
                 DCore.Installer.get_partition_free (part)
                 v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)

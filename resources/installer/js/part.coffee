@@ -465,8 +465,20 @@ class PartTableItem extends Widget
             @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(2) + "GB"
 
     fill_format: ->
-        @format.innerText = "format"
+        @format.innerHTML = ""
         if __selected_mode == "advance"
+            if v_part_info[@id]["type"] != "freespace"
+                @format_img = create_img("Format", "images/unformat.png", @format)
+                if v_part_info[@id]["format"]
+                    @format_img.setAttribute("src", "images/format.png")
+                @format_img.addEventListener("click", (e) =>
+                    if v_part_info[@id]["format"]
+                        v_part_info[@id]["format"] = false
+                        @format_img.setAttribute("src", "images/unformat.png")
+                    else
+                        v_part_info[@id]["format"] = true
+                        @format_img.setAttribute("src", "images/format.png")
+                )
             @format.style.display = "block"
         else
             @format.style.display = "none"

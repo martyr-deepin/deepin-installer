@@ -288,6 +288,12 @@
     box-shadow:0 1px 3px rgba(0,0,0,0.7);
 }
 
+.PartTableItem .Format {
+    width:16px;
+    height:16px;
+    margin:12px;
+}
+
 .PartTableItem .DropDown {
     margin:8px 0;
     color:rgba(0,0,0,0.8);
