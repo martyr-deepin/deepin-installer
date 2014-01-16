@@ -183,7 +183,7 @@ mark_update = (part) ->
             echo "should not reach for mark update"
         m_part_info[part]["op"] = "update"
     else
-        echo "should not mark update for new partition"
+        echo "skip mark update for new partition"
 
 #mark add flag for new partition
 mark_add = (part) ->
@@ -245,7 +245,7 @@ do_partition = ->
                         catch error
                             echo error
 
-                    if m_part_info[part]["fs"] != v_part_info[part]["fs"]
+                    if m_part_info[part]["fs"] != v_part_info[part]["fs"] or v_part_info[part]["format"]
                         if v_part_info[part]["fs"] not in ["", "unused"]
                             try
                                 DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])

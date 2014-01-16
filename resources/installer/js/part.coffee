@@ -473,10 +473,10 @@ class PartTableItem extends Widget
                     @format_img.setAttribute("src", "images/format.png")
                 @format_img.addEventListener("click", (e) =>
                     if v_part_info[@id]["format"]
-                        v_part_info[@id]["format"] = false
+                        update_part_format(@id, false)
                         @format_img.setAttribute("src", "images/unformat.png")
                     else
-                        v_part_info[@id]["format"] = true
+                        update_part_format(@id, true)
                         @format_img.setAttribute("src", "images/format.png")
                 )
             @format.style.display = "block"
