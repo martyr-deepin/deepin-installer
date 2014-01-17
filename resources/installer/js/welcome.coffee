@@ -425,7 +425,7 @@ class WelcomeFormItem extends Widget
 
     check_valid: ->
         if not @is_valid()
-            @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;")
+            @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
 
     is_valid: ->
         if not @input.value? or @input.value.length == 0
