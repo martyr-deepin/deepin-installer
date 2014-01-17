@@ -423,33 +423,42 @@ out:
 static gpointer
 thread_update_grub (gpointer data)
 {
-    gchar *uuid = (gchar *) data;
+    struct GrubHandler *handler = (struct GrubHandler *) data;
     gboolean ret = FALSE;
     gchar *path = NULL;
     gchar *grub_install = NULL;
     GError *error = NULL;
 
-    if (uuid == NULL) {
+    if (handler == NULL || handler->uuid == NULL) {
         g_warning ("update grub:destination uuid NULL\n");
         goto out;
     }
-    if (g_str_has_prefix (uuid, "disk")) {
-        path = installer_get_disk_path (uuid);
-    } else if (g_str_has_prefix (uuid, "part")) {
-        path = installer_get_partition_path (uuid);
+    if (g_str_has_prefix (handler->uuid, "disk")) {
+        path = installer_get_disk_path (handler->uuid);
+    } else if (g_str_has_prefix (handler->uuid, "part")) {
+        path = installer_get_partition_path (handler->uuid);
     } else {
-        g_warning ("update grub:invalid uuid %s\n", uuid);
+        g_warning ("update grub:invalid uuid %s\n", handler->uuid);
         goto out;
     }
 
-    grub_install = g_strdup_printf ("grub-install --no-floppy --force %s", path);
+    if (handler->uefi) {
+        grub_install = g_strdup_printf ("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --boot-directory=/boot/efi/EFI --recheck --debug");
+    } else {
+        grub_install = g_strdup_printf ("grub-install --no-floppy --force %s", path);
+    }
+
     g_spawn_command_line_sync (grub_install, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("update grub:grub-install %s\n", error->message);
         goto out;
     }
 
-    g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
+    if (handler->uefi) {
+        g_spawn_command_line_sync ("grub-mkconfig -o /boot/efi/grub/grub.cfg", NULL, NULL, NULL, &error);
+    } else {
+        g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
+    }
     if (error != NULL) {
         g_warning ("update grub:update grub %s\n", error->message);
         goto out;
@@ -458,61 +467,14 @@ thread_update_grub (gpointer data)
     goto out;
 
 out:
-    g_free (uuid);
+    if (handler->uuid != NULL) {
+        g_free (handler->uuid);
+    }
+    if (handler != NULL) {
+        g_free (handler);
+    }
     g_free (path);
     g_free (grub_install);
-    if (error != NULL) {
-        g_error_free (error);
-    }
-    if (ret) {
-        emit_progress ("bootloader", "finish");
-    } else {
-        emit_progress ("bootloader", "terminate");
-    }
-    finish_install_cleanup ();
-    return NULL;
-}
-
-static gpointer
-thread_update_gummiboot (gpointer data)
-{
-    gchar *uuid = (gchar *) data;
-    gboolean ret = FALSE;
-    gchar *path = NULL;
-    gchar *gummiboot_cmd = NULL;
-    GError *error = NULL;
-
-    if (uuid == NULL) {
-        g_warning ("update gummiboot:destination uuid NULL\n");
-        goto out;
-    }
-
-    if (g_str_has_prefix (uuid, "part")) {
-        path = installer_get_partition_path (uuid);
-    } else {
-        g_warning ("update gummiboot:invalid uuid %s\n", uuid);
-        goto out;
-    }
-
-    g_spawn_command_line_sync ("mount -t efivarfs efivarfs /sys/firmware/efi/efivars", NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("update gummiboot:moutn efivarfs %s\n", error->message);
-        goto out;
-    }
-
-    gummiboot_cmd = g_strdup_printf ("gummiboot --path=%s install", path);
-    g_spawn_command_line_sync (gummiboot_cmd, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("update gummiboot:gummiboot cmd %s\n", error->message);
-        goto out;
-    }
-    ret = TRUE;
-    goto out;
-
-out:
-    g_free (uuid);
-    g_free (path);
-    g_free (gummiboot_cmd);
     if (error != NULL) {
         g_error_free (error);
     }
@@ -529,11 +491,11 @@ JS_EXPORT_API
 void installer_update_bootloader (const gchar *uuid, gboolean uefi)
 {
     GThread *thread = NULL;
-    if (uefi) {
-        thread = g_thread_new ("bootloader", (GThreadFunc) thread_update_gummiboot, g_strdup (uuid));
-    } else {
-        thread = g_thread_new ("bootloader", (GThreadFunc) thread_update_grub, g_strdup (uuid));
-    }
+    struct GrubHandler *handler = g_new0 (struct GrubHandler, 1);
+    handler->uuid = g_strdup (uuid);
+    handler->uefi = uefi;
+
+    thread = g_thread_new ("bootloader", (GThreadFunc) thread_update_grub, (gpointer) handler);
     g_thread_unref (thread);
 }
 

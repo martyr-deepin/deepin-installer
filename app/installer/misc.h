@@ -24,6 +24,11 @@
 
 #include "base.h"
 
+struct GrubHandler {
+    const gchar *uuid;
+    gboolean uefi;
+};
+
 void installer_reboot ();
 
 JS_EXPORT_API JSObjectRef installer_get_timezone_list ();
