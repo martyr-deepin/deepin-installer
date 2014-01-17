@@ -947,7 +947,7 @@ class Part extends Page
         @t_help.style.display = "block"
         @linemap.element.setAttribute("style", "display:block")
         @op.setAttribute("style", "display:block")
-        @part_grub.setAttribute("style", "display:block")
+        #@part_grub.setAttribute("style", "display:block")
 
     hide_advance_mode: ->
         @t_help.style.display = "none"
