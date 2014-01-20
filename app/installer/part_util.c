@@ -898,8 +898,12 @@ gboolean installer_update_partition_fs (const gchar *part, const gchar *fs)
 
         part_path = ped_partition_get_path (pedpartition);
         if (part_path != NULL) {
-            set_partition_filesystem (part_path, fs);
-            g_printf ("update partition fs:ok\n");
+            if (g_strcmp0 (fs, "efi") == 0) {
+                set_partition_filesystem (part_path, "fat32");
+                installer_set_partition_flag (part, "boot", 1);
+            } else {
+                set_partition_filesystem (part_path, fs);
+            }
             ret = TRUE;
         } else {
             g_warning ("update partition fs:don't know the partition path\n");

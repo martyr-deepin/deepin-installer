@@ -366,18 +366,17 @@ check_has_mount = ->
                 break
     return mount
 
-get_boot_part = ->
-    echo "get target part"
+get_efi_boot_part = ->
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
-            if v_part_info[part]["mp"] == "/boot"
+            if v_part_info[part]["fs"] == "efi"
                 return part
     return null
 
 check_part_for_uefi = ->
-    boot = get_boot_part()
+    boot = get_efi_boot_part()
     if boot?
-        if v_part_info[boot]["fs"] == "fat32" and v_part_info[part]["length"] <= mb_to_sector(200, 512)
+        if v_part_info[part]["length"] <= mb_to_sector(100, 512)
             return true
     return false
 
@@ -475,6 +474,8 @@ init_v_part_info = ->
             if v_part_info[part]["type"] != "freespace"
                 DCore.Installer.get_partition_free (part)
                 v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
+                if v_part_info[part]["fs"] == "fat32" and DCore.Installer.get_partition_flag(part, "boot") == true
+                    v_part_info[part]["fs"] = "efi"
                 v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
                 v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
                 v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm") 
