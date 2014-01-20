@@ -910,16 +910,26 @@ class Part extends Page
         loader_value = _("Setup loader")
         @loader_input.setAttribute("value", loader_value)
         @part_loader.addEventListener("click", (e) =>
-            echo "show part loader"
-            @part_grub.style.display = "block"
+            if @part_grub_display
+                @hide_part_grub()
+            else
+                @show_part_grub()
         )
 
         @part_grub = create_element("div", "PartGrub", @wrap)
+        @hide_part_grub()
         @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
         @grub_loader.innerText = _("Boot loader")
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
-        @part_grub.style.display = "none"
         @fill_bootloader()
+
+    hide_part_grub: ->
+        @part_grub.style.display = "none"
+        @part_grub_display = false
+
+    show_part_grub: ->
+        @part_grub.style.display = "block"
+        @part_grub_display = true
 
     fill_bootloader: ->
         keys = []
