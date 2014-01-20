@@ -126,7 +126,6 @@ class Dialog extends Widget
         else
             @ok.setAttribute("style", "margin:31px 145px 0 0")
         @show_dialog()
-        #@element.setAttribute("draggable", "true")
 
     show_dialog: ->
         __in_model = true
@@ -137,21 +136,6 @@ class Dialog extends Widget
         @destroy()
         __board.setAttribute("style", "display:none")
 
-    #do_dragstart: (event) ->
-    #    echo "do dragstart in dialog"
-    #    event.dataTransfer.setData("Text", event.target.id)
-
-    #do_drop: (event) ->
-    #    echo "do drop in dialog"
-    #    event.preventDefault()
-    #    data = event.dataTransfer.getData("Text")
-    #    style = "top:"+ event.y + "px;" + "left:" + event.x + "px"
-    #    event.target.setAttribute("style", style)
-
-    #do_dragover: (event) ->
-    #    echo "do dragover in dialog"
-    #    event.preventDefault()
-    #
 
 class DropDownItem extends Widget
     constructor: (@id, @key, @value, @dropdownlist) ->
@@ -178,10 +162,14 @@ class DropDownItem extends Widget
                 Widget.look_up("dd_fs_"+@id[6..17])?.set_drop_items(__fs_keys, __fs_values)
 
         if @id.indexOf("di_fs") != -1 
-            if @key in ["fat16", "fat32", "ntfs", "swap", "unused", "efi"]
+            if @key  == "efi"
+                Widget.look_up("dd_mp_" +@id[6..17])?.hide_drop()
+            else if @key in ["fat16", "fat32", "ntfs", "swap", "unused"]
                 Widget.look_up("dd_mp_"+@id[6..17])?.set_drop_items(__filter_mp_keys, __filter_mp_values)
+                Widget.look_up("dd_mp_"+@id[6..17])?.show_drop()
             else
                 Widget.look_up("dd_mp_"+@id[6..17])?.set_drop_items(__mp_keys, __mp_values)
+                Widget.look_up("dd_mp_"+@id[6..17])?.show_drop()
 
         if @key != @dropdownlist.dropdown.selected 
             if @dropdownlist.dropdown.on_change_cb?

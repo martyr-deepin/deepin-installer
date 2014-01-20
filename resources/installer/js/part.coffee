@@ -524,10 +524,13 @@ class PartTableItem extends Widget
                 @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
                 @mount_select.show_drop()
                 @mount_select.set_selected(v_part_info[@id]["mp"])
+                if v_part_info[@id]["fs"] == "efi"
+                    @mount_select.hide_drop()
                 return
         else
-            @mount_txt = create_element("div", "", @mount)
-            @mount_txt.innerText = v_part_info[@id]["mp"]
+            if v_part_info[@id]["fs"] != "efi"
+                @mount_txt = create_element("div", "", @mount)
+                @mount_txt.innerText = v_part_info[@id]["mp"]
 
     set_btn_status: ->
         if __selected_mode != "advance"
