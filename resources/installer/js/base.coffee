@@ -48,6 +48,8 @@ _color_list = ["#89AFD0","#6D91BC","#E8948A","#DE5F4E","#C2A02D",
 
 __fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
 __fs_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
+__fs_efi_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap", "efi"]
+__fs_efi_values = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap", "efi"]
 __filter_fs_keys = ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
 __filter_fs_values = ["ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs"] 
 __mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/opt", "/usr/local"]
@@ -176,7 +178,7 @@ class DropDownItem extends Widget
                 Widget.look_up("dd_fs_"+@id[6..17])?.set_drop_items(__fs_keys, __fs_values)
 
         if @id.indexOf("di_fs") != -1 
-            if @key in ["fat16", "fat32", "ntfs", "swap", "unused"]
+            if @key in ["fat16", "fat32", "ntfs", "swap", "unused", "efi"]
                 Widget.look_up("dd_mp_"+@id[6..17])?.set_drop_items(__filter_mp_keys, __filter_mp_values)
             else
                 Widget.look_up("dd_mp_"+@id[6..17])?.set_drop_items(__mp_keys, __mp_values)

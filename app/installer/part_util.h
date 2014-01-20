@@ -44,7 +44,7 @@ JS_EXPORT_API double installer_get_disk_sector_size (const gchar *disk);
 
 JS_EXPORT_API JSObjectRef installer_get_disk_partitions (const gchar *disk);
 
-JS_EXPORT_API gboolean installer_is_support_uefi ();
+JS_EXPORT_API gboolean installer_disk_support_efi (const gchar *disk);
 
 JS_EXPORT_API void installer_is_device_slow (const gchar *uuid);
 

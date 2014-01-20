@@ -497,7 +497,10 @@ class PartTableItem extends Widget
                     if v_part_info[@id]["mp"]? and v_part_info[@id]["mp"] != "unused"
                         @fs_select.set_drop_items(__filter_fs_keys, __filter_fs_values)
                     else
-                        @fs_select.set_drop_items(__fs_keys, __fs_values)
+                        if DCore.Installer.disk_support_efi(v_part_info[@id]["disk"])
+                            @fs_select.set_drop_items(__fs_efi_keys, __fs_efi_values)
+                        else
+                            @fs_select.set_drop_items(__fs_keys, __fs_values)
                     @fs_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
                     @fs_select.show_drop()
                     @fs_select.set_selected(v_part_info[@id]["fs"])
@@ -921,11 +924,8 @@ class Part extends Page
     fill_bootloader: ->
         keys = []
         values = []
-        if DCore.Installer.is_support_uefi()
-            keys.push("uefi")
-            values.push("uefi")
         for disk in disks
-            text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" +sector_to_gb(v_disk_info[disk]["length"], 512) + "GB"
+            text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" + sector_to_gb(v_disk_info[disk]["length"], 512) + "GB"
             keys.push(disk)
             values.push(text)
             for part in v_disk_info[disk]["partitions"]

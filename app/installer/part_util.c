@@ -368,22 +368,24 @@ JSObjectRef installer_get_disk_partitions (const gchar *disk)
     return array;
 }
 
-JS_EXPORT_API 
-gboolean installer_is_support_uefi ()
+JS_EXPORT_API
+gboolean installer_disk_support_efi (const gchar *disk)
 {
-    GList *peddisks;
+    PedDisk *peddisk = NULL;
+
     if (!g_file_test ("/sys/firmware/efi", G_FILE_TEST_IS_DIR)) {
         return FALSE;
     }
 
-    peddisks = g_hash_table_get_values (disks);
-    int i;
-    for (i = 0; i < g_list_length (peddisks); i++) {
-        PedDisk *disk = (PedDisk *) g_list_nth_data (peddisks, i);
-        if ((disk->type != NULL) && (g_strcmp0 ("gpt", disk->type->name) == 0)) {
+    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
+    if (peddisk != NULL) {
+        if ((peddisk->type != NULL) && (g_strcmp0 ("gpt", peddisk->type->name) == 0)) {
             return TRUE;
         }
+    } else {
+        g_warning ("get disk sector size:find peddisk by %s failed\n", disk);
     }
+
     return FALSE;
 }
 
