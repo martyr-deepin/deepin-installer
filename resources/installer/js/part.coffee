@@ -351,10 +351,10 @@ class PartTableItem extends Widget
         @lineid = "line" + @id
         @active = false
         @device = create_element("div", "Fat", @element)
-        @size = create_element("div", "Thin", @element)
+        @size = create_element("div", "Thin Size", @element)
         @used = create_element("div", "Thin", @element)
-        @fs = create_element("div", "Thin", @element)
-        @mount = create_element("div", "Thin", @element)
+        @fs = create_element("div", "Thin Fs", @element)
+        @mount = create_element("div", "Thin Mount", @element)
         @format = create_element("div", "Thin", @element)
         @fill_device()
         @fill_size()
@@ -447,22 +447,22 @@ class PartTableItem extends Widget
     fill_size: ->
         @size.innerHTML = ""
         if __selected_mode == "advance"
-            @size.innerText += sector_to_gb(v_part_info[@id]["length"], 512).toFixed(2) + "GB"
+            @size.innerText += sector_to_gb(v_part_info[@id]["length"], 512).toFixed(1) + "G"
         else
-            @size.innerText += sector_to_gb(m_part_info[@id]["length"], 512).toFixed(2) + "GB"
+            @size.innerText += sector_to_gb(m_part_info[@id]["length"], 512).toFixed(1) + "G"
 
     fill_used: ->
         @used.innerHTML = ""
         if __selected_mode == "advance" and v_part_info[@id]["type"] != "freespace"
-            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(2) + "GB"
+            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(1) + "G"
         else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
-            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(2) + "GB"
+            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(1) + "G"
 
     update_part_used: ->
         if __selected_mode == "advance"
-            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(2) + "GB"
+            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(1) + "G"
         else
-            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(2) + "GB"
+            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(1) + "G"
 
     fill_format: ->
         @format.innerHTML = ""
@@ -641,13 +641,13 @@ class PartTable extends Widget
         @header = create_element("div", "PartTableHeader", @disk_content)
         @device_header = create_element("div", "Fat", @header)
         @device_header.innerText = _("Device")
-        @size_header = create_element("div", "Thin", @header)
+        @size_header = create_element("div", "Thin Size", @header)
         @size_header.innerText = _("Size")
         @used_header = create_element("div", "Thin", @header)
         @used_header.innerText = _("Free Space")
-        @fs_header = create_element("div", "Thin", @header)
+        @fs_header = create_element("div", "Thin Fs", @header)
         @fs_header.innerText = _("Filesystem")
-        @mount_header = create_element("div", "Thin", @header)
+        @mount_header = create_element("div", "Thin Mount", @header)
         @mount_header.innerText = _("Mount point")
         @format_header = create_element("div", "Thin", @header)
         @format_header.innerText = _("Format")

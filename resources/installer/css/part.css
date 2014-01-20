@@ -177,22 +177,28 @@
     box-shadow:0 1px rgba(255,255,255,0.2);
 }
 
-.PartTableHeader .Fat {
+.PartTableHeader > div {
     float:left;
-    width:199px;
     height:26px;
     line-height:27px;
     border-right:1px solid rgba(0,0,0,0.2);
     box-shadow:inset 1px 0 rgba(255,255,255,0.2);
 }
 
+.PartTableHeader .Fat {
+    width:199px;
+}
+
 .PartTableHeader .Thin {
-    float:left;
     width:99px;
-    height:26px;
-    line-height:27px;
-    border-right:1px solid rgba(0,0,0,0.2);
-    box-shadow:inset 1px 0 rgba(255,255,255,0.2);
+}
+
+.PartTableHeader .Fs, .PartTableHeader .Mount {
+    width:109px;
+}
+
+.PartTableHeader .Size {
+    width:79px;
 }
 
 .PartTableItems {
@@ -211,18 +217,27 @@
     clear:both;
 }
 
-.PartTableItem .Fat {
-    width:200px;
+.PartTableItem > div {
     height:40px;
     line-height:40px;
     float:left;
+    text-align:center;
+}
+
+.PartTableItem .Fat {
+    width:200px;
 }
 
 .PartTableItem .Thin {
     width:100px;
-    height:40px;
-    line-height:40px;
-    float:left;
+}
+
+.PartTableItem .Fs, .PartTableItem .Mount {
+    width:110px;
+}
+
+.PartTableItem .Size {
+    width:80px;
 }
 
 .PartTableItem .Lock {
@@ -298,6 +313,10 @@
     margin:8px 0;
     color:rgba(0,0,0,0.8);
     text-shadow:0 1px rgba(0,0,0,0.2);
+}
+
+.PartTableItem .Fs .DropDown, .PartTableItem .Mount .Dropdown {
+    margin:8px 5px;
 }
 
 .PartOp {
