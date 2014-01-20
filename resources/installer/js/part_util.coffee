@@ -698,6 +698,9 @@ update_part_fs = (part, fs) ->
     echo v_part_info[part]["path"]
     echo fs
     v_part_info[part]["fs"] = fs
+    if fs in ["unused", "fat16", "fat32", "ntfs", "swap", "efi"]
+        v_part_info[part]["mp"] = "unused"
+        Widget.look_up(part)?.fill_mount()
     mark_update(part)
 
 update_part_format = (part, format) ->
