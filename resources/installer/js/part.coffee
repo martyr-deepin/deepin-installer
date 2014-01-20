@@ -167,7 +167,7 @@ class AddPartDialog extends Dialog
     fill_fs: ->
         @fs = create_element("div", "", @content)
         @fs_desc = create_element("span", "AddDesc", @fs)
-        @fs_desc.innerText = _("Format:")
+        @fs_desc.innerText = _("Filesystem:")
         @fs_value = create_element("span", "AddValue", @fs)
         @fs_select = new DropDown("dd_fs_" + @partid, null)
         @fs_value.appendChild(@fs_select.element)
@@ -353,15 +353,15 @@ class PartTableItem extends Widget
         @device = create_element("div", "Fat", @element)
         @size = create_element("div", "Thin", @element)
         @used = create_element("div", "Thin", @element)
-        @format = create_element("div", "Thin", @element)
         @fs = create_element("div", "Thin", @element)
         @mount = create_element("div", "Thin", @element)
+        @format = create_element("div", "Thin", @element)
         @fill_device()
         @fill_size()
         @fill_used()
-        @fill_format()
         @fill_fs()
         @fill_mount()
+        @fill_format()
 
     fill_device: ->
         @device.innerHTML = ""
@@ -645,18 +645,18 @@ class PartTable extends Widget
         @size_header.innerText = _("Size")
         @used_header = create_element("div", "Thin", @header)
         @used_header.innerText = _("Free Space")
-        @format_header = create_element("div", "Thin", @header)
-        @format_header.innerText = _("Format")
         @fs_header = create_element("div", "Thin", @header)
         @fs_header.innerText = _("Filesystem")
+        @mount_header = create_element("div", "Thin", @header)
+        @mount_header.innerText = _("Mount point")
+        @format_header = create_element("div", "Thin", @header)
+        @format_header.innerText = _("Format")
         if __selected_mode == "advance"
+            @mount_header.style.display = "block"
             @format_header.style.display = "block"
-            @mount_header = create_element("div", "Thin", @header)
-            @mount_header.innerText = _("Mount point")
         else
+            @mount_header.style.display = "none"
             @format_header.style.display = "none"
-            @mount_header = create_element("div", "Fat", @header)
-            @mount_header.innerText = _("Information")
 
         @items = create_element("div", "PartTableItems", @disk_content)
         @fill_disk_tab()
@@ -693,15 +693,13 @@ class PartTable extends Widget
         else 
             id = null
         if mode == "advance"
+            @mount_header.style.display = "block"
             @format_header.style.display = "block"
-            @mount_header.setAttribute("class", "Thin")
-            @mount_header.innerText = _("Mount point")
             @items.setAttribute("style", "height:180px")
             @element.setAttribute("style", "top:140px;height:230px;")
         else
             @format_header.style.display = "none"
-            @mount_header.setAttribute("class", "Fat")
-            @mount_header.innerText = _("Information")
+            @mount_header.style.display = "none"
             @items.setAttribute("style", "")
             @element.setAttribute("style", "")
         @fill_items()
