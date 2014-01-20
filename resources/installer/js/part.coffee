@@ -517,18 +517,18 @@ class PartTableItem extends Widget
         if @active 
                 @mount_select = new DropDown("dd_mp_" + @id, update_part_mp)
                 @mount.appendChild(@mount_select.element)
-                if v_part_info[@id]["fs"]? and v_part_info[@id]["fs"] not in ["fat16", "fat32", "ntfs", "swap", "unused"]
+                if v_part_info[@id]["fs"]? and v_part_info[@id]["fs"] not in ["fat16", "fat32", "ntfs"]
                     @mount_select.set_drop_items(__mp_keys, __mp_values)
                 else 
                     @mount_select.set_drop_items(__filter_mp_keys, __filter_mp_values)
                 @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
                 @mount_select.show_drop()
                 @mount_select.set_selected(v_part_info[@id]["mp"])
-                if v_part_info[@id]["fs"] == "efi"
+                if v_part_info[@id]["fs"] in ["efi", "swap", "unused"]
                     @mount_select.hide_drop()
                 return
         else
-            if v_part_info[@id]["fs"] != "efi"
+            if v_part_info[@id]["fs"] not in ["efi", "swap", "unused"]
                 @mount_txt = create_element("div", "", @mount)
                 @mount_txt.innerText = v_part_info[@id]["mp"]
 

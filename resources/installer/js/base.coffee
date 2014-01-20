@@ -162,9 +162,9 @@ class DropDownItem extends Widget
                 Widget.look_up("dd_fs_"+@id[6..17])?.set_drop_items(__fs_keys, __fs_values)
 
         if @id.indexOf("di_fs") != -1 
-            if @key  == "efi"
+            if @key in ["efi", "swap", "unused"]
                 Widget.look_up("dd_mp_" +@id[6..17])?.hide_drop()
-            else if @key in ["fat16", "fat32", "ntfs", "swap", "unused"]
+            else if @key in ["fat16", "fat32", "ntfs"]
                 Widget.look_up("dd_mp_"+@id[6..17])?.set_drop_items(__filter_mp_keys, __filter_mp_values)
                 Widget.look_up("dd_mp_"+@id[6..17])?.show_drop()
             else
