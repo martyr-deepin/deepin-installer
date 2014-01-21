@@ -468,20 +468,30 @@ class PartTableItem extends Widget
         @format.innerHTML = ""
         if __selected_mode == "advance"
             if v_part_info[@id]["type"] != "freespace"
-                @format_img = create_img("Format", "images/unformat.png", @format)
-                if v_part_info[@id]["format"] or @is_format_mandatory()
-                    @format_img.setAttribute("src", "images/format.png")
+                @format_img = create_img("Format", "images/check-01.png", @format)
+                if not @active
+                    if v_part_info[@id]["format"]
+                        @format_img.setAttribute("src", "images/check-02.png")
+                    else
+                        @format_img.setAttribute("src", "images/check-01.png")
+                else
+                    if v_part_info[@id]["format"]
+                        @format_img.setAttribute("src", "images/check-04.png")
+                    else
+                        @format_img.setAttribute("src", "images/check-03.png")
+                if @is_format_mandatory()
+                    @format_img.setAttribute("src", "images/check-06.png")
                 @format_img.addEventListener("click", (e) =>
                     if @is_format_mandatory()
                         update_part_format(@id, true)
-                        @format_img.setAttribute("src", "images/format.png")
+                        @format_img.setAttribute("src", "images/check-04.png")
                     else
                         if v_part_info[@id]["format"]
                             update_part_format(@id, false)
-                            @format_img.setAttribute("src", "images/unformat.png")
+                            @format_img.setAttribute("src", "images/check-03.png")
                         else
                             update_part_format(@id, true)
-                            @format_img.setAttribute("src", "images/format.png")
+                            @format_img.setAttribute("src", "images/check-04.png")
                 )
             @format.style.display = "block"
         else
@@ -575,6 +585,7 @@ class PartTableItem extends Widget
         @active = true
         @fill_fs()
         @fill_mount()
+        @fill_format()
         @set_btn_status()
         style = "background:rgba(246,178,82,0.5);"
         style += "font-style:bold;"
@@ -600,6 +611,7 @@ class PartTableItem extends Widget
         @active = false
         @fill_fs()
         @fill_mount()
+        @fill_format()
         @lock.innerHTML = ""
         @element.setAttribute("style", "")
 
