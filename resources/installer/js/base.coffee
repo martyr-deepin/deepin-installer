@@ -359,13 +359,13 @@ class TimezoneToolTip extends Widget
         @content = create_element("div", "Content", @element)
         @content.innerText = @text
 
-        @arrowwidth = 18
-        @arrowheight = 10
+        @arrowwidth = 14
+        @arrowheight = 8 
         @xpadding = 5
         @ypadding = 0
-        @radius = 8
+        @radius = 4
         @offshadow = 5
-        @offradius = 4
+        @offradius = 2
 
     draw: ->
         @height = @content.clientHeight - 2 * @offradius

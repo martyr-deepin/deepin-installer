@@ -329,7 +329,7 @@ class Timezone extends Widget
         @tip = new TimezoneToolTip("timezone", text)
         @pin.appendChild(@tip.element)
         left = @tip.content.clientWidth + 2 * (@tip.radius + @tip.xpadding) - 2
-        @tip.element.style.top = "-40px"
+        @tip.element.style.top = "-36px"
         @tip.element.style.left = (0 - left / 2) + "px"
         @tip.draw()
 

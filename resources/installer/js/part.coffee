@@ -536,7 +536,10 @@ class PartTableItem extends Widget
         else
             if v_part_info[@id]["fs"] not in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
                 @mount_txt = create_element("div", "", @mount)
-                @mount_txt.innerText = v_part_info[@id]["mp"]
+                if v_part_info[@id]["mp"] == "unused"
+                    @mount_txt.innerText = ""
+                else
+                    @mount_txt.innerText = v_part_info[@id]["mp"]
 
     set_btn_status: ->
         if __selected_mode != "advance"
@@ -568,7 +571,7 @@ class PartTableItem extends Widget
     passive_focus: ->
         __selected_item?.blur()
         __selected_item = @
-        #@element.scrollIntoView()
+        @element.scrollIntoView()
         @active = true
         @fill_fs()
         @fill_mount()
