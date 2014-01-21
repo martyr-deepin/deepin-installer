@@ -467,8 +467,10 @@ init_v_part_info = ->
             if v_part_info[part]["type"] != "freespace"
                 DCore.Installer.get_partition_free (part)
                 v_part_info[part]["fs"] = DCore.Installer.get_partition_fs(part)
-                if v_part_info[part]["fs"] == "fat32" and DCore.Installer.get_partition_flag(part, "boot") == true
-                    v_part_info[part]["fs"] = "efi"
+                if v_part_info[part]["fs"] == "fat32"
+                    if DCore.Installer.get_partition_flag(part, "boot") == true
+                        if v_disk_info[disk]["type"] == "gpt"
+                            v_part_info[part]["fs"] = "efi"
                 v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
                 v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
                 v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm") 
