@@ -985,6 +985,11 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         mnt.mnt_opts = "sw,pri=1";
         mnt.mnt_passno = 0;
     }
+
+    if (g_strcmp0 ("fat16", fs) == 0 || g_strcmp0 ("fat32", fs) == 0) {
+        mnt.mnt_type = "vfat";
+    }
+
     if ((addmntent(mount_file, &mnt)) != 0) {
         g_warning ("write fs tab: addmntent failed %s\n", strerror (errno));
         goto out;
