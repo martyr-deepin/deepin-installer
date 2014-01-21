@@ -29,8 +29,12 @@
 #include "fs_util.h"
 #include "dwebview.h"
 
-#define WHITE_LIST_PATH RESOURCE_DIR"/installer/whitelist.ini"
-#define PACKAGES_LIST_PATH RESOURCE_DIR"/installer/blacklist.ini"
+#define WHITE_LIST_PATH         RESOURCE_DIR"/installer/whitelist.ini"
+#define PACKAGES_LIST_PATH      RESOURCE_DIR"/installer/blacklist.ini"
+#define EFI_BOOT_MGR            RESOURCE_DIR"/installer/efibootmgr.deb"
+#define GRUB_EFI_AMD64_BIN      RESOURCE_DIR"/installer/grub-efi-amd64-bin.deb"
+#define GRUB_EFI_AMD64          RESOURCE_DIR"/installer/grub-efi-amd64.deb" 
+
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);
@@ -420,6 +424,24 @@ out:
     }
 }
 
+static void
+install_grub_efi_amd64 ()
+{
+    g_spawn_command_line_sync ("apt-get remove -y grub-pc", NULL, NULL, NULL, NULL);
+
+    gchar *bootmgr = g_strdup_printf ("dpkg -i %s", EFI_BOOT_MGR);
+    g_spawn_command_line_sync (bootmgr, NULL, NULL, NULL, NULL);
+    g_free (bootmgr);
+
+    gchar *bin = g_strdup_printf ("dpkg -i %s", GRUB_EFI_AMD64_BIN);
+    g_spawn_command_line_sync (bin, NULL, NULL, NULL, NULL);
+    g_free (bin);
+
+    gchar *efi = g_strdup_printf ("dpkg -i %s", GRUB_EFI_AMD64);
+    g_spawn_command_line_sync (efi, NULL, NULL, NULL, NULL);
+    g_free (efi);
+}
+
 static gpointer
 thread_update_grub (gpointer data)
 {
@@ -443,6 +465,7 @@ thread_update_grub (gpointer data)
     }
 
     if (handler->uefi) {
+        install_grub_efi_amd64 ();
         grub_install = g_strdup_printf ("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --boot-directory=/boot/efi/EFI --recheck --debug");
     } else {
         grub_install = g_strdup_printf ("grub-install --no-floppy --force %s", path);
