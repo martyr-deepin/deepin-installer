@@ -275,11 +275,10 @@ class Timezone extends Widget
         @displayed = false
         @element.style.display = "none"
 
-    update_timezone: (zone) ->
+    hover_timezone: (zone) ->
         @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
         @current.innerHTML += "<span>City:" + _(zone) + "</span>"
         @current.innerHTML += "<span>Country:" + _(__database[zone]["country"]) + "</span>"
-        __selected_timezone = zone
 
     construct_map: ->
         @imagemap = create_element("map", "", @element)
@@ -303,10 +302,11 @@ class Timezone extends Widget
             area.setAttribute("coords", __database[key]["rects"])
         area.addEventListener("click", (e) =>
             @show_pin(area)
-            @update_timezone(area.getAttribute("data-timezone"))
+            __selected_timezone = area.getAttribute("data-timezone")
         )
         area.addEventListener("mouseover", (e) =>
             @draw_timezone(area)
+            @hover_timezone(area.getAttribute("data-timezone"))
         )
         area.addEventListener("mouseout", (e) =>
             @destroy_canvas(area)
