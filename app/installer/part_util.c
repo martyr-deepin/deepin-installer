@@ -903,7 +903,10 @@ gboolean installer_update_partition_fs (const gchar *part, const gchar *fs)
             if (g_strcmp0 (fs, "efi") == 0) {
                 set_partition_filesystem (part_path, "fat32");
                 installer_set_partition_flag (part, "boot", 1);
-            } else {
+            } else if (g_strcmp0 (fs, "swap") == 0) {
+                set_partition_filesystem (part_path, fs);
+                installer_set_partition_flag (part, "swap", 1);
+            }else {
                 set_partition_filesystem (part_path, fs);
             }
             ret = TRUE;
