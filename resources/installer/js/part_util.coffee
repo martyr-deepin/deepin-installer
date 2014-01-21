@@ -373,13 +373,6 @@ get_efi_boot_part = ->
                 return part
     return null
 
-check_part_for_uefi = ->
-    boot = get_efi_boot_part()
-    if boot?
-        if v_part_info[part]["length"] <= mb_to_sector(100, 512)
-            return true
-    return false
-
 #just cp mp form view to model as in simple mode, we fake the view data operation
 #don't use it any more as manuly operate the view table
 __sync_part_mp = ->

@@ -266,7 +266,7 @@ class UefiDialog extends Dialog
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Install tips")
         @root_tips = create_element("div", "", @content)
-        @root_tips.innerText = _("Uefi needs mount a fat32 part to /boot whose size less than 200M.")
+        @root_tips.innerText = _("Uefi needs mount a fat32 part to /boot whose size greater than 100M.")
 
     uefi_require_cb: ->
         echo "uefi require cb"
@@ -827,14 +827,17 @@ class Part extends Page
                     @root_model = new RootDialog("RootModel")
                     document.body.appendChild(@root_model.element)
                     return
-                __selected_grub = @grubdropdown?.get_selected()
-                if not __selected_grub
-                    __selected_grub = v_part_info[target]["disk"]
-                if __selected_grub == "uefi"
-                    if not check_part_for_uefi()
+                efi_boot = get_efi_boot_part()
+                if efi_boot?
+                    __selected_grub = "uefi"
+                    if v_part_info[efi_boot]["length"] <= mb_to_sector(100, 512)
                         @uefi_model = new UefiDialog("UefiModel")
                         document.body.appendChild(@root_model.element)
                         return
+                else
+                    __selected_grub = @grubdropdown?.get_selected()
+                if not __selected_grub
+                    __selected_grub = v_part_info[target]["disk"]
             else
                 __selected_grub = __selected_disk
 
