@@ -936,6 +936,9 @@ class Part extends Page
         loader_value = _("Setup loader")
         @loader_input.setAttribute("value", loader_value)
         @part_loader.addEventListener("click", (e) =>
+            efi_boot = get_efi_boot_part()
+            if efi_boot?
+                return
             if @part_grub_display
                 @hide_part_grub()
             else
