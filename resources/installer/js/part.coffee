@@ -581,9 +581,9 @@ class PartTableItem extends Widget
             if v_part_info[@id]["lvm"]? and v_part_info[@id]["lvm"] == true
                 lvm = true
         else
-            #fix me
-            if m_part_info[@id]["lvm"]? and m_part_info[@id]["lvm"] == true
-                lvm = true
+            if @id in m_disk_info[v_part_info[@id]["disk"]]["partitions"]
+                if m_part_info[@id]["lvm"]? and m_part_info[@id]["lvm"] == true
+                    lvm = true
 
         if lvm
             @lock_busy()
