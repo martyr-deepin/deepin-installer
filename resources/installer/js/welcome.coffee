@@ -333,6 +333,12 @@ class Timezone extends Widget
         @tip.element.style.left = (0 - left / 2) + "px"
         @tip.draw()
 
+        if @circle?
+            @circle.parentElement.removeChild(@circle)
+        @circle = create_element("div", "Circle", @pin)
+        @circle_inner = create_element("div", "Inner", @circle)
+        @circle_outer = create_element("div", "Outer", @circle)
+
     draw_timezone: (myarea) ->
         offset = myarea.getAttribute("data-offset")
         for area in @get_offset_areas(offset)

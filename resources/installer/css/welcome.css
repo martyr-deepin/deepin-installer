@@ -305,6 +305,34 @@
     padding:0px;
 }
 
+.Circle {
+    position:absolute;
+    top:-11px;
+    left:-11px;
+    width:32px;
+    height:32px;
+}
+
+.Inner {
+    position:absolute;
+    top:8px;
+    left:8px;
+    width:15px;
+    height:15px;
+    border:1px solid red;
+    border-radius:15px;
+}
+
+.Outer {
+    position:absolute;
+    top:0;
+    left:0;
+    width:30px;
+    height:30px;
+    border:1px solid red;
+    border-radius:30px;
+}
+
 .Welcome .Start {
     position:absolute;
     left:285px;
