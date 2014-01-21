@@ -469,19 +469,30 @@ class PartTableItem extends Widget
         if __selected_mode == "advance"
             if v_part_info[@id]["type"] != "freespace"
                 @format_img = create_img("Format", "images/unformat.png", @format)
-                if v_part_info[@id]["format"]
+                if v_part_info[@id]["format"] or @is_format_mandatory()
                     @format_img.setAttribute("src", "images/format.png")
                 @format_img.addEventListener("click", (e) =>
-                    if v_part_info[@id]["format"]
-                        update_part_format(@id, false)
-                        @format_img.setAttribute("src", "images/unformat.png")
-                    else
+                    if @is_format_mandatory()
                         update_part_format(@id, true)
                         @format_img.setAttribute("src", "images/format.png")
+                    else
+                        if v_part_info[@id]["format"]
+                            update_part_format(@id, false)
+                            @format_img.setAttribute("src", "images/unformat.png")
+                        else
+                            update_part_format(@id, true)
+                            @format_img.setAttribute("src", "images/format.png")
                 )
             @format.style.display = "block"
         else
             @format.style.display = "none"
+
+    is_format_mandatory: ->
+        if @id not in m_disk_info[v_part_info[@id]["disk"]]["partitions"] or m_part_info[@id]["op"] == "add"
+            return false
+        if m_part_info[@id]["fs"] != v_part_info[@id]["fs"]
+            return true
+        return false
 
     fill_fs: ->
         @fs.innerHTML = ""
@@ -570,6 +581,7 @@ class PartTableItem extends Widget
             if v_part_info[@id]["lvm"]? and v_part_info[@id]["lvm"] == true
                 lvm = true
         else
+            #fix me
             if m_part_info[@id]["lvm"]? and m_part_info[@id]["lvm"] == true
                 lvm = true
 

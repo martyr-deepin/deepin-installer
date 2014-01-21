@@ -468,7 +468,7 @@ thread_update_grub (gpointer data)
 
 out:
     if (handler->uuid != NULL) {
-        g_free (handler->uuid);
+        g_free ((gchar *)handler->uuid);
     }
     if (handler != NULL) {
         g_free (handler);

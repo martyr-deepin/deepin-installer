@@ -694,22 +694,24 @@ can_add_logical = (part) ->
 #Control: communicate with model and view
 update_part_fs = (part, fs) ->
     echo "--------update part fs--------"
-    echo part
     echo v_part_info[part]["path"]
     echo fs
     v_part_info[part]["fs"] = fs
     if fs in ["unused", "fat16", "fat32", "ntfs", "swap", "efi"]
         v_part_info[part]["mp"] = "unused"
         Widget.look_up(part)?.fill_mount()
+    Widget.look_up(part)?.fill_format()
     mark_update(part)
 
 update_part_format = (part, format) ->
+    echo "--------update part format--------"
+    echo v_part_info[part]["path"]
+    echo format
     v_part_info[part]["format"] = format
     mark_update(part)
 
 update_part_mp = (part, mp) ->
     echo "--------update part mp--------"
-    echo part
     echo v_part_info[part]["path"]
     echo mp 
     v_part_info[part]["mp"] = mp
