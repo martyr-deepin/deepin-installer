@@ -329,7 +329,7 @@ class Timezone extends Widget
         @tip = new TimezoneToolTip("timezone", text)
         @pin.appendChild(@tip.element)
         left = @tip.content.clientWidth + 2 * (@tip.radius + @tip.xpadding) - 2
-        @tip.element.style.top = "-42px"
+        @tip.element.style.top = "-40px"
         @tip.element.style.left = (0 - left / 2) + "px"
         @tip.draw()
 
@@ -339,7 +339,8 @@ class Timezone extends Widget
         @circle.setAttribute("id", "pin_circle")
         @circle_inner = create_element("div", "Inner", @circle)
         @circle_outer = create_element("div", "Outer", @circle)
-        apply_animation(@circle, "pinflash", "1.5s", "ease-in-out")
+        apply_animation(@circle_outer, "pinflash", "1.5s", "linear")
+        apply_animation(@circle_inner, "flashpin", "1.5s", "linear")
         setTimeout(->
             document.getElementById("pin_circle").style.display = "none"
         , 1500)
