@@ -283,12 +283,13 @@ class InstallDialog extends Dialog
         echo "confirm install"
         progress_page = new Progress("progress")
         progress_page.update_progress("0%")
-
         pc.remove_page(part_page)
         pc.add_page(progress_page)
+        echo "add progress page"
         if __selected_mode == "simple"
             do_simple_partition(__selected_item.id, "part")
         else if __selected_mode == "advance"
+            echo "do advance partition"
             do_partition()
         progress_page.update_progress("2%")
         __selected_stage = "extract"
