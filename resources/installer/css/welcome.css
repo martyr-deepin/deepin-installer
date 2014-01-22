@@ -357,23 +357,18 @@
 
 @-webkit-keyframes pinflash {
     0% {
-        display:none;
         opacity:0;
     }
     25% {
-        display:block;
         opacity:1;
     }
     50% {
-        display:none;
         opacity:0;
     }
     75% {
-        display:block;
         opacity:1;
     }
     100% {
-        display:none;
         opacity:0;
     }
 }

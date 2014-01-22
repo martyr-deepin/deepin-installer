@@ -336,9 +336,13 @@ class Timezone extends Widget
         if @circle?
             @circle.parentElement.removeChild(@circle)
         @circle = create_element("div", "Circle", @pin)
+        @circle.setAttribute("id", "pin_circle")
         @circle_inner = create_element("div", "Inner", @circle)
         @circle_outer = create_element("div", "Outer", @circle)
         apply_animation(@circle, "pinflash", "1.5s", "ease-in-out")
+        setTimeout(->
+            document.getElementById("pin_circle").style.display = "none"
+        , 1500)
 
     draw_timezone: (myarea) ->
         offset = myarea.getAttribute("data-offset")
