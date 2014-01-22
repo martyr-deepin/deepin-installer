@@ -169,12 +169,18 @@ class AddPartDialog extends Dialog
         @fs_desc = create_element("span", "AddDesc", @fs)
         @fs_desc.innerText = _("Filesystem:")
         @fs_value = create_element("span", "AddValue", @fs)
-        @fs_select = new DropDown("dd_fs_" + @partid, null)
+        @fs_select = new DropDown("dd_fs_" + @partid, @fs_change_cb)
         @fs_value.appendChild(@fs_select.element)
         @fs_select.set_drop_items(__fs_keys, __fs_values)
         @fs_select.set_drop_size(130,22)
         @fs_select.show_drop()
         @fs_select.set_selected("ext4")
+
+    fs_change_cb: (part, fs) ->
+        if fs == "unused"
+            Widget.look_up("AddModel").mp.style.display = "none"
+        else
+            Widget.look_up("AddModel").mp.style.display = "block"
 
     fill_mount: ->
         @mp = create_element("div", "", @content)
