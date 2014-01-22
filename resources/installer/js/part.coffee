@@ -513,7 +513,6 @@ class PartTableItem extends Widget
         else if __selected_mode == "advance"
             if v_part_info[@id]? and v_part_info[@id]["type"] != "freespace"
                 if @active
-                    #@fs_select = new DropDown("dd_fs_" + @id, update_part_fs)
                     @fs_select = new DropDown("dd_fs_" + @id, @fs_change_cb)
                     @fs.appendChild(@fs_select.element)
                     if DCore.Installer.disk_support_efi(v_part_info[@id]["disk"])
@@ -528,6 +527,11 @@ class PartTableItem extends Widget
                     @fs_txt.innerText = v_part_info[@id]["fs"]
 
     fs_change_cb: (part, fs) ->
+        if fs in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
+            Widget.look_up("dd_mp_" + part)?.hide_drop()
+        else
+            Widget.look_up("dd_mp_"+ part)?.set_drop_items(__mp_keys, __mp_values)
+            Widget.look_up("dd_mp_"+ part)?.show_drop()
         update_part_fs(part, fs)
 
     fill_mount: ->
@@ -537,7 +541,6 @@ class PartTableItem extends Widget
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
         if @active 
-                #@mount_select = new DropDown("dd_mp_" + @id, update_part_mp)
                 @mount_select = new DropDown("dd_mp_" + @id, @mp_change_cb)
                 @mount.appendChild(@mount_select.element)
                 if v_part_info[@id]["fs"]? 
@@ -556,8 +559,15 @@ class PartTableItem extends Widget
                 else
                     @mount_txt.innerText = v_part_info[@id]["mp"]
 
-    mp_change_cb: (part, mp) ->
-        update_part_mp(part, mp)
+    mp_change_cb: (partid, mp) ->
+        if mp in get_selected_mp()
+            part = get_mp_partition(mp)
+            if part?
+                v_part_info[part]["mp"] = "unused"
+                Widget.look_up(part)?.fill_mount()
+            else
+                echo "error in get mp partition"
+        update_part_mp(partid, mp)
 
     set_btn_status: ->
         if __selected_mode != "advance"

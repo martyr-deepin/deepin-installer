@@ -143,25 +143,9 @@ class DropDownItem extends Widget
         @element.setAttribute("style", style)
 
     do_click: (e) ->
-        if @id.indexOf("di_mp") != -1 
-            if @key in get_selected_mp()
-                part = get_mp_partition(@key)
-                if part?
-                    v_part_info[part]["mp"] = "unused"
-                    Widget.look_up(part)?.fill_mount()
-                else
-                    echo "error in get mp partition"
-
-        if @id.indexOf("di_fs") != -1 
-            if @key in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
-                Widget.look_up("dd_mp_" +@id[6..17])?.hide_drop()
-            else
-                Widget.look_up("dd_mp_"+@id[6..17])?.set_drop_items(__mp_keys, __mp_values)
-                Widget.look_up("dd_mp_"+@id[6..17])?.show_drop()
-
         if @key != @dropdownlist.dropdown.selected 
             if @dropdownlist.dropdown.on_change_cb?
-                @dropdownlist.dropdown.on_change_cb(@dropdownlist.dropdown.id[6..18],@key)
+                @dropdownlist.dropdown.on_change_cb(@id[6..17],@key)
         @dropdownlist.dropdown.set_selected(@key)
         @dropdownlist.hide()
 
