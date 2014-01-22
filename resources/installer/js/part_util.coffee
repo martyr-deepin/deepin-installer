@@ -43,7 +43,7 @@ get_random_color = ->
     random_list.splice(index,1)
 
 sector_to_mb = (sector_length, sector_size) ->
-    return (sector_length * sector_size) / (1000 * 1000)
+    return Math.floor((sector_length * sector_size) / (1000 * 10000))
 
 sector_to_gb = (sector_length, sector_size) ->
     return (sector_length * sector_size) / (1000 * 1000 * 1000)
