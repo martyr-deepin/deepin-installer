@@ -318,8 +318,8 @@ class Timezone extends Widget
         @pin = null
         @pin = create_element("div", "Pin", @picker_wrap)
         @pin_img = create_img("", "images/pin.png", @pin)
-        x = parseInt(pin[0]) - 7
-        y = parseInt(pin[1]) + 50 - 7
+        x = parseInt(pin[0]) - 6
+        y = parseInt(pin[1]) + 50 - 6
         style = "left:" + x + "px;" + "top:" + y + "px"
         @pin.setAttribute("style", style)
 
@@ -329,7 +329,7 @@ class Timezone extends Widget
         @tip = new TimezoneToolTip("timezone", text)
         @pin.appendChild(@tip.element)
         left = @tip.content.clientWidth + 2 * (@tip.radius + @tip.xpadding) - 2
-        @tip.element.style.top = "-36px"
+        @tip.element.style.top = "-42px"
         @tip.element.style.left = (0 - left / 2) + "px"
         @tip.draw()
 
@@ -338,6 +338,7 @@ class Timezone extends Widget
         @circle = create_element("div", "Circle", @pin)
         @circle_inner = create_element("div", "Inner", @circle)
         @circle_outer = create_element("div", "Outer", @circle)
+        apply_animation(@circle, "pinflash", "1.5s", "ease-in-out")
 
     draw_timezone: (myarea) ->
         offset = myarea.getAttribute("data-offset")
