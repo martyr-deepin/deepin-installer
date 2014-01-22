@@ -616,7 +616,7 @@ remove_packages ()
     }
     
     cmd = g_strdup_printf ("apt-get remove -y %s", packages);
-    g_spawn_command_line_async (cmd, &error);
+    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("remove packages:%s\n", error->message);
     }
