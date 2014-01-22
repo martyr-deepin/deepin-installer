@@ -712,6 +712,8 @@ class PartTable extends Widget
                     item = new PartTableItem(part)
                     @items.appendChild(item.element)
                     @partitems.push(item)
+        if @partitems.length > 0 and @items.scrollHeight > @items.clientHeight
+            @partitems[@partitems.length - 1].element.setAttribute("class", "PartTableItem PartTableItemLast")
             
     update_mode: (mode) ->
         if __selected_item?

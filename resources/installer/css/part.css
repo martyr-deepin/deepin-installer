@@ -217,6 +217,12 @@
     clear:both;
 }
 
+.PartTableItemLast {
+    border-bottom:none;
+    box-shadow:none;
+    margin-bottom:4px;
+}
+
 .PartTableItem > div {
     height:40px;
     line-height:40px;
