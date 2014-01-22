@@ -467,7 +467,7 @@ class PartTableItem extends Widget
     fill_format: ->
         @format.innerHTML = ""
         if __selected_mode == "advance"
-            if v_part_info[@id]["type"] != "freespace"
+            if v_part_info[@id]? and v_part_info[@id]["type"] != "freespace"
                 @format_img = create_img("Format", "images/check-01.png", @format)
                 if not @active
                     if v_part_info[@id]["format"]
@@ -513,7 +513,8 @@ class PartTableItem extends Widget
         else if __selected_mode == "advance"
             if v_part_info[@id]? and v_part_info[@id]["type"] != "freespace"
                 if @active
-                    @fs_select = new DropDown("dd_fs_" + @id, update_part_fs)
+                    #@fs_select = new DropDown("dd_fs_" + @id, update_part_fs)
+                    @fs_select = new DropDown("dd_fs_" + @id, @fs_change_cb)
                     @fs.appendChild(@fs_select.element)
                     if DCore.Installer.disk_support_efi(v_part_info[@id]["disk"])
                         @fs_select.set_drop_items(__fs_efi_keys, __fs_efi_values)
@@ -526,6 +527,9 @@ class PartTableItem extends Widget
                     @fs_txt = create_element("div", "", @fs)
                     @fs_txt.innerText = v_part_info[@id]["fs"]
 
+    fs_change_cb: (part, fs) ->
+        update_part_fs(part, fs)
+
     fill_mount: ->
         @mount.innerHTML = ""
         if __selected_mode != "advance" 
@@ -533,7 +537,8 @@ class PartTableItem extends Widget
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
         if @active 
-                @mount_select = new DropDown("dd_mp_" + @id, update_part_mp)
+                #@mount_select = new DropDown("dd_mp_" + @id, update_part_mp)
+                @mount_select = new DropDown("dd_mp_" + @id, @mp_change_cb)
                 @mount.appendChild(@mount_select.element)
                 if v_part_info[@id]["fs"]? 
                     @mount_select.set_drop_items(__mp_keys, __mp_values)
@@ -550,6 +555,9 @@ class PartTableItem extends Widget
                     @mount_txt.innerText = ""
                 else
                     @mount_txt.innerText = v_part_info[@id]["mp"]
+
+    mp_change_cb: (part, mp) ->
+        update_part_mp(part, mp)
 
     set_btn_status: ->
         if __selected_mode != "advance"

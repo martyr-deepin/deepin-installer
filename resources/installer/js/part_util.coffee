@@ -1061,6 +1061,12 @@ add_part = (free_part, type, size, align, fs, mp) ->
     v_part_info[new_part] = {}
     v_part_info[new_part]["disk"] = disk
     v_part_info[new_part]["color"] = v_part_info[free_part]["color"]
+    v_part_info[new_part]["format"] = true
+    v_part_info[new_part]["type"] = type
+    v_part_info[new_part]["align"] = align
+    v_part_info[new_part]["fs"] = fs
+    v_part_info[new_part]["mp"] = mp
+    v_part_info[new_part]["lvm"] = false
 
     if type == "normal"
         _add_normal(disk, free_part)
@@ -1068,7 +1074,6 @@ add_part = (free_part, type, size, align, fs, mp) ->
         _add_logical(disk, free_part)
     else
         echo "error in add_part, invalid partition type"
-
     #handle new part geometry
     if size == v_part_info[free_part]["length"]
         echo "whole freespace to new part"
@@ -1079,7 +1084,6 @@ add_part = (free_part, type, size, align, fs, mp) ->
         free_index = v_disk_info[disk]["partitions"].indexOf(free_part)
         v_disk_info[disk]["partitions"].splice(free_index, 1)
         delete v_part_info[free_part]
-
     else
         echo "partial freespace to new part"
         if align == "start"
@@ -1098,14 +1102,8 @@ add_part = (free_part, type, size, align, fs, mp) ->
             v_part_info[free_part]["length"] = v_part_info[free_part]["end"] - v_part_info[free_part]["start"] + 1
             v_part_info[free_part]["width"] = Math.floor((v_part_info[free_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
-    v_part_info[new_part]["type"] = type
     update_part_display_path(new_part, "add")
-
-    v_part_info[new_part]["align"] = align
-    v_part_info[new_part]["fs"] = fs
-    v_part_info[new_part]["mp"] = mp
     v_part_info[new_part]["width"] = Math.floor((v_part_info[new_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
-    v_part_info[new_part]["lvm"] = false
     v_part_info[new_part]["used"] = sector_to_mb(v_part_info[new_part]["length"], 512)
     v_disk_info[disk]["partitions"].push(new_part)
     #compute_display_path(disk)
