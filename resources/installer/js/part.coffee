@@ -490,10 +490,14 @@ class PartTableItem extends Widget
                         @format_img.setAttribute("src", "images/check-04.png")
                     else
                         @format_img.setAttribute("src", "images/check-03.png")
-                if @is_format_mandatory()
+                if @is_busy()
+                    @format_img.setAttribute("src", "images/check-05.png")
+                else if @is_format_mandatory()
                     @format_img.setAttribute("src", "images/check-06.png")
                 @format_img.addEventListener("click", (e) =>
-                    if @is_format_mandatory()
+                    if @is_busy()
+                        @format_img.setAttribute("src", "images/check-05.png")
+                    else if @is_format_mandatory()
                         update_part_format(@id, true)
                         @format_img.setAttribute("src", "images/check-06.png")
                     else
@@ -626,19 +630,8 @@ class PartTableItem extends Widget
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
-        if __selected_mode == "advance"
-            if v_part_info[@id]["lvm"]? and v_part_info[@id]["lvm"] == true
-                lvm = true
-        else
-            if @id in m_disk_info[v_part_info[@id]["disk"]]["partitions"]
-                if m_part_info[@id]["lvm"]? and m_part_info[@id]["lvm"] == true
-                    lvm = true
-
-        if lvm
+        if @is_busy
             @lock_busy()
-        else if @id in m_disk_info[__selected_disk]["partitions"]
-            if DCore.Installer.get_partition_busy(@id)
-                @lock_busy()
         else
             @unbusy()
 
@@ -649,6 +642,19 @@ class PartTableItem extends Widget
         @fill_format()
         @lock.innerHTML = ""
         @element.setAttribute("style", "")
+
+    is_busy: ->
+        if __selected_mode == "advance"
+            if v_part_info[@id]["lvm"]? and v_part_info[@id]["lvm"] == true
+                return true
+        else
+            if @id in m_disk_info[v_part_info[@id]["disk"]]["partitions"]
+                if m_part_info[@id]["lvm"]? and m_part_info[@id]["lvm"] == true
+                    return true
+        if @id in m_disk_info[__selected_disk]["partitions"]
+            if DCore.Installer.get_partition_busy(@id)
+                return true
+        return false
 
     do_click: (e)->
         if __selected_item != @ 
@@ -668,6 +674,7 @@ class PartTableItem extends Widget
         if __selected_mode == "advance"
             @fs_select?.set_list_enable(true)
             @mount_select?.set_list_enable(true)
+            @fill_format()
 
 class DiskTabItem extends Widget
     constructor: (@id, @disk)->
