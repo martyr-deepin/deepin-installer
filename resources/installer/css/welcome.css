@@ -307,10 +307,10 @@
 
 .Circle {
     position:absolute;
-    top:-12px;
-    left:-12px;
-    width:36px;
-    height:36px;
+    top:-11px;
+    left:-11px;
+    width:35px;
+    height:35px;
 }
 
 .Inner {
@@ -377,7 +377,7 @@
         left:10px;
         width:14px;
         height:14px;
-        border-radius:15px;
+        border-radius:8px;
     }
     60% {
         opacity:0.9;
@@ -385,7 +385,7 @@
         left:9px;
         width:16px;
         height:16px;
-        border-radius:17px;
+        border-radius:9px;
     }
     70% {
         opacity:0.8;
@@ -393,7 +393,7 @@
         left:8px;
         width:18px;
         height:18px;
-        border-radius:19px;
+        border-radius:10px;
     }
     80% {
         opacity:0.7;
@@ -401,7 +401,7 @@
         left:7px;
         width:20px;
         height:20px;
-        border-radius:21px;
+        border-radius:11px;
     }
     90% {
         opacity:0.6;
@@ -409,7 +409,7 @@
         left:6px;
         width:22px;
         height:22px;
-        border-radius:23px;
+        border-radius:12px;
     }
     100% {
         opacity:0.5;
@@ -417,7 +417,7 @@
         left:5px;
         width:24px;
         height:24px;
-        border-radius:25px;
+        border-radius:13px;
     }
 }
 
@@ -428,7 +428,7 @@
         left:10px;
         width:14px;
         height:14px;
-        border-radius:15px;
+        border-radius:8px;
     }
     10% {
         opacity:0.9;
@@ -436,7 +436,7 @@
         left:9px;
         width:16px;
         height:16px;
-        border-radius:17px;
+        border-radius:9px;
     }
     20% {
         opacity:0.8;
@@ -444,7 +444,7 @@
         left:8px;
         width:18px;
         height:18px;
-        border-radius:19px;
+        border-radius:10px;
     }
     30% {
         opacity:0.7;
@@ -452,7 +452,7 @@
         left:7px;
         width:20px;
         height:20px;
-        border-radius:21px;
+        border-radius:11px;
     }
     40% {
         opacity:0.6;
@@ -460,7 +460,7 @@
         left:6px;
         width:22px;
         height:22px;
-        border-radius:23px;
+        border-radius:12px;
     }
     50% {
         opacity:0.5;
@@ -468,7 +468,7 @@
         left:5px;
         width:24px;
         height:24px;
-        border-radius:25px;
+        border-radius:13px;
     }
     60% {
         opacity:0.4;
@@ -476,7 +476,7 @@
         left:4px;
         width:26px;
         height:26px;
-        border-radius:27px;
+        border-radius:14px;
     }
     70% {
         opacity:0.3;
@@ -484,7 +484,7 @@
         left:3px;
         width:28px;
         height:28px;
-        border-radius:29px;
+        border-radius:15px;
     }
     80% {
         opacity:0.2;
@@ -492,7 +492,7 @@
         left:2px;
         width:30px;
         height:30px;
-        border-radius:31px;
+        border-radius:16px;
     }
     90% {
         opacity:0.1;
@@ -500,7 +500,7 @@
         left:1px;
         width:32px;
         height:32px;
-        border-radius:33px;
+        border-radius:17px;
     }
     100% {
         opacity:0;
@@ -508,6 +508,6 @@
         left:0px;
         width:34px;
         height:34px;
-        border-radius:35px;
+        border-radius:18px;
     }
 }
