@@ -517,7 +517,10 @@ class PartTableItem extends Widget
         if __selected_mode == "simple" 
             if m_part_info[@id]? and m_part_info[@id]["type"] != "freespace"
                 @fs_txt = create_element("div", "", @fs)
-                @fs_txt.innerText = m_part_info[@id]["fs"]
+                if m_part_info[@id]["fs"] != "unused"
+                    @fs_txt.innerText = m_part_info[@id]["fs"]
+                else
+                    @fs_txt.innerText = ""
         else if __selected_mode == "advance"
             if v_part_info[@id]? and v_part_info[@id]["type"] != "freespace"
                 if @active
@@ -532,7 +535,10 @@ class PartTableItem extends Widget
                     @fs_select.set_selected(v_part_info[@id]["fs"])
                 else
                     @fs_txt = create_element("div", "", @fs)
-                    @fs_txt.innerText = v_part_info[@id]["fs"]
+                    if v_part_info[@id]["fs"] != "unused"
+                        @fs_txt.innerText = v_part_info[@id]["fs"]
+                    else
+                        @fs_txt.innerText = ""
 
     fs_change_cb: (part, fs) ->
         if fs in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
