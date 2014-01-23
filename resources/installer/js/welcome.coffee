@@ -42,6 +42,13 @@ get_matched_items = (key, list) ->
             matched.push(item)
     return matched
 
+is_ancestor = (ancestor, el) ->
+    while el?
+        if el == ancestor
+            return true
+        el = el.parentNode
+    return false
+
 class RequireMatchDialog extends Dialog
     constructor: (@id) ->
         super(@id, false, @require_match_cb)
@@ -463,23 +470,11 @@ class Welcome extends Page
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
         @keyboard_set.innerText = _("Keyboard")
-        @keyboard_set.addEventListener("click", (e) =>
-            if @keyboard.displayed
-                @display_account()
-            else
-                @display_keyboard()
-        )
         @keyboard_glue = create_element("div", "TitleGlue", @keyboard_set) 
         @keyboard_glue.style.display = "none"
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
         @timezone_set.innerText = _("Time Zone")
-        @timezone_set.addEventListener("click", (e) =>
-            if @timezone.displayed
-                @display_account()
-            else
-                @display_timezone()
-        )
         @timezone_glue = create_element("div", "TitleGlue", @timezone_set) 
         @timezone_glue.style.display = "none"
 
@@ -522,6 +517,25 @@ class Welcome extends Page
             @start_install_cb()
         )
         @start.setAttribute("style", "pointer-events:none")
+
+    do_click: (e) ->
+        if is_ancestor(@keyboard_set, e.target)
+           if @keyboard.displayed
+               @display_account()
+           else
+               @display_keyboard()
+        else if is_ancestor(@timezone_set, e.target)
+           if @timezone.displayed
+               @display_account()
+           else
+               @display_timezone()
+        else
+            if @keyboard.displayed
+                if not is_ancestor(@keyboard.element, e.target)
+                    @display_account()
+            if @timezone.displayed
+                if not is_ancestor(@timezone.element, e.target)
+                    @display_account()
 
     display_account: ->
         @keyboard.hide()
