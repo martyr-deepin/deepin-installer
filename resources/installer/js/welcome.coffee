@@ -374,7 +374,8 @@ class Timezone extends Widget
         if area?
             @draw_timezone(area)
             @show_pin(area)
-            @update_timezone(timezone)
+            __selected_timezone = timezone
+            @hover_timezone(timezone)
 
     draw_canvas: (area) ->
         ctx = @canvas.getContext("2d")
