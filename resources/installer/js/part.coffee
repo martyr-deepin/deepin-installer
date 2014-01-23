@@ -492,7 +492,7 @@ class PartTableItem extends Widget
                 @format_img.addEventListener("click", (e) =>
                     if @is_format_mandatory()
                         update_part_format(@id, true)
-                        @format_img.setAttribute("src", "images/check-04.png")
+                        @format_img.setAttribute("src", "images/check-06.png")
                     else
                         if v_part_info[@id]["format"]
                             update_part_format(@id, false)
