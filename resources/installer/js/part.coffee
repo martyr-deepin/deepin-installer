@@ -462,15 +462,18 @@ class PartTableItem extends Widget
     fill_used: ->
         @used.innerHTML = ""
         if __selected_mode == "advance" and v_part_info[@id]["type"] != "freespace"
-            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(1) + "G"
+            if isNaN(v_part_info[@id]["used"])
+                @used.innerText = _("Unknown")
+            else
+                @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(1) + "G"
         else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
-            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(1) + "G"
+            if isNaN(m_part_info[@id]["used"])
+                @used.innerText = _("Unknown")
+            else
+                @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(1) + "G"
 
     update_part_used: ->
-        if __selected_mode == "advance"
-            @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(1) + "G"
-        else
-            @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(1) + "G"
+        @fill_used()
 
     fill_format: ->
         @format.innerHTML = ""
