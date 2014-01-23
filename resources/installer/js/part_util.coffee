@@ -366,6 +366,13 @@ check_has_mount = ->
                 break
     return mount
 
+get_legacy_boot_part = ->
+    for disk in disks
+        for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["mp"] == "/boot"
+                return part
+    return null
+
 get_efi_boot_part = ->
     for disk in disks
         for part in v_disk_info[disk]["partitions"]

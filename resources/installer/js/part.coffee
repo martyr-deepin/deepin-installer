@@ -277,6 +277,17 @@ class UefiDialog extends Dialog
     uefi_require_cb: ->
         echo "uefi require cb"
 
+class UefiBootDialog extends Dialog
+    constructor: (@id) ->
+        super(@id, false, @uefi_boot_cb)
+        @add_css_class("DialogCommon")
+        @title_txt.innerText = _("Install tips")
+        @root_tips = create_element("div", "", @content)
+        @root_tips.innerText = _("In uefi mode, no needs  to mount a part to /boot manually")
+
+    uefi_boot_cb: ->
+        echo "uefi boot cb"
+
 class InstallDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @confirm_install_cb)
@@ -876,7 +887,12 @@ class Part extends Page
                     __selected_grub = "uefi"
                     if v_part_info[efi_boot]["length"] <= mb_to_sector(100, 512)
                         @uefi_model = new UefiDialog("UefiModel")
-                        document.body.appendChild(@root_model.element)
+                        document.body.appendChild(@uefi_model.element)
+                        return
+                    legacy_boot = get_legacy_boot_part()
+                    if legacy_boot?
+                        @uefi_boot_model = new UefiBootDialog("UefiBootModel")
+                        document.body.appendChild(@uefi_boot_model.element)
                         return
                 else
                     __selected_grub = @grubdropdown?.get_selected()
