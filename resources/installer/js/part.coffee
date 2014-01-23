@@ -524,8 +524,10 @@ class PartTableItem extends Widget
             @format.style.display = "none"
 
     is_format_mandatory: ->
-        if @id not in m_disk_info[v_part_info[@id]["disk"]]["partitions"] or m_part_info[@id]["op"] == "add"
+        if v_part_info[@id]["type"] == "freespace"
             return false
+        if @id not in m_disk_info[v_part_info[@id]["disk"]]["partitions"] or m_part_info[@id]["op"] == "add"
+            return true
         if m_part_info[@id]["fs"] != v_part_info[@id]["fs"]
             return true
         return false
@@ -641,7 +643,7 @@ class PartTableItem extends Widget
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
-        if @is_busy
+        if @is_busy()
             @lock_busy()
         else
             @unbusy()
