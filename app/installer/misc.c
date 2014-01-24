@@ -32,9 +32,10 @@
 #define WHITE_LIST_PATH         RESOURCE_DIR"/installer/whitelist.ini"
 #define PACKAGES_LIST_PATH      RESOURCE_DIR"/installer/blacklist.ini"
 #define EFI_BOOT_MGR            RESOURCE_DIR"/installer/efibootmgr.deb"
-#define GRUB_COMMON            RESOURCE_DIR"/installer/grub2-common.deb"
-#define GRUB_EFI_AMD64_BIN      RESOURCE_DIR"/installer/grub-efi-amd64-bin.deb"
-#define GRUB_EFI_AMD64          RESOURCE_DIR"/installer/grub-efi-amd64.deb" 
+#define GRUB_COMMON             RESOURCE_DIR"/installer/grub-common.deb"
+#define GRUB2_COMMON            RESOURCE_DIR"/installer/grub2-common*.deb"
+#define GRUB_EFI_AMD64_BIN      RESOURCE_DIR"/installer/grub-efi-amd64-bin*.deb"
+#define GRUB_EFI_AMD64          RESOURCE_DIR"/installer/grub-efi-amd64_*.deb" 
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);
@@ -427,23 +428,33 @@ out:
 static void
 install_grub_efi_amd64 ()
 {
-    g_spawn_command_line_sync ("apt-get remove -y grub-pc", NULL, NULL, NULL, NULL);
-
-    gchar *grub_common = g_strdup_printf ("dpkg -i %s", GRUB_COMMON);
-    g_spawn_command_line_sync (GRUB_COMMON, NULL, NULL, NULL, NULL);
-    g_free (grub_common);
+    g_spawn_command_line_sync ("apt-get remove -y grub-pc grub2-common", NULL, NULL, NULL, NULL);
+    g_warning ("----------------remove grub-pc grub2-common finish-------------------------\n");
 
     gchar *bootmgr = g_strdup_printf ("dpkg -i %s", EFI_BOOT_MGR);
     g_spawn_command_line_sync (bootmgr, NULL, NULL, NULL, NULL);
     g_free (bootmgr);
+    g_warning ("----------------install efi boot mgr finish-------------------------\n");
+
+    gchar *grub_common = g_strdup_printf ("dpkg -i %s", GRUB_COMMON);
+    g_spawn_command_line_sync (GRUB_COMMON, NULL, NULL, NULL, NULL);
+    g_free (grub_common);
+    g_warning ("----------------install grub-common finish-------------------------\n");
+
+    gchar *grub2_common = g_strdup_printf ("dpkg -i %s", GRUB2_COMMON);
+    g_spawn_command_line_sync (GRUB2_COMMON, NULL, NULL, NULL, NULL);
+    g_free (grub2_common);
+    g_warning ("----------------install grub2-common finish-------------------------\n");
 
     gchar *bin = g_strdup_printf ("dpkg -i %s", GRUB_EFI_AMD64_BIN);
     g_spawn_command_line_sync (bin, NULL, NULL, NULL, NULL);
     g_free (bin);
+    g_warning ("----------------install grub efi amd64 bin finish-------------------------\n");
 
     gchar *efi = g_strdup_printf ("dpkg -i %s", GRUB_EFI_AMD64);
     g_spawn_command_line_sync (efi, NULL, NULL, NULL, NULL);
     g_free (efi);
+    g_warning ("----------------install grub efi amd64 finish-------------------------\n");
 }
 
 static gpointer
