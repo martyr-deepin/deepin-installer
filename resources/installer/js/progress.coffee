@@ -188,6 +188,7 @@ class Progress extends Page
     constructor: (@id)->
         super
         @titleimg = create_img("", "images/progress_part.png", @titleprogress)
+
         @loading = create_element("div", "Loading", @element)
         @loading_tips = create_element("div", "LoadingTxt", @loading)
         @loading_tips.innerText = _("Prepare for Installation")
@@ -196,6 +197,19 @@ class Progress extends Page
         setInterval(=>
             @update_rotate()
         , 30)
+
+        @progress_container = create_element("div", "ProgressContainer", @element)
+        @progress_container.style.display = "none"
+        @progressbar = create_element("div", "ProgressBar", @progress_container)
+        @light = create_element("div", "ProgressLight", @progress_container)
+        @light.style.webkitAnimationName = "progressflash"
+        @light.style.webkitAnimationDuration = "5s"
+        @light.style.webkitAnimationIterationCount = 1000
+        @light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
+
+        @ppt = new Ppt("pptslider", _ppt_list)
+        @element.appendChild(@ppt.element)
+        @ticker = 0
 
     update_rotate: ->
         if @deg > 360
@@ -207,22 +221,12 @@ class Progress extends Page
         @titleimg.setAttribute("src", "images/progress_extract.png")
         setTimeout(=>
             @loading.style.display = "none"
-        ,900)
+        ,1000)
         apply_animation(@loading, "loadingout", "1s", "linear")
-
-        @progress_container = create_element("div", "ProgressContainer", @element)
-        @progress_container.style.display = "none"
-        @progressbar = create_element("div", "ProgressBar", @progress_container)
-        @light = create_element("div", "ProgressLight", @progress_container)
-        @light.style.webkitAnimationName = "progressflash"
-        @light.style.webkitAnimationDuration = "5s"
-        @light.style.webkitAnimationIterationCount = 1000
-        @light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
-        @ppt = new Ppt("pptslider", _ppt_list)
-        @element.appendChild(@ppt.element)
-        @ticker = 0
-        apply_animation(@progress_container, "pptin", "4s", "linear")
+        apply_animation(@progress_container, "pptin", "2s", "linear")
+        apply_animation(@ppt.element, "pptin", "2s", "linear")
         @progress_container.style.display = "block"
+        @ppt.element.style.display = "block"
 
     update_progress: (progress) ->
         @progressbar.style.width = progress
