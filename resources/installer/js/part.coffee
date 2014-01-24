@@ -243,6 +243,8 @@ class UnmountDialog extends Dialog
                     DCore.Installer.unmount_partition(part)
                 catch error
                     echo error
+        for item in Widget.look_up("part_table")?.partitems
+            item.check_busy()
 
 class FormatDialog extends Dialog
     constructor: (@id) ->
@@ -637,16 +639,13 @@ class PartTableItem extends Widget
         @active = true
         @fill_fs()
         @fill_mount()
-        @fill_format()
         @set_btn_status()
+        @check_busy()
+        @fill_format()
         style = "background:rgba(246,178,82,0.5);"
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
-        if @is_busy()
-            @lock_busy()
-        else
-            @unbusy()
 
     blur: ->
         @active = false
@@ -687,7 +686,12 @@ class PartTableItem extends Widget
         if __selected_mode == "advance"
             @fs_select?.set_list_enable(true)
             @mount_select?.set_list_enable(true)
-            @fill_format()
+
+    check_busy: ->
+        if @is_busy()
+            @lock_busy()
+        else
+            @unbusy()
 
 class DiskTabItem extends Widget
     constructor: (@id, @disk)->
