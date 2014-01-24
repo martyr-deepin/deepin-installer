@@ -102,6 +102,7 @@ input:focus {
     right:0;
     z-index:100;
     background:rgba(255,255,255,0.5);
+    border-radius:5px;
     display:none;
 }
 
