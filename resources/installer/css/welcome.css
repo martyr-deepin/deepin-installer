@@ -43,6 +43,9 @@
     border-top-left-radius:5px;
     border-top-right-radius:5px;
     z-index:60;
+    left:-1px;
+    top:-1px;
+    margin-right:-2px;
 }
 
 .TitleGlue {
