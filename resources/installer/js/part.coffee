@@ -301,7 +301,7 @@ class InstallDialog extends Dialog
     confirm_install_cb: ->
         echo "confirm install"
         progress_page = new Progress("progress")
-        progress_page.update_progress("0%")
+        progress_page.start_progress()
         pc.remove_page(part_page)
         pc.add_page(progress_page)
         setTimeout(->

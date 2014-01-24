@@ -1,3 +1,33 @@
+.Progress .Loading {
+    position:absolute;
+    top:268px;
+    left:343px;
+    width:64px;
+    height:64px;
+    background:url("../images/animation_bg.png");
+    z-index:1000;
+}
+
+.Progress .LoadingTxt {
+    position:absolute;
+    top:-60px;
+    left:-200px;
+    height:30px;
+    width:464px;
+    text-align:center;
+    font-size:20px;
+    text-shadow:0 2px 4px rgba(0,0,0,0.3);
+}
+
+.Progress .Rotate {
+    position:absolute;
+    top:0;
+    left:0;
+    width:64px;
+    height:64px;
+    background:url("../images/animation_fg.png");
+}
+
 .ProgressContainer {
     position:absolute;
     left:0;
@@ -94,6 +124,42 @@
     background-position:20px 10px;
     opacity:0.5;
     z-index:500;
+}
+
+@-webkit-keyframes loadingout {
+    0% {
+        opacity:1;
+    }
+    25% {
+        opacity:0.75;
+    }
+    50% {
+        opacity:0.5;
+    }
+    75% {
+        opacity:0.25;
+    }
+    100% {
+        opacity:0;
+    }
+}
+
+@-webkit-keyframes pptin {
+    0% {
+        opacity:0;
+    }
+    25% {
+        opacity:0.25;
+    }
+    50% {
+        opacity:0.5;
+    }
+    75% {
+        opacity:0.75;
+    }
+    100% {
+        opacity:1;
+    }
 }
 
 @-webkit-keyframes progressflash {
