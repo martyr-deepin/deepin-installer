@@ -64,6 +64,10 @@ class Finish extends Page
         if @succeed
             @now.setAttribute("class", "NowActive")
             @later.setAttribute("class", "Later")
+            @now_txt.innerText = _("Reboot now")
+            @later_txt.innerText = _("Reboot later")
         else
             @now.setAttribute("class", "Now")
             @later.setAttribute("class", "LaterActive")
+            @now_txt.innerText = _("Reboot")
+            @later_txt.innerText = _("Start Over")
