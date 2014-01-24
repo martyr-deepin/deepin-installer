@@ -153,8 +153,8 @@ class Ppt extends Widget
                     __ppt_in_switch = false
                 , 1000)
         )
-        __ppt_switch_id = setInterval(->
-            Widget.look_up("pptslider")?.switch_next()
+        __ppt_switch_id = setInterval(=>
+            @switch_next()
         ,5000)
 
     create_item: (index, img) ->
@@ -167,10 +167,10 @@ class Ppt extends Widget
         for item in @items
             item.switch_next()
             setTimeout(
-                Widget.look_up(item.id)?.init_position()
+                item.init_position()
             , 1000)
-        __ppt_switch_id = setInterval(->
-            Widget.look_up("pptslider")?.switch_next()
+        __ppt_switch_id = setInterval(=>
+            @switch_next()
         ,5000)
 
     switch_next: ->
@@ -178,10 +178,10 @@ class Ppt extends Widget
         for item in @items
             item.switch_prev()
             setTimeout(
-                Widget.look_up(item.id)?.init_position()
+                item.init_position()
             , 1000)
-        __ppt_switch_id = setInterval(->
-            Widget.look_up("pptslider")?.switch_next()
+        __ppt_switch_id = setInterval(=>
+            @switch_next()
         ,5000)
 
 class Progress extends Page
