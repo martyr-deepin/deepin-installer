@@ -201,6 +201,10 @@
     width:79px;
 }
 
+.PartTableHeader .Info {
+    width:209px;
+}
+
 .PartTableItems {
     width:700px;
     height:280px;

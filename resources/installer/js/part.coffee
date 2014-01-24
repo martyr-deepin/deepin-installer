@@ -727,20 +727,24 @@ class PartTable extends Widget
         @header = create_element("div", "PartTableHeader", @disk_content)
         @device_header = create_element("div", "Fat", @header)
         @device_header.innerText = _("Device")
-        @size_header = create_element("div", "Thin Size", @header)
+        @size_header = create_element("div", "Size", @header)
         @size_header.innerText = _("Size")
         @used_header = create_element("div", "Thin", @header)
         @used_header.innerText = _("Free Space")
-        @fs_header = create_element("div", "Thin Fs", @header)
+        @fs_header = create_element("div", "Fs", @header)
         @fs_header.innerText = _("Filesystem")
-        @mount_header = create_element("div", "Thin Mount", @header)
+        @info_header = create_element("div", "Info", @header)
+        @info_header.innerText = _("Information")
+        @mount_header = create_element("div", "Mount", @header)
         @mount_header.innerText = _("Mount point")
         @format_header = create_element("div", "Thin", @header)
         @format_header.innerText = _("Format")
         if __selected_mode == "advance"
+            @info_header.style.display = "none"
             @mount_header.style.display = "block"
             @format_header.style.display = "block"
         else
+            @info_header.style.display = "block"
             @mount_header.style.display = "none"
             @format_header.style.display = "none"
 
@@ -781,6 +785,7 @@ class PartTable extends Widget
         else 
             id = null
         if mode == "advance"
+            @info_header.style.display = "none"
             @mount_header.style.display = "block"
             @format_header.style.display = "block"
             @items.setAttribute("style", "height:180px")
@@ -788,6 +793,7 @@ class PartTable extends Widget
         else
             @format_header.style.display = "none"
             @mount_header.style.display = "none"
+            @info_header.style.display = "block"
             @items.setAttribute("style", "")
             @element.setAttribute("style", "")
         @fill_items()

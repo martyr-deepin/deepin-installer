@@ -89,6 +89,10 @@ msgstr "格式化："
 msgid "Mount:"
 msgstr "挂载："
 
+#: ../resources/installer/js/part.coffee:170
+msgid "Filesystem:"
+msgstr "文件系统："
+
 #: ../resources/installer/js/part.coffee:200
 msgid "Please enter a valid partition size."
 msgstr "请输入一个有效的分区大小数值"
@@ -190,6 +194,10 @@ msgstr "3. 点击安装进入安装，等待安装完成即可"
 #: ../resources/installer/js/part.coffee:666
 msgid "Help"
 msgstr "帮助"
+
+#: ../resources/installer/js/part.coffee:739
+msgid "Format"
+msgstr "格式化"
 
 #: ../resources/installer/js/part.coffee:676
 #: ../resources/installer/js/part.coffee:742
