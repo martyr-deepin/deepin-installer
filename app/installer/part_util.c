@@ -35,6 +35,9 @@ const gchar *target;
 int chroot_fd;
 gboolean in_chroot = FALSE;
 GList *mounted_list = NULL;
+static GAsyncQueue *op_queue = NULL;
+static GMutex op_mutex;
+static gint op_count = 0;
 
 JS_EXPORT_API 
 gchar* installer_rand_uuid ()
@@ -1165,3 +1168,125 @@ void installer_unmount_partition (const gchar *part)
     g_free (cmd);
 }
 
+gchar *
+json_get_string (JSObjectRef json,  const gchar *key)
+{
+    JSContextRef ctx = get_global_context();
+    JSStringRef js_key = JSStringCreateWithUTF8CString (key);
+    JSValueRef js_value = JSObjectGetProperty (ctx, json, js_key, NULL);
+    JSStringRelease (js_key);
+    if (!JSValueIsString (ctx, js_value)) {
+        g_warning ("json get string:value not string for %s\n", key);
+        return NULL;
+    }
+    return jsvalue_to_cstr (ctx, js_value);
+}
+
+double 
+json_get_number (JSObjectRef json, const gchar *key)
+{
+    JSContextRef ctx = get_global_context();
+    JSStringRef js_key = JSStringCreateWithUTF8CString (key);
+    JSValueRef js_value = JSObjectGetProperty (ctx, json, js_key, NULL);
+    JSStringRelease (js_key);
+    if (!JSValueIsNumber (ctx, js_value)) {
+        g_warning ("json get number:value not number for %s\n", key);
+        return -1;
+    }
+    return JSValueToNumber (ctx, js_value, NULL);
+}
+
+static gpointer 
+handle_part_operation_thread (gpointer data)
+{
+    guint i;
+    g_warning ("op count:%d\n", op_count);
+    for (i = 0; i < op_count; i++) {
+        g_mutex_lock (&op_mutex);
+        g_warning ("parse part operation");
+        JSObjectRef json = NULL;
+        json = g_async_queue_try_pop (op_queue);
+        if (json == NULL) {
+            g_warning ("json NULL\n");
+            g_usleep (100);
+        } else {
+            g_warning ("pop json\n");
+            gchar *op = json_get_string (json, "op");
+            g_warning ("get json op:%s\n", op);
+
+            if (g_strcmp0 ("delete_part", op) == 0) {
+                gchar *disk = json_get_string (json, "disk");
+                gchar *part = json_get_string (json, "part");
+                g_warning ("-----------delete disk->%s partition->%s-----------\n", disk, part);
+                installer_delete_disk_partition (disk, part);
+                g_free (disk);
+                g_free (part);
+
+            } else if (g_strcmp0 ("update_fs", op) == 0) {
+                gchar *part = json_get_string (json, "part");
+                gchar *fs = json_get_string (json, "fs");
+                g_warning ("-----------update part->%s fs->%s-----------\n", part, fs);
+                installer_update_partition_fs (part, fs);
+                g_free (part);
+                g_free (fs);
+
+            } else if (g_strcmp0 ("update_geometry", op) == 0) { 
+                gchar *part = json_get_string (json, "part");
+                double start = json_get_number (json, "start");
+                double length = json_get_number (json, "length");
+                g_warning ("-----------update part->%s geometry start->%f length->%f\n------------", part, start, length);
+                installer_update_partition_geometry (part, start, length);
+                g_free (part);
+
+            } else if (g_strcmp0 ("new_part", op) == 0) {
+                gchar *disk = json_get_string (json, "disk");
+                gchar *part = json_get_string (json, "part");
+                gchar *type = json_get_string (json, "type");
+                gchar *fs = json_get_string (json, "fs");
+                double start = json_get_number (json, "start");
+                double end = json_get_number (json, "end");
+                g_warning ("------------new part:disk->%s part->%s type->%s fs->%s start->%f end->%f------------\n", disk, part, type, fs, start, end);
+                installer_new_disk_partition (disk, part, type, fs, start, end);
+                g_free (disk);
+                g_free (part);
+                g_free (type);
+                g_free (fs);
+                
+            } else if (g_strcmp0 ("write_disk", op) == 0) {
+                gchar *disk = json_get_string (json, "disk");
+                g_warning ("write disk->%s\n", disk);
+                installer_write_disk (disk);
+                g_free (disk);
+
+            } else {
+                g_warning ("unkonw op:%s\n", op);
+            }
+            g_free (op);
+            g_mutex_unlock (&op_mutex);
+        }
+    }
+}
+
+JS_EXPORT_API 
+void installer_start_part_operation ()
+{
+    GThread *handle_thread = g_thread_new ("handle_operation", (GThreadFunc) handle_part_operation_thread, NULL);
+}
+
+JS_EXPORT_API 
+void installer_push_part_operation (JSValueRef json)
+{
+    if (op_queue == NULL) {
+        op_queue = g_async_queue_new ();
+    }
+    g_mutex_lock (&op_mutex);
+    op_count += 1;
+    g_async_queue_push (op_queue, (gpointer) json);
+    g_mutex_unlock (&op_mutex);
+}
+
+JS_EXPORT_API 
+void installer_finish_part_operation ()
+{
+    ;
+}

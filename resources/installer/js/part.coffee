@@ -309,6 +309,7 @@ class InstallDialog extends Dialog
             else if __selected_mode == "advance"
                 echo "do advance partition"
                 do_partition()
+            return
             progress_page.start_progress()
             progress_page.update_progress("2%")
             __selected_stage = "extract"
