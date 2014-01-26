@@ -33,9 +33,9 @@
 #define PACKAGES_LIST_PATH      RESOURCE_DIR"/installer/blacklist.ini"
 #define EFI_BOOT_MGR            RESOURCE_DIR"/installer/efibootmgr.deb"
 #define GRUB_COMMON             RESOURCE_DIR"/installer/grub-common.deb"
-#define GRUB2_COMMON            RESOURCE_DIR"/installer/grub2-common*.deb"
-#define GRUB_EFI_AMD64_BIN      RESOURCE_DIR"/installer/grub-efi-amd64-bin*.deb"
-#define GRUB_EFI_AMD64          RESOURCE_DIR"/installer/grub-efi-amd64_*.deb" 
+#define GRUB2_COMMON            RESOURCE_DIR"/installer/grub2-common.deb"
+#define GRUB_EFI_AMD64_BIN      RESOURCE_DIR"/installer/grub-efi-amd64-bin.deb"
+#define GRUB_EFI_AMD64          RESOURCE_DIR"/installer/grub-efi-amd64.deb" 
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);
