@@ -301,7 +301,6 @@ class InstallDialog extends Dialog
     confirm_install_cb: ->
         echo "confirm install"
         progress_page = new Progress("progress")
-        progress_page.start_progress()
         pc.remove_page(part_page)
         pc.add_page(progress_page)
         setTimeout(->
@@ -310,10 +309,11 @@ class InstallDialog extends Dialog
             else if __selected_mode == "advance"
                 echo "do advance partition"
                 do_partition()
+            progress_page.start_progress()
             progress_page.update_progress("2%")
             __selected_stage = "extract"
             progress_page.handle_extract("start")
-        , 500)
+        , 300)
 
     fill_install_info: ->
         if __selected_mode == "advance"
