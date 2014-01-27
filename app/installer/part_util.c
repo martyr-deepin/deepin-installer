@@ -1076,7 +1076,7 @@ handle_part_operation_thread (gpointer data)
             double start = *(double *) g_hash_table_lookup (table, "start");
             double end = *(double *) g_hash_table_lookup (table, "end");
             g_warning ("------------new part:disk->%s part->%s type->%s fs->%s start->%f end->%f------------\n", disk, part, type, fs, start, end);
-            handle_new_disk_partition (disk, part, type, fs, start, end);
+            handle_new_disk_partition (part, disk, type, fs, start, end);
             g_free (disk);
             g_free (part);
             g_free (type);
