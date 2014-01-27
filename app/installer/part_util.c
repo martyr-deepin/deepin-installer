@@ -1036,7 +1036,6 @@ static gpointer
 handle_part_operation_thread (gpointer data)
 {
     guint i;
-    g_warning ("op count:%d\n", op_count);
     for (i = 0; i < op_count; i++) {
         g_mutex_lock (&op_mutex);
         GHashTable *table  = (GHashTable *) g_async_queue_pop (op_queue);
@@ -1095,6 +1094,11 @@ handle_part_operation_thread (gpointer data)
         g_free (op);
         g_hash_table_destroy (table);
         g_mutex_unlock (&op_mutex);
+        if (i == op_count - 1) {
+            GRAB_CTX ();
+            js_post_message ("part_operation", NULL);
+            UNGRAB_CTX ();
+        }
     }
 }
 
