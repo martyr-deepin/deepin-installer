@@ -844,8 +844,8 @@ gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk
     g_hash_table_insert (table, "disk", g_strdup (disk));
     g_hash_table_insert (table, "type", g_strdup (type));
     g_hash_table_insert (table, "fs", g_strdup (fs));
-    g_hash_table_insert (table, "start", &start);
-    g_hash_table_insert (table, "end", &end);
+    g_hash_table_insert (table, "start", GINT_TO_POINTER (start));
+    g_hash_table_insert (table, "end", GINT_TO_POINTER (end));
     g_async_queue_push (op_queue, (gpointer) table);
     g_mutex_unlock (&op_mutex);
     return TRUE;
@@ -923,8 +923,8 @@ gboolean installer_update_partition_geometry (const gchar *part, double start, d
     GHashTable *table = g_hash_table_new (g_str_hash, g_str_equal);
     g_hash_table_insert (table, "op", g_strdup ("update_geometry"));
     g_hash_table_insert (table, "part", g_strdup (part));
-    g_hash_table_insert (table, "start", &start);
-    g_hash_table_insert (table, "length", &length);
+    g_hash_table_insert (table, "start", GINT_TO_POINTER (start));
+    g_hash_table_insert (table, "length", GINT_TO_POINTER (length));
     g_async_queue_push (op_queue, (gpointer) table);
     g_mutex_unlock (&op_mutex);
     return TRUE;
@@ -1062,8 +1062,8 @@ handle_part_operation_thread (gpointer data)
 
         } else if (g_strcmp0 ("update_geometry", op) == 0) { 
             gchar *part = (gchar *) g_hash_table_lookup (table, "part");
-            double start = *(double *) g_hash_table_lookup (table, "start");
-            double length = *(double *) g_hash_table_lookup (table, "length");
+            double start = (double) GPOINTER_TO_INT (g_hash_table_lookup (table, "start"));
+            double length = (double) GPOINTER_TO_INT (g_hash_table_lookup (table, "length"));
             g_warning ("-----------update part->%s geometry start->%f length->%f\n------------", part, start, length);
             handle_update_partition_geometry (part, start, length);
             g_free (part);
@@ -1073,8 +1073,8 @@ handle_part_operation_thread (gpointer data)
             gchar *part = (gchar *) g_hash_table_lookup (table, "part");
             gchar *type = (gchar *) g_hash_table_lookup (table, "type");
             gchar *fs = (gchar *) g_hash_table_lookup (table, "fs");
-            double start = *(double *) g_hash_table_lookup (table, "start");
-            double end = *(double *) g_hash_table_lookup (table, "end");
+            double start = (double) GPOINTER_TO_INT (g_hash_table_lookup (table, "start"));
+            double end = (double) GPOINTER_TO_INT (g_hash_table_lookup (table, "end"));
             g_warning ("------------new part:disk->%s part->%s type->%s fs->%s start->%f end->%f------------\n", disk, part, type, fs, start, end);
             handle_new_disk_partition (part, disk, type, fs, start, end);
             g_free (disk);
