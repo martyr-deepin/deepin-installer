@@ -759,8 +759,7 @@ gchar* installer_get_partition_os (const gchar *part)
     return result;
 }
 
-JS_EXPORT_API 
-gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end)
+gboolean handle_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end)
 {
     gboolean ret = FALSE;
 
@@ -832,7 +831,27 @@ out:
 }
 
 JS_EXPORT_API 
-gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part)
+gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end)
+{
+    if (op_queue == NULL) {
+        op_queue = g_async_queue_new ();
+    }
+    g_mutex_lock (&op_mutex);
+    op_count += 1;
+    GHashTable *table = g_hash_table_new (g_str_hash, g_str_equal);
+    g_hash_table_insert (table, "op", g_strdup ("new_part"));
+    g_hash_table_insert (table, "part", g_strdup (part_uuid));
+    g_hash_table_insert (table, "disk", g_strdup (disk));
+    g_hash_table_insert (table, "type", g_strdup (type));
+    g_hash_table_insert (table, "fs", g_strdup (fs));
+    g_hash_table_insert (table, "start", &start);
+    g_hash_table_insert (table, "end", &end);
+    g_async_queue_push (op_queue, (gpointer) table);
+    g_mutex_unlock (&op_mutex);
+    return TRUE;
+}
+
+gboolean handle_delete_disk_partition (const gchar *disk, const gchar *part)
 {
     gboolean ret = FALSE;
 
@@ -858,7 +877,23 @@ gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part)
 }
 
 JS_EXPORT_API 
-gboolean installer_update_partition_geometry (const gchar *part, double start, double length) {
+gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part)
+{
+    if (op_queue == NULL) {
+        op_queue = g_async_queue_new ();
+    }
+    g_mutex_lock (&op_mutex);
+    op_count += 1;
+    GHashTable *table = g_hash_table_new (g_str_hash, g_str_equal);
+    g_hash_table_insert (table, "op", g_strdup ("delete_part"));
+    g_hash_table_insert (table, "disk", g_strdup (disk));
+    g_hash_table_insert (table, "part", g_strdup (part));
+    g_async_queue_push (op_queue, (gpointer) table);
+    g_mutex_unlock (&op_mutex);
+    return TRUE;
+}
+
+gboolean handle_update_partition_geometry (const gchar *part, double start, double length) {
     gboolean ret = FALSE;
 
     PedPartition *pedpartition = NULL;
@@ -878,8 +913,24 @@ gboolean installer_update_partition_geometry (const gchar *part, double start, d
     return ret;
 }
 
-JS_EXPORT_API
-gboolean installer_update_partition_fs (const gchar *part, const gchar *fs)
+JS_EXPORT_API 
+gboolean installer_update_partition_geometry (const gchar *part, double start, double length) {
+    if (op_queue == NULL) {
+        op_queue = g_async_queue_new ();
+    }
+    g_mutex_lock (&op_mutex);
+    op_count += 1;
+    GHashTable *table = g_hash_table_new (g_str_hash, g_str_equal);
+    g_hash_table_insert (table, "op", g_strdup ("update_geometry"));
+    g_hash_table_insert (table, "part", g_strdup (part));
+    g_hash_table_insert (table, "start", &start);
+    g_hash_table_insert (table, "length", &length);
+    g_async_queue_push (op_queue, (gpointer) table);
+    g_mutex_unlock (&op_mutex);
+    return TRUE;
+}
+
+gboolean handle_update_partition_fs (const gchar *part, const gchar *fs)
 {
     gboolean ret = FALSE;
 
@@ -920,6 +971,144 @@ gboolean installer_update_partition_fs (const gchar *part, const gchar *fs)
     return ret;
 }
 
+JS_EXPORT_API
+gboolean installer_update_partition_fs (const gchar *part, const gchar *fs)
+{
+    if (op_queue == NULL) {
+        op_queue = g_async_queue_new ();
+    }
+    g_mutex_lock (&op_mutex);
+    op_count += 1;
+    GHashTable *table = g_hash_table_new (g_str_hash, g_str_equal);
+    g_hash_table_insert (table, "op", g_strdup ("update_fs"));
+    g_hash_table_insert (table, "part", g_strdup (part));
+    g_hash_table_insert (table, "fs", g_strdup (fs));
+    g_async_queue_push (op_queue, (gpointer) table);
+    g_mutex_unlock (&op_mutex);
+    return TRUE;
+}
+
+gboolean handle_write_disk (const gchar *disk)
+{
+    gboolean ret = FALSE;
+    PedDisk *peddisk = NULL;
+
+    peddisk = (PedDisk *) g_hash_table_lookup (disks, disk);
+    if (peddisk != NULL) {
+
+        if ((ped_disk_commit_to_dev (peddisk)) == 0) {
+            g_warning ("write disk:commit to dev failed\n");
+            return ret;
+        }
+        if ((ped_disk_commit_to_os (peddisk)) == 0) {
+            g_warning ("write disk:commit to dev failed\n");
+            return ret;
+        }
+
+        g_spawn_command_line_async ("sync", NULL);
+        ret = TRUE;
+        g_debug ("write disk:%s succeed\n", disk);
+
+    } else {
+        g_warning ("write disk:find peddisk %s failed\n", disk);
+    }
+
+    return ret;
+}
+
+JS_EXPORT_API 
+gboolean installer_write_disk (const gchar *disk)
+{
+    if (op_queue == NULL) {
+        op_queue = g_async_queue_new ();
+    }
+    g_mutex_lock (&op_mutex);
+    op_count += 1;
+    GHashTable *table = g_hash_table_new (g_str_hash, g_str_equal);
+    g_hash_table_insert (table, "op", g_strdup ("write_disk"));
+    g_hash_table_insert (table, "disk", g_strdup (disk));
+    g_async_queue_push (op_queue, (gpointer) table);
+    g_mutex_unlock (&op_mutex);
+    return TRUE;
+}
+
+static gpointer 
+handle_part_operation_thread (gpointer data)
+{
+    guint i;
+    g_warning ("op count:%d\n", op_count);
+    for (i = 0; i < op_count; i++) {
+        g_mutex_lock (&op_mutex);
+        GHashTable *table  = (GHashTable *) g_async_queue_pop (op_queue);
+        if (table == NULL) {
+            g_warning ("pop table NULL\n");
+        }
+        gchar *op = (gchar *) g_hash_table_lookup (table, "op");
+
+        if (g_strcmp0 ("delete_part", op) == 0) {
+            gchar *disk = (gchar *) g_hash_table_lookup (table, "disk");
+            gchar *part = (gchar *) g_hash_table_lookup (table, "part");
+            g_warning ("-----------delete disk->%s partition->%s-----------\n", disk, part);
+            handle_delete_disk_partition (disk, part);
+            g_free (disk);
+            g_free (part);
+
+        } else if (g_strcmp0 ("update_fs", op) == 0) {
+            gchar *part = (gchar *) g_hash_table_lookup (table, "part");
+            gchar *fs = (gchar *) g_hash_table_lookup (table, "fs");
+            g_warning ("-----------update part->%s fs->%s-----------\n", part, fs);
+            handle_update_partition_fs (part, fs);
+            g_free (part);
+            g_free (fs);
+
+        } else if (g_strcmp0 ("update_geometry", op) == 0) { 
+            gchar *part = (gchar *) g_hash_table_lookup (table, "part");
+            double start = *(double *) g_hash_table_lookup (table, "start");
+            double length = *(double *) g_hash_table_lookup (table, "length");
+            g_warning ("-----------update part->%s geometry start->%f length->%f\n------------", part, start, length);
+            handle_update_partition_geometry (part, start, length);
+            g_free (part);
+
+        } else if (g_strcmp0 ("new_part", op) == 0) {
+            gchar *disk = (gchar *) g_hash_table_lookup (table, "disk");
+            gchar *part = (gchar *) g_hash_table_lookup (table, "part");
+            gchar *type = (gchar *) g_hash_table_lookup (table, "type");
+            gchar *fs = (gchar *) g_hash_table_lookup (table, "fs");
+            double start = *(double *) g_hash_table_lookup (table, "start");
+            double end = *(double *) g_hash_table_lookup (table, "end");
+            g_warning ("------------new part:disk->%s part->%s type->%s fs->%s start->%f end->%f------------\n", disk, part, type, fs, start, end);
+            handle_new_disk_partition (disk, part, type, fs, start, end);
+            g_free (disk);
+            g_free (part);
+            g_free (type);
+            g_free (fs);
+            
+        } else if (g_strcmp0 ("write_disk", op) == 0) {
+            gchar *disk = (gchar *) g_hash_table_lookup (table, "disk");
+            g_warning ("write disk->%s\n", disk);
+            handle_write_disk (disk);
+            g_free (disk);
+
+        } else {
+            g_warning ("unkonw op:%s\n", op);
+        }
+        g_free (op);
+        g_hash_table_destroy (table);
+        g_mutex_unlock (&op_mutex);
+    }
+}
+
+JS_EXPORT_API 
+void installer_start_part_operation ()
+{
+    GThread *handle_thread = g_thread_new ("handle_operation", (GThreadFunc) handle_part_operation_thread, NULL);
+}
+
+JS_EXPORT_API 
+void installer_finish_part_operation ()
+{
+    ;
+}
 //call after chroot
 JS_EXPORT_API 
 gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
@@ -1050,35 +1239,6 @@ gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name
     return ret;
 }
 
-JS_EXPORT_API 
-gboolean installer_write_disk (const gchar *disk)
-{
-    gboolean ret = FALSE;
-    PedDisk *peddisk = NULL;
-
-    peddisk = (PedDisk *) g_hash_table_lookup (disks, disk);
-    if (peddisk != NULL) {
-
-        if ((ped_disk_commit_to_dev (peddisk)) == 0) {
-            g_warning ("write disk:commit to dev failed\n");
-            return ret;
-        }
-        if ((ped_disk_commit_to_os (peddisk)) == 0) {
-            g_warning ("write disk:commit to dev failed\n");
-            return ret;
-        }
-
-        g_spawn_command_line_async ("sync", NULL);
-        ret = TRUE;
-        g_debug ("write disk:%s succeed\n", disk);
-
-    } else {
-        g_warning ("write disk:find peddisk %s failed\n", disk);
-    }
-
-    return ret;
-}
-
 JS_EXPORT_API
 gboolean installer_mount_partition (const gchar *part, const gchar *mp)
 {
@@ -1166,127 +1326,4 @@ void installer_unmount_partition (const gchar *part)
     g_spawn_command_line_async (cmd, NULL);
     g_free (mp);
     g_free (cmd);
-}
-
-gchar *
-json_get_string (JSObjectRef json,  const gchar *key)
-{
-    JSContextRef ctx = get_global_context();
-    JSStringRef js_key = JSStringCreateWithUTF8CString (key);
-    JSValueRef js_value = JSObjectGetProperty (ctx, json, js_key, NULL);
-    JSStringRelease (js_key);
-    if (!JSValueIsString (ctx, js_value)) {
-        g_warning ("json get string:value not string for %s\n", key);
-        return NULL;
-    }
-    return jsvalue_to_cstr (ctx, js_value);
-}
-
-double 
-json_get_number (JSObjectRef json, const gchar *key)
-{
-    JSContextRef ctx = get_global_context();
-    JSStringRef js_key = JSStringCreateWithUTF8CString (key);
-    JSValueRef js_value = JSObjectGetProperty (ctx, json, js_key, NULL);
-    JSStringRelease (js_key);
-    if (!JSValueIsNumber (ctx, js_value)) {
-        g_warning ("json get number:value not number for %s\n", key);
-        return -1;
-    }
-    return JSValueToNumber (ctx, js_value, NULL);
-}
-
-static gpointer 
-handle_part_operation_thread (gpointer data)
-{
-    guint i;
-    g_warning ("op count:%d\n", op_count);
-    for (i = 0; i < op_count; i++) {
-        g_mutex_lock (&op_mutex);
-        g_warning ("parse part operation");
-        JSObjectRef json = NULL;
-        json = g_async_queue_try_pop (op_queue);
-        if (json == NULL) {
-            g_warning ("json NULL\n");
-            g_usleep (100);
-        } else {
-            g_warning ("pop json\n");
-            gchar *op = json_get_string (json, "op");
-            g_warning ("get json op:%s\n", op);
-
-            if (g_strcmp0 ("delete_part", op) == 0) {
-                gchar *disk = json_get_string (json, "disk");
-                gchar *part = json_get_string (json, "part");
-                g_warning ("-----------delete disk->%s partition->%s-----------\n", disk, part);
-                installer_delete_disk_partition (disk, part);
-                g_free (disk);
-                g_free (part);
-
-            } else if (g_strcmp0 ("update_fs", op) == 0) {
-                gchar *part = json_get_string (json, "part");
-                gchar *fs = json_get_string (json, "fs");
-                g_warning ("-----------update part->%s fs->%s-----------\n", part, fs);
-                installer_update_partition_fs (part, fs);
-                g_free (part);
-                g_free (fs);
-
-            } else if (g_strcmp0 ("update_geometry", op) == 0) { 
-                gchar *part = json_get_string (json, "part");
-                double start = json_get_number (json, "start");
-                double length = json_get_number (json, "length");
-                g_warning ("-----------update part->%s geometry start->%f length->%f\n------------", part, start, length);
-                installer_update_partition_geometry (part, start, length);
-                g_free (part);
-
-            } else if (g_strcmp0 ("new_part", op) == 0) {
-                gchar *disk = json_get_string (json, "disk");
-                gchar *part = json_get_string (json, "part");
-                gchar *type = json_get_string (json, "type");
-                gchar *fs = json_get_string (json, "fs");
-                double start = json_get_number (json, "start");
-                double end = json_get_number (json, "end");
-                g_warning ("------------new part:disk->%s part->%s type->%s fs->%s start->%f end->%f------------\n", disk, part, type, fs, start, end);
-                installer_new_disk_partition (disk, part, type, fs, start, end);
-                g_free (disk);
-                g_free (part);
-                g_free (type);
-                g_free (fs);
-                
-            } else if (g_strcmp0 ("write_disk", op) == 0) {
-                gchar *disk = json_get_string (json, "disk");
-                g_warning ("write disk->%s\n", disk);
-                installer_write_disk (disk);
-                g_free (disk);
-
-            } else {
-                g_warning ("unkonw op:%s\n", op);
-            }
-            g_free (op);
-            g_mutex_unlock (&op_mutex);
-        }
-    }
-}
-
-JS_EXPORT_API 
-void installer_start_part_operation ()
-{
-    GThread *handle_thread = g_thread_new ("handle_operation", (GThreadFunc) handle_part_operation_thread, NULL);
-}
-
-JS_EXPORT_API 
-void installer_push_part_operation (JSValueRef json)
-{
-    if (op_queue == NULL) {
-        op_queue = g_async_queue_new ();
-    }
-    g_mutex_lock (&op_mutex);
-    op_count += 1;
-    g_async_queue_push (op_queue, (gpointer) json);
-    g_mutex_unlock (&op_mutex);
-}
-
-JS_EXPORT_API 
-void installer_finish_part_operation ()
-{
-    ;
 }

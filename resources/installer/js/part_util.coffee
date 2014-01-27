@@ -218,6 +218,9 @@ mark_delete = (part) ->
         else
             echo "invalid flag for new part to mark delete"
 
+__update_fs_json = (part, fs) ->
+    return '{"op":"update_fs","part":"#{part}","fs":"#{fs}"}'
+
 #do real add/delete/update partition operation
 do_partition = ->
     echo "do partition"
@@ -225,71 +228,61 @@ do_partition = ->
         if m_disk_info[disk]["change"] == true
             for part in get_modeled_partitions(disk)
                 if m_part_info[part]["op"] == "delete"
-                    #try
-                    #    DCore.Installer.delete_disk_partition(disk, part)
-                    #catch error
-                    #    echo error
-                    #try
-                    #    DCore.Installer.write_disk(disk)
-                    #catch error
-                    #    echo error
-                    DCore.Installer.push_part_operation({"op":"delete_part", "disk":disk, "part":part})
-                    DCore.Installer.push_part_operation({"op":"write_disk", "disk":disk})
+                    try
+                        DCore.Installer.delete_disk_partition(disk, part)
+                    catch error
+                        echo error
+                    try
+                        DCore.Installer.write_disk(disk)
+                    catch error
+                        echo error
 
                 else if m_part_info[part]["op"] == "update"
                     if m_part_info[part]["start"] != v_part_info[part]["start"] or m_part_info[part]["length"] != v_part_info[part]["length"]
-                        #try
-                        #    DCore.Installer.update_partition_geometry(part, v_part_info[part]["start"], v_part_info[part]["length"])
-                        #catch error
-                        #    echo error
-                        #try
-                        #    DCore.Installer.write_disk(disk)
-                        #catch error
-                        #    echo error
-                        DCore.Installer.push_part_operation({"op":"update_geometry", "part":part, "start":start, "length":length})
-                        DCore.Installer.push_part_operation({"op":"write_disk", "disk":disk})
+                        try
+                            DCore.Installer.update_partition_geometry(part, v_part_info[part]["start"], v_part_info[part]["length"])
+                        catch error
+                            echo error
+                        try
+                            DCore.Installer.write_disk(disk)
+                        catch error
+                            echo error
 
                     if m_part_info[part]["fs"] != v_part_info[part]["fs"] or v_part_info[part]["format"]
                         if v_part_info[part]["fs"] not in ["", "unused"]
-                            #try
-                            #    DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
-                            #catch error
-                            #    echo error
-                            DCore.Installer.push_part_operation({"op":"update_fs", "part", part, "fs":v_part_info[part]["fs"]})
-                    #try
-                    #    DCore.Installer.write_disk(disk)
-                    #catch error
-                    #    echo error
-                        DCore.Installer.push_part_operation({"op":"write_disk", "disk", disk})
+                            try
+                                DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
+                            catch error
+                                echo error
+                    try
+                        DCore.Installer.write_disk(disk)
+                    catch error
+                        echo error
 
                 else if m_part_info[part]["op"] == "add"
-                    #try
-                    #    DCore.Installer.new_disk_partition(part, disk, m_part_info[part]["type"], m_part_info[part]["fs"], m_part_info[part]["start"], m_part_info[part]["end"])
-                    #catch error
-                    #    echo error
-                    #try
-                    #    DCore.Installer.write_disk(disk)
-                    #catch error
-                    #    echo error
-                    DCore.Installer.push_part_operation({"op":"new_part", "disk":disk, "part":part, "type":m_part_info[part]["type"], "fs":m_part_info[part]["fs"], "start":m_part_info[part]["start"], "end":m_part_info[part]["end"]})
-                    DCore.Installer.push_part_operation({"op":"write_disk", "disk":disk})
+                    try
+                        DCore.Installer.new_disk_partition(part, disk, m_part_info[part]["type"], m_part_info[part]["fs"], m_part_info[part]["start"], m_part_info[part]["end"])
+                    catch error
+                        echo error
+                    try
+                        DCore.Installer.write_disk(disk)
+                    catch error
+                        echo error
+
                     if v_part_info[part]["type"] != "extended"
-                        #try
-                        #    DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
-                        #catch error
-                        #    echo error
-                        #try
-                        #    DCore.Installer.write_disk(disk)
-                        #catch error
-                        #    echo error
-                        DCore.Installer.push_part_operation({"op":"update_fs", "part":part, "fs":v_part_info[part]["fs"]})
-                        DCore.Installer.push_part_operation({"op":"write_disk", "disk":disk})
+                        try
+                            DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
+                        catch error
+                            echo error
+                        try
+                            DCore.Installer.write_disk(disk)
+                        catch error
+                            echo error
                 else
                     echo "just keep part"
         else
             echo "just keep disk"
     DCore.Installer.start_part_operation()
-
 
 #auto partition for simple mode
 do_simple_partition = (device, type) ->

@@ -84,21 +84,19 @@ JS_EXPORT_API gboolean installer_update_partition_geometry (const gchar *part, d
 
 JS_EXPORT_API gboolean installer_update_partition_fs (const gchar *part, const gchar *fs);
 
-JS_EXPORT_API gboolean installer_write_partition_mp (const gchar *part, const gchar *mp);
-
-JS_EXPORT_API gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status);
-
 JS_EXPORT_API gboolean installer_write_disk (const gchar *disk);
-
-JS_EXPORT_API gboolean installer_mount_partition (const gchar *part, const gchar *mp);
-
-JS_EXPORT_API void installer_unmount_partition (const gchar *part);
 
 //use async queue to do partition as they are block and can't simply push into thread
 JS_EXPORT_API void installer_start_part_operation ();
 
-JS_EXPORT_API void installer_push_part_operation ();
-
 JS_EXPORT_API void installer_finish_part_operation ();
+
+JS_EXPORT_API gboolean installer_write_partition_mp (const gchar *part, const gchar *mp);
+
+JS_EXPORT_API gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status);
+
+JS_EXPORT_API gboolean installer_mount_partition (const gchar *part, const gchar *mp);
+
+JS_EXPORT_API void installer_unmount_partition (const gchar *part);
 
 #endif
