@@ -437,12 +437,12 @@ install_grub_efi_amd64 ()
     g_warning ("----------------install efi boot mgr finish-------------------------\n");
 
     gchar *grub_common = g_strdup_printf ("dpkg -i %s", GRUB_COMMON);
-    g_spawn_command_line_sync (GRUB_COMMON, NULL, NULL, NULL, NULL);
+    g_spawn_command_line_sync (grub_common, NULL, NULL, NULL, NULL);
     g_free (grub_common);
     g_warning ("----------------install grub-common finish-------------------------\n");
 
     gchar *grub2_common = g_strdup_printf ("dpkg -i %s", GRUB2_COMMON);
-    g_spawn_command_line_sync (GRUB2_COMMON, NULL, NULL, NULL, NULL);
+    g_spawn_command_line_sync (grub2_common, NULL, NULL, NULL, NULL);
     g_free (grub2_common);
     g_warning ("----------------install grub2-common finish-------------------------\n");
 
