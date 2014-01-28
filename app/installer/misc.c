@@ -493,7 +493,7 @@ thread_update_grub (gpointer data)
     }
 
     if (handler->uefi) {
-        g_spawn_command_line_sync ("grub-mkconfig -o /boot/efi/grub/grub.cfg", NULL, NULL, NULL, &error);
+        g_spawn_command_line_sync ("grub-mkconfig -o /boot/grub/grub.cfg", NULL, NULL, NULL, &error);
     } else {
         g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
     }
