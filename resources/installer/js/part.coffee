@@ -171,13 +171,16 @@ class AddPartDialog extends Dialog
         @fs_value = create_element("span", "AddValue", @fs)
         @fs_select = new DropDown("dd_fs_" + @partid, @fs_change_cb)
         @fs_value.appendChild(@fs_select.element)
-        @fs_select.set_drop_items(__fs_keys, __fs_values)
+        if DCore.Installer.disk_support_efi(v_part_info[@partid]["disk"])
+            @fs_select.set_drop_items(__fs_efi_keys, __fs_efi_values)
+        else
+            @fs_select.set_drop_items(__fs_keys, __fs_values)
         @fs_select.set_drop_size(130,22)
         @fs_select.show_drop()
         @fs_select.set_selected("ext4")
 
     fs_change_cb: (part, fs) ->
-        if fs == "unused"
+        if fs in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
             Widget.look_up("AddModel").mp.style.display = "none"
         else
             Widget.look_up("AddModel").mp.style.display = "block"
