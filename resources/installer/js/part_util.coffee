@@ -409,6 +409,8 @@ mount_custom_partitions = ->
 
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["fs"] == "efi"
+                v_part_info[part]["mp"] = "/boot/efi"
             if v_part_info[part]["mp"]? and v_part_info[part]["mp"] not in ["unused", "/"]
                 try
                     DCore.Installer.mount_partition(part, v_part_info[part]["mp"])
