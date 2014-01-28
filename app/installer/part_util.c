@@ -956,8 +956,10 @@ gboolean handle_update_partition_fs (const gchar *part, const gchar *fs)
         if (part_path != NULL) {
             if (g_strcmp0 (fs, "efi") == 0) {
                 set_partition_filesystem (part_path, "fat32");
-                installer_set_partition_flag (part, "boot", 1);
-            }else {
+                if (! installer_set_partition_flag (part, "boot", 1)) {
+                    g_warning ("set flag for uefi failed\n");
+                }
+            } else {
                 set_partition_filesystem (part_path, fs);
             }
             ret = TRUE;
@@ -1211,21 +1213,17 @@ out:
     return ret;
 }
 
-//used for bios_grub when install grub to gpt disk with bios
 JS_EXPORT_API 
 gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status)
 {
     gboolean ret = FALSE;
-
     PedPartition *pedpartition = NULL;
     PedPartitionFlag flag;
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
-
         flag = ped_partition_flag_get_by_name (flag_name);
         if (ped_partition_is_flag_available (pedpartition, flag)) {
-
             ped_partition_set_flag (pedpartition, flag, status);
             ret = TRUE;
         } else {
