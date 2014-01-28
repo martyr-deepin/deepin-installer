@@ -187,13 +187,15 @@ void installer_set_timezone (const gchar *timezone)
     gchar *localtime_path = NULL;
     GFile *zoneinfo_file = NULL;
     GFile *localtime_file = NULL;
+    gchar *timezone_content = NULL;
 
     if (timezone == NULL) {
         g_warning ("set timezone:timezone NULL\n");
         goto out;
     }
     timezone_file = g_strdup ("/etc/timezone");
-    g_file_set_contents (timezone_file, timezone, -1, &error);
+    timezone_content = g_strdup_printf ("%s\n", timezone);
+    g_file_set_contents (timezone_file, timezone_content, -1, &error);
     if (error != NULL) {
         g_warning ("set timezone:write timezone %s\n", error->message);
         goto out;
@@ -211,6 +213,7 @@ void installer_set_timezone (const gchar *timezone)
     goto out;
 
 out:
+    g_free (timezone_content);
     g_free (timezone_file);
     g_free (zoneinfo_path);
     g_free (localtime_path);
