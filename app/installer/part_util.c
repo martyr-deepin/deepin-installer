@@ -940,8 +940,11 @@ gboolean handle_update_partition_fs (const gchar *part, const gchar *fs)
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
-
-        part_fs_type = ped_file_system_type_get (fs);
+        if (g_strcmp0 (fs, "efi") == 0) {
+            part_fs_type = ped_file_system_type_get ("fat32");
+        } else {
+            part_fs_type = ped_file_system_type_get (fs);
+        }
         if (part_fs_type != NULL) {
             if ((ped_partition_set_system (pedpartition, part_fs_type)) == 0) {
                 g_warning ("update partition fs: ped partition set system %s failed\n", fs);
