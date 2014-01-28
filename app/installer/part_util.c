@@ -1108,11 +1108,6 @@ void installer_start_part_operation ()
     GThread *handle_thread = g_thread_new ("handle_operation", (GThreadFunc) handle_part_operation_thread, NULL);
 }
 
-JS_EXPORT_API 
-void installer_finish_part_operation ()
-{
-    ;
-}
 //call after chroot
 JS_EXPORT_API 
 gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)

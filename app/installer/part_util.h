@@ -89,8 +89,6 @@ JS_EXPORT_API gboolean installer_write_disk (const gchar *disk);
 //use async queue to do partition as they are block and can't simply push into thread
 JS_EXPORT_API void installer_start_part_operation ();
 
-JS_EXPORT_API void installer_finish_part_operation ();
-
 JS_EXPORT_API gboolean installer_write_partition_mp (const gchar *part, const gchar *mp);
 
 JS_EXPORT_API gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status);
