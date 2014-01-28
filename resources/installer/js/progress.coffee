@@ -210,6 +210,12 @@ class Progress extends Page
         @ppt = new Ppt("pptslider", _ppt_list)
         @element.appendChild(@ppt.element)
         @ticker = 0
+        @display_progress = false
+        setTimeout(=>
+            if @display_progress == false
+                @display_progress = true
+                @start_progress()
+        , 2000)
 
     update_rotate: ->
         if @deg > 360

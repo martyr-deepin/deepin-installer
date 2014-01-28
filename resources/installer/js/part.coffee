@@ -291,7 +291,9 @@ class UefiBootDialog extends Dialog
         echo "uefi boot cb"
 
 DCore.signal_connect("part_operation", (msg) ->
-    progress_page?.start_progress()
+    if progress_page? and progress_page.display_progress == false
+        progress_page.display_progress = true
+        progress_page.start_progress()
     progress_page?.update_progress("2%")
     __selected_stage = "extract"
     progress_page?.handle_extract("start")
