@@ -243,7 +243,8 @@ class UnmountDialog extends Dialog
         for disk in disks
             for part in m_disk_info[disk]["partitions"]
                 try
-                    DCore.Installer.unmount_partition(part)
+                    if DCore.Installer.get_partition_mp(part) not in ["/", "/cdrom"]
+                        DCore.Installer.unmount_partition(part)
                 catch error
                     echo error
         for item in Widget.look_up("part_table")?.partitems
