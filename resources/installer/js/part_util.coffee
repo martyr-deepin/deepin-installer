@@ -1112,7 +1112,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
         else
             v_part_info[new_part]["length"] = size 
             v_part_info[new_part]["end"] = v_part_info[free_part]["end"]
-            v_part_info[new_part]["start"] = v_part_info[free_part]["start"]
+            v_part_info[new_part]["start"] = v_part_info[new_part]["end"] - v_part_info[new_part]["length"] + 1
 
             v_part_info[free_part]["end"] = v_part_info[new_part]["start"] - 1
             v_part_info[free_part]["length"] = v_part_info[free_part]["end"] - v_part_info[free_part]["start"] + 1
