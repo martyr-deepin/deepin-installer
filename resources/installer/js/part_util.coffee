@@ -1116,7 +1116,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
 
             v_part_info[free_part]["end"] = v_part_info[new_part]["start"] - 1
             v_part_info[free_part]["length"] = v_part_info[free_part]["end"] - v_part_info[free_part]["start"] + 1
-            v_part_info[free_part]["width"] = Math.floor((v_part_info[free_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
+        v_part_info[free_part]["width"] = Math.floor((v_part_info[free_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
     update_part_display_path(new_part, "add")
     v_part_info[new_part]["width"] = Math.floor((v_part_info[new_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
