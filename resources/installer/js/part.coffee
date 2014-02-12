@@ -623,7 +623,10 @@ class PartTableItem extends Widget
         delete_btn = document.getElementById("part_delete")
 
         if type == "freespace"
-            add_btn.setAttribute("class", "PartBtnActive")
+            if not can_add_normal(@id) and not can_add_logical(@id)
+                add_btn.setAttribute("class", "PartBtn")
+            else
+                add_btn.setAttribute("class", "PartBtnActive")
             delete_btn.setAttribute("class", "PartBtn")
         else if type in ["normal", "logical"]
             add_btn.setAttribute("class", "PartBtn")
