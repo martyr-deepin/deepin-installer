@@ -621,7 +621,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkfs.btrfs not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkfs.btrfs %s", path);
+        cmd = g_strdup_printf ("mkfs.btrfs -f %s", path);
 
     } else if (g_strcmp0 (fs, "xfs") == 0) {
         fs_cmd = g_find_program_in_path ("mkfs.xfs");
