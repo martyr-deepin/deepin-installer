@@ -653,8 +653,10 @@ out:
 void
 finish_install_cleanup () 
 {
+    g_warning ("finish install cleanup\n");
     static gboolean cleaned = FALSE;
     if (cleaned) {
+        g_warning ("finish install cleanup:already cleaned\n");
         return;
     }
     cleaned = TRUE;
