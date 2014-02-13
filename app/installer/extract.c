@@ -265,6 +265,13 @@ is_outdated_machine ()
 JS_EXPORT_API
 void installer_extract_intelligent ()
 {
+    gchar *cmd = g_find_program_in_path ("os-prober");
+    if (cmd == NULL) {
+        g_warning ("os:os-prober not installed\n");
+    }
+    g_spawn_command_line_async ("pkill -9 os-prober", NULL);
+    g_free (cmd);
+
     if (is_outdated_machine ()) {
         g_printf ("extract intelligent:use extract iso\n");
         installer_extract_iso ();
