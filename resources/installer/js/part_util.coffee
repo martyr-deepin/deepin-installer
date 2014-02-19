@@ -323,6 +323,7 @@ do_simple_partition = (device, type) ->
         #just update the part fs and mp to install
         else if m_part_info[device]["type"] in ["normal", "logical"]
             update_part_fs(device,"ext4")
+            update_part_format(device, true)
             update_part_mp(device,"/")
         else
             echo "invalid as extended doesn't show in simple view"
