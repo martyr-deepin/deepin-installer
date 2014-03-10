@@ -18,6 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
+
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <sys/socket.h>
@@ -82,20 +83,12 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 }
 
 static gboolean 
-expose_cb (GtkWidget *widget, GdkEventExpose *event, gpointer data)
+expose_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
-    GdkWindow *gdkwindow = gtk_widget_get_window (installer_container);
-    GdkScreen *screen = gdk_window_get_screen (gdkwindow);
-    GdkVisual *visual = gdk_screen_get_rgba_visual (screen);
-    gtk_widget_set_visual (installer_container, visual);
-
-    cairo_t *cr = gdk_cairo_create (gdkwindow); 
     cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.0);
     cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
     cairo_paint (cr);
-    cairo_destroy (cr);
-
-    return TRUE;
+    return FALSE;
 }
 
 static void
@@ -168,12 +161,12 @@ int main(int argc, char **argv)
 
     installer_container = create_web_container (FALSE, TRUE);
     g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
-    g_signal_connect (GTK_WIDGET (installer_container), "draw", G_CALLBACK (expose_cb), NULL);
 
     gtk_window_set_decorated (GTK_WINDOW (installer_container), FALSE);
     //gtk_window_set_skip_taskbar_hint (GTK_WINDOW (installer_container), TRUE);
     //gtk_window_set_skip_pager_hint (GTK_WINDOW (installer_container), TRUE);
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
+    g_signal_connect (webview, "draw", G_CALLBACK (expose_cb), NULL);
 
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
     gtk_window_set_default_size (GTK_WINDOW (installer_container), INSTALLER_WIN_WIDTH, INSTALLER_WIN_HEIGHT);
