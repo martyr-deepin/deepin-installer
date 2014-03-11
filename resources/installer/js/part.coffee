@@ -1035,6 +1035,12 @@ class Part extends Page
         @grub_loader.innerText = _("Boot loader")
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
         @fill_bootloader()
+        echo "loader width"
+        echo @grub_loader.offsetWidth
+        echo get_position(@grub_loader)
+        echo "select width"
+        echo @grub_select.offsetWidth
+        echo get_position(@grub_select)
 
     hide_part_grub: ->
         @part_grub.style.display = "none"

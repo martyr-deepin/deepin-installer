@@ -392,17 +392,17 @@
 }
 
 .PartGrubLoader {
-    width:140px;
+    width:auto;
     height:24px;
     line-height:24px;
     float:left;
 }
 
 .PartGrubSelect {
-    width:560px;
+    width:auto;
     height:24px;
     line-height:24px;
-    float:left;
+    float:right;
 }
 
 .NextStep {
