@@ -863,10 +863,12 @@ class Part extends Page
         super
         @titleimg = create_img("", "images/progress_part.png", @titleprogress)
 
-        @help = create_element("div", "PartTitleSet", @title)
-        @t_help = create_element("span", "PartTitleHelp", @help)
+        @helpset = create_element("div", "TitleSet", @title)
+        @t_help = create_element("div", "PartTitleHelp", @helpset)
         @t_help.innerText = _("Help")
         @t_help.addEventListener("click", (e) =>
+            @t_help.setAttribute("class", "PartTitleHelp TitlesetActive")
+            @t_mode.setAttribute("class", "PartTitleMode ")
             if @help.displayed
                 @hide_help()
             else
@@ -874,9 +876,11 @@ class Part extends Page
         )
         @t_help.style.display = "none"
 
-        @t_mode = create_element("span", "PartTitleMode", @help)
+        @t_mode = create_element("div", "PartTitleMode", @helpset)
         @t_mode.innerText = _("Expert mode")
         @t_mode.addEventListener("click", (e) =>
+            @t_help.setAttribute("class", "PartTitleHelp")
+            @t_mode.setAttribute("class", "PartTitleMode TitlesetActive")
             @switch_mode()
         )
 

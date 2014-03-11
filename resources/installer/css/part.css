@@ -1,39 +1,11 @@
-.PartTitleSet {
-    position:absolute;
-    width:220px;
-    height:30px;
-    line-height:30px;
-    right:24px;
-    top:60px;
-    bottom:0px;
-    font-size:14px;
-    color:#B3B3B3;
-}
-
 .PartTitleMode {
-    float:right;
-    width:90px;
-    height:24px;
-    line-height:24px;
-    color:#FFFFFF;
-    text-align:center;
-    padding-left:40px;
-    margin:3px 0;
     background:url("../images/mode.png") no-repeat;
-    background-position:8px;
+    background-position:10px 0;
 }
 
 .PartTitleHelp {
-    float:right;
-    width:50px;
-    height:24px;
-    line-height:24px;
-    color:#FFFFFF;
-    text-align:center;
-    padding-left:40px;
-    margin:3px 0;
     background:url("../images/help.png") no-repeat;
-    background-position:8px;
+    background-position:10px 0;
 }
 
 .Help {

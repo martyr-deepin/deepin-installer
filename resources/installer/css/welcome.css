@@ -11,7 +11,7 @@
     color:#B3B3B3;
 }
 
-.KeyboardSet, .TimezoneSet {
+.KeyboardSet, .TimezoneSet, .PartTitleMode, .PartTitleHelp {
     position:relative;
     float:left;
     width:auto;
