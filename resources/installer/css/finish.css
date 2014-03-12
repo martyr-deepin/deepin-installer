@@ -38,27 +38,21 @@
     background-position:17px 7px;
 }
 
-.Finish .LaterActive {
-    float:right;
-    width:100px;
-    height:90px;
+.Finish .Later:hover {
     background:url("../images/later_active.png") no-repeat;
     background-position:17px 7px;
     color:#FBE90B;
 }
 
 .Finish .Now {
-    float:left;
+    float:right;
     width:100px;
     height:90px;
     background:url("../images/now.png") no-repeat;
     background-position:17px 7px;
 }
 
-.Finish .NowActive {
-    float:right;
-    width:100px;
-    height:90px;
+.Finish .Now:hover {
     background:url("../images/now_active.png") no-repeat;
     background-position:17px 7px;
     color:#FBE90B;
