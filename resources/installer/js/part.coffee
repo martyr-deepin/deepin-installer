@@ -1039,12 +1039,6 @@ class Part extends Page
         @grub_loader.innerText = _("Boot loader")
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
         @fill_bootloader()
-        echo "loader width"
-        echo @grub_loader.offsetWidth
-        echo get_position(@grub_loader)
-        echo "select width"
-        echo @grub_select.offsetWidth
-        echo get_position(@grub_select)
 
     hide_part_grub: ->
         @part_grub.style.display = "none"
@@ -1071,7 +1065,9 @@ class Part extends Page
         @grub_dropdown = new DropDown("dd_grub", null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
-        @grub_dropdown.set_drop_size(560, 20)
+        echo "grub loader width"
+        echo @grub_loader.clientWidth
+        @grub_dropdown.set_drop_size(700, 20)
         @grub_dropdown.show_drop()
         #@grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
         @grub_dropdown.set_list_scroll_height(true, 180)
