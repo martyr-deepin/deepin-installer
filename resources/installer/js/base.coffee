@@ -134,13 +134,19 @@ class Dialog extends Widget
 
 
 class DropDownItem extends Widget
-    constructor: (@id, @key, @value, @dropdownlist) ->
+    constructor: (@id, @key, @value, @index, @dropdownlist) ->
         super
         @element.innerText = @value
         @selected = false
         style = "height:" + @dropdownlist.dropdown.itemheight + "px;"
         style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
         @element.setAttribute("style", style)
+
+    focus: ->
+        @element.setAttribute("class", "DropDownItemHover")
+
+    blur: ->
+        @element.setAttribute("class", "DropDownItem")
 
     do_click: (e) ->
         if @key != @dropdownlist.dropdown.selected 
@@ -155,12 +161,50 @@ class DropDownList extends Widget
         @fill_dropdown(@dropdown.keys, @dropdown.values)
         document.body.appendChild(@element)
         @hide()
+        @element.setAttribute("autofocus", "autofocus")
+        @element.setAttribute("tabindex", "0")
+        @element.focus()
+        @element.focus()
+        @element.focus()
+        @element.focus()
+        @element.focus()
+        @element.addEventListener("keydown", (e) =>
+            echo "dropdown list keydown"
+            if e.which == 38
+                echo "arrow up"
+            if e.which == 40
+                echo "arrow down"
+        )
+
+    get_hover_item: ->
+        echo "get hovered item"
+
+    get_upstairs_item: ->
+        echo "get upstairs item"
+
+    get_downstairs_item : ->
+        echo "get downstairs item"
+
+    upstairs_hover: ->
+        echo "upstairs hover"
+        item = @get_upstairs_item()
+        uh = document.createEvent("MouseEvents")
+        uh.initMouseEvent("mouseover", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+        item.dispatchEvent(uh)
+
+    downstairs_hover: ->
+        echo "downstairs hover"
+
+    do_focus: (e) ->
+        echo "drop down list focused"
 
     fill_dropdown: (keys, values) ->
+        @items = []
         i = 0
         @length = keys.length
         while i < keys.length
-            item = new DropDownItem("di_" + @id[3..] + "_"  + keys[i], keys[i], values[i], @)
+            item = new DropDownItem("di_" + @id[3..] + "_"  + keys[i], keys[i], values[i], i, @)
+            @items.push(item)
             @element.appendChild(item.element)
             i = i + 1
 
@@ -335,6 +379,7 @@ class DropDown extends Widget
 
     set_item_left: (offset) ->
         @itemleft = offset
+
 
 class TimezoneToolTip extends Widget
     constructor: (@id, @text)->
