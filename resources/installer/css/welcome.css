@@ -147,6 +147,21 @@
     height:50px;
 }
 
+.Query ul {
+    list-style:none;
+    float:left;
+}
+
+.Query ul li {
+    float:left;
+    padding:3px;
+}
+
+.Query ul li:hover {
+    font-size:16px;
+    color:red;
+}
+
 .Query .QueryWrap {
     width:390px;
     height:34px;
