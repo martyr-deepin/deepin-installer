@@ -148,9 +148,9 @@ class Keyboard extends Widget
         @init_layouts()
 
         @query = create_element("div", "Query", @element)
-        @query_div = create_element("div", "Left", @query)
-        @query_ul = create_element("ul", "", @query_div)
+        @query_ul = create_element("ul", "", @query)
         @init_query_ul()
+        #@query_div = create_element("div", "Left", @query)
         #@query_wrap = create_element("div", "QueryWrap", @query_div)
         #@query_input = create_element("input", "", @query_wrap)
         #@query_input.addEventListener("keyup", (e) =>
@@ -161,8 +161,8 @@ class Keyboard extends Widget
         #@query_img.addEventListener("click", (e) =>
         #    @execute_query()
         #)
-        @query_txt = create_element("div", "Right", @query)
-        @query_txt.innerText = _("Please select your keyboard layout")
+        #@query_txt = create_element("div", "Right", @query)
+        #@query_txt.innerText = _("Please select your keyboard layout")
 
         @content = create_element("div", "KeyBoardContent", @element)
         @layout_list = create_element("div", "LayoutList", @content)
@@ -188,7 +188,9 @@ class Keyboard extends Widget
 
     create_query_li:(c) ->
         li = create_element("li", "", @query_ul)
-        li.innerText = c
+        a = create_element("a", "", li)
+        a.setAttribute("href", "#")
+        a.innerText = c
 
     init_layouts: ->
         lay_var = DCore.Installer.get_current_layout_variant()
