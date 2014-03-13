@@ -800,8 +800,8 @@ class PartTable extends Widget
             @info_header.style.display = "none"
             @mount_header.style.display = "block"
             @format_header.style.display = "block"
-            @items.setAttribute("style", "height:180px")
-            @element.setAttribute("style", "top:140px;height:230px;")
+            @items.setAttribute("style", "height:190px")
+            @element.setAttribute("style", "top:130px;height:230px;")
         else
             @format_header.style.display = "none"
             @mount_header.style.display = "none"
