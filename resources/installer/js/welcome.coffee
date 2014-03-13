@@ -175,8 +175,10 @@ class Keyboard extends Widget
 
     show: ->
         echo "keyboard show"
+        Widget.look_up("timezone").hide()
+        Widget.look_up("account").hide()
         @displayed = true
-        update_el_attr(@element, "-webkit-transform", "translateX(-750px)")
+        update_el_attr(@element, "-webkit-transform", "translateX(725px)")
         update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
         #@element.style.display = "block"
         __selected_layout_item?.focus()
@@ -184,7 +186,7 @@ class Keyboard extends Widget
     hide: ->
         echo "keyboard hide"
         @displayed = false
-        update_el_attr(@element, "-webkit-transform", "translateX(0)")
+        update_el_attr(@element, "-webkit-transform", "translateX(0px)")
         #@element.style.display = "none"
 
     init_query_ul: ->
@@ -292,14 +294,17 @@ class Timezone extends Widget
         @hide()
 
     show: ->
+        Widget.look_up("keyboard")?.hide()
+        Widget.look_up("account")?.hide()
         @displayed = true
-        update_el_attr(@element, "-webkit-transform", "translateX(-750px)")
+        update_el_attr(@element, "-webkit-transform", "translateX(-725px)")
         update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
         #@element.style.display = "block"
 
     hide: ->
+        echo "timezone hide"
         @displayed = false
-        update_el_attr(@element, "-webkit-transform", "translateX(0)")
+        update_el_attr(@element, "-webkit-transform", "translateX(0px)")
         #@element.style.display = "none"
 
     hover_timezone: (zone) ->
@@ -483,6 +488,68 @@ class WelcomeFormItem extends Widget
                 return false
         return true
 
+class Account extends Widget
+    constructor: (@id) ->
+        super
+        @form = create_element("div", "WelcomeForm", @element)
+
+        @username = new WelcomeFormItem("username")
+        @form.appendChild(@username.element)
+
+        @hostname = new WelcomeFormItem("hostname")
+        @form.appendChild(@hostname.element)
+
+        @password = new WelcomeFormItem("password")
+        @form.appendChild(@password.element)
+
+        @confirmpassword = new WelcomeFormItem("confirmpassword")
+        @form.appendChild(@confirmpassword.element)
+
+        @start = create_element("div", "Start", @element)
+        @start_input = create_element("input", "InputBtn", @start)
+        @start_input.setAttribute("type", "submit")
+        next = _("Next")
+        @start_input.setAttribute("value", next)
+        @start.addEventListener("mousedown", (e) =>
+            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
+        )
+        @start.addEventListener("click", (e) =>
+            @start_install_cb()
+        )
+        @start.setAttribute("style", "pointer-events:none")
+
+    show: ->
+        Widget.look_up("timezone")?.hide()
+        Widget.look_up("keyboard")?.hide()
+        @element.style.display = "block"
+
+    hide: ->
+        @element.style.display = "none"
+
+    check_start_ready: ->
+        if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
+            @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
+            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
+            return true
+        else
+            @start.setAttribute("style", "pointer-events:none")
+            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(244,198,136, 0.5)), to(rgba(255,190,87,0.5)))")
+            return false
+
+    start_install_cb: ->
+        if @check_start_ready()
+            undo_part_table_info()
+            part_page = new Part("part")
+            pc.remove_page(welcome_page)
+            pc.add_page(part_page)
+            __selected_item?.focus()
+        else
+            @username.check_valid()
+            @hostname.check_valid()
+            @password.check_valid()
+            @confirmpassword.check_valid()
+
+
 class Welcome extends Page
     constructor: (@id)->
         super
@@ -512,103 +579,24 @@ class Welcome extends Page
         @timezone = new Timezone("timezone")
         @wrap.appendChild(@timezone.element)
 
-        @account = create_element("div", "", @wrap)
-
-        @form = create_element("div", "WelcomeForm", @account)
-
-        @username = new WelcomeFormItem("username")
-        @form.appendChild(@username.element)
-
-        @hostname = new WelcomeFormItem("hostname")
-        @form.appendChild(@hostname.element)
-
-        @password = new WelcomeFormItem("password")
-        @form.appendChild(@password.element)
-
-        @confirmpassword = new WelcomeFormItem("confirmpassword")
-        @form.appendChild(@confirmpassword.element)
-
-        @start = create_element("div", "Start", @account)
-        @start_input = create_element("input", "InputBtn", @start)
-        @start_input.setAttribute("type", "submit")
-        next = _("Next")
-        @start_input.setAttribute("value", next)
-        @start.addEventListener("mousedown", (e) =>
-            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
-        )
-        @start.addEventListener("click", (e) =>
-            @start_install_cb()
-        )
-        @start.setAttribute("style", "pointer-events:none")
+        @account = new Account("account")
+        @wrap.appendChild(@account.element)
 
     do_click: (e) ->
         if is_ancestor(@keyboard_set, e.target)
-           if @keyboard.displayed
-               @display_account()
-           else
-               @display_keyboard()
+            if @keyboard.displayed
+                @account.show()
+            else
+                @keyboard.show()
         else if is_ancestor(@timezone_set, e.target)
-           if @timezone.displayed
-               @display_account()
-           else
-               @display_timezone()
+            if @timezone.displayed
+                @account.show()
+            else
+                @timezone.show()
         else
             if @keyboard.displayed
                 if not is_ancestor(@keyboard.element, e.target)
-                    @display_account()
+                    @account.show()
             if @timezone.displayed
                 if not is_ancestor(@timezone.element, e.target)
-                    @display_account()
-
-    display_account: ->
-        @keyboard.hide()
-        @timezone.hide()
-        @account.style.display = "block"
-        @keyboard_set.setAttribute("class", "KeyboardSet")
-        @timezone_set.setAttribute("class", "TimezoneSet")
-        @keyboard_glue.style.display = "none"
-        @timezone_glue.style.display = "none"
-
-    hide_account: ->
-        @account.style.display = "none"
-
-    display_keyboard: ->
-        @hide_account()
-        @timezone.hide()
-        @keyboard.show()
-        @timezone_set.setAttribute("class", "TimezoneSet") 
-        @keyboard_set.setAttribute("class", "KeyboardSet TitleSetActive")
-        @keyboard_glue.style.display = "block"
-        @timezone_glue.style.display = "none"
-
-    display_timezone: ->
-        @hide_account()
-        @keyboard.hide()
-        @timezone.show()
-        @keyboard_set.setAttribute("class", "KeyboardSet")
-        @timezone_set.setAttribute("class", "TimezoneSet TitleSetActive")
-        @keyboard_glue.style.display = "none"
-        @timezone_glue.style.display = "block"
-
-    check_start_ready: ->
-        if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
-            @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
-            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
-            return true
-        else
-            @start.setAttribute("style", "pointer-events:none")
-            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(244,198,136, 0.5)), to(rgba(255,190,87,0.5)))")
-            return false
-
-    start_install_cb: ->
-        if @check_start_ready()
-            undo_part_table_info()
-            part_page = new Part("part")
-            pc.remove_page(welcome_page)
-            pc.add_page(part_page)
-            __selected_item?.focus()
-        else
-            @username.check_valid()
-            @hostname.check_valid()
-            @password.check_valid()
-            @confirmpassword.check_valid()
+                    @account.show()

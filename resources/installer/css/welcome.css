@@ -73,14 +73,22 @@
     left:25px;
     width:700px;
     height:450px;
+    overflow:hidden;
+}
+
+.Account {
+    position:absolute;
+    top:0;
+    left:0;
+    width:700px;
+    height:450px;
 }
 
 .WelcomeForm {
     position:absolute;
     left:239px;
     right:239px;
-    top:140px;
-    bottom:156px;
+    top:60px;
     width:272px;
 }
 
@@ -123,10 +131,39 @@
     text-shadow:0 1px rgba(0,0,0,0.5);
 }
 
-.Timezone, .Keyboard {
+.Welcome .Start {
+    position:absolute;
+    left:285px;
+    right:285px;
+    bottom:60px;
+    width:180px;
+    height:38px;
+    border:1px solid rgba(0,0,0,0.3);
+    border-radius:5px;
+}
+
+.Welcome .Start input, .Part .NextStep input {
+    width:180px;
+    height:38px;
+    padding-top:5px;
+    background:-webkit-gradient(linear, left top, left bottom, from(rgba(244,198,136, 0.5)), to(rgba(255,190,87,0.5)));
+    color:rgba(0,0,0,0.3);
+    font-size:18px;
+    font-style:bold;
+}
+
+.Keyboard {
     position:absolute;
     top:0;
-    left:750px;
+    left:-725px;
+    width:700px;
+    height:450px;
+}
+
+.Timezone {
+    position:absolute;
+    top:0;
+    left:725px;
     width:700px;
     height:450px;
 }
@@ -360,28 +397,6 @@
     height:14px;
     border-radius:15px;
     border:1px solid rgba(247,169,48,1.0);
-}
-
-.Welcome .Start {
-    position:absolute;
-    left:285px;
-    right:285px;
-    top:440px;
-    bottom:60px;
-    width:180px;
-    height:38px;
-    border:1px solid rgba(0,0,0,0.3);
-    border-radius:5px;
-}
-
-.Welcome .Start input, .Part .NextStep input {
-    width:180px;
-    height:38px;
-    padding-top:5px;
-    background:-webkit-gradient(linear, left top, left bottom, from(rgba(244,198,136, 0.5)), to(rgba(255,190,87,0.5)));
-    color:rgba(0,0,0,0.3);
-    font-size:18px;
-    font-style:bold;
 }
 
 @-webkit-keyframes pinflash {
