@@ -254,10 +254,12 @@ input:focus {
     padding-left:20px;
 }
 
+/*
 .DropDownItem:hover {
     background:#4F3A7B;
     color:#FFF;
 }
+*/
 
 .DropDownItemHover {
     padding-left:20px;

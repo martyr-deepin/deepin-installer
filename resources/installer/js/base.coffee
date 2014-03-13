@@ -174,11 +174,20 @@ class DropDownItem extends Widget
         style += "line-height:" + @dropdownlist.dropdown.itemheight + "px;"
         @element.setAttribute("style", style)
 
-    focus: ->
-        @element.setAttribute("class", "DropDownItemHover")
+    do_mouseover: (e) ->
+        @handle_hover()
 
-    blur: ->
+    do_mouseout:  (e) ->
+        @handle_unhover()
+
+    handle_hover: ->
+        @element.setAttribute("class", "DropDownItemHover")
+        @dropdownlist.hovered_index = @index
+
+    handle_unhover: ->
         @element.setAttribute("class", "DropDownItem")
+        if @dropdownlist.hovered_index == @index
+            @dropdownlist.hovered_index = -1
 
     do_click: (e) ->
         if @key != @dropdownlist.dropdown.selected 
@@ -187,48 +196,34 @@ class DropDownItem extends Widget
         @dropdownlist.dropdown.set_selected(@key)
         @dropdownlist.hide()
 
+
 class DropDownList extends Widget
     constructor: (@id, @dropdown) ->
         super
         @fill_dropdown(@dropdown.keys, @dropdown.values)
         document.body.appendChild(@element)
+        @element.setAttribute("tabindex", 100)
+        @hovered_index = -1
         @hide()
-        @element.setAttribute("autofocus", "autofocus")
-        @element.setAttribute("tabindex", "0")
-        @element.focus()
-        @element.focus()
-        @element.focus()
-        @element.focus()
-        @element.focus()
-        @element.addEventListener("keydown", (e) =>
-            echo "dropdown list keydown"
-            if e.which == 38
-                echo "arrow up"
-            if e.which == 40
-                echo "arrow down"
-        )
 
-    get_hover_item: ->
-        echo "get hovered item"
+    do_keydown: (e) ->
+        echo "hovered index"
+        echo @hovered_index
+        if e.which == 38
+            if @hovered_index > 0
+                @hover_item(@hovered_index - 1)
+        if e.which == 40
+            if @hovered_index < @length - 1
+                @hover_item(@hovered_index + 1)
 
-    get_upstairs_item: ->
-        echo "get upstairs item"
-
-    get_downstairs_item : ->
-        echo "get downstairs item"
-
-    upstairs_hover: ->
-        echo "upstairs hover"
-        item = @get_upstairs_item()
-        uh = document.createEvent("MouseEvents")
-        uh.initMouseEvent("mouseover", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
-        item.dispatchEvent(uh)
-
-    downstairs_hover: ->
-        echo "downstairs hover"
-
-    do_focus: (e) ->
-        echo "drop down list focused"
+    hover_item: (index) ->
+        echo "hover item"
+        echo index
+        for item in @items
+            if item.index == index
+                item.handle_hover()
+            else
+                item.handle_unhover()
 
     fill_dropdown: (keys, values) ->
         @items = []
@@ -294,6 +289,8 @@ class DropDownList extends Widget
             style += "background:" + @dropdown.listbackground
         style += "display:block;"
         @element.setAttribute("style", style)
+        @element.focus()
+        @hover_item(0)
 
     hide: ->
         @element.style.display = "none"
