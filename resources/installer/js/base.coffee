@@ -200,7 +200,6 @@ class DropDownItem extends Widget
         @dropdownlist.dropdown.set_selected(@key)
         @dropdownlist.hide()
 
-
 class DropDownList extends Widget
     constructor: (@id, @dropdown) ->
         super
@@ -286,7 +285,10 @@ class DropDownList extends Widget
         style += "display:block;"
         @element.setAttribute("style", style)
         @element.focus()
-        @hover_item(0)
+        @hover_default()
+
+    hover_default: ->
+        @hover_item(@dropdown.keys.indexOf(@dropdown.selected))
 
     hide: ->
         @element.style.display = "none"
