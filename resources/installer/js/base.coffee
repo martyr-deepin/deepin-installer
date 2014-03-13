@@ -181,8 +181,12 @@ class DropDownItem extends Widget
         @handle_unhover()
 
     handle_hover: ->
-        @element.setAttribute("class", "DropDownItemHover")
-        @dropdownlist.hovered_index = @index
+        for item in @dropdownlist.items
+            if item.index == @index
+                item.element.setAttribute("class", "DropDownItemHover")
+                @dropdownlist.hovered_index = @index
+            else
+                item.handle_unhover()
 
     handle_unhover: ->
         @element.setAttribute("class", "DropDownItem")
@@ -207,8 +211,6 @@ class DropDownList extends Widget
         @hide()
 
     do_keydown: (e) ->
-        echo "hovered index"
-        echo @hovered_index
         if e.which == 38
             if @hovered_index > 0
                 @hover_item(@hovered_index - 1)
@@ -217,13 +219,7 @@ class DropDownList extends Widget
                 @hover_item(@hovered_index + 1)
 
     hover_item: (index) ->
-        echo "hover item"
-        echo index
-        for item in @items
-            if item.index == index
-                item.handle_hover()
-            else
-                item.handle_unhover()
+        @items[index].handle_hover()
 
     fill_dropdown: (keys, values) ->
         @items = []
