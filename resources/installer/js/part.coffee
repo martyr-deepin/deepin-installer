@@ -978,6 +978,8 @@ class Part extends Page
     show_part_grub: ->
         @part_grub.style.display = "block"
         @part_grub_display = true
+        @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10, 20)
+        @grub_dropdown.show_drop()
 
     fill_bootloader: ->
         keys = []
@@ -996,10 +998,8 @@ class Part extends Page
         @grub_dropdown = new DropDown("dd_grub", null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
-        echo "grub loader width"
-        echo @grub_loader.clientWidth
-        @grub_dropdown.set_drop_size(700, 20)
-        @grub_dropdown.show_drop()
+        #@grub_dropdown.set_drop_size(560, 20)
+        #@grub_dropdown.show_drop()
         #@grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
         @grub_dropdown.set_list_scroll_height(true, 180)
 
