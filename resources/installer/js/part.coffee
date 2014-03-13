@@ -813,79 +813,19 @@ class PartTable extends Widget
             __selected_item = Widget.look_up(id)
             __selected_item?.focus()
 
-class Help extends Widget
-    constructor: (@id)->
-        super
-        @displayed = false
-        @title = create_element("div", "HelpTitle", @element)
-        @title.innerText = _("Installation Help")
-
-        @content = create_element("div", "HelpContent", @element)
-
-        @step1 = create_element("p", "HelpStep", @content)
-        @step1_desc = create_element("div", "StepDesc", @step1)
-        @step1_desc.innerText = _("1. Please select partitions for installation, specify a root partition and partition types.") 
-
-        @step1_img = create_img("", "images/help1.png", @step1)
-
-        @step1_detail = create_element("div", "StepDetail", @step1)
-        @step1_detail.innerHTML = "<p>" + _("Note: to install Linux Deepin, you'll have to set up a root partition. An Ext4 filesystem is recommended.") + "</p>"
-        @step1_detail.innerHTML += "<p>" +  _("Setting up separate partitions for /home, /var, or /boot is optional.") + "</p>"
-        #@step1_detail.innerHTML += "<p>" +  _("If there are no existing partitions on your disk, please refer to Setting up a new partition.") + "</p>"
-
-        @step2 = create_element("p", "HelpStep", @content)
-        @step2_desc = create_element("div", "StepDesc", @step2)
-        @step2_desc.innerText = _("2. Select where GRUB will be installed.")
-
-        @step2_img = create_img("", "images/help2.png", @step2)
-
-        @step2_detail = create_element("div", "StepDetail", @step2)
-        @step2_detail.innerHTML = "<p>" +  _("Note: You can simply ignore this step. The default location is recommended.") + "</p>"
-
-        @step3 = create_element("p", "HelpStep", @content)
-        @step3_desc = create_element("div", "StepDesc", @step3)
-        @step3_desc.innerText = _("3. Click \"install\" to proceed with installation, and your system will be ready to use after that.") 
-
-        @step3_detail = create_element("div", "StepDetail", @step3)
-
-        @hide()
-
-    show: ->
-        @displayed = true
-        @element.style.display = "block"
-
-    hide: ->
-        @displayed = false
-        @element.style.display = "none"
-
 class Part extends Page
     constructor: (@id)->
         super
         @titleimg = create_img("", "images/progress_part.png", @titleprogress)
 
         @helpset = create_element("div", "TitleSet", @title)
-        @t_help = create_element("div", "PartTitleHelp", @helpset)
-        @t_help.innerText = _("Help")
-        @t_help.addEventListener("click", (e) =>
-            @t_help.setAttribute("class", "PartTitleHelp TitlesetActive")
-            @t_mode.setAttribute("class", "PartTitleMode ")
-            if @help.displayed
-                @hide_help()
-            else
-                @show_help()
-        )
-        @t_help.style.display = "none"
 
         @t_mode = create_element("div", "PartTitleMode", @helpset)
         @t_mode.innerText = _("Expert mode")
         @t_mode.addEventListener("click", (e) =>
-            @t_help.setAttribute("class", "PartTitleHelp")
             @t_mode.setAttribute("class", "PartTitleMode TitlesetActive")
             @switch_mode()
         )
-
-        @help = new Help("help")
-        @element.appendChild(@help.element)
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
@@ -969,21 +909,12 @@ class Part extends Page
             @t_mode.innerText = _("Simple mode")
         else
             __selected_mode = "simple"
-            @hide_help()
             @add_model?.hide_dialog()
             @delete_model?.hide_dialog()
             @unmount_model?.hide_dialog()
             @hide_advance_mode()
             @table.update_mode(__selected_mode)
             @t_mode.innerText = _("Expert mode") 
-
-    show_help: ->
-        @help.show()
-        @wrap.style.display = "none"
-
-    hide_help: ->
-        @help.hide()
-        @wrap.style.display = "block"
 
     fill_advance_op: ->
         @op = create_element("div", "PartOp", @wrap)
@@ -1073,13 +1004,11 @@ class Part extends Page
         @grub_dropdown.set_list_scroll_height(true, 180)
 
     show_advance_mode: ->
-        @t_help.style.display = "block"
         @linemap.element.setAttribute("style", "display:block")
         @op.setAttribute("style", "display:block")
         #@part_grub.setAttribute("style", "display:block")
 
     hide_advance_mode: ->
-        @t_help.style.display = "none"
         @linemap.element.setAttribute("style", "display:none")
         @op.setAttribute("style", "display:none")
         @part_grub.setAttribute("style", "display:none")

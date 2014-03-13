@@ -3,54 +3,6 @@
     background-position:10px 0;
 }
 
-.PartTitleHelp {
-    background:url("../images/help.png") no-repeat;
-    background-position:10px 0;
-}
-
-.Help {
-    position:absolute;
-    left:25px;
-    top:90px;
-    background:rgba(255,255,255,0.15);
-    width:700px;
-    height:420px;
-    border:1px solid rgba(0,0,0,0.4);
-    border-radius:4px;
-    box-shadow:0 1px rgba(255,255,255,0.2) inset,
-               0 -1px rgba(255,255,255,0.2) inset,
-               1px 0 rgba(255,255,255,0.2) inset,
-               -1px 0 rgba(255,255,255,0.2) inset;
-}
-
-.HelpTitle {
-    font-size:20px;
-    height:50px;
-    line-height:50px;
-    text-align:center;
-}
-
-.HelpContent {
-    width:540px;
-    height:370px;
-    margin:0 80px;
-    text-align:left;
-}
-
-.HelpStep {
-    margin:10px 0;
-}
-
-.Help .StepDesc {
-    font-size:14px;
-    margin-bottom:10px;
-}
-
-.Help .StepDetail {
-    font-size:12px;
-    padding-left:10px;
-}
-
 .PartLineMaps {
     position:absolute;
     top:110px;
