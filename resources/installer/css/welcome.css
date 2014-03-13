@@ -67,6 +67,14 @@
 }
 */
 
+.WelcomeWrap {
+    position:absolute;
+    top:90px;
+    left:25px;
+    width:700px;
+    height:450px;
+}
+
 .WelcomeForm {
     position:absolute;
     left:239px;
@@ -115,12 +123,10 @@
     text-shadow:0 1px rgba(0,0,0,0.5);
 }
 
-.Timezone, .Keyboard, .Help {
+.Timezone, .Keyboard {
     position:absolute;
-    left:25px;
-    right:25px;
-    top:90px;
-    bottom:0;
+    top:0;
+    left:750px;
     width:700px;
     height:450px;
 }

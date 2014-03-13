@@ -52,38 +52,6 @@ class ReportDialog extends Dialog
 apply_progress_flash = (el, time)->
     apply_animation(el, "progressflash", "#{time}s", "cubic-bezier(0, 0, 0.35, -1)")
 
-update_style_attr = (style, name, value) ->
-    array = style.split(";")
-    list = []
-    found = false
-    for item in array
-        if item.indexOf(name + ":") != -1
-            list.push(name + ":" + value)
-            found = true
-        else
-            list.push(item)
-    if not found
-        list.push(name + ":" + value)
-    return list.join(";")
-
-delete_style_attr = (style, name) ->
-    array = style.split(";")
-    list = []
-    for item in array
-        if item.indexOf(name + ":") == -1
-            list.push(item)
-    return list.join(";")
-
-update_el_attr = (el, name, value) ->
-    origin = el.getAttribute("style") or ""
-    style = update_style_attr(origin, name, value)
-    el.setAttribute("style", style)
-
-delete_el_attr = (el, name) ->
-    origin = el.getAttribute("style") or ""
-    style = delete_style_attr(origin, name)
-    el.setAttribute("style", style)
-
 __ppt_in_switch = false
 __ppt_switch_id = -1
 

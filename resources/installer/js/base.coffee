@@ -89,6 +89,38 @@ get_scroll_height = (el) ->
         el = el.parentElement
     return scroll
 
+update_style_attr = (style, name, value) ->
+    array = style.split(";")
+    list = []
+    found = false
+    for item in array
+        if item.indexOf(name + ":") != -1
+            list.push(name + ":" + value)
+            found = true
+        else
+            list.push(item)
+    if not found
+        list.push(name + ":" + value)
+    return list.join(";")
+
+delete_style_attr = (style, name) ->
+    array = style.split(";")
+    list = []
+    for item in array
+        if item.indexOf(name + ":") == -1
+            list.push(item)
+    return list.join(";")
+
+update_el_attr = (el, name, value) ->
+    origin = el.getAttribute("style") or ""
+    style = update_style_attr(origin, name, value)
+    el.setAttribute("style", style)
+
+delete_el_attr = (el, name) ->
+    origin = el.getAttribute("style") or ""
+    style = delete_style_attr(origin, name)
+    el.setAttribute("style", style)
+
 class Dialog extends Widget
     constructor: (@id, @with_cancel, @cb) ->
         super

@@ -174,13 +174,18 @@ class Keyboard extends Widget
         @hide()
 
     show: ->
+        echo "keyboard show"
         @displayed = true
-        @element.style.display = "block"
+        update_el_attr(@element, "-webkit-transform", "translateX(-750px)")
+        update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
+        #@element.style.display = "block"
         __selected_layout_item?.focus()
 
     hide: ->
+        echo "keyboard hide"
         @displayed = false
-        @element.style.display = "none"
+        update_el_attr(@element, "-webkit-transform", "translateX(0)")
+        #@element.style.display = "none"
 
     init_query_ul: ->
         for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -288,11 +293,14 @@ class Timezone extends Widget
 
     show: ->
         @displayed = true
-        @element.style.display = "block"
+        update_el_attr(@element, "-webkit-transform", "translateX(-750px)")
+        update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
+        #@element.style.display = "block"
 
     hide: ->
         @displayed = false
-        @element.style.display = "none"
+        update_el_attr(@element, "-webkit-transform", "translateX(0)")
+        #@element.style.display = "none"
 
     hover_timezone: (zone) ->
         @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
@@ -496,13 +504,15 @@ class Welcome extends Page
             @exit_installer()
         )
 
+        @wrap = create_element("div", "WelcomeWrap", @element)
+
         @keyboard = new Keyboard("keyboard")
-        @element.appendChild(@keyboard.element)
+        @wrap.appendChild(@keyboard.element)
 
         @timezone = new Timezone("timezone")
-        @element.appendChild(@timezone.element)
+        @wrap.appendChild(@timezone.element)
 
-        @account = create_element("div", "", @element)
+        @account = create_element("div", "", @wrap)
 
         @form = create_element("div", "WelcomeForm", @account)
 
