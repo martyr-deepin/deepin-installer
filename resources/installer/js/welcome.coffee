@@ -436,12 +436,12 @@ class WelcomeFormItem extends Widget
         @input.addEventListener("blur", (e) =>
             @check_valid()
             @fill_item_data()
-            Widget.look_up("welcome")?.check_start_ready()
+            Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("input", (e) =>
             if @id == "username"
-                Widget.look_up("welcome")?.hostname.input.value = @input.value + "-pc"
-            Widget.look_up("welcome")?.check_start_ready()
+                Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
+            Widget.look_up("account")?.check_start_ready()
         )
 
     fill_widget: ->
