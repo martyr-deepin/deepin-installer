@@ -31,48 +31,12 @@
     background-position:10px 3px;
 }
 
-/*
-.TitleSetActive {
-    background-color:rgba(255,255,255,0.2);
-    border-top:1px solid rgba(0,0,0,0.2);
-    border-left:1px solid rgba(0,0,0,0.2);
-    border-right:1px solid rgba(0,0,0,0.2);
-    box-shadow:inset 0 1px rgba(255,255,255,0.2),
-               inset -1px 0 rgba(255,255,255,0.2),
-               inset 1px 0 rgba(255,255,255,0.2);
-    border-top-left-radius:5px;
-    border-top-right-radius:5px;
-    z-index:60;
-    left:-1px;
-    top:-1px;
-    margin-right:-2px;
-}
-
-.TitleGlue {
-    position:absolute;
-    left:0;
-    bottom:-4px;
-    width:100%;
-    height:5px;
-    z-index:170;
-}
-
-.KeyboardSet .TitleGlue {
-    background:rgba(255,255,255,0.2) url("../images/keyboard_glue.png");
-}
-
-.TimezoneSet .TitleGlue {
-    background:rgba(255,255,255,0.2) url("../images/timezone_glue.png");
-    box-shadow:inset -1px 0 rgba(255,255,255,0.2);
-}
-*/
-
 .WelcomeWrap {
     position:absolute;
-    top:90px;
+    top:75px;
     left:25px;
     width:700px;
-    height:450px;
+    height:465px;
     overflow:hidden;
 }
 
@@ -86,8 +50,8 @@
 
 .WelcomeForm {
     position:absolute;
-    left:239px;
-    right:239px;
+    left:214px;
+    right:214px;
     top:60px;
     width:272px;
 }
@@ -133,8 +97,8 @@
 
 .Welcome .Start {
     position:absolute;
-    left:285px;
-    right:285px;
+    left:260px;
+    right:260px;
     bottom:60px;
     width:180px;
     height:38px;
@@ -154,16 +118,8 @@
 
 .Keyboard {
     position:absolute;
-    top:0;
+    top:15px;
     left:-725px;
-    width:700px;
-    height:450px;
-}
-
-.Timezone {
-    position:absolute;
-    top:0;
-    left:725px;
     width:700px;
     height:450px;
 }
@@ -254,6 +210,15 @@
     line-height:50px;
 }
 
+.KeyboardTri {
+    position:absolute;
+    top:-12px;
+    left:580px;
+    width:26px;
+    height:13px;
+    background:url("../images/triangle.png") no-repeat;
+}
+
 .Current {
     padding-left:16px;
     height:30px;
@@ -326,6 +291,23 @@
 .KeyboardActive {
     background:rgba(255,255,255,0.4) url("../images/select.png") no-repeat; 
     background-position:8px 8px;
+}
+
+.Timezone {
+    position:absolute;
+    top:15px;
+    left:725px;
+    width:700px;
+    height:450px;
+}
+
+.TimezoneTri {
+    position:absolute;
+    top:-12px;
+    left:650px;
+    width:26px;
+    height:13px;
+    background:url("../images/triangle.png") no-repeat;
 }
 
 .TimezoneWrap {

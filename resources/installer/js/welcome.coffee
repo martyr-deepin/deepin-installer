@@ -49,6 +49,10 @@ is_ancestor = (ancestor, el) ->
         el = el.parentNode
     return false
 
+__keyboard_widget = null
+__timezone_widget = null
+__account_widget = null
+
 class RequireMatchDialog extends Dialog
     constructor: (@id) ->
         super(@id, false, @require_match_cb)
@@ -147,6 +151,8 @@ class Keyboard extends Widget
         super
         @init_layouts()
 
+        @tri = create_element("div", "KeyboardTri", @element)
+
         @query = create_element("div", "Query", @element)
         @query_ul = create_element("ul", "", @query)
         @init_query_ul()
@@ -175,8 +181,8 @@ class Keyboard extends Widget
 
     show: ->
         echo "keyboard show"
-        Widget.look_up("timezone").hide()
-        Widget.look_up("account").hide()
+        __timezone_widget?.hide()
+        __account_widget?.hide()
         @displayed = true
         update_el_attr(@element, "-webkit-transform", "translateX(725px)")
         update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
@@ -263,6 +269,8 @@ class Timezone extends Widget
         super
         @search_list = DCore.Installer.get_timezone_list()
 
+        @tri = create_element("div", "TimezoneTri", @element)
+
         @query = create_element("div", "Query", @element)
         @query_div = create_element("div", "Left", @query)
         @query_wrap = create_element("div", "QueryWrap", @query_div)
@@ -294,8 +302,8 @@ class Timezone extends Widget
         @hide()
 
     show: ->
-        Widget.look_up("keyboard")?.hide()
-        Widget.look_up("account")?.hide()
+        __keyboard_widget?.hide()
+        __account_widget?.hide()
         @displayed = true
         update_el_attr(@element, "-webkit-transform", "translateX(-725px)")
         update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
@@ -519,8 +527,8 @@ class Account extends Widget
         @start.setAttribute("style", "pointer-events:none")
 
     show: ->
-        Widget.look_up("timezone")?.hide()
-        Widget.look_up("keyboard")?.hide()
+        __timezone_widget?.hide()
+        __keyboard_widget?.hide()
         @element.style.display = "block"
 
     hide: ->
@@ -558,13 +566,9 @@ class Welcome extends Page
         @title_set = create_element("div", "TitleSet", @title)
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
         @keyboard_set.innerText = _("Keyboard")
-        @keyboard_glue = create_element("div", "TitleGlue", @keyboard_set) 
-        @keyboard_glue.style.display = "none"
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
         @timezone_set.innerText = _("Time Zone")
-        @timezone_glue = create_element("div", "TitleGlue", @timezone_set) 
-        @timezone_glue.style.display = "none"
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
@@ -575,12 +579,15 @@ class Welcome extends Page
 
         @keyboard = new Keyboard("keyboard")
         @wrap.appendChild(@keyboard.element)
+        __keyboard_widget = @keyboard
 
         @timezone = new Timezone("timezone")
         @wrap.appendChild(@timezone.element)
+        __timezone_widget = @timezone
 
         @account = new Account("account")
         @wrap.appendChild(@account.element)
+        __account_widget = @account
 
     do_click: (e) ->
         if is_ancestor(@keyboard_set, e.target)
