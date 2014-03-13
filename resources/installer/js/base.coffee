@@ -288,7 +288,11 @@ class DropDownList extends Widget
         @hover_default()
 
     hover_default: ->
-        @hover_item(@dropdown.keys.indexOf(@dropdown.selected))
+        index = @dropdown.keys.indexOf(@dropdown.selected)
+        if not @dropdown.listenable
+            index = 0
+        if index != -1
+            @hover_item(index)
 
     hide: ->
         @element.style.display = "none"
