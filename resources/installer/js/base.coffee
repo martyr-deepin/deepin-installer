@@ -236,43 +236,30 @@ class DropDownList extends Widget
             __current_dropdown = null
         __current_dropdown = @
         __drop_board.style.display = "block"
-        position = get_position(@dropdown.element)
 
-        left = position["x"] 
+        #as we have space out of visiable area, just use webheight now
+        webheight = 540
         totalheight = @length * @dropdown.itemheight 
         pageheight = document.body.clientHeight
+        position = get_position(@dropdown.element)
+        scrollheight = get_scroll_height(@dropdown.element)
+        topspace = position["y"] - scrollheight
+        bottomspace = webheight - topspace - @dropdown.dropheight
         scroll_flag = false
 
-        if totalheight > pageheight
-            @dropdown.scrollable = true
-            if not @dropdown.maxheight?
-                @dropdown.maxheight = pageheight
+        width = @dropdown.dropwidth
+        height = totalheight
+        left = position["x"] 
 
-        width = @dropdown.dropwidth 
-
-        if @dropdown.scrollable
-            if totalheight > @dropdown.maxheight
-                height = @dropdown.maxheight
-                scroll_flag = true
-            else
-                height = totalheight
-                scroll_flag = false
+        if bottomspace > totalheight + 5
+            top = topspace + @dropdown.dropheight
+        else if topspace > totalheight + 5
+            top = topspace - totalheight - 5
+        else if webheight > totalheight + 5
+            top = webheight - totalheight - 5
         else
-            height = totalheight
-
-        scroll_height = get_scroll_height(@dropdown.element)
-        position["y"] = position["y"] - scroll_height + @dropdown.itemheight/2
-
-        if position["y"] < height / 2
-            top =  position["y"] - height / 3
-        else if position["y"] + height / 2 > pageheight
-            top = position["y"] - height
-        else
-            top = position["y"] -  height / 2 
-
-        #top 30px reserved for gtk click area
-        if top < 50
-            top = 50
+            height = webheight
+            top = 0
 
         style = "left:" + left + "px;"
         style += "top:" + top + "px;"
@@ -322,8 +309,6 @@ class DropDown extends Widget
         @dropheight = 24
         @itemheight = 30
         @itemleft = 10
-        @scrollable = false
-        @maxheight = 200
         @listenable = true
 
     set_drop_items: (keys, values) ->
@@ -397,10 +382,6 @@ class DropDown extends Widget
 
     set_list_enable: (enable) ->
         @listenable = enable
-
-    set_list_scroll_height: (scrollable, maxheight) ->
-        @scrollable = scrollable
-        @maxheight = maxheight
 
     set_list_background: (background) ->
         @listbackground = background
