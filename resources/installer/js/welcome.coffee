@@ -318,8 +318,8 @@ class Timezone extends Widget
 
     hover_timezone: (zone) ->
         @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
-        @current.innerHTML += "<span>City:" + _(zone) + "</span>"
-        @current.innerHTML += "<span>Country:" + _(__database[zone]["country"]) + "</span>"
+        @current.innerHTML += "<span>City:" + _(zone, "tzdata") + "</span>"
+        @current.innerHTML += "<span>Country:" + _(__database[zone]["country"], "tzdata") + "</span>"
 
     construct_map: ->
         @imagemap = create_element("map", "", @element)
@@ -574,7 +574,7 @@ class Welcome extends Page
         @keyboard_set.innerText = _("Keyboard")
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
-        @timezone_set.innerText = _("Time Zone")
+        @timezone_set.innerText = _("Time Zone", "INSTALLER")
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
