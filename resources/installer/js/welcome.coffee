@@ -529,10 +529,14 @@ class Account extends Widget
     show: ->
         __timezone_widget?.hide()
         __keyboard_widget?.hide()
+        apply_animation(@element, "pptin", "1s", "linear")
         @element.style.display = "block"
 
     hide: ->
-        @element.style.display = "none"
+        apply_animation(@element, "loadingout", "1s", "linear")
+        setTimeout(=>
+            @element.style.display = "none"
+        , 1000)
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
