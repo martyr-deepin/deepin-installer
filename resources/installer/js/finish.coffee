@@ -50,10 +50,16 @@ class Finish extends Page
             @later_txt.innerText = _("Start over")
 
         @later.addEventListener("click", (e) =>
-            try
-                DCore.Installer.finish_install()
-            catch error
-                echo error
+            if @succeed
+                try
+                    DCore.Installer.finish_install()
+                catch error
+                    echo error
+            else
+                try
+                    DCore.Installer.restart_installer()
+                catch error
+                    echo error
         )
 
         @now = create_element("div", "Now", @ops)

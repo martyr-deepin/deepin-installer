@@ -35,10 +35,12 @@
 #define INSTALLER_WIN_HEIGHT    576
 
 static GtkWidget *installer_container = NULL;
+char **global_argv = NULL;
+static int server_sockfd;
 
 gboolean installer_is_running ()
 {
-    int server_sockfd;
+    //int server_sockfd;
     socklen_t server_len;
     struct sockaddr_un server_addr;
 
@@ -136,8 +138,16 @@ sigterm_cb (int sig)
     installer_finish_install ();
 }
 
+JS_EXPORT_API
+void installer_restart_installer ()
+{
+    close (server_sockfd);
+    execv (global_argv[0], global_argv);
+}
+
 int main(int argc, char **argv)
 {
+    global_argv = argv;
     gtk_init (&argc, &argv);
 
     setlocale(LC_MESSAGES, "");
