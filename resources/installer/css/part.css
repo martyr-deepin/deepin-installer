@@ -293,6 +293,9 @@
     text-shadow:0 1px rgba(0,0,0,0.1);
     pointer-events:none;
     font-size:12px;
+    margin:0 8px;
+    position:relative;
+    left:-8px;
 }
 
 .PartBtnActive input {
@@ -304,6 +307,9 @@
     pointer-events:auto;
     font-size:12px;
     border-top:1px solid rgba(255,255,255,0.5);
+    margin:0 8px;
+    position:relative;
+    left:-8px;
 }
 
 .PartGrub {

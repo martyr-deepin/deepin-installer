@@ -185,7 +185,7 @@ class Keyboard extends Widget
         __account_widget?.hide()
         @displayed = true
         update_el_attr(@element, "-webkit-transform", "translateX(725px)")
-        update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
+        update_el_attr(@element, "-webkit-transition", "all 0.3s cubic-bezier(0, 0, 0.35, -1)")
         #@element.style.display = "block"
         __selected_layout_item?.focus()
 
@@ -306,7 +306,7 @@ class Timezone extends Widget
         __account_widget?.hide()
         @displayed = true
         update_el_attr(@element, "-webkit-transform", "translateX(-725px)")
-        update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
+        update_el_attr(@element, "-webkit-transition", "all 0.3s cubic-bezier(0, 0, 0.35, -1)")
         #@element.style.display = "block"
 
     hide: ->
@@ -477,8 +477,9 @@ class WelcomeFormItem extends Widget
             __selected_password = @input.value
 
     check_valid: ->
-        if not @is_valid()
-            @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
+        if not @is_valid() 
+            if @input.value.length != 0
+                @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
 
     is_valid: ->
         if not @input.value? or @input.value.length == 0
@@ -529,14 +530,14 @@ class Account extends Widget
     show: ->
         __timezone_widget?.hide()
         __keyboard_widget?.hide()
-        apply_animation(@element, "pptin", "1s", "linear")
+        apply_animation(@element, "pptin", "0.3s", "linear")
         @element.style.display = "block"
 
     hide: ->
-        apply_animation(@element, "loadingout", "1s", "linear")
+        apply_animation(@element, "loadingout", "0.3s", "linear")
         setTimeout(=>
             @element.style.display = "none"
-        , 1000)
+        , 300)
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 

@@ -188,6 +188,9 @@ input:focus {
     background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.3)), to(rgba(255,255,255, 0.15)));
     color:rgba(255,255,255,1);
     text-shadow:0 1px rgba(0,0,0,0.3);
+    margin:0 8px;
+    position:relative;
+    left:-8px;
 }
 
 .DropBoard {

@@ -157,10 +157,16 @@
     width:20px;
 }
 
+.Query a {
+    color:rgba(255,255,255,0.8);
+    text-decoration:none;
+    text-shadow:0 1px 1px rgba(0,0,0,0.5);
+    outline-style:none;
+    border-style:none;
+}
+
 .Query a:hover {
-    font-size:16px;
-    padding:2px;
-    color:red;
+    color:rgba(255,255,255,1);
 }
 
 .Query .QueryWrap {
