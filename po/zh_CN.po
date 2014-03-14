@@ -49,6 +49,10 @@ msgstr "稍后重启"
 msgid "Reboot now"
 msgstr "现在重启"
 
+#: ../resources/installer/js/finish.coffee:49
+msgid "Start over"
+msgstr "再来一次"
+
 #: ../resources/installer/js/part.coffee:34
 msgid "Add partition"
 msgstr "添加分区"

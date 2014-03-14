@@ -33,17 +33,22 @@ class Finish extends Page
         @info = create_element("div", "FinishInfo", @element)
         @desc = create_element("div", "Desc", @info)
         @detail = create_element("div", "Detail", @info)
+
+        @ops = create_element("div", "FinishOps", @element)
+
+        @later = create_element("div", "", @ops)
+        @later_txt = create_element("div", "Txt", @later)
         if @succeed
             @desc.innerText = _("Congratulations!")
             @detail.innerText = _("You need to restart the computer to complete installation.")
+            @later.setAttribute("class", "Later")
+            @later_txt.innerText = _("Reboot later")
         else
             @desc.innerText = _("Installation failed!")
             @detail.innerText = _("Please send the log to Linux Deepin Team.")
+            @later.setAttribute("class", "Startover")
+            @later_txt.innerText = _("Start over")
 
-        @ops = create_element("div", "FinishOps", @element)
-        @later = create_element("div", "Later", @ops)
-        @later_txt = create_element("div", "Txt", @later)
-        @later_txt.innerText = _("Reboot later")
         @later.addEventListener("click", (e) =>
             try
                 DCore.Installer.finish_install()
@@ -60,10 +65,3 @@ class Finish extends Page
             catch error
                 echo error
         )
-
-        if @succeed
-            @now_txt.innerText = _("Reboot now")
-            @later_txt.innerText = _("Reboot later")
-        else
-            @now_txt.innerText = _("Reboot")
-            @later_txt.innerText = _("Start Over")
