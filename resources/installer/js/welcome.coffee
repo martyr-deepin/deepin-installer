@@ -184,16 +184,14 @@ class Keyboard extends Widget
         __timezone_widget?.hide()
         __account_widget?.hide()
         @displayed = true
-        update_el_attr(@element, "-webkit-transform", "translateX(725px)")
-        update_el_attr(@element, "-webkit-transition", "all 0.3s cubic-bezier(0, 0, 0.35, -1)")
-        #@element.style.display = "block"
+        update_el_attr(@element, "-webkit-transform", "translateX(-725px)")
+        #update_el_attr(@element, "-webkit-transition", "all 0.3s cubic-bezier(0, 0, 0.35, -1)")
         __selected_layout_item?.focus()
 
     hide: ->
         echo "keyboard hide"
         @displayed = false
         update_el_attr(@element, "-webkit-transform", "translateX(0px)")
-        #@element.style.display = "none"
 
     init_query_ul: ->
         for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -306,7 +304,7 @@ class Timezone extends Widget
         __account_widget?.hide()
         @displayed = true
         update_el_attr(@element, "-webkit-transform", "translateX(-725px)")
-        update_el_attr(@element, "-webkit-transition", "all 0.3s cubic-bezier(0, 0, 0.35, -1)")
+        #update_el_attr(@element, "-webkit-transition", "all 0.3s cubic-bezier(0, 0, 0.35, -1)")
         #@element.style.display = "block"
 
     hide: ->

@@ -119,7 +119,7 @@
 .Keyboard {
     position:absolute;
     top:15px;
-    left:-725px;
+    left:725px;
     width:700px;
     height:450px;
 }
