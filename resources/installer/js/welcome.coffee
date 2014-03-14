@@ -156,19 +156,6 @@ class Keyboard extends Widget
         @query = create_element("div", "Query", @element)
         @query_ul = create_element("ul", "", @query)
         @init_query_ul()
-        #@query_div = create_element("div", "Left", @query)
-        #@query_wrap = create_element("div", "QueryWrap", @query_div)
-        #@query_input = create_element("input", "", @query_wrap)
-        #@query_input.addEventListener("keyup", (e) =>
-        #    if e.which == 13
-        #        @execute_query()
-        #)
-        #@query_img = create_element("div", "QueryImg", @query_wrap)
-        #@query_img.addEventListener("click", (e) =>
-        #    @execute_query()
-        #)
-        #@query_txt = create_element("div", "Right", @query)
-        #@query_txt.innerText = _("Please select your keyboard layout")
 
         @content = create_element("div", "KeyBoardContent", @element)
         @layout_list = create_element("div", "LayoutList", @content)
@@ -178,6 +165,7 @@ class Keyboard extends Widget
 
         @fill_layouts(@layouts)
         @hide()
+        @init_dbus_query()
 
     show: ->
         echo "keyboard show"
@@ -193,6 +181,16 @@ class Keyboard extends Widget
         @displayed = false
         update_el_attr(@element, "-webkit-transform", "translateX(0px)")
 
+    init_dbus_query: ->
+        try
+            @search_bus = DCore.DBus.session_object("com.deepin.api.Search", "/com/deepin/api/Search", "com.deepin.api.Search")
+            dict = {}
+            for item in @layouts
+                dict[item] = DCore.Installer.get_layout_description(item)
+            @search_handle = @search_bus.NewTrieWithString_sync(dict, "installer")
+        catch
+            echo "init dbus query failed"
+
     init_query_ul: ->
         for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             @create_query_li(c)
@@ -202,6 +200,9 @@ class Keyboard extends Widget
         a = create_element("a", "", li)
         a.setAttribute("href", "#")
         a.innerText = c
+        a.addEventListener("click", (e) =>
+            @execute_letter_query(c)
+        )
 
     init_layouts: ->
         lay_var = DCore.Installer.get_current_layout_variant()
@@ -249,9 +250,11 @@ class Keyboard extends Widget
         @current.innerText = DCore.Installer.get_layout_description(layout)
         __selected_layout = layout
 
-    execute_query: ->
-        key = @query_input.value
-        matched = get_matched_items(key, @search_list)
+    execute_letter_query: (letter) ->
+        try
+            matched = @search_bus.SearchKeysByFirstLetter_sync(letter, @search_handle)
+        catch
+            matched = []
         @layout_list.innerHTML = ""
         @variant_list.innerHTML = ""
         matched_layouts = []

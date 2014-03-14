@@ -1,6 +1,6 @@
 SET(NAME "installer")
 
-GEN_JSC_SOURCE2(JSC_GEN "jsc" "installer" "installer.cfg")
+GEN_JSC_SOURCE2(JSC_GEN "jsc" "installer" "installer.cfg" "dbus.cfg")
 
 pkg_check_modules(PARTED REQUIRED libparted)
 pkg_check_modules(XKLAVIER REQUIRED libxklavier)
