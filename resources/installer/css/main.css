@@ -281,15 +281,26 @@ input:focus {
 
 ::-webkit-scrollbar {
     background:rgba(255,255,255,0.15);
+    width:8px;
+    height:140px;
 }
 
 ::-webkit-scrollbar-thumb {
     background:rgba(0,0,0,0.4);
-    width:8px;
-    height:140px;
+    background-clip:padding-box;
     border-radius:5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background:rgba(0,0,0,0.6);
+}
+
+::-webkit-scrollbar-button {
+    width:0;
+    height:0;
+    display:none;
+}
+
+::-webkit-scrollbar-corner {
+    background-color:transparent;
 }

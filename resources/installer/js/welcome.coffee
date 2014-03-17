@@ -438,6 +438,7 @@ class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
         @input = create_element("input", "", @element)
+        @change = false
         @fill_widget()
         @input.addEventListener("focus", (e) =>
             @input.setAttribute("style", "")
@@ -448,9 +449,12 @@ class WelcomeFormItem extends Widget
             Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("input", (e) =>
-            if @id == "username"
+            if @id == "username" and Widget.look_up("account")?.hostname.change == false
                 Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
             Widget.look_up("account")?.check_start_ready()
+        )
+        @input.addEventListener("change", (e) =>
+            @change = true
         )
 
     fill_widget: ->
