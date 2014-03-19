@@ -20,6 +20,10 @@
  **/
 
 #include <sys/sysinfo.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <ftw.h>
 #include "extract.h"
 #include "keyboard.h"
@@ -30,40 +34,50 @@ static int
 copy_file_cb (const char *path, const struct stat *sb, int typeflag)
 {
     extern const gchar *target;
-    if (path == NULL) {
-        return 1;
-    }
-    static GFile *target_f; 
-    if (target_f == NULL) {
-        target_f = g_file_new_for_path (target);
-    }
-    static GFile *target_squash_f;
-    if (target_squash_f == NULL) {
-        gchar *squash = g_strdup_printf ("%s/squashfs", target);
-        target_squash_f = g_file_new_for_path (squash);
-        g_free (squash);
+    gchar *ts = g_strdup_printf ("%s/squashfs", target);
+    if (!g_str_has_prefix (path, ts)) {
+    	g_warning ("copy file cb:invalid path->%s with target %s\n", path, ts);
+	return 1;
     }
 
-    GFile *src = g_file_new_for_path (path);
-    gchar *origin = g_file_get_relative_path (target_squash_f, src);
-    if (origin == NULL) {
-        g_warning ("copy file cb:origin NULL for %s\n", path);
-    }
-    GFile *dest = g_file_resolve_relative_path (target_f, origin);
-    g_free (origin);
+    gchar **sp = g_strsplit (path, ts, -1);
+    g_free (ts);
 
-    g_warning ("copy file from %s to %s\n", g_file_get_path (src), g_file_get_path (dest));
+    gchar *base = g_strdup (sp[1]);
+    g_strfreev (sp);
 
-    g_file_copy (src, dest, G_FILE_COPY_OVERWRITE | G_FILE_COPY_NOFOLLOW_SYMLINKS,  NULL, NULL, NULL, NULL);
+    gchar *dest = g_strdup_printf ("%s%s", target, base);
+    g_free (base);
 
-    g_object_unref (src);
-    g_object_unref (dest);
+    mode_t mode = sb->st_mode;
+    if (S_ISREG (mode)) {
+	GFile *src = g_file_new_for_path (path);
+	GFile *df = g_file_new_for_path (dest);
+  	g_file_copy_async (src, df, G_FILE_COPY_OVERWRITE, 0, NULL, NULL, NULL, NULL, NULL);
+	g_object_unref (src);
+	g_object_unref (df);
+
+    } else if (S_ISDIR (mode)) {
+	g_mkdir_with_parents (dest, mode);
+
+    } else if (S_ISLNK (mode)) {
+	char buf[1024];
+	size_t size;
+	readlink (path, &buf, size);
+	g_warning ("copy file cb:%s is link to %s\n", dest, buf);
+
+    } else {
+	g_warning ("copy file cb:%s is device\n", dest);
+	mknod (dest, mode, sb->st_rdev);
+    } 
+
+    g_free (dest);
 
     return 0;
 }
 
-JS_EXPORT_API
-void installer_extract_iso ()
+gpointer 
+thread_extract_iso (gpointer data)
 {
     gboolean succeed = FALSE;
     extern const gchar *target;
@@ -112,6 +126,14 @@ out:
     } else {
         emit_progress ("extract", "terminate");
     }
+    return NULL;
+}
+
+JS_EXPORT_API
+void installer_extract_iso ()
+{
+    GThread *thread = g_thread_new ("extract_iso", (GThreadFunc) thread_extract_iso, NULL);
+    g_thread_unref (thread);
 }
 
 static void
@@ -272,11 +294,12 @@ void installer_extract_intelligent ()
     g_spawn_command_line_async ("pkill -9 os-prober", NULL);
     g_free (cmd);
 
-    if (is_outdated_machine ()) {
-        g_printf ("extract intelligent:use extract iso\n");
-        installer_extract_iso ();
-    } else {
-        g_printf ("extract intelligent:use extract squashfs\n");
-        installer_extract_squashfs ();
-    }
+    //if (is_outdated_machine ()) {
+    //    g_printf ("extract intelligent:use extract iso\n");
+    //    installer_extract_iso ();
+    //} else {
+    //    g_printf ("extract intelligent:use extract squashfs\n");
+    //    installer_extract_squashfs ();
+    //}
+    installer_extract_iso ();
 }
