@@ -30,6 +30,16 @@
 
 static gboolean extract_finish = FALSE;
 
+static gboolean
+timeout_emit_cb (gpointer data)
+{
+    if (extract_finish) {
+        return FALSE;
+    }
+    emit_progress ("extract", "ticker");
+    return TRUE;
+}
+
 static int 
 copy_file_cb (const char *path, const struct stat *sb, int typeflag)
 {
@@ -53,7 +63,13 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
     if (S_ISREG (mode)) {
 	GFile *src = g_file_new_for_path (path);
 	GFile *df = g_file_new_for_path (dest);
-  	g_file_copy_async (src, df, G_FILE_COPY_OVERWRITE, 0, NULL, NULL, NULL, NULL, NULL);
+  	//g_file_copy_async (src, df, G_FILE_COPY_OVERWRITE, 0, NULL, NULL, NULL, NULL, NULL);
+	GError *error = NULL;
+	g_file_copy (src, df, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
+	if (error != NULL) {
+	    g_warning ("copy file cb: copy file %s error->%s\n", dest, error->message);
+	    g_error_free (error);
+  	}
 	g_object_unref (src);
 	g_object_unref (df);
 
@@ -104,6 +120,8 @@ thread_extract_iso (gpointer data)
         goto out;
     }
 
+    guint cb_id = g_timeout_add (1000, (GSourceFunc) timeout_emit_cb, NULL);
+
     ftw (target_iso, copy_file_cb, 65536);
 
     umount_cmd  = g_strdup_printf ("umount %s", target_iso);
@@ -121,6 +139,12 @@ out:
     if (error != NULL) {
         g_error_free (error);
     }
+    if (cb_id > 0) {
+        g_source_remove (cb_id);
+        cb_id = 0;
+    }
+    extract_finish = TRUE;
+
     if (succeed) {
         emit_progress ("extract", "finish");
     } else {
@@ -163,15 +187,6 @@ watch_extract_child (GPid pid, gint status, gpointer data)
     extract_finish = TRUE;
 }
 
-static gboolean
-timeout_emit_cb (gpointer data)
-{
-    if (extract_finish) {
-        return FALSE;
-    }
-    emit_progress ("extract", "ticker");
-    return TRUE;
-}
 
 JS_EXPORT_API
 void installer_extract_squashfs ()
