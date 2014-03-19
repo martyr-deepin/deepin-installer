@@ -311,10 +311,13 @@ void installer_extract_intelligent ()
 
     //if (is_outdated_machine ()) {
     //    g_printf ("extract intelligent:use extract iso\n");
+    //    emit_progress ("extract", "slow");
     //    installer_extract_iso ();
     //} else {
     //    g_printf ("extract intelligent:use extract squashfs\n");
+    //    emit_progress ("extract", "fast");
     //    installer_extract_squashfs ();
     //}
+    emit_progress ("extract", "slow");
     installer_extract_iso ();
 }
