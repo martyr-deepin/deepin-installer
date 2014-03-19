@@ -28,6 +28,12 @@
 #include "extract.h"
 #include "keyboard.h"
 
+extern int symlink(const char *oldpath, const char *newpath);
+extern int mknod(const char *pathname, mode_t mode, dev_t dev);
+extern int lstat(const char *restrict path, struct stat *restrict buf);
+
+#define BUFFERSIZE 	16 * 1024
+
 static gboolean extract_finish = FALSE;
 
 static gboolean
@@ -38,6 +44,25 @@ timeout_emit_cb (gpointer data)
     }
     emit_progress ("extract", "ticker");
     return TRUE;
+}
+
+static void
+copy_single_file (const char *src, const char *dest)
+{
+    FILE *sf = fopen (src, "r");
+    FILE *df = fopen (dest, "w");
+    char buffer[BUFFERSIZE];
+    size_t n;
+
+    while ((n = fread (buffer, sizeof(char), sizeof(buffer), sf)) > 0) {
+	if (fwrite (buffer, sizeof(char), n, df) != n) {
+	    g_warning ("copy single file:%s failed\n", src);
+	    break;
+        }
+    }
+
+    fclose (sf);
+    fclose (df);
 }
 
 static int 
@@ -59,33 +84,44 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
     gchar *dest = g_strdup_printf ("%s%s", target, base);
     g_free (base);
 
-    mode_t mode = sb->st_mode;
-    if (S_ISREG (mode)) {
-	GFile *src = g_file_new_for_path (path);
-	GFile *df = g_file_new_for_path (dest);
-  	//g_file_copy_async (src, df, G_FILE_COPY_OVERWRITE, 0, NULL, NULL, NULL, NULL, NULL);
+    struct stat st;
+    if (lstat (path, &st) != 0) {
+    	g_warning ("copy file cb:lstat %s\n", path);
+	return 1;
+    }
+    mode_t mode = st.st_mode;
+
+    if (S_ISLNK (mode)) {
 	GError *error = NULL;
-	g_file_copy (src, df, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
+	gchar *link = g_file_read_link (path, &error);
 	if (error != NULL) {
-	    g_warning ("copy file cb: copy file %s error->%s\n", dest, error->message);
 	    g_error_free (error);
-  	}
-	g_object_unref (src);
-	g_object_unref (df);
+	}
+	error = NULL;
+	if (symlink (link, dest) != 0) {
+	    g_warning ("copy file cb:symlink to %s failed\n", link);
+        }
 
     } else if (S_ISDIR (mode)) {
 	g_mkdir_with_parents (dest, mode);
 
-    } else if (S_ISLNK (mode)) {
-	char buf[1024];
-	size_t size;
-	readlink (path, &buf, size);
-	g_warning ("copy file cb:%s is link to %s\n", dest, buf);
+    } else if (S_ISREG (mode)) {
+	copy_single_file (path, dest);
+	chmod (dest, mode);
+	//GFile *src = g_file_new_for_path (path);
+	//GFile *df = g_file_new_for_path (dest);
+	//GError *error = NULL;
+	//g_file_copy (src, df, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
+	//if (error != NULL) {
+	//    g_warning ("copy file cb: copy file %s error->%s\n", dest, error->message);
+	//    g_error_free (error);
+  	//}
+	//g_object_unref (src);
+	//g_object_unref (df);
 
     } else {
-	g_warning ("copy file cb:%s is device\n", dest);
-	mknod (dest, mode, sb->st_rdev);
-    } 
+	mknod (dest, mode, st.st_rdev);
+    }
 
     g_free (dest);
 

@@ -178,7 +178,7 @@ class Progress extends Page
         @ppt = new Ppt("pptslider", _ppt_list)
         @element.appendChild(@ppt.element)
         @ticker = 0
-	@tu = 180
+        @tu = 180
         @display_progress = false
         setTimeout(=>
             if @display_progress == false
@@ -235,10 +235,10 @@ class Progress extends Page
         else if progress == "terminate"
             echo "extract terminate"
             @show_report()
-	else if progress == "slow"
-	    @tu = 1800
-	else if progress == "fast"
-	    @tu = 180
+        else if progress == "slow"
+            @tu = 1800
+        else if progress == "fast"
+            @tu = 180
         else
             @ticker = @ticker + 1
             pgr = 0.05 + @ticker/@tu * 0.8
