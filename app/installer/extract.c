@@ -50,7 +50,21 @@ static void
 copy_single_file (const char *src, const char *dest)
 {
     FILE *sf = fopen (src, "r");
-    FILE *df = fopen (dest, "w");
+    if (sf == NULL) {
+	g_warning ("copy single file:open src %s failed\n", src);
+	return;
+    }
+
+    if (g_file_test (dest, G_FILE_TEST_EXISTS)) {
+    	g_unlink (dest);
+    }
+    FILE *df = fopen (dest, "a");
+    if (df == NULL) {
+	g_warning ("copy single file:open dest %s failed\n", dest);
+	fclose (sf);
+	return;
+    }
+
     char buffer[BUFFERSIZE];
     size_t n;
 
@@ -99,7 +113,7 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
 	}
 	error = NULL;
 	if (symlink (link, dest) != 0) {
-	    g_warning ("copy file cb:symlink to %s failed\n", link);
+	    g_warning ("copy file cb:copy symlink from %s to %s failed\n", path, link);
         }
 
     } else if (S_ISDIR (mode)) {
