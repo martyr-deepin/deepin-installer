@@ -22,6 +22,7 @@
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <ftw.h>
@@ -31,6 +32,7 @@
 extern int symlink(const char *oldpath, const char *newpath);
 extern int mknod(const char *pathname, mode_t mode, dev_t dev);
 extern int lstat(const char *restrict path, struct stat *restrict buf);
+extern int lchown(const char *path, uid_t owner, gid_t group);
 
 #define BUFFERSIZE 	16 * 1024
 
@@ -166,15 +168,9 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
     if (lchown (dest, st.st_uid, st.st_gid) != 0) {
         g_warning ("copy file cb:lchown for %s failed\n", dest);
     }
-    if (!S_ISLINK (mode)) {
+    if (!S_ISLNK (mode)) {
         if (g_chmod (dest, mode) != 0) {
             g_warning ("copy file cb:chmod for %s failed\n", dest);
-        }
-        struct utimebuf buf;
-        buf.actime = st.st_atime;
-        buf.modtime = st.st_mtime;
-        if (g_utime (dest, &buf) != 0) {
-            g_warning ("copy file cb:utime for %s failed\n", dest);
         }
     }
 
