@@ -497,18 +497,26 @@ thread_update_grub (gpointer data)
 
     if (handler->uefi) {
         g_spawn_command_line_sync ("grub-mkconfig -o /boot/grub/grub.cfg", NULL, NULL, NULL, &error);
-
+        if (error != NULL) {
+            g_warning ("update grub:update grub for uefi %s\n", error->message);
+            goto out;
+        }
     } else {
-        if (g_file_test ("/usr/lib/deepin-daemon/grub2", G_FILE_TEST_EXISTS)) {
+        if (g_file_test ("/usr/lib/deepin-daemon/grub2", G_FILE_TEST_IS_EXECUTABLE)) {
             g_spawn_command_line_sync ("/usr/lib/deepin-daemon/grub2 --debug --setup", NULL, NULL, NULL, &error);
+            if (error != NULL) {
+                g_warning ("update grub:update with style %s\n", error->message);
+                g_error_free (error);
+                g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
+            }
 
         } else {
             g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
         }
-    }
-    if (error != NULL) {
-        g_warning ("update grub:update grub %s\n", error->message);
-        goto out;
+        if (error != NULL) {
+            g_warning ("update grub:update grub %s\n", error->message);
+            goto out;
+        }
     }
     ret = TRUE;
     goto out;
