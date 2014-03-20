@@ -106,15 +106,25 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
     mode_t mode = st.st_mode;
 
     if (S_ISLNK (mode)) {
+        GFile *file = g_file_new_for_path (dest);
     	GError *error = NULL;
-    	gchar *link = g_file_read_link (path, &error);
-    	if (error != NULL) {
-    	    g_error_free (error);
-    	}
-    	error = NULL;
-    	if (symlink (link, dest) != 0) {
-    	    g_warning ("copy file cb:copy symlink from %s to %s failed\n", path, link);
+
+        if (!g_file_test (dest, G_FILE_TEST_IS_SYMLINK)) {
+    	    gchar *link = g_file_read_link (path, &error);
+    	    if (error != NULL) {
+    	        g_error_free (error);
+    	    }
+    	    error = NULL;
+
+            g_file_make_symbolic_link (file, link, NULL, &error);
+            if (error != NULL) {
+                g_warning ("copy file cb:make symlink from %s to %s failed-> %s\n", dest, link, error->message);
+                g_error_free (error);
+            }
+            g_free (link);
+            error = NULL;
         }
+        g_object_unref (file);
     
     } else if (S_ISDIR (mode)) {
 	    g_mkdir_with_parents (dest, mode);
