@@ -51,8 +51,8 @@ copy_single_file (const char *src, const char *dest)
 {
     FILE *sf = fopen (src, "r");
     if (sf == NULL) {
-	g_warning ("copy single file:open src %s failed\n", src);
-	return;
+	    g_warning ("copy single file:open src %s failed\n", src);
+	    return;
     }
 
     if (g_file_test (dest, G_FILE_TEST_EXISTS)) {
@@ -60,18 +60,18 @@ copy_single_file (const char *src, const char *dest)
     }
     FILE *df = fopen (dest, "a");
     if (df == NULL) {
-	g_warning ("copy single file:open dest %s failed\n", dest);
-	fclose (sf);
-	return;
+	    g_warning ("copy single file:open dest %s failed\n", dest);
+	    fclose (sf);
+	    return;
     }
 
     char buffer[BUFFERSIZE];
     size_t n;
 
     while ((n = fread (buffer, sizeof(char), sizeof(buffer), sf)) > 0) {
-	if (fwrite (buffer, sizeof(char), n, df) != n) {
-	    g_warning ("copy single file:%s failed\n", src);
-	    break;
+	    if (fwrite (buffer, sizeof(char), n, df) != n) {
+	        g_warning ("copy single file:%s failed\n", src);
+	        break;
         }
     }
 
@@ -86,7 +86,7 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
     gchar *ts = g_strdup_printf ("%s/squashfs", target);
     if (!g_str_has_prefix (path, ts)) {
     	g_warning ("copy file cb:invalid path->%s with target %s\n", path, ts);
-	return 1;
+	    return 1;
     }
 
     gchar **sp = g_strsplit (path, ts, -1);
@@ -101,40 +101,30 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
     struct stat st;
     if (lstat (path, &st) != 0) {
     	g_warning ("copy file cb:lstat %s\n", path);
-	return 1;
+	    return 1;
     }
     mode_t mode = st.st_mode;
 
     if (S_ISLNK (mode)) {
-	GError *error = NULL;
-	gchar *link = g_file_read_link (path, &error);
-	if (error != NULL) {
-	    g_error_free (error);
-	}
-	error = NULL;
-	if (symlink (link, dest) != 0) {
-	    g_warning ("copy file cb:copy symlink from %s to %s failed\n", path, link);
+    	GError *error = NULL;
+    	gchar *link = g_file_read_link (path, &error);
+    	if (error != NULL) {
+    	    g_error_free (error);
+    	}
+    	error = NULL;
+    	if (symlink (link, dest) != 0) {
+    	    g_warning ("copy file cb:copy symlink from %s to %s failed\n", path, link);
         }
-
+    
     } else if (S_ISDIR (mode)) {
-	g_mkdir_with_parents (dest, mode);
+	    g_mkdir_with_parents (dest, mode);
 
     } else if (S_ISREG (mode)) {
-	copy_single_file (path, dest);
-	chmod (dest, mode);
-	//GFile *src = g_file_new_for_path (path);
-	//GFile *df = g_file_new_for_path (dest);
-	//GError *error = NULL;
-	//g_file_copy (src, df, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
-	//if (error != NULL) {
-	//    g_warning ("copy file cb: copy file %s error->%s\n", dest, error->message);
-	//    g_error_free (error);
-  	//}
-	//g_object_unref (src);
-	//g_object_unref (df);
+	    copy_single_file (path, dest);
+	    chmod (dest, mode);
 
     } else {
-	mknod (dest, mode, st.st_rdev);
+	    mknod (dest, mode, st.st_rdev);
     }
 
     g_free (dest);
