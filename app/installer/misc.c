@@ -497,8 +497,14 @@ thread_update_grub (gpointer data)
 
     if (handler->uefi) {
         g_spawn_command_line_sync ("grub-mkconfig -o /boot/grub/grub.cfg", NULL, NULL, NULL, &error);
+
     } else {
-        g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
+        if (g_file_test ("/usr/lib/deepin-daemon/grub2", G_FILE_TEST_EXISTS)) {
+            g_spawn_command_line_sync ("/usr/lib/deepin-daemon/grub2 --debug --setup", NULL, NULL, NULL, &error);
+
+        } else {
+            g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
+        }
     }
     if (error != NULL) {
         g_warning ("update grub:update grub %s\n", error->message);
