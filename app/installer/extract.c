@@ -163,6 +163,21 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
 	    mknod (dest, mode, st.st_rdev);
     }
 
+    if (lchown (dest, st.st_uid, st.st_gid) != 0) {
+        g_warning ("copy file cb:lchown for %s failed\n", dest);
+    }
+    if (!S_ISLINK (mode)) {
+        if (g_chmod (dest, mode) != 0) {
+            g_warning ("copy file cb:chmod for %s failed\n", dest);
+        }
+        struct utimebuf buf;
+        buf.actime = st.st_atime;
+        buf.modtime = st.st_mtime;
+        if (g_utime (dest, &buf) != 0) {
+            g_warning ("copy file cb:utime for %s failed\n", dest);
+        }
+    }
+
     g_free (dest);
 
     return 0;
