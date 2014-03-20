@@ -173,7 +173,6 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
             g_warning ("copy file cb:chmod for %s failed\n", dest);
         }
     }
-
     g_free (dest);
 
     return 0;
@@ -243,6 +242,9 @@ out:
 JS_EXPORT_API
 void installer_extract_iso ()
 {
+    g_printf ("extract intelligent:use extract iso\n");
+    emit_progress ("extract", "safe");
+
     GThread *thread = g_thread_new ("extract_iso", (GThreadFunc) thread_extract_iso, NULL);
     g_thread_unref (thread);
 }
@@ -274,15 +276,14 @@ watch_extract_child (GPid pid, gint status, gpointer data)
     extract_finish = TRUE;
 }
 
-
-JS_EXPORT_API
-void installer_extract_squashfs ()
+gpointer
+thread_extract_squashfs (gpointer data)
 {
     gchar *squashfs_cmd = g_find_program_in_path ("unsquashfs");
     if (squashfs_cmd == NULL) {
         g_warning ("extract squashfs: unsquashfs not installed\n");
         emit_progress ("extract", "terminate");
-        return;
+        return NULL;
     }
     g_free (squashfs_cmd);
 
@@ -290,7 +291,7 @@ void installer_extract_squashfs ()
     if (target == NULL) {
         g_warning ("extract squash fs:target is NULL\n");
         emit_progress ("extract", "terminate");
-        return;
+        return NULL;
     }
 
     gchar *share = g_strdup_printf ("%s%s", target, "/usr/share");
@@ -301,24 +302,16 @@ void installer_extract_squashfs ()
     if (!g_file_test (iso, G_FILE_TEST_EXISTS)) {
         g_warning ("extract squashfs:iso not exists\n");
         emit_progress ("extract", "terminate");
-        return;
+        return NULL;
     }
 
-    guint processors = get_cpu_num ();
-    guint puse = 1;
-    if (processors > 2) {
-        puse = processors - 1;
-    }
-
-    gchar **argv = g_new0 (gchar *, 9);
+    gchar **argv = g_new0 (gchar *, 7);
     argv[0] = g_strdup ("unsquashfs");
     argv[1] = g_strdup ("-f");
     argv[2] = g_strdup ("-n");
-    argv[3] = g_strdup ("-p");
-    argv[4] = g_strdup_printf ("%d", puse);
-    argv[5] = g_strdup ("-d");
-    argv[6] = g_strdup (target);
-    argv[7] = g_strdup ("/cdrom/casper/filesystem.squashfs");
+    argv[3] = g_strdup ("-d");
+    argv[4] = g_strdup (target);
+    argv[5] = g_strdup ("/cdrom/casper/filesystem.squashfs");
 
     GError *error = NULL;
     GPid pid;
@@ -340,6 +333,16 @@ void installer_extract_squashfs ()
     g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, &cb_id);
 
     g_strfreev (argv);
+
+    return NULL;
+}
+
+
+JS_EXPORT_API
+void installer_extract_squashfs ()
+{
+    GThread *thread = g_thread_new ("extract_squashfs", (GThreadFunc) thread_extract_squashfs, NULL);
+    g_thread_unref (thread);
 }
 
 static gboolean
@@ -371,10 +374,9 @@ is_outdated_machine ()
     }
     g_free (kvm_output);
     
-    //double freeram = get_free_memory_size ();
-    double freeram = installer_get_memory_size ();
-    if (freeram > 0 && freeram < 1024 * 1024 * 1024) {
-        g_warning ("is outdated machine:free mem %f less than 1G\n", freeram);
+    double totalram = installer_get_memory_size ();
+    if (totalram > 0 && totalram < 2.0 * 1024 * 1024 * 1024) {
+        g_warning ("is outdated machine:total mem %f less than 2G\n", totalram);
         return TRUE;
     }
 
@@ -396,15 +398,26 @@ void installer_extract_intelligent ()
     g_spawn_command_line_async ("pkill -9 os-prober", NULL);
     g_free (cmd);
 
-    //if (is_outdated_machine ()) {
-    //    g_printf ("extract intelligent:use extract iso\n");
-    //    emit_progress ("extract", "slow");
-    //    installer_extract_iso ();
-    //} else {
-    //    g_printf ("extract intelligent:use extract squashfs\n");
-    //    emit_progress ("extract", "fast");
-    //    installer_extract_squashfs ();
-    //}
-    emit_progress ("extract", "slow");
-    installer_extract_iso ();
+    extern gchar *extract_mode;
+    if (extract_mode != NULL) {
+        if (g_strcmp0 (extract_mode, "fast") == 0) {
+            installer_extract_squashfs ();
+
+        } else if (g_strcmp0 (extract_mode, "safe") == 0) {
+            installer_extract_iso ();
+
+        } else {
+            if (is_outdated_machine ()) {
+                installer_extract_iso ();
+            } else {
+                installer_extract_squashfs ();
+            }
+        }
+    } else {
+        if (is_outdated_machine ()) {
+            installer_extract_iso ();
+        } else {
+            installer_extract_squashfs ();
+        }
+    }
 }

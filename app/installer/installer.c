@@ -37,6 +37,13 @@
 static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
 static int server_sockfd;
+gchar *extract_mode = NULL;
+
+static GOptionEntry entries[] = 
+{
+    { "mode", 'm', 0, G_OPTION_ARG_STRING, &extract_mode, "fast or safe"},
+    { NULL }
+};
 
 gboolean installer_is_running ()
 {
@@ -147,6 +154,14 @@ void installer_restart_installer ()
 
 int main(int argc, char **argv)
 {
+    GOptionContext *context = g_option_context_new ("- Deepin Installer");
+    g_option_context_add_main_entries (context, entries, "INSTALLER");
+    g_option_context_add_group (context, gtk_get_option_group (TRUE));
+    if (!g_option_context_parse (context, &argc, &argv, NULL)) {
+        g_warning ("context parse failed\n");
+    }
+    g_option_context_free (context);
+
     global_argv = argv;
     gtk_init (&argc, &argv);
 

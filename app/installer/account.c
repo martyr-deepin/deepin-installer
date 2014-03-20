@@ -107,21 +107,26 @@ thread_create_user (gpointer data)
     
     if (!add_user (handler->username)) {
         g_warning ("create user:add user failed\n");
+        emit_progress ("user", "terminate");
     }
 
     if (!set_user_home (handler->username)) {
         g_warning ("create user:set user home failed\n");
+        emit_progress ("user", "terminate");
     }
 
     if (!set_group (handler->username)) {
         g_warning ("create user:set group failed\n");
+        emit_progress ("user", "terminate");
     }
     
     if (!write_hostname (handler->hostname)) {
         g_warning ("create user:write hostname failed\n");
+        emit_progress ("user", "terminate");
     }
     if (!set_user_password (handler)) {
         g_warning ("create user:set user password failed\n");
+        emit_progress ("user", "terminate");
     }
 }
 
