@@ -236,7 +236,7 @@ class Progress extends Page
             echo "extract terminate"
             @show_report()
         else if progress == "slow"
-            @tu = 1800
+            @tu = 600
         else if progress == "fast"
             @tu = 180
         else

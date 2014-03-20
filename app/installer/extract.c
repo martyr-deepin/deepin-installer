@@ -79,9 +79,37 @@ copy_single_file (const char *src, const char *dest)
     fclose (df);
 }
 
+static gboolean
+ancestor_is_symlink (const char *path)
+{
+    GFile *self = g_file_new_for_path (path);
+    GFile *parent = NULL;
+    GFile *tmp = self;
+
+    while ((parent = g_file_get_parent (tmp)) != NULL) {
+        g_object_unref (tmp);
+        gchar *ppath = g_file_get_path (parent);
+        if (g_file_test (ppath, G_FILE_TEST_IS_SYMLINK)) {
+            g_object_unref (parent);
+            g_free (ppath);
+            return TRUE;
+        }
+        g_free (ppath);
+        tmp = parent;
+    }
+    if (parent != NULL) {
+        g_object_unref (parent);
+    }
+    return FALSE;
+}
+
 static int 
 copy_file_cb (const char *path, const struct stat *sb, int typeflag)
 {
+    if (ancestor_is_symlink (path)) {
+        return 0;
+    }
+
     extern const gchar *target;
     gchar *ts = g_strdup_printf ("%s/squashfs", target);
     if (!g_str_has_prefix (path, ts)) {
@@ -109,21 +137,19 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
         GFile *file = g_file_new_for_path (dest);
     	GError *error = NULL;
 
-        if (!g_file_test (dest, G_FILE_TEST_IS_SYMLINK)) {
-    	    gchar *link = g_file_read_link (path, &error);
-    	    if (error != NULL) {
-    	        g_error_free (error);
-    	    }
-    	    error = NULL;
+    	gchar *link = g_file_read_link (path, &error);
+    	if (error != NULL) {
+    	    g_error_free (error);
+    	}
+    	error = NULL;
 
-            g_file_make_symbolic_link (file, link, NULL, &error);
-            if (error != NULL) {
-                g_warning ("copy file cb:make symlink from %s to %s failed-> %s\n", dest, link, error->message);
-                g_error_free (error);
-            }
-            g_free (link);
-            error = NULL;
+        g_file_make_symbolic_link (file, link, NULL, &error);
+        if (error != NULL) {
+            g_warning ("copy file cb:make symlink from %s to %s failed-> %s\n", dest, link, error->message);
+            g_error_free (error);
         }
+        g_free (link);
+        error = NULL;
         g_object_unref (file);
     
     } else if (S_ISDIR (mode)) {
