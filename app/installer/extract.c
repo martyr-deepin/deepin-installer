@@ -266,14 +266,91 @@ watch_extract_child (GPid pid, gint status, gpointer data)
         emit_progress ("extract", "finish");
     }
 
-    guint cb_id = *(guint *) data;
-    if (cb_id > 0) {
-        g_source_remove (cb_id);
-        cb_id = 0;
+    guint *cb_ids = (guint *) data;
+    if (cb_ids[0] > 0) {
+        g_source_remove (cb_ids[0]);
+        cb_ids[0] = 0;
+    }
+    if (cb_ids[1] > 0) {
+        g_source_remove (cb_ids[1]);
+        cb_ids[1] = 0;
+    }
+    if (cb_ids[2] > 0) {
+        g_source_remove (cb_ids[2]);
+        cb_ids[2] = 0;
     }
 
+    g_free (cb_ids);
     g_spawn_close_pid (pid);
+
     extract_finish = TRUE;
+}
+
+static gboolean
+cb_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
+{
+    gchar **progress = (gchar **) data;
+    gchar *string;
+    gsize size;
+
+    if (cond == G_IO_HUP) {
+        g_io_channel_unref (channel);
+        return FALSE;
+    }
+
+    g_io_channel_read_line (channel, &string, &size, NULL, NULL);
+    //g_printf ("cb out watch:read->%s\n", string);
+    gchar *match = get_matched_string (string, "\\d{1,3}%");
+    //g_printf ("cb out watch:match->%s\n", match);
+
+    if (match == NULL) {
+        g_warning ("cb out watch:line without progress->%s\n", string);
+    } else {
+        if (progress != NULL && *progress != NULL) {
+            g_free (*progress);
+            *progress = NULL;
+        } 
+        *progress = g_strdup (match);
+    }
+
+    g_free (match);
+    g_free (string);
+
+    return TRUE;
+}
+
+static gboolean
+cb_err_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
+{
+    gchar *string;
+    gsize size;
+
+    if (cond == G_IO_HUP) {
+        g_io_channel_unref (channel);
+        return FALSE;
+    }
+
+    g_io_channel_read_line (channel, &string, &size, NULL, NULL);
+    g_printf ("cb err watch:%s\n", string);
+    g_free (string);
+
+    return TRUE;
+}
+
+static gboolean
+cb_timeout (gpointer data)
+{
+    gchar **progress = (gchar **) data;
+    if (progress != NULL) {
+        if (*progress != NULL) {
+            emit_progress ("extract", *progress);
+        } else {
+            g_warning ("cb timeout:*progress NULL\n");
+        }
+    } else {
+        g_warning ("cb timeout:progress NULL\n");
+    }
+    return TRUE;
 }
 
 gpointer
@@ -305,35 +382,61 @@ thread_extract_squashfs (gpointer data)
         return NULL;
     }
 
-    gchar **argv = g_new0 (gchar *, 7);
+    gchar **argv = g_new0 (gchar *, 6);
     argv[0] = g_strdup ("unsquashfs");
     argv[1] = g_strdup ("-f");
-    argv[2] = g_strdup ("-n");
-    argv[3] = g_strdup ("-d");
-    argv[4] = g_strdup (target);
-    argv[5] = g_strdup ("/cdrom/casper/filesystem.squashfs");
+    argv[2] = g_strdup ("-d");
+    argv[3] = g_strdup (target);
+    argv[4] = g_strdup ("/cdrom/casper/filesystem.squashfs");
 
+    gint std_output;
+    gint std_error;
     GError *error = NULL;
     GPid pid;
-    guint cb_id = 0;
+    GIOChannel *out_channel = NULL;
+    GIOChannel *err_channel = NULL;
+    guint *cb_ids = g_new0 (guint, 3);
+    gchar **progress = g_new0 (gchar *, 1);
 
-    g_spawn_async (NULL,
-                   argv,
-                   NULL,
-                   G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
-                   NULL,
-                   NULL,
-                   &pid,
-                   &error);
+    g_spawn_async_with_pipes (NULL,
+                              argv,
+                              NULL,
+                              G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
+                              NULL,
+                              NULL,
+                              &pid,
+                              NULL,
+                              &std_output,
+                              &std_error,
+                              &error);
     if (error != NULL) {
         g_warning ("extract squashfs:spawn async pipes %s\n", error->message);
         g_error_free (error);
     }
-    cb_id = g_timeout_add (1000, (GSourceFunc) timeout_emit_cb, NULL);
-    g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, &cb_id);
+    error = NULL;
+
+    out_channel = g_io_channel_unix_new (std_output);
+    err_channel = g_io_channel_unix_new (std_error);
+
+    cb_ids[0] = g_io_add_watch_full (out_channel,
+                                     G_PRIORITY_LOW,
+                                     G_IO_IN | G_IO_HUP,
+                                     (GIOFunc) cb_out_watch,
+                                     progress,
+                                     (GDestroyNotify) g_io_channel_unref);
+
+    cb_ids[1] = g_io_add_watch_full (err_channel,
+                                     G_PRIORITY_LOW,
+                                     G_IO_IN | G_IO_HUP,
+                                     (GIOFunc) cb_err_watch,
+                                     progress,
+                                     (GDestroyNotify) g_io_channel_unref);
+
+    cb_ids[2] = g_timeout_add (2000, (GSourceFunc) cb_timeout, progress);
+
+    g_child_watch_add (pid, (GChildWatchFunc) watch_extract_child, cb_ids);
 
     g_strfreev (argv);
-
     return NULL;
 }
 

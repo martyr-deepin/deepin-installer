@@ -235,16 +235,12 @@ class Progress extends Page
         else if progress == "terminate"
             echo "extract terminate"
             @show_report()
-        else if progress == "safe"
-            @tu = 360
-        else if progress == "fast"
-            @tu = 180
         else
-            @ticker = @ticker + 1
-            pgr = 0.05 + @ticker/@tu * 0.8
-            if pgr > 0.84
-                pgr = 0.84
-            @update_progress(pgr*100.toFixed(2) + "%")
+            if progress.length < 4 and progress.indexOf("%") != -1
+                pgr = 0.05 + parseFloat(progress)/100 * 0.8
+                if pgr > 0.85
+                    pgr = 0.85
+                @update_progress(pgr*100.toFixed(2) + "%")
 
     handle_chroot: (progress) ->
         if progress == "start"
