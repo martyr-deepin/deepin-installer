@@ -237,15 +237,15 @@ class Progress extends Page
             @show_report()
         else
             if progress.length < 4 and progress.indexOf("%") != -1
-                pgr = 0.05 + parseFloat(progress)/100 * 0.8
-                if pgr > 0.85
-                    pgr = 0.85
+                pgr = 0.05 + parseFloat(progress)/100 * 0.85
+                if pgr > 0.90
+                    pgr = 0.90
                 @update_progress(pgr*100.toFixed(2) + "%")
 
     handle_chroot: (progress) ->
         if progress == "start"
             echo "start handle chroot"
-            @update_progress("85%")
+            @update_progress("91%")
             try
                 DCore.Installer.mount_procfs()
                 DCore.Installer.chroot_target()
@@ -264,7 +264,7 @@ class Progress extends Page
     handle_set_timezone: (progress) ->
         if progress == "start"
             echo "start handle timezone"
-            @update_progress("88%")
+            @update_progress("92%")
             try
                 write_fs_tab()
                 DCore.Installer.set_timezone(__selected_timezone)
@@ -283,7 +283,7 @@ class Progress extends Page
     handle_set_keyboard: (progress) ->
         if progress == "start"
             echo "start handle keyboard"
-            @update_progress("91%")
+            @update_progress("93%")
             try
                 if __selected_layout.indexOf(",") != -1
                     layout = __selected_layout.split(",")[0]
@@ -340,7 +340,6 @@ class Progress extends Page
                         echo error
                 else
                     echo "in uefi but no boot part"
-            @update_progress("98%")
         else if progress == "finish"
             echo "finish update bootloader"
             @update_progress("99%")
@@ -351,4 +350,4 @@ class Progress extends Page
             echo "update bootloader terminate"
             @show_report()
         else
-            echo "invalid progress for handle bootloader"
+            @update_progress(progress)

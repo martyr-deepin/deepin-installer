@@ -484,8 +484,10 @@ thread_update_grub (gpointer data)
 
     if (handler->uefi) {
         install_grub_efi_amd64 ();
+        emit_progress ("bootloader", "96%");
         grub_install = g_strdup_printf ("grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck --debug");
     } else {
+        emit_progress ("bootloader", "96%");
         grub_install = g_strdup_printf ("grub-install --no-floppy --force %s", path);
     }
 
@@ -494,6 +496,7 @@ thread_update_grub (gpointer data)
         g_warning ("update grub:grub-install %s\n", error->message);
         goto out;
     }
+    emit_progress ("bootloader", "97%");
 
     if (handler->uefi) {
         g_spawn_command_line_sync ("grub-mkconfig -o /boot/grub/grub.cfg", NULL, NULL, NULL, &error);
@@ -519,6 +522,7 @@ thread_update_grub (gpointer data)
             goto out;
         }
     }
+    emit_progress ("bootloader", "98%");
     ret = TRUE;
     goto out;
 
@@ -534,12 +538,14 @@ out:
     if (error != NULL) {
         g_error_free (error);
     }
+
+    finish_install_cleanup ();
+
     if (ret) {
         emit_progress ("bootloader", "finish");
     } else {
         emit_progress ("bootloader", "terminate");
     }
-    finish_install_cleanup ();
     return NULL;
 }
 

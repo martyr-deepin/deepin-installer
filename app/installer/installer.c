@@ -211,7 +211,7 @@ int main(int argc, char **argv)
     gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
 
-    monitor_resource_file ("installer", webview);
+    //monitor_resource_file ("installer", webview);
     gtk_main ();
 
     return 0;
