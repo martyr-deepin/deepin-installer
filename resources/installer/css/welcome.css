@@ -169,6 +169,10 @@
     color:rgba(255,255,255,1);
 }
 
+.Query a:active {
+    background:blue;
+}
+
 .Query .QueryWrap {
     width:390px;
     height:34px;
@@ -240,7 +244,7 @@
 
 .KeyboardContent {
     width:700px;
-    height:370px;
+    height:330px;
     background:rgba(255,255,255,0.2);
     border-top:1px solid rgba(0,0,0,0.3);
     border-radius:0 0 5px 5px;
@@ -256,7 +260,7 @@
 .LayoutList {
     float:left;
     width:210px;
-    height:370px;
+    height:330px;
     overflow-x:hidden;
     overflow-y:scroll;
 }
@@ -265,7 +269,7 @@
     float:left;
     margin-left:3px;
     width:486px;
-    height:370px;
+    height:330px;
     overflow-x:hidden;
     overflow-y:scroll;
     border-left:1px solid rgba(0,0,0,0.3);
@@ -276,8 +280,6 @@
     height:30px;
     line-height:30px;
     padding-left:30px;
-    border-bottom:1px solid rgba(0,0,0,0.1);
-    box-shadow:0 1px rgba(255,255,255,0.2);
 }
 
 .KeyboardFocus {
@@ -301,6 +303,19 @@
 .KeyboardActive {
     background:rgba(255,255,255,0.4) url("../images/select.png") no-repeat; 
     background-position:8px 8px;
+}
+
+.KeyboardOp {
+    float:left;
+    margin-top:10px;
+}
+
+.KeyboardOp .PartBtnActive {
+    float:left;
+}
+
+#active_btn {
+    margin-left:0px;
 }
 
 .Timezone {
