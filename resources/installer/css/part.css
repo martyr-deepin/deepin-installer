@@ -67,9 +67,10 @@
 
 .DiskTabItem {
     float:left;
-    width:92px;
+    width:auto;
     height:21px;
     line-height:21px;
+    padding:0 4px;
     margin-right:8px;
     overflow:hidden;
     background:rgba(255,255,255,0.2);

@@ -709,7 +709,9 @@ class DiskTabItem extends Widget
     constructor: (@id, @disk)->
         super
         @focuspart = null
-        @element.innerText = v_disk_info[@disk]["path"]
+        @index = disks.indexOf(@disk) + 1
+        @size = sector_to_gb(v_disk_info[@disk]["length"], 512).toFixed(0)
+        @element.innerText = _("Disk") + @index  + "  (" + +  @size + "GB) "
         if __selected_disk == @disk
             @focus()
 
@@ -948,7 +950,7 @@ class Part extends Page
             document.body.appendChild(@add_model.element)
         )
 
-        @part_loader = create_element("div", "PartBtn", @op)
+        @part_loader = create_element("div", "PartBtnActive", @op)
         @part_loader.setAttribute("id", "part_loader")
         @loader_input = create_element("input", "InputBtn", @part_loader)
         @loader_input.setAttribute("type", "submit")
@@ -985,7 +987,7 @@ class Part extends Page
         keys = []
         values = []
         for disk in disks
-            text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" + sector_to_gb(v_disk_info[disk]["length"], 512) + "GB"
+            text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" + sector_to_gb(v_disk_info[disk]["length"], 512).toFixed(0) + "GB"
             keys.push(disk)
             values.push(text)
             for part in v_disk_info[disk]["partitions"]

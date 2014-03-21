@@ -207,6 +207,10 @@ msgstr "3. 点击安装进入安装，等待安装完成即可"
 msgid "Help"
 msgstr "帮助"
 
+#: ../resources/installer/js/part.coffee:714
+msgid "Disk"
+msgstr "硬盘"
+
 #: ../resources/installer/js/part.coffee:739
 msgid "Format"
 msgstr "格式化"
@@ -231,6 +235,10 @@ msgstr "新建分区"
 #: ../resources/installer/js/part.coffee:786
 msgid "Boot loader"
 msgstr "引导加载器"
+
+#: ../resources/installer/js/part.coffee:955
+msgid "Setup loader"
+msgstr "设置引导"
 
 #: ../resources/installer/js/progress.coffee:44
 msgid "Error report"
