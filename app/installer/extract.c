@@ -37,6 +37,8 @@ extern int lchown(const char *path, uid_t owner, gid_t group);
 #define BUFFERSIZE 	16 * 1024
 
 static gboolean extract_finish = FALSE;
+static gdouble total_size;
+static gdouble sum_size;
 
 static gboolean
 timeout_emit_cb (gpointer data)
@@ -44,7 +46,12 @@ timeout_emit_cb (gpointer data)
     if (extract_finish) {
         return FALSE;
     }
-    emit_progress ("extract", "ticker");
+    if (total_size > 0 && sum_size > 0) {
+        gint    num = sum_size/total_size * 100;
+        gchar *progress = g_strdup_printf ("%d%s", num, "%");
+        emit_progress ("extract", progress);
+        g_free (progress);
+    }
     return TRUE;
 }
 
@@ -108,6 +115,13 @@ ancestor_is_symlink (const char *path)
 static int 
 copy_file_cb (const char *path, const struct stat *sb, int typeflag)
 {
+    struct stat st;
+    if (lstat (path, &st) != 0) {
+    	g_warning ("copy file cb:lstat %s\n", path);
+	    return 1;
+    }
+    sum_size += st.st_size;
+
     if (ancestor_is_symlink (path)) {
         return 0;
     }
@@ -128,11 +142,6 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
     gchar *dest = g_strdup_printf ("%s%s", target, base);
     g_free (base);
 
-    struct stat st;
-    if (lstat (path, &st) != 0) {
-    	g_warning ("copy file cb:lstat %s\n", path);
-	    return 1;
-    }
     mode_t mode = st.st_mode;
 
     if (S_ISLNK (mode)) {
@@ -187,6 +196,8 @@ thread_extract_iso (gpointer data)
     gchar *target_iso;
     gchar *mount_cmd;
     gchar *umount_cmd;
+    gchar *size_content;
+    gsize length;
 
     if (target == NULL) {
         g_warning ("extract iso:target NULL\n");
@@ -206,7 +217,13 @@ thread_extract_iso (gpointer data)
         goto out;
     }
 
-    guint cb_id = g_timeout_add (1000, (GSourceFunc) timeout_emit_cb, NULL);
+    if (!g_file_get_contents ("/cdrom/casper/filesystem.size", &size_content, &length, &error)) {
+        g_warning ("extract iso:get filesystem size->%s\n", error->message);
+        goto out;
+    }
+    total_size = g_strtod (size_content, NULL);
+
+    guint cb_id = g_timeout_add (2000, (GSourceFunc) timeout_emit_cb, NULL);
 
     ftw (target_iso, copy_file_cb, 65536);
 
@@ -222,6 +239,7 @@ out:
     g_free (mount_cmd);
     g_free (umount_cmd);
     g_free (target_iso);
+    g_free (size_content);
     if (error != NULL) {
         g_error_free (error);
     }
