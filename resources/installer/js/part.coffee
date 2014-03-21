@@ -412,7 +412,7 @@ class PartTableItem extends Widget
             if v_part_info[@id]["type"] != "freespace"
                 @path.innerText = v_part_info[@id]["path"]
             else
-                @path.innerText = "freespace"
+                @path.innerText = _("freespace")
             if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
                 if v_part_info[@id]["label"].length > 12
                     @label.innerText = v_part_info[@id]["label"].substring(0,12) + "..."

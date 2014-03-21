@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../resources/installer/js/base.coffee:49
+msgid "unused"
+msgstr "未使用"
+
 #: ../resources/installer/js/base.coffee:107
 msgid "OK"
 msgstr "确定"
@@ -137,6 +141,10 @@ msgstr "至少需要一个根分区"
 #: ../resources/installer/js/part.coffee:263
 msgid "Proceed with installation"
 msgstr "确认安装"
+
+#: ../resources/installer/js/part.coffee:415
+msgid "freespace"
+msgstr "空闲"
 
 #: ../resources/installer/js/part.coffee:565
 msgid "Device"
