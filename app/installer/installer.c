@@ -38,10 +38,12 @@ static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
 static int server_sockfd;
 gchar *extract_mode = NULL;
+gint use_processors = 0;
 
 static GOptionEntry entries[] = 
 {
-    { "mode", 'm', 0, G_OPTION_ARG_STRING, &extract_mode, "fast or safe"},
+    { "mode", 'm', 0, G_OPTION_ARG_STRING, &extract_mode, "fast or safe", "M"},
+    { "processors", 'p', 0, G_OPTION_ARG_INT, &use_processors, "num of processors used for unsquashfs", "P"},
     { NULL }
 };
 
