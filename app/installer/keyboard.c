@@ -377,8 +377,11 @@ double installer_keyboard_detect_read_step (gchar *step)
             if (t != PRESS_KEY) {
                 g_warning ("read step:invalid step goto CODE\n");
             }
-            gchar *key = g_strdup("123");
-            gchar *value = g_strdup("456");
+            gchar **items = g_strsplit (lines[i], " ", -1);
+            gchar *key = g_strdup(items[1]);
+            gchar *value = g_strdup(items[2]);
+            g_strfreev (items);
+
             if (keycodes == NULL) {
                 keycodes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
             }
@@ -462,7 +465,20 @@ JSObjectRef installer_keyboard_detect_get_keycodes ()
 {
     GRAB_CTX ();
     JSObjectRef json = json_create ();
-    
+    if (keycodes == NULL) {
+        return json;
+    }
+    GHashTableIter iter;
+    gpointer key, value;
+
+    g_hash_table_iter_init (&iter, keycodes);
+    while (g_hash_table_iter_next (&iter, &key, &value)) {
+        gchar *skey = g_strdup (key);
+        gchar *svalue = g_strdup (value);
+        json_append_string (json, skey, svalue);
+        g_free (skey);
+        g_free (svalue);
+    }
     UNGRAB_CTX ();
     return json;
 }
