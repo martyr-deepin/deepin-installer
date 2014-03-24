@@ -40,11 +40,11 @@ enum StepType {
 };
 
 static gchar *pc105_contents = NULL;
-static int current_step = -1;
+static gchar *current_step = NULL;
 static GList *symbols = NULL;
 static GHashTable *keycodes = NULL;
-static int present = -1;
-static int not_present = -1;
+static gchar *present = NULL;
+static gchar *not_present = NULL;
 static gchar *result = NULL;
 
 static void 
@@ -316,37 +316,159 @@ init_keyboard_detect ()
 }
 
 JS_EXPORT_API 
-double installer_keyboard_detect_read_step (double step)
+double installer_keyboard_detect_read_step (gchar *step)
 {
     if (pc105_contents == NULL) {
        init_keyboard_detect (); 
     }
-    g_warning ("pc 105 contents\n:%s\n", pc105_contents);
+    if (current_step != NULL) {
+        if (result != NULL) {
+            g_warning ("read step:already done\n");
+        }
+    }
 
     enum StepType t = UNKNOWN;
+    if (keycodes != NULL) {
+        g_hash_table_destroy (keycodes);
+        keycodes = NULL;
+    }
+    if (symbols != NULL) {
+        g_list_free_full (symbols, g_free);
+        symbols = NULL;
+    }
+    if (present != NULL) {
+        g_free (present);
+        present = NULL;
+    }
+    if (not_present != NULL) {
+        g_free (not_present);
+        not_present = NULL;
+    }
+    if (result != NULL) {
+        g_free (result);
+        result = NULL;
+    }
+
+    gchar **lines = g_strsplit (pc105_contents, "\n", -1);
+    guint i = 0;
+    guint size = g_strv_length (lines);
+    for (i = 0; i < size - 1; i++) {
+        if (g_str_has_prefix (lines[i], "STEP ")) {
+            if (g_strcmp0 (current_step, step) == 0) {
+                current_step = g_strstrip (g_strdup (lines[i] + 5));
+                goto out;
+            } else {
+                current_step = g_strstrip (g_strdup (lines[i] + 5));
+            }
+
+        } else if (g_strcmp0 (current_step, step) != 0) {
+            continue;
+
+        } else if (g_str_has_prefix (lines[i], "PRESS ")) {
+            if (t == UNKNOWN) {
+                t = PRESS_KEY;
+            } 
+            if (t != PRESS_KEY) {
+                g_warning ("read step:invalid step goto PRESS\n");
+            }
+            symbols = g_list_append (symbols, g_strstrip (g_strdup (lines[i] + 6)));
+
+        } else if (g_str_has_prefix (lines[i], "CODE ")) {
+            if (t != PRESS_KEY) {
+                g_warning ("read step:invalid step goto CODE\n");
+            }
+            gchar *key = g_strdup("123");
+            gchar *value = g_strdup("456");
+            if (keycodes == NULL) {
+                keycodes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+            }
+            g_hash_table_insert (keycodes, key, value);
+
+        } else if (g_str_has_prefix (lines[i], "FIND ")) {
+            if (t == UNKNOWN) {
+                t = KEY_PRESENT;
+            } else {
+                g_warning ("read step:invalid step goto FIND\n");
+            }
+            symbols = g_list_append (symbols, g_strstrip (g_strdup (lines[i] + 5)));
+
+        } else if (g_str_has_prefix (lines[i], "FINDP ")) {
+            if (t == UNKNOWN) {
+                t = KEY_PRESENT_P;
+            } else {
+                g_warning ("read step:invalid step goto FINDP\n");
+            }
+            symbols = g_list_append (symbols, g_strstrip (g_strdup (lines[i] + 6)));
+
+        } else if (g_str_has_prefix (lines[i], "YES ")) {
+            if (t != KEY_PRESENT_P && t != KEY_PRESENT) {
+                g_warning ("read step:invalid step goto YES\n");
+            }
+            present = g_strstrip (g_strdup (lines[i]) + 4);
+
+        } else if (g_str_has_prefix (lines[i], "NO ")) {
+            if (t != KEY_PRESENT && t != KEY_PRESENT) {
+                g_warning ("read step:invalid step goto NO\n");
+            }
+            not_present = g_strstrip (g_strdup (lines[i]+ 3));
+
+        } else if (g_str_has_prefix (lines[i], "MAP ")) {
+            if (t == UNKNOWN) {
+                t = RESULT;
+            }
+            result = g_strstrip (g_strdup (lines[i] + 4));
+            goto out;
+
+        } else {
+            g_warning ("read step:invalid line->%s\n", lines[i]);
+        }
+    }
+out:
+    if (lines != NULL) {
+        g_strfreev (lines);
+    }
     return t;
 }
 
 JS_EXPORT_API 
 JSObjectRef installer_keyboard_detect_get_symbols ()
 {
-    return NULL;
+    GRAB_CTX ();
+    JSObjectRef array = json_array_create ();
+    guint i = 0;
+    for (i = 0; i < g_list_length (symbols); i++) {
+        gchar * symbol = g_strdup (g_list_nth_data (symbols, i));
+        json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), symbol));
+        g_free (symbol);
+    }
+    UNGRAB_CTX ();
+    return array;
 }
 
 JS_EXPORT_API 
-double installer_keyboard_detect_get_present ()
+gchar* installer_keyboard_detect_get_present ()
 {
-    return (double) present;
+    return g_strdup (present);
 }
 
 JS_EXPORT_API
-double installer_keyboard_detect_get_not_present ()
+gchar* installer_keyboard_detect_get_not_present ()
 {
-    return (double) not_present;
+    return g_strdup (not_present);
 }
 
 JS_EXPORT_API
 JSObjectRef installer_keyboard_detect_get_keycodes ()
 {
-    return NULL;
+    GRAB_CTX ();
+    JSObjectRef json = json_create ();
+    
+    UNGRAB_CTX ();
+    return json;
+}
+
+JS_EXPORT_API 
+gchar* installer_keyboard_detect_get_result ()
+{
+    return g_strdup (result);
 }
