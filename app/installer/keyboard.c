@@ -25,9 +25,27 @@
 #include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
 
+#define KEYBOARD_DETECT_FILE    "/usr/share/console-setup/pc105.tree"
+
 XklConfigRec *config_rec = NULL;
 GHashTable *layout_variants_hash = NULL;
 GHashTable *layout_desc_hash = NULL;
+
+enum StepType {
+    UNKNOWN,
+    PRESS_KEY,
+    KEY_PRESENT,
+    KEY_PRESENT_P,
+    RESULT
+};
+
+static gchar *pc105_contents = NULL;
+static int current_step = -1;
+static GList *symbols = NULL;
+static GHashTable *keycodes = NULL;
+static int present = -1;
+static int not_present = -1;
+static gchar *result = NULL;
 
 static void 
 _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
@@ -276,4 +294,59 @@ out:
         g_warning ("set keyboard failed, just skip\n");
     }
     emit_progress ("keyboard", "finish");
+}
+
+static void
+init_keyboard_detect ()
+{
+    static gboolean inited = FALSE;
+    if (inited) {
+        g_warning ("init keyboard detect:already inited\n");
+        return;
+    }
+    inited = TRUE;
+
+    gsize length;
+    GError *error = NULL;
+
+    if (!g_file_get_contents (KEYBOARD_DETECT_FILE, &pc105_contents, &length, &error)) {
+        g_warning ("init keyboard detect:get %s contents->%s\n", KEYBOARD_DETECT_FILE, error->message);
+        g_error_free (error);
+    }
+}
+
+JS_EXPORT_API 
+double installer_keyboard_detect_read_step (double step)
+{
+    if (pc105_contents == NULL) {
+       init_keyboard_detect (); 
+    }
+    g_warning ("pc 105 contents\n:%s\n", pc105_contents);
+
+    enum StepType t = UNKNOWN;
+    return t;
+}
+
+JS_EXPORT_API 
+JSObjectRef installer_keyboard_detect_get_symbols ()
+{
+    return NULL;
+}
+
+JS_EXPORT_API 
+double installer_keyboard_detect_get_present ()
+{
+    return (double) present;
+}
+
+JS_EXPORT_API
+double installer_keyboard_detect_get_not_present ()
+{
+    return (double) not_present;
+}
+
+JS_EXPORT_API
+JSObjectRef installer_keyboard_detect_get_keycodes ()
+{
+    return NULL;
 }

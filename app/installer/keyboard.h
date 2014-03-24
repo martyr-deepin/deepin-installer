@@ -35,4 +35,14 @@ JS_EXPORT_API JSObjectRef installer_get_current_layout_variant ();
 
 JS_EXPORT_API void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant);
 
+JS_EXPORT_API double installer_keyboard_detect_read_step (double step);
+
+JS_EXPORT_API JSObjectRef installer_keyboard_detect_get_symbols ();
+
+JS_EXPORT_API double installer_keyboard_detect_get_present ();
+
+JS_EXPORT_API double installer_keyboard_detect_get_not_present ();
+
+JS_EXPORT_API JSObjectRef installer_keyboard_detect_get_keycodes ();
+
 #endif

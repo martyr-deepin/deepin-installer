@@ -242,10 +242,10 @@ class Keyboard extends Widget
                 @variants[layout].push(layout + "," + variant)
         @layouts.sort(_sort_layout)
 
-        @search_list = []
-        for item in @layouts
-            @search_list.push(item)
-            @search_list.push(DCore.Installer.get_layout_description(item))
+        #@search_list = []
+        #for item in @layouts
+        #    @search_list.push(item)
+        #    @search_list.push(DCore.Installer.get_layout_description(item))
 
     fill_layouts: (layouts) -> 
         @layout_list.innerHTML = ""
