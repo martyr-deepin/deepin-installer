@@ -1174,7 +1174,9 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
     mnt.mnt_freq = 0;
     mnt.mnt_passno = 2;
     if (g_strcmp0 ("/", mp) == 0) {
-        mnt.mnt_opts = "errors=remount-ro";
+        if (g_strcmp0 (fs, "btrfs") != 0) {
+            mnt.mnt_opts = "errors=remount-ro";
+        }
         mnt.mnt_passno = 1;
     } else if (g_strcmp0 ("swap", mp) == 0 || g_strcmp0 ("linux-swap", fs) == 0) {
         mnt.mnt_type = "swap";
