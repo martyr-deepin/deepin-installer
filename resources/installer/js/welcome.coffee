@@ -490,7 +490,7 @@ class Timezone extends Widget
         @construct_map()
 
         @current = create_element("div", "Current", @element)
-        @current.innerText = __selected_timezone
+        @current.innerText = _(__selected_timezone.split("/")[0], "tzdata") + "/" + _(__selected_timezone.split("/")[1], "tzdata")
 
         @hide()
 
@@ -509,9 +509,10 @@ class Timezone extends Widget
         #@element.style.display = "none"
 
     hover_timezone: (zone) ->
-        @current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
-        @current.innerHTML += "<span>City:" + _(zone, "tzdata") + "</span>"
-        @current.innerHTML += "<span>Country:" + _(__database[zone]["country"], "tzdata") + "</span>"
+        #@current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
+        #@current.innerHTML += "<span>City:" + _(zone.split("/")[0], "tzdata") + "/" + _(zone.split("/")[1], "tzdata") + "</span>"
+        #@current.innerHTML += "<span>Country:" + _(__database[zone]["country"], "tzdata") + "</span>"
+        @current.innerHTML = "<span>" + _(zone.split("/")[0], "tzdata") + "/" + _(zone.split("/")[1], "tzdata") + "</span>"
 
     construct_map: ->
         @imagemap = create_element("map", "", @element)
@@ -559,7 +560,7 @@ class Timezone extends Widget
         text = area.getAttribute("data-timezone").split("/")[1]
         if @tip?
             @tip.destroy()
-        @tip = new TimezoneToolTip("timezone", text)
+        @tip = new TimezoneToolTip("timezone", _(text, "tzdata"))
         @pin.appendChild(@tip.element)
         left = @tip.content.clientWidth + 2 * (@tip.radius + @tip.xpadding) - 2
         @tip.element.style.top = "-40px"
