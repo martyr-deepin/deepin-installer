@@ -149,14 +149,18 @@ class VariantItem extends Widget
 class KeyboardDetectDialog extends  Widget
     constructor: (@id, @type, @keyboard) ->
         super
+        @add_css_class("DialogCommon")
         @title = create_element("div", "DialogTitle", @element)
         @title_txt = create_element("div", "DialogTxt", @title)
         @title_close = create_element("div", "DialogClose", @title)
         @title_close.addEventListener("click", (e) =>
             @hide_dialog()
         )
+        @title_txt.innerText = _("Detect keyboard layout")
 
         @content = create_element("div", "DialogContent", @element)
+        @desc = create_element("div", "Desc", @content)
+        @detail = create_element("div", "Detail", @content)
 
         @foot = create_element("div", "DialogBtn", @element)
         @ok = create_element("div", "", @foot)
@@ -176,12 +180,9 @@ class KeyboardDetectDialog extends  Widget
             @process_no_have_key()
         )
 
-        @update_type(type)
-        @show_dialog()
-
     do_keypress: (e) =>
         if @type == "press"
-            @process_key_process(e)
+            @process_key_press(e)
 
     process_have_key: ->
         echo "detect dialog process have key"
@@ -224,11 +225,21 @@ class KeyboardDetectDialog extends  Widget
         keycodes = null
         step = null
         r = null
+        echo "event"
+        echo e
+        echo "which"
+        echo e.which
         code = e.which - 8
+        echo "code"
+        echo code
+        echo "code to string"
+        echo code.toString()
         try
             keycodes = DCore.Installer.keyboard_detect_get_keycodes()
         catch error
             echo error
+        echo "keycodes"
+        echo keycodes
         if keycodes?
             try
                 step = keycodes[code.toString()]
@@ -248,7 +259,19 @@ class KeyboardDetectDialog extends  Widget
         else
             @hide_dialog()
 
+    fill_detail: (symbols) ->
+        @detail.innerHTML = ""
+        @detail_ul = create_element("ul", "", @detail)
+        for item in symbols
+            @fill_detail_item(item)
+
+    fill_detail_item: (s) ->
+        item = create_element("li", "", @detail_ul)
+        item.innerText = s
+
     update_type: (type) ->
+        echo "update type"
+        echo type
         try
             symbols = DCore.Installer.keyboard_detect_get_symbols()
         catch error
@@ -256,11 +279,15 @@ class KeyboardDetectDialog extends  Widget
         if type == "press"
             @type = type
             @foot.style.display = "none"
-            @content.innerText = symbols.toString()
+            @desc.innerText = _("Please press the following key")
+            @fill_detail(symbols)
+            @show_dialog()
         else if type == "have"
             @type = type
             @foot.style.display = "block"
-            @content.innerText = symbols.toString()
+            @desc.innerText = _("Confirm you have the following key")
+            @fill_detail(symbols)
+            @show_dialog()
         else if type == "result"
             @hide_dialog()
         else
@@ -270,11 +297,14 @@ class KeyboardDetectDialog extends  Widget
     show_dialog: ->
         __in_model = true
         __board.setAttribute("style", "display:block")
+        @element.style.display = "block"
+        @element.setAttribute("tabindex", 100)
+        @element.focus()
 
     hide_dialog: ->
         __in_model = false
-        @destroy()
         __board.setAttribute("style", "display:none")
+        @element.style.display = "none"
 
 class Keyboard extends Widget
     constructor: (@id)->
@@ -302,8 +332,8 @@ class Keyboard extends Widget
         @detect_input = create_element("input", "InputBtn", @detect_btn)
         @detect_input.setAttribute("type", "submit")
         @detect_input.setAttribute("value", _("Detect Layout"))
-        @detect_btn.addEventListener("click", (e) ->
-            @detect_keyboard_cb()
+        @detect_btn.addEventListener("click", (e) =>
+            @detect_keyboard_cb(e)
         )
         #@current = create_element("div", "Current", @element)
         #@current.innerText = DCore.Installer.get_layout_description(__selected_layout)
@@ -406,24 +436,23 @@ class Keyboard extends Widget
         if matched_layouts.length > 0
             Widget.look_up("layoutitem_" + matched_layouts[0])?.focus()
 
-    detect_keyboard_cb: (e)->
+    detect_keyboard_cb: (e)=>
         echo "detect keyboard cb"
         r = DCore.Installer.keyboard_detect_read_step("0")
+        if @detect_dialog?
+            @detect_dialog.destroy()
+            @detect_dialog = null
+        @detect_dialog = new KeyboardDetectDialog("detect_dialog", null, @)
+        document.body.appendChild(@detect_dialog.element)
+        @detect_dialog.hide_dialog()
         @process_keyboard_detect(r)
 
     process_keyboard_detect: (r) ->
         if r == 1
-            echo "PRESS_KEY"
-            if not @detect_dialog?
-                @detect_dialog = new KeyboardDetectDialog("detect_dialog", "press", @)
             @detect_dialog.update_type("press")
         else if r == 2 or r == 3
-            if not @detect_dialog?
-                @detect_dialog = new KeyboardDetectDialog("detect_dialog", "have", @)
             @detect_dialog.update_type("have")
         else if r == 4
-            if not @detect_dialog?
-                @detect_dialog = new KeyboardDetectDialog("detect_dialog", "result", @)
             @detect_dialog.update_type("result")
             @handle_detect_result()
         else

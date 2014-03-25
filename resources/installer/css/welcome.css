@@ -318,6 +318,26 @@
     margin-left:0px;
 }
 
+.KeyboardDetectDialog .Desc {
+    text-align:left;
+    margin-left:10px;
+}
+
+.KeyboardDetectDialog .Detail {
+    text-align:center;
+    maring-left:10px;
+}
+
+.KeyboardDetectDialog ul {
+    list-style:none;
+    text-align:center;
+}
+
+.KeyboardDetectDialog ul li {
+    float:left;
+    margin:5px;
+}
+
 .Timezone {
     position:absolute;
     top:15px;
