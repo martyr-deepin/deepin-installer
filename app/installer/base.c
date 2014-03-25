@@ -21,6 +21,8 @@
 
 #include "base.h"
 #include <sys/sysinfo.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
 
 void emit_progress (const gchar *step, const gchar *progress)
 {
@@ -77,6 +79,19 @@ double installer_get_memory_size ()
     }
 
     return info.totalram;
+}
+
+JS_EXPORT_API 
+double installer_get_keycode_from_keysym (double keysym)
+{
+    Display *dpy = XOpenDisplay (0);
+    if (dpy == NULL) {
+        g_warning ("get keycode from keysym:XOpenDisplay\n");
+        return 0;
+    }
+    KeyCode code = XKeysymToKeycode (dpy, (KeySym) keysym);
+    XCloseDisplay (dpy);
+    return code;
 }
 
 double get_free_memory_size ()

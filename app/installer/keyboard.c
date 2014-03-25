@@ -318,6 +318,7 @@ init_keyboard_detect ()
 JS_EXPORT_API 
 double installer_keyboard_detect_read_step (gchar *step)
 {
+    g_warning ("read step:read step->%s, current_step->%s\n", step, current_step);
     if (pc105_contents == NULL) {
        init_keyboard_detect (); 
     }
@@ -340,10 +341,12 @@ double installer_keyboard_detect_read_step (gchar *step)
         g_free (present);
         present = NULL;
     }
+    //g_warning ("finish free present\n");
     if (not_present != NULL) {
         g_free (not_present);
         not_present = NULL;
     }
+    //g_warning ("finish free not present\n");
     if (result != NULL) {
         g_free (result);
         result = NULL;
@@ -354,17 +357,22 @@ double installer_keyboard_detect_read_step (gchar *step)
     guint size = g_strv_length (lines);
     for (i = 0; i < size - 1; i++) {
         if (g_str_has_prefix (lines[i], "STEP ")) {
+            g_warning ("prefix step:%s\n", lines[i]);
             if (g_strcmp0 (current_step, step) == 0) {
+                g_free (current_step);
                 current_step = g_strstrip (g_strdup (lines[i] + 5));
                 goto out;
             } else {
+                g_free (current_step);
                 current_step = g_strstrip (g_strdup (lines[i] + 5));
             }
 
         } else if (g_strcmp0 (current_step, step) != 0) {
+            g_warning ("current step not equal step:%s, %d\n", lines[i], i);
             continue;
 
         } else if (g_str_has_prefix (lines[i], "PRESS ")) {
+            g_warning ("prefix PRESS :%s\n", lines[i]);
             if (t == UNKNOWN) {
                 t = PRESS_KEY;
             } 
@@ -374,6 +382,7 @@ double installer_keyboard_detect_read_step (gchar *step)
             symbols = g_list_append (symbols, g_strstrip (g_strdup (lines[i] + 6)));
 
         } else if (g_str_has_prefix (lines[i], "CODE ")) {
+            g_warning ("prefix CODE:%s\n", lines[i]);
             if (t != PRESS_KEY) {
                 g_warning ("read step:invalid step goto CODE\n");
             }
@@ -388,6 +397,7 @@ double installer_keyboard_detect_read_step (gchar *step)
             g_hash_table_insert (keycodes, key, value);
 
         } else if (g_str_has_prefix (lines[i], "FIND ")) {
+            g_warning ("prefix FIND :%s\n", lines[i]);
             if (t == UNKNOWN) {
                 t = KEY_PRESENT;
             } else {
@@ -396,6 +406,7 @@ double installer_keyboard_detect_read_step (gchar *step)
             symbols = g_list_append (symbols, g_strstrip (g_strdup (lines[i] + 5)));
 
         } else if (g_str_has_prefix (lines[i], "FINDP ")) {
+            g_warning ("prefix FINDP :%s\n", lines[i]);
             if (t == UNKNOWN) {
                 t = KEY_PRESENT_P;
             } else {
@@ -404,18 +415,21 @@ double installer_keyboard_detect_read_step (gchar *step)
             symbols = g_list_append (symbols, g_strstrip (g_strdup (lines[i] + 6)));
 
         } else if (g_str_has_prefix (lines[i], "YES ")) {
+            g_warning ("prefix YES :%s\n", lines[i]);
             if (t != KEY_PRESENT_P && t != KEY_PRESENT) {
                 g_warning ("read step:invalid step goto YES\n");
             }
             present = g_strstrip (g_strdup (lines[i]) + 4);
 
         } else if (g_str_has_prefix (lines[i], "NO ")) {
-            if (t != KEY_PRESENT && t != KEY_PRESENT) {
+            g_warning ("prefix NO :%s\n", lines[i]);
+            if (t != KEY_PRESENT_P && t != KEY_PRESENT) {
                 g_warning ("read step:invalid step goto NO\n");
             }
             not_present = g_strstrip (g_strdup (lines[i]+ 3));
 
         } else if (g_str_has_prefix (lines[i], "MAP ")) {
+            g_warning ("prefix MAP :%s\n", lines[i]);
             if (t == UNKNOWN) {
                 t = RESULT;
             }

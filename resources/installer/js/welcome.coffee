@@ -215,6 +215,8 @@ class KeyboardDetectDialog extends  Widget
                 r = DCore.Installer.keyboard_detect_read_step(step)
             catch error
                 echo error
+        echo "r"
+        echo r
         if r?
             @keyboard.process_keyboard_detect(r)
         else
@@ -225,24 +227,17 @@ class KeyboardDetectDialog extends  Widget
         keycodes = null
         step = null
         r = null
-        echo "event"
-        echo e
-        echo "which"
-        echo e.which
-        code = e.which - 8
-        echo "code"
-        echo code
-        echo "code to string"
-        echo code.toString()
+        code = DCore.Installer.get_keycode_from_keysym(e.which) - 8
+        if code > 255 or code < 0
+            echo "invalid code"
+            return
         try
-            keycodes = DCore.Installer.keyboard_detect_get_keycodes()
+            keycodes = DCore.Installer.keyboard_detect_get_keycodes() 
         catch error
             echo error
-        echo "keycodes"
-        echo keycodes
         if keycodes?
             try
-                step = keycodes[code.toString()]
+                step = keycodes[code]
             catch error
                 echo error
             if step?
@@ -270,8 +265,6 @@ class KeyboardDetectDialog extends  Widget
         item.innerText = s
 
     update_type: (type) ->
-        echo "update type"
-        echo type
         try
             symbols = DCore.Installer.keyboard_detect_get_symbols()
         catch error
@@ -457,6 +450,7 @@ class Keyboard extends Widget
             @handle_detect_result()
         else
             echo "Invalid Detect Type"
+            echo r
 
     handle_detect_result: ->
         echo "handle detect result"
