@@ -714,6 +714,9 @@ class WelcomeFormItem extends Widget
             for c in @input.value
                 if c in __illegal_keys
                     return false
+        if @id == "password"
+            if @input.value.length > 16
+                return false
         else if @id == "confirmpassword"
             if @input.value != Widget.look_up("password")?.input.value
                 return false
