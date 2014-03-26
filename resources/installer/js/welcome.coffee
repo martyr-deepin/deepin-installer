@@ -124,9 +124,9 @@ class VariantItem extends Widget
             @focus()
 
     focus: ->
-        @element.setAttribute("class", "VariantItem KeyboardActive")
         __selected_variant_item?.blur()
         __selected_variant_item = @
+        @element.setAttribute("class", "VariantItem KeyboardActive")
         __selected_layout = @variant
         __focused_layout_item?.active()
         @keyboard.update_layout(@variant)
@@ -438,7 +438,7 @@ class Keyboard extends Widget
 
     set_to_layout: (layout) ->
         a = layout.split(",")
-        if a.lenght > 1
+        if a.length > 1
             lay_var = a[0]
         else
             lay_var = layout

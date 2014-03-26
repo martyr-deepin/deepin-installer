@@ -320,12 +320,13 @@
 
 .KeyboardDetectDialog .Desc {
     text-align:left;
-    margin-left:10px;
+    margin-top:-20px;
+    padding:0 20px;
 }
 
 .KeyboardDetectDialog .Detail {
     text-align:center;
-    maring-left:10px;
+    margin:0;
 }
 
 .KeyboardDetectDialog ul {
@@ -335,7 +336,7 @@
 
 .KeyboardDetectDialog ul li {
     float:left;
-    margin:5px;
+    margin:0 5px;
 }
 
 .Timezone {
