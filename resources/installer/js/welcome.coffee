@@ -185,7 +185,7 @@ class KeyboardDetectDialog extends  Widget
             @process_key_press(e)
 
     process_have_key: ->
-        echo "detect dialog process have key"
+        #echo "detect dialog process have key"
         step = null
         r = null
         try
@@ -203,7 +203,7 @@ class KeyboardDetectDialog extends  Widget
             @hide_dialog()
 
     process_no_have_key: ->
-        echo "detect dialog process no have key"
+        #echo "detect dialog process no have key"
         step = null
         r = null
         try
@@ -215,15 +215,13 @@ class KeyboardDetectDialog extends  Widget
                 r = DCore.Installer.keyboard_detect_read_step(step)
             catch error
                 echo error
-        echo "r"
-        echo r
         if r?
             @keyboard.process_keyboard_detect(r)
         else
             @hide_dialog()
 
     process_key_press: (e) =>
-        echo "detect dialog process key press"
+        #echo "detect dialog process key press"
         keycodes = null
         step = null
         r = null
@@ -320,6 +318,10 @@ class Keyboard extends Widget
         @active_input = create_element("input", "InputBtn", @active_btn)
         @active_input.setAttribute("type", "submit")
         @active_input.setAttribute("value", _("Display Current"))
+        @active_btn.addEventListener("click", (e) =>
+            if __selected_layout?
+                @set_to_layout(__selected_layout)
+        )
 
         @detect_btn = create_element("div", "PartBtnActive", @op)
         @detect_input = create_element("input", "InputBtn", @detect_btn)
@@ -336,7 +338,7 @@ class Keyboard extends Widget
         @init_dbus_query()
 
     show: ->
-        echo "keyboard show"
+        #echo "keyboard show"
         __timezone_widget?.hide()
         __account_widget?.hide()
         @displayed = true
@@ -345,7 +347,7 @@ class Keyboard extends Widget
         __selected_layout_item?.focus()
 
     hide: ->
-        echo "keyboard hide"
+        #echo "keyboard hide"
         @displayed = false
         update_el_attr(@element, "-webkit-transform", "translateX(0px)")
 
@@ -397,6 +399,11 @@ class Keyboard extends Widget
                 @variants[layout].push(layout + "," + variant)
         @layouts.sort(_sort_layout)
 
+        #@search_list = []
+        #for item in @layouts
+        #    @search_list.push(item)
+        #    @search_list.push(DCore.Installer.get_layout_description(item))
+
     fill_layouts: (layouts) -> 
         @layout_list.innerHTML = ""
         for layout in layouts
@@ -429,8 +436,23 @@ class Keyboard extends Widget
         if matched_layouts.length > 0
             Widget.look_up("layoutitem_" + matched_layouts[0])?.focus()
 
+    set_to_layout: (layout) ->
+        a = layout.split(",")
+        if a.lenght > 1
+            lay_var = a[0]
+        else
+            lay_var = layout
+        if lay_var in @layouts
+            @fill_layouts(lay_var.split())
+            Widget.look_up("layoutitem_" + lay_var)?.focus()
+            Widget.look_up("variantitem_" + layout)?.focus()
+        else
+            echo "set_to_layout invalid layout"
+            echo layout
+            echo lay_var
+
     detect_keyboard_cb: (e)=>
-        echo "detect keyboard cb"
+        #echo "detect keyboard cb"
         r = DCore.Installer.keyboard_detect_read_step("0")
         if @detect_dialog?
             @detect_dialog.destroy()
@@ -454,8 +476,10 @@ class Keyboard extends Widget
 
     handle_detect_result: ->
         echo "handle detect result"
-        @detect_result = DCore.Installer.keyboard_detect_get_result()
-        echo @detect_result
+        detect_result = DCore.Installer.keyboard_detect_get_result()
+        layout = detect_result.split(":").join(",")
+        echo layout
+        @set_to_layout(layout)
 
 class Timezone extends Widget
     constructor: (@id) ->
@@ -503,7 +527,7 @@ class Timezone extends Widget
         #@element.style.display = "block"
 
     hide: ->
-        echo "timezone hide"
+        #echo "timezone hide"
         @displayed = false
         update_el_attr(@element, "-webkit-transform", "translateX(0px)")
         #@element.style.display = "none"
