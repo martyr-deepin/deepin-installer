@@ -658,9 +658,10 @@ class WelcomeFormItem extends Widget
         @change = false
         @fill_widget()
         @input.addEventListener("focus", (e) =>
-            @input.setAttribute("style", "")
+            @input.setAttribute("style", "border:2px solid #FFFFFF;border-radius:4px;background-position:-2px -2px;")
         )
         @input.addEventListener("blur", (e) =>
+            @input.setAttribute("style", "")
             @check_valid()
             @fill_item_data()
             Widget.look_up("account")?.check_start_ready()
