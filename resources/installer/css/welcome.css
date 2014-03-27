@@ -73,6 +73,7 @@
 }
 
 .WelcomeFormItem {
+    position:relative;
     width:272px;
     height:36px;
     margin-bottom:30px;
@@ -93,6 +94,20 @@
     padding-left:36px;
     outline-style:none;
     text-shadow:0 1px rgba(0,0,0,0.5);
+}
+
+.PasswordStyle {
+    -webkit-text-security:disc !important;
+}
+
+.CapsWarning {
+    position:absolute;
+    right:5px;
+    top:7px;
+    background:url("../images/capslock.png") no-repeat;
+    width:23px;
+    height:23px;
+    display:none;
 }
 
 .Welcome .Start {

@@ -655,12 +655,15 @@ class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
         @input = create_element("input", "", @element)
+        @input.setAttribute("autofocus", true)
         @change = false
         @fill_widget()
         @input.addEventListener("focus", (e) =>
+            @check_capslock()
             @input.setAttribute("style", "border:2px solid #FFFFFF;border-radius:4px;background-position:-2px -2px;")
         )
         @input.addEventListener("blur", (e) =>
+            @check_capslock()
             @input.setAttribute("style", "")
             @check_valid()
             @fill_item_data()
@@ -674,6 +677,16 @@ class WelcomeFormItem extends Widget
         @input.addEventListener("change", (e) =>
             @change = true
         )
+        @input.addEventListener("keydown", (e) =>
+            @check_capslock()
+        )
+
+    check_capslock: ->
+        if @id == "password" or @id == "confirmpassword"
+            if DCore.Installer.detect_capslock()
+                @warn.style.display = "block"
+            else
+                @warn.style.display = "none"
 
     fill_widget: ->
         if @id == "username"
@@ -685,11 +698,13 @@ class WelcomeFormItem extends Widget
         else if @id == "password"
             password_holder = _("Password")
             @input.setAttribute("placeholder", password_holder)
-            @input.setAttribute("type", "password")
+            @input.classList.add("PasswordStyle")
+            @warn = create_element("div", "CapsWarning", @element)
         else if @id == "confirmpassword"
             confirm_holder = _("Retype password")
             @input.setAttribute("placeholder", confirm_holder)
-            @input.setAttribute("type", "password")
+            @input.classList.add("PasswordStyle")
+            @warn = create_element("div", "CapsWarning", @element)
 
     fill_item_data: ->
         if @id == "username"
