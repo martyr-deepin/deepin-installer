@@ -614,6 +614,23 @@ unmount_target ()
 }
 
 static void
+fix_networkmanager ()
+{
+    extern gboolean in_chroot;
+    if (!in_chroot) {
+        g_warning ("fix networkmanager:not in chroot\n");
+        return;
+    }
+
+    GError *error = NULL;
+    const gchar *cmd = "sed -i 's/managed=false/managed=true/g' /etc/NetworkManager/NetworkManager.conf";
+    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("fix networkmanager:%s\n", error->message);
+    }
+}
+
+static void
 remove_packages ()
 {
     extern gboolean in_chroot;
@@ -692,6 +709,7 @@ finish_install_cleanup ()
     extern int chroot_fd;
 
     if (in_chroot) {
+        fix_networkmanager ();
         remove_packages ();
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");
