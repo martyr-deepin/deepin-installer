@@ -23,6 +23,7 @@
 #include <sys/sysinfo.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
+#include <X11/XKBlib.h>
 
 void emit_progress (const gchar *step, const gchar *progress)
 {
@@ -92,6 +93,25 @@ double installer_get_keycode_from_keysym (double keysym)
     KeyCode code = XKeysymToKeycode (dpy, (KeySym) keysym);
     XCloseDisplay (dpy);
     return code;
+}
+
+JS_EXPORT_API 
+gboolean installer_detect_capslock ()
+{
+    gboolean capslock_flag = FALSE;
+
+    Display *d = XOpenDisplay (0);
+    guint n;
+
+    if (d) {
+        XkbGetIndicatorState (d, XkbUseCoreKbd, &n);
+        if ((n & 1)) {
+            capslock_flag = TRUE;
+        }
+    }
+    XCloseDisplay (d);
+
+    return capslock_flag;
 }
 
 double get_free_memory_size ()
