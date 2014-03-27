@@ -31,6 +31,7 @@ static GHashTable *disks;
 static GHashTable *partitions;
 static GHashTable *disk_partitions;
 static GHashTable *partition_os = NULL;
+static GHashTable *partition_os_desc = NULL;
 const gchar *target;
 int chroot_fd;
 gboolean in_chroot = FALSE;
@@ -62,6 +63,11 @@ thread_os_prober (gpointer data)
                                           (GDestroyNotify) g_free, 
                                           (GDestroyNotify) g_free);
 
+    partition_os_desc = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                          (GEqualFunc) g_str_equal, 
+                                          (GDestroyNotify) g_free, 
+                                          (GDestroyNotify) g_free);
+
     gchar *cmd = g_find_program_in_path ("os-prober");
     if (cmd == NULL) {
         g_warning ("os:os-prober not installed\n");
@@ -85,6 +91,7 @@ thread_os_prober (gpointer data)
         if (g_strv_length (os) == 4) {
             //g_warning ("get partition os:insert key %s value %s\n", os[0], os[2]);
             g_hash_table_insert (partition_os, g_strdup (os[0]), g_strdup (os[2]));
+            g_hash_table_insert (partition_os_desc, g_strdup (os[0]), g_strdup (os[1]));
         }
 
         g_strfreev (os);
@@ -759,7 +766,35 @@ gchar* installer_get_partition_os (const gchar *part)
     return result;
 }
 
-gboolean handle_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end)
+JS_EXPORT_API 
+gchar* installer_get_partition_os_desc (const gchar *part)
+{
+    gchar* result = NULL;
+    gchar *path = NULL;
+    PedPartition *pedpartition = NULL;
+
+    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
+        
+    if (pedpartition != NULL) {
+
+        path = ped_partition_get_path (pedpartition);
+        if (path != NULL) {
+            result = g_strdup (g_hash_table_lookup (partition_os_desc, path));
+
+        } else {
+            g_warning ("get pedpartition os desc: get %s path failed\n", part);
+        }
+        g_free (path);
+
+    } else {
+        g_warning ("get partition os desc:find pedpartition %s failed\n", part);
+    }
+
+    return result;
+}
+
+gboolean 
+handle_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end)
 {
     gboolean ret = FALSE;
 

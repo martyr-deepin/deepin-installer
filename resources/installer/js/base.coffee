@@ -369,8 +369,6 @@ class DropDown extends Widget
         angle_img_style += "background-position:" + (@dropheight-12)/2 + "px " + (@dropheight-12)/2 + "px;"
         @angle_img.setAttribute("style", angle_img_style)
 
-        echo "show drop"
-        echo @selected
         if @selected == null
             @set_selected(@keys[0])
         @element.style.display = "block"
