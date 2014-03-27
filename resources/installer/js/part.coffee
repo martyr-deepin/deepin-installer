@@ -169,15 +169,15 @@ class AddPartDialog extends Dialog
         @fs_desc = create_element("span", "AddDesc", @fs)
         @fs_desc.innerText = _("Filesystem:")
         @fs_value = create_element("span", "AddValue", @fs)
-        @fs_select = new DropDown("dd_fs_" + @partid, @fs_change_cb)
+        @fs_select = new DropDown("dd_fs_" + @partid, false, @fs_change_cb)
         @fs_value.appendChild(@fs_select.element)
         if DCore.Installer.disk_support_efi(v_part_info[@partid]["disk"])
             @fs_select.set_drop_items(__fs_efi_keys, __fs_efi_values)
         else
             @fs_select.set_drop_items(__fs_keys, __fs_values)
         @fs_select.set_drop_size(130,22)
-        @fs_select.show_drop()
         @fs_select.set_selected("ext4")
+        @fs_select.show_drop()
 
     fs_change_cb: (part, fs) ->
         if fs in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
@@ -190,12 +190,12 @@ class AddPartDialog extends Dialog
         @mp_desc = create_element("span", "AddDesc", @mp)
         @mp_desc.innerText = _("Mount:")
         @mount_value = create_element("span", "AddValue", @mp)
-        @mount_select = new DropDown("dd_mp_" + @partid, null)
+        @mount_select = new DropDown("dd_mp_" + @partid, true, null)
         @mount_value.appendChild(@mount_select.element)
         @mount_select.set_drop_items(__mp_keys, __mp_values)
         @mount_select.set_drop_size(130,22)
-        @mount_select.show_drop()
         @mount_select.set_selected("unused")
+        @mount_select.show_drop()
 
     fill_tips: ->
         @tips = create_element("div", "", @content)
@@ -555,15 +555,15 @@ class PartTableItem extends Widget
         else if __selected_mode == "advance"
             if v_part_info[@id]? and v_part_info[@id]["type"] != "freespace"
                 if @active
-                    @fs_select = new DropDown("dd_fs_" + @id, @fs_change_cb)
+                    @fs_select = new DropDown("dd_fs_" + @id, false, @fs_change_cb)
                     @fs.appendChild(@fs_select.element)
                     if DCore.Installer.disk_support_efi(v_part_info[@id]["disk"])
                         @fs_select.set_drop_items(__fs_efi_keys, __fs_efi_values)
                     else
                         @fs_select.set_drop_items(__fs_keys, __fs_values)
                     @fs_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
-                    @fs_select.show_drop()
                     @fs_select.set_selected(v_part_info[@id]["fs"])
+                    @fs_select.show_drop()
                 else
                     @fs_txt = create_element("div", "", @fs)
                     if v_part_info[@id]["fs"] != "unused"
@@ -586,13 +586,13 @@ class PartTableItem extends Widget
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
         if @active 
-                @mount_select = new DropDown("dd_mp_" + @id, @mp_change_cb)
+                @mount_select = new DropDown("dd_mp_" + @id, true, @mp_change_cb)
                 @mount.appendChild(@mount_select.element)
                 if v_part_info[@id]["fs"]? 
                     @mount_select.set_drop_items(__mp_keys, __mp_values)
                 @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
-                @mount_select.show_drop()
                 @mount_select.set_selected(v_part_info[@id]["mp"])
+                @mount_select.show_drop()
                 if v_part_info[@id]["fs"] in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
                     @mount_select.hide_drop()
                 return
@@ -997,7 +997,7 @@ class Part extends Page
         if @grub_dropdown?
             @grub_dropdown?.destroy()
             @grub_dropdown = null
-        @grub_dropdown = new DropDown("dd_grub", null)
+        @grub_dropdown = new DropDown("dd_grub", false, null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
         #@grub_dropdown.set_drop_size(560, 20)

@@ -290,18 +290,33 @@ class DropDownList extends Widget
         @fill_dropdown(@dropdown.keys, @dropdown.values)
 
 class DropDown extends Widget
-    constructor: (@id, @on_change_cb) ->
+    constructor: (@id, @editable, @on_change_cb) ->
         super
         @init_dropdown_data()
         @dropdown_list = null
         @selected = null
         @base = create_element("div", "DropDownBase", @element)
-        @base.addEventListener("click", (e) =>
-            @show_list()
-        )
+        #@base.addEventListener("click", (e) =>
+        #    @show_list()
+        #)
         @current = create_element("div", "DropDownCurrent", @base)
+        if @editable
+            @cur_input = create_element("input", "", @current)
+            @cur_input.style.width = @dropwidth - @dropheight - 1 + "px"
+            @cur_input.style.height = @dropheight  + "px"
+            @cur_input.addEventListener("blur", (e) =>
+                @set_current_txt(@cur_input.value)
+                @on_change_cb(@id[6..17], @cur_input.value)
+            )
+        else
+            @current.addEventListener("click", (e) =>
+                @show_list()
+            )
         @angle = create_element("div", "DropDownAngle", @base)
         @angle_img = create_element("div", "DropDownAngleImg", @angle)
+        @angle.addEventListener("click", (e) =>
+            @show_list()
+        )
         @hide_drop()
 
     init_dropdown_data: ->
@@ -354,6 +369,8 @@ class DropDown extends Widget
         angle_img_style += "background-position:" + (@dropheight-12)/2 + "px " + (@dropheight-12)/2 + "px;"
         @angle_img.setAttribute("style", angle_img_style)
 
+        echo "show drop"
+        echo @selected
         if @selected == null
             @set_selected(@keys[0])
         @element.style.display = "block"
@@ -373,9 +390,18 @@ class DropDown extends Widget
             @dropdown_list.fill_dropdown(keys, values)
         @dropdown_list.show()
 
+    set_current_txt: (txt) ->
+        if @editable
+            @cur_input.setAttribute("value", txt)
+        else
+            @current.innerText = txt
+
     set_selected: (key) ->
         @selected = key
-        @current.innerText = @items[key]
+        if @items[key]?
+            @set_current_txt(@items[key])
+        else
+            @set_current_txt(key)
 
     get_selected: ->
         return @selected
