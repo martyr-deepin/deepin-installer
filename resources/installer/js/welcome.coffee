@@ -655,12 +655,11 @@ class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
         @input = create_element("input", "", @element)
-        @input.setAttribute("autofocus", true)
         @change = false
         @fill_widget()
         @input.addEventListener("focus", (e) =>
             @check_capslock()
-            @input.setAttribute("style", "border:2px solid #FFFFFF;border-radius:4px;background-position:-2px -2px;")
+            @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
         )
         @input.addEventListener("blur", (e) =>
             @check_capslock()

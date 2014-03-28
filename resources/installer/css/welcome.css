@@ -103,7 +103,7 @@
 .CapsWarning {
     position:absolute;
     right:5px;
-    top:7px;
+    top:6px;
     background:url("../images/capslock.png") no-repeat;
     width:23px;
     height:23px;
@@ -335,23 +335,24 @@
 
 .KeyboardDetectDialog .Desc {
     text-align:left;
-    margin-top:-20px;
-    padding:0 20px;
+    margin-left:25px;
 }
 
 .KeyboardDetectDialog .Detail {
-    text-align:center;
-    margin:0;
+    text-align:left;
+    margin-left:25px;
 }
 
 .KeyboardDetectDialog ul {
     list-style:none;
-    text-align:center;
+    text-align:left;
+    margin-left:-37px;
 }
 
 .KeyboardDetectDialog ul li {
     float:left;
-    margin:0 5px;
+    margin:5px 10px 15px 0;
+    font-size:13px;
 }
 
 .Timezone {
