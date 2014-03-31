@@ -54,6 +54,7 @@ apply_progress_flash = (el, time)->
 
 __ppt_in_switch = false
 __ppt_switch_id = -1
+__install_failed = false
 
 class PptItem extends Widget
     constructor: (@id, @src, @ppt) ->
@@ -210,6 +211,7 @@ class Progress extends Page
         #@report?.hide_dialog()
         #@report =  new ReportDialog("report")
         #document.body.appendChild(@report.element)
+        __install_failed = true
         finish_page = new Finish("finish", false)
         pc.add_page(finish_page)
         pc.remove_page(progress_page)
@@ -343,9 +345,10 @@ class Progress extends Page
         else if progress == "finish"
             echo "finish update bootloader"
             @update_progress("99%")
-            finish_page = new Finish("finish", true)
-            pc.remove_page(progress_page)
-            pc.add_page(finish_page)
+            if __install_failed != true
+                finish_page = new Finish("finish", true)
+                pc.remove_page(progress_page)
+                pc.add_page(finish_page)
         else if progress == "terminate"
             echo "update bootloader terminate"
             @show_report()
