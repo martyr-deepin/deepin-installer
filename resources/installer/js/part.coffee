@@ -261,6 +261,17 @@ class FormatDialog extends Dialog
     format_cb: ->
         echo "format to do install"
 
+class UnavailablePartedDialog extends Dialog
+    constructor: (@id) ->
+        super(@id, true, @parted_cb)
+        @add_css_class("DialogCommon")
+        @title_txt.innerText = _("Do partition")
+        @format_tips = create_element("div", "", @content)
+        @format_tips.innerText = _("Can't create a partition here")
+
+    parted_cb: ->
+        echo "can't create partition here"
+
 class RootDialog extends Dialog
     constructor: (@id) ->
         super(@id, false, @need_root_cb)
@@ -582,6 +593,9 @@ class PartTableItem extends Widget
     fill_mount: ->
         @mount.innerHTML = ""
         if __selected_mode != "advance" 
+            if @active
+                @mount.innerText = _("Install Here")
+                @mount.setAttribute("style", "text-align:right")
             return
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
@@ -785,7 +799,7 @@ class PartTable extends Widget
                     @partitems.push(item)
         else
             for part in m_disk_info[disk]["partitions"]
-                if m_part_info[part]["type"] in ["normal", "logical"] and m_part_info[part]["op"] != "add"
+                if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
                     item = new PartTableItem(part)
                     @items.appendChild(item.element)
                     @partitems.push(item)
@@ -869,6 +883,11 @@ class Part extends Page
                 if not __selected_grub
                     __selected_grub = v_part_info[target]["disk"]
             else
+                if __selected_item?
+                    if not can_add_normal(__selected_item.id) and not can_add_logical(__selected_item.id)
+                        @parted_model = new UnavailablePartedDialog("PartedModel")
+                        document.body.appendChild(@parted_model.element)
+                        return
                 __selected_grub = __selected_disk
 
             @install_model = new InstallDialog("InstallModel")
