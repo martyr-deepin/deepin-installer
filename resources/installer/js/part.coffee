@@ -435,6 +435,7 @@ class PartTableItem extends Widget
             color_value = v_part_info[@id]["color"]
             @color.style.background = color_value
             @color.style.display = "block"
+            os = v_part_info[@id]["os"]
         else if __selected_mode == "simple"
             if m_part_info[@id]["type"] != "freespace"
                 @path.innerText = m_part_info[@id]["path"]
@@ -449,7 +450,16 @@ class PartTableItem extends Widget
                 @label.style.display = "none"
                 @path.setAttribute("style", "margin:10px 0;")
             @color.style.display = "none"
-        @update_device_os()
+            os = m_part_info[@id]["os"]
+        @update_device_os(os)
+        txt = @path.innerText
+        @path.addEventListener("mouseover", (e) =>
+            if os? and os.length > 2
+                @path.innerText = DCore.Installer.get_partition_os_desc(@id)
+        )
+        @path.addEventListener("mouseout", (e) =>
+            @path.innerText = txt
+        )
 
     show_detail_label: ->
         if not @label_detail?
@@ -464,12 +474,7 @@ class PartTableItem extends Widget
         if @label_detail?
             @label_detail.style.display = "none"
 
-    update_device_os: ->
-        @os.innerHTML = ""
-        if __selected_mode == "simple"
-            os = m_part_info[@id]["os"]
-        else
-            os = v_part_info[@id]["os"]
+    update_device_os: (os) ->
         if os? and os.length > 2
             if os.toLowerCase().indexOf("deepin") != -1
                 os_img = "images/deepin.png"
