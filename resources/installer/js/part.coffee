@@ -889,10 +889,11 @@ class Part extends Page
                     __selected_grub = v_part_info[target]["disk"]
             else
                 if __selected_item?
-                    if not can_add_normal(__selected_item.id) and not can_add_logical(__selected_item.id)
-                        @parted_model = new UnavailablePartedDialog("PartedModel")
-                        document.body.appendChild(@parted_model.element)
-                        return
+                    if m_part_info[__selected_item.id]["type"] == "freespace"
+                        if not can_add_normal(__selected_item.id) and not can_add_logical(__selected_item.id)
+                            @parted_model = new UnavailablePartedDialog("PartedModel")
+                            document.body.appendChild(@parted_model.element)
+                            return
                 __selected_grub = __selected_disk
 
             @install_model = new InstallDialog("InstallModel")
