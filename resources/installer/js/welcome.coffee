@@ -270,7 +270,7 @@ class KeyboardDetectDialog extends  Widget
         if type == "press"
             @type = type
             @foot.style.display = "none"
-            @desc.innerText = _("Please press the following key")
+            @desc.innerText = _("Please press any of the following key")
             @fill_detail(symbols)
             @show_dialog()
         else if type == "have"
