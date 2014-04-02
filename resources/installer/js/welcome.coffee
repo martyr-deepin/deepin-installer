@@ -362,15 +362,17 @@ class Keyboard extends Widget
             echo "init dbus query failed"
 
     init_query_ul: ->
+        @selected_letter = null
         for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             @create_query_li(c)
 
     create_query_li:(c) ->
         li = create_element("li", "", @query_ul)
-        a = create_element("a", "", li)
-        a.setAttribute("href", "#")
-        a.innerText = c
-        a.addEventListener("click", (e) =>
+        li.innerText = c
+        li.addEventListener("click", (e) =>
+            @selected_letter?.setAttribute("class", "")
+            @selected_letter = li 
+            @selected_letter.setAttribute("class","LetterActive")
             @execute_letter_query(c)
         )
 
