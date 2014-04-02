@@ -1217,6 +1217,13 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         mnt.mnt_type = "swap";
         mnt.mnt_opts = "sw,pri=1";
         mnt.mnt_passno = 0;
+    } else if (!g_str_has_prefix (mp, "/")) {
+        g_warning ("write fs tab:invalid mp->%s\n", mp);
+        goto out;
+    }
+
+    if (!g_file_test (mp, G_FILE_TEST_EXISTS)) {
+        g_mkdir_with_parents (mp, 0755);
     }
 
     if (g_strcmp0 ("fat16", fs) == 0 || g_strcmp0 ("fat32", fs) == 0) {
