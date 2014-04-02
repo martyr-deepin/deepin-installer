@@ -227,12 +227,13 @@ input:focus {
     float:left;
     margin:0;
     padding:0;
-    color:rgba(0,0,0,1);
+    color:rgba(0,0,0,0.9);
     background:transparent;
     text-decoration:none;
     border:none;
     text-align:center;
     vertical-align:middle;
+    text-shadow:rgba(0,0,0,0.3);
 }
 
 .DropDownAngle {
