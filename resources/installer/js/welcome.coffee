@@ -673,6 +673,13 @@ class WelcomeFormItem extends Widget
         @input.addEventListener("input", (e) =>
             if @id == "username" and Widget.look_up("account")?.hostname.change == false
                 Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
+            if @id == "confirmpassword"
+                pwd = Widget.look_up("account")?.password.input.value
+                if pwd.indexOf(@input.value) == -1 
+                    @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
+                else
+                    @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
+
             Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("change", (e) =>
