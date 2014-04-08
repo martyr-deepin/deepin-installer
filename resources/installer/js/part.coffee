@@ -455,7 +455,7 @@ class PartTableItem extends Widget
         txt = @path.innerText
         @path.addEventListener("mouseover", (e) =>
             if os? and os.length > 2
-                @path.innerText = DCore.Installer.get_partition_os_desc(@id)
+                @path.innerText = DCore.Installer.get_partition_os_desc(@id).split("(")[0].trim()
         )
         @path.addEventListener("mouseout", (e) =>
             @path.innerText = txt
