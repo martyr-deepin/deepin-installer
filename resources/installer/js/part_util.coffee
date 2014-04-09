@@ -499,6 +499,14 @@ init_v_part_info = ->
                 v_part_info[part]["label"] = null
                 v_part_info[part]["lvm"] = null
 
+get_disk_fake_length = (disk) ->
+    sort_v_disk_info(disk)
+    length = 0
+    for part in v_disk_info[disk]["partitions"]
+        if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
+            length += v_part_info[part]["length"]
+    v_disk_info[disk]["length"] = length
+
 sync_part_os = ->
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
