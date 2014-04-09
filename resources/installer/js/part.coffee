@@ -190,12 +190,21 @@ class AddPartDialog extends Dialog
         @mp_desc = create_element("span", "AddDesc", @mp)
         @mp_desc.innerText = _("Mount:")
         @mount_value = create_element("span", "AddValue", @mp)
-        @mount_select = new DropDown("dd_mp_" + @partid, true, null)
+        @mount_select = new DropDown("dd_mp_" + @partid, true, @mp_change_cb)
         @mount_value.appendChild(@mount_select.element)
         @mount_select.set_drop_items(__mp_keys, __mp_values)
         @mount_select.set_drop_size(130,22)
         @mount_select.set_selected("unused")
         @mount_select.show_drop()
+
+    mp_change_cb: (partid, mp) ->
+        if mp in get_selected_mp()
+            part = get_mp_partition(mp)
+            if part?
+                v_part_info[part]["mp"] = "unused"
+                Widget.look_up(part)?.fill_mount()
+            else
+                echo "error to get mp partition in add dialog"
 
     fill_tips: ->
         @tips = create_element("div", "", @content)
