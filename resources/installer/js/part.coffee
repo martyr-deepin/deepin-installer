@@ -27,6 +27,15 @@ __selected_line = null
 __selected_mode = "simple"
 __selected_stage = null
 
+DCore.signal_connect("part_operation", (msg) ->
+    if progress_page? and progress_page.display_progress == false
+        progress_page.display_progress = true
+        progress_page.start_progress()
+    progress_page?.update_progress("2%")
+    __selected_stage = "extract"
+    progress_page?.handle_extract("start")
+)
+
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, true, @add_part_cb)
@@ -314,15 +323,6 @@ class UefiBootDialog extends Dialog
     uefi_boot_cb: ->
         echo "uefi boot cb"
 
-DCore.signal_connect("part_operation", (msg) ->
-    if progress_page? and progress_page.display_progress == false
-        progress_page.display_progress = true
-        progress_page.start_progress()
-    progress_page?.update_progress("2%")
-    __selected_stage = "extract"
-    progress_page?.handle_extract("start")
-)
-
 class InstallDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @confirm_install_cb)
@@ -430,38 +430,9 @@ class PartTableItem extends Widget
         )
 
         if __selected_mode == "advance"
-            if v_part_info[@id]["type"] != "freespace"
-                @path.innerText = v_part_info[@id]["path"]
-            else
-                @path.innerText = _("freespace")
-            if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
-                if v_part_info[@id]["label"].length > 12
-                    @label.innerText = v_part_info[@id]["label"].substring(0,12) + "..."
-                else
-                    @label.innerText = v_part_info[@id]["label"]
-            else
-                @label.style.display = "none"
-                @path.setAttribute("style", "margin:10px 0;")
-            color_value = v_part_info[@id]["color"]
-            @color.style.background = color_value
-            @color.style.display = "block"
-            os = v_part_info[@id]["os"]
+            @fill_device_advance()
         else if __selected_mode == "simple"
-            if m_part_info[@id]["type"] != "freespace"
-                @path.innerText = m_part_info[@id]["path"]
-            else
-                @path.innerText = "freespace"
-            if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
-                if m_part_info[@id]["label"].length > 12
-                    @label.innerText = m_part_info[@id]["label"].substring(0,12) + "..."
-                else
-                    @label.innerText = m_part_info[@id]["label"]
-            else
-                @label.style.display = "none"
-                @path.setAttribute("style", "margin:10px 0;")
-            @color.style.display = "none"
-            os = m_part_info[@id]["os"]
-        @update_device_os(os)
+            @fill_device_simple()
         txt = @path.innerText
         @path.addEventListener("mouseover", (e) =>
             if os? and os.length > 2
@@ -470,6 +441,42 @@ class PartTableItem extends Widget
         @path.addEventListener("mouseout", (e) =>
             @path.innerText = txt
         )
+
+    fill_device_advance: ->
+        if v_part_info[@id]["type"] != "freespace"
+            @path.innerText = v_part_info[@id]["path"]
+        else
+            @path.innerText = _("freespace")
+        if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
+            if v_part_info[@id]["label"].length > 12
+                @label.innerText = v_part_info[@id]["label"].substring(0,12) + "..."
+            else
+                @label.innerText = v_part_info[@id]["label"]
+        else
+            @label.style.display = "none"
+            @path.setAttribute("style", "margin:10px 0;")
+        color_value = v_part_info[@id]["color"]
+        @color.style.background = color_value
+        @color.style.display = "block"
+        os = v_part_info[@id]["os"]
+        @update_device_os(os)
+
+    fill_device_simple: ->
+        if m_part_info[@id]["type"] != "freespace"
+            @path.innerText = m_part_info[@id]["path"]
+        else
+            @path.innerText = "freespace"
+        if m_part_info[@id]["label"]? and m_part_info[@id]["label"].length > 0
+            if m_part_info[@id]["label"].length > 12
+                @label.innerText = m_part_info[@id]["label"].substring(0,12) + "..."
+            else
+                @label.innerText = m_part_info[@id]["label"]
+        else
+            @label.style.display = "none"
+            @path.setAttribute("style", "margin:10px 0;")
+        @color.style.display = "none"
+        os = m_part_info[@id]["os"]
+        @update_device_os(os)
 
     show_detail_label: ->
         if not @label_detail?
@@ -526,39 +533,43 @@ class PartTableItem extends Widget
     fill_format: ->
         @format.innerHTML = ""
         if __selected_mode == "advance"
-            if v_part_info[@id]? and v_part_info[@id]["type"] != "freespace"
-                @format_img = create_img("Format", "images/check-01.png", @format)
-                if not @active
-                    if v_part_info[@id]["format"]
-                        @format_img.setAttribute("src", "images/check-02.png")
-                    else
-                        @format_img.setAttribute("src", "images/check-01.png")
-                else
-                    if v_part_info[@id]["format"]
-                        @format_img.setAttribute("src", "images/check-04.png")
-                    else
-                        @format_img.setAttribute("src", "images/check-03.png")
-                if @is_busy()
-                    @format_img.setAttribute("src", "images/check-05.png")
-                else if @is_format_mandatory()
-                    @format_img.setAttribute("src", "images/check-06.png")
-                @format_img.addEventListener("click", (e) =>
-                    if @is_busy()
-                        @format_img.setAttribute("src", "images/check-05.png")
-                    else if @is_format_mandatory()
-                        update_part_format(@id, true)
-                        @format_img.setAttribute("src", "images/check-06.png")
-                    else
-                        if v_part_info[@id]["format"]
-                            update_part_format(@id, false)
-                            @format_img.setAttribute("src", "images/check-03.png")
-                        else
-                            update_part_format(@id, true)
-                            @format_img.setAttribute("src", "images/check-04.png")
-                )
-            @format.style.display = "block"
+            @fill_format_advance()
         else
             @format.style.display = "none"
+
+    fill_format_advance: ->
+        if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
+            return
+        @format_img = create_img("Format", "images/check-01.png", @format)
+        if not @active
+            if v_part_info[@id]["format"]
+                @format_img.setAttribute("src", "images/check-02.png")
+            else
+                @format_img.setAttribute("src", "images/check-01.png")
+        else
+            if v_part_info[@id]["format"]
+                @format_img.setAttribute("src", "images/check-04.png")
+            else
+                @format_img.setAttribute("src", "images/check-03.png")
+        if @is_busy()
+            @format_img.setAttribute("src", "images/check-05.png")
+        else if @is_format_mandatory()
+            @format_img.setAttribute("src", "images/check-06.png")
+        @format_img.addEventListener("click", (e) =>
+            if @is_busy()
+                @format_img.setAttribute("src", "images/check-05.png")
+            else if @is_format_mandatory()
+                update_part_format(@id, true)
+                @format_img.setAttribute("src", "images/check-06.png")
+            else
+                if v_part_info[@id]["format"]
+                    update_part_format(@id, false)
+                    @format_img.setAttribute("src", "images/check-03.png")
+                else
+                    update_part_format(@id, true)
+                    @format_img.setAttribute("src", "images/check-04.png")
+        )
+        @format.style.display = "block"
 
     is_format_mandatory: ->
         if v_part_info[@id]["type"] == "freespace"
@@ -572,30 +583,37 @@ class PartTableItem extends Widget
     fill_fs: ->
         @fs.innerHTML = ""
         if __selected_mode == "simple" 
-            if m_part_info[@id]? and m_part_info[@id]["type"] != "freespace"
-                @fs_txt = create_element("div", "", @fs)
-                if m_part_info[@id]["fs"] != "unused"
-                    @fs_txt.innerText = m_part_info[@id]["fs"]
-                else
-                    @fs_txt.innerText = ""
+            @fill_fs_simple()
         else if __selected_mode == "advance"
-            if v_part_info[@id]? and v_part_info[@id]["type"] != "freespace"
-                if @active
-                    @fs_select = new DropDown("dd_fs_" + @id, false, @fs_change_cb)
-                    @fs.appendChild(@fs_select.element)
-                    if DCore.Installer.disk_support_efi(v_part_info[@id]["disk"])
-                        @fs_select.set_drop_items(__fs_efi_keys, __fs_efi_values)
-                    else
-                        @fs_select.set_drop_items(__fs_keys, __fs_values)
-                    @fs_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
-                    @fs_select.set_selected(v_part_info[@id]["fs"])
-                    @fs_select.show_drop()
-                else
-                    @fs_txt = create_element("div", "", @fs)
-                    if v_part_info[@id]["fs"] != "unused"
-                        @fs_txt.innerText = v_part_info[@id]["fs"]
-                    else
-                        @fs_txt.innerText = ""
+            @fill_fs_advance()
+
+    fill_fs_advance: ->
+        if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
+            return
+        if @active
+            @fs_select = new DropDown("dd_fs_" + @id, false, @fs_change_cb)
+            @fs.appendChild(@fs_select.element)
+            if DCore.Installer.disk_support_efi(v_part_info[@id]["disk"])
+                @fs_select.set_drop_items(__fs_efi_keys, __fs_efi_values)
+            else
+                @fs_select.set_drop_items(__fs_keys, __fs_values)
+            @fs_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
+            @fs_select.set_selected(v_part_info[@id]["fs"])
+            @fs_select.show_drop()
+        else
+            @fs_txt = create_element("div", "", @fs)
+            if v_part_info[@id]["fs"] != "unused"
+                @fs_txt.innerText = v_part_info[@id]["fs"]
+            else
+                @fs_txt.innerText = ""
+
+    fill_fs_simple: ->
+        if m_part_info[@id]? and m_part_info[@id]["type"] != "freespace"
+            @fs_txt = create_element("div", "", @fs)
+            if m_part_info[@id]["fs"] != "unused"
+                @fs_txt.innerText = m_part_info[@id]["fs"]
+            else
+                @fs_txt.innerText = ""
 
     fs_change_cb: (part, fs) ->
         if fs in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
@@ -612,19 +630,23 @@ class PartTableItem extends Widget
                 @mount.innerText = _("Install Here")
                 @mount.setAttribute("style", "text-align:right")
             return
+        else
+            @fill_mount_advance()
+
+    fill_mount_advance: ->
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
         if @active 
-                @mount_select = new DropDown("dd_mp_" + @id, true, @mp_change_cb)
-                @mount.appendChild(@mount_select.element)
-                if v_part_info[@id]["fs"]? 
-                    @mount_select.set_drop_items(__mp_keys, __mp_values)
-                @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
-                @mount_select.set_selected(v_part_info[@id]["mp"])
-                @mount_select.show_drop()
-                if v_part_info[@id]["fs"] in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
-                    @mount_select.hide_drop()
-                return
+            @mount_select = new DropDown("dd_mp_" + @id, true, @mp_change_cb)
+            @mount.appendChild(@mount_select.element)
+            if v_part_info[@id]["fs"]? 
+                @mount_select.set_drop_items(__mp_keys, __mp_values)
+            @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
+            @mount_select.set_selected(v_part_info[@id]["mp"])
+            @mount_select.show_drop()
+            if v_part_info[@id]["fs"] in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
+                @mount_select.hide_drop()
+            return
         else
             if v_part_info[@id]["fs"] not in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
                 @mount_txt = create_element("div", "", @mount)
@@ -780,55 +802,47 @@ class PartTable extends Widget
         @mount_header.innerText = _("Mount point")
         @format_header = create_element("div", "Thin", @header)
         @format_header.innerText = _("Format")
-        if __selected_mode == "advance"
-            @info_header.style.display = "none"
-            @mount_header.style.display = "block"
-            @format_header.style.display = "block"
-        else
-            @info_header.style.display = "block"
-            @mount_header.style.display = "none"
-            @format_header.style.display = "none"
-
         @items = create_element("div", "PartTableItems", @disk_content)
-        @fill_items()
+        @update_mode(__selected_mode)
 
     fill_items: ->
         @items.innerHTML = ""
         @partitems = []
-        disk = __selected_disk
         if __selected_mode == "advance"
-            for part in v_disk_info[disk]["partitions"]
-                if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
-                    item = new PartTableItem(part)
-                    @items.appendChild(item.element)
-                    @partitems.push(item)
+            @fill_items_advance()
         else
-            for part in m_disk_info[disk]["partitions"]
-                if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
-                    item = new PartTableItem(part)
-                    @items.appendChild(item.element)
-                    @partitems.push(item)
+            @fill_items_simple()
         if @partitems.length > 0 and @items.scrollHeight > @items.clientHeight
             @partitems[@partitems.length - 1].element.setAttribute("class", "PartTableItem PartTableItemLast")
-            
+
+    fill_items_advance: ->
+        @info_header.style.display = "none"
+        @mount_header.style.display = "block"
+        @format_header.style.display = "block"
+        disk = __selected_disk
+        for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
+                item = new PartTableItem(part)
+                @items.appendChild(item.element)
+                @partitems.push(item)
+
+    fill_items_simple: ->
+        @format_header.style.display = "none"
+        @mount_header.style.display = "none"
+        @info_header.style.display = "block"
+        disk = __selected_disk
+        for part in m_disk_info[disk]["partitions"]
+            if m_part_info[part]["type"] in ["normal", "logical", "freespace"] and m_part_info[part]["op"] != "add"
+                item = new PartTableItem(part)
+                @items.appendChild(item.element)
+                @partitems.push(item)
+        
     update_mode: (mode) ->
         if __selected_item?
             id = __selected_item.id
             __selected_item = null
         else 
             id = null
-        if mode == "advance"
-            @info_header.style.display = "none"
-            @mount_header.style.display = "block"
-            @format_header.style.display = "block"
-            #@items.setAttribute("style", "height:190px")
-            #@element.setAttribute("style", "top:130px;height:230px;")
-        else
-            @format_header.style.display = "none"
-            @mount_header.style.display = "none"
-            @info_header.style.display = "block"
-            @items.setAttribute("style", "")
-            @element.setAttribute("style", "")
         @fill_items()
         if id?
             __selected_item = Widget.look_up(id)
@@ -859,47 +873,53 @@ class Part extends Page
         @next_btn.setAttribute("id", "mynextstep")
         @next_input = create_element("input", "InputBtn", @next_btn)
         @next_input.setAttribute("type", "submit")
-        next = _("Install")
-        @next_input.setAttribute("value", next)
-        @next_btn.addEventListener("mousedown", (e) =>
-            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
-        )
+        @next_input.setAttribute("value", _("Install"))
+        #@next_btn.addEventListener("mousedown", (e) =>
+        #    @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
+        #)
         @next_btn.addEventListener("click", (e) =>
             if __selected_mode == "advance"
-                target = get_target_part()
-                if not target?
-                    @root_model = new RootDialog("RootModel")
-                    document.body.appendChild(@root_model.element)
-                    return
-                efi_boot = get_efi_boot_part()
-                if efi_boot?
-                    __selected_grub = "uefi"
-                    if v_part_info[efi_boot]["length"] <= mb_to_sector(100, 512)
-                        @uefi_model = new UefiDialog("UefiModel")
-                        document.body.appendChild(@uefi_model.element)
-                        return
-                    legacy_boot = get_legacy_boot_part()
-                    if legacy_boot?
-                        @uefi_boot_model = new UefiBootDialog("UefiBootModel")
-                        document.body.appendChild(@uefi_boot_model.element)
-                        return
-                else
-                    __selected_grub = @grubdropdown?.get_selected()
-                if not __selected_grub
-                    __selected_grub = v_part_info[target]["disk"]
+                handle_install_advance()
             else
-                if __selected_item?
-                    if m_part_info[__selected_item.id]["type"] == "freespace"
-                        if not can_add_normal(__selected_item.id) and not can_add_logical(__selected_item.id)
-                            @parted_model = new UnavailablePartedDialog("PartedModel")
-                            document.body.appendChild(@parted_model.element)
-                            return
-                __selected_grub = __selected_disk
-
-            @install_model = new InstallDialog("InstallModel")
-            document.body.appendChild(@install_model.element)
+                handle_install_simple()
         )
         @init_part_page()
+
+    handle_install_advance: ->
+        target = get_target_part()
+        if not target?
+            @root_model = new RootDialog("RootModel")
+            document.body.appendChild(@root_model.element)
+            return
+        efi_boot = get_efi_boot_part()
+        if efi_boot?
+            __selected_grub = "uefi"
+            if v_part_info[efi_boot]["length"] <= mb_to_sector(100, 512)
+                @uefi_model = new UefiDialog("UefiModel")
+                document.body.appendChild(@uefi_model.element)
+                return
+            legacy_boot = get_legacy_boot_part()
+            if legacy_boot?
+                @uefi_boot_model = new UefiBootDialog("UefiBootModel")
+                document.body.appendChild(@uefi_boot_model.element)
+                return
+        else
+            __selected_grub = @grubdropdown?.get_selected()
+        if not __selected_grub
+            __selected_grub = v_part_info[target]["disk"]
+        @install_model = new InstallDialog("InstallModel")
+        document.body.appendChild(@install_model.element)
+
+    handle_install_simple: ->
+        if __selected_item?
+            if m_part_info[__selected_item.id]["type"] == "freespace"
+                if not can_add_normal(__selected_item.id) and not can_add_logical(__selected_item.id)
+                    @parted_model = new UnavailablePartedDialog("PartedModel")
+                    document.body.appendChild(@parted_model.element)
+                    return
+        __selected_grub = __selected_disk
+        @install_model = new InstallDialog("InstallModel")
+        document.body.appendChild(@install_model.element)
 
     init_part_page: ->
         if __selected_mode == null
@@ -940,21 +960,27 @@ class Part extends Page
 
     switch_mode: ->
         if __selected_mode != "advance"
-            __selected_mode = "advance"
-            if check_has_mount()
-                @unmount_model = new UnmountDialog("UnmountModel")
-                document.body.appendChild(@unmount_model.element)
-            @show_advance_mode()
-            @table.update_mode(__selected_mode)
-            @t_mode.innerText = _("Simple mode")
+            @switch_mode_advance()
         else
-            __selected_mode = "simple"
-            @add_model?.hide_dialog()
-            @delete_model?.hide_dialog()
-            @unmount_model?.hide_dialog()
-            @hide_advance_mode()
-            @table.update_mode(__selected_mode)
-            @t_mode.innerText = _("Expert mode") 
+            @switch_mode_simple()
+
+    switch_mode_advance: ->
+        __selected_mode = "advance"
+        if check_has_mount()
+            @unmount_model = new UnmountDialog("UnmountModel")
+            document.body.appendChild(@unmount_model.element)
+        @show_advance_mode()
+        @table.update_mode(__selected_mode)
+        @t_mode.innerText = _("Simple mode")
+
+    switch_mode_simple: ->
+        __selected_mode = "simple"
+        @add_model?.hide_dialog()
+        @delete_model?.hide_dialog()
+        @unmount_model?.hide_dialog()
+        @hide_advance_mode()
+        @table.update_mode(__selected_mode)
+        @t_mode.innerText = _("Expert mode") 
 
     fill_advance_op: ->
         @op = create_element("div", "PartOp", @wrap)
