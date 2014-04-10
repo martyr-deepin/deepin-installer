@@ -674,20 +674,20 @@ class PartTableItem extends Widget
 
         if type == "freespace"
             if not can_add_normal(@id) and not can_add_logical(@id)
-                add_btn.setAttribute("class", "PartBtn")
+                add_btn.setAttribute("class", "PartAddBtn")
             else
-                add_btn.setAttribute("class", "PartBtnActive")
-            delete_btn.setAttribute("class", "PartBtn")
+                add_btn.setAttribute("class", "PartAddBtnActive")
+            delete_btn.setAttribute("class", "PartDeleteBtn")
         else if type in ["normal", "logical"]
-            add_btn.setAttribute("class", "PartBtn")
-            delete_btn.setAttribute("class", "PartBtnActive")
+            add_btn.setAttribute("class", "PartAddBtn")
+            delete_btn.setAttribute("class", "PartDeleteBtnActive")
         else
-            add_btn.setAttribute("class", "PartBtn")
-            delete_btn.setAttribute("class", "PartBtn")
+            add_btn.setAttribute("class", "PartAddBtn")
+            delete_btn.setAttribute("class", "PartDeleteBtn")
 
         if type != "disk" and v_part_info[@id]["lvm"]
-            add_btn.setAttribute("class", "PartBtn")
-            delete_btn.setAttribute("class", "PartBtn")
+            add_btn.setAttribute("class", "PartAddBtn")
+            delete_btn.setAttribute("class", "PartDeleteBtn")
 
     focus: ->
         @passive_focus()
@@ -739,7 +739,7 @@ class PartTableItem extends Widget
         if __selected_mode == "advance"
             create_img("", "images/lock.png", @lock)
             delete_btn = document.getElementById("part_delete")
-            delete_btn.setAttribute("class", "PartBtn")
+            delete_btn.setAttribute("class", "PartDeleteBtn")
             @fs_select?.set_list_enable(false)
             @mount_select?.set_list_enable(false)
 
@@ -804,7 +804,7 @@ class PartTable extends Widget
         @items = create_element("div", "PartTableItems", @element)
 
         @op = create_element("div", "PartOp", @element)
-        @part_delete = create_element("div", "PartBtn", @op)
+        @part_delete = create_element("div", "PartDeleteBtn", @op)
         @part_delete.setAttribute("id", "part_delete")
         @part_delete.innerText = _("Delete partition")
         @part_delete.addEventListener("click", (e)=>
@@ -816,7 +816,7 @@ class PartTable extends Widget
             document.body.appendChild(@del_model.element)
         )
 
-        @part_add = create_element("div", "PartBtn", @op)
+        @part_add = create_element("div", "PartAddBtn", @op)
         @part_add.setAttribute("id", "part_add")
         @part_add.innerText = _("New partition")
         @part_add.addEventListener("click", (e)=>

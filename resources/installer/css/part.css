@@ -258,24 +258,38 @@
     box-shadow:inset 0 1px rgba(255,255,255,0.3);
 }
 
-.PartBtn, .PartBtnActive {
+.PartOp >div {
     float:right;
     position:relative;
     text-align:center;
-    width:auto;
-    height:22px;
-    line-height:22px;
-    margin:0 0 0 20px;
-    border:1px solid rgba(0,0,0,0.3);
-    border-radius:5px;
+    margin:5px 10px;
+    height:20px;
+    line-height:20px;
+    text-indent:25px;
 }
 
-.PartBtn {
+.PartAddBtn {
     pointer-events:none;
+    background:url("../images/add_part.png") no-repeat;
+    color:rgba(255,255,255,0.5);
 }
 
-.PartBtnActive {
+.PartAddBtnActive {
     pointer-events:auto;
+    background:url("../images/add_part_active.png") no-repeat;
+    color:rgba(255,255,255,1);
+}
+
+.PartDeleteBtn {
+    pointer-events:none;
+    background:url("../images/delete_part.png") no-repeat;
+    color:rgba(255,255,255,0.5);
+}
+
+.PartDeleteBtnActive {
+    pointer-events:auto;
+    background:url("../images/delete_part_active.png") no-repeat;
+    color:rgba(255,255,255,1);
 }
 
 .PartGrub {
