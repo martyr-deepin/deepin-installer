@@ -910,9 +910,9 @@ class Part extends Page
         #)
         @next_btn.addEventListener("click", (e) =>
             if __selected_mode == "advance"
-                handle_install_advance()
+                @handle_install_advance()
             else
-                handle_install_simple()
+                @handle_install_simple()
         )
 
         @init_part_page()
