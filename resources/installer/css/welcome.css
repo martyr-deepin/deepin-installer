@@ -232,21 +232,9 @@
     z-index:200;
 }
 
-.Current {
-    padding-left:16px;
-    height:30px;
-    line-height:30px;
-    color:rgba(255,255,255,0.6);
-    text-shadow:0 1px rgba(0,0,0,0.1);
-}
-
-.Current span {
-    margin-right:10px;
-}
-
 .KeyboardContent {
     width:700px;
-    height:330px;
+    height:370px;
     background:rgba(255,255,255,0.2);
     border-top:1px solid rgba(0,0,0,0.3);
     border-radius:0 0 5px 5px;
@@ -257,6 +245,13 @@
                0 1px rgba(0,0,0,0.3),
                1px 0 rgba(0,0,0,0.3),
                -1px 0 rgba(0,0,0,0.3);
+}
+
+.KeyboardList {
+    width:700px;
+    height:330px;
+    border-bottom:1px solid rgba(0,0,0,0.3);
+    box-shadow:0 1px rgba(255,255,255,0.3);
 }
 
 .LayoutList {
@@ -308,16 +303,13 @@
 }
 
 .KeyboardOp {
-    float:left;
-    margin-top:10px;
+    height:40px;
+    line-height:40px;
 }
 
-.KeyboardOp .PartBtnActive {
-    float:left;
-}
-
-#active_btn {
-    margin-left:0px;
+.KeyboardOp div {
+    float:right;
+    margin:0 10px;
 }
 
 .KeyboardDetectDialog .DialogTitle {

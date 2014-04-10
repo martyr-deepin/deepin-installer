@@ -309,29 +309,23 @@ class Keyboard extends Widget
         @init_query_ul()
 
         @content = create_element("div", "KeyBoardContent", @element)
-        @layout_list = create_element("div", "LayoutList", @content)
-        @variant_list = create_element("div", "VariantList", @content)
+        @list = create_element("div", "KeyBoardList", @content)
+        @layout_list = create_element("div", "LayoutList", @list)
+        @variant_list = create_element("div", "VariantList", @list)
 
-        @op = create_element("div","KeyBoardOp", @element)
-        @active_btn = create_element("div", "PartBtnActive", @op)
-        @active_btn.setAttribute("id", "active_btn")
-        @active_input = create_element("input", "InputBtn", @active_btn)
-        @active_input.setAttribute("type", "submit")
-        @active_input.setAttribute("value", _("Display Current"))
+        @op = create_element("div","KeyBoardOp", @content)
+        @detect_btn = create_element("div", "", @op)
+        @detect_btn.innerText = _("Detect Layout")
+        @detect_btn.addEventListener("click", (e) =>
+            @detect_keyboard_cb(e)
+        )
+
+        @active_btn = create_element("div", "", @op)
+        @active_btn.innerText = _("Display Current")
         @active_btn.addEventListener("click", (e) =>
             if __selected_layout?
                 @set_to_layout(__selected_layout)
         )
-
-        @detect_btn = create_element("div", "PartBtnActive", @op)
-        @detect_input = create_element("input", "InputBtn", @detect_btn)
-        @detect_input.setAttribute("type", "submit")
-        @detect_input.setAttribute("value", _("Detect Layout"))
-        @detect_btn.addEventListener("click", (e) =>
-            @detect_keyboard_cb(e)
-        )
-        #@current = create_element("div", "Current", @element)
-        #@current.innerText = DCore.Installer.get_layout_description(__selected_layout)
 
         @fill_layouts(@layouts)
         @hide()
@@ -419,7 +413,6 @@ class Keyboard extends Widget
             @variant_list.appendChild(item.element)
 
     update_layout: (layout) ->
-        #@current.innerText = DCore.Installer.get_layout_description(layout)
         __selected_layout = layout
 
     execute_letter_query: (letter) ->
