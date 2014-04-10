@@ -20,7 +20,6 @@
 __selected_target = null
 __selected_grub = null
 
-__selected_disk_item = null
 __selected_disk = null
 __selected_item = null
 __selected_line = null
@@ -755,32 +754,40 @@ class PartTableItem extends Widget
         else
             @unbusy()
 
-class DiskTabItem extends Widget
-    constructor: (@id, @disk)->
+class DiskTab extends Widget
+    constructor: (@id) ->
         super
-        @focuspart = null
-        @index = disks.indexOf(@disk) + 1
-        @size = sector_to_gb(v_disk_info[@disk]["length"], 512).toFixed(0)
-        @element.innerText = _("Disk") + @index  + "  (" + +  @size + "GB) "
-        if __selected_disk == @disk
-            @focus()
+        @prev = create_element("div", "Prev", @element)
+        @prev.addEventListener("click", (e) =>
+            @prev.style.background = "images/arrow_left_press.png"
+            @switch_prev()
+        )
+        @content = create_element("div", "Content", @element)
+        @next = create_element("div", "Next", @element)
+        @next.addEventListener("click", (e) =>
+            @next.style.background = "images/arrow_right_press.png"
+            @switch_next()
+        )
 
-    do_click: (e) ->
-        if __selected_disk_item != @
-            @focus()
+    focus_disk: (disk) ->
+        index = disks.indexOf(disk) + 1
+        if index > 0
+            __selected_disk = disk
+            size = sector_to_gb(v_disk_info[disk]["length"], 512).toFixed(0)
+            @content.innerText = _("Disk") + index  + "  (" + +  size + "GB) "
+            Widget.look_up("part_line_maps")?.fill_linemap()
+            Widget.look_up("part_table")?.fill_items()
+            Widget.look_up(__selected_item?.id)?.focus()
 
-    blur: ->
-        __selected_disk_item = null
-        @element.setAttribute("style", "")
-
-    focus: ->
-        __selected_disk_item?.blur()
-        __selected_disk_item = @
-        __selected_disk = @disk
-        @element.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.5)), to(rgba(255,255,255, 0.2)));")
-        Widget.look_up("part_line_maps")?.fill_linemap()
-        Widget.look_up("part_table")?.fill_items()
-        Widget.look_up(__selected_item?.id)?.focus()
+    switch_prev: ->
+        index = disks.indexOf(__selected_disk)
+        if index > 0
+            @focus_disk(disks[index-1])
+        
+    switch_next: ->
+        index = disks.indexOf(__selected_disk)
+        if index < disks.length
+            @focus_disk(disks[index+1])
 
 class PartTable extends Widget
     constructor: (@id)->
@@ -851,7 +858,7 @@ class PartTable extends Widget
                 item = new PartTableItem(part)
                 @items.appendChild(item.element)
                 @partitems.push(item)
-        @items.setAttribute("style","height:250px")
+        @items.setAttribute("style","height:220px")
         @element.setAttribute("style", "height:280px")
 
     fill_items_simple: ->
@@ -959,8 +966,8 @@ class Part extends Page
         if __selected_disk == null
             __selected_disk = disks[0]
 
-        @disktab = create_element("div", "PartTab", @wrap)
-        @fill_disk_tab()
+        @disktab = new DiskTab("disk_tab")
+        @wrap.appendChild(@disktab.element)
 
         @linemap = new PartLineMaps("part_line_maps")
         @wrap.appendChild(@linemap.element)
@@ -977,20 +984,13 @@ class Part extends Page
         @switch_mode_simple()
         recommand = get_recommand_target()
         if recommand?
-            Widget.look_up("disk_tab_"+ m_part_info[recommand]["disk"])?.focus()
+            @disktab.focus_disk(m_part_info[recommand]["disk"])
             Widget.look_up(recommand)?.focus()
         else
-            Widget.look_up("disk_tab" + __selected_disk)?.focus()
+            @disktab.focus_disk(__selected_disk)
         if  __selected_item?
             @next_btn.setAttribute("style", "pointer-events:auto")
             @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
-
-    fill_disk_tab: ->
-        @disktabs = []
-        for disk in disks
-            item = new DiskTabItem("disk_tab_" + disk, disk)
-            @disktab.appendChild(item.element)
-            @disktabs.push(item)
 
     fill_bootloader: ->
         keys = []
