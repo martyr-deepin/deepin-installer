@@ -514,10 +514,6 @@ class Timezone extends Widget
         @img = create_img("TimezoneMap", "images/zonemap.png", @picker)
         @img.setAttribute("usemap", "#ImageMap")
         @construct_map()
-
-        @current = create_element("div", "Current", @element)
-        @current.innerText = _(__selected_timezone.split("/")[0], "tzdata") + "/" + _(__selected_timezone.split("/")[1], "tzdata")
-
         @hide()
 
     show: ->
@@ -533,12 +529,6 @@ class Timezone extends Widget
         @displayed = false
         update_el_attr(@element, "-webkit-transform", "translateX(0px)")
         #@element.style.display = "none"
-
-    hover_timezone: (zone) ->
-        #@current.innerHTML = "<span>Zone:" + __database[zone]["offset"] + "</span>"
-        #@current.innerHTML += "<span>City:" + _(zone.split("/")[0], "tzdata") + "/" + _(zone.split("/")[1], "tzdata") + "</span>"
-        #@current.innerHTML += "<span>Country:" + _(__database[zone]["country"], "tzdata") + "</span>"
-        @current.innerHTML = "<span>" + _(zone.split("/")[0], "tzdata") + "/" + _(zone.split("/")[1], "tzdata") + "</span>"
 
     construct_map: ->
         @imagemap = create_element("map", "", @element)
@@ -566,7 +556,6 @@ class Timezone extends Widget
         )
         area.addEventListener("mouseover", (e) =>
             @draw_timezone(area)
-            @hover_timezone(area.getAttribute("data-timezone"))
         )
         area.addEventListener("mouseout", (e) =>
             @destroy_canvas(area)
@@ -628,7 +617,6 @@ class Timezone extends Widget
             @draw_timezone(area)
             @show_pin(area)
             __selected_timezone = timezone
-            @hover_timezone(timezone)
 
     draw_canvas: (area) ->
         ctx = @canvas.getContext("2d")
