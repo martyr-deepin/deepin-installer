@@ -494,6 +494,7 @@ class Timezone extends Widget
         @query_div = create_element("div", "Left", @query)
         @query_wrap = create_element("div", "QueryWrap", @query_div)
         @query_input = create_element("input", "", @query_wrap)
+        @query_input.setAttribute("placeholder", _("Please select or search your location"))
         @query_input.addEventListener("keyup", (e) =>
             if e.which == 13
                 @execute_query()
@@ -502,9 +503,6 @@ class Timezone extends Widget
         @query_img.addEventListener("click", (e) =>
             @execute_query()
         )
-
-        @query_txt = create_element("div", "Right", @query)
-        @query_txt.innerText = _("Please select or search your location")
 
         @picker_wrap = create_element("div","TmezoneWrap", @element)
         @picker = create_element("div", "TimezonePicker", @picker_wrap)

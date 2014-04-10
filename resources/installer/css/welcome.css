@@ -155,7 +155,7 @@
 
 .Query .Left {
     float:left;
-    width:440px;
+    width:700px;
     height:50px;
 }
 
@@ -183,9 +183,9 @@
 }
 
 .Query .QueryWrap {
-    width:390px;
+    width:684px;
     height:34px;
-    margin:8px 25px;
+    margin:8px;
     border-top:1px solid rgba(0,0,0,0.5);
     border-left:1px solid rgba(0,0,0,0.5);
     border-right:1px solid rgba(0,0,0,0.5);
@@ -196,20 +196,20 @@
 }
 
 .Query input {
-    width:390px;
+    width:684px;
     height:34px;
     border-style:none;
     padding-left:6px;
     outline-style:none;
     text-shadow:0 1px rgba(0,0,0,0.5);
     background:url("../images/search.png") no-repeat;
-    background-position:360px 7px;
+    background-position:656px 7px;
 }
 
 .Query .QueryImg {
     position:absolute;
-    top:10px;
-    left:378px;
+    top:9px;
+    left:656px;
     width:38px;
     height:34px;
     border-top-right-radius:4px;
@@ -220,13 +220,6 @@
     background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.2)), to(rgba(255,255,255,0.1)));
     border-left:1px solid rgba(0,0,0,0.4);
     box-shadow:inset 1px 0 rgba(255,255,255,0.2);
-}
-
-.Query .Right {
-    float:left;
-    width:260px;
-    height:50px;
-    line-height:50px;
 }
 
 .KeyboardTri {
