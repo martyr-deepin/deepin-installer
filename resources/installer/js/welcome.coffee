@@ -150,13 +150,11 @@ class KeyboardDetectDialog extends  Widget
     constructor: (@id, @type, @keyboard) ->
         super
         @add_css_class("DialogCommon")
-        @title = create_element("div", "DialogTitle", @element)
-        @title_txt = create_element("div", "DialogTxt", @title)
+        @title = create_element("div", "", @element)
         @title_close = create_element("div", "DialogClose", @title)
         @title_close.addEventListener("click", (e) =>
             @hide_dialog()
         )
-        @title_txt.innerText = _("Detect keyboard layout")
 
         @content = create_element("div", "DialogContent", @element)
         @desc = create_element("div", "Desc", @content)
