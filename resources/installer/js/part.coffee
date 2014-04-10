@@ -764,8 +764,6 @@ class DiskTabItem extends Widget
 class PartTable extends Widget
     constructor: (@id)->
         super
-        @disktab = create_element("div", "PartTab", @element)
-
         @disk_content = create_element("div", "PartContent", @element)
         @header = create_element("div", "PartTableHeader", @disk_content)
         @device_header = create_element("div", "Fat", @header)
@@ -792,15 +790,7 @@ class PartTable extends Widget
             @format_header.style.display = "none"
 
         @items = create_element("div", "PartTableItems", @disk_content)
-        @fill_disk_tab()
         @fill_items()
-
-    fill_disk_tab: ->
-        @disktabs = []
-        for disk in disks
-            item = new DiskTabItem("disk_tab_" + disk, disk)
-            @disktab.appendChild(item.element)
-            @disktabs.push(item)
 
     fill_items: ->
         @items.innerHTML = ""
@@ -831,8 +821,8 @@ class PartTable extends Widget
             @info_header.style.display = "none"
             @mount_header.style.display = "block"
             @format_header.style.display = "block"
-            @items.setAttribute("style", "height:190px")
-            @element.setAttribute("style", "top:130px;height:230px;")
+            #@items.setAttribute("style", "height:190px")
+            #@element.setAttribute("style", "top:130px;height:230px;")
         else
             @format_header.style.display = "none"
             @mount_header.style.display = "none"
@@ -916,10 +906,16 @@ class Part extends Page
             __selected_mode = "simple"
         if __selected_disk == null
             __selected_disk = disks[0]
+
+        @disktab = create_element("div", "PartTab", @wrap)
+        @fill_disk_tab()
+
         @linemap = new PartLineMaps("part_line_maps")
         @wrap.appendChild(@linemap.element)
+
         @table = new PartTable("part_table")
         @wrap.appendChild(@table.element)
+
         @fill_advance_op()
         if __selected_mode == "advance"
             @show_advance_mode()
@@ -934,6 +930,13 @@ class Part extends Page
         if  __selected_item?
             @next_btn.setAttribute("style", "pointer-events:auto")
             @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
+
+    fill_disk_tab: ->
+        @disktabs = []
+        for disk in disks
+            item = new DiskTabItem("disk_tab_" + disk, disk)
+            @disktab.appendChild(item.element)
+            @disktabs.push(item)
 
     switch_mode: ->
         if __selected_mode != "advance"
@@ -1035,9 +1038,6 @@ class Part extends Page
         @grub_dropdown = new DropDown("dd_grub", false, null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
-        #@grub_dropdown.set_drop_size(560, 20)
-        #@grub_dropdown.show_drop()
-        #@grub_dropdown.set_list_background("url(\"images/dropdown.png\");")
 
     show_advance_mode: ->
         @linemap.element.setAttribute("style", "display:block")

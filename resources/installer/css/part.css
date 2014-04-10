@@ -5,10 +5,11 @@
 
 .PartLineMaps {
     position:absolute;
-    top:90px;
+    top:110px;
     left:25px;
+    margin:0;
     width:700px;
-    height:20px;
+    height:10px;
     background:rgba(255,255,255,0.1);
     border:1px solid rgba(0,0,0,0.3);
     border-radius:5px;
@@ -23,7 +24,7 @@
 .PartLineItem {
     position:absolute;
     float:left;
-    height:20px;
+    height:10px;
     box-shadow:inset 1px 0 rgba(255,255,255,0.2),
                inset -1px 0 rgba(255,255,255,0.2);
 }
@@ -33,14 +34,14 @@
     top:0;
     left:0;
     width:100%;
-    height:10px;
+    height:5px;
     background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.3)), to(rgba(255,255,255,0.15)));
 }
 
 .PartLineItemActive {
     position:absolute;
     float:left;
-    height:20px;
+    height:10px;
     box-shadow:inset 1px 0 rgba(255,255,255,0.4),
                inset -1px 0 rgba(255,255,255,0.4),
                inset 0 1px rgba(255,255,255,0.4),
@@ -53,7 +54,7 @@
 
 .PartTable {
     position:absolute;
-    top:100px;
+    top:120px;
     left:25px;
     width:700px;
     height:330px;
@@ -63,6 +64,7 @@
 .PartTab {
     width:700px;
     height:22px;
+    margin:0 25px;
 }
 
 .DiskTabItem {
