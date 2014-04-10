@@ -755,7 +755,7 @@ class Account extends Widget
         next = _("Next")
         @start_input.setAttribute("value", next)
         @start.addEventListener("mousedown", (e) =>
-            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
+            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#D69004), to(#E8C243));color:rgba(0,0,0,1);")
         )
         @start.addEventListener("click", (e) =>
             @start_install_cb()
@@ -777,11 +777,11 @@ class Account extends Widget
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
             @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
-            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
+            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
             return true
         else
             @start.setAttribute("style", "pointer-events:none")
-            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(244,198,136, 0.5)), to(rgba(255,190,87,0.5)))")
+            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,0.5)), to(rgba(217,181,24,0.5)));")
             return false
 
     start_install_cb: ->
