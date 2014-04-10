@@ -282,39 +282,6 @@
     pointer-events:auto;
 }
 
-#part_loader {
-    float:left;
-    margin-left:0;
-    pointer-events:auto;
-}
-
-.PartBtn input {
-    width:100%;
-    height:22px;
-    background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.2)), to(rgba(255,255,255,0.1)));
-    color:rgba(255,255,255,0.5);
-    text-shadow:0 1px rgba(0,0,0,0.1);
-    pointer-events:none;
-    font-size:12px;
-    margin:0 8px;
-    position:relative;
-    left:-8px;
-}
-
-.PartBtnActive input {
-    width:100%;
-    height:22px;
-    background:-webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.4)), to(rgba(255,255,255, 0.2)));
-    color:rgba(255,255,255,1);
-    text-shadow:0 1px rgba(0,0,0,0.3);
-    pointer-events:auto;
-    font-size:12px;
-    border-top:1px solid rgba(255,255,255,0.5);
-    margin:0 8px;
-    position:relative;
-    left:-8px;
-}
-
 .PartGrub {
     position:absolute;
     top:420px;

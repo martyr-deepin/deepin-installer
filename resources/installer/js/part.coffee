@@ -668,6 +668,8 @@ class PartTableItem extends Widget
     set_btn_status: ->
         if __selected_mode != "advance"
             return 
+        echo "set btn status"
+        echo __selected_mode
         type = v_part_info[@id]["type"]
 
         add_btn = document.getElementById("part_add")
@@ -787,6 +789,7 @@ class PartTable extends Widget
     constructor: (@id)->
         super
         @disk_content = create_element("div", "PartContent", @element)
+
         @header = create_element("div", "PartTableHeader", @disk_content)
         @device_header = create_element("div", "Fat", @header)
         @device_header.innerText = _("Device")
@@ -802,7 +805,34 @@ class PartTable extends Widget
         @mount_header.innerText = _("Mount point")
         @format_header = create_element("div", "Thin", @header)
         @format_header.innerText = _("Format")
+
         @items = create_element("div", "PartTableItems", @disk_content)
+
+        @op = create_element("div", "PartOp", @disk_content)
+        @part_delete = create_element("div", "PartBtn", @op)
+        @part_delete.setAttribute("id", "part_delete")
+        @part_delete.innerText = _("Delete partition")
+        @part_delete.addEventListener("click", (e)=>
+            echo "handle delete"
+            if __in_model
+                echo "already had delete part mode dialog"
+                return 
+            @del_model = new DeletePartDialog("DeleteModel", __selected_item.id)
+            document.body.appendChild(@del_model.element)
+        )
+
+        @part_add = create_element("div", "PartBtn", @op)
+        @part_add.setAttribute("id", "part_add")
+        @part_add.innerText = _("New partition")
+        @part_add.addEventListener("click", (e)=>
+            echo "handle add"
+            if __in_model
+                echo "already had add part mode dialog"
+                return 
+            @add_model = new AddPartDialog("AddModel", __selected_item.id)
+            document.body.appendChild(@add_model.element)
+        )
+
         @update_mode(__selected_mode)
 
     fill_items: ->
@@ -819,6 +849,7 @@ class PartTable extends Widget
         @info_header.style.display = "none"
         @mount_header.style.display = "block"
         @format_header.style.display = "block"
+        @op.style.display = "block"
         disk = __selected_disk
         for part in v_disk_info[disk]["partitions"]
             if v_part_info[part]["type"] in ["normal", "logical", "freespace"]
@@ -829,6 +860,7 @@ class PartTable extends Widget
     fill_items_simple: ->
         @format_header.style.display = "none"
         @mount_header.style.display = "none"
+        @op.style.display = "none"
         @info_header.style.display = "block"
         disk = __selected_disk
         for part in m_disk_info[disk]["partitions"]
@@ -883,6 +915,7 @@ class Part extends Page
             else
                 handle_install_simple()
         )
+
         @init_part_page()
 
     handle_install_advance: ->
@@ -936,11 +969,13 @@ class Part extends Page
         @table = new PartTable("part_table")
         @wrap.appendChild(@table.element)
 
-        @fill_advance_op()
-        if __selected_mode == "advance"
-            @show_advance_mode()
-        else
-            @hide_advance_mode()
+        @part_grub = create_element("div", "PartGrub", @wrap)
+        @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
+        @grub_loader.innerText = _("Boot loader")
+        @grub_select = create_element("div", "PartGrubSelect", @part_grub)
+        @fill_bootloader()
+
+        @switch_mode_simple()
         recommand = get_recommand_target()
         if recommand?
             Widget.look_up("disk_tab_"+ m_part_info[recommand]["disk"])?.focus()
@@ -957,95 +992,6 @@ class Part extends Page
             item = new DiskTabItem("disk_tab_" + disk, disk)
             @disktab.appendChild(item.element)
             @disktabs.push(item)
-
-    switch_mode: ->
-        if __selected_mode != "advance"
-            @switch_mode_advance()
-        else
-            @switch_mode_simple()
-
-    switch_mode_advance: ->
-        __selected_mode = "advance"
-        if check_has_mount()
-            @unmount_model = new UnmountDialog("UnmountModel")
-            document.body.appendChild(@unmount_model.element)
-        @show_advance_mode()
-        @table.update_mode(__selected_mode)
-        @t_mode.innerText = _("Simple mode")
-
-    switch_mode_simple: ->
-        __selected_mode = "simple"
-        @add_model?.hide_dialog()
-        @delete_model?.hide_dialog()
-        @unmount_model?.hide_dialog()
-        @hide_advance_mode()
-        @table.update_mode(__selected_mode)
-        @t_mode.innerText = _("Expert mode") 
-
-    fill_advance_op: ->
-        @op = create_element("div", "PartOp", @wrap)
-        @part_delete = create_element("div", "PartBtn", @op)
-        @part_delete.setAttribute("id", "part_delete")
-        @delete_input = create_element("input", "InputBtn", @part_delete)
-        @delete_input.setAttribute("type", "submit")
-        delete_value = _("Delete partition")
-        @delete_input.setAttribute("value", delete_value)
-        @part_delete.addEventListener("click", (e)=>
-            echo "handle delete"
-            if __in_model
-                echo "already had delete part mode dialog"
-                return 
-            @del_model = new DeletePartDialog("DeleteModel", __selected_item.id)
-            document.body.appendChild(@del_model.element)
-        )
-
-        @part_add = create_element("div", "PartBtn", @op)
-        @part_add.setAttribute("id", "part_add")
-        @add_input = create_element("input", "InputBtn", @part_add)
-        @add_input.setAttribute("type", "submit")
-        new_value = _("New partition")
-        @add_input.setAttribute("value", new_value)
-        @part_add.addEventListener("click", (e)=>
-            echo "handle add"
-            if __in_model
-                echo "already had add part mode dialog"
-                return 
-            @add_model = new AddPartDialog("AddModel", __selected_item.id)
-            document.body.appendChild(@add_model.element)
-        )
-
-        @part_loader = create_element("div", "PartBtnActive", @op)
-        @part_loader.setAttribute("id", "part_loader")
-        @loader_input = create_element("input", "InputBtn", @part_loader)
-        @loader_input.setAttribute("type", "submit")
-        loader_value = _("Setup loader")
-        @loader_input.setAttribute("value", loader_value)
-        @part_loader.addEventListener("click", (e) =>
-            efi_boot = get_efi_boot_part()
-            if efi_boot?
-                return
-            if @part_grub_display
-                @hide_part_grub()
-            else
-                @show_part_grub()
-        )
-
-        @part_grub = create_element("div", "PartGrub", @wrap)
-        @hide_part_grub()
-        @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
-        @grub_loader.innerText = _("Boot loader")
-        @grub_select = create_element("div", "PartGrubSelect", @part_grub)
-        @fill_bootloader()
-
-    hide_part_grub: ->
-        @part_grub.style.display = "none"
-        @part_grub_display = false
-
-    show_part_grub: ->
-        @part_grub.style.display = "block"
-        @part_grub_display = true
-        @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10, 20)
-        @grub_dropdown.show_drop()
 
     fill_bootloader: ->
         keys = []
@@ -1065,12 +1011,35 @@ class Part extends Page
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
 
-    show_advance_mode: ->
-        @linemap.element.setAttribute("style", "display:block")
-        @op.setAttribute("style", "display:block")
-        #@part_grub.setAttribute("style", "display:block")
+    switch_mode: ->
+        if __selected_mode != "advance"
+            @switch_mode_advance()
+        else
+            @switch_mode_simple()
 
-    hide_advance_mode: ->
+    switch_mode_advance: ->
+        __selected_mode = "advance"
+        if check_has_mount()
+            @unmount_model = new UnmountDialog("UnmountModel")
+            document.body.appendChild(@unmount_model.element)
+        @linemap.element.setAttribute("style", "display:block")
+        @part_grub.setAttribute("style", "display:block")
+        efi_boot = get_efi_boot_part()
+        if efi_boot?
+            @part_grub.style.display = "none"
+        else
+            @part_grub.style.display = "block"
+            @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10, 20)
+            @grub_dropdown.show_drop()
+        @table.update_mode(__selected_mode)
+        @t_mode.innerText = _("Simple mode")
+
+    switch_mode_simple: ->
+        __selected_mode = "simple"
+        @add_model?.hide_dialog()
+        @delete_model?.hide_dialog()
+        @unmount_model?.hide_dialog()
         @linemap.element.setAttribute("style", "display:none")
-        @op.setAttribute("style", "display:none")
-        @part_grub.setAttribute("style", "display:none")
+        @part_grub.style.display = "none"
+        @table.update_mode(__selected_mode)
+        @t_mode.innerText = _("Expert mode") 
