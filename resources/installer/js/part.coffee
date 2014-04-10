@@ -668,10 +668,7 @@ class PartTableItem extends Widget
     set_btn_status: ->
         if __selected_mode != "advance"
             return 
-        echo "set btn status"
-        echo __selected_mode
         type = v_part_info[@id]["type"]
-
         add_btn = document.getElementById("part_add")
         delete_btn = document.getElementById("part_delete")
 
@@ -788,9 +785,7 @@ class DiskTabItem extends Widget
 class PartTable extends Widget
     constructor: (@id)->
         super
-        @disk_content = create_element("div", "PartContent", @element)
-
-        @header = create_element("div", "PartTableHeader", @disk_content)
+        @header = create_element("div", "PartTableHeader", @element)
         @device_header = create_element("div", "Fat", @header)
         @device_header.innerText = _("Device")
         @size_header = create_element("div", "Size", @header)
@@ -806,9 +801,9 @@ class PartTable extends Widget
         @format_header = create_element("div", "Thin", @header)
         @format_header.innerText = _("Format")
 
-        @items = create_element("div", "PartTableItems", @disk_content)
+        @items = create_element("div", "PartTableItems", @element)
 
-        @op = create_element("div", "PartOp", @disk_content)
+        @op = create_element("div", "PartOp", @element)
         @part_delete = create_element("div", "PartBtn", @op)
         @part_delete.setAttribute("id", "part_delete")
         @part_delete.innerText = _("Delete partition")
@@ -856,6 +851,8 @@ class PartTable extends Widget
                 item = new PartTableItem(part)
                 @items.appendChild(item.element)
                 @partitems.push(item)
+        @items.setAttribute("style","height:250px")
+        @element.setAttribute("style", "height:280px")
 
     fill_items_simple: ->
         @format_header.style.display = "none"
@@ -868,6 +865,8 @@ class PartTable extends Widget
                 item = new PartTableItem(part)
                 @items.appendChild(item.element)
                 @partitems.push(item)
+        @items.setAttribute("style", "")
+        @element.setAttribute("style", "")
         
     update_mode: (mode) ->
         if __selected_item?

@@ -84,11 +84,6 @@
     width:700px;
     height:330px;
     text-align:center;
-}
-
-.PartContent {
-    width:700px;
-    height:auto;
     border:1px solid rgba(0,0,0,0.3);
     border-radius:0 5px 5px 5px;
     box-shadow:inset 0 1px rgba(255,255,255,0.3),
@@ -255,11 +250,12 @@
 
 .PartOp {
     position:absolute;
-    top:380px;
-    bottom:130px;
-    left:26px;
-    right:26px;
+    top:250px;
+    width:700px;
     height:30px;
+    line-height:30px;
+    border-top:1px solid rgba(0,0,0,0.3);
+    box-shadow:inset 0 1px rgba(255,255,255,0.3);
 }
 
 .PartBtn, .PartBtnActive {
