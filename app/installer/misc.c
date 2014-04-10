@@ -516,9 +516,8 @@ thread_update_grub (gpointer data)
                 g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
             }
 
-        } else {
-            g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
-        }
+        } 
+        g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
         if (error != NULL) {
             g_warning ("update grub:update grub %s\n", error->message);
             goto out;

@@ -842,8 +842,8 @@ class PartTable extends Widget
             @fill_items_advance()
         else
             @fill_items_simple()
-        if @partitems.length > 0 and @items.scrollHeight > @items.clientHeight
-            @partitems[@partitems.length - 1].element.setAttribute("class", "PartTableItem PartTableItemLast")
+        #if @partitems.length > 0 and @items.scrollHeight > @items.clientHeight
+        #    @partitems[@partitems.length - 1].element.setAttribute("class", "PartTableItem PartTableItemLast")
 
     fill_items_advance: ->
         @info_header.style.display = "none"

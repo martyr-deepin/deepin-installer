@@ -52,15 +52,6 @@
                inset 0 -2px rgba(255,255,255,0.4);
 }
 
-.PartTable {
-    position:absolute;
-    top:120px;
-    left:25px;
-    width:700px;
-    height:330px;
-    text-align:center;
-}
-
 .PartTab {
     width:700px;
     height:22px;
@@ -84,6 +75,15 @@
                inset 1px 0 rgba(255,255,255,0.3);
     border-top-left-radius:5px;
     border-top-right-radius:5px;
+}
+
+.PartTable {
+    position:absolute;
+    top:120px;
+    left:25px;
+    width:700px;
+    height:330px;
+    text-align:center;
 }
 
 .PartContent {
@@ -144,16 +144,16 @@
     width:700px;
     height:40px;
     line-height:40px;
-    border-bottom:1px solid rgba(0,0,0,0.3);
-    box-shadow:0 1px rgba(255,255,255,0.3);
     clear:both;
 }
 
+/*
 .PartTableItemLast {
     border-bottom:none;
     box-shadow:none;
     margin-bottom:4px;
 }
+*/
 
 .PartTableItem > div {
     height:40px;
