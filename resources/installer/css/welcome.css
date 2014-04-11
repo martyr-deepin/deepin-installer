@@ -223,10 +223,10 @@
 
 .KeyboardTri {
     position:absolute;
-    top:-11px;
+    top:-13px;
     left:580px;
-    width:24px;
-    height:12px;
+    width:22px;
+    height:14px;
     background:url("../images/triangle.png") no-repeat;
     z-index:200;
 }
@@ -374,10 +374,10 @@
 
 .TimezoneTri {
     position:absolute;
-    top:-11px;
+    top:-13px;
     left:650px;
-    width:24px;
-    height:12px;
+    width:22px;
+    height:14px;
     background:url("../images/triangle.png") no-repeat;
     z-index:200;
 }
