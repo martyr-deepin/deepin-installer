@@ -314,6 +314,9 @@ class Progress extends Page
             echo "start handle user"
             @update_progress("94%")
             try
+                if not __selected_hostname?
+                    echo "invalid hostname, use username instead"
+                    __selected_hostname = __selected_username
                 DCore.Installer.create_user(__selected_username, __selected_hostname, __selected_password)
             catch error
                 echo error
