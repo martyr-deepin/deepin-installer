@@ -38,8 +38,7 @@ DCore.signal_connect("os_prober", (msg) ->
 
 DCore.Installer.emit_webview_ok()
 
-_ppt_list = ["images/deepin.jpg", "images/deepin1.jpg", "images/deepin2.jpg", 
-             "images/deepin3.jpg", "images/deepin4.jpg"]
+_ppt_list = ["images/ppt.jpg"]
 
 _color_list = ["#f2415b", "#e86836", "#fcc100", "#e8dd0a",
                "#9fdd05", "#0dd10d", "#11c9c0", "#2796f2",

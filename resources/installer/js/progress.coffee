@@ -71,7 +71,10 @@ class PptItem extends Widget
             update_el_attr(@element, "z-index", 50)
         else
             update_el_attr(@element, "z-index", 70)
-        left =  (@index + 1 - @length) * 750
+        if @length > 1
+            left =  (@index + 1 - @length) * 750
+        else
+            left = 0
         update_el_attr(@element, "-webkit-transform", "translateX(0)")
         update_el_attr(@element, "left", left + "px")
 
