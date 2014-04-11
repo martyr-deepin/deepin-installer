@@ -330,18 +330,15 @@ class Keyboard extends Widget
         @init_dbus_query()
 
     show: ->
-        #echo "keyboard show"
         __timezone_widget?.hide()
         __account_widget?.hide()
         @displayed = true
-        update_el_attr(@element, "-webkit-transform", "translateX(-725px)")
-        #update_el_attr(@element, "-webkit-transition", "all 0.3s cubic-bezier(0, 0, 0.35, -1)")
+        @element.style.display = "block"
         __selected_layout_item?.focus()
 
     hide: ->
-        #echo "keyboard hide"
         @displayed = false
-        update_el_attr(@element, "-webkit-transform", "translateX(0px)")
+        @element.style.display = "none"
 
     init_dbus_query: ->
         try
@@ -509,15 +506,11 @@ class Timezone extends Widget
         __keyboard_widget?.hide()
         __account_widget?.hide()
         @displayed = true
-        update_el_attr(@element, "-webkit-transform", "translateX(-725px)")
-        #update_el_attr(@element, "-webkit-transition", "all 0.3s cubic-bezier(0, 0, 0.35, -1)")
-        #@element.style.display = "block"
+        @element.style.display = "block"
 
     hide: ->
-        #echo "timezone hide"
         @displayed = false
-        update_el_attr(@element, "-webkit-transform", "translateX(0px)")
-        #@element.style.display = "none"
+        @element.style.display = "none"
 
     construct_map: ->
         @imagemap = create_element("map", "", @element)
@@ -756,14 +749,10 @@ class Account extends Widget
     show: ->
         __timezone_widget?.hide()
         __keyboard_widget?.hide()
-        apply_animation(@element, "pptin", "0.3s", "linear")
         @element.style.display = "block"
 
     hide: ->
-        apply_animation(@element, "loadingout", "0.3s", "linear")
-        setTimeout(=>
-            @element.style.display = "none"
-        , 300)
+        @element.style.display = "none"
 
     check_start_ready: ->
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
