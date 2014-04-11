@@ -509,7 +509,7 @@ thread_update_grub (gpointer data)
             if (!g_file_test ("/boot/grub/grub.cfg", G_FILE_TEST_EXISTS)) {
                 g_creat ("/boot/grub/grub.cfg", 0444);
             }
-            g_spawn_command_line_sync ("/usr/lib/deepin-daemon/grub2 --debug --setup", NULL, NULL, NULL, &error);
+            g_spawn_command_line_sync ("/usr/lib/deepin-daemon/grub2 --debug --setup --gfxmode 1024x768", NULL, NULL, NULL, &error);
             if (error != NULL) {
                 g_warning ("update grub:update with style %s\n", error->message);
                 g_error_free (error);
