@@ -475,8 +475,6 @@ class Keyboard extends Widget
 class Timezone extends Widget
     constructor: (@id) ->
         super
-        @search_list = DCore.Installer.get_timezone_list()
-
         @tri = create_element("div", "TimezoneTri", @element)
 
         @query = create_element("div", "Query", @element)
@@ -502,6 +500,23 @@ class Timezone extends Widget
         @img.setAttribute("usemap", "#ImageMap")
         @construct_map()
         @hide()
+
+    init_search_list: ->
+        @search_list = []
+        @zone_dict = {}
+        for zone in DCore.Installer.get_timezone_list()
+            @search_list.push(zone)
+            @zone_dict[zone] = zone
+            try
+                left = DCore.dgettext("tzdata", zone.split("/")[0])
+                right = DCore.dgettext("tzdata", zone.split("/")[1])
+                if left? and right?
+                    l = left + "/" + right
+                    if l not in @search_list
+                        @search_list.push(l)
+                        @zone_dict[l] = zone
+            catch error
+                pass
 
     show: ->
         __keyboard_widget?.hide()
@@ -619,10 +634,12 @@ class Timezone extends Widget
         ctx.clearRect(0,0,700,370)
 
     execute_query: ->
+        if not @search_list?
+            @init_search_list()
         key = @query_input.value
         matched = get_matched_items(key, @search_list)
         if matched.length == 1
-            @set_timezone(matched[0])
+            @set_timezone(@zone_dict[matched[0]])
 
 class WelcomeFormItem extends Widget
     constructor: (@id)->
