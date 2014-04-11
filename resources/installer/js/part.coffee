@@ -703,7 +703,7 @@ class PartTableItem extends Widget
         @set_btn_status()
         @check_busy()
         @fill_format()
-        style = "background:rgba(246,178,82,0.5);"
+        style = "background:rgba(255,255,3,0.3);"
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
@@ -912,9 +912,9 @@ class Part extends Page
         @next_input = create_element("input", "InputBtn", @next_btn)
         @next_input.setAttribute("type", "submit")
         @next_input.setAttribute("value", _("Install"))
-        #@next_btn.addEventListener("mousedown", (e) =>
-        #    @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F8AD4B), to(#FFC040));color:rgba(0,0,0,1);")
-        #)
+        @next_btn.addEventListener("mousedown", (e) =>
+            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#D69004), to(#E8C243));color:rgba(0,0,0,1);")
+        )
         @next_btn.addEventListener("click", (e) =>
             if __selected_mode == "advance"
                 @handle_install_advance()
@@ -990,7 +990,7 @@ class Part extends Page
             @disktab.focus_disk(__selected_disk)
         if  __selected_item?
             @next_btn.setAttribute("style", "pointer-events:auto")
-            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#F4C688), to(#FFBE57));color:rgba(0,0,0,1);")
+            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
 
     fill_bootloader: ->
         keys = []
