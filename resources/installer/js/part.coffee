@@ -206,6 +206,8 @@ class AddPartDialog extends Dialog
         @mount_select.show_drop()
 
     mp_change_cb: (partid, mp) ->
+        if mp not in __mp_keys and mp.substring(0,1) != "/"
+            mp = "unused"
         if mp in get_selected_mp()
             part = get_mp_partition(mp)
             if part?
@@ -655,6 +657,8 @@ class PartTableItem extends Widget
                     @mount_txt.innerText = v_part_info[@id]["mp"]
 
     mp_change_cb: (partid, mp) ->
+        if mp not in __mp_keys and mp.substring(0,1) != "/"
+            mp = "unused"
         if mp in get_selected_mp()
             part = get_mp_partition(mp)
             if part?

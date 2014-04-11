@@ -260,6 +260,11 @@
     text-shadow:0 1px rgba(0,0,0,0.2);
 }
 
+.PartTableItem .DropDownCurrent input {
+    color:rgba(0,0,0,0.8);
+    text-shadow:0 1px rgba(0,0,0,0.2);
+}
+
 .PartOp {
     position:absolute;
     top:250px;
