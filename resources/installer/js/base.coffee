@@ -294,15 +294,13 @@ class DropDown extends Widget
         @dropdown_list = null
         @selected = null
         @base = create_element("div", "DropDownBase", @element)
-        #@base.addEventListener("click", (e) =>
-        #    @show_list()
-        #)
         @current = create_element("div", "DropDownCurrent", @base)
         if @editable
             @cur_input = create_element("input", "", @current)
             @cur_input.style.width = @dropwidth - @dropheight - 1 + "px"
             @cur_input.style.height = @dropheight  + "px"
             @cur_input.addEventListener("blur", (e) =>
+                @set_selected(@cur_input.value)
                 @set_current_txt(@cur_input.value)
                 @on_change_cb(@id[6..17], @cur_input.value)
             )

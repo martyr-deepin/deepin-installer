@@ -51,6 +51,7 @@ class AddPartDialog extends Dialog
     add_part_cb: ->
         @gather_info()
         new_part = add_part(@partid, @n_type, @n_size, @n_align, @n_fs, @n_mp)
+        v_part_info[new_part]["mp"] = @n_mp
         Widget.look_up("part_table")?.fill_items()
         Widget.look_up("part_line_maps")?.fill_linemap()
         Widget.look_up(new_part)?.focus()
@@ -206,7 +207,7 @@ class AddPartDialog extends Dialog
         @mount_select.show_drop()
 
     mp_change_cb: (partid, mp) ->
-        if mp not in __mp_keys and mp.substring(0,1) != "/"
+        if mp.substring(0,1) != "/"
             mp = "unused"
         if mp in get_selected_mp()
             part = get_mp_partition(mp)
@@ -643,6 +644,8 @@ class PartTableItem extends Widget
             if v_part_info[@id]["fs"]? 
                 @mount_select.set_drop_items(__mp_keys, __mp_values)
             @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
+            if v_part_info[@id]["mp"].substring(0,1) != "/"
+                v_part_info[@id]["mp"] = "unused"
             @mount_select.set_selected(v_part_info[@id]["mp"])
             @mount_select.show_drop()
             if v_part_info[@id]["fs"] in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
@@ -657,7 +660,7 @@ class PartTableItem extends Widget
                     @mount_txt.innerText = v_part_info[@id]["mp"]
 
     mp_change_cb: (partid, mp) ->
-        if mp not in __mp_keys and mp.substring(0,1) != "/"
+        if mp.substring(0,1) != "/"
             mp = "unused"
         if mp in get_selected_mp()
             part = get_mp_partition(mp)
