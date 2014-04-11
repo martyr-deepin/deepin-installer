@@ -260,6 +260,10 @@
     text-shadow:0 1px rgba(0,0,0,0.2);
 }
 
+.PartTableItem .DropDownCurrent {
+    text-indent:10px;
+}
+
 .PartTableItem .DropDownCurrent input {
     color:rgba(0,0,0,0.8);
     text-shadow:0 1px rgba(0,0,0,0.2);
