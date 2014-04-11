@@ -165,7 +165,7 @@ class KeyboardDetectDialog extends  Widget
         @ok = create_element("div", "", @foot)
         @ok_input = create_element("input", "InputBtn", @ok)
         @ok_input.setAttribute("type", "submit")
-        value = _("YES")
+        value = _("Yes")
         @ok_input.setAttribute("value", value)
         @ok.addEventListener("click", (e) =>
             @process_have_key()
@@ -173,7 +173,7 @@ class KeyboardDetectDialog extends  Widget
         @cancel = create_element("div", "", @foot)
         @cancel_input = create_element("input", "InputBtn", @cancel)
         @cancel_input.setAttribute("type", "submit")
-        value = _("NO")
+        value = _("No")
         @cancel_input.setAttribute("value", value)
         @cancel.addEventListener("click", (e) =>
             @process_no_have_key()

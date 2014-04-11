@@ -261,9 +261,25 @@ msgstr "要安装Linux Deepin，必须有15G以上的可用磁盘空间"
 msgid "Please select your keyboard layout"
 msgstr "请选择您的键盘布局"
 
+#: ../resources/installer/js/welcome.coffee:168
+msgid "Yes"
+msgstr "是"
+
+#: ../resources/installer/js/welcome.coffee:176
+msgid "No"
+msgstr "否"
+
 #: ../resources/installer/js/welcome.coffee:254
 msgid "Please select or search your location"
 msgstr "请选择或搜索您所在的区域"
+
+#: ../resources/installer/js/welcome.coffee:272
+msgid "Please press one of the following key"
+msgstr "请按下以下按键其中之一"
+
+#: ../resources/installer/js/welcome.coffee:278
+msgid "Confirm you have the following key"
+msgstr "请确认您拥有以下按键"
 
 #: ../resources/installer/js/welcome.coffee:317
 msgid "Detect layout"
