@@ -101,7 +101,6 @@ input:focus {
     bottom:0;
     right:0;
     z-index:100;
-    background:rgba(255,255,255,0.5);
     border-radius:5px;
     display:none;
 }
@@ -112,7 +111,7 @@ input:focus {
     right:175px;
     width:400px;
     top:170px;
-    background:#FFF url("../images/dialog.png");
+    background:rgba(1,29,82,0.9);
     z-index:200;
     border:1px solid rgba(0,0,0,0.2);
     border-radius:5px;
