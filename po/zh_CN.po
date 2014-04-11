@@ -265,6 +265,14 @@ msgstr "请选择您的键盘布局"
 msgid "Please select or search your location"
 msgstr "请选择或搜索您所在的区域"
 
+#: ../resources/installer/js/welcome.coffee:317
+msgid "Detect layout"
+msgstr "探测布局"
+
+#: ../resources/installer/js/welcome.coffee:317
+msgid "Display current"
+msgstr "查看当前"
+
 #: ../resources/installer/js/welcome.coffee:386
 msgid "User name"
 msgstr "用户名"

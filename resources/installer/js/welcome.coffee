@@ -150,6 +150,7 @@ class KeyboardDetectDialog extends  Widget
     constructor: (@id, @type, @keyboard) ->
         super
         @add_css_class("DialogCommon")
+        @element.style.top = "200px"
         @title = create_element("div", "", @element)
         @title_close = create_element("div", "DialogClose", @title)
         @title_close.addEventListener("click", (e) =>
@@ -268,7 +269,7 @@ class KeyboardDetectDialog extends  Widget
         if type == "press"
             @type = type
             @foot.style.display = "none"
-            @desc.innerText = _("Please press any of the following key")
+            @desc.innerText = _("Please press one of the following key")
             @fill_detail(symbols)
             @show_dialog()
         else if type == "have"
@@ -313,13 +314,13 @@ class Keyboard extends Widget
 
         @op = create_element("div","KeyBoardOp", @content)
         @detect_btn = create_element("div", "Detect", @op)
-        @detect_btn.innerText = _("Detect Layout")
+        @detect_btn.innerText = _("Detect layout")
         @detect_btn.addEventListener("click", (e) =>
             @detect_keyboard_cb(e)
         )
 
         @active_btn = create_element("div", "Default", @op)
-        @active_btn.innerText = _("Display Current")
+        @active_btn.innerText = _("Display current")
         @active_btn.addEventListener("click", (e) =>
             if __selected_layout?
                 @set_to_layout(__selected_layout)

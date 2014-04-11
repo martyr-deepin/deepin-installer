@@ -201,8 +201,14 @@
     padding-left:6px;
     outline-style:none;
     text-shadow:0 1px rgba(0,0,0,0.5);
+    color:rgba(255,255,255,1);
     background:url("../images/search.png") no-repeat;
     background-position:656px 7px;
+}
+
+::-webkit-input-placeholder {
+    text-shadow:0 1px rgba(0,0,0,0.5);
+    color:rgba(255,255,255,1);
 }
 
 .Query .QueryImg {
@@ -322,11 +328,6 @@
     background-position:0 10px;
 }
 
-.KeyboardDetectDialog .DialogTitle {
-    height:60px;
-    line-height:60px;
-}
-
 .KeyboardDetectDialog .DialogContent {
     background:rgba(255,255,255,0.1);
     height:90px;
@@ -351,6 +352,7 @@
     text-align:left;
     padding-left:25px;
     height:30px;
+    color:rgba(255,255,3,0.9);
 }
 
 .KeyboardDetectDialog ul {
