@@ -768,6 +768,8 @@ class DiskTab extends Widget
             @next.style.background = "images/arrow_right_press.png"
             @switch_next()
         )
+        if disks.length < 2
+            @element.style.display = "none"
 
     focus_disk: (disk) ->
         index = disks.indexOf(disk) + 1
