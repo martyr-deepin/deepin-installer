@@ -22,7 +22,7 @@ msgid "unused"
 msgstr "未使用"
 
 #: ../resources/installer/js/base.coffee:107
-msgid "OK"
+msgid "Ok"
 msgstr "确定"
 
 #: ../resources/installer/js/base.coffee:117

@@ -163,18 +163,12 @@ class KeyboardDetectDialog extends  Widget
 
         @foot = create_element("div", "DialogBtn", @element)
         @ok = create_element("div", "", @foot)
-        @ok_input = create_element("input", "InputBtn", @ok)
-        @ok_input.setAttribute("type", "submit")
-        value = _("Yes")
-        @ok_input.setAttribute("value", value)
+        @ok.innerText = _("Yes")
         @ok.addEventListener("click", (e) =>
             @process_have_key()
         )
         @cancel = create_element("div", "", @foot)
-        @cancel_input = create_element("input", "InputBtn", @cancel)
-        @cancel_input.setAttribute("type", "submit")
-        value = _("No")
-        @cancel_input.setAttribute("value", value)
+        @cancel.innerText = _("No")
         @cancel.addEventListener("click", (e) =>
             @process_no_have_key()
         )
