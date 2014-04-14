@@ -509,13 +509,21 @@ thread_update_grub (gpointer data)
             if (!g_file_test ("/boot/grub/grub.cfg", G_FILE_TEST_EXISTS)) {
                 g_creat ("/boot/grub/grub.cfg", 0444);
             }
-            g_spawn_command_line_sync ("/usr/lib/deepin-daemon/grub2 --debug --setup --gfxmode 1024x768", NULL, NULL, NULL, &error);
+
+            extern gchar *xrandr_size;
+            gchar *grub_theme_cmd = NULL;
+            if (xrandr_size != NULL) {
+                grub_theme_cmd = g_strdup_printf ("/usr/lib/deepin-daemon/grub2 --debug --setup --gfxmode %s", xrandr_size);
+            } else {
+                grub_theme_cmd = g_strdup ("/usr/lib/deepin-daemon/grub2 --debug --setup --gfxmode 1024x768");
+            }
+
+            g_spawn_command_line_sync (grub_theme_cmd, NULL, NULL, NULL, &error);
             if (error != NULL) {
                 g_warning ("update grub:update with style %s\n", error->message);
                 g_error_free (error);
-                g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
             }
-
+            g_free (grub_theme_cmd);
         } 
         g_spawn_command_line_sync ("update-grub", NULL, NULL, NULL, &error);
         if (error != NULL) {

@@ -36,6 +36,8 @@ void emit_progress (const gchar *step, const gchar *progress);
 
 gchar *get_matched_string (const gchar *target, const gchar *regex_string);
 
+gchar *get_xrandr_size ();
+
 JS_EXPORT_API double installer_get_memory_size ();
 
 JS_EXPORT_API double installer_get_keycode_from_keysym (double keysym);

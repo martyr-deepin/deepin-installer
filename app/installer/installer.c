@@ -39,6 +39,7 @@ char **global_argv = NULL;
 static int server_sockfd;
 gchar *extract_mode = NULL;
 gint use_processors = 0;
+gchar *xrandr_size = NULL;
 
 static GOptionEntry entries[] = 
 {
@@ -213,7 +214,8 @@ int main(int argc, char **argv)
     gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
 
-    monitor_resource_file ("installer", webview);
+    xrandr_size = get_xrandr_size ();
+    //monitor_resource_file ("installer", webview);
     gtk_main ();
 
     return 0;

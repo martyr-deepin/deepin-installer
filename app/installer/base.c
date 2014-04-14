@@ -70,6 +70,33 @@ get_matched_string (const gchar *target, const gchar *regex_string)
     return result;
 }
 
+gchar *
+get_xrandr_size ()
+{
+    gchar *size = NULL;
+    GError *error = NULL;
+    
+    const gchar *cmd = "sh -c \"xrandr | grep '*' | awk '{print $1}'\"";
+    gchar *output = NULL;
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error); 
+    if (error != NULL) {
+        g_warning ("get xrandr size:%s\n", error->message);
+        g_error_free (error);
+        g_free (output);
+        return g_strdup("1024x768");
+    }
+    gchar **lines = g_strsplit(output, "\n", -1);
+    if (lines != NULL) {
+        size = g_strdup(g_strstrip(lines[0]));
+    } else {
+        size = g_strdup("1024x768");
+    }
+    g_strfreev (lines);
+    g_free(output);
+
+    return size;
+}
+
 JS_EXPORT_API 
 double installer_get_memory_size ()
 {
