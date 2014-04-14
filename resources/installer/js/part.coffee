@@ -347,12 +347,15 @@ class InstallDialog extends Dialog
         , 300)
 
     fill_install_info: ->
-        if __selected_mode == "advance"
+	    if __selected_mode == "advance"
             target = get_target_part()
         else
             target = __selected_item.id
         path = v_part_info[target]["path"]
-        @root_tips.innerText = "Linux Deepin will be installer to " + path
+	    if v_part_info[target]["type"] == "freespace"
+            @root_tips.innerText = _("Linux Deepin will be installed to freespace")
+	    else
+            @root_tips.innerText = _("Linux Deepin will be installed to ") + path
 
 class PartLineItem extends Widget
     constructor: (@id) ->
