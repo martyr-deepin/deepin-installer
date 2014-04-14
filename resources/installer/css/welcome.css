@@ -227,6 +227,30 @@
     box-shadow:inset 1px 0 rgba(255,255,255,0.2);
 }
 
+.QueryComplete {
+    position:relative;
+    left:8px;
+    top:-4px;
+    width:684px;
+    height:auto;
+    max-height:180px;
+    background:rgba(255,255,255,1);
+    overflow:hidden;
+    z-index:900;
+}
+
+.QueryCompleteItem {
+    height:30px;
+    line-height:30px;
+    text-indent:30px;
+    color:rgba(0,0,0,1);
+}
+
+.QueryCompleteItem:hover {
+    background:#3a61b1;
+    color:rgba(255,255,3,1);
+}
+
 .KeyboardTri {
     position:absolute;
     top:-13px;

@@ -486,6 +486,9 @@ class Timezone extends Widget
             if e.which == 13
                 @execute_query()
         )
+        @query_input.addEventListener("input", (e) =>
+            @show_query_complete()
+        )
         @query_img = create_element("div", "QueryImg", @query_wrap)
         @query_img.addEventListener("click", (e) =>
             @execute_query()
@@ -632,6 +635,30 @@ class Timezone extends Widget
     destroy_canvas: (area) ->
         ctx = @canvas.getContext("2d")
         ctx.clearRect(0,0,700,370)
+
+    show_query_complete: ->
+        echo "show query complete"
+        @destroy_query_complete()
+        @query_complete = create_element("div", "QueryComplete", @query_div)
+        if not @search_list?
+            @init_search_list()
+        key = @query_input.value
+        matched = get_matched_items(key, @search_list)
+        for item in matched
+            @create_complete_item(item)
+
+    destroy_query_complete: ->
+        if @query_complete?
+            @query_div.removeChild(@query_complete)
+            @query_complete = null
+
+    create_complete_item: (txt) ->
+        item = create_element("div", "QueryCompleteItem", @query_complete)
+        item.innerText = txt
+        item.addEventListener("click", (e) =>
+            @set_timezone(@zone_dict[txt])
+            @query_complete.style.display = "none"
+        )
 
     execute_query: ->
         if not @search_list?
