@@ -1005,6 +1005,10 @@ class Part extends Page
             @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
 
     fill_bootloader: ->
+        efi_boot = get_efi_boot_part()
+        if efi_boot?
+            @part_grub.style.display = "none"
+            return
         keys = []
         values = []
         for disk in disks
@@ -1021,6 +1025,8 @@ class Part extends Page
         @grub_dropdown = new DropDown("dd_grub", false, null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
+        @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10, 20)
+        @grub_dropdown.show_drop()
 
     switch_mode: ->
         if __selected_mode != "advance"
