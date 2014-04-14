@@ -106,6 +106,10 @@ class Ppt extends Widget
             @create_item(i, img)
             i = i + 1
 
+        if @images.length > 1
+            @init_switch()
+
+    init_switch: ->
         @prev_btn = create_element("div", "PrevBtn", @element)
         @prev_btn.addEventListener("click", (e) =>
             if not __ppt_in_switch
