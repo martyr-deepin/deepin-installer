@@ -637,8 +637,9 @@ class Timezone extends Widget
         ctx.clearRect(0,0,700,370)
 
     show_query_complete: ->
-        echo "show query complete"
-        @destroy_query_complete()
+        if @query_complete?
+            @query_div.removeChild(@query_complete)
+            @query_complete = null
         @query_complete = create_element("div", "QueryComplete", @query_div)
         if not @search_list?
             @init_search_list()
@@ -646,11 +647,6 @@ class Timezone extends Widget
         matched = get_matched_items(key, @search_list)
         for item in matched
             @create_complete_item(item)
-
-    destroy_query_complete: ->
-        if @query_complete?
-            @query_div.removeChild(@query_complete)
-            @query_complete = null
 
     create_complete_item: (txt) ->
         item = create_element("div", "QueryCompleteItem", @query_complete)
