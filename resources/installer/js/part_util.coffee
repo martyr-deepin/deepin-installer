@@ -316,7 +316,8 @@ do_simple_partition = (device, type) ->
                 type = "logical"
             else
                 type = "normal"
-            size = v_disk_info[partid]["length"]
+            size = v_part_info[partid]["length"]
+            align = "start"
             fs = "ext4"
             mp = "/"
             add_part(partid, type, size, align, fs, mp)
