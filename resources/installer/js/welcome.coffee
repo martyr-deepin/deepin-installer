@@ -479,6 +479,8 @@ class Timezone extends Widget
         @query_input.addEventListener("keyup", (e) =>
             if e.which == 13
                 @execute_query()
+            else if e.which == 27
+                @query_complete?.style.display = "none"
         )
         @query_input.addEventListener("input", (e) =>
             @show_query_complete()
