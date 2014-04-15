@@ -532,26 +532,27 @@ void installer_extract_intelligent ()
     g_spawn_command_line_async ("pkill -9 os-prober", NULL);
     g_free (cmd);
 
-    extern gchar *extract_mode;
-    if (extract_mode != NULL) {
-        if (g_strcmp0 (extract_mode, "fast") == 0) {
-            installer_extract_squashfs ();
+    installer_extract_squashfs ();
+    //extern gchar *extract_mode;
+    //if (extract_mode != NULL) {
+    //    if (g_strcmp0 (extract_mode, "fast") == 0) {
+    //        installer_extract_squashfs ();
 
-        } else if (g_strcmp0 (extract_mode, "safe") == 0) {
-            installer_extract_iso ();
+    //    } else if (g_strcmp0 (extract_mode, "safe") == 0) {
+    //        installer_extract_iso ();
 
-        } else {
-            if (is_outdated_machine ()) {
-                installer_extract_iso ();
-            } else {
-                installer_extract_squashfs ();
-            }
-        }
-    } else {
-        if (is_outdated_machine ()) {
-            installer_extract_iso ();
-        } else {
-            installer_extract_squashfs ();
-        }
-    }
+    //    } else {
+    //        if (is_outdated_machine ()) {
+    //            installer_extract_iso ();
+    //        } else {
+    //            installer_extract_squashfs ();
+    //        }
+    //    }
+    //} else {
+    //    if (is_outdated_machine ()) {
+    //        installer_extract_iso ();
+    //    } else {
+    //        installer_extract_squashfs ();
+    //    }
+    //}
 }
