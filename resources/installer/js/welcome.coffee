@@ -641,8 +641,12 @@ class Timezone extends Widget
             @init_search_list()
         key = @query_input.value
         matched = get_matched_items(key, @search_list)
-        for item in matched
-            @create_complete_item(item)
+        if matched.length > 0
+            @query_complete.style.display = "block"
+            for item in matched
+                @create_complete_item(item)
+        else
+            @query_complete.style.display = "none"
 
     create_complete_item: (txt) ->
         item = create_element("div", "QueryCompleteItem", @query_complete)
