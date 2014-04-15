@@ -367,8 +367,8 @@ class PartLineItem extends Widget
         disk = v_part_info[@part]["disk"]
         @color = v_part_info[@part]["color"]
         @element.style.background = @color
-        @element.style.width = v_part_info[@part]["length"] / v_disk_info[disk]["length"] * 700
-        @element.style.left = v_part_info[@part]["start"] / v_disk_info[disk]["length"] * 700
+        @element.style.width = Math.round(v_part_info[@part]["length"] / v_disk_info[disk]["length"] * 700)
+        @element.style.left = Math.round(v_part_info[@part]["start"] / v_disk_info[disk]["length"] * 700)
         @mask = create_element("div", "Mask", @element)
 
     focus: ->
