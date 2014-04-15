@@ -106,7 +106,7 @@ double installer_get_memory_size ()
         return 0;
     }
 
-    return info.totalram;
+    return info.totalram * info.mem_unit;
 }
 
 JS_EXPORT_API 
@@ -149,7 +149,7 @@ double get_free_memory_size ()
         return 0;
     }
 
-    return info.freeram;
+    return info.freeram * info.mem_unit;
 }
 
 guint
