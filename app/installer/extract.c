@@ -113,7 +113,7 @@ ancestor_is_symlink (const char *path)
 }
 
 static int 
-copy_file_cb (const char *path, const struct stat *sb, int typeflag)
+copy_file_cb (const char *path)
 {
     struct stat st;
     if (lstat (path, &st) != 0) {
@@ -187,6 +187,40 @@ copy_file_cb (const char *path, const struct stat *sb, int typeflag)
     return 0;
 }
 
+int walk_directory (const char *dpath, int (*cb) (const char *path))
+{
+	struct stat buf;
+	if (lstat (dpath, &buf) != 0) {
+		g_warning ("walk directory:lstat for %s\n", dpath);
+		return -1;
+	}
+	if (!S_ISDIR(buf.st_mode)) {
+		cb (dpath);
+	}
+	DIR * dirp = opendir (dpath);
+	struct dirent *direntp = NULL;
+	if (dirp != NULL) {
+		while ((direntp = readdir (dirp)) != NULL) {
+			if (strcmp (".", direntp->d_name) == 0 || strcmp ("..", direntp->d_name) == 0) {
+				continue;
+			}
+			char *npath = (char *) malloc (256);
+			if (npath == NULL) {
+				g_warning ("walk directory:malloc\n");
+                break;
+			}
+			memset (npath, 0, 256);
+			strcat (npath, dpath);
+			strcat (npath, "/");
+			strcat (npath, direntp->d_name);
+			walk_directory (npath, cb);
+			free (npath);
+		} 
+	}
+    closedir (dirp);
+	return 0;
+}
+
 gpointer 
 thread_extract_iso (gpointer data)
 {
@@ -225,7 +259,8 @@ thread_extract_iso (gpointer data)
 
     guint cb_id = g_timeout_add (2000, (GSourceFunc) timeout_emit_cb, NULL);
 
-    ftw (target_iso, copy_file_cb, 65536);
+    //ftw (target_iso, copy_file_cb, 65536);
+    walk_directory (target_iso, copy_file_cb); 
 
     umount_cmd  = g_strdup_printf ("umount %s", target_iso);
     g_spawn_command_line_sync (umount_cmd, NULL, NULL, NULL, &error);
