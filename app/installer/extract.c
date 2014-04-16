@@ -34,7 +34,7 @@ extern int mknod(const char *pathname, mode_t mode, dev_t dev);
 extern int lstat(const char *restrict path, struct stat *restrict buf);
 extern int lchown(const char *path, uid_t owner, gid_t group);
 
-#define BUFFERSIZE 	16 * 1024
+#define BUFFERSIZE  16 * 1024
 
 static gboolean extract_finish = FALSE;
 static gdouble total_size;
@@ -61,27 +61,27 @@ copy_single_file (const char *src, const char *dest)
 {
     FILE *sf = fopen (src, "r");
     if (sf == NULL) {
-	    g_warning ("copy single file:open src %s failed\n", src);
-	    return;
+        g_warning ("copy single file:open src %s failed\n", src);
+        return;
     }
 
     if (g_file_test (dest, G_FILE_TEST_EXISTS)) {
-    	g_unlink (dest);
+        g_unlink (dest);
     }
     FILE *df = fopen (dest, "a");
     if (df == NULL) {
-	    g_warning ("copy single file:open dest %s failed\n", dest);
-	    fclose (sf);
-	    return;
+        g_warning ("copy single file:open dest %s failed\n", dest);
+        fclose (sf);
+        return;
     }
 
     char buffer[BUFFERSIZE];
     size_t n;
 
     while ((n = fread (buffer, sizeof(char), sizeof(buffer), sf)) > 0) {
-	    if (fwrite (buffer, sizeof(char), n, df) != n) {
-	        g_warning ("copy single file:%s failed\n", src);
-	        break;
+        if (fwrite (buffer, sizeof(char), n, df) != n) {
+            g_warning ("copy single file:%s failed\n", src);
+            break;
         }
     }
 
@@ -118,8 +118,8 @@ copy_file_cb (const char *path)
 {
     struct stat st;
     if (lstat (path, &st) != 0) {
-    	g_warning ("copy file cb:lstat for %s failed->%s\n", path, strerror (errno));
-	    return -1;
+        g_warning ("copy file cb:lstat for %s failed->%s\n", path, strerror (errno));
+        return -1;
     }
     sum_size += st.st_size;
 
@@ -130,8 +130,8 @@ copy_file_cb (const char *path)
     extern const gchar *target;
     gchar *ts = g_strdup_printf ("%s/squashfs", target);
     if (!g_str_has_prefix (path, ts)) {
-    	g_warning ("copy file cb:invalid path->%s with target %s\n", path, ts);
-	    return -1;
+        g_warning ("copy file cb:invalid path->%s with target %s\n", path, ts);
+        return -1;
     }
 
     gchar **sp = g_strsplit (path, ts, -1);
@@ -147,13 +147,13 @@ copy_file_cb (const char *path)
 
     if (S_ISLNK (mode)) {
         GFile *file = g_file_new_for_path (dest);
-    	GError *error = NULL;
+        GError *error = NULL;
 
-    	gchar *link = g_file_read_link (path, &error);
-    	if (error != NULL) {
-    	    g_error_free (error);
-    	}
-    	error = NULL;
+        gchar *link = g_file_read_link (path, &error);
+        if (error != NULL) {
+            g_error_free (error);
+        }
+        error = NULL;
 
         g_file_make_symbolic_link (file, link, NULL, &error);
         if (error != NULL) {
@@ -165,13 +165,13 @@ copy_file_cb (const char *path)
         g_object_unref (file);
     
     } else if (S_ISDIR (mode)) {
-	    g_mkdir_with_parents (dest, mode);
+        g_mkdir_with_parents (dest, mode);
 
     } else if (S_ISREG (mode)) {
-	    copy_single_file (path, dest);
+        copy_single_file (path, dest);
 
     } else {
-	    mknod (dest, mode, st.st_rdev);
+        mknod (dest, mode, st.st_rdev);
     }
 
     if (lchown (dest, st.st_uid, st.st_gid) != 0) {
@@ -190,43 +190,43 @@ copy_file_cb (const char *path)
 int walk_directory (const char *dpath, int (*cb) (const char *path))
 {
     concurrency_num += 1;
-	struct stat buf;
-	if (lstat (dpath, &buf) != 0) {
-		g_warning ("walk directory:lstat for %s failed->%s\n", dpath, strerror (errno));
-		return -1;
-	}
-	if (!S_ISDIR(buf.st_mode)) {
-	    cb (dpath);
+    struct stat buf;
+    if (lstat (dpath, &buf) != 0) {
+        g_warning ("walk directory:lstat for %s failed->%s\n", dpath, strerror (errno));
+        return -1;
+    }
+    if (!S_ISDIR(buf.st_mode)) {
+        cb (dpath);
         concurrency_num -= 1;
         return 0;
-	}
-	DIR * dirp = opendir (dpath);
-	struct dirent *direntp = NULL;
+    }
+    DIR * dirp = opendir (dpath);
+    struct dirent *direntp = NULL;
     cb (dpath);
     concurrency_num -= 1;
-	if (dirp != NULL) {
-		while ((direntp = readdir (dirp)) != NULL) {
-			if (strcmp (".", direntp->d_name) == 0 || strcmp ("..", direntp->d_name) == 0) {
-				continue;
-			}
-			char *npath = (char *) malloc (256);
-			if (npath == NULL) {
-				g_warning ("walk directory:malloc\n");
+    if (dirp != NULL) {
+        while ((direntp = readdir (dirp)) != NULL) {
+            if (strcmp (".", direntp->d_name) == 0 || strcmp ("..", direntp->d_name) == 0) {
+                continue;
+            }
+            char *npath = (char *) malloc (256);
+            if (npath == NULL) {
+                g_warning ("walk directory:malloc\n");
                 break;
-			}
-			memset (npath, 0, 256);
-			strcat (npath, dpath);
-			strcat (npath, "/");
-			strcat (npath, direntp->d_name);
+            }
+            memset (npath, 0, 256);
+            strcat (npath, dpath);
+            strcat (npath, "/");
+            strcat (npath, direntp->d_name);
             while (concurrency_num > 65535) {
                 g_usleep (10);
             }
-			walk_directory (npath, cb);
-			free (npath);
-		} 
-	}
+            walk_directory (npath, cb);
+            free (npath);
+        } 
+    }
     closedir (dirp);
-	return 0;
+    return 0;
 }
 
 gpointer 
