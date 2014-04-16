@@ -60,7 +60,7 @@ copy_single_file (const char *src, const char *dest)
 {
     FILE *sf = fopen (src, "r");
     if (sf == NULL) {
-	    g_warning ("copy single file:open src %s failed\n", src);
+	    //g_warning ("copy single file:open src %s failed\n", src);
 	    return;
     }
 
@@ -69,7 +69,7 @@ copy_single_file (const char *src, const char *dest)
     }
     FILE *df = fopen (dest, "a");
     if (df == NULL) {
-	    g_warning ("copy single file:open dest %s failed\n", dest);
+	    //g_warning ("copy single file:open dest %s failed\n", dest);
 	    fclose (sf);
 	    return;
     }
@@ -79,7 +79,7 @@ copy_single_file (const char *src, const char *dest)
 
     while ((n = fread (buffer, sizeof(char), sizeof(buffer), sf)) > 0) {
 	    if (fwrite (buffer, sizeof(char), n, df) != n) {
-	        g_warning ("copy single file:%s failed\n", src);
+	        //g_warning ("copy single file:%s failed\n", src);
 	        break;
         }
     }
@@ -117,8 +117,8 @@ copy_file_cb (const char *path)
 {
     struct stat st;
     if (lstat (path, &st) != 0) {
-    	g_warning ("copy file cb:lstat %s\n", path);
-	    return 1;
+    	//g_warning ("copy file cb:lstat for %s failed->%s\n", path, strerror (errno));
+	    return -1;
     }
     sum_size += st.st_size;
 
@@ -129,8 +129,8 @@ copy_file_cb (const char *path)
     extern const gchar *target;
     gchar *ts = g_strdup_printf ("%s/squashfs", target);
     if (!g_str_has_prefix (path, ts)) {
-    	g_warning ("copy file cb:invalid path->%s with target %s\n", path, ts);
-	    return 1;
+    	//g_warning ("copy file cb:invalid path->%s with target %s\n", path, ts);
+	    return -1;
     }
 
     gchar **sp = g_strsplit (path, ts, -1);
@@ -156,7 +156,7 @@ copy_file_cb (const char *path)
 
         g_file_make_symbolic_link (file, link, NULL, &error);
         if (error != NULL) {
-            g_warning ("copy file cb:make symlink from %s to %s failed-> %s\n", dest, link, error->message);
+            //g_warning ("copy file cb:make symlink from %s to %s failed-> %s\n", dest, link, error->message);
             g_error_free (error);
         }
         g_free (link);
@@ -168,18 +168,18 @@ copy_file_cb (const char *path)
 
     } else if (S_ISREG (mode)) {
 	    copy_single_file (path, dest);
-	    chmod (dest, mode);
+	    //chmod (dest, mode);
 
     } else {
 	    mknod (dest, mode, st.st_rdev);
     }
 
     if (lchown (dest, st.st_uid, st.st_gid) != 0) {
-        g_warning ("copy file cb:lchown for %s failed\n", dest);
+        //g_warning ("copy file cb:lchown for %s failed->%s\n", dest, strerror (errno));
     }
     if (!S_ISLNK (mode)) {
         if (g_chmod (dest, mode) != 0) {
-            g_warning ("copy file cb:chmod for %s failed\n", dest);
+            //g_warning ("copy file cb:chmod for %s failed\n", dest);
         }
     }
     g_free (dest);
@@ -191,11 +191,11 @@ int walk_directory (const char *dpath, int (*cb) (const char *path))
 {
 	struct stat buf;
 	if (lstat (dpath, &buf) != 0) {
-		g_warning ("walk directory:lstat for %s\n", dpath);
+		g_warning ("walk directory:lstat for %s failed->%s\n", dpath, strerror (errno));
 		return -1;
 	}
 	if (!S_ISDIR(buf.st_mode)) {
-		cb (dpath);
+	    return cb (dpath);
 	}
 	DIR * dirp = opendir (dpath);
 	struct dirent *direntp = NULL;

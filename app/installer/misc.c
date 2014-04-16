@@ -337,12 +337,12 @@ gboolean installer_chroot_target ()
     extern const gchar* target;
     if (target == NULL) {
         g_warning ("chroot:target is NULL\n");
-        return ret;
+        goto out;
     }
     extern int chroot_fd;
     if ((chroot_fd = open (".", O_RDONLY)) < 0) {
         g_warning ("chroot:set chroot fd failed\n");
-        return ret;
+        goto out;
     }
 
     extern gboolean in_chroot;
@@ -352,8 +352,14 @@ gboolean installer_chroot_target ()
     } else {
         g_warning ("chroot:chroot to %s falied:%s\n", target, strerror (errno));
     }
+    goto out;
 
-    emit_progress ("chroot", "finish");
+out:
+    if (ret) {
+        emit_progress ("chroot", "finish");
+    } else {
+        emit_progress ("chroot", "terminate");
+    }
     return ret;
 }
 
@@ -379,7 +385,6 @@ void installer_copy_whitelist ()
     g_file_get_contents (WHITE_LIST_PATH, &contents, NULL, &error);
     if (error != NULL) {
         g_warning ("copy whitelist:get packages list %s\n", error->message);
-        g_error_free (error);
         goto out;
     }
     if (contents == NULL) {
@@ -392,11 +397,9 @@ void installer_copy_whitelist ()
        goto out;
     }
     guint count = g_strv_length (strarray);
-    g_printf ("copy whitelist:file count %d\n", count);
     guint index = 0;
     for (index = 0; index < count; index++) {
         gchar *item = g_strdup (strarray[index]);
-        g_printf ("copy whitelist:start copy file %s\n", item);
         if (!g_file_test (item, G_FILE_TEST_EXISTS)) {
             g_warning ("copy whitelist:file %s not exists\n", item);
             g_free (item);
@@ -414,7 +417,6 @@ void installer_copy_whitelist ()
         g_object_unref (dest);
         if (error != NULL) {
             g_warning ("copy whiltelist:file %s error->%s\n", item, error->message);
-            g_error_free (error);
         }
     }
     goto out;

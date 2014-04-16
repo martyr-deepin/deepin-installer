@@ -1252,10 +1252,9 @@ out:
     if (mount_file != NULL) {
         endmntent (mount_file);
     }
-    if (ret) {
-        emit_progress ("chroot", "finish");
-    } else {
-        emit_progress ("chroot", "terminate");
+    if (!ret) {
+        //write fs tab stage goes together with timezone
+        emit_progress ("timezone", "terminate");
     }
     return ret;
 }
