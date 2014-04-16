@@ -39,6 +39,7 @@ extern int lchown(const char *path, uid_t owner, gid_t group);
 static gboolean extract_finish = FALSE;
 static gdouble total_size;
 static gdouble sum_size;
+static gint concurrency_num;
 
 static gboolean
 timeout_emit_cb (gpointer data)
@@ -60,7 +61,7 @@ copy_single_file (const char *src, const char *dest)
 {
     FILE *sf = fopen (src, "r");
     if (sf == NULL) {
-	    //g_warning ("copy single file:open src %s failed\n", src);
+	    g_warning ("copy single file:open src %s failed\n", src);
 	    return;
     }
 
@@ -69,7 +70,7 @@ copy_single_file (const char *src, const char *dest)
     }
     FILE *df = fopen (dest, "a");
     if (df == NULL) {
-	    //g_warning ("copy single file:open dest %s failed\n", dest);
+	    g_warning ("copy single file:open dest %s failed\n", dest);
 	    fclose (sf);
 	    return;
     }
@@ -79,7 +80,7 @@ copy_single_file (const char *src, const char *dest)
 
     while ((n = fread (buffer, sizeof(char), sizeof(buffer), sf)) > 0) {
 	    if (fwrite (buffer, sizeof(char), n, df) != n) {
-	        //g_warning ("copy single file:%s failed\n", src);
+	        g_warning ("copy single file:%s failed\n", src);
 	        break;
         }
     }
@@ -117,19 +118,19 @@ copy_file_cb (const char *path)
 {
     struct stat st;
     if (lstat (path, &st) != 0) {
-    	//g_warning ("copy file cb:lstat for %s failed->%s\n", path, strerror (errno));
+    	g_warning ("copy file cb:lstat for %s failed->%s\n", path, strerror (errno));
 	    return -1;
     }
     sum_size += st.st_size;
 
-    if (ancestor_is_symlink (path)) {
-        return 0;
-    }
+    //if (ancestor_is_symlink (path)) {
+    //    return 0;
+    //}
 
     extern const gchar *target;
     gchar *ts = g_strdup_printf ("%s/squashfs", target);
     if (!g_str_has_prefix (path, ts)) {
-    	//g_warning ("copy file cb:invalid path->%s with target %s\n", path, ts);
+    	g_warning ("copy file cb:invalid path->%s with target %s\n", path, ts);
 	    return -1;
     }
 
@@ -168,18 +169,17 @@ copy_file_cb (const char *path)
 
     } else if (S_ISREG (mode)) {
 	    copy_single_file (path, dest);
-	    //chmod (dest, mode);
 
     } else {
 	    mknod (dest, mode, st.st_rdev);
     }
 
     if (lchown (dest, st.st_uid, st.st_gid) != 0) {
-        //g_warning ("copy file cb:lchown for %s failed->%s\n", dest, strerror (errno));
+        g_warning ("copy file cb:lchown for %s failed->%s\n", dest, strerror (errno));
     }
     if (!S_ISLNK (mode)) {
         if (g_chmod (dest, mode) != 0) {
-            //g_warning ("copy file cb:chmod for %s failed\n", dest);
+            g_warning ("copy file cb:chmod for %s failed\n", dest);
         }
     }
     g_free (dest);
@@ -189,16 +189,21 @@ copy_file_cb (const char *path)
 
 int walk_directory (const char *dpath, int (*cb) (const char *path))
 {
+    concurrency_num += 1;
 	struct stat buf;
 	if (lstat (dpath, &buf) != 0) {
 		g_warning ("walk directory:lstat for %s failed->%s\n", dpath, strerror (errno));
 		return -1;
 	}
 	if (!S_ISDIR(buf.st_mode)) {
-	    return cb (dpath);
+	    cb (dpath);
+        concurrency_num -= 1;
+        return 0;
 	}
 	DIR * dirp = opendir (dpath);
 	struct dirent *direntp = NULL;
+    cb (dpath);
+    concurrency_num -= 1;
 	if (dirp != NULL) {
 		while ((direntp = readdir (dirp)) != NULL) {
 			if (strcmp (".", direntp->d_name) == 0 || strcmp ("..", direntp->d_name) == 0) {
@@ -213,6 +218,9 @@ int walk_directory (const char *dpath, int (*cb) (const char *path))
 			strcat (npath, dpath);
 			strcat (npath, "/");
 			strcat (npath, direntp->d_name);
+            while (concurrency_num > 65535) {
+                g_usleep (10);
+            }
 			walk_directory (npath, cb);
 			free (npath);
 		} 
