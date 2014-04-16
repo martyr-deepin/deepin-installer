@@ -18,6 +18,8 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 DCore.signal_connect("progress", (msg) ->
+    if __selected_stage == "terminate"
+        return
     if msg.stage == "extract" and __selected_stage == "extract"
         progress_page.handle_extract(msg.progress)
     else if msg.stage == "chroot" and __selected_stage == "chroot"
@@ -219,6 +221,7 @@ class Progress extends Page
         #@report =  new ReportDialog("report")
         #document.body.appendChild(@report.element)
         __install_failed = true
+        __selected_stage = "terminate"
         finish_page = new Finish("finish", false)
         pc.add_page(finish_page)
         pc.remove_page(progress_page)
@@ -276,7 +279,8 @@ class Progress extends Page
             @update_progress("92%")
             try
                 write_fs_tab()
-                DCore.Installer.set_timezone(__selected_timezone)
+                if __selected_stage != "terminate"
+                    DCore.Installer.set_timezone(__selected_timezone)
             catch error
                 echo error
         else if progress == "finish"
