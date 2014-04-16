@@ -1,4 +1,4 @@
-SET(NAME "installer")
+SET(NAME "deepin-installer")
 
 GEN_JSC_SOURCE2(JSC_GEN "jsc" "installer" "installer.cfg" "dbus.cfg")
 
@@ -13,7 +13,7 @@ include_directories(${DWEBVIEW_INCLUDE_DIRS} ${PARTED_INCLUDE_DIRS} ${XKLAVIER_I
 
 execute_process(
     COMMAND make
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/resources/${NAME}/js
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/resources/installer/js
     )
 
 install(
@@ -22,7 +22,7 @@ install(
     )
 
 install(
-    DIRECTORY ${PROJECT_SOURCE_DIR}/resources/${NAME}
+    DIRECTORY ${PROJECT_SOURCE_DIR}/resources/installer
     DESTINATION ${RESOURCE_DIR}
     )
 
