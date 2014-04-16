@@ -195,6 +195,10 @@ get_partition_mount_point (const gchar *path)
     g_free (cmd);
     if (mp != NULL) {
         mp = g_strstrip (mp);
+        if (g_strcmp0 (mp, "") == 0) {
+            g_free (mp);
+            return NULL;
+        }
     }
 
     return mp;

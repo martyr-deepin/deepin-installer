@@ -1361,12 +1361,14 @@ out:
 JS_EXPORT_API
 void installer_unmount_partition (const gchar *part)
 {
-    gchar *mp = installer_get_partition_mp (part);
-    if (mp == NULL || !g_file_test (mp, G_FILE_TEST_EXISTS)) {
-        return ;
+    gchar *path = installer_get_partition_path (part);
+    gchar *mp = NULL;
+    while ((mp = get_partition_mount_point (path)) != NULL) {
+        gchar *cmd = g_strdup_printf ("umount -l %s", mp);
+        g_spawn_command_line_async (cmd, NULL);
+        g_free (cmd);
+        g_free (mp);
+        g_usleep (1000);
     }
-    gchar *cmd = g_strdup_printf ("umount -l %s", mp);
-    g_spawn_command_line_async (cmd, NULL);
-    g_free (mp);
-    g_free (cmd);
+    g_free (path);
 }
