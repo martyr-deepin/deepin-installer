@@ -23,6 +23,7 @@ __selected_variant_item = null
 __focused_layout_item = null
 
 __selected_timezone = "Asia/Shanghai"
+__selected_zone_index = 8
 __selected_username = null
 __selected_hostname = null
 __selected_password = null
@@ -492,6 +493,15 @@ class Timezone extends Widget
 
         @picker_wrap = create_element("div","TmezoneWrap", @element)
         @picker = create_element("div", "TimezonePicker", @picker_wrap)
+        @picker.addEventListener("mousemove", (e) =>
+            px = e.x - 25
+            mouse_zone = Math.round(px * 24 / 700 - 12).toString()
+            if mouse_zone != __selected_zone_index
+                __selected_zone_index = mouse_zone
+                @destroy_canvas("picker")
+                for area in @get_offset_areas(__selected_zone_index)
+                    @draw_canvas(area)
+        )
         @canvas = create_element("canvas", "TimezoneCanvas", @picker)
         @canvas.setAttribute("width", 700)
         @canvas.setAttribute("height", 370)
