@@ -632,7 +632,7 @@ class PartTableItem extends Widget
         @mount.innerHTML = ""
         if __selected_mode != "advance" 
             if @active
-                @mount.innerText = _("Install Here")
+                @mount.innerText = _("Install here")
                 @mount.setAttribute("style", "text-align:right")
             return
         else
