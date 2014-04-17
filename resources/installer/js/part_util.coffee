@@ -369,6 +369,9 @@ check_has_mount = ->
             if DCore.Installer.get_partition_mp(part)
                 mount = true
                 break
+    if mount == false
+        if DCore.Installer.is_swap_on() == true
+            mount = true
     return mount
 
 get_legacy_boot_part = ->

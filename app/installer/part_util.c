@@ -1380,3 +1380,18 @@ void installer_swapoff_all ()
     g_spawn_command_line_async (cmd, NULL);
     g_free (cmd);
 }
+
+JS_EXPORT_API 
+gboolean installer_is_swap_on ()
+{
+    gboolean flag = FALSE;
+    gchar *cmd = g_strdup ("free |grep \"Swap\" |awk '{print $2}'");
+    gchar *output = NULL;
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, NULL);
+    if (g_strcmp0 ("0", g_strstrip (output)) != 0) {
+        flag = TRUE;
+    }
+    g_free (output);
+    g_free (cmd);
+    return flag;
+}
