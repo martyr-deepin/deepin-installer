@@ -1372,3 +1372,11 @@ void installer_unmount_partition (const gchar *part)
     }
     g_free (path);
 }
+
+JS_EXPORT_API 
+void installer_swapoff_all ()
+{
+    gchar *cmd = g_strdup ("swapoff -a"); 
+    g_spawn_command_line_async (cmd, NULL);
+    g_free (cmd);
+}
