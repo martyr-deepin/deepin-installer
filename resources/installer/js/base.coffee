@@ -396,6 +396,11 @@ class DropDown extends Widget
 
     set_list_enable: (enable) ->
         @listenable = enable
+        if @editable
+            if enable
+                @cur_input.removeAttribute("disabled")
+            else
+                @cur_input.setAttribute("disabled", "disabled")
 
     set_list_background: (background) ->
         @listbackground = background
