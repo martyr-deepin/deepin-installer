@@ -28,19 +28,12 @@ DCore.signal_connect("slow", (msg) ->
     Widget.look_up(msg.uuid)?.update_part_slow()
 )
 
-#get_random_color = ->
-#    return '#'+(Math.random()*0xffffff<<0).toString(16)
-#    return _color_list[Math.floor(Math.random() * 24)]
 random_list = []
-
 get_random_color = ->
     if random_list.length == 0
         for item in _color_list
             random_list.push(item)
-    length = random_list.length
-    index = Math.floor(Math.random() * length)
-    color = random_list[index]
-    random_list.splice(index,1)
+    random_list.splice(0,1)
 
 sector_to_mb = (sector_length, sector_size) ->
     return Math.floor((sector_length * sector_size) / (1000 * 1000))
