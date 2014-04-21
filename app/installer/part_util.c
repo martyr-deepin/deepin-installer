@@ -1214,8 +1214,9 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         }
         mnt.mnt_passno = 1;
     } else if (g_strcmp0 ("swap", mp) == 0 || g_strcmp0 ("linux-swap", fs) == 0) {
+        mnt.mnt_dir = "none";
         mnt.mnt_type = "swap";
-        mnt.mnt_opts = "sw,pri=1";
+        mnt.mnt_opts = "sw";
         mnt.mnt_passno = 0;
     } else if (!g_str_has_prefix (mp, "/")) {
         g_warning ("write fs tab:invalid mp->%s\n", mp);
