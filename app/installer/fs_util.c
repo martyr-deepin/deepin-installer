@@ -597,7 +597,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkswap not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkswap %s", path);
+        cmd = g_strdup_printf ("mkswap -f %s", path);
 
     } else if (g_strcmp0 (fs, "ntfs") == 0) {
         fs_cmd = g_find_program_in_path ("mkntfs");
@@ -637,7 +637,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
             g_warning ("set partition filesystem:mkswap not installed\n");
             return ;
         }
-        cmd = g_strdup_printf ("mkswap %s", path);
+        cmd = g_strdup_printf ("mkswap -f %s", path);
 
     } else {
         g_warning ("set partition filesystem:%s currently not supported\n", fs);
