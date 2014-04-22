@@ -295,7 +295,6 @@ class DropDown extends Widget
             @cur_input.style.height = @dropheight  + "px"
             @cur_input.addEventListener("blur", (e) =>
                 @set_selected(@cur_input.value)
-                @set_current_txt(@cur_input.value)
                 @on_change_cb(@id[6..17], @cur_input.value)
             )
         else

@@ -211,7 +211,7 @@ class AddPartDialog extends Dialog
             mp = "unused"
         if mp in get_selected_mp()
             part = get_mp_partition(mp)
-            if part?
+            if part? and part != partid
                 v_part_info[part]["mp"] = "unused"
                 Widget.look_up(part)?.fill_mount()
             else
@@ -671,7 +671,7 @@ class PartTableItem extends Widget
             mp = "unused"
         if mp in get_selected_mp()
             part = get_mp_partition(mp)
-            if part?
+            if part? and part != partid
                 v_part_info[part]["mp"] = "unused"
                 Widget.look_up(part)?.fill_mount()
             else
