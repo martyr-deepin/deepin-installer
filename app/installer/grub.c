@@ -126,6 +126,7 @@ thread_update_grub (gpointer data)
             if (error != NULL) {
                 g_warning ("update grub:update with style %s\n", error->message);
                 g_error_free (error);
+                error = NULL;
             }
             g_free (grub_theme_cmd);
         } 
@@ -150,6 +151,7 @@ out:
     g_free (grub_install);
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
 
     finish_install_cleanup ();
