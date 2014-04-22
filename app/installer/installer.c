@@ -126,7 +126,6 @@ JS_EXPORT_API
 void installer_finish_reboot ()
 {
     finish_install_cleanup ();
-    //installer_reboot ();
     g_spawn_command_line_async ("reboot", NULL);
     gtk_main_quit ();
 }

@@ -29,8 +29,6 @@ struct GrubHandler {
     gboolean uefi;
 };
 
-void installer_reboot ();
-
 JS_EXPORT_API JSObjectRef installer_get_timezone_list ();
 
 JS_EXPORT_API void installer_set_timezone (const gchar *timezone);
