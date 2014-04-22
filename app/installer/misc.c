@@ -124,6 +124,12 @@ out:
     return timezones;
 }
 
+static void 
+run_locale_gen ()
+{
+    g_spawn_command_line_async ("locale-gen", NULL);
+}
+
 JS_EXPORT_API 
 void installer_set_timezone (const gchar *timezone)
 {
@@ -179,6 +185,7 @@ out:
         g_warning ("set timezone failed, just skip this step");
         emit_progress ("timezone", "finish");
     }
+    run_locale_gen ();
 }
 
 JS_EXPORT_API
