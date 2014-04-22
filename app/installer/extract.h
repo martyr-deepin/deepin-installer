@@ -30,4 +30,6 @@ JS_EXPORT_API void installer_extract_squashfs ();
 
 JS_EXPORT_API void installer_extract_intelligent ();
 
+JS_EXPORT_API void installer_copy_whitelist ();
+
 #endif

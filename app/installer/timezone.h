@@ -19,13 +19,13 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef __MISC_H
-#define __MISC_H
+#ifndef __TIMEZONE_H
+#define __TIMEZONE_H
 
 #include "base.h"
 
-JS_EXPORT_API gboolean installer_chroot_target ();
+JS_EXPORT_API JSObjectRef installer_get_timezone_list ();
 
-void finish_install_cleanup ();
+JS_EXPORT_API void installer_set_timezone (const gchar *timezone);
 
 #endif

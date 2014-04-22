@@ -19,13 +19,16 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef __MISC_H
-#define __MISC_H
+#ifndef __GRUB_H
+#define __GRUB_H
 
 #include "base.h"
 
-JS_EXPORT_API gboolean installer_chroot_target ();
+struct GrubHandler {
+    const gchar *uuid;
+    gboolean uefi;
+};
 
-void finish_install_cleanup ();
+JS_EXPORT_API void installer_update_bootloader (const gchar *uuid, gboolean uefi);
 
 #endif

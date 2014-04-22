@@ -259,7 +259,6 @@ class Progress extends Page
             echo "start handle chroot"
             @update_progress("91%")
             try
-                DCore.Installer.mount_procfs()
                 DCore.Installer.chroot_target()
             catch error
                 echo error
