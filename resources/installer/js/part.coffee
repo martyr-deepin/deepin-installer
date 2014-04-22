@@ -509,7 +509,7 @@ class PartTableItem extends Widget
             else if os.toLowerCase().indexOf("windows") != -1
                 os_img = "images/windows.png"
             else if os.toLowerCase().indexOf("mac") != -1
-                os_img = "images/apple.png"
+                os_img = "images/mac.png"
             else
                 echo "--------upate device os--------"
                 echo os
