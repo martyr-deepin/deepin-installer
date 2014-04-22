@@ -977,6 +977,8 @@ gboolean handle_update_partition_fs (const gchar *part, const gchar *fs)
     if (pedpartition != NULL) {
         if (g_strcmp0 (fs, "efi") == 0) {
             part_fs_type = ped_file_system_type_get ("fat32");
+        } else if (g_strcmp0 (fs, "swap") == 0) {
+            part_fs_type = ped_file_system_type_get ("linux-swap");
         } else {
             part_fs_type = ped_file_system_type_get (fs);
         }
