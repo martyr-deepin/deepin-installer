@@ -1161,10 +1161,25 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
     gchar *uuid = NULL;
     gchar *fsname = NULL;
     gchar *mount_cmd = NULL;
+    gchar *comment_line = NULL;
     PedGeometry *geom = NULL;
     PedFileSystemType *fs_type = NULL;
     struct mntent mnt;
     FILE *mount_file = NULL;
+    static gboolean header_inited = FALSE;
+
+    if (!header_inited) {
+        const gchar *contents = "# /etc/fstab: static file system information.\
+                                 #\
+                                 # Use 'blkid' to print the universally unique identifier for a\
+                                 # device; this may be used with UUID= as a more robust way to name devices\
+                                 # that works even if disks are added and removed. See fstab(5).\
+                                 #\
+                                 # <file system> <mount point>   <type>  <options>       <dump>  <pass>\
+                                ";
+        g_file_set_contents ("/etc/fstab", contents, -1, NULL);
+        header_inited = TRUE;
+    }
 
     if (mp == NULL) {
         g_warning ("write fs tab:mount point is NULL\n");
@@ -1235,6 +1250,17 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         mnt.mnt_type = "ntfs-3g";
     }
 
+    comment_line = g_strdup_printf ("# %s was on %s during installation\n", mp, path);
+    gchar *p = comment_line;
+    size_t s = 0;
+    while(*p != '\0') {
+        p++;
+        s++;
+    }
+    if (fwrite (comment_line, 1, s, mount_file) != s) {
+        g_warning ("write fs tab: fwrite %s failed\n", comment_line);
+    }
+
     if ((addmntent(mount_file, &mnt)) != 0) {
         g_warning ("write fs tab: addmntent failed %s\n", strerror (errno));
         goto out;
@@ -1249,6 +1275,7 @@ out:
     g_free (uuid);
     g_free (fsname);
     g_free (mount_cmd);
+    g_free (comment_line);
     if (geom != NULL) {
         ped_geometry_destroy (geom);
     }
