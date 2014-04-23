@@ -21,10 +21,18 @@
 
 #include "wubi.h"
 
-#define WUBI_CONFIG_FILE     /target/preseed.cfg
+#define WUBI_CONFIG_FILE     "/target/preseed.cfg"
 
-JS_EXPORT_API 
-gboolean installer_is_use_wubi ()
+extern gchar *opt_target;
+extern gchar *opt_username;
+extern gchar *opt_hostname;
+extern gchar *opt_password;
+extern gchar *opt_layout;
+extern gchar *opt_variant;
+extern gchar *opt_timezone;
+extern gchar *opt_locale;
+
+gboolean is_use_wubi ()
 {
     gint status = -1;
     g_spawn_command_line_sync ("grep install-automatic /proc/cmdline", NULL, NULL, &status, NULL); 
@@ -38,12 +46,8 @@ gboolean installer_is_use_wubi ()
     return FALSE;
 }
 
-JS_EXPORT_API 
-JSObjectRef installer_get_wubi_config ()
+void sync_wubi_config ()
 {
-    GRAB_CTX ();
-    JSObjectRef json = json_create ();
-
     gsize index = 0;
     GError *error = NULL;
     GFile *file = NULL;
@@ -85,13 +89,13 @@ JSObjectRef installer_get_wubi_config ()
                     g_warning ("get wubi config:split %s failed\n", data);
                 } else {
                     if (g_strcmp0 (line[1], "netcfg/get_hostname") == 0) {
-                        json_append_string (json, "hostname", line[3]);
+                        opt_hostname = g_strdup(line[3]);
                     } else if (g_strcmp0 (line[1], "passwd/username") == 0) {
-                        json_append_string (json, "username", line[3]);
+                        opt_username = g_strdup(line[3]);
                     } else if (g_strcmp0 (line[1], "passwd/user-passwd-crypted") == 0) {
-                        json_append_string (json, "user-passwd-crypted", line[3]);
-                    } else if (g_strcmp0 (line[1]. "time/zone") == 0) {
-                        json_append_string (json, "timezone", line[3]);
+                        opt_password = g_strdup(line[3]);
+                    } else if (g_strcmp0 (line[1], "time/zone") == 0) {
+                        opt_timezone = g_strdup(line[3]);
                     }
                     g_strfreev (line);
                 }
@@ -112,6 +116,4 @@ out:
     if (error != NULL) {
         g_error_free (error);
     }
-    UNGRAB_CTX ();
-    return json;
 }

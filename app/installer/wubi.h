@@ -24,8 +24,8 @@
 
 #include "base.h"
 
-JS_EXPORT_API gboolean installer_is_use_wubi ();
+gboolean is_use_wubi ();
 
-JS_EXPORT_API JSObjectRef installer_get_wubi_config ();
+void sync_wubi_config ();
 
 #endif
