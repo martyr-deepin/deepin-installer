@@ -25,9 +25,11 @@ determine_target_id = (target) ->
         throw "invalid target to install"
     for disk in disks
         if m_disk_info[disk]["path"] == target
+            __selected_target = disk
             return disk
         for part in m_disk_info[disk]["partitions"]
             if m_part_info[part]["path"] == target
+                __selected_target = part
                 return part
     return null
 
@@ -36,7 +38,6 @@ fetch_install_info = ->
         info = DCore.Installer.get_installation_info()
         __selected_username = info["username"]
         __selected_password = info["password"]
-        __selected_target = determine_target_id(info["target"])
         if info["hostname"]? and info["hostname"].length > 0
             __selected_hostname = info["hostname"]
         else
@@ -55,29 +56,38 @@ fetch_install_info = ->
             __selected_locale = info["locale"]
         else
             __selected_locale = "zh_CN.UTF-8"
+        determine_target_id(info["target"])
     catch error
         throw error
 
+handle_automatic_install = ->
+    if __init_parted_finish
+        try
+            undo_part_table_info()
+            fetch_install_info()
+            if not __selected_target?
+                throw "invalid __selected_target"
+            if __selected_target.indexOf("disk") != -1
+                do_simple_partition(__selected_target, "disk")
+                __selected_grub = __selected_target
+            else if __selected_target.indexOf("part") != -1
+                do_simple_partition(__selected_target, "part")
+                __selected_grub = v_part_info[__selected_target]["disk"]
+            else
+                throw "invalid __selected_target"
+            progress_page = new Progress("progress")
+            pc.add_page(progress_page)
+        catch error
+            echo error
+            welcome_page = new Welcome("welcome")
+            pc.add_page(welcome_page)
+    else
+        setTimeout(=>
+            handle_automatic_install()
+        , 1000)
+
 if DCore.Installer.is_installation_auto()
-    try
-        undo_part_table_info()
-        fetch_install_info()
-        if not __selected_target?
-            throw "invalid __selected_target"
-        if __selected_target.indexOf("disk") != -1
-            do_simple_partition(__selected_target, "disk")
-            __selected_grub = __selected_target
-        else if __selected_target.indexOf("part") != -1
-            do_simple_partition(__selected_target, "part")
-            __selected_grub = v_part_info[__selected_target]["disk"]
-        else
-            throw "invalid __selected_target"
-        progress_page = new Progress("progress")
-        pc.add_page(progress_page)
-    catch error
-        echo error
-        welcome_page = new Welcome("welcome")
-        pc.add_page(welcome_page)
+    handle_automatic_install()
 else
     welcome_page = new Welcome("welcome")
     pc.add_page(welcome_page)

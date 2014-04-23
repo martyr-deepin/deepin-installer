@@ -1136,10 +1136,15 @@ add_part = (free_part, type, size, align, fs, mp) ->
     return new_part
 
 undo_part_table_info = ->
-    init_v_disk_info()
-    init_v_part_info()
-    init_m_disk_info()
-    init_m_part_info()
+    if __init_parted_finish
+        init_v_disk_info()
+        init_v_part_info()
+        init_m_disk_info()
+        init_m_part_info()
+    else 
+        setTimeout(=>
+            undo_part_table_info()
+        ,1000)
 
 #Control end
 #Control
