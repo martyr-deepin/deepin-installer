@@ -20,7 +20,7 @@
 pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
-determine_target_id: (target) ->
+determine_target_id = (target) ->
     if target.indexOf("/dev/") == -1
         throw "invalid target to install"
     for disk in disks
@@ -31,7 +31,7 @@ determine_target_id: (target) ->
                 return part
     return null
 
-fetch_install_info:->
+fetch_install_info = ->
     try
         info = DCore.Installer.get_installation_info()
         __selected_username = info["username"]
@@ -70,6 +70,8 @@ if DCore.Installer.is_installation_auto()
         else if __selected_target.indexOf("part") != -1
             do_simple_partition(__selected_target, "part")
             __selected_grub = v_part_info[__selected_target]["disk"]
+        else
+            throw "invalid __selected_target"
         progress_page = new Progress("progress")
         pc.add_page(progress_page)
     catch error
