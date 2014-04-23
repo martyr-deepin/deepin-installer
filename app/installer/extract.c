@@ -236,14 +236,20 @@ thread_extract_iso (gpointer data)
     gboolean succeed = FALSE;
     extern const gchar *target;
     GError *error = NULL;
-    gchar *target_iso;
-    gchar *mount_cmd;
-    gchar *umount_cmd;
-    gchar *size_content;
+    gchar *target_iso = NULL;
+    gchar *mount_cmd = NULL;
+    gchar *umount_cmd = NULL;
+    gchar *size_content = NULL;
     gsize length;
 
     if (target == NULL) {
         g_warning ("extract iso:target NULL\n");
+        goto out;
+    }
+
+    const gchar *iso = "/cdrom/casper/filesystem.squashfs";
+    if (!g_file_test (iso, G_FILE_TEST_EXISTS)) {
+        g_warning ("extract iso:iso not exists\n");
         goto out;
     }
 
@@ -432,10 +438,6 @@ thread_extract_squashfs (gpointer data)
         emit_progress ("extract", "terminate");
         return NULL;
     }
-
-    gchar *share = g_strdup_printf ("%s%s", target, "/usr/share");
-    g_rmdir (share);
-    g_free (share);
 
     const gchar *iso = "/cdrom/casper/filesystem.squashfs";
     if (!g_file_test (iso, G_FILE_TEST_EXISTS)) {
