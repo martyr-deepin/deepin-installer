@@ -19,7 +19,6 @@
 
 __selected_target = null
 __selected_grub = null
-
 __selected_disk = null
 __selected_item = null
 __selected_line = null

@@ -20,17 +20,62 @@
 pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
-welcome_page = new Welcome("welcome")
-#part_page = new Part("part")
-#progress_page = new Progress("progress")
-#finish_page = new Finish("finish", false)
+determine_target_id: (target) ->
+    if target.indexOf("/dev/") == -1
+        throw "invalid target to install"
+    for disk in disks
+        if m_disk_info[disk]["path"] == target
+            return disk
+        for part in m_disk_info[disk]["partitions"]
+            if m_part_info[part]["path"] == target
+                return part
+    return null
 
-pc.add_page(welcome_page)
-#pc.add_page(part_page)
-#pc.add_page(progress_page)
-#progress_page.update_progress("50%")
-#setTimeout( ->
-#    progress_page.start_progress()
-#    progress_page.update_progress("59%")
-#, 3000)
-#pc.add_page(finish_page)
+fetch_install_info:->
+    try
+        info = DCore.Installer.get_installation_info()
+        __selected_username = info["username"]
+        __selected_password = info["password"]
+        __selected_target = determine_target_id(info["target"])
+        if info["hostname"]? and info["hostname"].length > 0
+            __selected_hostname = info["hostname"]
+        else
+            __selected_hostname = __selected_username
+        if info["timezone"]? and DCore.Installer.get_timezone_list().indexOf(info["timezone"]) != -1
+            __selected_timezone = info["timezone"]
+        else
+            __selected_timezone = "Asia/Shanghai"
+        if info["layout"]? and DCore.Installer.get_keyboard_layouts().indexOf(info["layout"]) != -1
+            __selected_layout = info["layout"]
+            if info["variant"]? and DCore.Installer.get_layout_variants(info["layout"]).indexOf(info["variant"]) != -1
+                __selected_layout = info["layout"] + "," + info["variant"]
+        else
+            __selected_layout = "us"
+        if info["locale"]? and info["locale"].lenght > 0
+            __selected_locale = info["locale"]
+        else
+            __selected_locale = "zh_CN.UTF-8"
+    catch error
+        throw error
+
+if DCore.Installer.is_installation_auto()
+    try
+        undo_part_table_info()
+        fetch_install_info()
+        if not __selected_target?
+            throw "invalid __selected_target"
+        if __selected_target.indexOf("disk") != -1
+            do_simple_partition(__selected_target, "disk")
+            __selected_grub = __selected_target
+        else if __selected_target.indexOf("part") != -1
+            do_simple_partition(__selected_target, "part")
+            __selected_grub = v_part_info[__selected_target]["disk"]
+        progress_page = new Progress("progress")
+        pc.add_page(progress_page)
+    catch error
+        echo error
+        welcome_page = new Welcome("welcome")
+        pc.add_page(welcome_page)
+else
+    welcome_page = new Welcome("welcome")
+    pc.add_page(welcome_page)
