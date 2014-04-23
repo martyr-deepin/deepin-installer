@@ -65,6 +65,43 @@ static GOptionEntry entries[] =
     { NULL }
 };
 
+JS_EXPORT_API
+gboolean installer_is_installation_auto ()
+{
+    if (!opt_automatic) {
+        return FALSE;
+    }
+    if (opt_target == NULL) {
+        g_warning ("is installation auto:must specified target\n");
+        return FALSE;
+    }
+    if (opt_username == NULL) {
+        g_warning ("is installation auto:must specified username\n");
+        return FALSE;
+    }
+    if (opt_password == NULL) {
+        g_warning ("is installation auto:must specified  password\n");
+        return FALSE;
+    }
+    return TRUE;
+}
+
+JS_EXPORT_API
+JSObjectRef installer_get_installation_info ()
+{
+    GRAB_CTX ();
+    JSObjectRef json = json_create ();
+    json_append_string (json, "target", opt_target);
+    json_append_string (json, "username", opt_username);
+    json_append_string (json, "hostname", opt_hostname);
+    json_append_string (json, "password", opt_password);
+    json_append_string (json, "layout", opt_layout);
+    json_append_string (json, "variant", opt_variant);
+    json_append_string (json, "locale", opt_locale);
+    UNGRAB_CTX ();
+    return json;
+}
+
 static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
