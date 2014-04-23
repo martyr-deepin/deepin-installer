@@ -806,6 +806,8 @@ class Account extends Widget
         @element.style.display = "none"
 
     check_start_ready: ->
+        if !__init_parted_finish
+            return false
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
             @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
             @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
@@ -823,11 +825,11 @@ class Account extends Widget
             pc.add_page(part_page)
             __selected_item?.focus()
         else
-            @username.check_valid()
-            @hostname.check_valid()
-            @password.check_valid()
-            @confirmpassword.check_valid()
-
+            if __init_parted_finish
+                @username.check_valid()
+                @hostname.check_valid()
+                @password.check_valid()
+                @confirmpassword.check_valid()
 
 class Welcome extends Page
     constructor: (@id)->
