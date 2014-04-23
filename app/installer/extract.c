@@ -446,9 +446,9 @@ thread_extract_squashfs (gpointer data)
 
     guint processors = get_cpu_num ();
     guint puse = 1;
-    extern gint use_processors;
-    if (use_processors > 0 && use_processors <= processors) {
-        puse = use_processors;
+    extern gint opt_use_processors;
+    if (opt_use_processors > 0 && opt_use_processors <= processors) {
+        puse = opt_use_processors;
     } else {
         if (processors > 2) {
             puse = processors - 1;
@@ -576,12 +576,12 @@ void installer_extract_intelligent ()
     g_spawn_command_line_async ("pkill -9 os-prober", NULL);
     g_free (cmd);
 
-    extern gchar *extract_mode;
-    if (extract_mode != NULL) {
-        if (g_strcmp0 (extract_mode, "fast") == 0) {
+    extern gchar *opt_extract_mode;
+    if (opt_extract_mode != NULL) {
+        if (g_strcmp0 (opt_extract_mode, "fast") == 0) {
             installer_extract_squashfs ();
 
-        } else if (g_strcmp0 (extract_mode, "safe") == 0) {
+        } else if (g_strcmp0 (opt_extract_mode, "safe") == 0) {
             installer_extract_iso ();
 
         } else {

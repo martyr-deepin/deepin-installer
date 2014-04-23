@@ -19,12 +19,35 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include "base.h"
 #include <sys/sysinfo.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 #include <X11/XKBlib.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include "base.h"
 #include "dwebview.h"
+
+int server_sockfd;
+
+gboolean installer_is_running ()
+{
+    socklen_t server_len;
+    struct sockaddr_un server_addr;
+
+    server_addr.sun_path[0] = '\0';
+    int path_size = g_sprintf (server_addr.sun_path+1, "%s", "installer.app.deepin");
+    server_addr.sun_family = AF_UNIX;
+    server_len = 1 + path_size + offsetof(struct sockaddr_un, sun_path);
+
+    server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
+
+    if (0 == bind(server_sockfd, (struct sockaddr *)&server_addr, server_len)) {
+        return FALSE;
+    } else {
+        return TRUE;
+    }
+}
 
 void emit_progress (const gchar *step, const gchar *progress)
 {

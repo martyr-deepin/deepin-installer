@@ -21,8 +21,6 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
-#include <sys/socket.h>
-#include <sys/un.h>
 #include <signal.h>
 #include "dwebview.h"
 #include "i18n.h"
@@ -36,50 +34,46 @@
 
 static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
-static int server_sockfd;
-gchar *extract_mode = NULL;
-gint use_processors = 0;
 gchar *xrandr_size = NULL;
+
+gchar *opt_extract_mode;
+gint opt_use_processors;
+gboolean opt_automatic;
+gchar *opt_target;
+gchar *opt_username;
+gchar *opt_hostname;
+gchar *opt_password;
+gchar *opt_layout;
+gchar *opt_variant;
+gchar *opt_locale;
+gboolean opt_debug;
 
 static GOptionEntry entries[] = 
 {
-    { "mode", 'm', 0, G_OPTION_ARG_STRING, &extract_mode, "fast or safe", "M"},
-    { "processors", 'p', 0, G_OPTION_ARG_INT, &use_processors, "num of processors used for unsquashfs", "P"},
+    { "mode", 'm', 0, G_OPTION_ARG_STRING, &opt_extract_mode, "fast use unsquashfs, safe copy file one by one", "fast or safe"},
+    { "cpu", 'c', 0, G_OPTION_ARG_INT, &opt_use_processors, "num of processors used in unsquashfs mode", "count"},
+    { "automatic", 'a', 0, G_OPTION_ARG_NONE, &opt_automatic, "gather info from command line then install automatic", NULL},
+    { "target", 't', 0, G_OPTION_ARG_STRING, &opt_target, "target disk or partition to install system, required when automatic", "/dev/sdaX"},
+    { "username", 'u', 0, G_OPTION_ARG_STRING, &opt_username, "username of target system, required when automatic", "deepin"}, 
+    { "hostname", 'n', 0, G_OPTION_ARG_STRING, &opt_hostname, "hostname of target system", "hostname"},
+    { "password", 'p', 0, G_OPTION_ARG_STRING, &opt_password, "password of target system, required when automatic", "password"},
+    { "layout", 'l', 0, G_OPTION_ARG_STRING, &opt_layout, "keyboard layout of target system, default us", "layout code"},
+    { "variant", 'v', 0, G_OPTION_ARG_STRING, &opt_variant, "keyboard variant of target system", "variant code"},
+    { "zone", 'z', 0, G_OPTION_ARG_STRING, &opt_variant, "timezone of target system, default Asia/Shanghai", "Asia/Shanghai"},
+    { "locale", 'e', 0, G_OPTION_ARG_STRING, &opt_locale, "locale of target system", "zh_CN.UTF-8"},
+    { "debug", 'd', 0, G_OPTION_ARG_NONE, &opt_debug, "set log level to debug", NULL},
     { NULL }
 };
-
-gboolean installer_is_running ()
-{
-    //int server_sockfd;
-    socklen_t server_len;
-    struct sockaddr_un server_addr;
-
-    server_addr.sun_path[0] = '\0'; //make it be an name unix socket
-    int path_size = g_sprintf (server_addr.sun_path+1, "%s", "installer.app.deepin");
-    server_addr.sun_family = AF_UNIX;
-    server_len = 1 + path_size + offsetof(struct sockaddr_un, sun_path);
-
-    server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
-
-    if (0 == bind(server_sockfd, (struct sockaddr *)&server_addr, server_len)) {
-        return FALSE;
-    } else {
-        return TRUE;
-    }
-}
 
 static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
     g_debug ("installer:move window");
-
     if (event->y > 50 || (event->x > 740) && (event->y < 50)) {
         return TRUE;
     }
-
     if (event->button == 1) {
         g_debug ("move window:in drag x_root->%g, y_root->%g", event->x_root, event->y_root);
-
         gtk_widget_set_can_focus (widget, TRUE);
         gtk_widget_grab_focus (widget);
 
@@ -88,9 +82,7 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
                                     event->x_root,
                                     event->y_root,
                                     event->time);
-
     }
-
     return FALSE;
 }
 
@@ -101,18 +93,6 @@ expose_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
     cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
     cairo_paint (cr);
     return FALSE;
-}
-
-static void
-move_window_center ()
-{
-    GdkScreen *screen = gtk_window_get_screen (GTK_WINDOW (installer_container));
-    gint s_width = gdk_screen_get_width (screen);
-    gint s_height = gdk_screen_get_height (screen);
-    gint x = s_width > 1250 ? ((s_width - (750)) / 2) : 0;
-    gint y = s_height > 540 ? ((s_height - 540) / 2) : 0;
-    
-    gtk_window_move (GTK_WINDOW (installer_container), x, y);
 }
 
 JS_EXPORT_API
@@ -131,13 +111,21 @@ void installer_finish_reboot ()
 }
 
 JS_EXPORT_API
+void installer_restart_installer ()
+{
+    extern int server_sockfd;
+    close (server_sockfd);
+    execv (global_argv[0], global_argv);
+}
+
+JS_EXPORT_API
 void installer_emit_webview_ok ()
 {
     static gboolean inited = FALSE;
     if (!inited) {
         inited = TRUE;
+        xrandr_size = get_xrandr_size ();
         init_parted ();
-        //inhibit_disk ();
     }
 }
 
@@ -145,13 +133,6 @@ static void
 sigterm_cb (int sig)
 {
     installer_finish_install ();
-}
-
-JS_EXPORT_API
-void installer_restart_installer ()
-{
-    close (server_sockfd);
-    execv (global_argv[0], global_argv);
 }
 
 int main(int argc, char **argv)
@@ -208,12 +189,9 @@ int main(int argc, char **argv)
     geometry.max_height = INSTALLER_WIN_HEIGHT;
     geometry.base_height = INSTALLER_WIN_HEIGHT;
     gtk_window_set_geometry_hints (GTK_WINDOW (installer_container), webview, &geometry, GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE | GDK_HINT_BASE_SIZE);
-    //move_window_center ();
 
     gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
-
-    xrandr_size = get_xrandr_size ();
     //monitor_resource_file ("installer", webview);
     gtk_main ();
 
