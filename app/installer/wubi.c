@@ -31,6 +31,7 @@ extern gchar *opt_layout;
 extern gchar *opt_variant;
 extern gchar *opt_timezone;
 extern gchar *opt_locale;
+extern gchar *opt_grub;
 
 gboolean is_use_wubi ()
 {

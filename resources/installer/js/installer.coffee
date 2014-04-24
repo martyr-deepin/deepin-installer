@@ -36,7 +36,7 @@ determine_target_id = (target) ->
 fetch_install_info = ->
     try
         info = DCore.Installer.get_installation_info()
-        if info["username"] != "deepin" and DCore.Installer.get_system_users().indexOf(info["username"]) != -1
+        if info["username"] != "deepin" and info["username"] in DCore.Installer.get_system_users().indexOf(info["username"])
             throw "invalid username"
         for c in info["username"]
             if c in __illegal_keys
@@ -47,13 +47,13 @@ fetch_install_info = ->
             __selected_hostname = info["hostname"]
         else
             __selected_hostname = __selected_username
-        if info["timezone"]? and DCore.Installer.get_timezone_list().indexOf(info["timezone"]) != -1
+        if info["timezone"]? and info["timezone"] not in DCore.Installer.get_timezone_list().indexOf(info["timezone"])
             __selected_timezone = info["timezone"]
         else
             __selected_timezone = "Asia/Shanghai"
-        if info["layout"]? and DCore.Installer.get_keyboard_layouts().indexOf(info["layout"]) != -1
+        if info["layout"]? and info["layout"] in DCore.Installer.get_keyboard_layouts()
             __selected_layout = info["layout"]
-            if info["variant"]? and DCore.Installer.get_layout_variants(info["layout"]).indexOf(info["variant"]) != -1
+            if info["variant"]? and info["variant"] in DCore.Installer.get_layout_variants(info["layout"])
                 __selected_layout = info["layout"] + "," + info["variant"]
         else
             __selected_layout = "us"

@@ -48,6 +48,7 @@ gchar *opt_layout;
 gchar *opt_variant;
 gchar *opt_timezone;
 gchar *opt_locale;
+gchar *opt_grub;
 gboolean opt_debug;
 
 static GOptionEntry entries[] = 
@@ -63,6 +64,7 @@ static GOptionEntry entries[] =
     { "variant", 'v', 0, G_OPTION_ARG_STRING, &opt_variant, "keyboard variant of target system", "variant code"},
     { "zone", 'z', 0, G_OPTION_ARG_STRING, &opt_timezone, "timezone of target system, default Asia/Shanghai", "Asia/Shanghai"},
     { "locale", 'e', 0, G_OPTION_ARG_STRING, &opt_locale, "locale of target system", "zh_CN.UTF-8"},
+    { "grub", 'g', 0, G_OPTION_ARG_STRING, &opt_grub, "position to install grub", "/dev/sdaX or uefi"},
     { "debug", 'd', 0, G_OPTION_ARG_NONE, &opt_debug, "set log level to debug", NULL},
     { NULL }
 };
@@ -99,6 +101,7 @@ JSObjectRef installer_get_installation_info ()
     json_append_string (json, "password", opt_password);
     json_append_string (json, "layout", opt_layout);
     json_append_string (json, "variant", opt_variant);
+    json_append_string (json, "timezone", opt_timezone);
     json_append_string (json, "locale", opt_locale);
     UNGRAB_CTX ();
     return json;
