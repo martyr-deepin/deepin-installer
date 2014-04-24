@@ -1,13 +1,26 @@
 Deepin Installer
 
-Dep:
-    squashfs-tools
-    e2fsprogs
-    reiserfsprogs
-    xfsprogs
-    jfsutils
-    dosfstools
-    btrfs-tools
-    ntfs-3g
-    libxklavier-dev
-    libparted0-dev
+用法：
+  deepin-installer [选项...] - Deepin Installer
+
+帮助选项：
+  -h, --help                       显示帮助选项
+  --help-all                       显示全部帮助选项
+  --help-gtk                       显示 GTK+ 选项
+
+应用程序选项：
+  -s, --schema=fast or safe        fast use unsquashfs, safe copy file one by one
+  -c, --cpu=count                  num of processors used in unsquashfs mode
+  -a, --automatic                  gather info from command line then install automatic
+  -t, --target=/dev/sdaX           device to install system, required when automatic
+  -m, --home=/dev/sdaX             partition mount as home in target system
+  -u, --username=deepin            username of target system, required when automatic
+  -n, --hostname=hostname          hostname of target system
+  -p, --password=password          password of target system, required when automatic
+  -l, --layout=layout code         keyboard layout of target system, default us
+  -v, --variant=variant code       keyboard variant of target system
+  -z, --zone=Asia/Shanghai         timezone of target system, default Asia/Shanghai
+  -e, --locale=zh_CN.UTF-8         locale of target system
+  -g, --grub=/dev/sdaX or uefi     device to install grub, or uefi auto detect
+  -d, --debug                      set log level to debug
+  --display=显示                   要使用的 X 显示
