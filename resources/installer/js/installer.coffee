@@ -36,6 +36,11 @@ determine_target_id = (target) ->
 fetch_install_info = ->
     try
         info = DCore.Installer.get_installation_info()
+        if info["username"] != "deepin" and DCore.Installer.get_system_users().indexOf(info["username"]) != -1
+            throw "invalid username"
+        for c in info["username"]
+            if c in __illegal_keys
+                throw "invalid username"
         __selected_username = info["username"]
         __selected_password = info["password"]
         if info["hostname"]? and info["hostname"].length > 0
