@@ -62,6 +62,21 @@ fetch_install_info = ->
         else
             __selected_locale = "zh_CN.UTF-8"
         determine_target_id(info["target"])
+        if info["grub"]?
+            if info["grub"] == "uefi"
+                __selected_grub = "uefi"
+            else if info["grub"] in disks
+                __selected_grub = info["grub"]
+            else 
+                for disk in disks
+                    for part in v_disk_info[disk]["partitions"]
+                        if info["grub"] == v_part_info[part]["path"] and v_part_info[part]["type"] in ["normal", "logical"]
+                            __selected_grub = info["grub"]
+        if not __selected_grub?
+            if __selected_target.indexOf("part") != -1
+                __selected_grub = v_part_info[__selected_target]["disk"]
+            else
+                __selected_grub = __selected_target
     catch error
         throw error
 
@@ -74,10 +89,8 @@ handle_automatic_install = ->
                 throw "invalid __selected_target"
             if __selected_target.indexOf("disk") != -1
                 do_simple_partition(__selected_target, "disk")
-                __selected_grub = __selected_target
             else if __selected_target.indexOf("part") != -1
                 do_simple_partition(__selected_target, "part")
-                __selected_grub = v_part_info[__selected_target]["disk"]
             else
                 throw "invalid __selected_target"
             progress_page = new Progress("progress")

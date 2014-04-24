@@ -103,6 +103,7 @@ JSObjectRef installer_get_installation_info ()
     json_append_string (json, "variant", opt_variant);
     json_append_string (json, "timezone", opt_timezone);
     json_append_string (json, "locale", opt_locale);
+    json_append_string (json, "grub", opt_grub);
     UNGRAB_CTX ();
     return json;
 }
