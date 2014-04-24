@@ -57,7 +57,7 @@ fetch_install_info = ->
                 __selected_layout = info["layout"] + "," + info["variant"]
         else
             __selected_layout = "us"
-        if info["locale"]? and info["locale"].lenght > 0
+        if info["locale"]? and info["locale"].length > 0
             __selected_locale = info["locale"]
         else
             __selected_locale = "zh_CN.UTF-8"
