@@ -114,9 +114,40 @@ ancestor_is_symlink (const char *path)
     return FALSE;
 }
 
-static int 
-copy_file_cb (const char *path)
+static char*
+get_dest_for_extract_iso (const char *path)
 {
+    char *dest = NULL;
+    extern const gchar *target;
+    gchar *ts = g_strdup_printf ("%s/squashfs", target);
+    if (!g_str_has_prefix (path, ts)) {
+        g_warning ("get dest for extract iso:invalid path->%s with target %s\n", path, ts);
+        g_free (ts);
+        return dest;
+    }
+
+    gchar **sp = g_strsplit (path, ts, -1);
+    g_free (ts);
+
+    if (sp == NULL) {
+        g_warning ("get dest for extract iso:split %s with %s failed\n", path, ts);
+        return dest;
+    }
+    gchar *base = g_strdup (sp[1]);
+    g_strfreev (sp);
+
+    dest = g_strdup_printf ("%s%s", target, base);
+    g_free (base);
+
+    return dest;
+}
+
+static int 
+copy_file_cb (const char *path, const char *dest)
+{
+    if (path == NULL || dest == NULL) {
+        g_warning ("copy file cb:invald path->%s, dest->%s\n", path, dest);
+    }
     struct stat st;
     if (lstat (path, &st) != 0) {
         g_warning ("copy file cb:lstat for %s failed->%s\n", path, strerror (errno));
@@ -127,23 +158,6 @@ copy_file_cb (const char *path)
     //if (ancestor_is_symlink (path)) {
     //    return 0;
     //}
-
-    extern const gchar *target;
-    gchar *ts = g_strdup_printf ("%s/squashfs", target);
-    if (!g_str_has_prefix (path, ts)) {
-        g_warning ("copy file cb:invalid path->%s with target %s\n", path, ts);
-        return -1;
-    }
-
-    gchar **sp = g_strsplit (path, ts, -1);
-    g_free (ts);
-
-    gchar *base = g_strdup (sp[1]);
-    g_strfreev (sp);
-
-    gchar *dest = g_strdup_printf ("%s%s", target, base);
-    g_free (base);
-
     mode_t mode = st.st_mode;
 
     if (S_ISLNK (mode)) {
@@ -183,12 +197,11 @@ copy_file_cb (const char *path)
             g_warning ("copy file cb:chmod for %s failed\n", dest);
         }
     }
-    g_free (dest);
 
     return 0;
 }
 
-int walk_directory (const char *dpath, int (*cb) (const char *path))
+int walk_directory (const char *dpath, int (*cb) (const char *path, const char *dest))
 {
     concurrency_num += 1;
     struct stat buf;
@@ -196,15 +209,18 @@ int walk_directory (const char *dpath, int (*cb) (const char *path))
         g_warning ("walk directory:lstat for %s failed->%s\n", dpath, strerror (errno));
         return -1;
     }
+
+    gchar *dest = get_dest_for_extract_iso (dpath);
+    cb (dpath, dest);
+    g_free (dest);
+    concurrency_num -= 1;
+
     if (!S_ISDIR(buf.st_mode)) {
-        cb (dpath);
-        concurrency_num -= 1;
         return 0;
     }
+
     DIR * dirp = opendir (dpath);
     struct dirent *direntp = NULL;
-    cb (dpath);
-    concurrency_num -= 1;
     if (dirp != NULL) {
         while ((direntp = readdir (dirp)) != NULL) {
             if (strcmp (".", direntp->d_name) == 0 || strcmp ("..", direntp->d_name) == 0) {
@@ -372,7 +388,7 @@ cb_out_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
     //g_printf ("cb out watch:match->%s\n", match);
 
     if (match == NULL) {
-        g_warning ("cb out watch:line without progress->%s\n", string);
+        g_debug ("cb out watch:line without progress->%s\n", string);
     } else {
         if (progress != NULL && *progress != NULL) {
             g_free (*progress);
@@ -399,9 +415,29 @@ cb_err_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
     }
 
     g_io_channel_read_line (channel, &string, &size, NULL, NULL);
-    g_printf ("cb err watch:%s\n", string);
+    g_warning ("cb err watch:%s\n", string);
+    if (g_str_has_prefix (string, "Failed to write")) {
+        gchar *fix_cmd = g_strdup_printf ("sh -c \"echo %s |awk -F, '{print $1}'|awk '{print $4}'\"", string);
+        gchar *output = NULL;
+        g_spawn_command_line_sync (fix_cmd, &output, NULL, NULL, NULL);
+        extern const gchar *target;
+        if (output == NULL || !g_str_has_prefix (output, target)) {
+            g_free (fix_cmd);
+        } else {
+            g_warning ("cb err watch:fix %s\n", output);
+            gchar *orig_cmd = g_strdup_printf ("sh -c \"echo %s |cut -c %zu-\"", output, strlen (target) + 1);
+            gchar *orig_path = NULL;
+            g_spawn_command_line_sync (orig_cmd, &orig_path, NULL, NULL, NULL);
+            if (orig_path != NULL) {
+                copy_file_cb (orig_path, output);                
+                g_free (orig_path);
+            }
+            g_free (orig_cmd);
+            g_free (fix_cmd);
+            g_free (output);
+        }
+    }
     g_free (string);
-
     return TRUE;
 }
 
