@@ -46,7 +46,7 @@ determine_target_home_id = (target) ->
 fetch_install_info = ->
     try
         info = DCore.Installer.get_installation_info()
-        if info["username"] != "deepin" and info["username"] in DCore.Installer.get_system_users().indexOf(info["username"])
+        if info["username"] != "deepin" and info["username"] in DCore.Installer.get_system_users()
             throw "invalid username"
         for c in info["username"]
             if c in __illegal_keys
@@ -57,7 +57,7 @@ fetch_install_info = ->
             __selected_hostname = info["hostname"]
         else
             __selected_hostname = __selected_username
-        if info["timezone"]? and info["timezone"] not in DCore.Installer.get_timezone_list().indexOf(info["timezone"])
+        if info["timezone"]? and info["timezone"] not in DCore.Installer.get_timezone_list()
             __selected_timezone = info["timezone"]
         else
             __selected_timezone = "Asia/Shanghai"
