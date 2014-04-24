@@ -41,6 +41,7 @@ gchar *opt_extract_mode;
 gint opt_use_processors;
 gboolean opt_automatic;
 gchar *opt_target;
+gchar *opt_home;
 gchar *opt_username;
 gchar *opt_hostname;
 gchar *opt_password;
@@ -53,10 +54,11 @@ gboolean opt_debug;
 
 static GOptionEntry entries[] = 
 {
-    { "mode", 'm', 0, G_OPTION_ARG_STRING, &opt_extract_mode, "fast use unsquashfs, safe copy file one by one", "fast or safe"},
+    { "schema", 's', 0, G_OPTION_ARG_STRING, &opt_extract_mode, "fast use unsquashfs, safe copy file one by one", "fast or safe"},
     { "cpu", 'c', 0, G_OPTION_ARG_INT, &opt_use_processors, "num of processors used in unsquashfs mode", "count"},
     { "automatic", 'a', 0, G_OPTION_ARG_NONE, &opt_automatic, "gather info from command line then install automatic", NULL},
     { "target", 't', 0, G_OPTION_ARG_STRING, &opt_target, "target disk or partition to install system, required when automatic", "/dev/sdaX"},
+    { "home", 'm', 0, G_OPTION_ARG_STRING, &opt_home, "partition mount as home in target system", "/dev/sdaX"},
     { "username", 'u', 0, G_OPTION_ARG_STRING, &opt_username, "username of target system, required when automatic", "deepin"}, 
     { "hostname", 'n', 0, G_OPTION_ARG_STRING, &opt_hostname, "hostname of target system", "hostname"},
     { "password", 'p', 0, G_OPTION_ARG_STRING, &opt_password, "password of target system, required when automatic", "password"},
@@ -96,6 +98,7 @@ JSObjectRef installer_get_installation_info ()
     GRAB_CTX ();
     JSObjectRef json = json_create ();
     json_append_string (json, "target", opt_target);
+    json_append_string (json, "home", opt_home);
     json_append_string (json, "username", opt_username);
     json_append_string (json, "hostname", opt_hostname);
     json_append_string (json, "password", opt_password);

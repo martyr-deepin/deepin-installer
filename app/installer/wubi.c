@@ -24,6 +24,7 @@
 #define WUBI_CONFIG_FILE     "/target/preseed.cfg"
 
 extern gchar *opt_target;
+extern gchar *opt_home;
 extern gchar *opt_username;
 extern gchar *opt_hostname;
 extern gchar *opt_password;

@@ -280,7 +280,7 @@ do_partition = ->
 #auto partition for simple mode
 do_simple_partition = (device, type) ->
     #fake advance mode operation to keep the hash table uuid
-    undo_part_table_info()
+    #undo_part_table_info(), migrate to call before do simple partition
     if type == "disk"
         #drop all partition then crate a new one
         for part in v_disk_info[device]["partitions"]
@@ -321,6 +321,8 @@ do_simple_partition = (device, type) ->
             update_part_mp(device,"/")
         else
             echo "invalid as extended doesn't show in simple view"
+        if __selected_home?
+            update_part_mp(__selected_home, "/home")
     else
         echo "invalid type to do simple partition"
     do_partition()

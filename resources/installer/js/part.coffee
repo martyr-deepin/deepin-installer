@@ -18,6 +18,7 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 __selected_target = null
+__selected_home = null
 __selected_grub = null
 __selected_disk = null
 __selected_item = null
@@ -343,6 +344,7 @@ class InstallDialog extends Dialog
         pc.add_page(progress_page)
         setTimeout(->
             if __selected_mode == "simple"
+                undo_part_table_info()
                 do_simple_partition(__selected_item.id, "part")
             else if __selected_mode == "advance"
                 echo "do advance partition"

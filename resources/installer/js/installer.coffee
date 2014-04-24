@@ -33,6 +33,16 @@ determine_target_id = (target) ->
                 return part
     return null
 
+determine_target_home_id = (target) ->
+    if target.indexOf("/dev/") == -1
+        return null
+    if target == __selected_target
+        return null
+    for disk in disks
+        for part in m_disk_info[disk]["partitions"]
+            if m_part_info[part]["path"] == target and m_part_info[part]["type"] in ["normal", "logical"]
+                __selected_home = part
+
 fetch_install_info = ->
     try
         info = DCore.Installer.get_installation_info()
@@ -61,7 +71,11 @@ fetch_install_info = ->
             __selected_locale = info["locale"]
         else
             __selected_locale = "zh_CN.UTF-8"
+
         determine_target_id(info["target"])
+        if info["home"]
+            determine_target_home_id(info["home"])
+
         if info["grub"]?
             if info["grub"] == "uefi"
                 __selected_grub = "uefi"
