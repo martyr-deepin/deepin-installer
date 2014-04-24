@@ -1148,6 +1148,7 @@ JS_EXPORT_API
 void installer_start_part_operation ()
 {
     GThread *handle_thread = g_thread_new ("handle_operation", (GThreadFunc) handle_part_operation_thread, NULL);
+    g_thread_unref (handle_thread);
 }
 
 //call after chroot
