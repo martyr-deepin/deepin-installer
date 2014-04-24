@@ -57,7 +57,7 @@ static GOptionEntry entries[] =
     { "schema", 's', 0, G_OPTION_ARG_STRING, &opt_extract_mode, "fast use unsquashfs, safe copy file one by one", "fast or safe"},
     { "cpu", 'c', 0, G_OPTION_ARG_INT, &opt_use_processors, "num of processors used in unsquashfs mode", "count"},
     { "automatic", 'a', 0, G_OPTION_ARG_NONE, &opt_automatic, "gather info from command line then install automatic", NULL},
-    { "target", 't', 0, G_OPTION_ARG_STRING, &opt_target, "target disk or partition to install system, required when automatic", "/dev/sdaX"},
+    { "target", 't', 0, G_OPTION_ARG_STRING, &opt_target, "device to install system, required when automatic", "/dev/sdaX"},
     { "home", 'm', 0, G_OPTION_ARG_STRING, &opt_home, "partition mount as home in target system", "/dev/sdaX"},
     { "username", 'u', 0, G_OPTION_ARG_STRING, &opt_username, "username of target system, required when automatic", "deepin"}, 
     { "hostname", 'n', 0, G_OPTION_ARG_STRING, &opt_hostname, "hostname of target system", "hostname"},
@@ -66,7 +66,7 @@ static GOptionEntry entries[] =
     { "variant", 'v', 0, G_OPTION_ARG_STRING, &opt_variant, "keyboard variant of target system", "variant code"},
     { "zone", 'z', 0, G_OPTION_ARG_STRING, &opt_timezone, "timezone of target system, default Asia/Shanghai", "Asia/Shanghai"},
     { "locale", 'e', 0, G_OPTION_ARG_STRING, &opt_locale, "locale of target system", "zh_CN.UTF-8"},
-    { "grub", 'g', 0, G_OPTION_ARG_STRING, &opt_grub, "position to install grub", "/dev/sdaX or uefi"},
+    { "grub", 'g', 0, G_OPTION_ARG_STRING, &opt_grub, "device to install grub, or uefi auto detect", "/dev/sdaX or uefi"},
     { "debug", 'd', 0, G_OPTION_ARG_NONE, &opt_debug, "set log level to debug", NULL},
     { NULL }
 };
