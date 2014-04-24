@@ -1169,14 +1169,13 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
     static gboolean header_inited = FALSE;
 
     if (!header_inited) {
-        const gchar *contents = "# /etc/fstab: static file system information.\
-                                 #\
-                                 # Use 'blkid' to print the universally unique identifier for a\
-                                 # device; this may be used with UUID= as a more robust way to name devices\
-                                 # that works even if disks are added and removed. See fstab(5).\
-                                 #\
-                                 # <file system> <mount point>   <type>  <options>       <dump>  <pass>\
-                                ";
+        const gchar *contents = "# /etc/fstab: static file system information.\n"                               \
+                                "#\n"                                                                           \
+                                "# Use 'blkid' to print the universally unique identifier for a\n"              \
+                                "# device; this may be used with UUID= as a more robust way to name devices\n"  \
+                                "# that works even if disks are added and removed. See fstab(5).\n"             \
+                                "#\n"                                                                           \
+                                "# <file system> <mount point>   <type>  <options>       <dump>  <pass>\n"; 
         g_file_set_contents ("/etc/fstab", contents, -1, NULL);
         header_inited = TRUE;
     }
