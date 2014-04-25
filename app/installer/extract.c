@@ -604,15 +604,40 @@ is_outdated_machine ()
     return FALSE;
 }
 
+static gboolean
+is_live_os ()
+{
+    gboolean flag = FALSE;
+    const gchar *cmd = "sh -c \"cat /proc/cmdline | grep boot=casper\" ";
+    gchar *output = NULL;
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, NULL);
+    if (output != NULL && g_strcmp0 ("", output) != 0) {
+        flag = TRUE;
+    }
+    g_free (output);
+    return flag;
+}
+
 JS_EXPORT_API
 void installer_extract_intelligent ()
 {
     gchar *cmd = g_find_program_in_path ("os-prober");
     if (cmd == NULL) {
-        g_warning ("os:os-prober not installed\n");
+        g_warning ("extract intelligent:os-prober not installed\n");
     }
     g_spawn_command_line_async ("pkill -9 os-prober", NULL);
     g_free (cmd);
+
+    if (!is_live_os ()) {
+        extern gchar *opt_iso_path;
+        if (opt_iso_path != NULL && g_file_test (opt_iso_path, G_FILE_TEST_EXISTS)) {
+            gchar *cdrom_cmd = g_strdup_printf ("mount %s /cdrom", opt_iso_path);
+            g_spawn_command_line_sync (cdrom_cmd, NULL, NULL, NULL, NULL);
+            g_free (cdrom_cmd);
+        } else  {
+            g_warning ("extract intelligent:iso not exists in none live os\n");
+        }
+    }
 
     extern gchar *opt_extract_mode;
     if (opt_extract_mode != NULL) {
