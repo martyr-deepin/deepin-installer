@@ -38,6 +38,9 @@ JSObjectRef installer_get_system_users()
     int i = 0;
 
     while ((user = getpwent ()) != NULL){
+        if (user->pw_uid >= 1000) {
+            continue;
+        }
         username = g_strdup (user->pw_name);
         json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), username));
         i++;
