@@ -1040,8 +1040,8 @@ handle_update_partition_geometry (const gchar *part, double start, double length
     return ret;
 }
 
-JS_EXPORT_API gboolean 
-installer_update_partition_geometry (const gchar *part, double start, double length) 
+JS_EXPORT_API 
+gboolean installer_update_partition_geometry (const gchar *part, double start, double length) 
 {
     if (part == NULL) {
         g_warning ("update partition geometry:part NULL\n");
