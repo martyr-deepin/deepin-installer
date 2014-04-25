@@ -539,6 +539,12 @@ get_partition_free (gpointer data)
 void 
 set_partition_filesystem (const gchar *path, const gchar *fs)
 {
+    if (path == NULL || fs == NULL) {
+        g_warning ("set partition filesystem:invalid path->%s or fs->%s\n", path, fs);
+        return;
+    }
+    unmount_partition_by_device (path);
+
     gchar *cmd = NULL;
     gchar *fs_cmd = NULL;
     GError *error = NULL;
