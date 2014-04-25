@@ -37,6 +37,10 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar
     
     gdouble free_double = 0;
     gdouble size_double = 0;
+    if (cmd == NULL || free_regex == NULL || free_num_regex == NULL || unit_regex == NULL || unit_num_regex == NULL) {
+        g_warning ("_get_partition_free_size:some param NULL\n");
+        return result;
+    }
 
     g_spawn_command_line_sync (cmd, &output, NULL, &exit_status, NULL);
     if (exit_status == -1) {
@@ -78,15 +82,18 @@ gchar*
 get_mounted_partition_used (const gchar *path) 
 {
     gchar *result = NULL;
-
     gchar *output = NULL;
     gint exit_status;
 
-    gchar *cmd = g_strdup_printf ("sh -c \"df -h %s | awk '{ print $3 }'\" ", path);
+    if (path == NULL) {
+        g_warning ("get mounted partition used:path NULL\n");
+        return result;
+    }
 
+    gchar *cmd = g_strdup_printf ("sh -c \"df -h %s | awk '{ print $3 }'\" ", path);
     g_spawn_command_line_sync (cmd, &output, NULL, &exit_status, NULL);
     if (exit_status == -1 ) {
-        g_warning ("run command %s failed\n", cmd);
+        g_warning ("get mounted partition used:run command %s failed\n", cmd);
     }
     g_free (cmd);
     result = g_strdup (output);
@@ -300,6 +307,7 @@ _get_fat16_free (const gchar *path)
 out:
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     g_free (fat16_cmd);
     g_free (cmd);
@@ -382,6 +390,7 @@ _get_btrfs_free (const gchar *path)
 out:
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     g_free (btrfs_cmd);
     g_free (cmd);
@@ -453,6 +462,7 @@ _get_ntfs_free (const gchar *path)
 out:
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     g_free (ntfs_cmd);
     g_free (cmd);
@@ -553,7 +563,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkfs.ext4");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.ext4 not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkfs.ext4 -F -F %s", path);
 
@@ -561,7 +571,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkfs.ext3");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.ext3 not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkfs.ext3 -F -F %s", path);
 
@@ -569,7 +579,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkfs.ext2");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.ext2 not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkfs.ext2 -F -F %s", path);
 
@@ -577,7 +587,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkdosfs");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkdosfs not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkdosfs -F16 -I %s", path);
 
@@ -585,7 +595,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkdosfs");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkdosfs not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkdosfs -F32 -I %s", path);
 
@@ -593,7 +603,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkfs.jfs");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.jfs not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkfs.jfs -q %s", path);
 
@@ -601,7 +611,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkswap");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkswap not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkswap -f %s", path);
 
@@ -609,7 +619,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkntfs");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkntfs not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkntfs -Q -v %s", path);
     
@@ -617,7 +627,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkreiserfs");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkreiserfs not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkreiserfs -f -f %s", path);
 
@@ -625,7 +635,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkfs.btrfs");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.btrfs not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkfs.btrfs -f %s", path);
 
@@ -633,7 +643,7 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkfs.xfs");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkfs.xfs not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkfs.xfs -f %s", path);
 
@@ -641,13 +651,13 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
         fs_cmd = g_find_program_in_path ("mkswap");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkswap not installed\n");
-            return ;
+            return;
         }
         cmd = g_strdup_printf ("mkswap -f %s", path);
 
     } else {
         g_warning ("set partition filesystem:%s currently not supported\n", fs);
-        return ;
+        return;
     }
 
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
@@ -677,8 +687,8 @@ inhibit_disk ()
     if (error != NULL) {
         g_warning ("inhibit disk:%s\n", error->message);
         g_error_free (error);
+        error = NULL;
     }
-    error = NULL;
     
     g_free (inhibit_cmd);
     g_free (installer);
@@ -746,6 +756,7 @@ out:
     g_free (matched);
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     g_free ((gchar *)handler->path);
     g_free ((gchar *)handler->uuid);

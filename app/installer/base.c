@@ -52,6 +52,9 @@ gboolean installer_is_running ()
 void emit_progress (const gchar *step, const gchar *progress)
 {
     GRAB_CTX ();
+    if (step == NULL || progress == NULL) {
+        g_warning ("emit progress:invalid step->%s or progress->%s\n", step, progress);
+    }
     JSObjectRef message = json_create ();
     json_append_string (message, "stage", step);
     json_append_string (message, "progress", progress);
@@ -64,8 +67,8 @@ get_matched_string (const gchar *target, const gchar *regex_string)
 {
     gchar *result = NULL;
     GError *error = NULL;
-    GRegex *regex;
-    GMatchInfo *match_info;
+    GRegex *regex = NULL;
+    GMatchInfo *match_info = NULL;
 
     if (target == NULL || regex_string == NULL) {
         g_warning ("get matched string:paramemter NULL\n");
@@ -76,9 +79,9 @@ get_matched_string (const gchar *target, const gchar *regex_string)
     if (error != NULL) {
         g_warning ("get matched string:%s\n", error->message);
         g_error_free (error);
+        error = NULL;
         return NULL;
     }
-    error = NULL;
 
     g_regex_match (regex, target, 0, &match_info);
     if (g_match_info_matches (match_info)) {
@@ -106,6 +109,7 @@ get_xrandr_size ()
     if (error != NULL) {
         g_warning ("get xrandr size:%s\n", error->message);
         g_error_free (error);
+        error = NULL;
         g_free (output);
         return g_strdup("1024x768");
     }
@@ -186,8 +190,9 @@ get_cpu_num ()
 
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
-       g_warning ("get cpu num:%s\n", error->message);
+        g_warning ("get cpu num:%s\n", error->message);
         g_error_free (error);
+        error = NULL;
     }
     if (output == NULL) {
         return num;
@@ -247,6 +252,10 @@ get_partition_mount_point (const gchar *path)
 void 
 unmount_partition_by_device (const gchar *path)
 {
+    if (path == NULL) {
+        g_warning ("unmount partition by device:path NULL\n");
+        return;
+    }
     gchar *mp = NULL;
     while ((mp = get_partition_mount_point (path)) != NULL) {
         gchar *cmd = NULL;
@@ -306,6 +315,7 @@ out:
     }
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     return count;
 }
@@ -317,7 +327,7 @@ get_partition_uuid (const gchar *path)
     gchar *cmd = NULL;
     GError *error = NULL;
 
-    if (!g_file_test (path, G_FILE_TEST_EXISTS)) {
+    if (path == NULL || !g_file_test (path, G_FILE_TEST_EXISTS)) {
         g_warning ("get partition uuid:path %s not exists", path);
         return NULL;
     }
@@ -327,6 +337,7 @@ get_partition_uuid (const gchar *path)
     if (error != NULL) {
         g_warning ("get partition uuid:%s\n", error->message);
         g_error_free (error);
+        error = NULL;
     }
     g_free (cmd);
 
@@ -340,9 +351,8 @@ get_partition_label (const gchar *path)
     gchar *cmd = NULL;
     GError *error = NULL;
 
-    if (!g_file_test (path, G_FILE_TEST_EXISTS)) {
+    if (path == NULL || !g_file_test (path, G_FILE_TEST_EXISTS)) {
         g_warning ("get partition label:path %s not exists", path);
-
         return NULL;
     }
 
@@ -351,6 +361,7 @@ get_partition_label (const gchar *path)
     if (error != NULL) {
         g_warning ("get partition label:%s\n", error->message);
         g_error_free (error);
+        error = NULL;
     }
     g_free (cmd);
 
@@ -375,6 +386,7 @@ void  installer_draw_background (JSValueRef canvas, const gchar *path)
     if (error != NULL) {
         g_warning ("draw background:get pixbuf failed");
         g_error_free (error);
+        error = NULL;
         cairo_set_source_rgba (cr, 0.3, 0.3, 0.3, 0.5);
     } else {
         gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);

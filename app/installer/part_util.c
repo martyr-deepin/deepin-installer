@@ -80,6 +80,7 @@ thread_os_prober (gpointer data)
     if (error != NULL) {
         g_warning ("get partition os:os-prober %s\n", error->message);
         g_error_free (error);
+        error = NULL;
     }
 
     gchar **items = g_strsplit (output, "\n", -1);
@@ -237,8 +238,11 @@ JS_EXPORT_API
 gchar *installer_get_disk_path (const gchar *disk)
 {
     gchar *result = NULL;
-
     PedDisk *peddisk = NULL;
+    if (disk == NULL) {
+        g_warning ("get disk path:disk NULL\n");
+        return result;
+    }
 
     peddisk = (PedDisk *) g_hash_table_lookup (disks, disk);
     if (peddisk != NULL) {
@@ -261,6 +265,10 @@ gchar *installer_get_disk_type (const gchar *disk)
     PedDisk *peddisk = NULL;
     PedDevice *device = NULL;
     PedDiskType *type = NULL;
+    if (disk == NULL) {
+        g_warning ("get disk type:disk NULL\n");
+        return result;
+    }
 
     peddisk = (PedDisk *) g_hash_table_lookup (disks, disk);
     if (peddisk == NULL) {
@@ -286,15 +294,18 @@ JS_EXPORT_API
 gchar *installer_get_disk_model (const gchar *disk)
 {
     gchar *result = NULL;
-
     PedDisk *peddisk = NULL;
+    if (disk == NULL) {
+        g_warning ("get disk model:disk NULL\n");
+        return result;
+    }
 
     peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
     if (peddisk != NULL) {
         PedDevice *device = peddisk->dev;
-        g_assert(device != NULL);
-
-        result = g_strdup (device->model);
+        if (device != NULL) {
+            result = g_strdup (device->model);
+        }
 
     } else {
         g_warning ("get disk model:find peddisk by %s failed\n", disk);
@@ -308,6 +319,10 @@ double installer_get_disk_max_primary_count (const gchar *disk)
 {
     double count = 0;
     PedDisk *peddisk = NULL;
+    if (disk == NULL) {
+        g_warning ("get disk max primary count:disk NULL\n");
+        return count;
+    }
 
     peddisk = (PedDisk *) g_hash_table_lookup (disks, disk);
     if (peddisk != NULL) {
@@ -325,13 +340,18 @@ double installer_get_disk_length (const gchar *disk)
 {
     double length = 0;
     PedDisk *peddisk = NULL;
+    if (disk == NULL) {
+        g_warning ("get disk length:disk NULL\n");
+        return length;
+    }
 
     peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
     if (peddisk != NULL) {
         PedDevice *device = peddisk->dev;
-        g_assert(device != NULL);
+        if (device != NULL) {
+            length = device->length;
+        }
 
-        length = device->length;
     } else {
         g_warning ("get disk length:find peddisk by %s failed\n", disk);
     }
@@ -344,13 +364,18 @@ double installer_get_disk_sector_size (const gchar *disk)
 {
     double sector_size = 0;
     PedDisk *peddisk = NULL;
+    if (disk == NULL) {
+        g_warning ("get disk sector size:disk NULL\n");
+        return sector_size;
+    }
 
     peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
     if (peddisk != NULL) {
         PedDevice *device = peddisk->dev;
-        g_assert(device != NULL);
+        if (device != NULL) {
+            sector_size = device->sector_size;
+        }
 
-        sector_size = device->sector_size;
     } else {
         g_warning ("get disk sector size:find peddisk by %s failed\n", disk);
     }
@@ -364,9 +389,12 @@ JSObjectRef installer_get_disk_partitions (const gchar *disk)
     GRAB_CTX ();
     JSObjectRef array = json_array_create ();
     int i;
-
-    GList *parts =  NULL;
-    parts = (GList *) g_hash_table_lookup (disk_partitions, disk);
+    GList *parts = NULL;
+    if (disk == NULL) {
+        g_warning ("get disk partitions:disk NULL\n");
+    } else {
+        parts = (GList *) g_hash_table_lookup (disk_partitions, disk);
+    }
    
     if (parts != NULL) {
         for (i = 0; i < g_list_length (parts); i++) {
@@ -382,6 +410,10 @@ JS_EXPORT_API
 gboolean installer_disk_support_efi (const gchar *disk)
 {
     PedDisk *peddisk = NULL;
+    if (disk == NULL) {
+        g_warning ("disk support efi:disk NULL\n");
+        return FALSE;
+    }
 
     if (!g_file_test ("/sys/firmware/efi", G_FILE_TEST_IS_DIR)) {
         return FALSE;
@@ -433,9 +465,13 @@ gchar* installer_get_partition_type (const gchar *part)
 {
     gchar *type = NULL;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition type:part NULL\n");
+        return type;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    
+
     if (pedpartition != NULL) {
         PedPartitionType part_type = pedpartition->type;
         switch (part_type) {
@@ -482,6 +518,10 @@ gchar *installer_get_partition_name (const gchar *part)
 {
     gchar *name = NULL;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition name:part NULL\n");
+        return name;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
@@ -500,6 +540,10 @@ gchar* installer_get_partition_path (const gchar *part)
 {
     gchar *path = NULL;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition path:part NULL\n");
+        return path;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
@@ -517,16 +561,20 @@ gchar* installer_get_partition_mp (const gchar *part)
     gchar *mp = NULL;
     PedPartition *pedpartition = NULL;
     gchar *path = NULL;
+    if (part == NULL) {
+        g_warning ("get partition mp:part NULL\n");
+        return mp;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition == NULL) {
         g_warning ("get partition mp:find pedpartition %s failed\n", part);
-        return NULL;
+        return mp;
     }
     path = ped_partition_get_path (pedpartition);
     if (path == NULL) {
         g_warning ("get partition mp:get partition path failed\n");
-        return NULL;
+        return mp;
     }
     mp = get_partition_mount_point (path);
 
@@ -539,6 +587,10 @@ double installer_get_partition_start (const gchar *part)
 {
     double start = 0;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition start:part NULL\n");
+        return start;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
@@ -556,6 +608,10 @@ double installer_get_partition_length (const gchar *part)
 {
     double length = 0;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition length:part NULL\n");
+        return length;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
@@ -573,6 +629,10 @@ double installer_get_partition_end (const gchar *part)
 {
     double end = 0;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition end:part NULL\n");
+        return end;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
@@ -590,6 +650,10 @@ gchar *installer_get_partition_fs (const gchar *part)
 {
     gchar *fs = NULL;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition fs:part NULL\n");
+        return fs;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
@@ -608,9 +672,7 @@ gchar *installer_get_partition_fs (const gchar *part)
         if (g_strrstr (fs, "swap") != NULL) {
             return g_strdup ("swap");
         }
-    } else {
-        fs = g_strdup (NULL);
-    }
+    } 
 
     return fs;
 }
@@ -621,6 +683,10 @@ gchar* installer_get_partition_label (const gchar *part)
     gchar *label = NULL;
     PedPartition *pedpartition = NULL;
     gchar *path = NULL;
+    if (part == NULL) {
+        g_warning ("get partition label:part NULL\n");
+        return NULL;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition == NULL) {
@@ -646,6 +712,10 @@ gboolean installer_get_partition_busy (const gchar *part)
 {
     gboolean busy = FALSE;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition busy:part NULL\n");
+        return busy;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
@@ -666,6 +736,10 @@ gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name
     gboolean result = FALSE;
     PedPartition *pedpartition = NULL;
     PedPartitionFlag flag;
+    if (part == NULL || flag_name == NULL) {
+        g_warning ("get partition flag:part or flag name NULL\n");
+        return result;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition == NULL) {
@@ -695,15 +769,18 @@ void installer_get_partition_free (const gchar *part)
 {
     GRAB_CTX ();
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition free:part NULL\n");
+        return;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-
     if (pedpartition != NULL) {
         PedPartitionType part_type = pedpartition->type;
 
         if (part_type != PED_PARTITION_NORMAL && part_type != PED_PARTITION_LOGICAL && part_type != PED_PARTITION_EXTENDED) {
             g_printf ("get partition free:no meaning for none used\n");
-            return ;
+            return;
         }
 
         const gchar *fs = NULL;
@@ -715,7 +792,7 @@ void installer_get_partition_free (const gchar *part)
         ped_geometry_destroy (geom);
         if (fs == NULL) {
             g_warning ("get partition free:get partition file system failed\n");
-            return ;
+            return;
         }
 
         gchar *path = ped_partition_get_path (pedpartition);
@@ -745,9 +822,12 @@ gchar* installer_get_partition_os (const gchar *part)
     gchar* result = NULL;
     gchar *path = NULL;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition os:part NULL\n");
+        return result;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-        
     if (pedpartition != NULL) {
 
         path = ped_partition_get_path (pedpartition);
@@ -772,9 +852,12 @@ gchar* installer_get_partition_os_desc (const gchar *part)
     gchar* result = NULL;
     gchar *path = NULL;
     PedPartition *pedpartition = NULL;
+    if (part == NULL) {
+        g_warning ("get partition os desc:part NULL\n");
+        return result;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-        
     if (pedpartition != NULL) {
 
         path = ped_partition_get_path (pedpartition);
@@ -868,6 +951,11 @@ out:
 JS_EXPORT_API 
 gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk, const gchar *type, const gchar *fs, double start, double end)
 {
+    if (part_uuid == NULL || disk == NULL || type == NULL || fs == NULL) {
+        g_warning ("new disk partition:some param NULL\n");
+        return FALSE;
+    }
+
     if (op_queue == NULL) {
         op_queue = g_async_queue_new ();
     }
@@ -889,7 +977,6 @@ gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk
 gboolean handle_delete_disk_partition (const gchar *disk, const gchar *part)
 {
     gboolean ret = FALSE;
-
     PedDisk *peddisk = NULL;
     PedPartition *pedpartition = NULL;
 
@@ -914,6 +1001,10 @@ gboolean handle_delete_disk_partition (const gchar *disk, const gchar *part)
 JS_EXPORT_API 
 gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part)
 {
+    if (disk == NULL || part == NULL) {
+        g_warning ("delete disk partition:some param NULL\n");
+        return FALSE;
+    }
     if (op_queue == NULL) {
         op_queue = g_async_queue_new ();
     }
@@ -928,9 +1019,10 @@ gboolean installer_delete_disk_partition (const gchar *disk, const gchar *part)
     return TRUE;
 }
 
-gboolean handle_update_partition_geometry (const gchar *part, double start, double length) {
+gboolean 
+handle_update_partition_geometry (const gchar *part, double start, double length) 
+{
     gboolean ret = FALSE;
-
     PedPartition *pedpartition = NULL;
     PedGeometry *geom = NULL;
 
@@ -948,8 +1040,13 @@ gboolean handle_update_partition_geometry (const gchar *part, double start, doub
     return ret;
 }
 
-JS_EXPORT_API 
-gboolean installer_update_partition_geometry (const gchar *part, double start, double length) {
+JS_EXPORT_API gboolean 
+installer_update_partition_geometry (const gchar *part, double start, double length) 
+{
+    if (part == NULL) {
+        g_warning ("update partition geometry:part NULL\n");
+        return FALSE;
+    }
     if (op_queue == NULL) {
         op_queue = g_async_queue_new ();
     }
@@ -1016,6 +1113,10 @@ gboolean handle_update_partition_fs (const gchar *part, const gchar *fs)
 JS_EXPORT_API
 gboolean installer_update_partition_fs (const gchar *part, const gchar *fs)
 {
+    if (part == NULL || fs == NULL) {
+        g_warning ("update partition fs:part or fs NULL\n");
+        return FALSE;
+    }
     if (op_queue == NULL) {
         op_queue = g_async_queue_new ();
     }
@@ -1061,6 +1162,10 @@ gboolean handle_write_disk (const gchar *disk)
 JS_EXPORT_API 
 gboolean installer_write_disk (const gchar *disk)
 {
+    if (disk == NULL) {
+        g_warning ("write disk:disk NULL\n");
+        return FALSE;
+    }
     if (op_queue == NULL) {
         op_queue = g_async_queue_new ();
     }
@@ -1169,6 +1274,11 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
     FILE *mount_file = NULL;
     static gboolean header_inited = FALSE;
 
+    if (part == NULL || mp == NULL) {
+        g_warning ("write fs tab:part or mount point is NULL\n");
+        goto out;
+    }
+
     if (!header_inited) {
         const gchar *contents = "# /etc/fstab: static file system information.\n"                               \
                                 "#\n"                                                                           \
@@ -1181,10 +1291,6 @@ gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
         header_inited = TRUE;
     }
 
-    if (mp == NULL) {
-        g_warning ("write fs tab:mount point is NULL\n");
-        goto out;
-    }
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition == NULL) {
         g_warning ("write fs tab:find pedpartition %s failed\n", part);
@@ -1295,6 +1401,10 @@ gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name
     gboolean ret = FALSE;
     PedPartition *pedpartition = NULL;
     PedPartitionFlag flag;
+    if (part == NULL || flag_name == NULL) {
+        g_warning ("set partition flag:part or flag NULL\n");
+        return ret;
+    }
 
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
@@ -1380,6 +1490,7 @@ out:
     g_free (fs);
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     if ((!result) && (g_strcmp0 ("/", mp) == 0)) {
         emit_progress ("extract", "terminate");
@@ -1391,6 +1502,10 @@ out:
 JS_EXPORT_API
 void installer_unmount_partition (const gchar *part)
 {
+    if (part == NULL) {
+        g_warning ("unmount partition:part NULL\n");
+        return;
+    }
     gchar *path = installer_get_partition_path (part);
     unmount_partition_by_device (path);
     g_free (path);

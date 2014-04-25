@@ -60,6 +60,10 @@ timeout_emit_cb (gpointer data)
 static void
 copy_single_file (const char *src, const char *dest)
 {
+    if (src == NULL || dest == NULL) {
+        g_warning ("copy single file:src->%s or dest->%s invalid\n", src, dest);
+        return;
+    }
     FILE *sf = fopen (src, "r");
     if (sf == NULL) {
         g_warning ("copy single file:open src %s failed\n", src);
@@ -93,6 +97,9 @@ copy_single_file (const char *src, const char *dest)
 static gboolean
 ancestor_is_symlink (const char *path)
 {
+    if (path == NULL) {
+        return FALSE;
+    }
     GFile *self = g_file_new_for_path (path);
     GFile *parent = NULL;
     GFile *tmp = self;
@@ -117,6 +124,10 @@ ancestor_is_symlink (const char *path)
 static char*
 get_dest_for_extract_iso (const char *path)
 {
+    if (path == NULL) {
+        g_warning ("get dest for extract iso:path NULL\n");
+        return NULL;
+    }
     char *dest = NULL;
     extern const gchar *target;
     gchar *ts = g_strdup_printf ("%s/squashfs", target);
@@ -147,6 +158,7 @@ copy_file_cb (const char *path, const char *dest)
 {
     if (path == NULL || dest == NULL) {
         g_warning ("copy file cb:invald path->%s, dest->%s\n", path, dest);
+        return -1;
     }
     struct stat st;
     if (lstat (path, &st) != 0) {
@@ -167,16 +179,16 @@ copy_file_cb (const char *path, const char *dest)
         gchar *link = g_file_read_link (path, &error);
         if (error != NULL) {
             g_error_free (error);
+            error = NULL;
         }
-        error = NULL;
 
         g_file_make_symbolic_link (file, link, NULL, &error);
         if (error != NULL) {
             //g_warning ("copy file cb:make symlink from %s to %s failed-> %s\n", dest, link, error->message);
             g_error_free (error);
+            error = NULL;
         }
         g_free (link);
-        error = NULL;
         g_object_unref (file);
     
     } else if (S_ISDIR (mode)) {
@@ -203,6 +215,10 @@ copy_file_cb (const char *path, const char *dest)
 
 int walk_directory (const char *dpath, int (*cb) (const char *path, const char *dest))
 {
+    if (dpath == NULL) {
+        g_warning ("walk directory:dpath NULL\n");
+        return -1;
+    }
     concurrency_num += 1;
     struct stat buf;
     if (lstat (dpath, &buf) != 0) {
@@ -308,6 +324,7 @@ out:
     g_free (size_content);
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     if (cb_id > 0) {
         g_source_remove (cb_id);
@@ -344,6 +361,7 @@ watch_extract_child (GPid pid, gint status, gpointer data)
     if (error != NULL) {
         g_warning ("watch extract child:error->%s\n", error->message);
         g_error_free (error);
+        error = NULL;
         emit_progress ("extract", "terminate");
     } else {
         g_printf ("watch extract child:extract finish\n");
@@ -525,8 +543,8 @@ thread_extract_squashfs (gpointer data)
     if (error != NULL) {
         g_warning ("extract squashfs:spawn async pipes %s\n", error->message);
         g_error_free (error);
+        error = NULL;
     }
-    error = NULL;
 
     out_channel = g_io_channel_unix_new (std_output);
     err_channel = g_io_channel_unix_new (std_error);
@@ -727,5 +745,6 @@ out:
     g_strfreev (strarray);
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
 }

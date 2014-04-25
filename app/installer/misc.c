@@ -125,6 +125,7 @@ out:
     g_free (mount_sys);
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     return ret;
 }
@@ -170,7 +171,7 @@ out:
 static void 
 unmount_target ()
 {
-    g_warning ("finish install:unmount target\n");
+    g_debug ("finish install:unmount target\n");
     extern const gchar *target;
     if (target == NULL) {
         g_warning ("unmount mount:target is NULL\n");
@@ -230,6 +231,8 @@ fix_networkmanager ()
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("fix networkmanager:%s\n", error->message);
+        g_error_free (error);
+        error = NULL;
     }
 }
 
@@ -290,13 +293,14 @@ out:
     g_free (packages);
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
 }
 
 void
 finish_install_cleanup () 
 {
-    g_warning ("finish install cleanup\n");
+    g_debug ("finish install cleanup\n");
     static gboolean cleaned = FALSE;
     if (cleaned) {
         g_warning ("finish install cleanup:already cleaned\n");

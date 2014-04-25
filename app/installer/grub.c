@@ -167,11 +167,15 @@ out:
 JS_EXPORT_API 
 void installer_update_bootloader (const gchar *uuid, gboolean uefi)
 {
-    GThread *thread = NULL;
+    if (uuid == NULL) {
+        g_warning ("update bootloader:invalid device\n");
+        emit_progress ("bootloader", "terminate");
+        return;
+    }
     struct GrubHandler *handler = g_new0 (struct GrubHandler, 1);
     handler->uuid = g_strdup (uuid);
     handler->uefi = uefi;
 
-    thread = g_thread_new ("bootloader", (GThreadFunc) thread_update_grub, (gpointer) handler);
+    GThread *thread = g_thread_new ("bootloader", (GThreadFunc) thread_update_grub, (gpointer) handler);
     g_thread_unref (thread);
 }

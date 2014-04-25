@@ -55,6 +55,9 @@ JSObjectRef installer_get_system_users()
 static void
 free_passwd_handler (struct PasswdHandler *handler)
 {
+    if (handler == NULL) {
+        return;
+    }
     GError *error = NULL;
 
     g_free (handler->username);
@@ -143,6 +146,11 @@ thread_create_user (gpointer data)
 JS_EXPORT_API 
 void installer_create_user (const gchar *username, const gchar *hostname, const gchar *password)
 {
+    if (username == NULL || hostname == NULL || password == NULL) {
+        g_warning ("create user:invalid username-> %s or hostname->%s or password->%s\n", username, hostname, password);
+        emit_progress ("user", "terminate");
+        return;
+    }
     struct PasswdHandler *handler = g_new0 (struct PasswdHandler, 1);
     handler->username = g_strdup (username);
     handler->password = g_strdup (password);
@@ -160,6 +168,9 @@ void installer_create_user (const gchar *username, const gchar *hostname, const 
 gboolean 
 add_user (const gchar *username)
 {
+    if (username == NULL) {
+        return FALSE;
+    }
     GError *error = NULL;
     gchar *useradd_cmd = g_strdup_printf ("useradd -U -m --skel /etc/skel --shell /bin/bash %s", username);
 
@@ -179,6 +190,9 @@ add_user (const gchar *username)
 gboolean 
 set_user_home (const gchar *username)
 {
+    if (username == NULL) {
+        return FALSE;
+    }
     GError *error = NULL;
     gchar *chown_cmd = g_strdup_printf ("chown -hR %s:%s /home/%s", username, username, username);
 
@@ -198,7 +212,7 @@ set_user_home (const gchar *username)
 static void
 watch_passwd_child (GPid pid, gint status, struct PasswdHandler *handler)
 {
-    g_printf ("watch password child:set password finish\n");
+    g_debug ("watch password child:set password finish\n");
     free_passwd_handler (handler);
     if (status == -1) {
         emit_progress ("user", "terminate");
@@ -209,7 +223,7 @@ static gboolean
 passwd_out_watch (GIOChannel *channel, GIOCondition cond, struct PasswdHandler *handler)
 {
     static int write_count = 0;
-    if (write_count > 1) {
+    if (write_count > 1 || channel == NULL) {
         return FALSE;
     }
 
@@ -220,6 +234,7 @@ passwd_out_watch (GIOChannel *channel, GIOCondition cond, struct PasswdHandler *
     if (g_io_channel_read_chars (channel, buf, BUFSIZE, NULL, &error) != G_IO_STATUS_NORMAL) {
         g_warning ("passwd out watch:read error %s", error->message);
         g_error_free (error);
+        error = NULL;
         return TRUE;
     }
     error = NULL;
@@ -231,8 +246,8 @@ passwd_out_watch (GIOChannel *channel, GIOCondition cond, struct PasswdHandler *
         if (g_io_channel_write_chars (handler->in_channel, passwd, -1, NULL, &error) != G_IO_STATUS_NORMAL) {
             g_warning ("passwd out watch:write %s to channel: %s", passwd, error->message);
             g_error_free (error);
+            error = NULL;
         }
-        error = NULL;
         g_free (passwd);
         write_count = write_count + 1;
     }
@@ -249,8 +264,11 @@ ignore_sigpipe (gpointer data)
 gboolean 
 set_user_password (struct PasswdHandler *handler)
 {
-    g_printf ("set user password");
+    g_debug ("set user password");
     gboolean ret = FALSE;
+    if (handler == NULL) {
+        return ret;
+    }
 
     gchar **argv = g_new0 (gchar *, 3);
     argv[0] = g_strdup ("passwd");
@@ -322,9 +340,12 @@ gboolean
 set_group (const gchar *username)
 {
     gboolean ret = FALSE;
-
     GError *error = NULL;
     gint status = -1;
+
+    if (username == NULL) {
+        return ret;
+    }
 
     gchar **groups = g_new0 (gchar*, 15);
     groups[0] = g_strdup ("cdrom");
@@ -351,8 +372,8 @@ set_group (const gchar *username)
         if (error != NULL) {
             g_warning ("create user:groupadd %s\n", error->message);
             g_error_free (error);
+            error = NULL;
         }
-        error = NULL;
         if (status != 0) {
             g_warning ("create user:group add failed for %s\n", groups[i]);
             g_free (groupadd_cmd);
@@ -367,8 +388,8 @@ set_group (const gchar *username)
         if (error != NULL) {
             g_warning ("create user:gpasswd %s\n", error->message);
             g_error_free (error);
+            error = NULL;
         }
-        error = NULL;
         if (status != 0) {
             g_warning ("create user:gpasswd failed for %s\n", groups[i]);
             g_free (gpasswd_cmd);
@@ -387,11 +408,9 @@ gboolean
 write_hostname (const gchar *hostname)
 {
     gboolean ret = FALSE;
-
     GError *error = NULL;
 
     if (hostname == NULL) {
-        g_warning ("write hostname:hostname is NULL\n");
         return ret;
     }
 
@@ -401,10 +420,10 @@ write_hostname (const gchar *hostname)
     if (error != NULL) {
         g_warning ("write hostname: set hostname file %s contents failed\n", hostname_file);
         g_error_free (error);
+        error = NULL;
         g_free (hostname_file);
         return ret;
     }
-    error = NULL;
     g_free (hostname_file);
 
     gchar *hosts_file = g_strdup ("/etc/hosts");
@@ -422,12 +441,12 @@ write_hostname (const gchar *hostname)
     if (error != NULL) {
         g_warning ("write hostname: set hosts file %s contents failed\n", hosts_file);
         g_error_free (error);
+        error = NULL;
         g_free ((gchar *)lha);
         g_free (hosts_file);
         g_free (hosts_content);
         return ret;
     }
-    error = NULL;
     g_free ((gchar *)lha);
     g_free (hosts_file);
     g_free (hosts_content);

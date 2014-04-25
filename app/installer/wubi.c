@@ -117,5 +117,6 @@ out:
     }
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
 }

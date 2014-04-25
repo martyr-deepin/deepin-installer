@@ -86,6 +86,7 @@ out:
     }
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     UNGRAB_CTX ();
 
@@ -140,6 +141,7 @@ out:
     g_free (localtime_path);
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     if (zoneinfo_file != NULL) {
         g_object_unref (zoneinfo_file);

@@ -50,6 +50,10 @@ static gchar *result = NULL;
 static void 
 _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
+    if (item == NULL || data == NULL) {
+        g_warning ("_foreach variant:some param NULL\n");
+        return;
+    }
     XklConfigItem *layout = (XklConfigItem *) data;
 
     GList *variants = g_list_copy (g_hash_table_lookup (layout_variants_hash, layout->name));
@@ -64,6 +68,10 @@ _foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer
 static void 
 _foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
 {
+    if (config == NULL || item == NULL) {
+        g_warning ("_foreach layout:some param NULL\n");
+        return;
+    }
     GList *variants = NULL;
     g_hash_table_insert (layout_variants_hash, g_strdup (item->name), variants);
     g_hash_table_insert (layout_desc_hash, g_strdup (item->name), g_strdup (item->description));
@@ -183,6 +191,10 @@ JSObjectRef installer_get_layout_variants (const gchar *layout_name)
 {
     GRAB_CTX ();
     JSObjectRef layout_variants = json_array_create ();
+    if (layout_name == NULL) {
+        g_warning ("get layout variants:layout NULL\n");
+        return layout_variants;
+    }
     if (layout_variants_hash == NULL) {
         g_warning ("get layout variants:layout variants hash NULL\n");
         init_keyboard_layouts ();
@@ -289,6 +301,7 @@ out:
     g_free (result);
     if (error != NULL) {
         g_error_free (error);
+        error = NULL;
     }
     if (!succeed) {
         g_warning ("set keyboard failed, just skip\n");
@@ -319,6 +332,10 @@ JS_EXPORT_API
 double installer_keyboard_detect_read_step (gchar *step)
 {
     g_debug ("read step:read step->%s, current_step->%s\n", step, current_step);
+    if (step == NULL) {
+        g_warning ("keyboard detect read step:step NULL\n");
+        return 0;
+    }
     if (pc105_contents == NULL) {
        init_keyboard_detect (); 
     }
