@@ -46,7 +46,7 @@ determine_target_home_id = (target) ->
 fetch_install_info = ->
     try
         info = DCore.Installer.get_installation_info()
-        if info["username"] != "deepin" and info["username"] in DCore.Installer.get_system_users()
+        if info["username"] in DCore.Installer.get_system_users()
             throw "invalid username"
         for c in info["username"]
             if c in __illegal_keys

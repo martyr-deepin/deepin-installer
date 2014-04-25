@@ -752,8 +752,6 @@ class WelcomeFormItem extends Widget
         if not @input.value? or @input.value.length == 0
             return false
         if @id == "username"
-            if @input.value == "deepin"
-                return true
             if @input.value in DCore.Installer.get_system_users()
                 return false
             for c in @input.value

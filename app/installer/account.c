@@ -38,7 +38,7 @@ JSObjectRef installer_get_system_users()
     int i = 0;
 
     while ((user = getpwent ()) != NULL){
-        if (user->pw_uid >= 1000) {
+        if (user->pw_uid >= 1000 || g_strcmp0 ("deepin", user->pw_name) == 0) {
             continue;
         }
         username = g_strdup (user->pw_name);
