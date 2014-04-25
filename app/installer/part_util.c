@@ -1392,36 +1392,6 @@ JS_EXPORT_API
 void installer_unmount_partition (const gchar *part)
 {
     gchar *path = installer_get_partition_path (part);
-    gchar *mp = NULL;
-    while ((mp = get_partition_mount_point (path)) != NULL) {
-        gchar *cmd = g_strdup_printf ("umount -l %s", mp);
-        g_spawn_command_line_async (cmd, NULL);
-        g_free (cmd);
-        g_free (mp);
-        g_usleep (1000);
-    }
+    unmount_partition_by_device (path);
     g_free (path);
-}
-
-JS_EXPORT_API 
-void installer_swapoff_all ()
-{
-    gchar *cmd = g_strdup ("swapoff -a"); 
-    g_spawn_command_line_async (cmd, NULL);
-    g_free (cmd);
-}
-
-JS_EXPORT_API 
-gboolean installer_is_swap_on ()
-{
-    gboolean flag = FALSE;
-    gchar *cmd = g_strdup ("free |grep \"Swap\" |awk '{print $2}'");
-    gchar *output = NULL;
-    g_spawn_command_line_sync (cmd, &output, NULL, NULL, NULL);
-    if (g_strcmp0 ("0", g_strstrip (output)) != 0) {
-        flag = TRUE;
-    }
-    g_free (output);
-    g_free (cmd);
-    return flag;
 }

@@ -267,10 +267,6 @@ class UnmountDialog extends Dialog
                         DCore.Installer.unmount_partition(part)
                 catch error
                     echo error
-        try
-            DCore.Installer.swapoff_all()
-        catch error
-            echo error
         for item in Widget.look_up("part_table")?.partitems
             item.check_busy()
 

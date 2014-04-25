@@ -202,6 +202,8 @@ gchar *
 get_partition_mount_point (const gchar *path)
 {
     gchar *mp = NULL;
+    gchar *swap_cmd = NULL;
+    gchar *swap_output = NULL;
     gchar *cmd = NULL;
     GError *error = NULL;
 
@@ -210,11 +212,25 @@ get_partition_mount_point (const gchar *path)
         return mp;
     }
 
+    swap_cmd = g_strdup_printf ("sh -c \"cat /proc/swaps |grep %s |awk '{print $1}'\"", path);
+    g_spawn_command_line_sync (cmd, &swap_output, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("get partition mount point:run swap cmd error->%s\n", error->message);
+        g_error_free (error);
+        error = NULL;
+    }
+    g_free (swap_cmd);
+
+    if (swap_output != NULL && g_strcmp0 (g_strstrip(swap_output), path) == 0) {
+        return g_strdup ("swap");
+    }
+
     cmd = g_strdup_printf ("findmnt -k -f -n -o TARGET -S %s", path);
     g_spawn_command_line_sync (cmd, &mp, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("get partition mount point:run cmd error->%s\n", error->message);
         g_error_free (error);
+        error = NULL;
     }
     g_free (cmd);
     if (mp != NULL) {
@@ -226,6 +242,24 @@ get_partition_mount_point (const gchar *path)
     }
 
     return mp;
+}
+
+void 
+unmount_partition_by_device (const gchar *path)
+{
+    gchar *mp = NULL;
+    while ((mp = get_partition_mount_point (path)) != NULL) {
+        gchar *cmd = NULL;
+        if (g_strcmp0 (mp, "swap") == 0) {
+            cmd = g_strdup_printf ("swapoff %s", path);
+        } else {
+            cmd = g_strdup_printf ("umount -l %s", mp);
+        }
+        g_spawn_command_line_async (cmd, NULL);
+        g_free (cmd);
+        g_free (mp);
+        g_usleep (1000);
+    }
 }
 
 guint 

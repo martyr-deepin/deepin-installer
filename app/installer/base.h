@@ -52,6 +52,8 @@ guint get_cpu_num ();
 
 gchar *get_partition_mount_point (const gchar *path);
 
+void unmount_partition_by_device (const gchar *path);
+
 guint get_mount_target_count (const gchar *target);
 
 gchar *get_partition_uuid (const gchar *path);

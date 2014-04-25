@@ -358,16 +358,11 @@ check_target_part = ->
 
 #when had partition mount, should attention him unmount first before part operation
 check_has_mount = ->
-    mount = false
     for disk in disks
         for part in m_disk_info[disk]["partitions"]
             if DCore.Installer.get_partition_mp(part)
-                mount = true
-                break
-    if mount == false
-        if DCore.Installer.is_swap_on() == true
-            mount = true
-    return mount
+                return true
+    return false
 
 get_legacy_boot_part = ->
     for disk in disks

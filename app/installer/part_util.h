@@ -98,8 +98,4 @@ JS_EXPORT_API gboolean installer_mount_partition (const gchar *part, const gchar
 
 JS_EXPORT_API void installer_unmount_partition (const gchar *part);
 
-JS_EXPORT_API void installer_swapoff_all ();
-
-JS_EXPORT_API gboolean installer_is_swap_on ();
-
 #endif
