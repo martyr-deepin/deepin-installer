@@ -27,6 +27,7 @@ __selected_zone_index = 8
 __selected_username = null
 __selected_hostname = null
 __selected_password = null
+__selected_locale = DCore.Installer.get_current_locale()
 __illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/'
 
 __database = JSON.parse(timezone_json)

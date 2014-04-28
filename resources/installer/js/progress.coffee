@@ -28,6 +28,8 @@ DCore.signal_connect("progress", (msg) ->
         progress_page.handle_set_timezone(msg.progress)
     else if msg.stage == "keyboard" and __selected_stage == "keyboard"
         progress_page.handle_set_keyboard(msg.progress)
+    else if msg.stage == "locale" and __selected_stage == "locale"
+        progress_page.handle_set_locale(msg.progress)
     else if msg.stage == "user" and __selected_stage == "user"
         progress_page.handle_create_user(msg.progress)
     else if msg.stage == "bootloader" and __selected_stage == "bootloader"
@@ -308,13 +310,30 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "keyboard finish"
-            __selected_stage = "user"
-            @handle_create_user("start")
+            __selected_stage = "locale"
+            @handle_set_locale("start")
         else if progress == "terminate"
             echo "keyboard terminate"
             @show_report()
         else 
             echo "invalid progress for handle keyboard"
+
+    handle_set_locale: (progress) ->
+        if progress == "start"
+            echo "start handle locale"
+            try
+                DCore.Installer.set_target_locale(__selected_locale)
+            catch error
+                echo error
+        else if progress == "finish"
+            echo "locale finish"
+            __selected_stage = "user"
+            @handle_create_user("start")
+        else if progress == "terminate"
+            echo "locale terminate"
+            @show_report()
+        else
+            echo "invalid progress for handle locale"
 
     handle_create_user: (progress) ->
         if progress == "start"

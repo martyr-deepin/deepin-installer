@@ -28,7 +28,7 @@ JS_EXPORT_API
 gchar* installer_get_current_locale ()
 {
     gchar *locale = NULL;
-    gchar *cmd = g_strdup ("sh -c \"locale | head -n1 | awk -F= '{print $2}'\"");
+    gchar *cmd = g_strdup ("sh -c \"locale | head -n1 | awk -F= '{print $2}' | tr -d '\n' \"");
     g_spawn_command_line_sync (cmd, &locale, NULL, NULL, NULL);
     g_free (cmd);
     return locale;
@@ -114,4 +114,6 @@ void  installer_set_target_locale (const gchar *locale)
     g_free (charset_part);
     g_free (contents);
     g_free (localedef_cmd);
+
+    emit_progress ("locale", "finish");
 }
