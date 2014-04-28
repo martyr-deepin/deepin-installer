@@ -20,6 +20,9 @@
  **/
 
 #include "locale.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 JS_EXPORT_API 
 gchar* installer_get_current_locale ()
@@ -34,13 +37,19 @@ gchar* installer_get_current_locale ()
 static gboolean
 is_locale_valid (const gchar *local_part)
 {
-    return FALSE;
+    if (local_part == NULL) {
+        return FALSE;
+    }
+    return TRUE;
 }
 
 static gboolean
 is_charset_valid (const gchar *charset_part)
 {
-    return FALSE;
+    if (charset_part == NULL) {
+        return FALSE;
+    }
+    return TRUE;
 }
 
 JS_EXPORT_API 
@@ -49,6 +58,9 @@ void  installer_set_target_locale (const gchar *locale)
     gchar **split = NULL;
     gchar *locale_part = NULL;
     gchar *charset_part = NULL;
+    gchar *localedef_cmd = NULL;
+    gchar *contents = NULL;
+    GError *error = NULL;
 
     if (locale == NULL) {
         g_warning ("set target locale:locale NULL\n");
@@ -67,6 +79,39 @@ void  installer_set_target_locale (const gchar *locale)
     }
 
     if (!g_file_test ("/etc/default/locale", G_FILE_TEST_EXISTS)) {
-        g_create ("/etc/default/locale", 0644);
+        g_creat ("/etc/default/locale", 0644);
     }
+    if (!is_locale_valid (locale_part)) {
+        if (locale_part != NULL) {
+            g_free (locale_part);
+        }
+        locale_part = g_strdup ("en_US");
+    }
+    if (!is_charset_valid (charset_part)) {
+        if (charset_part != NULL) {
+            g_free (charset_part);
+        }
+        charset_part = g_strdup ("UTF-8");
+    }
+
+    contents = g_strdup_printf ("%s.%s", locale_part, charset_part);
+    g_file_set_contents ("/etc/default/locale", contents, -1, &error);
+    if (error != NULL) {
+        g_warning ("set target locale:write %s to /etc/default/locale failed\n", contents);
+        g_error_free (error);
+        error = NULL;
+    }
+
+    localedef_cmd = g_strdup_printf ("localedef -f %s -i %s %s", charset_part, locale_part, contents);
+    g_spawn_command_line_async (localedef_cmd, &error);
+    if (error != NULL) {
+        g_warning ("set target locale:run localdef->%s\n", error->message);
+        g_error_free (error);
+        error = NULL;
+    }
+
+    g_free (locale_part);
+    g_free (charset_part);
+    g_free (contents);
+    g_free (localedef_cmd);
 }
