@@ -67,7 +67,7 @@ void  installer_set_target_locale (const gchar *locale)
         locale_part = g_strdup ("en_US");
         charset_part = g_strdup ("UTF-8");
     } else {
-        split = g_strsplit (locale, ",", -1);
+        split = g_strsplit (locale, ".", -1);
         if (g_strv_length (split) == 2) {
             locale_part = g_strdup (split[0]);
             charset_part = g_strdup (split[1]);
