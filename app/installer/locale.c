@@ -94,7 +94,7 @@ void  installer_set_target_locale (const gchar *locale)
         charset_part = g_strdup ("UTF-8");
     }
 
-    contents = g_strdup_printf ("%s.%s", locale_part, charset_part);
+    contents = g_strdup_printf ("LANG=\"%s.%s\"", locale_part, charset_part);
     g_file_set_contents ("/etc/default/locale", contents, -1, &error);
     if (error != NULL) {
         g_warning ("set target locale:write %s to /etc/default/locale failed\n", contents);
