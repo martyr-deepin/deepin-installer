@@ -11,6 +11,7 @@ Deepin Installer
 应用程序选项：
   -s, --schema=fast or safe        fast use unsquashfs, safe copy file one by one
   -c, --cpu=count                  num of processors used in unsquashfs mode
+  -i, --iso=path                   set iso file path when install without live os
   -a, --automatic                  gather info from command line then install automatic
   -t, --target=/dev/sdaX           device to install system, required when automatic
   -m, --home=/dev/sdaX             partition mount as home in target system
