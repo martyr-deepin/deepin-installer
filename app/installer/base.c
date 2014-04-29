@@ -218,7 +218,7 @@ get_partition_mount_point (const gchar *path)
     }
 
     swap_cmd = g_strdup_printf ("sh -c \"cat /proc/swaps |grep %s |awk '{print $1}'\"", path);
-    g_spawn_command_line_sync (cmd, &swap_output, NULL, NULL, &error);
+    g_spawn_command_line_sync (swap_cmd, &swap_output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("get partition mount point:run swap cmd error->%s\n", error->message);
         g_error_free (error);

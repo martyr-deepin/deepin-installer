@@ -664,8 +664,8 @@ set_partition_filesystem (const gchar *path, const gchar *fs)
     if (error != NULL) {
         g_warning ("set partition filesystem %s\n", error->message);
         g_error_free (error);
+        error = NULL;
     }
-    error = NULL;
     g_free (fs_cmd);
     g_free (cmd);
 }
