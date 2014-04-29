@@ -57,7 +57,7 @@ fetch_install_info = ->
             __selected_hostname = info["hostname"]
         else
             __selected_hostname = __selected_username
-        if info["timezone"]? and info["timezone"] not in DCore.Installer.get_timezone_list()
+        if info["timezone"]? and info["timezone"] in DCore.Installer.get_timezone_list()
             __selected_timezone = info["timezone"]
         else
             __selected_timezone = "Asia/Shanghai"
