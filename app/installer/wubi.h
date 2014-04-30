@@ -28,4 +28,12 @@ JS_EXPORT_API gboolean installer_is_use_wubi ();
 
 void sync_wubi_config ();
 
+JS_EXPORT_API void installer_update_fs_wubi (const gchar *path, const gchar *fs);
+
+JS_EXPORT_API void installer_mount_path_wubi (const gchar *path, const gchar *mp);
+
+JS_EXPORT_API gboolean installer_write_mp_wubi (const gchar *path, const gchar *fs, const gchar *mp);
+
+JS_EXPORT_API void installer_update_bootloader_wubi (const gchar *path);
+
 #endif

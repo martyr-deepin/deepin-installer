@@ -53,33 +53,48 @@ fetch_install_info = (info) ->
 
 #below used for wubi install
 do_wubi_partition = ->
-    echo "do wubi partition need to be implemented"
+    echo "do wubi partition"
+    #echo "do wubi partition need to be implemented"
+    #try
+    #    DCore.Installer.update_fs_wubi("/targetpath", "ext4")
+    #catch error
+    #    throw error
 
 mount_wubi_partitions = ->
-    echo  "need to be implemented, called in progress.coffee handle extract"
+    echo "mount wubi partitions"
+    #echo  "need to be implemented, called in progress.coffee handle extract"
+    #try
+    #    DCore.Installer.mount_path_wubi("/targetpath", "/mnt/target")
+    #catch error
+    #    throw error
 
 write_wubi_fs_tab = ->
-    echo "need to be implemented, called in progress.coffee before handle timezone"
+    echo "write wubi fs tab"
+    #echo "need to be implemented, called in progress.coffee before handle timezone"
+    #try
+    #    DCore.Installer.write_mp_wubi("/targetpath", "ext4", "/")
+    #catch error
+    #    throw error
 
 update_wubi_bootloader = ->
-    echo "to be implemented, called in progress.coffee handle update bootloader"
+    echo "update wubi bootloader"
+    #echo "to be implemented, called in progress.coffee handle update bootloader"
+    #try
+    #    DCore.Installer.update_bootloader_wubi("/dev/sda")
+    #catch error
+    #    throw error
 
 handle_wubi_install = ->
-    if __init_parted_finish
-        try
-            do_wubi_partition()
-            info = DCore.Installer.get_installation_info()
-            fetch_install_info(info)
-            progress_page = new Progress("progress")
-            pc.add_page(progress_page)
-        catch error
-            echo error
-            welcome_page = new Welcome("welcome")
-            pc.add_page(welcome_page)
-    else
-        setTimeout(=>
-            handle_wubi_install()
-        , 1000)
+    try
+        do_wubi_partition()
+        info = DCore.Installer.get_installation_info()
+        fetch_install_info(info)
+        progress_page = new Progress("progress")
+        pc.add_page(progress_page)
+    catch error
+        echo error
+        welcome_page = new Welcome("welcome")
+        pc.add_page(welcome_page)
 
 #below used for automatic install
 determine_target_id = (target) ->
