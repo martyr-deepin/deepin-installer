@@ -14,14 +14,14 @@ Deepin Installer
   -i, --iso=path                   set iso file path when install without live os
   -a, --automatic                  gather info from command line then install automatic
   -t, --target=/dev/sdaX           device to install system, required when automatic
-  -m, --home=/dev/sdaX             partition mount as home in target system
+  -m, --home=/dev/sdaX             partition mount as home in target system, only work when automatic
   -u, --username=deepin            username of target system, required when automatic
-  -n, --hostname=hostname          hostname of target system
+  -n, --hostname=hostname          hostname of target system, only work when automatic
   -p, --password=password          password of target system, required when automatic
-  -l, --layout=layout code         keyboard layout of target system, default us
-  -v, --variant=variant code       keyboard variant of target system
-  -z, --zone=Asia/Shanghai         timezone of target system, default Asia/Shanghai
-  -e, --locale=zh_CN.UTF-8         locale of target system
-  -g, --grub=/dev/sdaX or uefi     device to install grub, or uefi auto detect
+  -l, --layout=layout code         keyboard layout of target system, only work when automatic
+  -v, --variant=variant code       keyboard variant of target system, only work when automatic
+  -z, --zone=Asia/Shanghai         timezone of target system, only work when automatic
+  -e, --locale=zh_CN.UTF-8         locale of target system, only work when automatic
+  -g, --grub=/dev/sdaX or uefi     device path or uefi to install bootloader, only work when automatic
   -d, --debug                      set log level to debug
   --display=显示                   要使用的 X 显示
