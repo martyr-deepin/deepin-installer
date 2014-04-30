@@ -649,7 +649,11 @@ void installer_extract_intelligent ()
     if (!is_live_os ()) {
         extern gchar *opt_iso_path;
         if (opt_iso_path != NULL && g_file_test (opt_iso_path, G_FILE_TEST_EXISTS)) {
-            gchar *cdrom_cmd = g_strdup_printf ("mount %s /cdrom", opt_iso_path);
+            while (g_file_test ("/cdrom/casper/filesystem.squashfs", G_FILE_TEST_EXISTS)) {
+                g_spawn_command_line_async ("umount -l /cdrom", NULL);
+                g_usleep (100);
+            }
+            gchar *cdrom_cmd = g_strdup_printf ("mount -t iso9660 %s /cdrom", opt_iso_path);
             g_spawn_command_line_sync (cdrom_cmd, NULL, NULL, NULL, NULL);
             g_free (cdrom_cmd);
         } else  {
