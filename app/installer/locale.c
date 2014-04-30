@@ -46,13 +46,13 @@ is_locale_valid (const gchar *local_part)
         goto out;
     }
 
-    g_spawn_command_line_sync ("ls /usr/share/i18n/locales", &output, NULL, NULL, &error);
+    g_spawn_command_line_sync ("ls /usr/share/i18n/locales |awk '{print $1}'", &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("is locale valid:%s\n", error->message);
         goto out;
     }
 
-    locales = g_strsplit (output, "\t", -1);
+    locales = g_strsplit (output, "\n", -1);
     int i;
     for (i = 0; i < g_strv_length (locales); i++) {
         if (g_str_has_prefix (locales[i], local_part)) {
@@ -83,13 +83,13 @@ is_charset_valid (const gchar *charset_part)
         goto out;
     }
 
-    g_spawn_command_line_sync ("ls /usr/share/i18n/charmaps", &output, NULL, NULL, &error);
+    g_spawn_command_line_sync ("ls /usr/share/i18n/charmaps | awk '{print $1}'", &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("is charset valid:%s\n", error->message);
         goto out;
     }
 
-    charmaps = g_strsplit (output, "\t", -1);
+    charmaps = g_strsplit (output, "\n", -1);
     int i;
     for (i = 0; i < g_strv_length (charmaps); i++) {
         if (g_str_has_prefix (charmaps[i], charset_part)) {
