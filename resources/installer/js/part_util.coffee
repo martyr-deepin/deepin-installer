@@ -733,26 +733,6 @@ update_part_mp = (part, mp) ->
     v_part_info[part]["mp"] = mp
     mark_update(part)
 
-#compute virtual path according to part geometry
-compute_display_path = (disk) ->
-    disk_path = v_disk_info[disk]["path"]
-    sort_v_disk_info(disk)
-
-    i = 1
-    for part in get_primary_partitions(disk)
-        if i > v_disk_info[disk]["max_primary"]
-            echo "error, path exceeded max primary partition count"
-        v_part_info[part]["path"] = disk_path+i
-        i = i+1
-
-    j = v_disk_info[disk]["max_primary"]+1 
-    for part in get_logical_partitions(disk)
-        v_part_info[part]["path"] = disk_path+j
-        j=j+1
-
-    for part in get_freespace_partitions(disk)
-        v_part_info[part]["path"] = ""
-
 #when add part, set its path to max plus 1, after mark the part type
 #when delete part, set others part minus 1, before mark the part type
 update_part_display_path = (part, op) ->
@@ -1005,7 +985,6 @@ delete_part = (part) ->
         _delete_extended(disk, extended)
         remain_part = extended
 
-    #compute_display_path(disk)
     sort_v_disk_info(disk)
     return remain_part
 
@@ -1127,7 +1106,6 @@ add_part = (free_part, type, size, align, fs, mp) ->
     v_part_info[new_part]["width"] = Math.floor((v_part_info[new_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
     v_part_info[new_part]["used"] = sector_to_mb(v_part_info[new_part]["length"], 512)
     v_disk_info[disk]["partitions"].push(new_part)
-    #compute_display_path(disk)
     sort_v_disk_info(disk)
     mark_add(new_part)
     return new_part
