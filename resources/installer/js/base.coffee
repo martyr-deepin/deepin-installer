@@ -37,6 +37,8 @@ DCore.signal_connect("os_prober", (msg) ->
 )
 
 DCore.Installer.emit_webview_ok()
+_is_use_wubi = DCore.Installer.is_use_wubi()
+_is_installation_auto = DCore.Installer.is_installation_auto()
 
 _ppt_list = ["images/ppt.jpg"]
 

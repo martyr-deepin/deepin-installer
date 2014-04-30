@@ -24,7 +24,7 @@
 
 #include "base.h"
 
-gboolean is_use_wubi ();
+JS_EXPORT_API gboolean installer_is_use_wubi ();
 
 void sync_wubi_config ();
 

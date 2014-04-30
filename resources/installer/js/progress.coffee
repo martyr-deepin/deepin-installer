@@ -232,10 +232,12 @@ class Progress extends Page
         if progress == "start"
             echo "start handle extract"
             try
-                if mount_custom_partitions()
-                    @update_progress("5%")
-                    #echo "mount custom partitions finish"
-                    DCore.Installer.extract_intelligent()
+                if _is_use_wubi
+                    mount_wubi_partitions()
+                else
+                    mount_custom_partitions()
+                @update_progress("5%")
+                DCore.Installer.extract_intelligent()
             catch error
                 echo error
         else if progress == "finish"
@@ -279,7 +281,10 @@ class Progress extends Page
             echo "start handle timezone"
             @update_progress("92%")
             try
-                write_fs_tab()
+                if _is_use_wubi()
+                    write_wubi_fs_tab()
+                else
+                    write_fs_tab()
                 if __selected_stage != "terminate"
                     DCore.Installer.set_timezone(__selected_timezone)
             catch error
@@ -360,20 +365,23 @@ class Progress extends Page
         if progress == "start"
             echo "start handle bootloader"
             @update_progress("95%")
-            if __selected_grub != "uefi"
-                try
-                    DCore.Installer.update_bootloader(__selected_grub, false)
-                catch error
-                    echo error
+            if _is_use_wubi
+                update_wubi_bootloader()
             else
-                boot = get_efi_boot_part()
-                if boot?
+                if __selected_grub != "uefi"
                     try
-                        DCore.Installer.update_bootloader(boot, true)
+                        DCore.Installer.update_bootloader(__selected_grub, false)
                     catch error
                         echo error
                 else
-                    echo "in uefi but no boot part"
+                    boot = get_efi_boot_part()
+                    if boot?
+                        try
+                            DCore.Installer.update_bootloader(boot, true)
+                        catch error
+                            echo error
+                    else
+                        echo "in uefi but no boot part"
         else if progress == "finish"
             echo "finish update bootloader"
             @update_progress("99%")

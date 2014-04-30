@@ -20,32 +20,8 @@
 pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
-determine_target_id = (target) ->
-    if target.indexOf("/dev/") == -1
-        throw "invalid target to install"
-    for disk in disks
-        if m_disk_info[disk]["path"] == target
-            __selected_target = disk
-            return disk
-        for part in m_disk_info[disk]["partitions"]
-            if m_part_info[part]["path"] == target
-                __selected_target = part
-                return part
-    return null
-
-determine_target_home_id = (target) ->
-    if target.indexOf("/dev/") == -1
-        return null
-    if target == __selected_target
-        return null
-    for disk in disks
-        for part in m_disk_info[disk]["partitions"]
-            if m_part_info[part]["path"] == target and m_part_info[part]["type"] in ["normal", "logical"]
-                __selected_home = part
-
-fetch_install_info = ->
+fetch_install_info = (info) ->
     try
-        info = DCore.Installer.get_installation_info()
         if info["username"] in DCore.Installer.get_system_users()
             throw "invalid username"
         for c in info["username"]
@@ -72,6 +48,65 @@ fetch_install_info = ->
         else
             __selected_locale = "zh_CN.UTF-8"
 
+    catch error
+        throw error
+
+#below used for wubi install
+do_wubi_partition = ->
+    echo "do wubi partition need to be implemented"
+
+mount_wubi_partitions = ->
+    echo  "need to be implemented, called in progress.coffee handle extract"
+
+write_wubi_fs_tab = ->
+    echo "need to be implemented, called in progress.coffee before handle timezone"
+
+update_wubi_bootloader = ->
+    echo "to be implemented, called in progress.coffee handle update bootloader"
+
+handle_wubi_install = ->
+    if __init_parted_finish
+        try
+            do_wubi_partition()
+            info = DCore.Installer.get_installation_info()
+            fetch_install_info(info)
+            progress_page = new Progress("progress")
+            pc.add_page(progress_page)
+        catch error
+            echo error
+            welcome_page = new Welcome("welcome")
+            pc.add_page(welcome_page)
+    else
+        setTimeout(=>
+            handle_wubi_install()
+        , 1000)
+
+#below used for automatic install
+determine_target_id = (target) ->
+    if target.indexOf("/dev/") == -1
+        throw "invalid target to install"
+    for disk in disks
+        if m_disk_info[disk]["path"] == target
+            __selected_target = disk
+            return disk
+        for part in m_disk_info[disk]["partitions"]
+            if m_part_info[part]["path"] == target
+                __selected_target = part
+                return part
+    return null
+
+determine_target_home_id = (target) ->
+    if target.indexOf("/dev/") == -1
+        return null
+    if target == __selected_target
+        return null
+    for disk in disks
+        for part in m_disk_info[disk]["partitions"]
+            if m_part_info[part]["path"] == target and m_part_info[part]["type"] in ["normal", "logical"]
+                __selected_home = part
+
+fetch_automatic_target_grub = (info) ->
+    try
         determine_target_id(info["target"])
         if info["home"]
             determine_target_home_id(info["home"])
@@ -93,20 +128,22 @@ fetch_install_info = ->
                 __selected_grub = __selected_target
     catch error
         throw error
+    if not __selected_target?
+        throw "invalid __selected_target"
+    if __selected_target.indexOf("disk") != -1
+        do_simple_partition(__selected_target, "disk")
+    else if __selected_target.indexOf("part") != -1
+        do_simple_partition(__selected_target, "part")
+    else
+        throw "invalid __selected_target"
 
 handle_automatic_install = ->
     if __init_parted_finish
         try
             undo_part_table_info()
-            fetch_install_info()
-            if not __selected_target?
-                throw "invalid __selected_target"
-            if __selected_target.indexOf("disk") != -1
-                do_simple_partition(__selected_target, "disk")
-            else if __selected_target.indexOf("part") != -1
-                do_simple_partition(__selected_target, "part")
-            else
-                throw "invalid __selected_target"
+            info = DCore.Installer.get_installation_info()
+            fetch_install_info(info)
+            fetch_automatic_target_grub(info)
             progress_page = new Progress("progress")
             pc.add_page(progress_page)
         catch error
@@ -118,7 +155,9 @@ handle_automatic_install = ->
             handle_automatic_install()
         , 1000)
 
-if DCore.Installer.is_installation_auto()
+if _is_use_wubi
+    handle_wubi_install()
+else if _is_installation_auto
     handle_automatic_install()
 else
     welcome_page = new Welcome("welcome")

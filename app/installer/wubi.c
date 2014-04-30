@@ -34,7 +34,8 @@ extern gchar *opt_timezone;
 extern gchar *opt_locale;
 extern gchar *opt_grub;
 
-gboolean is_use_wubi ()
+JS_EXPORT_API
+gboolean installer_is_use_wubi ()
 {
     gint status = -1;
     g_spawn_command_line_sync ("grep install-automatic /proc/cmdline", NULL, NULL, &status, NULL); 

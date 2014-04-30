@@ -174,9 +174,8 @@ void installer_emit_webview_ok ()
         inited = TRUE;
         xrandr_size = get_xrandr_size ();
         init_parted ();
-        if (is_use_wubi ()) {
+        if (installer_is_use_wubi ()) {
             g_debug ("emit webview ok:use wubi\n");
-            opt_automatic = TRUE;
             sync_wubi_config ();
         }
     }
