@@ -28,6 +28,7 @@
 #include "fs_util.h"
 
 #define PACKAGES_LIST_PATH      RESOURCE_DIR"/installer/blacklist.ini"
+#define LOG_FILE_PATH           "/tmp/installer.log"
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);
@@ -332,3 +333,12 @@ finish_install_cleanup ()
     unmount_target ();
     ped_device_free_all ();
 }
+
+JS_EXPORT_API 
+void  installer_show_log ()
+{
+    gchar *cmd = g_strdup_printf ("xdg-open %s\n", LOG_FILE_PATH);
+    g_spawn_command_line_async (cmd, NULL);
+    g_free (cmd);
+}
+

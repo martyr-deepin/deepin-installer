@@ -46,6 +46,15 @@ class Finish extends Page
         else
             @desc.innerText = _("Installation failed!")
             @detail.innerText = _("Please send the log to Linux Deepin Team.")
+            @detail.addEventListener("click", (e) =>
+                DCore.Installer.show_log()
+            )
+            @detail.addEventListener("mouseover", (e) =>
+                @detail.style.color = "red"
+            )
+            @detail.addEventListener("mouseout", (e) =>
+                @detail.style.color = "rgba(255,255,255,0.7)"
+            )
             @later.setAttribute("class", "Startover")
             @later_txt.innerText = _("Start over")
 
@@ -71,3 +80,8 @@ class Finish extends Page
             catch error
                 echo error
         )
+
+        #just hide later/now when failed
+        if not @succeed
+            @later.style.display = "none"
+            @now.style.display = "none"
