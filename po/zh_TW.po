@@ -267,7 +267,7 @@ msgstr "查看目前"
 
 #: ../resources/installer/js/welcome.coffee:386
 msgid "User name"
-msgstr "用戶名"
+msgstr "使用者名稱"
 
 #: ../resources/installer/js/welcome.coffee:392
 msgid "Computer name"
