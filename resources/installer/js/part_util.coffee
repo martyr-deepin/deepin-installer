@@ -733,6 +733,7 @@ update_part_mp = (part, mp) ->
     v_part_info[part]["mp"] = mp
     mark_update(part)
 
+
 #when add part, set its path to max plus 1, after mark the part type
 #when delete part, set others part minus 1, before mark the part type
 update_part_display_path = (part, op) ->

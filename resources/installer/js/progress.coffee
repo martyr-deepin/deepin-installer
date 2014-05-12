@@ -187,8 +187,17 @@ class Progress extends Page
         @light.style.webkitAnimationIterationCount = 1000
         @light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
 
-        @ppt = new Ppt("pptslider", _ppt_list)
-        @element.appendChild(@ppt.element)
+        ppt_method = 1
+        switch ppt_method
+            when 1
+                @ppt = new Ppt("pptslider", _ppt_list)
+                @element.appendChild(@ppt.element)
+            when 2
+                @ppt = create_element("iframe","ppt_iframe",@element)
+                @ppt.width = 750
+                @ppt.height = 444
+                @ppt.src = "ppt_iframe/ppt.html"
+
         @ticker = 0
         @tu = 180
         @display_progress = false
