@@ -1,10 +1,10 @@
 #!/usr/bin/env xdg-open
 
 [Desktop Entry]
-Name=Deepin Installer
-Name[zh_CN]=深度安装器
-Name[zh_TW]=深度安裝程式
-Name[zh_HK]=深度安裝程式
+Name=Install Deepin
+Name[zh_CN]=安装Deepin
+Name[zh_TW]=安裝Deepin
+Name[zh_HK]=安裝Deepin
 Comment=Installer for Linux Deepin
 Comment[zh_CN]=安装器
 Comment[zh_TW]=安装器TW
