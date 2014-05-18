@@ -19,137 +19,137 @@ msgstr ""
 
 #: ../resources/installer/js/base.coffee:107
 msgid "Ok"
-msgstr ""
+msgstr "確定"
 
 #: ../resources/installer/js/base.coffee:117
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: ../resources/installer/js/finish.coffee:32
 msgid "Congratulations"
-msgstr ""
+msgstr "恭喜您！"
 
 #: ../resources/installer/js/finish.coffee:34
 msgid "Complete installation needs reboot"
-msgstr ""
+msgstr "需要重新啟動電腦以完成安裝"
 
 #: ../resources/installer/js/finish.coffee:39
 msgid "Reboot later"
-msgstr ""
+msgstr "稍候重新啟動"
 
 #: ../resources/installer/js/finish.coffee:49
 msgid "Reboot now"
-msgstr ""
+msgstr "立即重新啟動"
 
 #: ../resources/installer/js/part.coffee:34
 msgid "Add partition"
-msgstr ""
+msgstr "添加分割區"
 
 #: ../resources/installer/js/part.coffee:53
 msgid "Type:"
-msgstr ""
+msgstr "類型："
 
 #: ../resources/installer/js/part.coffee:59
 msgid "Primary"
-msgstr ""
+msgstr "主要分割區"
 
 #: ../resources/installer/js/part.coffee:64
 msgid "Logical"
-msgstr ""
+msgstr "邏輯分割區"
 
 #: ../resources/installer/js/part.coffee:94
 msgid "Size:"
-msgstr ""
+msgstr "大小："
 
 #: ../resources/installer/js/part.coffee:138
 msgid "Align:"
-msgstr ""
+msgstr "對齊："
 
 #: ../resources/installer/js/part.coffee:144
 msgid "Begin"
-msgstr ""
+msgstr "初始"
 
 #: ../resources/installer/js/part.coffee:149
 msgid "End"
-msgstr ""
+msgstr "結束"
 
 #: ../resources/installer/js/part.coffee:169
 msgid "Format:"
-msgstr ""
+msgstr "格式化："
 
 #: ../resources/installer/js/part.coffee:181
 msgid "Mount:"
-msgstr ""
+msgstr "掛載於："
 
 #: ../resources/installer/js/part.coffee:200
 msgid "Please enter invalid partition size"
-msgstr ""
+msgstr "請輸入有效的分割區大小"
 
 #: ../resources/installer/js/part.coffee:209
 #: ../resources/installer/js/part.coffee:758
 msgid "Delete partition"
-msgstr ""
+msgstr "刪除分割區"
 
 #: ../resources/installer/js/part.coffee:211
 msgid "Confirm to delete?"
-msgstr ""
+msgstr "確定刪除？"
 
 #: ../resources/installer/js/part.coffee:224
 msgid "Unmount partition"
-msgstr ""
+msgstr "卸載分割區"
 
 #: ../resources/installer/js/part.coffee:226
 msgid "Detected partitions mounted, confirm to unmount them?"
-msgstr ""
+msgstr "偵測到分割區已經掛載，確定要卸載嗎？"
 
 #: ../resources/installer/js/part.coffee:241
 msgid "Format partition"
-msgstr ""
+msgstr "格式化分割區"
 
 #: ../resources/installer/js/part.coffee:243
 msgid "Confirm to format the partition?"
-msgstr ""
+msgstr "確定要格式化分割區嗎？"
 
 #: ../resources/installer/js/part.coffee:252
 msgid "Install tips"
-msgstr ""
+msgstr "安裝提示"
 
 #: ../resources/installer/js/part.coffee:254
 msgid "Need mount a partition as root"
-msgstr ""
+msgstr "至少需要一個根分割區"
 
 #: ../resources/installer/js/part.coffee:263
 msgid "Confirm Install"
-msgstr ""
+msgstr "確定安裝"
 
 #: ../resources/installer/js/part.coffee:565
 msgid "Device"
-msgstr ""
+msgstr "設備"
 
 #: ../resources/installer/js/part.coffee:567
 msgid "Size"
-msgstr ""
+msgstr "大小"
 
 #: ../resources/installer/js/part.coffee:569
 msgid "Freespace"
-msgstr ""
+msgstr "空閒的空間"
 
 #: ../resources/installer/js/part.coffee:571
 msgid "Filesystem"
-msgstr ""
+msgstr "檔案系統"
 
 #: ../resources/installer/js/part.coffee:574
 #: ../resources/installer/js/part.coffee:610
 msgid "Mount point"
-msgstr ""
+msgstr "掛載點"
 
 #: ../resources/installer/js/part.coffee:576
 msgid "Info"
-msgstr ""
+msgstr "分割區訊息"
 
 #: ../resources/installer/js/part.coffee:627
 msgid "Installation Help"
-msgstr ""
+msgstr "安裝幫助"
 
 #: ../resources/installer/js/part.coffee:633
 msgid "1.Set up partition"
@@ -243,8 +243,8 @@ msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:450
 msgid "Timezone"
-msgstr ""
+msgstr "時區"
 
 #: ../resources/installer/js/welcome.coffee:491
 msgid "Next"
-msgstr ""
+msgstr "下一步"
