@@ -218,6 +218,46 @@ unmount_target ()
     g_free (umount_target_cmd);
 }
 
+
+static void
+excute_scripts()
+{
+/*/opt/bin/busybox chroot /opt/debian_long /bin/bash -c "mount -t proc proc /proc" */
+/*/opt/bin/busybox chroot /opt/debian_long /bin/bash -c "etc/init.d/ssh start &"*/
+    const gchar *scripts_path = "/usr/share/deepin-installer/post-install";
+    
+    extern gboolean in_chroot;
+    extern const gchar* target;
+    if (!in_chroot) {
+        g_warning ("excute_scripts:not in chroot\n");
+        return;
+    }
+
+
+    GError *error = NULL;
+    const gchar *cmd_cp = g_strdup_printf ("cp %s/* %s", scripts_path, target);
+    g_spawn_command_line_sync (cmd_cp, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("excute_scripts:cp failed:%s\n", error->message);
+    }
+    
+    gchar *script = "test.sh";
+    const gchar *cmd_excute = g_strdup_printf ("chroot %s /bin/bash -c \"./%s\"", target, script);
+    g_spawn_command_line_sync (cmd_excute, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("excute_scripts:excute failed:%s\n", error->message);
+    }
+
+    
+    
+    if (error != NULL) {
+        g_error_free (error);
+        error = NULL;
+    }
+    g_free(script);
+}
+
+
 static void
 fix_networkmanager ()
 {
@@ -226,6 +266,7 @@ fix_networkmanager ()
         g_warning ("fix networkmanager:not in chroot\n");
         return;
     }
+
 
     GError *error = NULL;
     const gchar *cmd = "sed -i 's/managed=false/managed=true/g' /etc/NetworkManager/NetworkManager.conf";
