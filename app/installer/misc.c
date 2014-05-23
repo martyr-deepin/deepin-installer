@@ -26,13 +26,27 @@
 #include "misc.h"
 #include "part_util.h"
 #include "fs_util.h"
+#include "../../lib/dentry/entry.h"
 
 #define PACKAGES_LIST_PATH      RESOURCE_DIR"/installer/blacklist.ini"
 #define LOG_FILE_PATH           "/tmp/installer.log"
+#define SCRIPTS_PATH    "/usr/share/deepin-installer/post-install"
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);
 extern int chdir(const char *path);
+
+
+static GFile* _get_gfile_from_gapp(GDesktopAppInfo* info);
+static ArrayContainer _normalize_array_container(ArrayContainer pfs);
+
+extern ArrayContainer dentry_list_files(GFile* f);
+extern char* dentry_get_name(Entry* e);
+extern Entry* dentry_create_by_path(const char* path);
+extern void dentry_copy (ArrayContainer fs, GFile* dest);
+
+
+
 static GList *filelist = NULL;
 
 static gboolean 
@@ -218,13 +232,36 @@ unmount_target ()
     g_free (umount_target_cmd);
 }
 
+static
+GFile* _get_gfile_from_gapp(GDesktopAppInfo* info)
+{
+    return g_file_new_for_commandline_arg(g_desktop_app_info_get_filename(info));
+}
+
+
+static ArrayContainer _normalize_array_container(ArrayContainer pfs)
+{
+    GPtrArray* array = g_ptr_array_new();
+
+    GFile** _array = pfs.data;
+    for(size_t i=0; i<pfs.num; i++) {
+        if (G_IS_DESKTOP_APP_INFO(_array[i])) {
+            g_ptr_array_add(array, _get_gfile_from_gapp(((GDesktopAppInfo*)_array[i])));
+        } else {
+            g_ptr_array_add(array, g_object_ref(_array[i]));
+        }
+    }
+
+    ArrayContainer ret;
+    ret.num = pfs.num;
+    ret.data = g_ptr_array_free(array, FALSE);
+    return ret;
+}
+
 
 static void
 excute_scripts()
 {
-/*/opt/bin/busybox chroot /opt/debian_long /bin/bash -c "mount -t proc proc /proc" */
-/*/opt/bin/busybox chroot /opt/debian_long /bin/bash -c "etc/init.d/ssh start &"*/
-    const gchar *scripts_path = "/usr/share/deepin-installer/post-install";
     
     extern gboolean in_chroot;
     extern const gchar* target;
@@ -232,29 +269,45 @@ excute_scripts()
         g_warning ("excute_scripts:not in chroot\n");
         return;
     }
-
-
-    GError *error = NULL;
-    const gchar *cmd_cp = g_strdup_printf ("cp %s/* %s", scripts_path, target);
-    g_spawn_command_line_sync (cmd_cp, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("excute_scripts:cp failed:%s\n", error->message);
+    
+    ArrayContainer fs;
+    GFile* src = g_file_new_for_path(SCRIPTS_PATH);
+    fs = dentry_list_files(src);
+    g_object_unref(src);
+    g_assert(fs.num > 1);
+    
+    if(fs.num == 0){
+        return;
     }
     
-    gchar *script = "test.sh";
-    const gchar *cmd_excute = g_strdup_printf ("chroot %s /bin/bash -c \"./%s\"", target, script);
-    g_spawn_command_line_sync (cmd_excute, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("excute_scripts:excute failed:%s\n", error->message);
+    //1.copy to target
+    GFile* dest = g_file_new_for_path(target);
+    dentry_copy(fs,dest);
+    g_object_unref(dest);
+    
+    //2.excute
+    const ArrayContainer _fs = _normalize_array_container(fs);
+    GFile** files = _fs.data;
+    for (size_t i=0; i<_fs.num; i++) {
+        GFile *f = files[i];
+        gchar *name = dentry_get_name(f);
+        g_message("excute_scripts:script name :%s.",name);
+        
+        GError *error = NULL;
+        const gchar *cmd = g_strdup_printf ("chroot %s /bin/bash -c \"./%s\"", target, name);
+        g_message("excute_scripts:cmd :%s.",cmd);
+        g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+        if (error != NULL) {
+            g_warning ("excute_scripts:excute failed:%s\n", error->message);
+            g_error_free (error);
+            error = NULL;
+        }
+        
+        g_free(name);
+        g_object_unref(f);
     }
+    g_free(_fs.data);
 
-    
-    
-    if (error != NULL) {
-        g_error_free (error);
-        error = NULL;
-    }
-    g_free(script);
 }
 
 
@@ -342,7 +395,8 @@ out:
 void
 finish_install_cleanup () 
 {
-    g_debug ("finish install cleanup\n");
+    g_message ("finish install cleanup\n");
+    /*excute_scripts();*/
     static gboolean cleaned = FALSE;
     if (cleaned) {
         g_warning ("finish install cleanup:already cleaned\n");
@@ -359,6 +413,7 @@ finish_install_cleanup ()
 
     if (in_chroot) {
         fix_networkmanager ();
+        /*excute_scripts();*/
         remove_packages ();
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");
