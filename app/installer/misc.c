@@ -410,9 +410,9 @@ finish_install_cleanup ()
     extern int chroot_fd;
 
     if (in_chroot) {
-        fix_networkmanager ();
+        /*fix_networkmanager ();*/
+        /*remove_packages ();*/
         excute_scripts();
-        remove_packages ();
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");
         } else {
