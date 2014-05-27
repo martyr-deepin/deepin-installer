@@ -30,7 +30,7 @@
 
 #define PACKAGES_LIST_PATH      RESOURCE_DIR"/installer/blacklist.ini"
 #define LOG_FILE_PATH           "/tmp/installer.log"
-#define SCRIPTS_PATH    RESOURCE_DIR"/post-install"
+#define SCRIPTS_PATH    RESOURCE_DIR"/hooks"
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);

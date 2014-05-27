@@ -6,6 +6,6 @@ install(
     )
 
 install(
-    DIRECTORY ${PROJECT_SOURCE_DIR}/resources/post-install
+    DIRECTORY ${PROJECT_SOURCE_DIR}/resources/hooks
     DESTINATION ${RESOURCE_DIR}
     )
