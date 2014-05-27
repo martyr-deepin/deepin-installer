@@ -294,7 +294,8 @@ void excute_scripts(const gchar *fname)
         gchar *name = dentry_get_name(f);
         if (!g_str_equal(name,fname)){
             g_message("find the fname:%s\n",fname);
-            continue;
+            //for test then hide
+            //continue;
         }
         
         g_message("excute_scripts:script name :%s.",name);
