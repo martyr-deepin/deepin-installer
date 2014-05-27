@@ -259,16 +259,19 @@ static ArrayContainer _normalize_array_container(ArrayContainer pfs)
 }
 
 
-void excute_scripts()
+void excute_scripts(const gchar *fname)
 {
     
     extern gboolean in_chroot;
     extern const gchar* target;
     if (!in_chroot) {
-        g_warning ("excute_scripts:not in chroot\n");
-        return;
+        gboolean result = installer_chroot_target ();
+        if (!result){
+            g_warning ("excute_scripts:installer_chroot_target failed\n");
+            return;
+        }
     }
-    
+
     ArrayContainer fs;
     g_message("SCRIPTS_PATH:%s\n",SCRIPTS_PATH);
     GFile* src = g_file_new_for_path(SCRIPTS_PATH);
@@ -279,7 +282,6 @@ void excute_scripts()
         return;
     }
     
-    //1.copy to target
     GFile* dest = g_file_new_for_path(target);
     dentry_copy(fs,dest);
     g_object_unref(dest);
@@ -290,8 +292,12 @@ void excute_scripts()
     for (size_t i=0; i<_fs.num; i++) {
         GFile *f = files[i];
         gchar *name = dentry_get_name(f);
-        g_message("excute_scripts:script name :%s.",name);
+        if (!g_str_equal(name,fname)){
+            g_message("find the fname:%s\n",fname);
+            continue;
+        }
         
+        g_message("excute_scripts:script name :%s.",name);
         GError *error = NULL;
         const gchar *cmd = g_strdup_printf ("chroot %s /bin/bash -c \"./%s\"", target, name);
         g_message("excute_scripts:cmd :%s.",cmd);
@@ -301,7 +307,6 @@ void excute_scripts()
             g_error_free (error);
             error = NULL;
         }
-        
         g_free(name);
         g_object_unref(f);
     }
@@ -412,7 +417,7 @@ finish_install_cleanup ()
     if (in_chroot) {
         /*fix_networkmanager ();*/
         /*remove_packages ();*/
-        excute_scripts();
+        excute_scripts("end");
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");
         } else {
