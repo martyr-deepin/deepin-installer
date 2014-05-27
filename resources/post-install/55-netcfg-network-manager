@@ -1,0 +1,8 @@
+#!/bin/sh
+# Disable 'auto dhcp' interfaces because we use Network-Manager
+
+if [ -f /usr/lib/NetworkManager/ifblacklist_migrate.sh ]; then
+    sh /usr/lib/NetworkManager/ifblacklist_migrate.sh
+fi
+
+exit 0
