@@ -8,3 +8,4 @@ touch testdeepin-install.txt
 echo sudo cp testdeepin-install.txt /usr/share/installer/resources/
 sudo cp testdeepin-install.txt /usr/share/installer/resources/
 
+exit 0
