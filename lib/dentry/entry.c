@@ -1536,7 +1536,7 @@ char* dentry_get_rich_dir_group_name(ArrayContainer const fs)
 }
 
 JS_EXPORT_API
-char* dentry_get_default_audio_player_name()
+const char* dentry_get_default_audio_player_name()
 {
    GAppInfo* gappinfo = g_app_info_get_default_for_type("audio/mpeg",FALSE);
    const char* name = g_app_info_get_name(gappinfo);
