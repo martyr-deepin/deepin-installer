@@ -348,7 +348,7 @@ finish_install_cleanup ()
     if (in_chroot) {
         /*fix_networkmanager ();*/
         /*remove_packages ();*/
-        execute_hook("test.sh");
+        execute_hook("end.sh");
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");
         } else {
