@@ -27,7 +27,7 @@
 JS_EXPORT_API gboolean installer_chroot_target ();
 
 void finish_install_cleanup ();
-void excute_scripts ();
+void execute_hook (const gchar *hookname);
 
 JS_EXPORT_API void  installer_show_log ();
 

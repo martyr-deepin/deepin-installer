@@ -26,11 +26,10 @@
 #include "misc.h"
 #include "part_util.h"
 #include "fs_util.h"
-#include "../../lib/dentry/entry.h"
 
 #define PACKAGES_LIST_PATH      RESOURCE_DIR"/installer/blacklist.ini"
 #define LOG_FILE_PATH           "/tmp/installer.log"
-#define SCRIPTS_PATH    RESOURCE_DIR"/hooks"
+#define HOOKS_PATH    RESOURCE_DIR"/hooks"
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);
@@ -38,14 +37,6 @@ extern int chdir(const char *path);
 
 
 static GFile* _get_gfile_from_gapp(GDesktopAppInfo* info);
-static ArrayContainer _normalize_array_container(ArrayContainer pfs);
-
-extern ArrayContainer dentry_list_files(GFile* f);
-extern char* dentry_get_name(Entry* e);
-extern Entry* dentry_create_by_path(const char* path);
-extern void dentry_copy (ArrayContainer fs, GFile* dest);
-
-
 
 static GList *filelist = NULL;
 
@@ -239,79 +230,19 @@ GFile* _get_gfile_from_gapp(GDesktopAppInfo* info)
 }
 
 
-static ArrayContainer _normalize_array_container(ArrayContainer pfs)
-{
-    GPtrArray* array = g_ptr_array_new();
-
-    GFile** _array = pfs.data;
-    for(size_t i=0; i<pfs.num; i++) {
-        if (G_IS_DESKTOP_APP_INFO(_array[i])) {
-            g_ptr_array_add(array, _get_gfile_from_gapp(((GDesktopAppInfo*)_array[i])));
-        } else {
-            g_ptr_array_add(array, g_object_ref(_array[i]));
-        }
-    }
-
-    ArrayContainer ret;
-    ret.num = pfs.num;
-    ret.data = g_ptr_array_free(array, FALSE);
-    return ret;
-}
-
-
-void excute_scripts(const gchar *fname)
+void execute_hook(const gchar *hookname)
 {
     
-    extern gboolean in_chroot;
     extern const gchar* target;
-    if (!in_chroot) {
-        gboolean result = installer_chroot_target ();
-        if (!result){
-            g_warning ("excute_scripts:installer_chroot_target failed\n");
-            return;
-        }
+    GError *error = NULL;
+    const gchar *cmd = g_strdup_printf ("chroot %s /bin/sh -c \" %s/%s \"", target, HOOKS_PATH,hookname);
+    g_message("excute_scripts:cmd :%s.",cmd);
+    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("excute_scripts:excute failed:%s\n", error->message);
+        g_error_free (error);
+        error = NULL;
     }
-
-    ArrayContainer fs;
-    g_message("SCRIPTS_PATH:%s\n",SCRIPTS_PATH);
-    GFile* src = g_file_new_for_path(SCRIPTS_PATH);
-    fs = dentry_list_files(src);
-    g_object_unref(src);
-    
-    if(fs.num == 0){
-        return;
-    }
-    
-    GFile* dest = g_file_new_for_path(target);
-    dentry_copy(fs,dest);
-    g_object_unref(dest);
-    
-    //2.excute
-    const ArrayContainer _fs = _normalize_array_container(fs);
-    GFile** files = _fs.data;
-    for (size_t i=0; i<_fs.num; i++) {
-        GFile *f = files[i];
-        gchar *name = dentry_get_name(f);
-        if (!g_str_equal(name,fname)){
-            g_message("find the fname:%s\n",fname);
-            //for test then hide
-            //continue;
-        }
-        
-        g_message("excute_scripts:script name :%s.",name);
-        GError *error = NULL;
-        const gchar *cmd = g_strdup_printf ("chroot %s /bin/bash -c \"./%s\"", target, name);
-        g_message("excute_scripts:cmd :%s.",cmd);
-        g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-        if (error != NULL) {
-            g_warning ("excute_scripts:excute failed:%s\n", error->message);
-            g_error_free (error);
-            error = NULL;
-        }
-        g_free(name);
-        g_object_unref(f);
-    }
-    g_free(_fs.data);
 
 }
 
@@ -418,7 +349,7 @@ finish_install_cleanup ()
     if (in_chroot) {
         /*fix_networkmanager ();*/
         /*remove_packages ();*/
-        excute_scripts("end");
+        execute_hook("test.sh");
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");
         } else {

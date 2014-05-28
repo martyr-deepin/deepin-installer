@@ -1,11 +1,15 @@
 #!/bin/bash
 
 echo testdeepin-installer
-echo cd /tmp/
-cd /tmp/
-echo touch testdeepin-install.txt
-touch testdeepin-install.txt
-echo sudo cp testdeepin-install.txt /usr/share/installer/resources/
-sudo cp testdeepin-install.txt /usr/share/installer/resources/
+echo touch /tmp/testdeepin-install.txt
+touch /tmp/testdeepin-install.txt
+echo sudo cp /tmp/testdeepin-install.txt /usr/share/installer/resources/
+sudo cp /tmp/testdeepin-install.txt /usr/share/installer/resources/
+
+./55-netcfg-network-manager
+
+./56enable-network-manager
+
+./70remove-overlaymirror.sh
 
 exit 0
