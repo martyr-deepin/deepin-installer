@@ -29,7 +29,7 @@
 
 #define PACKAGES_LIST_PATH      RESOURCE_DIR"/installer/blacklist.ini"
 #define LOG_FILE_PATH           "/tmp/installer.log"
-#define HOOKS_PATH    RESOURCE_DIR"/hooks"
+#define HOOKS_PATH    RESOURCE_DIR"hooks"
 
 extern int chroot(const char *path);
 extern int fchdir(int fd);
@@ -232,10 +232,9 @@ GFile* _get_gfile_from_gapp(GDesktopAppInfo* info)
 
 void execute_hook(const gchar *hookname)
 {
-    
     extern const gchar* target;
     GError *error = NULL;
-    const gchar *cmd = g_strdup_printf ("chroot %s /bin/sh -c \" %s/%s \"", target, HOOKS_PATH,hookname);
+    const gchar *cmd = g_strdup_printf ("%s/%s", target, HOOKS_PATH,hookname);
     g_message("excute_scripts:cmd :%s.",cmd);
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
