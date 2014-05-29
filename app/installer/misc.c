@@ -234,7 +234,7 @@ void execute_hook(const gchar *hookname)
 {
     extern const gchar* target;
     GError *error = NULL;
-    const gchar *cmd = g_strdup_printf ("%s/%s", target, HOOKS_PATH,hookname);
+    const gchar *cmd = g_strdup_printf ("%s/%s", HOOKS_PATH,hookname);
     g_message("excute_scripts:cmd :%s.",cmd);
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
