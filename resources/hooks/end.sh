@@ -1,15 +1,21 @@
 #!/bin/bash
+hookspath=/usr/share/installer/resources/hooks/
 
-echo testdeepin-installer
-echo touch /tmp/testdeepin-install.txt
-touch /tmp/testdeepin-install.txt
-echo sudo cp /tmp/testdeepin-install.txt /usr/share/installer/resources/
-sudo cp /tmp/testdeepin-install.txt /usr/share/installer/resources/
+echo test deepin-installer
 
+echo cd $hookspath/
+cd $hookspath/
+
+echo touch /tmp/test-deepin-install-ok.txt
+touch /tmp/test-deepin-install-ok.txt
+
+echo ./55-netcfg-network-manager
 ./55-netcfg-network-manager
 
+echo ./56enable-network-manager
 ./56enable-network-manager
 
+echo ./70remove-overlaymirror.sh
 ./70remove-overlaymirror.sh
 
 exit 0
