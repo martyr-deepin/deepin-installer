@@ -79,6 +79,15 @@
     overflow:hidden;
 }
 
+.ppt_iframe{
+    position:absolute;
+    width:750px;
+    height:444px;
+    margin:0 1px;
+    text-align:center;
+    overflow:hidden;
+}
+
 .PptItem {
     position:absolute;
     width:750px;
