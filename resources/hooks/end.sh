@@ -1,5 +1,5 @@
 #!/bin/bash
-hookspath=/usr/share/installer/resources/hooks/
+hookspath=/usr/share/installer/resources/hooks
 
 echo test deepin-installer
 
