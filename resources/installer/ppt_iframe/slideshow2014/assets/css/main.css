@@ -1,8 +1,7 @@
 body, html{
-    /*margin:0;*/
-    width:100%;
-    /*height:444px;*/
-    background:gray;
+    width:750px;
+    height:444px;
+    background:transparent;
 }
 
 h1{

@@ -194,8 +194,9 @@ class Progress extends Page
                 @element.appendChild(@ppt.element)
             when "slideshow2014"
                 @ppt = create_element("iframe","ppt_iframe",@element)
-                @ppt.width = 750
-                @ppt.height = 444
+                @ppt.setAttribute("seamless",true)
+                @ppt.style.width = 750
+                @ppt.style.height = 444
                 if document.body.lang is "zh"
                     @ppt.src = "ppt_iframe/#{ppt_method}/index.html"
                 else
