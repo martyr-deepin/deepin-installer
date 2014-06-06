@@ -179,7 +179,7 @@ class Progress extends Page
         , 30)
 
         @progress_container = create_element("div", "ProgressContainer", @element)
-        @progress_container.style.display = "none"
+        @progress_container.style.display = "block"
         @progressbar = create_element("div", "ProgressBar", @progress_container)
         @light = create_element("div", "ProgressLight", @progress_container)
         @light.style.webkitAnimationName = "progressflash"
@@ -194,9 +194,6 @@ class Progress extends Page
                 @element.appendChild(@ppt.element)
             when "slideshow2014"
                 @ppt = create_element("iframe","ppt_iframe",@element)
-                @ppt.setAttribute("seamless",true)
-                @ppt.style.width = 750
-                @ppt.style.height = 444
                 if document.body.lang is "zh"
                     @ppt.src = "ppt_iframe/#{ppt_method}/index.html"
                 else
@@ -221,12 +218,12 @@ class Progress extends Page
         @titleimg.setAttribute("src", "images/progress_extract.png")
         setTimeout(=>
             @loading.style.display = "none"
+            @ppt.style.display = "block"
         ,1000)
         apply_animation(@loading, "loadingout", "1s", "linear")
         apply_animation(@progress_container, "pptin", "2s", "linear")
-        apply_animation(@ppt.element, "pptin", "2s", "linear")
+        apply_animation(@ppt, "pptin", "2s", "linear")
         @progress_container.style.display = "block"
-        @ppt.element.style.display = "block"
 
     update_progress: (progress) ->
         @progressbar.style.width = progress

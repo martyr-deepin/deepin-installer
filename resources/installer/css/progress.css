@@ -81,11 +81,13 @@
 
 .ppt_iframe{
     position:absolute;
+    display:none;
     width:750px;
-    height:444px;
+    height:450px;
     margin:0 1px;
     text-align:center;
     overflow:hidden;
+    border:0;
 }
 
 .PptItem {

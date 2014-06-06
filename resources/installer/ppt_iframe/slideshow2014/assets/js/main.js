@@ -478,9 +478,17 @@ function Stage5(){
     .to(people6_5, 0.8, {x:"+=150"})
     .to(background5_1, 0.8, {y:"+=231"})
     .to(mask5, 0.8, {y:"+=128"})
-    .add(textBox5_Show());
+    .add(textBox5_Show())
 
     return tl;
+}
+
+function restartStage(){
+	var tl = new TimelineMax();
+	tl.to(COMMON.computer, 0, {delay:2,onComplete:function(){
+		mainline.restart();
+	}});
+	return tl;
 }
 
 function handleComplete(){
@@ -496,7 +504,8 @@ function handleComplete(){
     .add(Stage2())
     .add(Stage3())
     .add(Stage4())
-    .add(Stage5());
+    .add(Stage5())
+	.add(restartStage());
 
     window.mainline = mainline;
 }
