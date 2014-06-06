@@ -472,13 +472,14 @@ function Stage5(){
     }
 
     var tl = new TimelineMax();
-    tl.to(background5_2, 0.8, {alpha:1,delay:3})
+
+    tl.to(background5_1, 0.8, {y:"+=231",delay:2})
+    .to(background5_2, 0.8, {alpha:1})
     .to(people5_5, 0.8, {alpha:1})
     .to(people4_5, 0.8, {y:"-=205"})
     .to(people6_5, 0.8, {x:"+=150"})
-    .to(background5_1, 0.8, {y:"+=231"})
     .to(mask5, 0.8, {y:"+=128"})
-    .add(textBox5_Show())
+    .add(textBox5_Show());
 
     return tl;
 }
@@ -510,3 +511,10 @@ function handleComplete(){
     window.mainline = mainline;
 }
 
+if(DCore){
+    document.addEventListener('click',function(e){
+            if(e.target.tagName === "A"){
+                DCore.Installer.OpenUrl(e.target.href);
+            }
+        },false);
+}
