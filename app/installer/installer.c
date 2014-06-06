@@ -182,6 +182,24 @@ void installer_emit_webview_ok ()
     }
 }
 
+JS_EXPORT_API
+void installer_OpenUrl(const char* url)
+{
+    if ( url == NULL || url[0] == '\0' ) {
+        g_warning ("url error\n");
+        return ;
+    }
+
+    if (!dcore_open_browser(url)) {
+        g_warning("browser url failed\n");
+        return ;
+    }
+
+    return ;
+}
+
+
+
 static void
 sigterm_cb (int sig)
 {
