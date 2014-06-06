@@ -23,6 +23,7 @@
 #include <gdk/gdkx.h>
 #include <signal.h>
 #include "dwebview.h"
+#include "dcore.h"
 #include "i18n.h"
 #include "fs_util.h"
 #include "part_util.h"
