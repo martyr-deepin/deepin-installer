@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-27 14:49+0800\n"
+"POT-Creation-Date: 2014-06-10 16:46+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Lihongwu\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,278 +17,303 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../resources/installer/js/base.coffee:49
+#: ../resources/installer/js/base.coffee:48
+#: ../resources/installer/js/base.coffee:50
+#: ../resources/installer/js/base.coffee:52
 msgid "unused"
 msgstr "未使用"
 
-#: ../resources/installer/js/base.coffee:107
+#: ../resources/installer/js/base.coffee:135
 msgid "Ok"
 msgstr "确定"
 
-#: ../resources/installer/js/base.coffee:117
+#: ../resources/installer/js/base.coffee:142
 msgid "Cancel"
 msgstr "取消"
 
-#: ../resources/installer/js/finish.coffee:32
+#: ../resources/installer/js/finish.coffee:42
 msgid "Congratulations!"
 msgstr "祝贺您！"
 
-#: ../resources/installer/js/finish.coffee:34
+#: ../resources/installer/js/finish.coffee:43
 msgid "You need to restart the computer to complete installation."
 msgstr "需要重新启动以完成安装"
 
-#: ../resources/installer/js/finish.coffee:46
-msgid "Installation failed!"
-msgstr "安装失败"
-
-#: ../resources/installer/js/finish.coffee:41
-msgid "Please send the log to Linux Deepin Team."
-msgstr "请将安装日志反馈至Linux Deepin团队"
-
-#: ../resources/installer/js/finish.coffee:39
+#: ../resources/installer/js/finish.coffee:45
 msgid "Reboot later"
 msgstr "稍后重启"
 
-#: ../resources/installer/js/finish.coffee:49
-msgid "Reboot now"
-msgstr "现在重启"
+#: ../resources/installer/js/finish.coffee:47
+msgid "Installation failed!"
+msgstr "安装失败"
 
-#: ../resources/installer/js/finish.coffee:49
+#: ../resources/installer/js/finish.coffee:48
+msgid "Please send the log to Linux Deepin Team."
+msgstr "请将安装日志反馈至Linux Deepin团队"
+
+#: ../resources/installer/js/finish.coffee:59
 msgid "Start over"
 msgstr "再来一次"
 
-#: ../resources/installer/js/part.coffee:34
+#: ../resources/installer/js/finish.coffee:76
+msgid "Reboot now"
+msgstr "现在重启"
+
+#: ../resources/installer/js/part.coffee:43
 msgid "Add partition"
 msgstr "添加分区"
 
-#: ../resources/installer/js/part.coffee:53
+#: ../resources/installer/js/part.coffee:63
 msgid "Type:"
 msgstr "类型："
 
-#: ../resources/installer/js/part.coffee:59
+#: ../resources/installer/js/part.coffee:69
 msgid "Primary"
 msgstr "主分区"
 
-#: ../resources/installer/js/part.coffee:64
+#: ../resources/installer/js/part.coffee:74
 msgid "Logical"
 msgstr "逻辑分区"
 
-#: ../resources/installer/js/part.coffee:94
+#: ../resources/installer/js/part.coffee:104
 msgid "Size:"
 msgstr "大小："
 
-#: ../resources/installer/js/part.coffee:138
+#: ../resources/installer/js/part.coffee:148
 msgid "Align:"
 msgstr "对齐："
 
-#: ../resources/installer/js/part.coffee:144
+#: ../resources/installer/js/part.coffee:154
 msgid "Begin"
 msgstr "起始"
 
-#: ../resources/installer/js/part.coffee:149
+#: ../resources/installer/js/part.coffee:159
 msgid "End"
 msgstr "结束"
 
-#: ../resources/installer/js/part.coffee:169
-msgid "Format:"
-msgstr "格式化："
-
-#: ../resources/installer/js/part.coffee:181
-msgid "Mount:"
-msgstr "挂载："
-
-#: ../resources/installer/js/part.coffee:170
+#: ../resources/installer/js/part.coffee:179
 msgid "Filesystem:"
 msgstr "文件系统："
 
 #: ../resources/installer/js/part.coffee:200
+msgid "Mount:"
+msgstr "挂载："
+
+#: ../resources/installer/js/part.coffee:233
 msgid "Please enter a valid partition size."
 msgstr "请输入一个有效的分区大小数值"
 
-#: ../resources/installer/js/part.coffee:209
-#: ../resources/installer/js/part.coffee:758
+#: ../resources/installer/js/part.coffee:242
+#: ../resources/installer/js/part.coffee:829
 msgid "Delete partition"
 msgstr "删除分区"
 
-#: ../resources/installer/js/part.coffee:211
+#: ../resources/installer/js/part.coffee:244
 msgid "Are you sure you want to delete this partition?"
 msgstr "确认要删除该分区？"
 
-#: ../resources/installer/js/part.coffee:224
+#: ../resources/installer/js/part.coffee:257
 msgid "Unmount partition"
 msgstr "卸载分区"
 
-#: ../resources/installer/js/part.coffee:226
+#: ../resources/installer/js/part.coffee:259
 msgid "Partition is already mounted. Do you want to unmount it?"
 msgstr "检测到分区已挂载，确定要卸载已挂载分区？"
 
-#: ../resources/installer/js/part.coffee:241
+#: ../resources/installer/js/part.coffee:277
 msgid "Format partition"
 msgstr "格式化分区"
 
-#: ../resources/installer/js/part.coffee:243
+#: ../resources/installer/js/part.coffee:279
 msgid "Are you sure you want to format this partition?"
 msgstr "确定要格式化该分区？"
 
-#: ../resources/installer/js/part.coffee:252
+#: ../resources/installer/js/part.coffee:288
+msgid "Do partition"
+msgstr "添加分区"
+
+#: ../resources/installer/js/part.coffee:290
+msgid "Can't create a partition here"
+msgstr "不能在此创建分区"
+
+#: ../resources/installer/js/part.coffee:299
+#: ../resources/installer/js/part.coffee:310
+#: ../resources/installer/js/part.coffee:321
 msgid "Install tips"
 msgstr "安装提示"
 
-#: ../resources/installer/js/part.coffee:254
+#: ../resources/installer/js/part.coffee:301
 msgid "A root partition is required."
 msgstr "至少需要一个根分区"
 
-#: ../resources/installer/js/part.coffee:263
+#: ../resources/installer/js/part.coffee:312
+msgid "Uefi needs mount a fat32 part to /boot whose size greater than 100M."
+msgstr "Uefi 需要挂载/boot 到一个大于100M的fat32分区"
+
+#: ../resources/installer/js/part.coffee:323
+msgid "In uefi mode, no needs  to mount a part to /boot manually"
+msgstr "在uefi模式下，不需要手动挂载 /boot"
+
+#: ../resources/installer/js/part.coffee:332
 msgid "Proceed with installation"
 msgstr "确认安装"
 
-#: ../resources/installer/js/part.coffee:356
+#: ../resources/installer/js/part.coffee:357
 msgid "Linux Deepin will be installed to freespace"
 msgstr "Linux Deepin将安装到空余空间"
 
-#: ../resources/installer/js/part.coffee:356
-msgid "Linux Deepin will be installed to"
-msgstr "Linux Deepin将安装到"
+#: ../resources/installer/js/part.coffee:359
+msgid "Linux Deepin will be installed to "
+msgstr "Linux Deepin将安装到 "
 
-#: ../resources/installer/js/part.coffee:415
+#: ../resources/installer/js/part.coffee:455
+#: ../resources/installer/js/part.coffee:474
 msgid "freespace"
 msgstr "空闲"
 
-#: ../resources/installer/js/part.coffee:565
-msgid "Device"
-msgstr "设备"
+#: ../resources/installer/js/part.coffee:527
+#: ../resources/installer/js/part.coffee:532
+msgid "Unknown"
+msgstr "未知"
 
-#: ../resources/installer/js/part.coffee:567
-msgid "Size"
-msgstr "大小"
-
-#: ../resources/installer/js/part.coffee:569
-msgid "Free Space"
-msgstr "可用空间"
-
-#: ../resources/installer/js/part.coffee:571
-msgid "Filesystem"
-msgstr "文件系统"
-
-#: ../resources/installer/js/part.coffee:574
-#: ../resources/installer/js/part.coffee:610
-msgid "Mount point"
-msgstr "挂载点"
-
-#: ../resources/installer/js/part.coffee:576
-msgid "Information"
-msgstr "分区信息"
-
-#: ../resources/installer/js/part.coffee:635
+#: ../resources/installer/js/part.coffee:636
 msgid "Install here"
 msgstr "安装到此"
 
-#: ../resources/installer/js/part.coffee:714
+#: ../resources/installer/js/part.coffee:790
 msgid "Disk"
 msgstr "硬盘"
 
-#: ../resources/installer/js/part.coffee:739
+#: ../resources/installer/js/part.coffee:810
+msgid "Device"
+msgstr "设备"
+
+#: ../resources/installer/js/part.coffee:812
+msgid "Size"
+msgstr "大小"
+
+#: ../resources/installer/js/part.coffee:814
+msgid "Free Space"
+msgstr "可用空间"
+
+#: ../resources/installer/js/part.coffee:816
+msgid "Filesystem"
+msgstr "文件系统"
+
+#: ../resources/installer/js/part.coffee:818
+msgid "Information"
+msgstr "分区信息"
+
+#: ../resources/installer/js/part.coffee:820
+msgid "Mount point"
+msgstr "挂载点"
+
+#: ../resources/installer/js/part.coffee:822
 msgid "Format"
 msgstr "格式化"
 
-#: ../resources/installer/js/part.coffee:676
-#: ../resources/installer/js/part.coffee:742
-msgid "Expert mode"
-msgstr "专家模式"
-
-#: ../resources/installer/js/part.coffee:695
-msgid "Install"
-msgstr "安装"
-
-#: ../resources/installer/js/part.coffee:733
-msgid "Simple mode"
-msgstr "简单模式"
-
-#: ../resources/installer/js/part.coffee:773
+#: ../resources/installer/js/part.coffee:841
 msgid "New partition"
 msgstr "新建分区"
 
-#: ../resources/installer/js/part.coffee:786
+#: ../resources/installer/js/part.coffee:910
+#: ../resources/installer/js/part.coffee:1063
+msgid "Expert mode"
+msgstr "专家模式"
+
+#: ../resources/installer/js/part.coffee:927
+msgid "Install"
+msgstr "安装"
+
+#: ../resources/installer/js/part.coffee:993
 msgid "Boot loader"
 msgstr "引导加载器"
 
-#: ../resources/installer/js/part.coffee:955
-msgid "Setup loader"
-msgstr "设置引导"
+#: ../resources/installer/js/part.coffee:1053
+msgid "Simple mode"
+msgstr "简单模式"
 
-#: ../resources/installer/js/progress.coffee:44
+#: ../resources/installer/js/progress.coffee:48
 msgid "Error report"
 msgstr "错误报告"
 
-#: ../resources/installer/js/progress.coffee:46
+#: ../resources/installer/js/progress.coffee:50
 msgid "Installation failed. Please send the log to Linux Deepin Team."
 msgstr "安装失败，请将安装日志反馈至Linux Deepin团队"
 
-#: ../resources/installer/js/welcome.coffee:49
+#: ../resources/installer/js/progress.coffee:174
+msgid "Prepare for Installation"
+msgstr "正在为安装做准备"
+
+#: ../resources/installer/js/welcome.coffee:62
 msgid "Installation requirements"
 msgstr "安装需求"
 
-#: ../resources/installer/js/welcome.coffee:51
-msgid ""
-"To install Linux Deepin, you need to have at least 15GB disk space."
+#: ../resources/installer/js/welcome.coffee:64
+msgid "To install Linux Deepin, you need to have at least 15GB disk space."
 msgstr "要安装Linux Deepin，必须有15G以上的可用磁盘空间"
-
-#: ../resources/installer/js/welcome.coffee:156
-msgid "Please select your keyboard layout"
-msgstr "请选择您的键盘布局"
 
 #: ../resources/installer/js/welcome.coffee:168
 msgid "Yes"
 msgstr "是"
 
-#: ../resources/installer/js/welcome.coffee:176
+#: ../resources/installer/js/welcome.coffee:173
 msgid "No"
 msgstr "否"
 
-#: ../resources/installer/js/welcome.coffee:254
-msgid "Please select or search your location"
-msgstr "请选择或搜索您所在的区域"
-
-#: ../resources/installer/js/welcome.coffee:272
+#: ../resources/installer/js/welcome.coffee:268
 msgid "Please press one of the following key"
 msgstr "请按下以下按键其中之一"
 
-#: ../resources/installer/js/welcome.coffee:278
+#: ../resources/installer/js/welcome.coffee:274
 msgid "Confirm you have the following key"
 msgstr "请确认您拥有以下按键"
 
-#: ../resources/installer/js/welcome.coffee:317
+#: ../resources/installer/js/welcome.coffee:313
 msgid "Detect layout"
 msgstr "探测布局"
 
-#: ../resources/installer/js/welcome.coffee:317
+#: ../resources/installer/js/welcome.coffee:319
 msgid "Display current"
 msgstr "查看当前"
 
-#: ../resources/installer/js/welcome.coffee:386
+#: ../resources/installer/js/welcome.coffee:480
+msgid "Please select or search your location"
+msgstr "请选择或搜索您所在的区域"
+
+#: ../resources/installer/js/welcome.coffee:723
 msgid "User name"
 msgstr "用户名"
 
-#: ../resources/installer/js/welcome.coffee:392
+#: ../resources/installer/js/welcome.coffee:726
 msgid "Computer name"
 msgstr "计算机名称"
 
-#: ../resources/installer/js/welcome.coffee:395
+#: ../resources/installer/js/welcome.coffee:729
 msgid "Password"
 msgstr "密码"
 
-#: ../resources/installer/js/welcome.coffee:407
+#: ../resources/installer/js/welcome.coffee:734
 msgid "Retype password"
 msgstr "确认密码"
 
-#: ../resources/installer/js/welcome.coffee:438
+#: ../resources/installer/js/welcome.coffee:789
+msgid "Next"
+msgstr "下一步"
+
+#: ../resources/installer/js/welcome.coffee:840
 msgid "Keyboard"
 msgstr "键盘"
 
-#: ../resources/installer/js/welcome.coffee:450
+#: ../resources/installer/js/welcome.coffee:843
 msgid "Time Zone"
 msgstr "时区"
 
-#: ../resources/installer/js/welcome.coffee:491
-msgid "Next"
-msgstr "下一步"
+#~ msgid "Format:"
+#~ msgstr "格式化："
+
+#~ msgid "Setup loader"
+#~ msgstr "设置引导"
+
+#~ msgid "Please select your keyboard layout"
+#~ msgstr "请选择您的键盘布局"
