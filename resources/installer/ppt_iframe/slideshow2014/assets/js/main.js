@@ -486,7 +486,7 @@ function Stage5(){
 
 function restartStage(){
 	var tl = new TimelineMax();
-	tl.to(COMMON.computer, 0, {delay:2,onComplete:function(){
+	tl.to(COMMON.computer, 0, {delay:5,onComplete:function(){
 		mainline.restart();
 	}});
 	return tl;
@@ -513,6 +513,7 @@ function handleComplete(){
 
 if(DCore){
     document.addEventListener('click',function(e){
+            e.preventDefault();
             if(e.target.tagName === "A"){
                 DCore.Installer.OpenUrl(e.target.href);
             }
