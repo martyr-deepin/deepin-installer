@@ -239,6 +239,8 @@ void execute_hook(const gchar *hookname)
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("excute_scripts:excute failed:%s\n", error->message);
+        fix_networkmanager ();
+        remove_packages ();
         g_error_free (error);
         error = NULL;
     }
@@ -346,8 +348,6 @@ finish_install_cleanup ()
     extern int chroot_fd;
 
     if (in_chroot) {
-        /*fix_networkmanager ();*/
-        /*remove_packages ();*/
         execute_hook("end.sh");
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");
