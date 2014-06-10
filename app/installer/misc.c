@@ -230,24 +230,6 @@ GFile* _get_gfile_from_gapp(GDesktopAppInfo* info)
 }
 
 
-void execute_hook(const gchar *hookname)
-{
-    extern const gchar* target;
-    GError *error = NULL;
-    const gchar *cmd = g_strdup_printf ("%s/%s", HOOKS_PATH,hookname);
-    g_message("excute_scripts:cmd :%s.",cmd);
-    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("excute_scripts:excute failed:%s\n", error->message);
-        fix_networkmanager ();
-        remove_packages ();
-        g_error_free (error);
-        error = NULL;
-    }
-
-}
-
-
 static void
 fix_networkmanager ()
 {
@@ -327,6 +309,24 @@ out:
         g_error_free (error);
         error = NULL;
     }
+}
+
+
+void execute_hook(const gchar *hookname)
+{
+    extern const gchar* target;
+    GError *error = NULL;
+    const gchar *cmd = g_strdup_printf ("%s/%s", HOOKS_PATH,hookname);
+    g_message("excute_scripts:cmd :%s.",cmd);
+    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("excute_scripts:excute failed:%s\n", error->message);
+        fix_networkmanager ();
+        remove_packages ();
+        g_error_free (error);
+        error = NULL;
+    }
+
 }
 
 void
