@@ -1,29 +1,47 @@
 #!/usr/bin/python
 
-coffee_files = [
-"../resources/installer/js/*.coffee",
-]
-
-c_files = [
-"../app/installer/*.c",
-]
-
-lang = ["zh_CN", "zh_TW"]
-
-
+import glob
 import os
 
-for l in lang:
-    os.system("touch %s.pot" % l)
+lang = ["zh_CN", "zh_TW","es","pt_BR"]
 
-    cmd= "xgettext --from-code=utf-8 -L python -j -o %s.pot " % l + " ".join(coffee_files)
-    os.system(cmd)
+coffee_files = []
+c_files = []
+except_dirs = ["dbus_test", "memory_test", "dominant_color"]
 
-    cmd = "xgettext --from-code=utf-8 -k_ -j -o %s.pot " % l + " ".join(c_files)
-    os.system(cmd)
 
-    os.system("msgmerge %s.po %s.pot > new_%s.po" % (l, l, l))
+def get_files():
+    global coffee_files, c_files
+    for d in os.listdir("../resources"):
+        if d != "common" and d not in except_dirs:
+            coffee_files += glob.glob("../resources/%s/js/*.coffee" % d)
 
-    os.system("mv new_%s.po %s.po" % (l, l))
+    for d in os.listdir("../app"):
+        if d not in except_dirs:
+            c_files += glob.glob("../app/%s/*.c" % d);
+            c_files += glob.glob("../app/%s/*.h" % d);
 
-    os.system("rm %s.pot" % l)
+    c_files += [
+            ]
+
+
+def scan():
+    global coffee_files, c_files, lang
+    os.system("rm installer.pot")
+    for l in lang:
+        os.system("touch installer.pot")
+        os.system("touch %s.po" % l)
+
+        cmd= "xgettext --from-code=utf-8 -L python -j -o installer.pot " + " ".join(coffee_files)
+        os.system(cmd)
+
+        cmd = "xgettext --from-code=utf-8 -k_ -j -o installer.pot " + " ".join(c_files)
+        os.system(cmd)
+
+        os.system("msgmerge %s.po installer.pot > new_%s.po" % (l, l))
+
+        os.system("mv new_%s.po %s.po" % (l, l))
+
+if __name__ == '__main__':
+    get_files()
+    scan()

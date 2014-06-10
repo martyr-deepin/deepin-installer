@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-10 16:46+0800\n"
+"POT-Creation-Date: 2014-06-10 17:01+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Lihongwu\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,48 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../resources/installer/js/base.coffee:48
-#: ../resources/installer/js/base.coffee:50
-#: ../resources/installer/js/base.coffee:52
-msgid "unused"
-msgstr ""
-
-#: ../resources/installer/js/base.coffee:135
-msgid "Ok"
-msgstr ""
-
-#: ../resources/installer/js/base.coffee:142
-msgid "Cancel"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:42
-msgid "Congratulations!"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:43
-msgid "You need to restart the computer to complete installation."
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:45
-msgid "Reboot later"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:47
-msgid "Installation failed!"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:48
-msgid "Please send the log to Linux Deepin Team."
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:59
-msgid "Start over"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:76
-msgid "Reboot now"
-msgstr ""
 
 #: ../resources/installer/js/part.coffee:43
 msgid "Add partition"
@@ -233,18 +191,6 @@ msgstr ""
 msgid "Simple mode"
 msgstr ""
 
-#: ../resources/installer/js/progress.coffee:48
-msgid "Error report"
-msgstr ""
-
-#: ../resources/installer/js/progress.coffee:50
-msgid "Installation failed. Please send the log to Linux Deepin Team."
-msgstr ""
-
-#: ../resources/installer/js/progress.coffee:174
-msgid "Prepare for Installation"
-msgstr ""
-
 #: ../resources/installer/js/welcome.coffee:62
 msgid "Installation requirements"
 msgstr ""
@@ -307,4 +253,58 @@ msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:843
 msgid "Time Zone"
+msgstr ""
+
+#: ../resources/installer/js/base.coffee:48
+#: ../resources/installer/js/base.coffee:50
+#: ../resources/installer/js/base.coffee:52
+msgid "unused"
+msgstr ""
+
+#: ../resources/installer/js/base.coffee:135
+msgid "Ok"
+msgstr ""
+
+#: ../resources/installer/js/base.coffee:142
+msgid "Cancel"
+msgstr ""
+
+#: ../resources/installer/js/progress.coffee:48
+msgid "Error report"
+msgstr ""
+
+#: ../resources/installer/js/progress.coffee:50
+msgid "Installation failed. Please send the log to Linux Deepin Team."
+msgstr ""
+
+#: ../resources/installer/js/progress.coffee:174
+msgid "Prepare for Installation"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:42
+msgid "Congratulations!"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:43
+msgid "You need to restart the computer to complete installation."
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:45
+msgid "Reboot later"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:47
+msgid "Installation failed!"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:48
+msgid "Please send the log to Linux Deepin Team."
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:59
+msgid "Start over"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:76
+msgid "Reboot now"
 msgstr ""
