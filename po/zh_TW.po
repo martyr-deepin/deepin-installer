@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-11 14:30+0800\n"
+"POT-Creation-Date: 2014-06-11 14:38+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Lihongwu\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -308,7 +308,7 @@ msgid "Reboot Later"
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:47
-msgid "Installation Failed!"
+msgid "Installation Failed"
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:48

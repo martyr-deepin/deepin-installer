@@ -44,7 +44,7 @@ class Finish extends Page
             @later.setAttribute("class", "Later")
             @later_txt.innerText = _("Reboot Later")
         else
-            @desc.innerText = _("Installation Failed!")
+            @desc.innerText = _("Installation Failed")
             @detail.innerText = _("Please send the log to Deepin Team.")
             @detail.addEventListener("click", (e) =>
                 DCore.Installer.show_log()
