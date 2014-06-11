@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-10 17:01+0800\n"
+"POT-Creation-Date: 2014-06-11 14:30+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../resources/installer/js/part.coffee:43
-msgid "Add partition"
+msgid "Add Partition"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:63
@@ -63,7 +63,7 @@ msgstr ""
 
 #: ../resources/installer/js/part.coffee:242
 #: ../resources/installer/js/part.coffee:829
-msgid "Delete partition"
+msgid "Delete Partition"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:244
@@ -71,15 +71,17 @@ msgid "Are you sure you want to delete this partition?"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:257
-msgid "Unmount partition"
+msgid "Unmount Partition"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:259
-msgid "Partition is already mounted. Do you want to unmount it?"
+msgid ""
+"Partition is detected to have been mounted. Are you sure you want to unmount "
+"it?"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:277
-msgid "Format partition"
+msgid "Formatting Partition"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:279
@@ -87,7 +89,7 @@ msgid "Are you sure you want to format this partition?"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:288
-msgid "Do partition"
+msgid "Do Partition"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:290
@@ -95,13 +97,16 @@ msgid "Can't create a partition here"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:299
-#: ../resources/installer/js/part.coffee:310
-#: ../resources/installer/js/part.coffee:321
-msgid "Install tips"
+msgid "Installation Tips"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:301
-msgid "A root partition is required."
+msgid "A root partition (/) is required."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:310
+#: ../resources/installer/js/part.coffee:321
+msgid "Install tips"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:312
@@ -117,14 +122,17 @@ msgid "Proceed with installation"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:357
-msgid "Linux Deepin will be installed to freespace"
+msgid "Deepin OS will be installed to freespace"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:359
-msgid "Linux Deepin will be installed to "
+msgid "Deepin OS will be installed to "
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:455
+msgid "Freespace"
+msgstr ""
+
 #: ../resources/installer/js/part.coffee:474
 msgid "freespace"
 msgstr ""
@@ -135,7 +143,7 @@ msgid "Unknown"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:636
-msgid "Install here"
+msgid "Install Here"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:790
@@ -163,20 +171,19 @@ msgid "Information"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:820
-msgid "Mount point"
+msgid "Mount Point"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:822
-msgid "Format"
+msgid "Formatting"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:841
-msgid "New partition"
+msgid "New Partition"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:910
-#: ../resources/installer/js/part.coffee:1063
-msgid "Expert mode"
+msgid "Expert Mode"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:927
@@ -184,19 +191,23 @@ msgid "Install"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:993
-msgid "Boot loader"
+msgid "Boot Loader"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:1053
-msgid "Simple mode"
+msgid "Simple Mode"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:1063
+msgid "Expert mode"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:62
-msgid "Installation requirements"
+msgid "Installation Requirements"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:64
-msgid "To install Linux Deepin, you need to have at least 15GB disk space."
+msgid "To install Deepin OS, you need to have at least 15GB disk space."
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:168
@@ -208,11 +219,11 @@ msgid "No"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:268
-msgid "Please press one of the following key"
+msgid "Please press one of the following keys."
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:274
-msgid "Confirm you have the following key"
+msgid "Please confirm you have the following keys."
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:313
@@ -220,19 +231,19 @@ msgid "Detect layout"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:319
-msgid "Display current"
+msgid "View current"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:480
-msgid "Please select or search your location"
+msgid "Please select or search your location."
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:723
-msgid "User name"
+msgid "User Name"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:726
-msgid "Computer name"
+msgid "Computer Name"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:729
@@ -240,7 +251,7 @@ msgid "Password"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:734
-msgid "Retype password"
+msgid "Retype Password"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:789
@@ -256,13 +267,16 @@ msgid "Time Zone"
 msgstr ""
 
 #: ../resources/installer/js/base.coffee:48
+msgid "Unused"
+msgstr ""
+
 #: ../resources/installer/js/base.coffee:50
 #: ../resources/installer/js/base.coffee:52
 msgid "unused"
 msgstr ""
 
 #: ../resources/installer/js/base.coffee:135
-msgid "Ok"
+msgid "OK"
 msgstr ""
 
 #: ../resources/installer/js/base.coffee:142
@@ -270,11 +284,11 @@ msgid "Cancel"
 msgstr ""
 
 #: ../resources/installer/js/progress.coffee:48
-msgid "Error report"
+msgid "Error Report"
 msgstr ""
 
 #: ../resources/installer/js/progress.coffee:50
-msgid "Installation failed. Please send the log to Linux Deepin Team."
+msgid "System installation failed. Please send the log to Deepin Team."
 msgstr ""
 
 #: ../resources/installer/js/progress.coffee:174
@@ -290,21 +304,21 @@ msgid "You need to restart the computer to complete installation."
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:45
-msgid "Reboot later"
+msgid "Reboot Later"
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:47
-msgid "Installation failed!"
+msgid "Installation Failed!"
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:48
-msgid "Please send the log to Linux Deepin Team."
+msgid "Please send the log to Deepin Team."
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:59
-msgid "Start over"
+msgid "Start Over"
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:76
-msgid "Reboot now"
+msgid "Reboot Now"
 msgstr ""
