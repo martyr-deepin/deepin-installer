@@ -285,7 +285,7 @@ class UnavailablePartedDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @parted_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Do Partition")
+        @title_txt.innerText = _("Add Partition")
         @format_tips = create_element("div", "", @content)
         @format_tips.innerText = _("Can't create a partition here")
 
@@ -307,9 +307,9 @@ class UefiDialog extends Dialog
     constructor: (@id) ->
         super(@id, false, @uefi_require_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Install tips")
+        @title_txt.innerText = _("Install Tips")
         @root_tips = create_element("div", "", @content)
-        @root_tips.innerText = _("Uefi needs mount a fat32 part to /boot whose size greater than 100M.")
+        @root_tips.innerText = _("UEFI can be successfully mounted to /boot only by a Fat32 partition greater than 100M.")
 
     uefi_require_cb: ->
         echo "uefi require cb"
@@ -318,9 +318,9 @@ class UefiBootDialog extends Dialog
     constructor: (@id) ->
         super(@id, false, @uefi_boot_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Install tips")
+        @title_txt.innerText = _("Install Tips")
         @root_tips = create_element("div", "", @content)
-        @root_tips.innerText = _("In uefi mode, no needs  to mount a part to /boot manually")
+        @root_tips.innerText = _("In UEFI mode, manual mount/boot is not needed.")
 
     uefi_boot_cb: ->
         echo "uefi boot cb"
@@ -354,7 +354,7 @@ class InstallDialog extends Dialog
             target = __selected_item.id
         path = v_part_info[target]["path"]
 	    if v_part_info[target]["type"] == "freespace"
-            @root_tips.innerText = _("Deepin OS will be installed to freespace")
+            @root_tips.innerText = _("Deepin OS will be installed to freespace.")
 	    else
             @root_tips.innerText = _("Deepin OS will be installed to ") + path
 

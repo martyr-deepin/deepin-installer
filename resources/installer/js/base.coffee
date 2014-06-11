@@ -47,9 +47,9 @@ _color_list = ["#f2415b", "#e86836", "#fcc100", "#e8dd0a",
 __fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
 __fs_values = [_("Unused"), "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
 __fs_efi_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap", "efi"]
-__fs_efi_values = [_("unused"), "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap", "efi"]
+__fs_efi_values = [_("Unused"), "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap", "efi"]
 __mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/opt", "/usr/local"]
-__mp_values = [_("unused"), "/","/boot","/home","/tmp","/usr", "/var","/srv","/opt", "/usr/local"]
+__mp_values = [_("Unused"), "/","/boot","/home","/tmp","/usr", "/var","/srv","/opt", "/usr/local"]
 
 __current_page = null
 pc = null

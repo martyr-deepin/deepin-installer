@@ -310,13 +310,13 @@ class Keyboard extends Widget
 
         @op = create_element("div","KeyBoardOp", @content)
         @detect_btn = create_element("div", "Detect", @op)
-        @detect_btn.innerText = _("Detect layout")
+        @detect_btn.innerText = _("Detect Layout")
         @detect_btn.addEventListener("click", (e) =>
             @detect_keyboard_cb(e)
         )
 
         @active_btn = create_element("div", "Default", @op)
-        @active_btn.innerText = _("View current")
+        @active_btn.innerText = _("View Current")
         @active_btn.addEventListener("click", (e) =>
             if __selected_layout?
                 @set_to_layout(__selected_layout)
