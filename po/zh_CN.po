@@ -314,4 +314,3 @@ msgstr "再试一次"
 #: ../resources/installer/js/finish.coffee:76
 msgid "Reboot Now"
 msgstr "立即重启"
-
