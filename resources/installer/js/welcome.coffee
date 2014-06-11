@@ -59,9 +59,9 @@ class RequireMatchDialog extends Dialog
     constructor: (@id) ->
         super(@id, false, @require_match_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Installation requirements")
+        @title_txt.innerText = _("Installation Requirements")
         @format_tips = create_element("p", "", @content)
-        @format_tips.innerText = _("To install Linux Deepin, you need to have at least 15GB disk space.")
+        @format_tips.innerText = _("To install Deepin OS, you need to have at least 15GB disk space.")
 
     require_match_cb: ->
         echo "require match cb"
@@ -265,13 +265,13 @@ class KeyboardDetectDialog extends  Widget
         if type == "press"
             @type = type
             @foot.style.display = "none"
-            @desc.innerText = _("Please press one of the following key")
+            @desc.innerText = _("Please press one of the following keys.")
             @fill_detail(symbols)
             @show_dialog()
         else if type == "have"
             @type = type
             @foot.style.display = "block"
-            @desc.innerText = _("Confirm you have the following key")
+            @desc.innerText = _("Please confirm you have the following keys.")
             @fill_detail(symbols)
             @show_dialog()
         else if type == "result"
@@ -316,7 +316,7 @@ class Keyboard extends Widget
         )
 
         @active_btn = create_element("div", "Default", @op)
-        @active_btn.innerText = _("Display current")
+        @active_btn.innerText = _("View current")
         @active_btn.addEventListener("click", (e) =>
             if __selected_layout?
                 @set_to_layout(__selected_layout)
@@ -477,7 +477,7 @@ class Timezone extends Widget
         @query_div = create_element("div", "Left", @query)
         @query_wrap = create_element("div", "QueryWrap", @query_div)
         @query_input = create_element("input", "", @query_wrap)
-        @query_input.setAttribute("placeholder", _("Please select or search your location"))
+        @query_input.setAttribute("placeholder", _("Please select or search your location."))
         @query_input.addEventListener("keyup", (e) =>
             if e.which == 13
                 @execute_query()
@@ -720,10 +720,10 @@ class WelcomeFormItem extends Widget
 
     fill_widget: ->
         if @id == "username"
-            username_holder = _("User name") 
+            username_holder = _("User Name") 
             @input.setAttribute("placeholder", username_holder)
         else if @id == "hostname"
-            hostname_holder = _("Computer name")
+            hostname_holder = _("Computer Name")
             @input.setAttribute("placeholder", hostname_holder)
         else if @id == "password"
             password_holder = _("Password")
@@ -731,7 +731,7 @@ class WelcomeFormItem extends Widget
             @input.classList.add("PasswordStyle")
             @warn = create_element("div", "CapsWarning", @element)
         else if @id == "confirmpassword"
-            confirm_holder = _("Retype password")
+            confirm_holder = _("Retype Password")
             @input.setAttribute("placeholder", confirm_holder)
             @input.classList.add("PasswordStyle")
             @warn = create_element("div", "CapsWarning", @element)

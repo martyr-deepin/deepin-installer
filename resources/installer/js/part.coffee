@@ -239,7 +239,7 @@ class DeletePartDialog extends Dialog
     constructor: (@id,@partid) ->
         super(@id, true, @delete_part_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Delete partition")
+        @title_txt.innerText = _("Delete Partition")
         @delete_tips = create_element("div", "", @content)
         @delete_tips.innerText = _("Are you sure you want to delete this partition?")
 
@@ -254,9 +254,9 @@ class UnmountDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @unmount_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Unmount partition")
+        @title_txt.innerText = _("Unmount Partition")
         @unmount_tips = create_element("div", "", @content)
-        @unmount_tips.innerText = _("Partition is already mounted. Do you want to unmount it?")
+        @unmount_tips.innerText = _("Partition is detected to have been mounted. Are you sure you want to unmount it?")
 
     unmount_cb: ->
         echo "unmount all partitions"
@@ -274,7 +274,7 @@ class FormatDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @format_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Format Partition")
+        @title_txt.innerText = _("Formatting Partition")
         @format_tips = create_element("div", "", @content)
         @format_tips.innerText = _("Are you sure you want to format this partition?")
 
@@ -285,7 +285,7 @@ class UnavailablePartedDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @parted_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Do partition")
+        @title_txt.innerText = _("Do Partition")
         @format_tips = create_element("div", "", @content)
         @format_tips.innerText = _("Can't create a partition here")
 
@@ -296,9 +296,9 @@ class RootDialog extends Dialog
     constructor: (@id) ->
         super(@id, false, @need_root_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Install tips")
+        @title_txt.innerText = _("Installation Tips")
         @root_tips = create_element("div", "", @content)
-        @root_tips.innerText = _("A root partition is required.")
+        @root_tips.innerText = _("A root partition (/) is required.")
 
     need_root_cb: ->
         echo "need mount root to do install"
@@ -354,9 +354,9 @@ class InstallDialog extends Dialog
             target = __selected_item.id
         path = v_part_info[target]["path"]
 	    if v_part_info[target]["type"] == "freespace"
-            @root_tips.innerText = _("Linux Deepin will be installed to freespace")
+            @root_tips.innerText = _("Deepin OS will be installed to freespace")
 	    else
-            @root_tips.innerText = _("Linux Deepin will be installed to ") + path
+            @root_tips.innerText = _("Deepin OS will be installed to ") + path
 
 class PartLineItem extends Widget
     constructor: (@id) ->
@@ -452,7 +452,7 @@ class PartTableItem extends Widget
         if v_part_info[@id]["type"] != "freespace"
             @path.innerText = v_part_info[@id]["path"]
         else
-            @path.innerText = _("freespace")
+            @path.innerText = _("Freespace")
         if v_part_info[@id]["label"]? and v_part_info[@id]["label"].length > 0
             if v_part_info[@id]["label"].length > 12
                 @label.innerText = v_part_info[@id]["label"].substring(0,12) + "..."
@@ -633,7 +633,7 @@ class PartTableItem extends Widget
         @mount.innerHTML = ""
         if __selected_mode != "advance" 
             if @active
-                @mount.innerText = _("Install here")
+                @mount.innerText = _("Install Here")
                 @mount.setAttribute("style", "text-align:right")
             return
         else
@@ -817,16 +817,16 @@ class PartTable extends Widget
         @info_header = create_element("div", "Info", @header)
         @info_header.innerText = _("Information")
         @mount_header = create_element("div", "Mount", @header)
-        @mount_header.innerText = _("Mount point")
+        @mount_header.innerText = _("Mount Point")
         @format_header = create_element("div", "Thin", @header)
-        @format_header.innerText = _("Format")
+        @format_header.innerText = _("Formatting")
 
         @items = create_element("div", "PartTableItems", @element)
 
         @op = create_element("div", "PartOp", @element)
         @part_delete = create_element("div", "PartDeleteBtn", @op)
         @part_delete.setAttribute("id", "part_delete")
-        @part_delete.innerText = _("Delete partition")
+        @part_delete.innerText = _("Delete Partition")
         @part_delete.addEventListener("click", (e)=>
             echo "handle delete"
             if __in_model
@@ -838,7 +838,7 @@ class PartTable extends Widget
 
         @part_add = create_element("div", "PartAddBtn", @op)
         @part_add.setAttribute("id", "part_add")
-        @part_add.innerText = _("New partition")
+        @part_add.innerText = _("New Partition")
         @part_add.addEventListener("click", (e)=>
             echo "handle add"
             if __in_model
@@ -907,7 +907,7 @@ class Part extends Page
         @helpset = create_element("div", "TitleSet", @title)
 
         @t_mode = create_element("div", "PartTitleMode", @helpset)
-        @t_mode.innerText = _("Expert mode")
+        @t_mode.innerText = _("Expert Mode")
         @t_mode.addEventListener("click", (e) =>
             @t_mode.setAttribute("class", "PartTitleMode TitlesetActive")
             @switch_mode()
@@ -990,7 +990,7 @@ class Part extends Page
 
         @part_grub = create_element("div", "PartGrub", @wrap)
         @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
-        @grub_loader.innerText = _("Boot loader")
+        @grub_loader.innerText = _("Boot Loader")
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
         @fill_bootloader()
 
@@ -1050,7 +1050,7 @@ class Part extends Page
             @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10, 20)
             @grub_dropdown.show_drop()
         @table.update_mode(__selected_mode)
-        @t_mode.innerText = _("Simple mode")
+        @t_mode.innerText = _("Simple Mode")
 
     switch_mode_simple: ->
         __selected_mode = "simple"
