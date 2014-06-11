@@ -193,7 +193,7 @@ function Stage1(){
     }
 
     var tl = new TimelineMax();
-    tl.to(computer, 0.8, {alpha:1, y:0})
+    tl.to(computer, 0, {alpha:1, y:0})
     .to(background1, 0.8, {alpha:1})
     .to(logo1, 0.8, {alpha:1, delay:0.4})
     .to(mask1, 0.8, {y:"+="+table.image.height})
@@ -203,11 +203,9 @@ function Stage1(){
     .to(icon4, 0.3, {alpha:1, y:iconAlign.y - 16, delay:0.1})
     .to(icon5, 0.3, {alpha:1, y:iconAlign.y - 16, delay:0.1})
     .to(icon6, 0.3, {alpha:1, y:iconAlign.y - 16, delay:0.1})
-    .to(chart, 0.8, {x:getWidthCenter(chart) - 70, delay:0.2 ,ease:"Power2.easeOut"})
     .add(textBox1_Show());
 
     tl.add(textBox1_Exit(),"+="+3)
-    .to(chart, 0.8, {y:stage.canvas.height * 2})
     .to(icon1, 0.3, {alpha:0, y:iconAlign.y - 32, delay:0.1})
     .to(icon5, 0.3, {alpha:0, y:iconAlign.y - 32, delay:0.1})
     .to(icon2, 0.3, {alpha:0, y:iconAlign.y - 32, delay:0.1})
@@ -216,7 +214,7 @@ function Stage1(){
     .to(icon3, 0.3, {alpha:0, y:iconAlign.y - 32, delay:0.1})
     .to(mask1, 0.8, {y:"-="+table.image.height})
     .to(logo1, 0.8, {alpha:0})
-    .to(background1, 0.8, {y:"+=251"});
+    .to(background1, 0.8, {alpha:0});
 
     return tl;
 }
@@ -283,13 +281,11 @@ function Stage2(){
     var tl = new TimelineMax();
     tl.to(background2, 0.8, {alpha:1,delay:2})
     .to(logo2, 0.8, {alpha:1,repeat:4,yoyo:true})
-    .to(people1_2, 2, {alpha:1})
     .to(action, 0.8, {alpha:1})
     .add(textBox2_Show());
 
     tl.add(textBox2_Exit(),"+="+3)
     .to(action, 0.8, {alpha:0})
-    .to(people1_2, 0.9, {alpha:0})
     .to(logo2, 0.8, {alpha:0})
     .to(background2, 0.8, {alpha:0});
 
@@ -329,17 +325,20 @@ function Stage3(){
     }
 
     var tl = new TimelineMax();
-    tl.to(background3, 0.8, {x:'-=400',y:'+=230',delay:2})
-    .to(logo3, 0.8, {y:'+=130'})
-    .to(people2_3, 0.8, {x:'-=280'})
-    .to(people2_3, 0.1, {rotation:-0.2})
-    .to(people2_3, 0, {rotation:0.8})
+
+    background3.alpha = 0;
+    background3.x = COMMON.screen.x;
+    background3.y = COMMON.screen.y;
+    logo3.alpha = 0;
+    logo3.y+= 130;
+
+    tl.to(background3, 1.2, {alpha:1,delay:2})
+    .to(logo3, 0.8, {alpha:1})
     .add(textBox3_Show());
 
     tl.add(textBox3_Exit(),"+="+3)
-    .to(people2_3, 0.8, {x:'+=280'})
-    .to(logo3, 0.8, {y:'-=130'})
-    .to(background3, 0.8, {x:'-=401'});
+    .to(logo3, 0.8, {alpha:0})
+    .to(background3, 0.8, {alpha:0});
     return tl;
 }
 
@@ -391,16 +390,18 @@ function Stage4(){
     }
 
     var tl = new TimelineMax();
-    tl.to(background4, 0.8, {x:'-=400',delay:2})
+
+    background4.alpha = 0;
+    background4.x = COMMON.screen.x;
+
+    tl.to(background4, 1.2, {alpha:1,delay:2})
     .to(medal, 1.4, {y:162,ease:Bounce.easeOut})
-    .to(people3_4, 0.8,{y:180})
     .add(textBox4_Show());
 
 
     tl.add(textBox4_Exit(),"+="+3)
-    .to(people3_4, 0.8,{y:'+=300'})
     .to(medal, 0.8, {alpha:0})
-    .to(background4, 0.8, {x:'-=401',y:'-=231'});
+    tl.to(background4, 0.8, {alpha:0});
 
     return tl;
 }
@@ -473,11 +474,11 @@ function Stage5(){
 
     var tl = new TimelineMax();
 
-    tl.to(background5_1, 0.8, {y:"+=231",delay:2})
+    background5_1.alpha = 0;
+    background5_1.y = COMMON.screen.y;
+
+    tl.to(background5_1, 0.8, {alpha:1,delay:2})
     .to(background5_2, 0.8, {alpha:1})
-    .to(people5_5, 0.8, {alpha:1})
-    .to(people4_5, 0.8, {y:"-=205"})
-    .to(people6_5, 0.8, {x:"+=150"})
     .to(mask5, 0.8, {y:"+=128"})
     .add(textBox5_Show());
 
@@ -513,9 +514,9 @@ function handleComplete(){
 
 if(DCore){
     document.addEventListener('click',function(e){
-            e.preventDefault();
-            if(e.target.tagName === "A"){
-                DCore.Installer.OpenUrl(e.target.href);
-            }
-        },false);
+        e.preventDefault();
+        if(e.target.tagName === "A"){
+            DCore.Installer.OpenUrl(e.target.href);
+        }
+    },false);
 }
