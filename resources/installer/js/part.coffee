@@ -256,7 +256,7 @@ class UnmountDialog extends Dialog
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Unmount Partition")
         @unmount_tips = create_element("div", "", @content)
-        @unmount_tips.innerText = _("Partition is detected to have been mounted. Are you sure you want to unmount it?")
+        @unmount_tips.innerText = _("Partition is detected to have been mounted.\nAre you sure you want to unmount it?")
 
     unmount_cb: ->
         echo "unmount all partitions"

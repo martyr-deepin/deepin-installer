@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-11 15:52+0800\n"
+"POT-Creation-Date: 2014-06-11 18:42+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Lihongwu\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,9 +75,10 @@ msgid "Unmount Partition"
 msgstr "卸载分区"
 
 #: ../resources/installer/js/part.coffee:259
+#, fuzzy
 msgid ""
-"Partition is detected to have been mounted. Are you sure you want to unmount "
-"it?"
+"Partition is detected to have been mounted.\n"
+"Are you sure you want to unmount it?"
 msgstr "检测到当前分区已挂载，确定要卸载已挂载分区？"
 
 #: ../resources/installer/js/part.coffee:277
