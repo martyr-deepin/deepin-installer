@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-11 14:49+0800\n"
+"POT-Creation-Date: 2014-06-11 15:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Lihongwu\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../resources/installer/js/part.coffee:43
+#: ../resources/installer/js/part.coffee:288
 msgid "Add Partition"
 msgstr "添加分区"
 
@@ -87,10 +88,6 @@ msgstr "格式化分区"
 msgid "Are you sure you want to format this partition?"
 msgstr "确定要格式化该分区？"
 
-#: ../resources/installer/js/part.coffee:288
-msgid "Do Partition"
-msgstr "添加分区"
-
 #: ../resources/installer/js/part.coffee:290
 msgid "Can't create a partition here"
 msgstr "不能在此创建分区"
@@ -105,23 +102,25 @@ msgstr "至少需要一个根分区（/）。"
 
 #: ../resources/installer/js/part.coffee:310
 #: ../resources/installer/js/part.coffee:321
-msgid "Install tips"
+msgid "Install Tips"
 msgstr "安装提示"
 
 #: ../resources/installer/js/part.coffee:312
-msgid "Uefi needs mount a fat32 part to /boot whose size greater than 100M."
-msgstr "Uefi 需要挂载/boot 到一个大于100M的fat32分区"
+msgid ""
+"UEFI can be successfully mounted to /boot only by a Fat32 partition greater "
+"than 100M."
+msgstr "需要一个大于100M的Fat32分区，才能成功将UEFI挂载到/boot上。"
 
 #: ../resources/installer/js/part.coffee:323
-msgid "In uefi mode, no needs  to mount a part to /boot manually"
-msgstr "在uefi模式下，不需要手动挂载 /boot"
+msgid "In UEFI mode, manual mount/boot is not needed."
+msgstr "在UEFI模式下，无需手动挂载 /boot。"
 
 #: ../resources/installer/js/part.coffee:332
 msgid "Proceed with installation"
 msgstr "确认安装"
 
 #: ../resources/installer/js/part.coffee:357
-msgid "Deepin OS will be installed to freespace"
+msgid "Deepin OS will be installed to freespace."
 msgstr "Deepin操作系统将安装到空余空间。"
 
 #: ../resources/installer/js/part.coffee:359
@@ -223,16 +222,16 @@ msgid "Please confirm you have the following keys."
 msgstr "请确认您拥有以下按键。"
 
 #: ../resources/installer/js/welcome.coffee:313
-msgid "Detect layout"
+msgid "Detect Layout"
 msgstr "探测布局"
 
 #: ../resources/installer/js/welcome.coffee:319
-msgid "View current"
+msgid "View Current"
 msgstr "查看当前"
 
 #: ../resources/installer/js/welcome.coffee:480
 msgid "Please select or search your location."
-msgstr "请选择或搜索您所在的区域。。"
+msgstr "请选择或搜索您所在的区域。"
 
 #: ../resources/installer/js/welcome.coffee:723
 msgid "User Name"
@@ -263,17 +262,14 @@ msgid "Time Zone"
 msgstr "时区"
 
 #: ../resources/installer/js/base.coffee:48
-msgid "Unused"
-msgstr "未使用"
-
 #: ../resources/installer/js/base.coffee:50
 #: ../resources/installer/js/base.coffee:52
-msgid "unused"
+msgid "Unused"
 msgstr "未使用"
 
 #: ../resources/installer/js/base.coffee:135
 msgid "OK"
-msgstr ""
+msgstr "确定"
 
 #: ../resources/installer/js/base.coffee:142
 msgid "Cancel"
@@ -319,14 +315,3 @@ msgstr "再试一次"
 msgid "Reboot Now"
 msgstr "立即重启"
 
-#~ msgid "Ok"
-#~ msgstr "确定"
-
-#~ msgid "Format:"
-#~ msgstr "格式化："
-
-#~ msgid "Setup loader"
-#~ msgstr "设置引导"
-
-#~ msgid "Please select your keyboard layout"
-#~ msgstr "请选择您的键盘布局"
