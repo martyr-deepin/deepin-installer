@@ -42,10 +42,10 @@ class Finish extends Page
             @desc.innerText = _("Congratulations!")
             @detail.innerText = _("You need to restart the computer to complete installation.")
             @later.setAttribute("class", "Later")
-            @later_txt.innerText = _("Reboot later")
+            @later_txt.innerText = _("Reboot Later")
         else
-            @desc.innerText = _("Installation failed!")
-            @detail.innerText = _("Please send the log to Linux Deepin Team.")
+            @desc.innerText = _("Installation Failed!")
+            @detail.innerText = _("Please send the log to Deepin Team.")
             @detail.addEventListener("click", (e) =>
                 DCore.Installer.show_log()
             )
@@ -56,7 +56,7 @@ class Finish extends Page
                 @detail.style.color = "rgba(255,255,255,0.7)"
             )
             @later.setAttribute("class", "Startover")
-            @later_txt.innerText = _("Start over")
+            @later_txt.innerText = _("Start Over")
 
         @later.addEventListener("click", (e) =>
             if @succeed
@@ -73,7 +73,7 @@ class Finish extends Page
 
         @now = create_element("div", "Now", @ops)
         @now_txt = create_element("div", "Txt", @now)
-        @now_txt.innerText = _("Reboot now")
+        @now_txt.innerText = _("Reboot Now")
         @now.addEventListener("click", (e) =>
             try
                 DCore.Installer.finish_reboot()

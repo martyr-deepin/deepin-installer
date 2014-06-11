@@ -45,7 +45,7 @@ _color_list = ["#f2415b", "#e86836", "#fcc100", "#e8dd0a",
                "#1452Ed", "#6913e5", "#9b13ea", "#b300d8"]
 
 __fs_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
-__fs_values = [_("unused"), "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
+__fs_values = [_("Unused"), "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap"]
 __fs_efi_keys = ["unused", "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap", "efi"]
 __fs_efi_values = [_("unused"), "ext4","ext3","ext2","reiserfs","btrfs","jfs","xfs","fat16","fat32","ntfs","swap", "efi"]
 __mp_keys = ["unused", "/","/boot","/home","/tmp","/usr", "/var","/srv", "/opt", "/usr/local"]
@@ -132,7 +132,7 @@ class Dialog extends Widget
         @content = create_element("div", "DialogContent", @element)
         @foot = create_element("div", "DialogBtn", @element)
         @ok = create_element("div", "", @foot)
-        @ok.innerText = _("Ok")
+        @ok.innerText = _("OK")
         @ok.addEventListener("click", (e) =>
             @hide_dialog()
             @cb()

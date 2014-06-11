@@ -40,7 +40,7 @@ class AddPartDialog extends Dialog
         super(@id, true, @add_part_cb)
         @add_css_class("DialogCommon")
         @element.style.top = "85px"
-        @title_txt.innerText = _("Add partition")
+        @title_txt.innerText = _("Add Partition")
         @fill_type()
         @fill_size()
         @fill_align()
@@ -274,7 +274,7 @@ class FormatDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @format_cb)
         @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Format partition")
+        @title_txt.innerText = _("Format Partition")
         @format_tips = create_element("div", "", @content)
         @format_tips.innerText = _("Are you sure you want to format this partition?")
 
