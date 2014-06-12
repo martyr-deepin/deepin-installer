@@ -1,0 +1,5 @@
+#!/bin/bash
+# Remove unused packages
+
+apt-get --force-yes -y purge ubiquity deepin-installer
+apt-get --force-yes -y autoremove --purge

@@ -348,7 +348,7 @@ finish_install_cleanup ()
     extern int chroot_fd;
 
     if (in_chroot) {
-        execute_hook("end.sh");
+        execute_hook("install-bottom");
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");
         } else {
