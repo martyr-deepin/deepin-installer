@@ -487,7 +487,7 @@ function Stage5(){
 
 function restartStage(){
 	var tl = new TimelineMax();
-	tl.to(COMMON.computer, 0, {delay:3,onComplete:function(){
+	tl.to(COMMON.computer, 0, {delay:5,onComplete:function(){
 		mainline.restart();
 	}});
 	return tl;
