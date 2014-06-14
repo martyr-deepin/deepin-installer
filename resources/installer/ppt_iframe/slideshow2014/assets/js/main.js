@@ -280,12 +280,10 @@ function Stage2(){
 
     var tl = new TimelineMax();
     tl.to(background2, 0.8, {alpha:1,delay:2})
-    .to(logo2, 0.8, {alpha:1,repeat:4,yoyo:true})
-    .to(action, 0.8, {alpha:1})
+    .to(logo2, 0.8, {alpha:1,repeat:2,yoyo:true})
     .add(textBox2_Show());
 
     tl.add(textBox2_Exit(),"+="+3)
-    .to(action, 0.8, {alpha:0})
     .to(logo2, 0.8, {alpha:0})
     .to(background2, 0.8, {alpha:0});
 
