@@ -1,7 +1,5 @@
 body, html{
     margin:0;
-    overflow:hidden;
-    /*background:transparent;*/
     width:100%;
 }
 
@@ -26,6 +24,14 @@ li{
 p{
     margin: 0 0.625em;
     font-size: 0.75em;
+}
+
+a{
+    color:#e4e4e4;
+}
+
+[lang=en] .messages{
+    font-family: Arial;
 }
 
 .container{
@@ -65,6 +71,10 @@ p{
     left:90px;
     padding-left:34px;
     background:#7fa628;
+}
+
+[lang=en] .text3 h1{
+    font-size: 0.9em;
 }
 
 .text3:after{
