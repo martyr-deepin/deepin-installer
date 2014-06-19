@@ -329,6 +329,7 @@ class Keyboard extends Widget
 
     show: ->
         __timezone_widget?.hide()
+        __language_widget?.hide()
         __account_widget?.hide()
         @displayed = true
         @element.style.display = "block"
@@ -530,6 +531,7 @@ class Timezone extends Widget
                 pass
 
     show: ->
+        __language_widget?.hide()
         __keyboard_widget?.hide()
         __account_widget?.hide()
         @displayed = true
@@ -701,6 +703,7 @@ class Language extends Widget
 
     show: ->
         echo "language show"
+        __keyboard_widget?.hide()
         __timezone_widget?.hide()
         __account_widget?.hide()
         @displayed = true
@@ -833,6 +836,7 @@ class Account extends Widget
         @start.setAttribute("style", "pointer-events:none")
 
     show: ->
+        __language_widget?.hide()
         __timezone_widget?.hide()
         __keyboard_widget?.hide()
         @element.style.display = "block"
@@ -908,18 +912,15 @@ class Welcome extends Page
     do_click: (e) ->
         if is_ancestor(@language_set, e.target)
             if @language.displayed
-                @language.hide()
                 @account.show()
             else
                 @language.show()
         else if is_ancestor(@keyboard_set, e.target)
-            @language.hide()
             if @keyboard.displayed
                 @account.show()
             else
                 @keyboard.show()
         else if is_ancestor(@timezone_set, e.target)
-            @language.hide()
             if @timezone.displayed
                 @account.show()
             else
