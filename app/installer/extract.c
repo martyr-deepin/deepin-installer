@@ -350,6 +350,36 @@ void installer_extract_iso ()
     g_thread_unref (thread);
 }
 
+
+static char* lang_pack = NULL;
+
+JS_EXPORT_API
+void installer_set_lang_pack(const char* lang)
+{
+    if (lang_pack != NULL) {
+	g_free(lang_pack);
+    }
+    lang_pack = g_strdup(lang);
+}
+
+gboolean extract_lang_pack(const char* lang)
+{
+    if (lang == NULL) {
+	g_warning("Hasn't set any lang package");
+	return TRUE;
+    }
+    extern const gchar *target;
+    GError* error=NULL;
+    char* cmd = g_strdup_printf("unsquashfs -f -d %s /cdrom/casper/overlay-deepin-%s.squashfs", target, lang);
+    g_spawn_command_line_sync(cmd, NULL, NULL, NULL, &error);
+    if (error != NULL) {
+	g_error("%s", error->message);
+	g_error_free(error);
+	return FALSE;
+    }
+    return TRUE;
+}
+
 static void
 watch_extract_child (GPid pid, gint status, gpointer data)
 {
@@ -365,7 +395,11 @@ watch_extract_child (GPid pid, gint status, gpointer data)
         emit_progress ("extract", "terminate");
     } else {
         g_printf ("watch extract child:extract finish\n");
-        emit_progress ("extract", "finish");
+	if (extract_lang_pack(lang_pack)) {
+	    emit_progress ("extract", "finish");
+	} else {
+	    emit_progress ("extract", "terminate");
+	}
     }
 
     guint *cb_ids = (guint *) data;
