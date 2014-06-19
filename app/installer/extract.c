@@ -35,7 +35,6 @@ extern int mknod(const char *pathname, mode_t mode, dev_t dev);
 extern int lstat(const char *restrict path, struct stat *restrict buf);
 extern int lchown(const char *path, uid_t owner, gid_t group);
 
-#define WHITE_LIST_PATH         RESOURCE_DIR"/installer/whitelist.ini"
 #define BUFFERSIZE  16 * 1024
 
 static gboolean extract_finish = FALSE;
@@ -727,66 +726,5 @@ void installer_extract_intelligent ()
 JS_EXPORT_API 
 void installer_copy_whitelist ()
 {
-    GError *error = NULL;
-    gchar *cmd = NULL;
-    gchar *contents = NULL;
-    gchar **strarray = NULL;
-
-    extern const gchar *target;
-    if (target == NULL) {
-        g_warning ("copy whitelist:target NULL\n");
-        goto out;
-    }
-
-    if (!g_file_test (WHITE_LIST_PATH, G_FILE_TEST_EXISTS)) {
-        g_warning ("copy whitelist:%s not exists\n", WHITE_LIST_PATH);
-        goto out;
-    }
-    g_file_get_contents (WHITE_LIST_PATH, &contents, NULL, &error);
-    if (error != NULL) {
-        g_warning ("copy whitelist:get packages list %s\n", error->message);
-        goto out;
-    }
-    if (contents == NULL) {
-        g_warning ("copy whitelist:contents NULL\n");
-        goto out;
-    }
-    strarray = g_strsplit (contents, "\n", -1);
-    if (strarray == NULL) {
-       g_warning ("copy whitelist:strarray NULL\n"); 
-       goto out;
-    }
-    guint count = g_strv_length (strarray);
-    guint index = 0;
-    for (index = 0; index < count; index++) {
-        gchar *item = g_strdup (strarray[index]);
-        if (!g_file_test (item, G_FILE_TEST_EXISTS)) {
-            g_warning ("copy whitelist:file %s not exists\n", item);
-            g_free (item);
-            continue;
-        }
-        GFile *src = g_file_new_for_path (item);
-        gchar *dest_path = g_strdup_printf ("%s%s", target, item);
-        GFile *dest = g_file_new_for_path (dest_path);
-
-        g_file_copy (src, dest, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &error);
-
-        g_free (item);
-        g_free (dest_path);
-        g_object_unref (src);
-        g_object_unref (dest);
-        if (error != NULL) {
-            g_warning ("copy whiltelist:file %s error->%s\n", item, error->message);
-        }
-    }
-    goto out;
-
-out:
-    g_free (cmd);
-    g_free (contents);
-    g_strfreev (strarray);
-    if (error != NULL) {
-        g_error_free (error);
-        error = NULL;
-    }
+    //TODO: before hooks
 }

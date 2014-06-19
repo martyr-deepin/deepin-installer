@@ -27,7 +27,6 @@
 #include "part_util.h"
 #include "fs_util.h"
 
-#define PACKAGES_LIST_PATH      RESOURCE_DIR"/installer/blacklist.ini"
 #define LOG_FILE_PATH           "/tmp/installer.log"
 #define HOOKS_PATH    RESOURCE_DIR"hooks"
 
@@ -230,88 +229,6 @@ GFile* _get_gfile_from_gapp(GDesktopAppInfo* info)
 }
 
 
-static void
-fix_networkmanager ()
-{
-    extern gboolean in_chroot;
-    if (!in_chroot) {
-        g_warning ("fix networkmanager:not in chroot\n");
-        return;
-    }
-
-
-    GError *error = NULL;
-    const gchar *cmd = "sed -i 's/managed=false/managed=true/g' /etc/NetworkManager/NetworkManager.conf";
-    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("fix networkmanager:%s\n", error->message);
-        g_error_free (error);
-        error = NULL;
-    }
-}
-
-static void
-remove_packages ()
-{
-    extern gboolean in_chroot;
-    if (!in_chroot) {
-        g_warning ("remove packages:not in chroot\n");
-        return ;
-    }
-
-    GError *error = NULL;
-    gchar *cmd = NULL;
-    gchar *contents = NULL;
-    gchar **strarray = NULL;
-    gchar *packages = NULL;
-
-    if (!g_file_test (PACKAGES_LIST_PATH, G_FILE_TEST_EXISTS)) {
-        g_warning ("remove packages:%s not exists\n", PACKAGES_LIST_PATH);
-        goto out;
-    }
-    g_file_get_contents (PACKAGES_LIST_PATH, &contents, NULL, &error);
-    if (error != NULL) {
-        g_warning ("remove packages:get packages list %s\n", error->message);
-        goto out;
-    }
-    if (contents == NULL) {
-        g_warning ("remove packages:contents NULL\n");
-        goto out;
-    }
-    strarray = g_strsplit (contents, "\n", -1);
-    if (strarray == NULL) {
-       g_warning ("remove packages:strarray NULL\n"); 
-       goto out;
-    }
-    packages = g_strjoinv (" ", strarray);
-    if (packages == NULL) {
-        g_warning ("remove packages:packages NULL\n");
-        goto out;
-    }
-
-    if (g_file_test ("/var/lib/apt/lock", G_FILE_TEST_EXISTS)) {
-       g_unlink ("/var/lib/apt/lock"); 
-    }
-    
-    cmd = g_strdup_printf ("apt-get remove -y %s", packages);
-    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("remove packages:%s\n", error->message);
-    }
-    goto out;
-
-out:
-    g_free (cmd);
-    g_free (contents);
-    g_strfreev (strarray);
-    g_free (packages);
-    if (error != NULL) {
-        g_error_free (error);
-        error = NULL;
-    }
-}
-
-
 void execute_hook(const gchar *hookname)
 {
     extern const gchar* target;
@@ -321,8 +238,6 @@ void execute_hook(const gchar *hookname)
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("excute_scripts:excute failed:%s\n", error->message);
-        fix_networkmanager ();
-        remove_packages ();
         g_error_free (error);
         error = NULL;
     }
