@@ -53,6 +53,7 @@ is_ancestor = (ancestor, el) ->
 
 __keyboard_widget = null
 __timezone_widget = null
+__language_widget = null
 __account_widget = null
 
 class RequireMatchDialog extends Dialog
@@ -675,6 +676,41 @@ class Timezone extends Widget
         if matched.length == 1
             @set_timezone(@zone_dict[matched[0]])
 
+class Language extends Widget
+    constructor: (@id)->
+        super
+        @lang_list = ["zh_CN","en_US"]
+        @lang_selected = null
+        @lang_create()
+        @hide()
+    
+    lang_create: ->
+        @li = []
+        @lang_div = create_element("div","lang_div",@element)
+        @ul = create_element("ul","",@lang_div)
+        for lang,i in @lang_list
+            @li[i] = create_element("li","",@ul)
+            @li[i].textContent = lang
+            @li[i].value = i
+            that = @
+            @li[i].addEventListener("click",->
+                that.lang_selected = that.lang_list[this.value]
+                echo "click and lang_selected:#{that.lang_selected}"
+                DCore.Installer.set_lang_pack(that.lang_selected)
+            )
+
+    show: ->
+        echo "language show"
+        __timezone_widget?.hide()
+        __account_widget?.hide()
+        @displayed = true
+        @element.style.display = "block"
+        __selected_layout_item?.focus()
+
+    hide: ->
+        @displayed = false
+        @element.style.display = "none"
+
 class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
@@ -836,6 +872,10 @@ class Welcome extends Page
         @titleimg = create_img("", "images/progress_account.png", @titleprogress)
 
         @title_set = create_element("div", "TitleSet", @title)
+        
+        @language_set = create_element("div", "LanguageSet", @title_set)
+        @language_set.innerText = _("Language")
+        
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
         @keyboard_set.innerText = _("Keyboard")
 
@@ -848,6 +888,10 @@ class Welcome extends Page
         )
 
         @wrap = create_element("div", "WelcomeWrap", @element)
+
+        @language = new Language("language")
+        @wrap.appendChild(@language.element)
+        __language_widget = @language
 
         @keyboard = new Keyboard("keyboard")
         @wrap.appendChild(@keyboard.element)
@@ -862,12 +906,20 @@ class Welcome extends Page
         __account_widget = @account
 
     do_click: (e) ->
-        if is_ancestor(@keyboard_set, e.target)
+        if is_ancestor(@language_set, e.target)
+            if @language.displayed
+                @language.hide()
+                @account.show()
+            else
+                @language.show()
+        else if is_ancestor(@keyboard_set, e.target)
+            @language.hide()
             if @keyboard.displayed
                 @account.show()
             else
                 @keyboard.show()
         else if is_ancestor(@timezone_set, e.target)
+            @language.hide()
             if @timezone.displayed
                 @account.show()
             else
