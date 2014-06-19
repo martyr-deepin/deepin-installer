@@ -28,6 +28,7 @@
 #include <ftw.h>
 #include "extract.h"
 #include "keyboard.h"
+#include "misc.h"
 
 extern int symlink(const char *oldpath, const char *newpath);
 extern int mknod(const char *pathname, mode_t mode, dev_t dev);
@@ -362,15 +363,18 @@ void installer_set_lang_pack(const char* lang)
     lang_pack = g_strdup(lang);
 }
 
-gboolean extract_lang_pack(const char* lang)
+gboolean extract_lang_pack()
 {
-    if (lang == NULL) {
-	g_warning("Hasn't set any lang package");
-	return TRUE;
+    if (lang_pack == NULL) {
+	char* default_lang = installer_get_default_lang_pack();
+	g_warning("Hasn't set any lang package, fallback to :%s", default_lang);
+	installer_set_lang_pack(default_lang);
+	g_free(default_lang);
     }
+
     extern const gchar *target;
     GError* error=NULL;
-    char* cmd = g_strdup_printf("unsquashfs -f -d %s /cdrom/casper/overlay-deepin-%s.squashfs", target, lang);
+    char* cmd = g_strdup_printf("unsquashfs -f -d %s /cdrom/casper/overlay-deepin-%s.squashfs", target, lang_pack);
     g_spawn_command_line_sync(cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
 	g_error("%s", error->message);
@@ -395,7 +399,7 @@ watch_extract_child (GPid pid, gint status, gpointer data)
         emit_progress ("extract", "terminate");
     } else {
         g_printf ("watch extract child:extract finish\n");
-	if (extract_lang_pack(lang_pack)) {
+	if (extract_lang_pack()) {
 	    emit_progress ("extract", "finish");
 	} else {
 	    emit_progress ("extract", "terminate");

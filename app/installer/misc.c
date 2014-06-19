@@ -372,3 +372,33 @@ void  installer_show_log ()
     g_free (cmd);
 }
 
+
+
+JS_EXPORT_API
+char* installer_get_default_lang_pack()
+{
+    char* contents = NULL;
+    if (!g_file_get_contents("/proc/cmdline", &contents, NULL, NULL)) {
+	return g_strdup("en_US");
+    }
+
+    gchar* begin = g_strstr_len(contents, -1, "locale=");
+    if (begin == NULL) {
+	g_free(contents);
+	return g_strdup("en_US");
+    }
+    g_free(contents);
+
+    int end = 0;
+    for (; begin[end] != ' ' && begin[end] != '.' && begin[end] != '\0'; end++);
+    if (end == 0) {
+	return g_strdup("en_US");
+    }
+
+
+    char* new_str = g_strdup(begin);
+    new_str[end] = '\0';
+    char* ret = g_strdup(new_str+ 7);
+    g_free(new_str);
+    return ret;
+}
