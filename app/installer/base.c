@@ -88,7 +88,7 @@ get_matched_string (const gchar *target, const gchar *regex_string)
         result = g_match_info_fetch (match_info, 0);
 
     } else {
-        g_warning ("get matched string:failed in %s to find %s\n", target, regex_string);
+        g_debug("get matched string:failed in \"%s\" to find \"%s\"\n", target, regex_string);
     }
 
     g_match_info_free (match_info);
