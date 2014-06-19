@@ -29,7 +29,12 @@ gchar* installer_get_current_locale ()
 {
     gchar *locale = NULL;
     gchar *cmd = g_strdup ("sh -c \"locale | head -n1 | awk -F= '{print $2}' | tr -d '\n' \"");
-    g_spawn_command_line_sync (cmd, &locale, NULL, NULL, NULL);
+    GError* error = NULL;
+    g_spawn_command_line_sync (cmd, &locale, NULL, NULL, &error);
+    if (error != NULL) {
+	g_warning("get_current_locale:", error->message);
+	g_error_free(error);
+    }
     g_free (cmd);
     return locale;
 }
@@ -46,7 +51,7 @@ is_locale_valid (const gchar *local_part)
         goto out;
     }
 
-    g_spawn_command_line_sync ("ls /usr/share/i18n/locales |awk '{print $1}'", &output, NULL, NULL, &error);
+    g_spawn_command_line_sync ("sh -c \"ls /usr/share/i18n/locales | awk '{print $1}'\"", &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("is locale valid:%s\n", error->message);
         goto out;
@@ -83,7 +88,7 @@ is_charset_valid (const gchar *charset_part)
         goto out;
     }
 
-    g_spawn_command_line_sync ("ls /usr/share/i18n/charmaps | awk '{print $1}'", &output, NULL, NULL, &error);
+    g_spawn_command_line_sync ("sh -c \"ls /usr/share/i18n/charmaps | awk '{print $1}'\"", &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("is charset valid:%s\n", error->message);
         goto out;
