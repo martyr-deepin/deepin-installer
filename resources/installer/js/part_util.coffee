@@ -48,7 +48,7 @@ mb_to_sector = (mb_size, sector_size) ->
 #Model: for origin disk partition table 
 #disks = DCore.Installer.list_disks()
 disks = null
-minimum_disk_size_required = 15
+minimum_disk_size_required = 8
 
 is_match_install_require = ->
     for disk in DCore.Installer.list_disks()
