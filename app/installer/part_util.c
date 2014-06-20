@@ -1473,7 +1473,7 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
 	}
 
 	g_mkdir_with_parents ("/target/media/cdrom", 0755);
-	g_spawn_command_line_sync("mount --bind /cdrom  /taret/media/cdrom", NULL, NULL, NULL, &error);
+	g_spawn_command_line_sync("mount --bind /cdrom  /target/media/cdrom", NULL, NULL, NULL, &error);
 	if (error != NULL) {
 	    g_warning("Can't bind cdrom: %s\n", error->message);
 	    g_error_free(error);
