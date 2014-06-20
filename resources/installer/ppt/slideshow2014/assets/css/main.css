@@ -1,0 +1,106 @@
+body, html{
+    margin:0;
+    width:100%;
+    overflow:hidden;
+}
+
+h1{
+    font-size:1.5em;
+    text-indent:0.3em;
+    margin:0.2em;
+}
+
+[lang=en] h1{
+    font-size:1em;
+}
+
+ul{
+    margin:0.5em 0;
+}
+
+li{
+    font-size:0.875em;
+}
+
+p{
+    margin: 0 0.625em;
+    font-size: 0.75em;
+}
+
+a{
+    color:#e4e4e4;
+}
+
+[lang=en] .messages{
+    font-family: Arial;
+}
+
+.container{
+    width:750px;
+    margin:0 auto;
+    position:relative;
+    background:linear-gradient(#a6dfff,#ffffff);
+}
+
+.messages{
+    position:absolute;
+    color:white;
+    border-radius:3px;
+    opacity:0;
+}
+
+.text1{
+    width:200px;
+    height:105px;
+    top:85px;
+    left:52px;
+    background:#ce5e1b;
+}
+
+.text2{
+    width:145px;
+    height:103px;
+    top:140px;
+    left:82px;
+    background:#4158db;
+}
+
+.text3{
+    width:183px;
+    height:103px;
+    top:132px;
+    left:90px;
+    padding-left:34px;
+    background:#7fa628;
+}
+
+[lang=en] .text3 h1{
+    font-size: 0.9em;
+}
+
+.text3:after{
+    content:'';
+    display:block;
+    position:relative;
+    width:199px;
+    height:300px;
+    right:25px;
+    bottom:86px;
+    background:url('../img/earphone.png');
+}
+
+.text4{
+    width:205px;
+    height:105px;
+    top:65px;
+    left:85px;
+    background:#f49741;
+}
+
+.text5{
+    width:305px;
+    height:120px;
+    top:296px;
+    left:21px;
+    background:#30b3e5;
+}
