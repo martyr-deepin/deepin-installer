@@ -1,3 +1,4 @@
+#include "info.h"
 #include <glib.h>
 void write_bootloader_info(const char* uuid, gboolean uefi)
 {
@@ -9,11 +10,8 @@ void write_bootloader_info(const char* uuid, gboolean uefi)
 	    uefi ? "uefi" : "bios",
 	    uuid);
 
-    extern const gchar *target;
-    char* path= g_strdup_printf("%s/host/config.json", target);
     GError* error = NULL;
-    g_file_set_contents(path, content, -1, &error);
-    g_free(path);
+    g_file_set_contents("/target/etc/deepin-installer.json", content, -1, &error);
 
     if (error != NULL) {
 	g_warning("Write_bootloader_info failed:%s\n", error->message);

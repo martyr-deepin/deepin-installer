@@ -24,6 +24,7 @@
 #include <sys/mount.h>
 #include "part_util.h"
 #include "fs_util.h"
+#include "info.h"
 
 #define PART_INFO_LENGTH 4096
 
@@ -32,7 +33,6 @@ static GHashTable *partitions;
 static GHashTable *disk_partitions;
 static GHashTable *partition_os = NULL;
 static GHashTable *partition_os_desc = NULL;
-const gchar *target;
 int chroot_fd;
 gboolean in_chroot = FALSE;
 GList *mounted_list = NULL;
@@ -128,14 +128,6 @@ thread_init_parted (gpointer data)
 
     PedDevice *device = NULL;
     PedDisk *disk = NULL;
-
-    gchar *target_uuid = installer_rand_uuid ();
-    target = g_strdup_printf ("/mnt/target%s", target_uuid);
-    if (g_file_test (target, G_FILE_TEST_EXISTS)) {
-        target_uuid = installer_rand_uuid ();
-        target = g_strdup_printf ("/mnt/target%s", target_uuid);
-    }
-    g_free (target_uuid);
 
     ped_device_probe_all ();
 
@@ -637,7 +629,6 @@ double installer_get_partition_end (const gchar *part)
     pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
     if (pedpartition != NULL) {
         end = pedpartition->geom.end;
-
     } else {
         g_warning ("get partition end:find pedpartition %s failed\n", part);
     }
@@ -1461,7 +1452,7 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
         fs = g_strdup ("ntfs-3g");
     }
 
-    mount_target = g_strdup_printf ("%s%s", target, mp);
+    mount_target = g_strdup_printf ("%s%s", TARGET, mp);
     if (g_mkdir_with_parents (mount_target, 0755) == -1) {
         g_warning ("init parted:create target directory failed\n");
         goto out;

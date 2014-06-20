@@ -26,6 +26,7 @@
 #include "misc.h"
 #include "part_util.h"
 #include "fs_util.h"
+#include "info.h"
 
 #define LOG_FILE_PATH           "/tmp/installer.log"
 #define HOOKS_PATH    RESOURCE_DIR"hooks"
@@ -44,7 +45,6 @@ mount_procfs ()
 {
     gboolean ret = FALSE;
     GError *error = NULL;
-    extern const gchar* target;
     gchar *dev_target = NULL;
     gchar *devpts_target = NULL;
     gchar *proc_target = NULL;
@@ -54,19 +54,15 @@ mount_procfs ()
     gchar *mount_proc = NULL;
     gchar *mount_sys = NULL;
 
-    if (target == NULL) {
-        g_warning ("mount procfs:target is NULL\n");
-        goto out;
-    }
-    dev_target = g_strdup_printf ("%s/dev", target);
-    devpts_target = g_strdup_printf ("%s/dev/pts", target);
-    proc_target = g_strdup_printf ("%s/proc", target);
-    sys_target = g_strdup_printf ("%s/sys", target);
+    dev_target = g_strdup_printf ("%s/dev", TARGET);
+    devpts_target = g_strdup_printf ("%s/dev/pts", TARGET);
+    proc_target = g_strdup_printf ("%s/proc", TARGET);
+    sys_target = g_strdup_printf ("%s/sys", TARGET);
 
-    mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", target);
-    mount_devpts = g_strdup_printf ("mount -vt devpts devpts %s/dev/pts", target);
-    mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", target);
-    mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sys", target);
+    mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", TARGET);
+    mount_devpts = g_strdup_printf ("mount -vt devpts devpts %s/dev/pts", TARGET);
+    mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", TARGET);
+    mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sys", TARGET);
 
     guint dev_before = get_mount_target_count (dev_target);
     g_spawn_command_line_sync (mount_dev, NULL, NULL, NULL, &error);
@@ -143,11 +139,6 @@ gboolean installer_chroot_target ()
         goto out;
     }
 
-    extern const gchar* target;
-    if (target == NULL) {
-        g_warning ("chroot:target is NULL\n");
-        goto out;
-    }
     extern int chroot_fd;
     if ((chroot_fd = open (".", O_RDONLY)) < 0) {
         g_warning ("chroot:set chroot fd failed\n");
@@ -155,11 +146,11 @@ gboolean installer_chroot_target ()
     }
 
     extern gboolean in_chroot;
-    if (chroot (target) == 0) {
+    if (chroot (TARGET) == 0) {
         in_chroot = TRUE;
         ret = TRUE;
     } else {
-        g_warning ("chroot:chroot to %s falied:%s\n", target, strerror (errno));
+        g_warning ("chroot:chroot to %s falied:%s\n", TARGET, strerror (errno));
     }
     goto out;
 
@@ -177,22 +168,17 @@ static void
 unmount_target ()
 {
     g_debug ("finish install:unmount target\n");
-    extern const gchar *target;
-    if (target == NULL) {
-        g_warning ("unmount mount:target is NULL\n");
-        return;
-    } 
     extern gboolean in_chroot;
     if (in_chroot) {
         g_warning ("unmount mount:in chroot\n");
         return;
     }
 
-    gchar *umount_sys_cmd = g_strdup_printf ("umount -l %s/sys", target);
-    gchar *umount_proc_cmd = g_strdup_printf ("umount -l %s/proc", target);
-    gchar *umount_devpts_cmd = g_strdup_printf ("umount -l %s/dev/pts", target);
-    gchar *umount_dev_cmd = g_strdup_printf ("umount -l %s/dev", target);
-    gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", target);
+    gchar *umount_sys_cmd = g_strdup_printf ("umount -l %s/sys", TARGET);
+    gchar *umount_proc_cmd = g_strdup_printf ("umount -l %s/proc", TARGET);
+    gchar *umount_devpts_cmd = g_strdup_printf ("umount -l %s/dev/pts", TARGET);
+    gchar *umount_dev_cmd = g_strdup_printf ("umount -l %s/dev", TARGET);
+    gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", TARGET);
 
     g_spawn_command_line_sync (umount_sys_cmd, NULL, NULL, NULL, NULL);
     g_spawn_command_line_sync (umount_proc_cmd, NULL, NULL, NULL, NULL);
@@ -207,8 +193,8 @@ unmount_target ()
     }
     g_spawn_command_line_sync (umount_target_cmd, NULL, NULL, NULL, NULL);
 
-    while (g_file_test (target, G_FILE_TEST_IS_DIR)) {
-        if (g_rmdir (target) != 0) {
+    while (g_file_test (TARGET, G_FILE_TEST_IS_DIR)) {
+        if (g_rmdir (TARGET) != 0) {
             g_spawn_command_line_sync (umount_target_cmd, NULL, NULL, NULL, NULL);
             g_usleep (1000);
         }
@@ -231,7 +217,6 @@ GFile* _get_gfile_from_gapp(GDesktopAppInfo* info)
 
 void execute_hook(const gchar *hookname)
 {
-    extern const gchar* target;
     GError *error = NULL;
     const gchar *cmd = g_strdup_printf ("%s/%s", HOOKS_PATH,hookname);
     g_message("excute_scripts:cmd :%s.",cmd);
@@ -255,10 +240,6 @@ finish_install_cleanup ()
     }
     cleaned = TRUE;
 
-    extern const gchar *target;
-    if (target == NULL) {
-        g_warning ("finish install:target is NULL\n");
-    } 
     extern gboolean in_chroot;
     extern int chroot_fd;
 

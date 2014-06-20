@@ -29,6 +29,7 @@
 #include "extract.h"
 #include "keyboard.h"
 #include "misc.h"
+#include "info.h"
 
 extern int symlink(const char *oldpath, const char *newpath);
 extern int mknod(const char *pathname, mode_t mode, dev_t dev);
@@ -129,8 +130,7 @@ get_dest_for_extract_iso (const char *path)
         return NULL;
     }
     char *dest = NULL;
-    extern const gchar *target;
-    gchar *ts = g_strdup_printf ("%s/squashfs", target);
+    gchar *ts = g_strdup_printf ("%s/squashfs", TARGET);
     if (!g_str_has_prefix (path, ts)) {
         g_warning ("get dest for extract iso:invalid path->%s with target %s\n", path, ts);
         g_free (ts);
@@ -147,7 +147,7 @@ get_dest_for_extract_iso (const char *path)
     gchar *base = g_strdup (sp[1]);
     g_strfreev (sp);
 
-    dest = g_strdup_printf ("%s%s", target, base);
+    dest = g_strdup_printf ("%s%s", TARGET, base);
     g_free (base);
 
     return dest;
@@ -266,7 +266,6 @@ gpointer
 thread_extract_iso (gpointer data)
 {
     gboolean succeed = FALSE;
-    extern const gchar *target;
     GError *error = NULL;
     gchar *target_iso = NULL;
     gchar *mount_cmd = NULL;
@@ -274,18 +273,13 @@ thread_extract_iso (gpointer data)
     gchar *size_content = NULL;
     gsize length;
 
-    if (target == NULL) {
-        g_warning ("extract iso:target NULL\n");
-        goto out;
-    }
-
     const gchar *iso = "/cdrom/casper/filesystem.squashfs";
     if (!g_file_test (iso, G_FILE_TEST_EXISTS)) {
         g_warning ("extract iso:iso not exists\n");
         goto out;
     }
 
-    target_iso = g_strdup_printf ("%s/squashfs", target);
+    target_iso = g_strdup_printf ("%s/squashfs", TARGET);
     if (g_mkdir_with_parents (target_iso, 0755) == -1) {
         g_warning ("extract iso:mkdir failed\n");
         goto out;
@@ -371,9 +365,8 @@ gboolean extract_lang_pack()
 	g_free(default_lang);
     }
 
-    extern const gchar *target;
     GError* error=NULL;
-    char* cmd = g_strdup_printf("unsquashfs -f -d %s /cdrom/casper/overlay-deepin-%s.squashfs", target, lang_pack);
+    char* cmd = g_strdup_printf("unsquashfs -f -d %s /cdrom/casper/overlay-deepin-%s.squashfs", TARGET, lang_pack);
     g_spawn_command_line_sync(cmd, NULL, NULL, NULL, &error);
     if (error != NULL) {
 	g_error("%s", error->message);
@@ -475,12 +468,11 @@ cb_err_watch (GIOChannel *channel, GIOCondition cond, gpointer data)
         gchar *fix_cmd = g_strdup_printf ("sh -c \"echo %s |awk -F, '{print $1}'|awk '{print $4}'\"", string);
         gchar *output = NULL;
         g_spawn_command_line_sync (fix_cmd, &output, NULL, NULL, NULL);
-        extern const gchar *target;
-        if (output == NULL || !g_str_has_prefix (output, target)) {
+        if (output == NULL || !g_str_has_prefix (output, TARGET)) {
             g_free (fix_cmd);
         } else {
             g_warning ("cb err watch:fix %s\n", output);
-            gchar *orig_cmd = g_strdup_printf ("sh -c \"echo %s |cut -c %zu-\"", output, strlen (target) + 1);
+            gchar *orig_cmd = g_strdup_printf ("sh -c \"echo %s |cut -c %zu-\"", output, strlen (TARGET) + 1);
             gchar *orig_path = NULL;
             g_spawn_command_line_sync (orig_cmd, &orig_path, NULL, NULL, NULL);
             if (orig_path != NULL) {
@@ -523,13 +515,6 @@ thread_extract_squashfs (gpointer data)
     }
     g_free (squashfs_cmd);
 
-    extern const gchar *target;
-    if (target == NULL) {
-        g_warning ("extract squash fs:target is NULL\n");
-        emit_progress ("extract", "terminate");
-        return NULL;
-    }
-
     const gchar *iso = "/cdrom/casper/filesystem.squashfs";
     if (!g_file_test (iso, G_FILE_TEST_EXISTS)) {
         g_warning ("extract squashfs:iso not exists\n");
@@ -554,7 +539,7 @@ thread_extract_squashfs (gpointer data)
     argv[2] = g_strdup ("-p");
     argv[3] = g_strdup_printf ("%d", puse);
     argv[4] = g_strdup ("-d");
-    argv[5] = g_strdup (target);
+    argv[5] = g_strdup (TARGET);
     argv[6] = g_strdup ("/cdrom/casper/filesystem.squashfs");
 
     gint std_output;
