@@ -1470,6 +1470,20 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
     guint before = get_mount_target_count (mount_target);
     cmd = g_strdup_printf ("mount -t %s %s %s", fs, path, mount_target);
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+
+
+    {
+	//bind the root dir to /target/host
+	//
+	char* host_path = g_strdup_printf("/%s/host", mount_target);
+	g_mkdir_with_parents (host_path, 0755);
+	g_free(cmd);
+	cmd = g_strdup_printf("mount --bind /  %s", host_path);
+	g_free(host_path);
+	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+    }
+
+
     if (error != NULL) {
         g_warning ("mount partition:mount path %s with fs %s error:%s\n", path, fs, error->message);
         goto out;
