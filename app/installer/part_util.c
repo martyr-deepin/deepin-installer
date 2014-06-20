@@ -1464,14 +1464,19 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
 
 
     {
-	//bind the root dir to /target/host
-	//
-	char* host_path = g_strdup_printf("/%s/host", mount_target);
-	g_mkdir_with_parents (host_path, 0755);
-	g_free(cmd);
-	cmd = g_strdup_printf("mount --bind /  %s", host_path);
-	g_free(host_path);
-	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+	g_mkdir_with_parents ("/target/host/cdrom", 0755);
+	g_spawn_command_line_sync ("mount --bind / /target/host", NULL, NULL, NULL, &error);
+	if (error != NULL) {
+	    g_warning("Can't bind host: %s\n", error->message);
+	    g_error_free(error);
+	    error = NULL;
+	}
+	g_spawn_command_line_sync("mount --bind /cdrom  /taret/host/cdrom", NULL, NULL, NULL, &error);
+	if (error != NULL) {
+	    g_warning("Can't bind cdrom: %s\n", error->message);
+	    g_error_free(error);
+	    error = NULL;
+	}
     }
 
 
