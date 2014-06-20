@@ -11,7 +11,7 @@ void write_bootloader_info(const char* uuid, gboolean uefi)
 	    uuid);
 
     GError* error = NULL;
-    g_file_set_contents("/target/etc/deepin-installer.json", content, -1, &error);
+    g_file_set_contents("/etc/deepin-installer.json", content, -1, &error);
 
     if (error != NULL) {
 	g_warning("Write_bootloader_info failed:%s\n", error->message);
