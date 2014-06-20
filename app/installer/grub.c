@@ -188,6 +188,15 @@ void installer_update_bootloader (const gchar *uuid, gboolean uefi)
         emit_progress ("bootloader", "terminate");
         return;
     }
-    write_bootloader_info(uuid, uefi);
+    char* path = NULL;
+    if (g_str_has_prefix (uuid, "disk")) {
+	path = installer_get_disk_path (uuid);
+    } else if (g_str_has_prefix (uuid, "part")) {
+	path = installer_get_partition_path (uuid);
+    } else {
+	g_warning ("update grub:invalid uuid %s\n", uuid);
+    }
+    write_bootloader_info(path, uefi);
+    g_free(path);
     emit_progress ("bootloader", "finish");
 }
