@@ -195,9 +195,9 @@ class Progress extends Page
             when "iframe"
                 @ppt = create_element("iframe","ppt_iframe",@element)
                 if document.body.lang is "zh"
-                    @ppt.src = "ppt/#{ppt_method}/index.html"
+                    @ppt.src = "ppt/slideshow2014/index.html"
                 else
-                    @ppt.src = "ppt/#{ppt_method}/index_en.html"
+                    @ppt.src = "ppt/slideshow2014/index_en.html"
             when "video"
                 @ppt = create_element("video","ppt_video",@element)
                 @ppt.autoplay = "autoplay"
@@ -225,6 +225,7 @@ class Progress extends Page
         @titleimg.setAttribute("src", "images/progress_extract.png")
         setTimeout(=>
             @loading.style.display = "none"
+            echo "@ppt show"
             @ppt.style.display = "block"
         ,1000)
         apply_animation(@loading, "loadingout", "1s", "linear")
