@@ -30,5 +30,6 @@ struct GrubHandler {
 };
 
 JS_EXPORT_API void installer_update_bootloader (const gchar *uuid, gboolean uefi);
+void write_bootloader_info(const char* uuid, gboolean uefi);
 
 #endif
