@@ -135,15 +135,6 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
     return FALSE;
 }
 
-static gboolean 
-expose_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
-{
-    cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.0);
-    cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-    cairo_paint (cr);
-    return FALSE;
-}
-
 JS_EXPORT_API
 void installer_finish_install ()
 {
@@ -246,7 +237,7 @@ int main(int argc, char **argv)
     //gtk_window_set_skip_taskbar_hint (GTK_WINDOW (installer_container), TRUE);
     //gtk_window_set_skip_pager_hint (GTK_WINDOW (installer_container), TRUE);
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
-    g_signal_connect (webview, "draw", G_CALLBACK (expose_cb), NULL);
+    g_signal_connect (webview, "draw", G_CALLBACK (erase_background), NULL);
 
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
     gtk_window_set_default_size (GTK_WINDOW (installer_container), INSTALLER_WIN_WIDTH, INSTALLER_WIN_HEIGHT);
