@@ -210,6 +210,7 @@ int main(int argc, char **argv)
 
     global_argv = argv;
     gtk_init (&argc, &argv);
+    g_log_set_default_handler((GLogFunc)log_to_file, "deepin-installer");
 
     setlocale(LC_MESSAGES, "");
     textdomain("INSTALLER");
