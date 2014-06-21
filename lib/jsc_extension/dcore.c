@@ -18,6 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
+#include <glib.h>
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include <gio/gio.h>
@@ -27,6 +29,7 @@
 #include "jsextension.h"
 #include "dwebview.h"
 #include "dcore.h"
+#include "pixbuf.h"
 
 
 #define DESKTOP_SCHEMA_ID "com.deepin.dde.desktop"
@@ -78,7 +81,7 @@ gboolean is_plugin(char const* path)
     return _is_plugin;
 }
 
-void _init_state(gpointer key, gpointer value, gpointer user_data)
+void _init_state(gpointer key, gpointer value G_GNUC_UNUSED, gpointer user_data)
 {
     g_hash_table_replace((GHashTable*)user_data, g_strdup(key), GINT_TO_POINTER(DISABLED_PLUGIN));
 }
@@ -194,7 +197,7 @@ JSValueRef dcore_get_plugins(const char* app_name)
 }
 
 
-void create_strv(gpointer key, gpointer value, gpointer user_data)
+void create_strv(gpointer key G_GNUC_UNUSED, gpointer value, gpointer user_data)
 {
     char* pos = strchr((char*)value, ':');
     char* plugin_name = g_strdup(pos + 1);
@@ -240,7 +243,7 @@ void dcore_enable_plugin(char const* id, gboolean value)
 void trans_to_js_array(char** strv, gsize length, JSObjectRef json)
 {
     JSContextRef ctx = get_global_context();
-    for (int i = 0; strv[i] != NULL; ++i)
+    for (guint i = 0; strv[i] != NULL || i < length; ++i)
         json_array_insert(json, i, jsvalue_from_cstr(ctx, strv[i]));
 }
 
@@ -364,4 +367,3 @@ gboolean dcore_open_browser(char const* origin_uri)
 
     return launch_result;
 }
-

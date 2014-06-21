@@ -264,6 +264,12 @@ static JSValueRef __%(name)s__ (JSContextRef noused_context,
                             const JSValueRef arguments[],
                             JSValueRef *exception)
 {
+    (void)noused_context;
+    (void)function;
+    (void)thisObject;
+    (void)argumentCount;
+    (void)arguments;
+    (void)exception;
     JSContextRef context = get_global_context();
     gboolean _has_fatal_error = FALSE;
     JSValueRef r = NULL;
@@ -294,6 +300,11 @@ gboolean %(module_name)s_test_wrap()
 #endif
 static JSValueRef __%(name)s__ (JSContextRef ctx, JSObjectRef f, JSObjectRef this, size_t c, const JSValueRef args[], JSValueRef* excp)
 {
+    (void)f;
+    (void)this;
+    (void)c;
+    (void)args;
+    (void)excp;
 #ifdef __DUI_DEBUG
     g_timeout_add(3000, (GSourceFunc)%(module_name)s_test_wrap, NULL);
 #endif

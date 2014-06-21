@@ -1,10 +1,10 @@
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
 #include <JavaScriptCore/JSObjectRef.h>
 #include <JavaScriptCore/JSStringRef.h>
 #include <string.h>
 #include <glib.h>
+#include <gio/gio.h>
 
+#include "utils.h"
 #include "dbus_introspect.h"
 #include "dbus_object_info.h"
 #include "dbus_js_convert.h"
@@ -12,13 +12,13 @@
 
 void dbus_object_info_free(struct DBusObjectInfo* info);
 
-static GHashTable *__sig_info_hash = NULL; // hash of (path:ifc:sig_name  ---> (hash of callbackid---> *SignalInfo))
+static GHashTable *__sig_callback_hash = NULL; // hash of (path:ifc:sig_name@unique_name  ---> (hash of callbackid---> callback))
 static GHashTable *__objs_cache = NULL;
 
 void reset_dbus_infos()
 {
-    if (__sig_info_hash) {
-        g_hash_table_remove_all(__sig_info_hash);
+    if (__sig_callback_hash) {
+        g_hash_table_remove_all(__sig_callback_hash);
     }
     if (__objs_cache) {
         g_hash_table_remove_all(__objs_cache);
@@ -28,20 +28,17 @@ void reset_dbus_infos()
 typedef int SIGNAL_CALLBACK_ID;
 
 struct SignalInfo {
-    const char* name;
-    GSList* signatures;
-    const char* path;
-    const char* iface;
     JSObjectRef callback;
+    GVariant* body;
 };
 struct AsyncInfo {
     JSObjectRef on_ok;
     JSObjectRef on_error;
-    GSList* signatures;
+    GDBusConnection* connection;
 };
 
 struct ObjCacheKey {
-    DBusGConnection* connection;
+    GDBusConnection* connection;
     const char* bus_name;
     const char* path;
     const char* iface;
@@ -52,6 +49,7 @@ guint key_hash(struct ObjCacheKey* key)
     return g_str_hash(key->bus_name) + g_str_hash(key->path) +
         g_str_hash(key->iface) + g_direct_hash(key->connection);
 }
+
 guint key_equal(struct ObjCacheKey* a, struct ObjCacheKey* b)
 {
     char* a_str = g_strdup_printf("%s%s%s%p",
@@ -64,85 +62,97 @@ guint key_equal(struct ObjCacheKey* a, struct ObjCacheKey* b)
     return ret;
 }
 
-void handle_signal_callback(gpointer no_used_key, struct SignalInfo* info, DBusMessage *msg)
+gboolean handle_signal_callback(struct SignalInfo* info)
 {
-    DBusMessageIter iter;
-    dbus_message_iter_init(msg, &iter);
-
-    int num = g_slist_length(info->signatures);
-    JSValueRef *params = g_new(JSValueRef, num);
-    for (int i=0; i<num; i++) {
-	params[i] = dbus_to_js(get_global_context(), &iter);
-	if (!dbus_message_iter_next(&iter)) {
-	}
-    }
     g_assert(info->callback != NULL);
-    JSObjectCallAsFunction(get_global_context(),
-	    info->callback, NULL,
-	    num, params, NULL);
-    g_free(params);
+
+    if (info->body == NULL) {
+        JSObjectCallAsFunction(get_global_context(), info->callback, NULL, 0, NULL, NULL);
+    } else {
+	int num = g_variant_n_children(info->body);
+
+	JSValueRef *params = g_new(JSValueRef, num);
+	for (int i=0; i<num; i++) {
+	    GVariant* item = g_variant_get_child_value(info->body, i);
+	    params[i] = dbus_to_js(get_global_context(), item);
+	    g_variant_unref(item);
+	}
+	JSObjectCallAsFunction(get_global_context(), info->callback, NULL, num, params, NULL);
+
+	g_free(params);
+	g_variant_unref(info->body);
+    }
+    g_free(info);
+    return FALSE;
 }
 
-DBusHandlerResult watch_signal(DBusConnection* connection, DBusMessage *msg,
-        void *no_use)
+GDBusMessage* watch_signal(GDBusConnection* connection, GDBusMessage *msg, gboolean incoming, gpointer no_use G_GNUC_UNUSED)
 {
-    if (dbus_message_get_type(msg) != DBUS_MESSAGE_TYPE_SIGNAL)
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+    if (!incoming)
+        return msg;
+
+    if (g_dbus_message_get_message_type(msg)  != G_DBUS_MESSAGE_TYPE_SIGNAL) {
+        return msg;
+    }
+
+    if (__sig_callback_hash == NULL)
+        return msg;
 
 
-    const char* iface = dbus_message_get_interface(msg);
-    const char* s_name = dbus_message_get_member(msg);
-    const char* path = dbus_message_get_path(msg);
+    const char* iface = g_dbus_message_get_interface(msg);
+    const char* s_name = g_dbus_message_get_member(msg);
+    const char* path = g_dbus_message_get_path(msg);
 
-    char* key = g_strdup_printf("%s%s%s", path, iface, s_name);
-    GHashTable* cbs_info  = g_hash_table_lookup(__sig_info_hash, key);
+    char* key = g_strdup_printf("%s:%s:%s@%s", path, iface, s_name, g_dbus_connection_get_unique_name(connection));
+    GHashTable* cbs_info  = g_hash_table_lookup(__sig_callback_hash, key);
     g_free(key);
 
     if (cbs_info == NULL) {
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+        return msg;
     } else {
-	g_hash_table_foreach(cbs_info, (GHFunc)handle_signal_callback, msg);
-        return DBUS_HANDLER_RESULT_HANDLED;
+        GHashTableIter iter;
+        g_hash_table_iter_init(&iter, cbs_info);
+        JSObjectRef callback;
+
+        while (g_hash_table_iter_next(&iter, NULL, (gpointer)&callback)) {
+            struct SignalInfo* sig_info  = g_new0(struct SignalInfo, 1);
+            GVariant* body = g_dbus_message_get_body(msg);
+            sig_info->callback =callback;
+            if (body) {
+                sig_info->body= g_variant_ref(body);
+            }
+            g_main_context_invoke(NULL, (GSourceFunc)handle_signal_callback, sig_info);
+        }
+
+        return msg;
     }
 }
 
 
-PRIVATE void signal_info_free(struct SignalInfo* sig_info)
-{
-    g_assert(sig_info != NULL);
-    if (sig_info->callback) {
-        JSValueUnprotect(get_global_context(), sig_info->callback);
-    }
-    g_free(sig_info);
-}
-
-SIGNAL_CALLBACK_ID add_signal_callback(JSContextRef ctx, struct DBusObjectInfo *info,
-        struct Signal *sig, JSObjectRef func)
+SIGNAL_CALLBACK_ID add_signal_callback(struct DBusObjectInfo *info, struct Signal *sig, JSObjectRef func)
 {
     g_assert(sig != NULL);
     g_assert(func != NULL);
 
-    if (__sig_info_hash == NULL) {
-        __sig_info_hash = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, (GDestroyNotify)g_hash_table_destroy);
+    if (__sig_callback_hash == NULL) {
+        __sig_callback_hash = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, (GDestroyNotify)g_hash_table_destroy);
     }
-    char* key = g_strdup_printf("%s%s%s", info->path, info->iface, sig->name);
 
-    GHashTable *cbs = g_hash_table_lookup(__sig_info_hash, key);
+    char* key = g_strdup_printf("%s:%s:%s@%s", info->path, info->iface, sig->name, g_dbus_connection_get_unique_name(info->connection));
+
+    g_debug("add signal callback key: %s", key);
+    GHashTable *cbs = g_hash_table_lookup(__sig_callback_hash, key);
     if (cbs == NULL) {
-	cbs = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)signal_info_free);
-	g_hash_table_insert(__sig_info_hash, key, cbs);
+        cbs = g_hash_table_new_full(g_direct_hash, g_direct_equal, NULL, (GDestroyNotify)js_value_unprotect);
+        g_hash_table_insert(__sig_callback_hash, key, cbs);
+    } else {
+        g_free(key);
     }
 
-    struct SignalInfo* sig_info = g_new0(struct SignalInfo, 1);
-    sig_info->name = sig->name;
-    sig_info->signatures = sig->signature;
-    sig_info->path = info->path;
-    sig_info->iface = info->iface;
-    sig_info->callback = func;
-    JSValueProtect(ctx, func);
-
+    js_value_protect(func);
     SIGNAL_CALLBACK_ID id = (SIGNAL_CALLBACK_ID)GPOINTER_TO_INT(func);
-    g_hash_table_insert(cbs, GINT_TO_POINTER((int)id), sig_info);
+    g_debug("%u", id);
+    g_hash_table_insert(cbs, GINT_TO_POINTER((int)id), func);
     return id;
 }
 
@@ -150,21 +160,17 @@ SIGNAL_CALLBACK_ID add_signal_callback(JSContextRef ctx, struct DBusObjectInfo *
 
 static
 JSValueRef signal_connect(JSContextRef ctx,
-                            JSObjectRef function,
-                            JSObjectRef this,
-                            size_t argumentCount,
-                            const JSValueRef arguments[],
-                            JSValueRef *exception)
+                          JSObjectRef function G_GNUC_UNUSED,
+                          JSObjectRef this,
+                          size_t argumentCount,
+                          const JSValueRef arguments[],
+                          JSValueRef *exception)
 {
     if (argumentCount != 2 ) {
         js_fill_exception(ctx, exception, "connect must have two params");
         return NULL;
     }
     struct DBusObjectInfo* obj_info = JSObjectGetPrivate(this);
-
-    if (__sig_info_hash == NULL) {
-        dbus_connection_add_filter(obj_info->connection, watch_signal, NULL, NULL);
-    }
 
     if (!JSValueIsString(ctx, arguments[0])) {
         js_fill_exception(ctx, exception, "the first params must the signal name");
@@ -174,37 +180,40 @@ JSValueRef signal_connect(JSContextRef ctx,
     char* s_name = jsvalue_to_cstr(ctx, arguments[0]);
     struct Signal *signal = g_hash_table_lookup(obj_info->signals, s_name);
     if (signal == NULL) {
-        js_fill_exception(ctx, exception, "the interface hasn't this signal");
-        return NULL;
+        char* desc = g_strdup_printf("dbus(\"%s:%s:%s\") hasn't signal \"%s\"",
+                                     obj_info->name,
+                                     obj_info->path,
+                                     obj_info->iface,
+                                     s_name);
+        js_fill_exception(ctx, exception, desc);
+        g_free(desc);
+        goto errout;
     }
-
-
-    char* rule = g_strdup_printf("eavesdrop=true,type=signal,interface=%s,member=%s",
-            obj_info->iface, s_name);
-    dbus_bus_add_match(obj_info->connection, rule, NULL);
-    dbus_connection_flush(obj_info->connection);
-    g_free(rule);
-    g_free(s_name);
-
 
     JSObjectRef callback = JSValueToObject(ctx, arguments[1], NULL);
     if (!JSObjectIsFunction(ctx, callback)) {
         js_fill_exception(ctx, exception, "the params two must be an function!");
-        return NULL;
+        goto errout;
     }
 
-    SIGNAL_CALLBACK_ID id = add_signal_callback(ctx, obj_info, signal, callback);
+    SIGNAL_CALLBACK_ID id = add_signal_callback(obj_info, signal, callback);
     if (id == -1) {
         js_fill_exception(ctx, exception, "you have aleady watch the signal with this callback?");
-        return NULL;
+        goto errout;
     }
+    add_watch(obj_info->connection, obj_info->path, obj_info->iface, s_name);
+    g_free(s_name);
 
     return JSValueMakeNumber(ctx, id);
+
+errout:
+    g_free(s_name);
+    return NULL;
 }
 
 static
 JSValueRef signal_disconnect(JSContextRef ctx,
-                            JSObjectRef function,
+                            JSObjectRef function G_GNUC_UNUSED,
                             JSObjectRef this,
                             size_t argumentCount,
                             const JSValueRef arguments[],
@@ -213,33 +222,37 @@ JSValueRef signal_disconnect(JSContextRef ctx,
     struct DBusObjectInfo* info = JSObjectGetPrivate(this);
 
     if (argumentCount != 2) {
-	js_fill_exception(ctx, exception, "Disconnet_signal need tow paramters!");
+        js_fill_exception(ctx, exception, "Disconnet_signal need tow paramters!");
+        return NULL;
     }
 
     char* sig_name = jsvalue_to_cstr(ctx, arguments[0]);
-    char* key = g_strdup_printf("%s%s%s", info->path, info->iface, sig_name);
+    char* key = g_strdup_printf("%s:%s:%s@%s", info->path, info->iface, sig_name, g_dbus_connection_get_unique_name(info->connection));
+    g_debug("remove signal callback: %s", key);
     g_free(sig_name);
-    GHashTable *cbs = g_hash_table_lookup(__sig_info_hash, key);
+    GHashTable *cbs = g_hash_table_lookup(__sig_callback_hash, key);
     g_free(key);
 
     if (cbs == NULL) {
-	js_fill_exception(ctx, exception, "This signal hasn't connected!");
-	return NULL;
+        g_debug("no callback");
+        js_fill_exception(ctx, exception, "This signal hasn't connected!");
+        return NULL;
     }
-    SIGNAL_CALLBACK_ID cb_id = (SIGNAL_CALLBACK_ID)(int)JSValueToNumber(ctx, arguments[1], NULL);
+    SIGNAL_CALLBACK_ID cb_id = (SIGNAL_CALLBACK_ID)GPOINTER_TO_INT(arguments[1]);
+    g_debug("%u", cb_id);
     if (!g_hash_table_remove(cbs, GINT_TO_POINTER(cb_id))) {
-	js_fill_exception(ctx, exception, "This signal hasn't connected!");
-	return NULL;
+        js_fill_exception(ctx, exception, "This signal hasn't connected!");
+        return NULL;
     }
 
     return JSValueMakeNull(ctx);
 }
 static
 JSValueRef signal_emit(JSContextRef ctx,
-                            JSObjectRef function,
-                            JSObjectRef this,
-                            size_t argumentCount,
-                            const JSValueRef arguments[],
+                            JSObjectRef function G_GNUC_UNUSED,
+                            JSObjectRef this G_GNUC_UNUSED,
+                            size_t argumentCount G_GNUC_UNUSED,
+                            const JSValueRef arguments[] G_GNUC_UNUSED,
                             JSValueRef *exception)
 {
     /*obj_info;*/
@@ -250,35 +263,6 @@ JSValueRef signal_emit(JSContextRef ctx,
     return NULL;
 }
 
-
-void async_callback(DBusPendingCall *pending, void *user_data)
-{
-    DBusMessage *reply = dbus_pending_call_steal_reply(pending);
-
-    struct AsyncInfo *info = (struct AsyncInfo*) user_data;
-    if (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_ERROR) {
-        if (info->on_error != NULL)
-            JSObjectCallAsFunction(get_global_context(), info->on_error, NULL, 0, NULL, NULL);
-        dbus_message_unref(reply);
-        return;
-    }
-
-    DBusMessageIter iter;
-    dbus_message_iter_init(reply , &iter);
-
-    int num = g_slist_length(info->signatures);
-    JSValueRef *params = g_new(JSValueRef, num);
-    for (int i=0; i<num; i++) {
-        params[i] = dbus_to_js(get_global_context(), &iter);
-        if (!dbus_message_iter_next(&iter)) {
-        }
-    }
-    if (info->on_ok)
-        JSObjectCallAsFunction(get_global_context(), info->on_ok, NULL, num, params, NULL);
-    g_free(params);
-
-    dbus_message_unref(reply);
-}
 
 void async_info_free(struct AsyncInfo* info)
 {
@@ -291,69 +275,32 @@ void async_info_free(struct AsyncInfo* info)
     g_free(info);
 }
 
-void call_async(DBusConnection* con, DBusMessage *msg, GSList* sigs_out,
-        JSObjectRef ok_callback, JSObjectRef error_callback)
+void async_callback(GObject *source G_GNUC_UNUSED, GAsyncResult* res, struct AsyncInfo *info)
 {
-    DBusPendingCall *reply = NULL;
-    dbus_connection_send_with_reply(con, msg, &reply, -1);
-
-    if (reply != NULL) {
-        struct AsyncInfo *info = g_new0(struct AsyncInfo, 1);
-        if (error_callback) {
-            JSValueProtect(get_global_context(), error_callback);
-            info->on_error = error_callback;
-        }
-        if (ok_callback) {
-            JSValueProtect(get_global_context(), ok_callback);
-            info->on_ok = ok_callback;
-        }
-        info->signatures = sigs_out;
-
-        dbus_pending_call_set_notify(reply, async_callback, info, (DBusFreeFunction)async_info_free);
-        dbus_pending_call_unref(reply);
-    }
-}
-
-
-JSValueRef call_sync(JSContextRef ctx, DBusConnection* con,
-        DBusMessage *msg, GSList* sigs_out, JSValueRef* exception)
-{
-    g_slist_nth_data(sigs_out, 0);
-
-    g_assert(msg != NULL);
-    g_assert(con != NULL);
-
-    DBusMessage* reply = dbus_connection_send_with_reply_and_block(
-            con,
-            msg, -1, NULL);
-    //TODO: error handle
-    //
-
-    if (reply == NULL) {
-        js_fill_exception(ctx, exception, "dbus daemon faild call this function...");
-        return NULL;
+    GError* error = NULL;
+    GVariant* r = g_dbus_connection_call_finish(info->connection, res, &error);
+    if (error != NULL) {
+        if (info->on_error != NULL)
+            JSObjectCallAsFunction(get_global_context(), info->on_error, NULL, 0, NULL, NULL);
+        async_info_free(info);
+        return;
     } else {
-        if (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN) {
-            DBusMessageIter iter;
-            dbus_message_iter_init(reply, &iter);
+        int num = g_variant_n_children(r);
 
-            int num = g_slist_length(sigs_out);
-            if (num == 0) {
-                return JSValueMakeUndefined(ctx);
-            } else if (num == 1) {
-                return dbus_to_js(ctx, &iter);
-            } else {
-                JSValueRef args[num];
-                for (int i=0; i<num; i++) {
-                    args[i] = dbus_to_js(ctx, &iter);
-                    dbus_message_iter_next(&iter);
-                }
-                return JSObjectMakeArray(ctx, num, args, NULL);
-            }
-        } else {
-            g_warning("Faild call this function...");
-            return JSValueMakeUndefined(ctx);
+
+        JSValueRef *params = g_new(JSValueRef, num);
+        for (int i=0; i<num; i++) {
+            GVariant* item = g_variant_get_child_value(r, i);
+            params[i] = dbus_to_js(get_global_context(), item);
+            g_variant_unref(item);
         }
+        if (info->on_ok)
+            JSObjectCallAsFunction(get_global_context(), info->on_ok, NULL, num, params, NULL);
+
+        g_free(params);
+        g_variant_unref(r);
+        async_info_free(info);
+        return;
     }
 }
 
@@ -361,97 +308,88 @@ bool dynamic_set (JSContextRef ctx, JSObjectRef object,
         JSStringRef propertyName, JSValueRef jsvalue, JSValueRef* exception)
 {
     struct DBusObjectInfo* obj_info = JSObjectGetPrivate(object);
+    GError* error = NULL;
 
     char* prop_name = jsstring_to_cstr(ctx, propertyName);
     struct Property *p = g_hash_table_lookup(obj_info->properties, prop_name);
+
+    GVariantType* sig = g_variant_type_new(p->signature->data);
+    g_dbus_connection_call_sync(obj_info->connection, obj_info->name, obj_info->path, "org.freedesktop.DBus.Properties", "Set",
+            g_variant_new("(ssv)", obj_info->iface, prop_name, js_to_dbus(ctx, jsvalue, sig, exception)), NULL,
+            G_DBUS_CALL_FLAGS_NONE, -1, NULL, &error);
+    g_variant_type_free(sig);
     g_free(prop_name);
 
-    DBusMessage* msg = dbus_message_new_method_call(
-            obj_info->server,
-            obj_info->path,
-            "org.freedesktop.DBus.Properties",
-            "Set");
-    g_assert(msg != NULL);
-
-    DBusMessageIter iter;
-    dbus_message_iter_init_append(msg, &iter);
-
-    JSStringRef iface = JSStringCreateWithUTF8CString(obj_info->iface);
-    if (!js_to_dbus(ctx, JSValueMakeString(ctx, iface), &iter, "s", exception)) {
-        dbus_message_unref(msg);
+    if (error != NULL) {
+        char* err_str = g_strdup_printf("synamic_set:%s\n", error->message);
+        js_fill_exception(ctx, exception, err_str);
+        g_free(err_str);
+        g_error_free(error);
         return FALSE;
     }
-    JSStringRelease(iface);
-
-    if (!js_to_dbus(ctx, JSValueMakeString(ctx, propertyName), &iter, "s", exception)) {
-        dbus_message_unref(msg);
-        return FALSE;
-    }
-
-    DBusMessageIter v_iter;
-    dbus_message_iter_open_container(&iter, DBUS_TYPE_VARIANT,
-            g_slist_nth_data(p->signature, 0), &v_iter);
-    if (!js_to_dbus(ctx, jsvalue, &v_iter, g_slist_nth_data(p->signature, 0), exception)) {
-        dbus_message_unref(msg);
-        return FALSE;
-    }
-    dbus_message_iter_close_container(&iter, &v_iter);
-
-    GSList *tmp = NULL;
-    tmp = g_slist_append(tmp, "b");
-    if (call_sync(ctx, obj_info->connection, msg, tmp, exception) == NULL) {
-        dbus_message_unref(msg);
-        g_slist_free(tmp);
-        js_fill_exception(ctx, exception, "can't set this property");
-        return FALSE;
-    } else {
-        dbus_message_unref(msg);
-        g_slist_free(tmp);
-        return TRUE;
-    }
+    return TRUE;
 }
+
+bool has_property(JSContextRef ctx, JSObjectRef object, JSStringRef propertyName)
+{
+    struct DBusObjectInfo* obj_info = JSObjectGetPrivate(object);
+    char* prop_name = jsstring_to_cstr(ctx, propertyName);
+    GDBusProxy* proxy = g_dbus_proxy_new_sync(obj_info->connection, G_DBUS_PROXY_FLAGS_NONE, NULL,
+            obj_info->name, obj_info->path, obj_info->iface,
+            NULL, NULL);
+
+    gboolean has = FALSE;
+
+    gchar** names = g_dbus_proxy_get_cached_property_names(proxy);
+    if (names != NULL) {
+        for (guint i=0; i < g_strv_length(names); i++) {
+            if (g_strcmp0(names[i], prop_name) == 0) {
+                has = TRUE;
+                break;
+            }
+        }
+        g_strfreev(names);
+    }
+    g_free(prop_name);
+    return has;
+}
+
 
 JSValueRef dynamic_get (JSContextRef ctx,
         JSObjectRef object, JSStringRef propertyName, JSValueRef* exception)
 {
     struct DBusObjectInfo* obj_info = JSObjectGetPrivate(object);
+    GError* error = NULL;
 
+    GVariantType* sig_out = g_variant_type_new("(v)");
     char* prop_name = jsstring_to_cstr(ctx, propertyName);
-    struct Property *p = g_hash_table_lookup(obj_info->properties, prop_name);
+
+    GVariant * v = g_dbus_connection_call_sync(obj_info->connection, obj_info->name, obj_info->path, "org.freedesktop.DBus.Properties", "Get",
+            g_variant_new("(ss)", obj_info->iface, prop_name), sig_out,
+            G_DBUS_CALL_FLAGS_NONE, -1, NULL, &error);
+
     g_free(prop_name);
+    g_variant_type_free(sig_out);
 
-    DBusMessage* msg = dbus_message_new_method_call(
-            obj_info->server,
-            obj_info->path,
-            "org.freedesktop.DBus.Properties",
-            "Get");
-    g_assert(msg != NULL);
 
-    DBusMessageIter iter;
-    dbus_message_iter_init_append(msg, &iter);
-
-    JSStringRef iface = JSStringCreateWithUTF8CString(obj_info->iface);
-    if (!js_to_dbus(ctx, JSValueMakeString(ctx, iface), &iter, "s", exception)) {
-        dbus_message_unref(msg);
+    if (error != NULL) {
+        char* err_str = g_strdup_printf("dyanmic_get:%s\n", error->message);
+        js_fill_exception(ctx, exception, err_str);
+        g_free(err_str);
+        g_error_free(error);
         return NULL;
+    } else {
+        GVariant* arg0 = g_variant_get_child_value(v, 0);
+        JSValueRef ret = dbus_to_js(ctx,  arg0);
+        g_variant_unref(arg0);
+        g_variant_unref(v);
+        return ret;
     }
-    JSStringRelease(iface);
-
-    if (!js_to_dbus(ctx, JSValueMakeString(ctx, propertyName), &iter, "s", exception)) {
-        dbus_message_unref(msg);
-        return NULL;
-    }
-
-    return call_sync(ctx, obj_info->connection, msg, p->signature, exception);
 }
 
+
 static
-JSValueRef dynamic_function(JSContextRef ctx,
-                            JSObjectRef function,
-                            JSObjectRef this,
-                            size_t argumentCount,
-                            const JSValueRef arguments[],
-                            JSValueRef *exception)
+JSValueRef dynamic_function(JSContextRef ctx, JSObjectRef function, JSObjectRef this, size_t argumentCount, const JSValueRef arguments[], JSValueRef *exception)
 {
     JSValueRef ret;
     gboolean async = TRUE;
@@ -461,14 +399,13 @@ JSValueRef dynamic_function(JSContextRef ctx,
     struct DBusObjectInfo* obj_info = JSObjectGetPrivate(this);
 
     JSStringRef name_str = JSStringCreateWithUTF8CString("name");
-    JSValueRef js_func_name = JSObjectGetProperty(ctx, function,
-            name_str, NULL);
+    JSValueRef js_func_name = JSObjectGetProperty(ctx, function, name_str, NULL);
     JSStringRelease(name_str);
 
     char* func_name = jsvalue_to_cstr(ctx, js_func_name);
     if (g_str_has_suffix(func_name, "_sync")) {
-            async = FALSE;
-            func_name[strlen(func_name)-5] = '\0';
+        async = FALSE;
+        func_name[strlen(func_name)-5] = '\0';
     }
 
     struct Method *m = g_hash_table_lookup(obj_info->methods, func_name);
@@ -505,45 +442,62 @@ JSValueRef dynamic_function(JSContextRef ctx,
             return NULL;
         }
     }
-    GSList* sigs_out = m->signature_out;
 
-    DBusMessage* msg = dbus_message_new_method_call(
-            obj_info->server,
-            obj_info->path,
-            obj_info->iface,
-            func_name);
-    g_free(func_name);
-    g_assert(msg != NULL);
 
-    DBusMessageIter iter;
-    dbus_message_iter_init_append(msg, &iter);
-
+    GVariantBuilder args;
+    g_variant_builder_init(&args, G_VARIANT_TYPE_TUPLE);
     for (guint i=0; i<argumentCount; i++) {
-        if (!js_to_dbus(ctx, arguments[i],
-                    &iter, g_slist_nth_data(sigs_in, i),
-                    exception)) {
-            g_warning("jsvalue to dbus don't match at pos:%d", i);
-            dbus_message_unref(msg);
-            return NULL;
-        }
+        GVariantType* sig = g_variant_type_new(g_slist_nth_data(sigs_in, i));
+        GVariant* v = js_to_dbus(ctx, arguments[i], sig, exception);
+        g_variant_builder_add_value(&args, v);
+        g_variant_type_free(sig);
     }
+
+    GVariantType* sigs_out = gslit_to_varianttype(m->signature_out);
     if (async) {
         ret = JSValueMakeUndefined(ctx);
-        call_async(obj_info->connection, msg, sigs_out, ok_callback, error_callback);
+
+        struct AsyncInfo *info = g_new0(struct AsyncInfo, 1);
+        info->connection = obj_info->connection;
+        if (error_callback) {
+            JSValueProtect(get_global_context(), error_callback);
+            info->on_error = error_callback;
+        }
+        if (ok_callback) {
+            JSValueProtect(get_global_context(), ok_callback);
+            info->on_ok = ok_callback;
+        }
+        g_dbus_connection_call(obj_info->connection, obj_info->name, obj_info->path, obj_info->iface, func_name,
+                g_variant_builder_end(&args), sigs_out,
+                G_DBUS_CALL_FLAGS_NONE, -1, NULL,
+                (GAsyncReadyCallback)async_callback, info);
     } else {
-        ret = call_sync(ctx, obj_info->connection, msg, sigs_out, exception);
+        GError* error = NULL;
+        GVariant * v = g_dbus_connection_call_sync(obj_info->connection, obj_info->name, obj_info->path, obj_info->iface, func_name,
+                g_variant_builder_end(&args), sigs_out,
+                G_DBUS_CALL_FLAGS_NONE, -1, NULL, &error);
+        if (error != NULL) {
+            js_fill_exception(ctx, exception, error->message);
+            g_error_free(error);
+            return NULL;
+        }
+        if (g_variant_n_children(v) == 1) {
+            GVariant* arg0 = g_variant_get_child_value(v, 0);
+            ret = dbus_to_js(ctx, arg0);
+            g_variant_unref(arg0);
+        } else {
+            ret = dbus_to_js(ctx, v);
+        }
+        g_variant_unref(v);
     }
+    g_variant_type_free(sigs_out);
 
-
-
-    if (msg != NULL) {
-        dbus_message_unref(msg);
-    }
+    g_free(func_name);
 
     return ret;
 }
 
-JSClassRef get_cache_class(struct DBusObjectInfo* obj_info)
+JSClassRef get_cache_class(struct DBusObjectInfo* obj_info G_GNUC_UNUSED)
 {
     //TODO: build cache;
     return NULL;
@@ -559,8 +513,7 @@ void obj_finalize(JSObjectRef obj)
 
 JSObjectRef build_dbus_object(JSContextRef ctx, struct ObjCacheKey *key)
 {
-    struct DBusObjectInfo* obj_info = build_object_info(key->connection,
-            key->bus_name, key->path, key->iface);
+    struct DBusObjectInfo* obj_info = build_object_info(key->connection, key->bus_name, key->path, key->iface);
 
     if (obj_info == NULL) //can't build object info
         return NULL;
@@ -603,8 +556,7 @@ JSObjectRef build_dbus_object(JSContextRef ctx, struct ObjCacheKey *key)
     }
 
     GString *class_name = g_string_new(NULL);
-    g_string_printf(class_name, "%s_%s_%s",
-            obj_info->server, obj_info->path, obj_info->iface);
+    g_string_printf(class_name, "%s_%s_%s", obj_info->name, obj_info->path, obj_info->iface);
     JSClassDefinition class_def = {
         0,
         kJSClassAttributeNone,
@@ -614,9 +566,9 @@ JSObjectRef build_dbus_object(JSContextRef ctx, struct ObjCacheKey *key)
         static_funcs,
         NULL,
         NULL,//obj_finalize,
-        NULL,
-        NULL,
-        NULL,
+        has_property,
+        dynamic_get,
+        dynamic_set,
         NULL,
         NULL,
         NULL,
@@ -651,10 +603,14 @@ JSObjectRef build_dbus_object(JSContextRef ctx, struct ObjCacheKey *key)
     return obj_info->obj;
 }
 
-JSObjectRef get_dbus_object(
-        JSContextRef ctx, DBusGConnection* con,
-        const char* bus_name, const char* path, const char* iface)
+JSObjectRef get_dbus_object(JSContextRef ctx, GDBusConnection* con, const char* bus_name, const char* path, const char* iface, JSValueRef* exception)
 {
+    if (bus_name == NULL || path == NULL ||  iface == NULL) {
+        char* err_str = g_strdup_printf("can't build dbus object by %s:%s:%s\n", bus_name, path, iface);
+        js_fill_exception(ctx, exception, err_str);
+        g_free(err_str);
+        return NULL;
+    }
     if (__objs_cache == NULL) {
         __objs_cache = g_hash_table_new_full(
                 (GHashFunc)key_hash,
@@ -672,7 +628,20 @@ JSObjectRef get_dbus_object(
     JSObjectRef obj = g_hash_table_lookup(__objs_cache, &key);
     if (obj == NULL) {
         obj = build_dbus_object(ctx, &key);
+        if (obj == NULL) {
+            js_fill_exception(ctx, exception, "can't build_dbus_object");
+        }
     }
     return obj;
+}
+
+
+void add_watch(GDBusConnection* con, const char* path, const char* ifc, const char* member)
+{
+    GDBusProxy* proxy = g_dbus_proxy_new_sync(con, G_DBUS_PROXY_FLAGS_NONE, NULL, "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", NULL, NULL);
+    char* rule = g_strdup_printf("eavesdrop=true,type=signal,path=%s,interface=%s,member=%s", path, ifc, member);
+    g_dbus_proxy_call_sync(proxy, "AddMatch", g_variant_new("(s)", rule),  G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL);
+    g_free(rule);
+    g_object_unref(proxy);
 }
 

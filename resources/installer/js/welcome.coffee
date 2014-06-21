@@ -341,7 +341,7 @@ class Keyboard extends Widget
 
     init_dbus_query: ->
         try
-            @search_bus = DCore.DBus.session_object("com.deepin.api.Search", "/com/deepin/api/Search", "com.deepin.api.Search")
+            @search_bus = DCore.DBus.session_object("com.deepin.daemon.Search", "/com/deepin/daemon/Search", "com.deepin.daemon.Search")
             dict = {}
             for item in @layouts
                 dict[item] = DCore.Installer.get_layout_description(item)

@@ -42,6 +42,12 @@ void js_fill_exception(JSContextRef ctx, JSValueRef* excp, const char* format, .
 }
 
 
+JSValueRef jsvalue_from_number(JSContextRef ctx, double number)
+{
+    return JSValueMakeNumber(ctx, number);
+}
+
+
 JSValueRef jsvalue_from_cstr(JSContextRef ctx, const char* str)
 {
     JSStringRef jsstr = JSStringCreateWithUTF8CString(str);
@@ -57,6 +63,7 @@ JSValueRef jsvalue_null()
 
 char* jsstring_to_cstr(JSContextRef ctx, JSStringRef js_string)
 {
+    (void)ctx;
   size_t len = JSStringGetMaximumUTF8CStringSize(js_string);
   char *c_str = g_new(char, len);
   JSStringGetUTF8CString(js_string, c_str, len);
@@ -84,5 +91,25 @@ gboolean jsvalue_instanceof(JSContextRef ctx, JSValueRef test, const char *klass
                          NULL);
   JSStringRelease(property);
   return JSValueIsInstanceOfConstructor(ctx, test, ctor, NULL);
+}
+
+
+PRIVATE gboolean _js_value_unprotect(JSValueRef v)
+{
+    JSValueUnprotect(get_global_context(), v);
+    return FALSE;
+}
+void js_value_unprotect(JSValueRef v)
+{
+    g_main_context_invoke(NULL, (GSourceFunc)_js_value_unprotect, (gpointer)v);
+}
+PRIVATE gboolean _js_value_protect(JSValueRef v)
+{
+    JSValueProtect(get_global_context(), v);
+    return FALSE;
+}
+void js_value_protect(JSValueRef v)
+{
+    g_main_context_invoke(NULL, (GSourceFunc)_js_value_protect, (gpointer)v);
 }
 

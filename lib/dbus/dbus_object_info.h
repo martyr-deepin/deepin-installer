@@ -1,15 +1,14 @@
 #ifndef __DBUS_OBJECT_INFO__
 #define __DBUS_OBJECT_INFO__
 #include <glib.h>
-#include <dbus/dbus.h>
 #include <JavaScriptCore/JSBase.h>
 #include <JavaScriptCore/JSObjectRef.h>
 
 struct DBusObjectInfo {
-    DBusConnection* connection;
+    GDBusConnection* connection;
     JSClassRef klass;
     JSObjectRef obj;
-    char* server;
+    char* name;
     char* path;
     char* iface;
 
@@ -38,8 +37,7 @@ struct Property {
 
 
 struct DBusObjectInfo* 
-build_object_info(DBusGConnection* con, const char *server,
-        const char* path, const char *interface);
+build_object_info(GDBusConnection* con, const char *name, const char* path, const char *interface);
 void dbus_object_info_free(struct DBusObjectInfo* info);
 
 #endif

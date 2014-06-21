@@ -11,6 +11,7 @@ struct _ObjectData {
 static
 void object_init(JSContextRef ctx, JSObjectRef object)
 {
+    (void)ctx;
     struct _ObjectData* data = JSObjectGetPrivate(object);
     g_assert(data != NULL);
     if (data->ref) {
@@ -43,7 +44,7 @@ JSClassRef obj_class()
             NULL, //static value
             NULL, //static function
 
-            object_init, 
+            object_init,
             object_finlize,
             NULL,
             NULL,
@@ -69,7 +70,9 @@ JSObjectRef create_nobject(JSContextRef ctx, void* obj, NObjectRef ref, NObjectU
     data->core = obj;
     data->ref = ref;
     data->unref = unref;
+    GRAB_CTX();
     JSObjectRef r = JSObjectMake(ctx, obj_class(), data);
+    UNGRAB_CTX();
     return r;
 }
 
@@ -90,12 +93,16 @@ void* object_to_core(JSObjectRef object)
 
 void* jsvalue_to_nobject(JSContextRef ctx, JSValueRef value)
 {
+    GRAB_CTX();
     if (JSValueIsObjectOfClass(ctx, value, obj_class())) {
         JSObjectRef obj = JSValueToObject(ctx, value, NULL);
         void* core = object_to_core(obj);
+	UNGRAB_CTX();
         return core;
     } else {
+	UNGRAB_CTX();
         g_warning("This JSValueRef is not an DeepinObject!!");
         return NULL;
     }
 }
+

@@ -8,9 +8,8 @@
 char* jsstring_to_cstr(JSContextRef ctx, JSStringRef js_string);
 char* jsvalue_to_cstr(JSContextRef ctx, JSValueRef js_value);
 
-gboolean js_to_dbus(JSContextRef ctx, const JSValueRef jsvalue, 
-        DBusMessageIter *iter, const char* sig, JSValueRef *exception);
+GVariant* js_to_dbus(JSContextRef ctx, const JSValueRef jsvalue, const GVariantType* sig, JSValueRef *exception);
+JSValueRef dbus_to_js(JSContextRef ctx, GVariant *);
 
-JSValueRef dbus_to_js(JSContextRef ctx, DBusMessageIter *iter);
-
+GVariantType* gslit_to_varianttype(GSList* l);
 #endif

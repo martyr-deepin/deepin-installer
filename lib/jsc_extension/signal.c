@@ -23,6 +23,7 @@
 
 static GHashTable* signals = NULL;
 
+
 typedef struct {
     JSObjectRef cb;
     JSValueRef arg;
@@ -33,8 +34,10 @@ gboolean _interal_call(Call* call)
     JSValueRef js_args[1];
     js_args[0] = call->arg;
 
-    JSObjectCallAsFunction(get_global_context(), call->cb, NULL, 1, js_args, NULL);
-    unprotect(call->arg);
+
+    JSContextRef ctx = get_global_context();
+    JSObjectCallAsFunction(ctx, call->cb, NULL, 1, js_args, NULL);
+    JSValueUnprotect(ctx, call->arg);
     g_free(call);
     return FALSE;
 }
@@ -53,8 +56,8 @@ void js_post_message(const char* name, JSValueRef json)
     if (cb != NULL) {
         Call* call = g_new0(Call, 1);
         call->cb = cb;
-        JSValueProtect(ctx, json);
         call->arg = json;
+	JSValueProtect(ctx, json);
         g_main_context_invoke(NULL, (GSourceFunc)_interal_call, call);
     } else {
         g_warning("signal %s has not connected!\n", name);
@@ -86,6 +89,7 @@ void js_post_signal(const char* signal)
 {
     js_post_message_simply(signal, NULL);
 }
+
 
 void unprotect(gpointer data)
 {

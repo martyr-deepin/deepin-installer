@@ -1,495 +1,226 @@
-#include <dbus/dbus.h>
 #include "dbus_js_convert.h"
 #include "jsextension.h"
 
-#ifndef __DBUSBASIC_VALUE__
-typedef struct
+gboolean filter_function_child(JSContextRef ctx, JSValueRef jsvalue, int i)
 {
-    dbus_uint32_t first32;  /**< first 32 bits in the 8 bytes (beware endian issues) */
-    dbus_uint32_t second32; /**< second 32 bits in the 8 bytes (beware endian issues) */
-} DBus8ByteStruct;
-
-typedef union
-{
-    unsigned char bytes[8]; /**< as 8 individual bytes */
-    dbus_int16_t  i16;   /**< as int16 */
-    dbus_uint16_t u16;   /**< as int16 */
-    dbus_int32_t  i32;   /**< as int32 */
-    dbus_uint32_t u32;   /**< as int32 */
-    dbus_bool_t   bool_val; /**< as boolean */
-#ifdef DBUS_HAVE_INT64
-    dbus_int64_t  i64;   /**< as int64 */
-    dbus_uint64_t u64;   /**< as int64 */
-#endif
-    DBus8ByteStruct eight; /**< as 8-byte struct */
-    double dbl;          /**< as double */
-    unsigned char byt;   /**< as byte */
-    char *str;           /**< as char* (string, object path or signature) */
-    int fd;              /**< as Unix file descriptor */
-} DBusBasicValue;
-#endif
-
-
-#define CASE_STRING \
-    case DBUS_TYPE_STRING:\
-    case DBUS_TYPE_OBJECT_PATH:\
-    case DBUS_TYPE_SIGNATURE:\
-
-#define CASE_NUMBER \
-    case DBUS_TYPE_BYTE:\
-    case DBUS_TYPE_INT16:\
-    case DBUS_TYPE_UINT16:\
-    case DBUS_TYPE_INT32:\
-    case DBUS_TYPE_UINT32:\
-    case DBUS_TYPE_INT64:\
-    case DBUS_TYPE_UINT64:\
-    case DBUS_TYPE_UNIX_FD:\
-
-#define OPEN_CONTAINER(iter, type, sig, sub_iter) do { \
-    if (!dbus_message_iter_open_container(iter, type, sig, sub_iter)) { \
-            dbus_free(sig);  \
-            g_warning("Not have enough memory!"); \
-            return FALSE; \
-    } \
-} while (0)
-#define CLOSE_CONTAINER(iter, sub_iter) do { \
-    dbus_message_iter_close_container(iter, sub_iter); \
-} while (0)
-
-const char* jsvalue_to_signature(JSContextRef ctx, JSValueRef jsvalue)
-{
-  switch (JSValueGetType(ctx, jsvalue))
-  {
-    case kJSTypeBoolean:
-      {
-          return DBUS_TYPE_BOOLEAN_AS_STRING;
-      }
-    case kJSTypeNumber:
-      {
-          return DBUS_TYPE_DOUBLE_AS_STRING;
-      }
-    case kJSTypeString:
-      {
-          return DBUS_TYPE_STRING_AS_STRING;
-      }
-    case kJSTypeObject:
-      {
-          return NULL;
-
-        /*if (jsvalue_instanceof(ctx, jsvalue, "Array"))*/
-        /*{*/
-          /*char *array_signature;*/
-
-          /*propnames = JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);*/
-          /*if (!jsarray_get_signature(ctx, jsvalue, propnames, &array_signature))*/
-          /*{ */
-            /*g_warning("Could not create array signature");*/
-            /*JSPropertyNameArrayRelease(propnames);*/
-            /*break;*/
-          /*}*/
-          /*signature = g_strdup_printf("a%s", array_signature);*/
-          /*g_free(array_signature);*/
-          /*JSPropertyNameArrayRelease(propnames);*/
-          /*break;*/
-        /*}*/
-
-        /*[> Default conversion is to dict <]*/
-        /*propnames = JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);*/
-        /*jsdict_get_signature(ctx, jsvalue, propnames, &dict_signature);*/
-        /*if (dict_signature != NULL)*/
-        /*{*/
-          /*signature = g_strdup_printf("a%s", dict_signature);*/
-          /*g_free(dict_signature);*/
-        /*}*/
-        /*JSPropertyNameArrayRelease(propnames);*/
-        /*break;*/
-      }
-
-    case kJSTypeUndefined:
-    case kJSTypeNull:
-    default:
-      g_warning("Signature lookup failed for unsupported type %i", JSValueGetType(ctx, jsvalue));
-      break;
-  }
-  return NULL;
+    JSObjectRef p =JSValueToObject(ctx, JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, NULL), NULL);
+    if (p == NULL) {
+        return FALSE;
+    }
+    return JSObjectIsFunction(ctx, p);
 }
 
-gboolean js_to_dbus(JSContextRef ctx, const JSValueRef jsvalue,
-    DBusMessageIter *iter, const char* sig, JSValueRef* exception)
+gboolean filter_array_child(JSContextRef ctx, JSPropertyNameArrayRef array, int index)
 {
-    DBusSignatureIter s_iter;
-    dbus_signature_iter_init(&s_iter, sig);
-
-    int type;
-    switch (type = dbus_signature_iter_get_current_type(&s_iter)) {
-        case DBUS_TYPE_BOOLEAN:
-            {
-                dbus_bool_t value = JSValueToBoolean(ctx, jsvalue);
-                if (!dbus_message_iter_append_basic(iter, type, (void*)&value)) {
-                    g_warning("signatuer:%c error!", type);
-                    return FALSE;
-                }  else {
-                    return TRUE;
-                }
-            }
-        case DBUS_TYPE_DOUBLE:
-            {
-                if (!JSValueIsNumber(ctx, jsvalue)) {
-                    js_fill_exception(ctx, exception, "jsvalue is not an number!");
-                    return FALSE;
-                }
-                double value = JSValueToNumber(ctx, jsvalue, NULL);
-                if (!dbus_message_iter_append_basic(iter, type, (void*)&value)) {
-                    g_warning("signatuer:%c error!", type);
-                    return FALSE;
-                } else {
-                    return TRUE;
-                }
-            }
-            CASE_NUMBER
-            {
-                if (!JSValueIsNumber(ctx, jsvalue)) {
-                    js_fill_exception(ctx, exception, "jsvalue is not an number!");
-                    return FALSE;
-                }
-                dbus_uint64_t value = JSValueToNumber(ctx, jsvalue, NULL);
-                if (!dbus_message_iter_append_basic(iter, type, (void*)&value)) {
-                    g_warning("signatuer:%c error!", type);
-                    return FALSE;
-                } else {
-                    return TRUE;
-                }
-            }
-            CASE_STRING
-            {
-                char* value = jsvalue_to_cstr(ctx, jsvalue);
-                if (value == NULL ||
-                        !dbus_message_iter_append_basic(iter, type, (void*)&value)) {
-                    g_free(value);
-                    js_fill_exception(ctx, exception, "jsvalue is not an string or memory not enough!");
-                    return FALSE;
-                } else {
-                    g_free(value);
-                    return TRUE;
-                }
-            }
-
-        case DBUS_TYPE_STRUCT:
-            {
-                if (!jsvalue_instanceof(ctx, jsvalue, "Array")) {
-                    js_fill_exception(ctx, exception, "jsvalue should an array");
-                    return FALSE;
-                }
-
-                JSPropertyNameArrayRef prop_names =
-                    JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);
-                int p_num = JSPropertyNameArrayGetCount(prop_names);
-                if (p_num == 0) {
-                    JSPropertyNameArrayRelease(prop_names);
-                    js_fill_exception(ctx, exception, "Struct at least have one element!");
-                    return FALSE;
-                }
-
-                DBusMessageIter sub_iter;
-                OPEN_CONTAINER(iter, type, NULL, &sub_iter);
-
-                DBusSignatureIter sub_s_iter;
-                dbus_signature_iter_recurse(&s_iter, &sub_s_iter);
-
-                for (int i=0; i<p_num; i++) {
-                    JSValueRef value = JSObjectGetProperty(ctx,
-                            (JSObjectRef)jsvalue,
-                            JSPropertyNameArrayGetNameAtIndex(prop_names, i),
-                            NULL);
-
-                    char *sig = dbus_signature_iter_get_signature(&sub_s_iter);
-                    if (!js_to_dbus(ctx, value, &sub_iter, sig, exception)) {
-                        js_fill_exception(ctx, exception, "Failed append struct with sig:%sTODO");
-                        dbus_free(sig);
-                        return FALSE;
-                    }
-                    dbus_free(sig);
-
-                    if (i != p_num-1 && !dbus_signature_iter_next(&sub_s_iter)) {
-                        JSPropertyNameArrayRelease(prop_names);
-                        CLOSE_CONTAINER(iter, &sub_iter);
-                        js_fill_exception(ctx, exception, "to many params filled to struct");
-                        return FALSE;
-                    }
-                }
-
-                if (dbus_signature_iter_next(&sub_s_iter)) {
-                    JSPropertyNameArrayRelease(prop_names);
-                    CLOSE_CONTAINER(iter, &sub_iter);
-                    js_fill_exception(ctx, exception, "need more params by this struct");
-                    return FALSE;
-                }
-                JSPropertyNameArrayRelease(prop_names);
-                CLOSE_CONTAINER(iter, &sub_iter);
-                return TRUE;
-            }
-        case DBUS_TYPE_ARRAY:
-            if (dbus_signature_iter_get_element_type(&s_iter) ==
-                    DBUS_TYPE_DICT_ENTRY) {
-
-                DBusSignatureIter dict_s_iter;
-                dbus_signature_iter_recurse(&s_iter, &dict_s_iter);
-                char *d_sig = dbus_signature_iter_get_signature(&dict_s_iter);
-
-                DBusMessageIter sub_iter;
-                OPEN_CONTAINER(iter, type, d_sig, &sub_iter);
-                dbus_free(d_sig);
-
-                JSPropertyNameArrayRef prop_names = JSObjectCopyPropertyNames(ctx,
-                        (JSObjectRef)jsvalue);
-                int p_num = JSPropertyNameArrayGetCount(prop_names);
-
-                DBusSignatureIter dict_sub_s_iter;
-                dbus_signature_iter_recurse(&dict_s_iter, &dict_sub_s_iter);
-
-                int key_type = dbus_signature_iter_get_current_type(&dict_sub_s_iter);
-                dbus_signature_iter_next(&dict_sub_s_iter);
-                char *val_sig = dbus_signature_iter_get_signature(&dict_sub_s_iter);
-
-
-                for (int i=0; i<p_num; i++) {
-                    DBusMessageIter dict_iter;
-                    OPEN_CONTAINER(&sub_iter, DBUS_TYPE_DICT_ENTRY,
-                            NULL, &dict_iter);
-
-                    JSStringRef key_str = JSPropertyNameArrayGetNameAtIndex(prop_names, i);
-
-                    //TODO: fetch key type
-                    switch (key_type) {
-                        CASE_STRING
-                        {
-                            char *value = jsstring_to_cstr(ctx, key_str);
-                            dbus_message_iter_append_basic(&dict_iter, key_type, (void*)&value);
-                            g_free(value);
-                            break;
-                        }
-                        case DBUS_TYPE_DOUBLE:
-                        {
-                            //TODO detect illegal number format
-                            JSValueRef excp;
-                            double value = JSValueToNumber(ctx,
-                                    JSValueMakeString(ctx, key_str), &excp);
-
-                            if (excp != NULL) {
-                                js_fill_exception(ctx, exception, "dict_entry's key must be an number to match the signature!");
-                                return FALSE;
-                            }
-
-                            dbus_message_iter_append_basic(&dict_iter, key_type,
-                                    (void*)&value);
-                            break;
-                        }
-                        CASE_NUMBER
-                        {
-                            JSValueRef excp;
-                            dbus_uint64_t value = JSValueToNumber(ctx,
-                                    JSValueMakeString(ctx, key_str), &excp);
-
-                            if (excp != NULL) {
-                                js_fill_exception(ctx, exception, "dict_entry's key must be an number to match the signature!");
-                                return FALSE;
-                            }
-
-                            dbus_message_iter_append_basic(&dict_iter, key_type,
-                                    (void*)&value);
-                            break;
-                        }
-                        default:
-                        {
-                            js_fill_exception(ctx, exception, "DICT_ENTRY's key must basic type, and you should not see this warning in javascript runtime");
-                            dbus_free(val_sig);
-                            JSPropertyNameArrayRelease(prop_names);
-                            CLOSE_CONTAINER(iter, &sub_iter);
-                            return FALSE;
-                        }
-                    }
-
-
-
-                    js_to_dbus(ctx,
-                            JSObjectGetProperty(ctx, (JSObjectRef)jsvalue,
-                                key_str, NULL),
-                            &dict_iter, val_sig,
-                            exception);
-
-                    CLOSE_CONTAINER(&sub_iter, &dict_iter);
-                }
-                dbus_free(val_sig);
-                JSPropertyNameArrayRelease(prop_names);
-
-                CLOSE_CONTAINER(iter, &sub_iter);
-                return TRUE;
-            } else {
-                DBusMessageIter sub_iter;
-                DBusSignatureIter array_s_iter;
-                char *array_signature = NULL;
-                if (!jsvalue_instanceof(ctx, jsvalue, "Array")) {
-                    js_fill_exception(ctx, exception, "jsvalue is not an array type");
-                    return FALSE;
-                }
-                dbus_signature_iter_recurse(&s_iter, &array_s_iter);
-                array_signature =
-                    dbus_signature_iter_get_signature(&array_s_iter);
-
-                JSPropertyNameArrayRef prop_names =
-                    JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);
-                OPEN_CONTAINER(iter, type, array_signature, &sub_iter);
-
-                int p_num = JSPropertyNameArrayGetCount(prop_names);
-
-                for (int i=0; i<p_num; i++) {
-                    JSValueRef value = JSObjectGetPropertyAtIndex(ctx,
-                            (JSObjectRef)jsvalue, i, NULL);
-                    js_to_dbus(ctx, value,
-                            &sub_iter, array_signature,
-                            exception);
-                }
-
-                g_free(array_signature);
-                JSPropertyNameArrayRelease(prop_names);
-
-                CLOSE_CONTAINER(iter, &sub_iter);
-                return TRUE;
-            }
-
-        case DBUS_TYPE_VARIANT:
-            {
-                //TODO: detect the signature of the jsvalue
-                DBusMessageIter sub_iter;
-                DBusSignatureIter v_iter;
-                const char *v_sig;
-                dbus_signature_iter_recurse(&s_iter, &v_iter);
-                v_sig = jsvalue_to_signature(ctx, jsvalue);
-
-                if (v_sig == NULL) {
-                    js_fill_exception(ctx, exception, "Can't detect the variant type");
-                    return FALSE;
-                }
-
-                OPEN_CONTAINER(iter, DBUS_TYPE_VARIANT, (char*)v_sig, &sub_iter);
-
-                if (!js_to_dbus(ctx, jsvalue, &sub_iter, v_sig, exception)) {
-                    js_fill_exception(ctx, exception, "Failed to append variant contents with signature");
-                    return FALSE;
-                }
-
-                CLOSE_CONTAINER(iter, &sub_iter);
-                return TRUE;
-
-            }
-
-        case DBUS_TYPE_DICT_ENTRY:
-            g_assert_not_reached();
-            break;
-        default:
-            g_warning("Unknow signature type :%c", type);
-                return FALSE;
+    JSStringRef key = JSPropertyNameArrayGetNameAtIndex(array, index);
+    char* c_key = jsstring_to_cstr(ctx, key);
+    char* endptr = NULL;
+    g_ascii_strtoll(c_key, &endptr, 10);
+    if (endptr == c_key) {
+        return TRUE;
+    } else {
+        g_free(c_key);
+        return FALSE;
     }
 }
 
+GVariant* js_to_dbus(JSContextRef ctx, const JSValueRef jsvalue, const GVariantType* sig, JSValueRef *exception)
+{
+    if (g_variant_type_is_array(sig)) {
+        GVariantBuilder builder;
+        g_variant_builder_init(&builder, sig);
+        JSPropertyNameArrayRef array = JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);
 
+        const GVariantType* child_sig = g_variant_type_element(sig);
 
-JSValueRef dbus_to_js(JSContextRef ctx, DBusMessageIter *iter)
+        if (g_variant_type_is_dict_entry(child_sig)) {
+
+            const GVariantType* key_sig = g_variant_type_first(child_sig);
+            const GVariantType* value_sig = g_variant_type_next(key_sig);
+            for (size_t i=0; i < JSPropertyNameArrayGetCount(array); i++) {
+                if (filter_function_child(ctx, jsvalue, i)) continue;
+
+                g_variant_builder_open(&builder, child_sig);
+                JSValueRef key = JSValueMakeString(ctx, JSPropertyNameArrayGetNameAtIndex(array, i));
+                JSValueRef value = JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, NULL);
+                g_variant_builder_add_value(&builder, js_to_dbus(ctx, key, key_sig, exception));
+                g_variant_builder_add_value(&builder, js_to_dbus(ctx, value, value_sig, exception));
+                g_variant_builder_close(&builder);
+            }
+            return g_variant_builder_end(&builder);
+
+	} else {
+	    GVariantBuilder builder;
+	    g_variant_builder_init(&builder, sig);
+	    JSPropertyNameArrayRef array = JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);
+	    const GVariantType* child_sig = g_variant_type_element(sig);
+	    for (size_t i=0; i < JSPropertyNameArrayGetCount(array); i++) {
+		if (filter_array_child(ctx, array, i)) continue;
+		g_variant_builder_add_value(&builder, js_to_dbus(ctx, JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, NULL), child_sig, exception));
+	    }
+	    JSPropertyNameArrayRelease(array);
+	    return g_variant_builder_end(&builder);
+	}
+    } else if (g_variant_type_is_tuple(sig)) {
+	    GVariantBuilder builder;
+	    g_variant_builder_init(&builder, sig);
+	    JSPropertyNameArrayRef array = JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);
+	    const GVariantType* current_sig = g_variant_type_first(sig);
+            for (size_t i=0; i < JSPropertyNameArrayGetCount(array); i++) {
+                if (filter_array_child(ctx, array, i)) continue;
+                g_variant_builder_add_value(&builder, js_to_dbus(ctx, JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, NULL), current_sig, exception));
+		current_sig = g_variant_type_next(current_sig);
+            }
+            JSPropertyNameArrayRelease(array);
+            return g_variant_builder_end(&builder);
+    } else {
+        switch (g_variant_type_peek_string(sig)[0]) {
+            case 'y':
+                return g_variant_new_byte(JSValueToNumber(ctx, jsvalue, exception));
+            case 'n':
+                return g_variant_new_int16(JSValueToNumber(ctx, jsvalue, exception));
+            case 'q':
+                return g_variant_new_uint16(JSValueToNumber(ctx, jsvalue, exception));
+            case 'i':
+                return g_variant_new_int32(JSValueToNumber(ctx, jsvalue, exception));
+            case 'u':
+                return g_variant_new_uint32(JSValueToNumber(ctx, jsvalue, exception));
+            case 'x':
+                return g_variant_new_int64(JSValueToNumber(ctx, jsvalue, exception));
+            case 't':
+                return g_variant_new_uint64(JSValueToNumber(ctx, jsvalue, exception));
+            case 'd':
+                return g_variant_new_double(JSValueToNumber(ctx, jsvalue, exception));
+            case 'h':
+                return g_variant_new_handle(JSValueToNumber(ctx, jsvalue, exception));
+            case 'b':
+                return g_variant_new_boolean(JSValueToBoolean(ctx, jsvalue));
+            case 's':
+                {
+                    char* v = jsvalue_to_cstr(ctx, jsvalue);
+                    GVariant* r = g_variant_new_string(v);
+                    g_free(v);
+                    return r;
+                }
+            case 'v':
+                {
+                    //TODO:
+                    /*g_variant_new_variant()*/
+                    g_assert_not_reached();
+                }
+        }
+    }
+    g_assert_not_reached();
+}
+
+JSValueRef dbus_to_js(JSContextRef ctx, GVariant *dbus)
 {
     JSValueRef jsvalue = NULL;
-    int type = dbus_message_iter_get_arg_type(iter);
+    GVariantClass type = g_variant_classify(dbus);
     switch (type) {
-        CASE_STRING
+        case G_VARIANT_CLASS_STRING:
+        case G_VARIANT_CLASS_OBJECT_PATH:
+        case G_VARIANT_CLASS_SIGNATURE:
             {
-                const char *value = NULL;
-                dbus_message_iter_get_basic(iter, (void*)&value);
-
-                JSStringRef js_string = JSStringCreateWithUTF8CString(value);
+                JSStringRef js_string = JSStringCreateWithUTF8CString(g_variant_get_string(dbus, NULL));
                 jsvalue = JSValueMakeString(ctx, js_string);
                 JSStringRelease(js_string);
-                break;
+                return jsvalue;
             }
-        CASE_NUMBER
+        case G_VARIANT_CLASS_BYTE:
+            return JSValueMakeNumber(ctx, g_variant_get_byte(dbus));
+        case G_VARIANT_CLASS_DOUBLE:
+            return JSValueMakeNumber(ctx, g_variant_get_double(dbus));
+        case G_VARIANT_CLASS_INT16:
+            return JSValueMakeNumber(ctx, g_variant_get_int16(dbus));
+        case G_VARIANT_CLASS_UINT16:
+            return JSValueMakeNumber(ctx, g_variant_get_uint16(dbus));
+        case G_VARIANT_CLASS_INT32:
+            return JSValueMakeNumber(ctx, g_variant_get_int32(dbus));
+        case G_VARIANT_CLASS_UINT32:
+            return JSValueMakeNumber(ctx, g_variant_get_uint32(dbus));
+        case G_VARIANT_CLASS_INT64:
+            return JSValueMakeNumber(ctx, g_variant_get_int64(dbus));
+        case G_VARIANT_CLASS_UINT64:
+            return JSValueMakeNumber(ctx, g_variant_get_uint64(dbus));
+        case G_VARIANT_CLASS_BOOLEAN:
+            return JSValueMakeBoolean(ctx, g_variant_get_boolean(dbus));
+        case G_VARIANT_CLASS_HANDLE:
+            g_warning("didn't support FD type");
+            return JSValueMakeNumber(ctx, g_variant_get_uint32(dbus));
+        case G_VARIANT_CLASS_VARIANT:
             {
-                dbus_uint64_t value = 0;
-                dbus_message_iter_get_basic(iter, (void*)&value);
-                jsvalue = JSValueMakeNumber(ctx, value);
-                break;
+                GVariant* v = g_variant_get_variant(dbus);
+                jsvalue = dbus_to_js(ctx, v);
+                g_variant_unref(v);
+                return jsvalue;
             }
-        case DBUS_TYPE_DOUBLE:
-            {
-                DBusBasicValue value;
-                dbus_message_iter_get_basic(iter, (void*)&value);
-                jsvalue = JSValueMakeNumber(ctx, value.dbl);
-                break;
-            }
-        case DBUS_TYPE_BOOLEAN:
-            {
-                DBusBasicValue value;
-                dbus_message_iter_get_basic(iter, &value);
-                jsvalue = JSValueMakeBoolean(ctx, value.bool_val);
-                break;
-            }
-        case DBUS_TYPE_VARIANT:
-            {
-                DBusMessageIter c_iter;
-                dbus_message_iter_recurse(iter, &c_iter);
-                jsvalue = dbus_to_js(ctx, &c_iter);
-                break;
-            }
-        case DBUS_TYPE_DICT_ENTRY:
-            g_assert_not_reached();
+
+        case G_VARIANT_CLASS_DICT_ENTRY:
+            /*g_assert_not_reached();*/
             break;
 
-        case DBUS_TYPE_STRUCT:
-        case DBUS_TYPE_ARRAY:
+        case G_VARIANT_CLASS_ARRAY:
             {
-
-                DBusMessageIter c_iter;
-                dbus_message_iter_recurse(iter, &c_iter);
-
-                if (dbus_message_iter_get_arg_type(&c_iter) == DBUS_TYPE_DICT_ENTRY) {
+                if (g_variant_type_is_dict_entry(g_variant_type_element(g_variant_get_type(dbus)))) {
                     jsvalue = JSObjectMake(ctx, NULL, NULL);
-                } else {
-                    jsvalue = JSObjectMakeArray(ctx, 0, NULL, NULL);
-                }
+                    for (size_t i=0; i<g_variant_n_children(dbus); i++) {
+                        GVariant *dic = g_variant_get_child_value(dbus, i);
+                        GVariant *key= g_variant_get_child_value (dic, 0);
+                        GVariant *value = g_variant_get_child_value (dic, 1);
 
-                int i=0;
-                do {
-                    if (dbus_message_iter_get_arg_type(&c_iter) ==
-                            DBUS_TYPE_DICT_ENTRY) {
-                        JSValueRef key;
-                        JSStringRef key_str;
-                        JSValueRef value;
+                        JSValueRef js_key = dbus_to_js(ctx, key);
+                        JSValueRef js_value = dbus_to_js(ctx, value);
 
-                        DBusMessageIter d_iter;
-                        dbus_message_iter_recurse(&c_iter, &d_iter);
-
-                        key = dbus_to_js(ctx, &d_iter);
-                        key_str = JSValueToStringCopy(ctx, key, NULL);
-
-                        dbus_message_iter_next(&d_iter);
-                        value = dbus_to_js(ctx, &d_iter);
-
-                        JSObjectSetProperty(ctx, (JSObjectRef)jsvalue,
-                                key_str, value, 0, NULL);
-
+                        JSStringRef key_str = JSValueToStringCopy(ctx, js_key, NULL);
+                        JSObjectSetProperty(ctx, (JSObjectRef)jsvalue, key_str, js_value, 0, NULL);
                         JSStringRelease(key_str);
-                    } else {
-                        JSObjectSetPropertyAtIndex(ctx, (JSObjectRef)jsvalue,
-                                i++, dbus_to_js(ctx, &c_iter), NULL);
-                    }
-                } while(dbus_message_iter_next(&c_iter));
-                break;
-            }
 
-        case DBUS_TYPE_INVALID:
-            jsvalue = JSValueMakeUndefined(ctx);
-            break;
-        default:
-            g_warning("didn't support signature type:%c", type);
-            jsvalue = JSValueMakeUndefined(ctx);
-            break;
+                        g_variant_unref(key);
+                        g_variant_unref(value);
+                        g_variant_unref(dic);
+                    }
+                    return jsvalue;
+                } else {
+                    int n = g_variant_n_children(dbus);
+                    JSValueRef *args = g_new(JSValueRef, n);
+                    for (int i=0; i < n; i++) {
+                        GVariant* v = g_variant_get_child_value(dbus, i);
+                        args[i] = dbus_to_js(ctx, v);
+                        g_variant_unref(v);
+                    }
+                    jsvalue = JSObjectMakeArray(ctx, n, args, NULL);
+                    g_free(args);
+                    return jsvalue;
+                }
+            }
+        case G_VARIANT_CLASS_TUPLE:
+            {
+                int n = g_variant_n_children(dbus);
+                jsvalue = JSObjectMakeArray(ctx, 0, NULL, NULL);
+                for (int i=0; i < n; i++) {
+                    GVariant* v = g_variant_get_child_value(dbus, i);
+                    JSObjectSetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, dbus_to_js(ctx, v), NULL);
+                    g_variant_unref(v);
+                }
+                return jsvalue;
+            }
+        case G_VARIANT_CLASS_MAYBE:
+            g_assert_not_reached();
     }
-    return jsvalue;
+    g_warning("didn't support signature type:%c", type);
+    return JSValueMakeUndefined(ctx);
 }
+
+
+GVariantType* gslit_to_varianttype(GSList* l)
+{
+    GString* str = g_string_new("(");
+    while (l != NULL) {
+        g_string_append(str, l->data);
+        l = g_slist_next(l);
+    }
+    g_string_append(str, ")");
+    return g_variant_type_new(g_string_free(str, FALSE));
+}
+
