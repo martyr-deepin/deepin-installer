@@ -108,6 +108,41 @@ thread_os_prober (gpointer data)
     return NULL;
 }
 
+
+
+GList* build_part_list(PedDisk* disk)
+{
+    GList *part_list = NULL;
+
+    PedPartition *partition = NULL;
+    for (partition = ped_disk_next_partition (disk, NULL); partition; 
+	    partition = ped_disk_next_partition (disk, partition)) {
+	if (partition->num < 0)
+	    continue;
+
+	gchar *uuid_num = installer_rand_uuid ();
+	gchar *part_uuid = g_strdup_printf("part%s", uuid_num);
+	g_free (uuid_num);
+
+	part_list = g_list_append (part_list, g_strdup (part_uuid));
+	g_hash_table_insert (partitions, g_strdup (part_uuid), partition);
+	g_free (part_uuid);
+    }
+    return part_list;
+}
+
+PedDisk* try_build_disk(PedDevice* device)
+{
+    if (device->read_only || device->next != 0) {
+	return 0;
+    } 
+    PedDiskType* type = ped_disk_probe(device);
+    if (type == 0 || strncmp(type->name, "loop", 5) == 0) {
+	return 0;
+    }
+    return ped_disk_new (device);
+}
+
 static gpointer
 thread_init_parted (gpointer data)
 {
@@ -132,58 +167,20 @@ thread_init_parted (gpointer data)
     ped_device_probe_all ();
 
     while ((device = ped_device_get_next (device))) {
-        if (device->read_only) {
-            g_warning ("init parted:device read only\n");
-            continue;
-        } 
-
-        if (ped_disk_probe (device) != NULL) {
-            disk = ped_disk_new (device);
-
-        } else {
-            g_printf ("init parted:new disk partition table for %s\n", device->path);
-            const PedDiskType *type;
-            long long size = device->sector_size;
-            PedSector length = device->length;
-            //if (size * length > (long long) 2*1024*1024*1024*1024) {
-            if (size * length > (long long) 2 << 40) {
-                type = ped_disk_type_get ("gpt");
-            } else {
-                type = ped_disk_type_get ("msdos");
-            }
-
-            if (type != NULL) {
-                disk = ped_disk_new_fresh (device, type);
-            } else {
-                g_warning ("init parted:ped disk type get failed:%s\n", device->path);
-                continue;
-            }
-        }
+	disk = try_build_disk(device);
+	if (disk == 0) {
+	    continue;
+	}
 
         gchar *uuid_num = installer_rand_uuid ();
         gchar *uuid = g_strdup_printf ("disk%s", uuid_num);
+	g_hash_table_insert (disks, g_strdup (uuid), disk);
         g_free (uuid_num);
 
-        GList *part_list = NULL;
-        if (uuid != NULL && disk != NULL ) {
-            g_hash_table_insert (disks, g_strdup (uuid), disk);
-
-            PedPartition *partition = NULL;
-            for (partition = ped_disk_next_partition (disk, NULL); partition; 
-                    partition = ped_disk_next_partition (disk, partition)) {
-
-                gchar *uuid_num = installer_rand_uuid ();
-                gchar *part_uuid = g_strdup_printf("part%s", uuid_num);
-                g_free (uuid_num);
-
-                part_list = g_list_append (part_list, g_strdup (part_uuid));
-                g_hash_table_insert (partitions, g_strdup (part_uuid), partition);
-                g_free (part_uuid);
-            }
-        }
-        g_hash_table_insert (disk_partitions, g_strdup (uuid), part_list);
+        g_hash_table_insert (disk_partitions, g_strdup (uuid), build_part_list(disk));
         g_free (uuid);
     }
+
     GRAB_CTX ();
     js_post_message ("init_parted", NULL);
     UNGRAB_CTX ();
@@ -543,7 +540,6 @@ gchar* installer_get_partition_path (const gchar *part)
     } else {
         g_warning ("get partition path:find pedpartition %s failed\n", part);
     }
-
     return path;
 }
 
