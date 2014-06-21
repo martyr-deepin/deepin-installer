@@ -341,11 +341,11 @@ class Keyboard extends Widget
 
     init_dbus_query: ->
         try
-            @search_bus = DCore.DBus.session_object("com.deepin.daemon.Search", "/com/deepin/daemon/Search", "com.deepin.daemon.Search")
+            #@search_bus = DCore.DBus.session("com.deepin.daemon.Search")
             dict = {}
             for item in @layouts
                 dict[item] = DCore.Installer.get_layout_description(item)
-            @search_handle = @search_bus.NewTrieWithString_sync(dict, "installer")
+            #@search_handle = @search_bus.NewTrieWithString_sync(dict, "installer")
         catch
             echo "init dbus query failed"
 
