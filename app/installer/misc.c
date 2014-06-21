@@ -27,13 +27,10 @@
 #include "part_util.h"
 #include "fs_util.h"
 #include "info.h"
+#include "unistd.h"
 
 #define LOG_FILE_PATH           "/tmp/installer.log"
 #define HOOKS_PATH    RESOURCE_DIR"hooks"
-
-extern int chroot(const char *path);
-extern int fchdir(int fd);
-extern int chdir(const char *path);
 
 
 static GFile* _get_gfile_from_gapp(GDesktopAppInfo* info);
@@ -147,6 +144,7 @@ gboolean installer_chroot_target ()
 
     extern gboolean in_chroot;
     if (chroot (TARGET) == 0) {
+	chdir("/"); //change to an valid directory
         in_chroot = TRUE;
         ret = TRUE;
     } else {
@@ -245,6 +243,7 @@ finish_install_cleanup ()
 
     if (in_chroot) {
         execute_hook("install-bottom");
+
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");
         } else {
@@ -252,8 +251,8 @@ finish_install_cleanup ()
             for (i = 0; i < 1024; i++) {
                 chdir ("..");
             }
-            chroot (".");
         }
+        chroot (".");
         in_chroot = FALSE;
     }
     unmount_target ();

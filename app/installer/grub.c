@@ -198,6 +198,6 @@ void installer_update_bootloader (const gchar *uuid, gboolean uefi)
     }
     write_bootloader_info(path, uefi);
     g_free(path);
-    finish_install_cleanup ();
+    /*finish_install_cleanup ();*/
     emit_progress ("bootloader", "finish");
 }

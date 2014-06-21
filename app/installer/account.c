@@ -20,10 +20,11 @@
  **/
 
 #include "account.h"
+#include <sys/types.h>
+#include <pwd.h>
+#include <signal.h>
 
-extern struct passwd* getpwent (void);
-extern void endpwent (void);
-extern int lchown (const char *path, uid_t owner, gid_t group);
+#include "unistd.h"
 
 #define BUFSIZE 64
 
@@ -301,7 +302,6 @@ set_user_password (struct PasswdHandler *handler)
     if ((dup2 (std_err, std_out)) == -1) {
         g_warning ("set user password:dup %s\n", strerror (errno));
         if (handler->pid != -1) {
-            extern int kill (pid_t pid, int sig);
             kill (handler->pid, 9);
         }
         free_passwd_handler (handler);
@@ -318,7 +318,6 @@ set_user_password (struct PasswdHandler *handler)
 
         g_warning ("set user password: set io channel encoding or flags failed\n");
         if (handler->pid != -1) {
-            extern int kill (pid_t pid, int sig);
             kill (handler->pid, 9);
         }
         free_passwd_handler (handler);

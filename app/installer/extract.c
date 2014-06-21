@@ -19,6 +19,12 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
+
+#include "extract.h"
+#include "keyboard.h"
+#include "misc.h"
+#include "info.h"
+
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -26,15 +32,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <ftw.h>
-#include "extract.h"
-#include "keyboard.h"
-#include "misc.h"
-#include "info.h"
-
-extern int symlink(const char *oldpath, const char *newpath);
-extern int mknod(const char *pathname, mode_t mode, dev_t dev);
-extern int lstat(const char *restrict path, struct stat *restrict buf);
-extern int lchown(const char *path, uid_t owner, gid_t group);
 
 #define BUFFERSIZE  16 * 1024
 
