@@ -455,9 +455,8 @@ init_v_disk_info = ->
                 if DCore.Installer.get_partition_length(part) > 20480
                     v_disk_info[disk]["partitions"].push(part)
             else if type in ["normal", "extended", "logical"]
-                if DCore.Installer.get_partition_path(part).indexOf("/dev/mapper") == -1
                     v_disk_info[disk]["partitions"].push(part)
-    
+
 v_part_info = {}
 init_v_part_info = ->
     v_part_info = {}
