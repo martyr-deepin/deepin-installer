@@ -27,7 +27,8 @@ case ${BOOT} in
         ;;
     "legacy")
         echo "INFO: Detected legacy machine"
-        apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-pc
+	DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install grub-pc
+        #apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-pc
         grub-install --no-floppy --force ${GRUB_TARGET}
         ;;
     "uefi-secureboot")
