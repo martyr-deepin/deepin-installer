@@ -20,12 +20,6 @@
  **/
 
 #include "account.h"
-#include <sys/types.h>
-#include <pwd.h>
-#include <signal.h>
-
-#include "unistd.h"
-
 #define BUFSIZE 64
 
 JS_EXPORT_API 

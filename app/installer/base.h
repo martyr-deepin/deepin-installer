@@ -22,6 +22,7 @@
 #ifndef __BASE_H
 #define __BASE_H
 
+#define _GNU_SOURCE
 #include <glib.h>
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>

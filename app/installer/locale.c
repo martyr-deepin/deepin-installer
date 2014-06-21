@@ -32,7 +32,7 @@ gchar* installer_get_current_locale ()
     GError* error = NULL;
     g_spawn_command_line_sync (cmd, &locale, NULL, NULL, &error);
     if (error != NULL) {
-	g_warning("get_current_locale:", error->message);
+	g_warning("get_current_locale:%s", error->message);
 	g_error_free(error);
     }
     g_free (cmd);

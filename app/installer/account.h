@@ -22,6 +22,8 @@
 #ifndef __ACCOUNT_H
 #define __ACCOUNT_H
 
+#define _GNU_SOURCE
+
 #include "base.h"
 #include <pwd.h>
 #include <sys/types.h>

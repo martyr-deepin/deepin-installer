@@ -19,15 +19,16 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <parted/parted.h>
 #include "misc.h"
 #include "part_util.h"
 #include "fs_util.h"
 #include "info.h"
-#include "unistd.h"
+
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <parted/parted.h>
+#include <unistd.h>
 
 #define LOG_FILE_PATH           "/tmp/installer.log"
 #define HOOKS_PATH    RESOURCE_DIR"hooks"
