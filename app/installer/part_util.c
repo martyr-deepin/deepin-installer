@@ -117,9 +117,6 @@ GList* build_part_list(PedDisk* disk)
     PedPartition *partition = NULL;
     for (partition = ped_disk_next_partition (disk, NULL); partition;
 	    partition = ped_disk_next_partition (disk, partition)) {
-	if (partition->num < 0)
-	    continue;
-
 	gchar *uuid_num = installer_rand_uuid ();
 	gchar *part_uuid = g_strdup_printf("part%s", uuid_num);
 	g_free (uuid_num);
