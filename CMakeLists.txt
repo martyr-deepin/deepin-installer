@@ -79,6 +79,7 @@ add_subdirectory(lib)
 add_subdirectory(app)
 add_subdirectory(po)
 add_subdirectory(test)
+add_subdirectory(tools)
 
 #install(
 #    DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
