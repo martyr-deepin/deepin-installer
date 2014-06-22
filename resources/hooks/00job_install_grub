@@ -8,7 +8,7 @@ else
 fi
 
 # add cdrom to source.list
- [ ! -d /media/cdrom ] && exit 0
+ [ ! -d /media/cdrom ] && echo "No /media/cdrom " && exit 1
 apt-cdrom add -d /media/cdrom -m  && apt-get update
 
 GRUB_TARGET="/dev/sda"

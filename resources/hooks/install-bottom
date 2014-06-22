@@ -1,8 +1,10 @@
 #!/bin/bash
 HOOKSPATH=/usr/share/installer/resources/hooks
 
-if [ -f ${HOOKSPATH}/ORDER ];then
-    . ${HOOKSPATH}/ORDER
-fi
+. ${HOOKSPATH}/00job_install_grub
+. ${HOOKSPATH}/55-netcfg-network-manager
+. ${HOOKSPATH}/56enable-network-manager
+. ${HOOKSPATH}/57select-grub-packages
+. ${HOOKSPATH}/90remove-unused-packages
 
 exit 0

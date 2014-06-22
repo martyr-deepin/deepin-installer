@@ -1,5 +1,0 @@
-/usr/share/installer/resources/hooks/00job_install_grub
-/usr/share/installer/resources/hooks/55-netcfg-network-manager
-/usr/share/installer/resources/hooks/56enable-network-manager
-/usr/share/installer/resources/hooks/57select-grub-packages
-/usr/share/installer/resources/hooks/90remove-unused-packages
