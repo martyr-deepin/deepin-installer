@@ -27,8 +27,10 @@ case ${BOOT} in
         ;;
     "legacy")
         echo "INFO: Detected legacy machine"
+        # if still not work, uncomment blow code.
+        ## echo "set grub-pc/install_devices ${GRUB_TARGET}" | debconf-communicate
         DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
-        #apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-pc
+        
         grub-install --no-floppy --force ${GRUB_TARGET}
         ;;
     "uefi-secureboot")
