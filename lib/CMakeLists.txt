@@ -13,5 +13,3 @@ add_library(dcom ${SRC_LIST})
 target_link_libraries(dcom ${DWEBVIEW_LIBRAIRES})
 
 add_subdirectory(dbus)
-add_subdirectory(dentry)
-
