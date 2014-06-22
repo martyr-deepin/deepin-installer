@@ -258,10 +258,6 @@ class Progress extends Page
                 echo error
         else if progress == "finish"
             echo "extract finish"
-            try
-                DCore.Installer.copy_whitelist()
-            catch error
-                echo error
             __selected_stage = "chroot"
             @handle_chroot("start")
         else if progress == "terminate"
@@ -361,7 +357,10 @@ class Progress extends Page
                 if not __selected_hostname?
                     echo "invalid hostname, use username instead"
                     __selected_hostname = __selected_username
+                #TODO:try remove create user
                 DCore.Installer.create_user(__selected_username, __selected_hostname, __selected_password)
+
+                DCore.Installer.record_accounts_info(__selected_username, __selected_hostname, __selected_password)
             catch error
                 echo error
         else if progress == "finish"
@@ -380,14 +379,18 @@ class Progress extends Page
             @update_progress("95%")
             if __selected_grub != "uefi"
                 try
+                    #TODO: try remove
                     DCore.Installer.update_bootloader(__selected_grub, false)
+                    DCore.Installer.record_bootloader_info(__selected_grub, false)
                 catch error
                     echo error
             else
                 boot = get_efi_boot_part()
                 if boot?
                     try
+                        #TODO: try remove
                         DCore.Installer.update_bootloader(boot, true)
+                        DCore.Installer.record_bootloader_info(boot, true)
                     catch error
                         echo error
                 else

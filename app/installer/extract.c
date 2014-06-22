@@ -331,8 +331,7 @@ out:
     return NULL;
 }
 
-JS_EXPORT_API
-void installer_extract_iso ()
+PRIVATE void installer_extract_iso ()
 {
     g_printf ("extract intelligent:use extract iso\n");
     emit_progress ("extract", "safe");
@@ -591,8 +590,7 @@ thread_extract_squashfs (gpointer data)
 }
 
 
-JS_EXPORT_API
-void installer_extract_squashfs ()
+PRIVATE void installer_extract_squashfs ()
 {
     GThread *thread = g_thread_new ("extract_squashfs", (GThreadFunc) thread_extract_squashfs, NULL);
     g_thread_unref (thread);
@@ -658,6 +656,8 @@ is_live_os ()
 JS_EXPORT_API
 void installer_extract_intelligent ()
 {
+    write_installer_conf("/etc/deepin-installer.conf");
+
     gchar *cmd = g_find_program_in_path ("os-prober");
     if (cmd == NULL) {
         g_warning ("extract intelligent:os-prober not installed\n");
@@ -702,11 +702,4 @@ void installer_extract_intelligent ()
             installer_extract_squashfs ();
         }
     }
-}
-
-//copy whitelist file just after extract and before chroot
-JS_EXPORT_API 
-void installer_copy_whitelist ()
-{
-    //TODO: before hooks
 }

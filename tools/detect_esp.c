@@ -1,5 +1,6 @@
 #include <parted/parted.h>
 #include <glib.h>
+#include <glib/gstdio.h>
 
 gchar *get_partition_mount_point (const gchar *path);
 

@@ -23,6 +23,7 @@
 #include "part_util.h"
 #include "fs_util.h"
 #include "info.h"
+#include "hooks.h"
 
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -31,7 +32,6 @@
 #include <unistd.h>
 
 #define LOG_FILE_PATH           "/tmp/installer.log"
-#define HOOKS_PATH    RESOURCE_DIR"hooks"
 
 
 static GFile* _get_gfile_from_gapp(GDesktopAppInfo* info);
@@ -132,6 +132,8 @@ out:
 JS_EXPORT_API
 gboolean installer_chroot_target ()
 {
+    write_installer_conf("/target/etc/deepin-installer.conf");
+
     gboolean ret = FALSE;
     if (!mount_procfs ()) {
         goto out;
@@ -214,20 +216,6 @@ GFile* _get_gfile_from_gapp(GDesktopAppInfo* info)
 }
 
 
-void execute_hook(const gchar *hookname)
-{
-    GError *error = NULL;
-    const gchar *cmd = g_strdup_printf ("%s/%s", HOOKS_PATH,hookname);
-    g_message("excute_scripts:cmd :%s.",cmd);
-    g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("excute_scripts:excute failed:%s\n", error->message);
-        g_error_free (error);
-        error = NULL;
-    }
-
-}
-
 void
 finish_install_cleanup () 
 {
@@ -239,11 +227,12 @@ finish_install_cleanup ()
     }
     cleaned = TRUE;
 
+    run_hooks_in_chroot();
+    
     extern gboolean in_chroot;
     extern int chroot_fd;
 
     if (in_chroot) {
-        execute_hook("install-bottom");
 
         if (fchdir (chroot_fd) < 0) {
             g_warning ("finish install:reset to chroot fd dir failed\n");

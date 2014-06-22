@@ -379,7 +379,7 @@ get_efi_boot_part = ->
     return null
 
 #just cp mp form view to model as in simple mode, we fake the view data operation
-#don't use it any more as manuly operate the view table
+#don't use it any more as manually operate the view table
 __sync_part_mp = ->
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
@@ -387,7 +387,7 @@ __sync_part_mp = ->
                 m_part_info[part]["mp"] = v_part_info[part]["mp"]
 
 #mount custom partitions, before chroot, before extract iso
-#don't need to __sync_part_mp as we manuly operate the view table
+#don't need to __sync_part_mp as we manually operate the view table
 mount_custom_partitions = ->
     echo "mount custom partitions"
     target = get_target_part()
@@ -404,6 +404,9 @@ mount_custom_partitions = ->
 
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
+            DCore.Installer.record_mountpoint_info(part, v_part_info[part]["mp"])
+
+            #TODO: Try remove below code
             if v_part_info[part]["fs"] == "efi"
                 v_part_info[part]["mp"] = "/boot/efi"
             if v_part_info[part]["mp"]? and v_part_info[part]["mp"] not in ["unused", "/"]

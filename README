@@ -25,3 +25,9 @@ Deepin Installer
   -g, --grub=/dev/sdaX or uefi     device path or uefi to install bootloader, only work when automatic
   -d, --debug                      set log level to debug
   --display=显示                   要使用的 X 显示
+
+
+TODO:
+1. locale/zoneinfo/accounts/extract等全部通过hooks机制完成
+2. os-probe 支持EFI系统
+3. 如果覆盖安装了一个EFI系统，需要清除对应系统在EFI变量中的信息
