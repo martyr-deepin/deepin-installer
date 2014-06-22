@@ -130,7 +130,7 @@ GList* build_part_list(PedDisk* disk)
 
 PedDisk* try_build_disk(PedDevice* device)
 {
-    if (device->read_only || device->next != 0) {
+    if (device->read_only) {
 	return 0;
     }
     PedDiskType* type = ped_disk_probe(device);
