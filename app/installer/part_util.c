@@ -1406,6 +1406,7 @@ gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name
     return ret;
 }
 
+
 JS_EXPORT_API
 gboolean installer_mount_partition (const gchar *part, const gchar *mp)
 {
@@ -1454,22 +1455,6 @@ gboolean installer_mount_partition (const gchar *part, const gchar *mp)
     guint before = get_mount_target_count (mount_target);
     cmd = g_strdup_printf ("mount -t %s %s %s", fs, path, mount_target);
     g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-
-
-    {
-	//bind the root dir to /target/host
-	//bind /cdrom to /target/media/cdrom
-	char* host_path = g_strdup_printf("/%s/host", mount_target);
-	g_mkdir_with_parents (host_path, 0755);
-	g_free(cmd);
-	cmd = g_strdup_printf("mount --bind /  %s", host_path);
-	g_free(host_path);
-	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-
-	g_mkdir_with_parents ("/target/media/cdrom", 0755);
-	g_spawn_command_line_sync ("mount --bind /cdrom /target/media/cdrom", NULL, NULL, NULL, NULL);
-
-    }
 
 
     if (error != NULL) {

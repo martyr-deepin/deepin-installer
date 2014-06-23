@@ -24,6 +24,7 @@
 #include "fs_util.h"
 #include "info.h"
 #include "hooks.h"
+#include "setup.h"
 
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -134,6 +135,8 @@ gboolean installer_chroot_target ()
 {
     write_installer_conf("/target/etc/deepin-installer.conf");
 
+    run_hooks_before_chroot();
+
     gboolean ret = FALSE;
     if (!mount_procfs ()) {
         goto out;
@@ -227,8 +230,6 @@ finish_install_cleanup ()
     }
     cleaned = TRUE;
 
-    run_hooks_in_chroot();
-    
     extern gboolean in_chroot;
     extern int chroot_fd;
 
@@ -245,6 +246,9 @@ finish_install_cleanup ()
         chroot (".");
         in_chroot = FALSE;
     }
+
+    run_hooks_after_chroot();
+
     unmount_target ();
     ped_device_free_all ();
 }

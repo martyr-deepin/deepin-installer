@@ -42,10 +42,10 @@ endmacro()
 
 if (DEVELOP)
     SET(RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/")
-    add_definitions("-DDATA_DIR=\"../data\"")
+    add_definitions("-DHOOKS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/hooks\"")
 else()
-    SET(RESOURCE_DIR "${CMAKE_INSTALL_PREFIX}/share/installer/resources/")
-    add_definitions("-DDATA_DIR=\"${CMAKE_INSTALL_PREFIX}/share/installer/data\"")
+    SET(RESOURCE_DIR "${CMAKE_INSTALL_PREFIX}/share/deepin-installer/resources/")
+    add_definitions("-DHOOKS_DIR=\"${CMAKE_INSTALL_PREFIX}/share/deepin-installer/hooks\"")
 endif()
 
 if (TEST)
@@ -56,7 +56,6 @@ add_definitions("-DRESOURCE_DIR=\"${RESOURCE_DIR}\"")
 
 find_package(PkgConfig)
 pkg_check_modules(WEBKIT REQUIRED deepin-webkit-3.0)
-pkg_check_modules(DBUS REQUIRED dbus-glib-1)
 
 set(CMAKE_C_FLAGS "-std=c99")
 
@@ -85,7 +84,7 @@ add_subdirectory(tools)
 #    DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
 #    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/glib-2.0
 #)
-#install(
-#    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
-#    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dde
-#    )
+install(
+   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/hooks
+   DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dde
+   )

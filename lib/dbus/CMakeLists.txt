@@ -6,8 +6,6 @@ AUX_SOURCE_DIRECTORY(. DBUS)
 
 set(SRC_LIST ${DBUS})
 
-pkg_check_modules(DBUS REQUIRED dbus-glib-1)
-
 include(CheckCSourceRuns)
 set(CMAKE_REQUIRED_INCLUDES  ${DBUS_INCLUDE_DIRS})
 CHECK_C_SOURCE_RUNS(
