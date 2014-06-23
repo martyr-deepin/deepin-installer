@@ -17,7 +17,12 @@ if [ -f /etc/deepin-installer.conf ];then
     . /etc/deepin-installer.conf
 fi
 
-#TODO detect secureboot
+if [ x${BOOT} == xefi ];then
+    if [ -x /usr/bin/fwts ];then
+        value=$(fwts uefidump - | grep Secure\ Boot\ Mode | awk '{print $2}')
+        [ x${value} == 0x01 ] && BOOT="uefi-secureboot"
+    fi
+fi
 
 case ${BOOT} in
     "efi")
@@ -28,12 +33,13 @@ case ${BOOT} in
     "legacy")
         echo "INFO: Detected legacy machine"
         DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
-        
         grub-install --no-floppy --force ${GRUB_TARGET}
         ;;
     "uefi-secureboot")
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated sbsigntool grub-efi-amd64-signed linux-signed-generic
-        grub-install --uefi-secure-boot --efi-directory=/boot/efi
+        grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck --debug
+        [ -d /boot/efi/EFI/ubuntu ] || mkdir -p /boot/efi/EFI/ubuntu
+        cp  /boot/efi/EFI/linuxdeepin2014/* /boot/efi/EFI/ubuntu
         ;;
 esac
 
