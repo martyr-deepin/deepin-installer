@@ -13,8 +13,8 @@ apt-cdrom add -d /media/cdrom -m  && apt-get update
 
 GRUB_TARGET="/dev/sda"
 
-if [ -f /etc/deepin-installer.conf ];then
-    . /etc/deepin-installer.conf
+if [ -f /host/etc/deepin-installer.conf ];then
+    . /host/etc/deepin-installer.conf
 fi
 
 if [ x${BOOT} == xefi ];then

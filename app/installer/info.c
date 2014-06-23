@@ -11,6 +11,13 @@ static struct _InstallerConf {
     char* password;
     char* host_name;
 
+    char* locale;
+
+    char* layout;
+    char* layout_variant;
+
+    char* timezone;
+
     GHashTable* mount_points;
 	
 } InstallerConf;
@@ -47,12 +54,20 @@ char* installer_conf_to_string()
 	    "DI_USER=\"%s\"\n"
 	    "DI_PASSWORD=\"%s\"\n"
 	    "DI_HOSTNAME=\"%s\"\n"
+	    "DI_TIMEZONE=\"%s\"\n"
+	    "DI_LOCALE=\"%s\"\n"
+	    "DI_LAYOUT=\"%s\"\n"
+	    "DI_LAYOUT_VARIANT=\"%s\"\n"
 	    "DI_MOUNTPOINTS=\"%s\"\n",
 	    InstallerConf.bootloader,
 	    InstallerConf.uefi ? "true" : "false",
 	    InstallerConf.user_name,
 	    InstallerConf.password,
 	    InstallerConf.host_name,
+	    InstallerConf.timezone ? : "",
+	    InstallerConf.locale ? : "",
+	    InstallerConf.layout ? : "",
+	    InstallerConf.layout_variant ? : "",
 	    g_string_free(mp, FALSE)
 	    );
 }
@@ -102,4 +117,34 @@ void installer_record_bootloader_info(const char* uuid, gboolean uefi)
 
     InstallerConf.bootloader = find_path_by_uuid(uuid);
     InstallerConf.uefi = uefi;
+}
+
+JS_EXPORT_API
+void installer_record_locale_info(const char* locale)
+{
+    if (InstallerConf.locale)
+	g_free(InstallerConf.locale);
+
+    InstallerConf.locale = g_strdup(locale);
+}
+
+JS_EXPORT_API
+void installer_record_timezone_info(const char* timezone)
+{
+    if (InstallerConf.timezone)
+	g_free(InstallerConf.timezone);
+
+    InstallerConf.timezone = g_strdup(timezone);
+}
+
+JS_EXPORT_API
+void installer_record_keyboard_layout_info(const char* layout, const char* variant)
+{
+    if (InstallerConf.layout)
+	g_free(InstallerConf.layout);
+    if (InstallerConf.layout_variant)
+	g_free(InstallerConf.layout_variant);
+
+    InstallerConf.layout = g_strdup(layout);
+    InstallerConf.layout_variant = g_strdup(variant);
 }

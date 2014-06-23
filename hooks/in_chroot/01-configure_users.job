@@ -1,8 +1,8 @@
 #!/bin/bash
 # TODO: add more than one users
 
-if [ -f /etc/deepin-installer.conf ];then
-    . /etc/deepin-installer.conf
+if [ -f /host/etc/deepin-installer.conf ];then
+    . /host/etc/deepin-installer.conf
 fi
 
 [ -z ${DI_USERNAME} ] && exit 101
