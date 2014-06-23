@@ -64,11 +64,6 @@ free_passwd_handler (struct PasswdHandler *handler)
         handler->child_watch_id = 0;
     }
 
-    if (handler->child_watch_id != 0) {
-        g_source_remove (handler->child_watch_id);
-        handler->child_watch_id = 0;
-    }
-
     if (handler->in_channel != NULL) {
         if (g_io_channel_shutdown (handler->in_channel, TRUE, &error) != G_IO_STATUS_NORMAL) {
             g_warning ("create user:shutdown in channel: %s", error->message);
