@@ -24,12 +24,12 @@
 
 #include "base.h"
 
-JS_EXPORT_API gboolean installer_chroot_target ();
-
-void finish_install_cleanup ();
-void execute_hook (const gchar *hookname);
+gboolean break_chroot();
+gboolean enter_chroot();
 
 JS_EXPORT_API void  installer_show_log ();
 JS_EXPORT_API char* installer_get_default_lang_pack();
+
+void finish_install_cleanup ();
 
 #endif

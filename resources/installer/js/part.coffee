@@ -26,13 +26,16 @@ __selected_line = null
 __selected_mode = "simple"
 __selected_stage = null
 
-DCore.signal_connect("part_operation", (msg) ->
+DCore.signal_connect("part_operation",  ->
     if progress_page? and progress_page.display_progress == false
         progress_page.display_progress = true
         progress_page.start_progress()
     progress_page?.update_progress("2%")
-    __selected_stage = "extract"
-    progress_page?.handle_extract("start")
+
+    DCore.Installer.start_install()
+
+    #__selected_stage = "extract"
+    #progress_page?.handle_extract("start")
 )
 
 class AddPartDialog extends Dialog
@@ -335,6 +338,8 @@ class InstallDialog extends Dialog
 
     confirm_install_cb: ->
         echo "confirm install"
+        sync_installer_conf()
+
         progress_page = new Progress("progress")
         pc.remove_page(part_page)
         pc.add_page(progress_page)

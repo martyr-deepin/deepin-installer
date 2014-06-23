@@ -34,9 +34,11 @@ char* installer_conf_to_string()
 
     GHashTableIter iter;
     gpointer key, value;
-    g_hash_table_iter_init(&iter, InstallerConf.mount_points);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-	g_string_append_printf(mp, "%s=%s;", (gchar*)key, (gchar*)value);
+    if (InstallerConf.mount_points != NULL) {
+	g_hash_table_iter_init(&iter, InstallerConf.mount_points);
+	while (g_hash_table_iter_next(&iter, &key, &value)) {
+	    g_string_append_printf(mp, "%s=%s;", (gchar*)key, (gchar*)value);
+	}
     }
 
     return g_strdup_printf("\n"
@@ -63,14 +65,9 @@ void write_installer_conf(const char* path)
     g_free(content);
 
     if (error != NULL) {
-	g_warning("Write_bootloader_info(to %s) failed:%s\n", path, error->message);
+	g_warning("write deepin-installer.conf(to %s) failed:%s\n", path, error->message);
 	g_error_free(error);
     }
-}
-
-void write_bootloader_info(const char* target, gboolean uefi)
-{
-    write_installer_conf("/etc/deepin-installer.conf");
 }
 
 JS_EXPORT_API
@@ -79,7 +76,7 @@ void installer_record_mountpoint_info(const char* part, const char* mountpoint)
     if (InstallerConf.mount_points == NULL) {
 	InstallerConf.mount_points = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
     }
-    g_hash_table_insert(InstallerConf.mount_points, g_strdup(part), g_strdup(mountpoint));
+    g_hash_table_insert(InstallerConf.mount_points, find_path_by_uuid(part), g_strdup(mountpoint));
 }
 
 JS_EXPORT_API
@@ -103,6 +100,6 @@ void installer_record_bootloader_info(const char* uuid, gboolean uefi)
     if (InstallerConf.bootloader)
 	g_free(InstallerConf.bootloader);
 
-    InstallerConf.bootloader = g_strdup(uuid);
+    InstallerConf.bootloader = find_path_by_uuid(uuid);
     InstallerConf.uefi = uefi;
 }

@@ -17,18 +17,11 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-__selected_layout = "cn"
-__selected_layout_item = null
-__selected_variant_item = null
 __focused_layout_item = null
 
-__selected_timezone = "Asia/Shanghai"
-__selected_zone_index = 8
-__selected_username = null
-__selected_hostname = null
-__selected_password = null
-__selected_locale = DCore.Installer.get_current_locale()
 __illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/ '
+
+__selected_zone_index = 8
 
 __database = JSON.parse(timezone_json)
 

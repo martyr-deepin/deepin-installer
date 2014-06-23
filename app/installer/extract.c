@@ -656,8 +656,6 @@ is_live_os ()
 JS_EXPORT_API
 void installer_extract_intelligent ()
 {
-    write_installer_conf("/etc/deepin-installer.conf");
-
     gchar *cmd = g_find_program_in_path ("os-prober");
     if (cmd == NULL) {
         g_warning ("extract intelligent:os-prober not installed\n");

@@ -1,7 +1,7 @@
-#include "hooks.h"
 #include <glib.h>
 #include <string.h>
 #include "base.h"
+#include "scheduler.h"
 #include "misc.h"
 
 typedef struct _HookInfo {
@@ -33,10 +33,7 @@ void thread_run_hooks(HookInfo* info);
 
 void run_hooks_before_chroot()
 {
-    //TODO: remove this to hooks code
-    setup_mount_point();
-
-    /*thread_run_hooks(&before_chroot_info);*/
+    thread_run_hooks(&before_chroot_info);
 }
 
 void run_hooks_in_chroot()
@@ -46,15 +43,10 @@ void run_hooks_in_chroot()
 
 void run_hooks_after_chroot()
 {
-    /*thread_run_hooks(&after_chroot_info);*/
+    thread_run_hooks(&after_chroot_info);
+    //TODO: finish_cleanup
 }
 
-
-void hooks_end()
-{
-    finish_install_cleanup ();
-    emit_progress ("bootloader", "finish");
-}
 
 void run_one_by_one(GPid pid, gint status, GList* jobs)
 {
@@ -64,7 +56,7 @@ void run_one_by_one(GPid pid, gint status, GList* jobs)
 
     if (jobs->data == NULL) {
 	g_list_free_full(g_list_first(jobs), g_free);
-	hooks_end();
+	enter_next_stage();
 	return;
     }
 

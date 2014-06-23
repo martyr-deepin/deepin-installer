@@ -17,29 +17,6 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-DCore.signal_connect("progress", (msg) ->
-    if __selected_stage == "terminate"
-        return
-    if msg.stage == "extract" and __selected_stage == "extract"
-        progress_page.handle_extract(msg.progress)
-    else if msg.stage == "chroot" and __selected_stage == "chroot"
-        progress_page.handle_chroot(msg.progress)
-    else if msg.stage == "timezone" and __selected_stage == "timezone"
-        progress_page.handle_set_timezone(msg.progress)
-    else if msg.stage == "keyboard" and __selected_stage == "keyboard"
-        progress_page.handle_set_keyboard(msg.progress)
-    else if msg.stage == "locale" and __selected_stage == "locale"
-        progress_page.handle_set_locale(msg.progress)
-    else if msg.stage == "user" and __selected_stage == "user"
-        progress_page.handle_create_user(msg.progress)
-    else if msg.stage == "bootloader" and __selected_stage == "bootloader"
-        progress_page.handle_update_bootloader(msg.progress)
-    else
-        echo "other message or stage"
-        echo msg.stage
-        echo msg.progress
-        echo __selected_stage
-)
 
 class ReportDialog extends Dialog
     constructor: (@id) ->
@@ -357,9 +334,6 @@ class Progress extends Page
                 if not __selected_hostname?
                     echo "invalid hostname, use username instead"
                     __selected_hostname = __selected_username
-                #TODO:try remove create user
-                DCore.Installer.create_user(__selected_username, __selected_hostname, __selected_password)
-
                 DCore.Installer.record_accounts_info(__selected_username, __selected_hostname, __selected_password)
             catch error
                 echo error
@@ -407,3 +381,12 @@ class Progress extends Page
             @show_report()
         else
             @update_progress(progress)
+            
+
+DCore.signal_connect("install_finished", ->
+    #@update_progress("99%")
+    if __install_failed != true
+        finish_page = new Finish("finish", true)
+        pc.remove_page(progress_page)
+        pc.add_page(finish_page)
+)

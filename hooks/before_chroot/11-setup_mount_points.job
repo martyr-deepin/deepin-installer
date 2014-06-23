@@ -1,0 +1,15 @@
+
+mkdir -p /target/dev
+mount --bind -v --bind /dev/ /target/dev
+
+mkdir -p /target/dev/pts
+mount -vt devpts devpts /target/dev/pts
+
+mkdir -p /target/proc
+mount -vt proc proc /target/proc
+
+mkdir -p /target/sys
+mount -vt sysfs sysfs /target/sys
+
+mkdir -p /target/cdrom
+mount /cdrom /target/cdrom

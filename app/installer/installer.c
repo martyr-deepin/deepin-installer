@@ -74,27 +74,6 @@ static GOptionEntry entries[] =
 };
 
 JS_EXPORT_API
-gboolean installer_is_installation_auto ()
-{
-    if (!opt_automatic) {
-        return FALSE;
-    }
-    if (opt_target == NULL) {
-        g_warning ("is installation auto:must specified target\n");
-        return FALSE;
-    }
-    if (opt_username == NULL) {
-        g_warning ("is installation auto:must specified username\n");
-        return FALSE;
-    }
-    if (opt_password == NULL) {
-        g_warning ("is installation auto:must specified  password\n");
-        return FALSE;
-    }
-    return TRUE;
-}
-
-JS_EXPORT_API
 JSObjectRef installer_get_installation_info ()
 {
     GRAB_CTX ();

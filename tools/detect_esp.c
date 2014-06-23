@@ -8,6 +8,7 @@ int has_efi_directory(PedPartition* part)
 {
     int is_busy = ped_partition_is_busy(part);
     char *path = ped_partition_get_path(part);
+    //TODO: free path
     char* mount_point = NULL; 
     GError* error = NULL;
 

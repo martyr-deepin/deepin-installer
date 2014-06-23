@@ -23,11 +23,10 @@
 #include "part_util.h"
 #include "fs_util.h"
 #include "info.h"
-#include "hooks.h"
-#include "setup.h"
 
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <pwd.h>
 #include <sys/types.h>
 #include <parted/parted.h>
 #include <unistd.h>
@@ -35,117 +34,14 @@
 #define LOG_FILE_PATH           "/tmp/installer.log"
 
 
-static GFile* _get_gfile_from_gapp(GDesktopAppInfo* info);
-
-static GList *filelist = NULL;
-
-static gboolean 
-mount_procfs ()
+gboolean enter_chroot()
 {
     gboolean ret = FALSE;
-    GError *error = NULL;
-    gchar *dev_target = NULL;
-    gchar *devpts_target = NULL;
-    gchar *proc_target = NULL;
-    gchar *sys_target = NULL;
-    gchar *mount_dev = NULL;
-    gchar *mount_devpts = NULL;
-    gchar *mount_proc = NULL;
-    gchar *mount_sys = NULL;
-
-    dev_target = g_strdup_printf ("%s/dev", TARGET);
-    devpts_target = g_strdup_printf ("%s/dev/pts", TARGET);
-    proc_target = g_strdup_printf ("%s/proc", TARGET);
-    sys_target = g_strdup_printf ("%s/sys", TARGET);
-
-    mount_dev = g_strdup_printf ("mount -v --bind /dev %s/dev", TARGET);
-    mount_devpts = g_strdup_printf ("mount -vt devpts devpts %s/dev/pts", TARGET);
-    mount_proc = g_strdup_printf ("mount -vt proc proc %s/proc", TARGET);
-    mount_sys = g_strdup_printf ("mount -vt sysfs sysfs %s/sys", TARGET);
-
-    guint dev_before = get_mount_target_count (dev_target);
-    g_spawn_command_line_sync (mount_dev, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("mount procfs:mount dev %s\n", error->message);
-        goto out;
-    }
-    guint dev_after = get_mount_target_count (dev_target);
-    if (dev_after != dev_before + 1) {
-        g_warning ("mount procfs:mount dev not changed\n");
-        goto out;
-    }
-    
-    guint devpts_before = get_mount_target_count (devpts_target);
-    g_spawn_command_line_sync (mount_devpts, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("mount procfs:mount devpts %s\n", error->message);
-        goto out;
-    }
-    guint devpts_after  = get_mount_target_count (devpts_target);
-    if (devpts_after != devpts_before + 1) {
-        g_warning ("mount procfs:mount devpts not changed\n");
-        goto out;
-    }
-
-    guint proc_before = get_mount_target_count (proc_target);
-    g_spawn_command_line_sync (mount_proc, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("mount procfs:mount proc %s\n", error->message);
-        goto out;
-    }
-    guint proc_after = get_mount_target_count (proc_target);
-    if (proc_after != proc_before + 1) {
-        g_warning ("mount procfs:mount proc not changed\n");
-        goto out;
-    }
-
-    guint sys_before = get_mount_target_count (sys_target);
-    g_spawn_command_line_sync (mount_sys, NULL, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("mount procfs:mount sys %s\n", error->message);
-        goto out;
-    }
-    guint sys_after = get_mount_target_count (sys_target);
-    if (sys_after != sys_before + 1) {
-        g_warning ("mount procfs:mount sys not changed\n");
-        goto out;
-    }
-    ret = TRUE;
-    goto out;
-
-out:
-    g_free (dev_target);
-    g_free (devpts_target);
-    g_free (proc_target);
-    g_free (sys_target);
-
-    g_free (mount_dev);
-    g_free (mount_devpts);
-    g_free (mount_proc);
-    g_free (mount_sys);
-    if (error != NULL) {
-        g_error_free (error);
-        error = NULL;
-    }
-    return ret;
-}
-
-JS_EXPORT_API
-gboolean installer_chroot_target ()
-{
-    write_installer_conf("/target/etc/deepin-installer.conf");
-
-    run_hooks_before_chroot();
-
-    gboolean ret = FALSE;
-    if (!mount_procfs ()) {
-        goto out;
-    }
 
     extern int chroot_fd;
     if ((chroot_fd = open (".", O_RDONLY)) < 0) {
         g_warning ("chroot:set chroot fd failed\n");
-        goto out;
+	return ret;
     }
 
     extern gboolean in_chroot;
@@ -156,15 +52,28 @@ gboolean installer_chroot_target ()
     } else {
         g_warning ("chroot:chroot to %s falied:%s\n", TARGET, strerror (errno));
     }
-    goto out;
 
-out:
-    if (ret) {
-        emit_progress ("chroot", "finish");
-    } else {
-        emit_progress ("chroot", "terminate");
-    }
     return ret;
+}
+
+gboolean break_chroot()
+{
+    extern gboolean in_chroot;
+    extern int chroot_fd;
+
+    if (in_chroot) {
+
+	if (fchdir (chroot_fd) < 0) {
+	    g_warning ("finish install:reset to chroot fd dir failed\n");
+	} else {
+	    int i = 0;
+	    for (i = 0; i < 1024; i++) {
+		chdir ("..");
+	    }
+	}
+	chroot (".");
+	in_chroot = FALSE;
+    }
 }
 
 //unmount after break chroot
@@ -212,15 +121,7 @@ unmount_target ()
     g_free (umount_target_cmd);
 }
 
-static
-GFile* _get_gfile_from_gapp(GDesktopAppInfo* info)
-{
-    return g_file_new_for_commandline_arg(g_desktop_app_info_get_filename(info));
-}
-
-
-void
-finish_install_cleanup () 
+void finish_install_cleanup () 
 {
     g_message ("finish install cleanup\n");
     static gboolean cleaned = FALSE;
@@ -230,24 +131,6 @@ finish_install_cleanup ()
     }
     cleaned = TRUE;
 
-    extern gboolean in_chroot;
-    extern int chroot_fd;
-
-    if (in_chroot) {
-
-        if (fchdir (chroot_fd) < 0) {
-            g_warning ("finish install:reset to chroot fd dir failed\n");
-        } else {
-            int i = 0;
-            for (i = 0; i < 1024; i++) {
-                chdir ("..");
-            }
-        }
-        chroot (".");
-        in_chroot = FALSE;
-    }
-
-    run_hooks_after_chroot();
 
     unmount_target ();
     ped_device_free_all ();
@@ -290,4 +173,29 @@ char* installer_get_default_lang_pack()
     char* ret = g_strdup(new_str+ 7);
     g_free(new_str);
     return ret;
+}
+
+JS_EXPORT_API 
+JSObjectRef installer_get_system_users()
+{
+    GRAB_CTX ();
+    JSObjectRef array = json_array_create ();
+
+    struct passwd *user;
+    gchar *username = NULL;
+    int i = 0;
+
+    while ((user = getpwent ()) != NULL){
+        if (user->pw_uid >= 1000 || g_strcmp0 ("deepin", user->pw_name) == 0) {
+            continue;
+        }
+        username = g_strdup (user->pw_name);
+        json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), username));
+        i++;
+        g_free (username);
+    }
+    endpwent ();
+    UNGRAB_CTX ();
+
+    return array;
 }
