@@ -877,8 +877,8 @@ class Welcome extends Page
 
         @title_set = create_element("div", "TitleSet", @title)
         
-        @language_set = create_element("div", "LanguageSet", @title_set)
-        @language_set.innerText = _("Language")
+        #@language_set = create_element("div", "LanguageSet", @title_set)
+        #@language_set.innerText = _("Language")
         
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
         @keyboard_set.innerText = _("Keyboard")
@@ -893,9 +893,9 @@ class Welcome extends Page
 
         @wrap = create_element("div", "WelcomeWrap", @element)
 
-        @language = new Language("language")
-        @wrap.appendChild(@language.element)
-        __language_widget = @language
+        #@language = new Language("language")
+        #@wrap.appendChild(@language.element)
+        #__language_widget = @language
 
         @keyboard = new Keyboard("keyboard")
         @wrap.appendChild(@keyboard.element)
@@ -910,12 +910,12 @@ class Welcome extends Page
         __account_widget = @account
 
     do_click: (e) ->
-        if is_ancestor(@language_set, e.target)
-            if @language.displayed
-                @account.show()
-            else
-                @language.show()
-        else if is_ancestor(@keyboard_set, e.target)
+        #if is_ancestor(@language_set, e.target)
+        #    if @language.displayed
+        #        @account.show()
+        #    else
+        #        @language.show()
+        if is_ancestor(@keyboard_set, e.target)
             if @keyboard.displayed
                 @account.show()
             else
