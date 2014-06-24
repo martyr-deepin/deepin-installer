@@ -1,21 +1,25 @@
 #!/bin/bash
 # install grub to detect machine
 
-if [ ! -d /sys/firmware/efi ];then
-    BOOT="legacy"
-else
-    BOOT="efi"
-fi
 
-# add cdrom to source.list
- [ ! -d /media/cdrom ] && echo "No /media/cdrom " && exit 1
-apt-cdrom add -d /media/cdrom -m  && apt-get update
-
-GRUB_TARGET="/dev/sda"
 
 if [ -f /host/etc/deepin-installer.conf ];then
     . /host/etc/deepin-installer.conf
 fi
+
+[ -z ${GRUB_TARGET} ] && exit 0
+
+if [ x${DI_UEFI} == xtrue ];then
+    BOOT="efi"
+else
+    BOOT="legacy"
+fi
+
+#if [ ! -d /sys/firmware/efi ];then
+#    BOOT="legacy"
+#else
+#    BOOT="efi"
+#fi
 
 if [ x${BOOT} == xefi ];then
     if [ -x /usr/bin/fwts ];then
@@ -23,6 +27,10 @@ if [ x${BOOT} == xefi ];then
         [ x${value} == 0x01 ] && BOOT="uefi-secureboot"
     fi
 fi
+
+# add cdrom to source.list
+ [ ! -d /media/cdrom ] && echo "No /media/cdrom " && exit 1
+apt-cdrom add -d /media/cdrom -m  && apt-get update
 
 case ${BOOT} in
     "efi")
