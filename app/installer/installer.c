@@ -37,61 +37,6 @@ static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
 gchar *xrandr_size = NULL;
 
-gchar *opt_extract_mode;
-gint opt_use_processors;
-gchar *opt_iso_path;
-gboolean opt_automatic;
-gchar *opt_target;
-gchar *opt_home;
-gchar *opt_username;
-gchar *opt_hostname;
-gchar *opt_password;
-gchar *opt_layout;
-gchar *opt_variant;
-gchar *opt_timezone;
-gchar *opt_locale;
-gchar *opt_grub;
-gboolean opt_debug;
-
-static GOptionEntry entries[] = 
-{
-    { "schema", 's', 0, G_OPTION_ARG_STRING, &opt_extract_mode, "fast use unsquashfs, safe copy file one by one", "fast or safe"},
-    { "cpu", 'c', 0, G_OPTION_ARG_INT, &opt_use_processors, "num of processors used in unsquashfs mode", "count"},
-    { "iso", 'i', 0, G_OPTION_ARG_STRING, &opt_iso_path, "set iso file path when install without live os", "path"},
-    { "automatic", 'a', 0, G_OPTION_ARG_NONE, &opt_automatic, "gather info from command line then install automatic", NULL},
-    { "target", 't', 0, G_OPTION_ARG_STRING, &opt_target, "device to install system, required when automatic", "/dev/sdaX"},
-    { "home", 'm', 0, G_OPTION_ARG_STRING, &opt_home, "partition mount as home in target system, only work when automatic", "/dev/sdaX"},
-    { "username", 'u', 0, G_OPTION_ARG_STRING, &opt_username, "username of target system, required when automatic", "deepin"}, 
-    { "hostname", 'n', 0, G_OPTION_ARG_STRING, &opt_hostname, "hostname of target system, only work when automatic", "hostname"},
-    { "password", 'p', 0, G_OPTION_ARG_STRING, &opt_password, "password of target system, required when automatic", "password"},
-    { "layout", 'l', 0, G_OPTION_ARG_STRING, &opt_layout, "keyboard layout of target system, only work when automatic", "layout code"},
-    { "variant", 'v', 0, G_OPTION_ARG_STRING, &opt_variant, "keyboard variant of target system, only work when automatic", "variant code"},
-    { "zone", 'z', 0, G_OPTION_ARG_STRING, &opt_timezone, "timezone of target system, only work when automatic", "Asia/Shanghai"},
-    { "locale", 'e', 0, G_OPTION_ARG_STRING, &opt_locale, "locale of target system, only work when automatic", "zh_CN.UTF-8"},
-    { "grub", 'g', 0, G_OPTION_ARG_STRING, &opt_grub, "device path or uefi to install bootloader, only work when automatic", "/dev/sdaX or uefi"},
-    { "debug", 'd', 0, G_OPTION_ARG_NONE, &opt_debug, "set log level to debug", NULL},
-    { NULL }
-};
-
-JS_EXPORT_API
-JSObjectRef installer_get_installation_info ()
-{
-    GRAB_CTX ();
-    JSObjectRef json = json_create ();
-    json_append_string (json, "target", opt_target);
-    json_append_string (json, "home", opt_home);
-    json_append_string (json, "username", opt_username);
-    json_append_string (json, "hostname", opt_hostname);
-    json_append_string (json, "password", opt_password);
-    json_append_string (json, "layout", opt_layout);
-    json_append_string (json, "variant", opt_variant);
-    json_append_string (json, "timezone", opt_timezone);
-    json_append_string (json, "locale", opt_locale);
-    json_append_string (json, "grub", opt_grub);
-    UNGRAB_CTX ();
-    return json;
-}
-
 static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
@@ -173,15 +118,6 @@ sigterm_cb (int sig)
 
 int main(int argc, char **argv)
 {
-    GOptionContext *context = g_option_context_new ("- Deepin Installer");
-    g_option_context_add_main_entries (context, entries, "INSTALLER");
-    g_option_context_add_group (context, gtk_get_option_group (TRUE));
-    if (!g_option_context_parse (context, &argc, &argv, NULL)) {
-        g_warning ("context parse failed\n");
-    }
-    g_option_context_free (context);
-
-    global_argv = argv;
     gtk_init (&argc, &argv);
     g_log_set_default_handler((GLogFunc)log_to_file, "deepin-installer");
 

@@ -61,6 +61,4 @@ gchar *get_partition_uuid (const gchar *path);
 
 gchar *get_partition_label (const gchar *path);
 
-JS_EXPORT_API void  installer_draw_background (JSValueRef canvas, const gchar *path);
-
 #endif

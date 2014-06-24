@@ -418,6 +418,7 @@ gboolean installer_disk_support_efi (const gchar *disk)
 }
 
 //generally, you should get device speed by disk, not partition
+//TODO: remove
 JS_EXPORT_API 
 void installer_is_device_slow (const gchar *uuid)
 {

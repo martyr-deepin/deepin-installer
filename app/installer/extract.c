@@ -520,13 +520,8 @@ thread_extract_squashfs (gpointer data)
 
     guint processors = get_cpu_num ();
     guint puse = 1;
-    extern gint opt_use_processors;
-    if (opt_use_processors > 0 && opt_use_processors <= processors) {
-        puse = opt_use_processors;
-    } else {
-        if (processors > 2) {
-            puse = processors - 1;
-        }
+    if (processors > 2) {
+	puse = processors - 1;
     }
 
     gchar **argv = g_new0 (gchar *, 8);
@@ -639,6 +634,7 @@ is_outdated_machine ()
     return FALSE;
 }
 
+//TODO: report error
 static gboolean
 is_live_os ()
 {
@@ -663,41 +659,9 @@ void installer_extract_intelligent ()
     g_spawn_command_line_async ("pkill -9 os-prober", NULL);
     g_free (cmd);
 
-    if (!is_live_os ()) {
-        extern gchar *opt_iso_path;
-        if (opt_iso_path != NULL && g_file_test (opt_iso_path, G_FILE_TEST_EXISTS)) {
-            while (g_file_test ("/cdrom/casper/filesystem.squashfs", G_FILE_TEST_EXISTS)) {
-                g_spawn_command_line_async ("umount -l /cdrom", NULL);
-                g_usleep (100);
-            }
-            gchar *cdrom_cmd = g_strdup_printf ("mount -t iso9660 %s /cdrom", opt_iso_path);
-            g_spawn_command_line_sync (cdrom_cmd, NULL, NULL, NULL, NULL);
-            g_free (cdrom_cmd);
-        } else  {
-            g_warning ("extract intelligent:iso not exists in none live os\n");
-        }
-    }
-
-    extern gchar *opt_extract_mode;
-    if (opt_extract_mode != NULL) {
-        if (g_strcmp0 (opt_extract_mode, "fast") == 0) {
-            installer_extract_squashfs ();
-
-        } else if (g_strcmp0 (opt_extract_mode, "safe") == 0) {
-            installer_extract_iso ();
-
-        } else {
-            if (is_outdated_machine ()) {
-                installer_extract_iso ();
-            } else {
-                installer_extract_squashfs ();
-            }
-        }
+    if (is_outdated_machine ()) {
+	installer_extract_iso ();
     } else {
-        if (is_outdated_machine ()) {
-            installer_extract_iso ();
-        } else {
-            installer_extract_squashfs ();
-        }
+	installer_extract_squashfs ();
     }
 }
