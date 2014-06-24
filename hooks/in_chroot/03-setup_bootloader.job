@@ -7,7 +7,8 @@ if [ -f /host/etc/deepin-installer.conf ];then
     . /host/etc/deepin-installer.conf
 fi
 
-[ -z ${GRUB_TARGET} ] && exit 0
+# if no GRUB_TARGET, treat as not installing bootloader
+[ -z ${GRUB_TARGET} ] && return
 
 if [ x${DI_UEFI} == xtrue ];then
     BOOT="efi"
@@ -27,10 +28,6 @@ if [ x${BOOT} == xefi ];then
         [ x${value} == 0x01 ] && BOOT="uefi-secureboot"
     fi
 fi
-
-# add cdrom to source.list
- [ ! -d /media/cdrom ] && echo "No /media/cdrom " && exit 1
-apt-cdrom add -d /media/cdrom -m  && apt-get update
 
 case ${BOOT} in
     "efi")

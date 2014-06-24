@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# add cdrom to source.list
+[ ! -d /media/cdrom ] && echo "No /media/cdrom " && exit 1
+#commented source.list to let apt-get just using cdrom repo.
+set -i 's/^/#/g' /etc/apt/sources.list
+apt-cdrom add -d /media/cdrom -m  && apt-get update
