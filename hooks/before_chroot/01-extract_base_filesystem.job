@@ -1,1 +1,10 @@
 unsquashfs -f -d /target /cdrom/casper/filesystem.squashfs
+
+[ ! -f /etc/deepin-installer.conf ] && exit 0
+
+. /etc/deepin-installer.conf
+local L=${DI_LOCALE%.*}
+
+if [ -f /cdrom/casper/overlay-deepin-${L}.squashfs ];then
+    unsquashfs -f -d /target /cdrom/casper/overlay-deepin-${L}.squashfs
+fi
