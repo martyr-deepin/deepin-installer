@@ -29,3 +29,6 @@ for i in $array;do
 		mount $mountpoint ${target}${mountpath}
 	fi
 done
+
+[ ! -d ${target}/host ] && mkdir -p ${target}/host
+mount --bind / ${target}/host
