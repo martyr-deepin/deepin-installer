@@ -1,0 +1,6 @@
+umount /target/host
+umount /target/media/cdrom
+umount /target/dev/pts
+umount /target/dev
+umount /target/proc
+umount /target/sys
