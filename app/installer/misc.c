@@ -76,66 +76,6 @@ gboolean break_chroot()
     }
 }
 
-//unmount after break chroot
-static void 
-unmount_target ()
-{
-    g_debug ("finish install:unmount target\n");
-    extern gboolean in_chroot;
-    if (in_chroot) {
-        g_warning ("unmount mount:in chroot\n");
-        return;
-    }
-
-    gchar *umount_sys_cmd = g_strdup_printf ("umount -l %s/sys", TARGET);
-    gchar *umount_proc_cmd = g_strdup_printf ("umount -l %s/proc", TARGET);
-    gchar *umount_devpts_cmd = g_strdup_printf ("umount -l %s/dev/pts", TARGET);
-    gchar *umount_dev_cmd = g_strdup_printf ("umount -l %s/dev", TARGET);
-    gchar *umount_target_cmd = g_strdup_printf ("umount -l %s", TARGET);
-
-    g_spawn_command_line_sync (umount_sys_cmd, NULL, NULL, NULL, NULL);
-    g_spawn_command_line_sync (umount_proc_cmd, NULL, NULL, NULL, NULL);
-    g_spawn_command_line_sync (umount_devpts_cmd, NULL, NULL, NULL, NULL);
-    g_spawn_command_line_sync (umount_dev_cmd, NULL, NULL, NULL, NULL);
-    extern GList *mounted_list;
-    int i;
-    for (i = 0 ; i < g_list_length (mounted_list); i++) {
-        gchar *umount_cmd = g_strdup_printf ("umount -l %s", (gchar *) g_list_nth_data (mounted_list, i));
-        g_spawn_command_line_sync (umount_cmd, NULL, NULL, NULL, NULL);
-        g_free (umount_cmd);
-    }
-    g_spawn_command_line_sync (umount_target_cmd, NULL, NULL, NULL, NULL);
-
-    while (g_file_test (TARGET, G_FILE_TEST_IS_DIR)) {
-        if (g_rmdir (TARGET) != 0) {
-            g_spawn_command_line_sync (umount_target_cmd, NULL, NULL, NULL, NULL);
-            g_usleep (1000);
-        }
-    }
-
-    g_list_free_full (mounted_list, g_free);
-    g_free (umount_sys_cmd);
-    g_free (umount_proc_cmd);
-    g_free (umount_devpts_cmd);
-    g_free (umount_dev_cmd);
-    g_free (umount_target_cmd);
-}
-
-void finish_install_cleanup () 
-{
-    g_message ("finish install cleanup\n");
-    static gboolean cleaned = FALSE;
-    if (cleaned) {
-        g_warning ("finish install cleanup:already cleaned\n");
-        return;
-    }
-    cleaned = TRUE;
-
-
-    unmount_target ();
-    ped_device_free_all ();
-}
-
 JS_EXPORT_API 
 void  installer_show_log ()
 {

@@ -3,6 +3,3 @@ mount /dev/sda1 /target
 
 mkdir -p /target/host
 mount --bind / /target/host
-
-mkdir -p /target/media/cdrom
-mount --bind /cdrom /target/media/cdrom

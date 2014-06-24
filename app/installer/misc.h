@@ -30,6 +30,4 @@ gboolean enter_chroot();
 JS_EXPORT_API void  installer_show_log ();
 JS_EXPORT_API char* installer_get_default_lang_pack();
 
-void finish_install_cleanup ();
-
 #endif

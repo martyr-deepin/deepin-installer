@@ -1,0 +1,2 @@
+#!/bin/bash
+cat /target/etc/deepin-installer.conf
