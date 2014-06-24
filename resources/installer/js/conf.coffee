@@ -29,3 +29,20 @@ sync_installer_conf = ->
         layout = __selected_layout
         variant = null
     DCore.Installer.record_keyboard_layout_info(layout, variant)
+
+    record_mount_points()
+
+#write /etc/fstab, after extract iso
+record_mount_points = ->
+    for disk in disks
+        for part in v_disk_info[disk]["partitions"]
+            if v_part_info[part]["fs"] == "efi"
+                v_part_info[part]["mp"] = "/boot/efi"
+            if v_part_info[part]["fs"] == "swap"
+                v_part_info[part]["mp"] = "swap"
+            if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused"
+                try
+                    DCore.Installer.record_mountpoint_info(part, v_part_info[part]["mp"])
+
+                catch error
+                    echo error

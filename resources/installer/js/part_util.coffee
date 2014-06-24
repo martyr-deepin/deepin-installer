@@ -378,58 +378,6 @@ get_efi_boot_part = ->
                 return part
     return null
 
-#just cp mp form view to model as in simple mode, we fake the view data operation
-#don't use it any more as manually operate the view table
-__sync_part_mp = ->
-    for disk in disks
-        for part in v_disk_info[disk]["partitions"]
-            if v_part_info[part]["type"] in ["normal", "logical"]
-                m_part_info[part]["mp"] = v_part_info[part]["mp"]
-
-#mount custom partitions, before chroot, before extract iso
-#don't need to __sync_part_mp as we manually operate the view table
-mount_custom_partitions = ->
-    echo "mount custom partitions"
-    target = get_target_part()
-    if target?
-        try
-            ret = DCore.Installer.mount_partition(target, "/")
-        catch error
-            return false
-        if not ret
-            return false
-    else
-        echo "mount custom partitions must have root"
-        return false
-
-    for disk in disks
-        for part in v_disk_info[disk]["partitions"]
-            DCore.Installer.record_mountpoint_info(part, v_part_info[part]["mp"])
-
-            #TODO: Try remove below code
-            if v_part_info[part]["fs"] == "efi"
-                v_part_info[part]["mp"] = "/boot/efi"
-            if v_part_info[part]["mp"]? and v_part_info[part]["mp"] not in ["unused", "/"]
-                try
-                    DCore.Installer.mount_partition(part, v_part_info[part]["mp"])
-                catch error
-                    echo error
-    return true
-
-#write /etc/fstab, after extract iso
-write_fs_tab = ->
-    echo "write fs tab"
-    for disk in disks
-        for part in v_disk_info[disk]["partitions"]
-            if v_part_info[part]["fs"] == "efi"
-                v_part_info[part]["mp"] = "/boot/efi"
-            if v_part_info[part]["fs"] == "swap"
-                v_part_info[part]["mp"] = "swap"
-            if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused"
-                try
-                    DCore.Installer.write_partition_mp(part, v_part_info[part]["mp"])
-                catch error
-                    echo error
 
 #Model end
 #Model
