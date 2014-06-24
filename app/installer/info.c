@@ -51,7 +51,7 @@ char* installer_conf_to_string()
     return g_strdup_printf("\n"
 	    "GRUB_TARGET=\"%s\"\n"
 	    "DI_UEFI=\"%s\"\n"
-	    "DI_USER=\"%s\"\n"
+	    "DI_USERNAME=\"%s\"\n"
 	    "DI_PASSWORD=\"%s\"\n"
 	    "DI_HOSTNAME=\"%s\"\n"
 	    "DI_TIMEZONE=\"%s\"\n"
