@@ -20,6 +20,9 @@ enum {
 JS_EXPORT_API
 void installer_start_install()
 {
+    //TODO: find an better palce
+    ped_device_free_all();
+
     write_installer_conf("/etc/deepin-installer.conf");
     enter_next_stage();
 }

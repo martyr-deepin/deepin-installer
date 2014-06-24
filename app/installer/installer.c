@@ -61,14 +61,12 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 JS_EXPORT_API
 void installer_finish_install ()
 {
-    finish_install_cleanup ();
     gtk_main_quit ();
 }
 
 JS_EXPORT_API
 void installer_finish_reboot ()
 {
-    finish_install_cleanup ();
     g_spawn_command_line_async ("reboot", NULL);
     gtk_main_quit ();
 }
