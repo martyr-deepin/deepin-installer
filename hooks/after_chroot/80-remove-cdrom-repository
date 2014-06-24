@@ -1,0 +1,3 @@
+#!/bin/bash
+set -i '/deb\ cdrom/d' /target/etc/apt/sources.list
+sed -i 's/^#//g' /target/etc/apt/sources.list
