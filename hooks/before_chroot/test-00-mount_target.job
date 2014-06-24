@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#TODO: check rootfs exists !!!
+#      this script seems bad!!!
+
+[ -f /etc/deepin-installer.conf ] || exit 101
+. /etc/deepin-installer.conf
+
+target="/target"
+
+[ -z ${DI_MOUNTPOINTS} ] && exit 101
+
+array=`echo ${DI_MOUNTPOINTS//;/ }`
+#must mount rootfs first
+for i in $array;do
+	mountpoint=$(echo $i | cut -d'=' -f1)
+	mountpath=$(echo $i | cut -d'=' -f2)
+	if [ $mountpath ==  '/' ];then
+        echo "mount rootfs to ${target}"
+		mount $mountpoint $target
+	fi
+done
+
+for i in $array;do
+	mountpoint=$(echo $i | cut -d'=' -f1)
+	mountpath=$(echo $i | cut -d'=' -f2)
+	if [ $mountpath !=  '/' ];then
+        echo "mount ${mountpoint} -> ${mountpath}"
+		mount $mountpoint ${target}${mountpath}
+	fi
+done
