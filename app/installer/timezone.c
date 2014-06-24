@@ -93,6 +93,7 @@ out:
     return timezones;
 }
 
+//TODO: REMOVE
 JS_EXPORT_API 
 void installer_set_timezone (const gchar *timezone)
 {

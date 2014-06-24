@@ -12,9 +12,9 @@ __selected_locale = DCore.Installer.get_current_locale()
 sync_installer_conf = ->
     DCore.Installer.record_accounts_info(__selected_username, __selected_hostname, __selected_password)
 
-    DCore.Installer.set_timezone(__selected_timezone)
+    DCore.Installer.record_timezone_info(__selected_timezone)
 
-    DCore.Installer.set_target_locale(__selected_locale)
+    DCore.Installer.record_locale_info(__selected_locale)
 
     if __selected_grub != "uefi"
         DCore.Installer.record_bootloader_info(__selected_grub, false)
@@ -28,4 +28,4 @@ sync_installer_conf = ->
     else
         layout = __selected_layout
         variant = null
-    DCore.Installer.set_keyboard_layout_variant(layout, variant)
+    DCore.Installer.record_keyboard_layout_info(layout, variant)

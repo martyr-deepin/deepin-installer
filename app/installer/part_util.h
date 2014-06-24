@@ -94,8 +94,6 @@ JS_EXPORT_API gboolean installer_write_partition_mp (const gchar *part, const gc
 
 JS_EXPORT_API gboolean installer_set_partition_flag (const gchar *part, const gchar *flag_name, gboolean status);
 
-JS_EXPORT_API gboolean installer_mount_partition (const gchar *part, const gchar *mp);
-
 JS_EXPORT_API void installer_unmount_partition (const gchar *part);
 
 #endif

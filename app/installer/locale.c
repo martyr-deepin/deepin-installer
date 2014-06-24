@@ -113,7 +113,7 @@ out:
     return flag;
 }
 
-JS_EXPORT_API 
+//TODO: remove
 void  installer_set_target_locale (const gchar *locale)
 {
     gchar **split = NULL;

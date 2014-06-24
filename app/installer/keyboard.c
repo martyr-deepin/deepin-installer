@@ -248,7 +248,7 @@ JSObjectRef installer_get_current_layout_variant ()
     return current;
 }
 
-JS_EXPORT_API 
+//TODO: REMOVE
 void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant)
 {
     gchar *contents = NULL;
