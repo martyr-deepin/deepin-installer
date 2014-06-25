@@ -24,57 +24,15 @@
 #include "fs_util.h"
 #include "info.h"
 
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <pwd.h>
-#include <sys/types.h>
 #include <parted/parted.h>
 #include <unistd.h>
 
 #define LOG_FILE_PATH           "/tmp/installer.log"
 
-
-gboolean enter_chroot()
-{
-    gboolean ret = FALSE;
-
-    extern int chroot_fd;
-    if ((chroot_fd = open (".", O_RDONLY)) < 0) {
-        g_warning ("chroot:set chroot fd failed\n");
-	return ret;
-    }
-
-    extern gboolean in_chroot;
-    if (chroot (TARGET) == 0) {
-	chdir("/"); //change to an valid directory
-        in_chroot = TRUE;
-        ret = TRUE;
-    } else {
-        g_warning ("chroot:chroot to %s falied:%s\n", TARGET, strerror (errno));
-    }
-
-    return ret;
-}
-
-gboolean break_chroot()
-{
-    extern gboolean in_chroot;
-    extern int chroot_fd;
-
-    if (in_chroot) {
-
-	if (fchdir (chroot_fd) < 0) {
-	    g_warning ("finish install:reset to chroot fd dir failed\n");
-	} else {
-	    int i = 0;
-	    for (i = 0; i < 1024; i++) {
-		chdir ("..");
-	    }
-	}
-	chroot (".");
-	in_chroot = FALSE;
-    }
-}
 
 JS_EXPORT_API 
 void  installer_show_log ()

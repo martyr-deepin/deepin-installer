@@ -338,7 +338,6 @@ class InstallDialog extends Dialog
 
     confirm_install_cb: ->
         echo "confirm install"
-        sync_installer_conf()
 
         progress_page = new Progress("progress")
         pc.remove_page(part_page)
@@ -350,6 +349,7 @@ class InstallDialog extends Dialog
             else if __selected_mode == "advance"
                 echo "do advance partition"
                 do_partition()
+            sync_installer_conf()
         , 300)
 
     fill_install_info: ->

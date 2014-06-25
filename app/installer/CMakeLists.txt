@@ -5,7 +5,7 @@ GEN_JSC_SOURCE2(JSC_GEN "jsc" "installer" "installer.cfg" "dbus.cfg")
 pkg_check_modules(PARTED REQUIRED libparted)
 pkg_check_modules(XKLAVIER REQUIRED libxklavier)
 
-add_executable(${NAME} ${JSC_GEN} base.c fs_util.c part_util.c misc.c timezone.c locale.c extract.c keyboard.c installer.c info.c hooks.c scheduler.c)
+add_executable(${NAME} ${JSC_GEN} base.c fs_util.c part_util.c misc.c timezone.c locale.c extract.c keyboard.c installer.c info.c hooks.c scheduler.c esp.c)
 
 target_link_libraries(${NAME} dcom dbus ${DWEBVIEW_LIBRARIES} ${PARTED_LIBRARIES} ${XKLAVIER_LIBRARIES})
 

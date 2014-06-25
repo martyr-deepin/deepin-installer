@@ -4,3 +4,5 @@ umount /target/dev/pts
 umount /target/dev
 umount /target/proc
 umount /target/sys
+rm -rf /target/host
+umount /target/

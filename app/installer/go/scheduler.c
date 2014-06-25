@@ -1,9 +1,9 @@
 #include "scheduler.h"
-#include "jsextension.h"
-#include "misc.h"
 #include "info.h"
 
 #include <glib.h>
+
+#define JS_EXPORT_API
 
 void run_hooks_before_chroot();
 void run_hooks_in_chroot();
@@ -40,12 +40,14 @@ void enter_next_stage()
 	case STAGE_HOOKS_BEFORE_CHROOT:
 	    current_stage = STAGE_HOOKS_IN_CHROOT;
 
+	    enter_chroot();
 	    run_hooks_in_chroot();
 	    break;
 
 	case STAGE_HOOKS_IN_CHROOT:
 	    current_stage = STAGE_HOOKS_AFTER_CHROOT;
 
+	    break_chroot();
 	    run_hooks_after_chroot();
 	    break;
 

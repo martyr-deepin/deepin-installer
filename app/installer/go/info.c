@@ -1,7 +1,7 @@
 #include "info.h"
 #include <glib.h>
-#include "jsextension.h"
-#include "part_util.h"
+
+#define JS_EXPORT_API
 
 static struct _InstallerConf {
     char* bootloader;
@@ -24,14 +24,16 @@ static struct _InstallerConf {
 
 char* find_path_by_uuid(const char* uuid)
 {
-    if (g_str_has_prefix (uuid, "disk")) {
-	return installer_get_disk_path (uuid);
-    } else if (g_str_has_prefix (uuid, "part")) {
-	return installer_get_partition_path (uuid);
-    } else {
-	g_error("update grub:invalid uuid %s\n", uuid);
-	return NULL;
-    }
+    return "hehe";
+    //TODO:
+    /*if (g_str_has_prefix (uuid, "disk")) {*/
+	/*return installer_get_disk_path (uuid);*/
+    /*} else if (g_str_has_prefix (uuid, "part")) {*/
+	/*return installer_get_partition_path (uuid);*/
+    /*} else {*/
+	/*g_error("update grub:invalid uuid %s\n", uuid);*/
+	/*return NULL;*/
+    /*}*/
 }
 
 
@@ -41,17 +43,17 @@ char* installer_conf_to_string()
 
     GHashTableIter iter;
     gpointer key, value;
-    g_assert(InstallerConf.mount_points != NULL);
-
-    g_hash_table_iter_init(&iter, InstallerConf.mount_points);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-	g_string_append_printf(mp, "%s=%s;", (gchar*)key, (gchar*)value);
+    if (InstallerConf.mount_points != NULL) {
+	g_hash_table_iter_init(&iter, InstallerConf.mount_points);
+	while (g_hash_table_iter_next(&iter, &key, &value)) {
+	    g_string_append_printf(mp, "%s=%s;", (gchar*)key, (gchar*)value);
+	}
     }
 
     return g_strdup_printf("\n"
 	    "GRUB_TARGET=\"%s\"\n"
 	    "DI_UEFI=\"%s\"\n"
-	    "DI_USERNAME=\"%s\"\n"
+	    "DI_USER=\"%s\"\n"
 	    "DI_PASSWORD=\"%s\"\n"
 	    "DI_HOSTNAME=\"%s\"\n"
 	    "DI_TIMEZONE=\"%s\"\n"

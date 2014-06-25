@@ -180,6 +180,7 @@ thread_init_parted (gpointer data)
 
     GRAB_CTX ();
     js_post_message ("init_parted", NULL);
+
     UNGRAB_CTX ();
     return NULL;
 }
@@ -1229,6 +1230,7 @@ handle_part_operation_thread (gpointer data)
         if (i == op_count - 1) {
             GRAB_CTX ();
             js_post_message ("part_operation", NULL);
+	    ped_device_free_all();
             UNGRAB_CTX ();
         }
     }
