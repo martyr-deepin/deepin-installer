@@ -6,7 +6,7 @@ fi
 
 DI_LOCALE=${DI_LOCALE:-en_US}
 DI_TIMEZONE=${DI_TIMEZONE:-UTC}
-local LOCALE=${DI_LOCALE%.*}
+LOCALE=${DI_LOCALE%.*}
 
 echo "Check timezone"
 if awk '{print $3}' /usr/share/zoneinfo/zone.tab | grep -q "^${DI_TIMEZONE}$";then
