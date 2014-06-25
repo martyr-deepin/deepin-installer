@@ -8,7 +8,7 @@ DI_LOCALE=${DI_LOCALE:-en_US}
 DI_TIMEZONE=${DI_TIMEZONE:-UTC}
 LOCALE=${DI_LOCALE%.*}
 
-echo "Check timezone"
+echo "Check timezone ${DI_TIMEZONE}"
 if awk '{print $3}' /usr/share/zoneinfo/zone.tab | grep -q "^${DI_TIMEZONE}$";then
     echo "${DI_TIMEZONE} is available"
 else

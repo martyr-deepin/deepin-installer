@@ -8,7 +8,7 @@ if [ -f /host/etc/deepin-installer.conf ];then
 fi
 
 # if no GRUB_TARGET, treat as not installing bootloader
-[ -z ${GRUB_TARGET} ] && return
+[ -z ${GRUB_TARGET} ] && { echo >&2 "[WARN] GRUB_TARGET not set. Treat as not install bootloader. Skip."; exit 1;}
 
 if [ x${DI_UEFI} == xtrue ];then
     BOOT="efi"

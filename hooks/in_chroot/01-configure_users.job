@@ -5,8 +5,8 @@ if [ -f /host/etc/deepin-installer.conf ];then
     . /host/etc/deepin-installer.conf
 fi
 
-[ -z ${DI_USERNAME} ] && exit 101
-[ -z ${DI_PASSWORD} ] && exit 101
+[ -z ${DI_USERNAME} ] && { echo >&2 "[ERROR] Variable DI_USERNAME not set. Aborting"; exit 1; }
+[ -z ${DI_PASSWORD} ] && { echo >&2 "[ERROR] Variable DI_PASSWORD not set. Aborting."; exit 1; }
 [ -z ${DI_HOSTNAME} ] && DI_HOSTNAME="deepin"
 
 useradd -U -m --skel /etc/skel --shell /bin/bash ${DI_USERNAME}
@@ -28,8 +28,10 @@ gpasswd -a ${DI_USERNAME} sudo
 gpasswd -a ${DI_USERNAME} storage
 gpasswd -a ${DI_USERNAME} network
 
+echo "[INFO] Fix Home directory permission to ${DI_USERNAME}."
 chown -hR ${DI_USERNAME}:${DI_USERNAME} /home/${DI_USERNAME}
 
+echo "[INFO] Set Hostname to ${DI_HOSTNAME}
 echo "${DI_HOSTNAME}" | tee /etc/hostname
 
 
