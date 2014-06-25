@@ -1,28 +1,20 @@
 #!/bin/bash
 # install grub to detect machine
 
-
-
 if [ -f /host/etc/deepin-installer.conf ];then
     . /host/etc/deepin-installer.conf
 fi
 
-# if no GRUB_TARGET, treat as not installing bootloader
-[ -z ${GRUB_TARGET} ] && { echo >&2 "[WARN] GRUB_TARGET not set. Treat as not install bootloader. Skip."; exit 1;}
+# if no DI_BOOTLOADER, treat as not installing bootloader
+[ -z ${DI_BOOTLOADER} ] && { echo >&2 "[WARN] DI_BOOTLOADER not set. Treat as not install bootloader. Skip."; exit 1;}
 
 if [ x${DI_UEFI} == xtrue ];then
-    BOOT="efi"
+    BOOT="uefi"
 else
     BOOT="legacy"
 fi
 
-#if [ ! -d /sys/firmware/efi ];then
-#    BOOT="legacy"
-#else
-#    BOOT="efi"
-#fi
-
-if [ x${BOOT} == xefi ];then
+if [ x${BOOT} == xuefi ];then
     if [ -x /usr/bin/fwts ];then
         value=$(fwts uefidump - | grep Secure\ Boot\ Mode | awk '{print $2}')
         [ x${value} == 0x01 ] && BOOT="uefi-secureboot"
@@ -30,7 +22,7 @@ if [ x${BOOT} == xefi ];then
 fi
 
 case ${BOOT} in
-    "efi")
+    "uefi")
         echo "INFO: Detected efi machine"
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-efi
         grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck --debug
@@ -38,7 +30,7 @@ case ${BOOT} in
     "legacy")
         echo "INFO: Detected legacy machine"
         DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
-        grub-install --no-floppy --force ${GRUB_TARGET}
+        grub-install --no-floppy --force ${DI_BOOTLOADER}
         ;;
     "uefi-secureboot")
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated sbsigntool grub-efi-amd64-signed linux-signed-generic

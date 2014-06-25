@@ -279,29 +279,7 @@ do_partition = ->
 
 #auto partition for simple mode
 do_simple_partition = (device, type) ->
-    #fake advance mode operation to keep the hash table uuid
-    #undo_part_table_info(), migrate to call before do simple partition
-    if type == "disk"
-        #drop all partition then crate a new one
-        for part in v_disk_info[device]["partitions"]
-            if v_part_info[part]["type"] in ["normal", "logical"]
-                delete_part(part)
-        if v_disk_info[device]["partitions"].length != 1 
-            echo "do simple partiiton, should have only one when delete all"
-        partid = v_disk_info[device]["partitions"][0]
-        if v_part_info[partid]["type"] != "freespace"
-            echo "do simple partiiton, part should be freespace when delete all"
-        memory_size = DCore.Installer.get_memory_size()
-        swap_sector = Math.floor(memory_size / 512) * 2
-        root_sector = v_part_info[partid]["length"] - swap_sector
-
-        if memory_size < 4000000000 and root_sector > 0
-            add_part(partid, "normal", root_sector, "start", "ext4", "/") 
-            add_part(partid, "normal", swap_sector, "start", "swap", null)
-        else
-            add_part(partid, "normal", v_part_info[partid]["length"], "start", "ext4", "/")
-
-    else if type == "part"
+    if type == "part"
         #create a new part when install to freespace
         if m_part_info[device]["type"] == "freespace"
             partid = device

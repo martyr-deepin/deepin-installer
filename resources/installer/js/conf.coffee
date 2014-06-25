@@ -31,6 +31,10 @@ sync_installer_conf = ->
     DCore.Installer.record_keyboard_layout_info(layout, variant)
 
     record_mount_points()
+    if __selected_mode == "simple"
+        DCore.Installer.record_simple_mode_info(true)
+    else
+        DCore.Installer.record_install_mode_info(false)
 
 #write /etc/fstab, after extract iso
 record_mount_points = ->
@@ -43,6 +47,7 @@ record_mount_points = ->
             if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused"
                 try
                     DCore.Installer.record_mountpoint_info(part, v_part_info[part]["mp"])
-
+                    if v_part_info[part]["mp"] == "/"
+                        DCore.Installer.record_root_disk_info(disk)
                 catch error
                     echo error

@@ -26,6 +26,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include "base.h"
+#include "ped_utils.h"
 #include "dwebview.h"
 
 int server_sockfd;
@@ -201,52 +202,6 @@ get_cpu_num ()
 
     g_free (output);
     return num;
-}
-
-gchar *
-get_partition_mount_point (const gchar *path)
-{
-    gchar *mp = NULL;
-    gchar *swap_cmd = NULL;
-    gchar *swap_output = NULL;
-    gchar *cmd = NULL;
-    GError *error = NULL;
-
-    if (path == NULL || !g_file_test (path, G_FILE_TEST_EXISTS)) {
-        g_warning ("get partition mount point:invalid path %s\n", path);
-        return mp;
-    }
-
-    swap_cmd = g_strdup_printf ("sh -c \"cat /proc/swaps |grep %s |awk '{print $1}'\"", path);
-    g_spawn_command_line_sync (swap_cmd, &swap_output, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("get partition mount point:run swap cmd error->%s\n", error->message);
-        g_error_free (error);
-        error = NULL;
-    }
-    g_free (swap_cmd);
-
-    if (swap_output != NULL && g_strcmp0 (g_strstrip(swap_output), path) == 0) {
-        return g_strdup ("swap");
-    }
-
-    cmd = g_strdup_printf ("findmnt -k -f -n -o TARGET -S %s", path);
-    g_spawn_command_line_sync (cmd, &mp, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning ("get partition mount point:run cmd error->%s\n", error->message);
-        g_error_free (error);
-        error = NULL;
-    }
-    g_free (cmd);
-    if (mp != NULL) {
-        mp = g_strstrip (mp);
-        if (g_strcmp0 (mp, "") == 0) {
-            g_free (mp);
-            return NULL;
-        }
-    }
-
-    return mp;
 }
 
 void 

@@ -3,24 +3,7 @@
 #include "jsextension.h"
 #include "part_util.h"
 
-static struct _InstallerConf {
-    char* bootloader;
-    gboolean uefi;
-
-    char* user_name;
-    char* password;
-    char* host_name;
-
-    char* locale;
-
-    char* layout;
-    char* layout_variant;
-
-    char* timezone;
-
-    GHashTable* mount_points;
-	
-} InstallerConf;
+struct _InstallerConf InstallerConf;
 
 char* find_path_by_uuid(const char* uuid)
 {
@@ -29,8 +12,7 @@ char* find_path_by_uuid(const char* uuid)
     } else if (g_str_has_prefix (uuid, "part")) {
 	return installer_get_partition_path (uuid);
     } else {
-	g_error("update grub:invalid uuid %s\n", uuid);
-	return NULL;
+	return g_strdup(uuid);
     }
 }
 
@@ -42,6 +24,8 @@ char* installer_conf_to_string()
     GHashTableIter iter;
     gpointer key, value;
     g_assert(InstallerConf.mount_points != NULL);
+    g_assert(InstallerConf.root_partition != NULL);
+    g_assert(InstallerConf.root_disk != NULL);
 
     g_hash_table_iter_init(&iter, InstallerConf.mount_points);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
@@ -49,7 +33,8 @@ char* installer_conf_to_string()
     }
 
     return g_strdup_printf("\n"
-	    "GRUB_TARGET=\"%s\"\n"
+	    "DI_BOOTLOADER=\"%s\"\n"
+	    "DI_SIMPLE_MODE=\"%s\"\n"
 	    "DI_UEFI=\"%s\"\n"
 	    "DI_USERNAME=\"%s\"\n"
 	    "DI_PASSWORD=\"%s\"\n"
@@ -58,8 +43,11 @@ char* installer_conf_to_string()
 	    "DI_LOCALE=\"%s\"\n"
 	    "DI_LAYOUT=\"%s\"\n"
 	    "DI_LAYOUT_VARIANT=\"%s\"\n"
-	    "DI_MOUNTPOINTS=\"%s\"\n",
+	    "DI_MOUNTPOINTS=\"%s\"\n"
+	    "DI_ROOT_PARTITION=\"%s\"\n"
+	    "DI_ROOT_DISK=\"%s\"\n",
 	    InstallerConf.bootloader,
+	    InstallerConf.simple_mode ? "true" : "false",
 	    InstallerConf.uefi ? "true" : "false",
 	    InstallerConf.user_name,
 	    InstallerConf.password,
@@ -68,7 +56,9 @@ char* installer_conf_to_string()
 	    InstallerConf.locale ? : "",
 	    InstallerConf.layout ? : "",
 	    InstallerConf.layout_variant ? : "",
-	    g_string_free(mp, FALSE)
+	    g_string_free(mp, FALSE),
+	    InstallerConf.root_partition,
+	    InstallerConf.root_disk
 	    );
 }
 
@@ -91,7 +81,13 @@ void installer_record_mountpoint_info(const char* part, const char* mountpoint)
     if (InstallerConf.mount_points == NULL) {
 	InstallerConf.mount_points = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
     }
-    g_hash_table_insert(InstallerConf.mount_points, find_path_by_uuid(part), g_strdup(mountpoint));
+    if (g_strcmp0(mountpoint, "/") == 0) {
+	if (InstallerConf.root_partition)
+	    g_free(InstallerConf.root_partition);
+	InstallerConf.root_partition = find_path_by_uuid(part);
+    } else {
+	g_hash_table_insert(InstallerConf.mount_points, find_path_by_uuid(part), g_strdup(mountpoint));
+    }
 }
 
 JS_EXPORT_API
@@ -148,3 +144,23 @@ void installer_record_keyboard_layout_info(const char* layout, const char* varia
     InstallerConf.layout = g_strdup(layout);
     InstallerConf.layout_variant = g_strdup(variant);
 }
+
+
+JS_EXPORT_API
+void installer_record_simple_mode_info(gboolean simple)
+{
+    InstallerConf.simple_mode = simple;
+}
+
+JS_EXPORT_API
+void installer_record_root_disk_info(const char* disk)
+{
+    if (InstallerConf.root_disk)
+	g_free(InstallerConf.root_disk);
+    InstallerConf.root_disk = find_path_by_uuid(disk);
+}
+
+char* get_target_disk()
+{
+}
+

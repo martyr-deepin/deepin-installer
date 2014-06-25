@@ -24,6 +24,7 @@
 #include <sys/mount.h>
 #include "part_util.h"
 #include "fs_util.h"
+#include "ped_utils.h"
 #include "info.h"
 
 #define PART_INFO_LENGTH 4096
@@ -394,19 +395,15 @@ JSObjectRef installer_get_disk_partitions (const gchar *disk)
 }
 
 JS_EXPORT_API
-gboolean installer_disk_support_efi (const gchar *disk)
+gboolean installer_system_support_efi ()
 {
-    PedDisk *peddisk = NULL;
-    if (disk == NULL) {
-        g_warning ("disk support efi:disk NULL\n");
-        return FALSE;
-    }
+    return g_file_test("/sys/firmware/efi", G_FILE_TEST_IS_DIR);
+}
 
-    if (!g_file_test ("/sys/firmware/efi", G_FILE_TEST_IS_DIR)) {
-        return FALSE;
-    }
-
-    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
+JS_EXPORT_API 
+gboolean installer_disk_is_gpt(const char* disk)
+{
+    PedDisk* peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
     if (peddisk != NULL) {
         if ((peddisk->type != NULL) && (g_strcmp0 ("gpt", peddisk->type->name) == 0)) {
             return TRUE;
@@ -414,7 +411,6 @@ gboolean installer_disk_support_efi (const gchar *disk)
     } else {
         g_warning ("get disk sector size:find peddisk by %s failed\n", disk);
     }
-
     return FALSE;
 }
 
@@ -1078,12 +1074,12 @@ gboolean handle_update_partition_fs (const gchar *part, const gchar *fs)
         part_path = ped_partition_get_path (pedpartition);
         if (part_path != NULL) {
             if (g_strcmp0 (fs, "efi") == 0) {
-                set_partition_filesystem (part_path, "fat32");
+                mkfs(part_path, "fat32");
                 if (! installer_set_partition_flag (part, "boot", 1)) {
                     g_warning ("set flag for uefi failed\n");
                 }
             } else {
-                set_partition_filesystem (part_path, fs);
+                mkfs(part_path, fs);
             }
             ret = TRUE;
         } else {

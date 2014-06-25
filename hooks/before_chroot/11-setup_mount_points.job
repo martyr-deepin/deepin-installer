@@ -1,3 +1,6 @@
+#!/bin/bash
+
+. /etc/deepin-installer.conf
 
 mkdir -p /target/dev
 mount --bind -v --bind /dev/ /target/dev
@@ -13,3 +16,9 @@ mount -vt sysfs sysfs /target/sys
 
 mkdir -p /target/media/cdrom
 mount --bind /cdrom /target/media/cdrom
+
+if [ x${DI_UEFI} == xtrue ];then
+    mkdir -p /target/boot/efi
+    mount ${DI_BOOTLOADER} /target/boot/efi
+fi
+

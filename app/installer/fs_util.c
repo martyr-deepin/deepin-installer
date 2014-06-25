@@ -546,8 +546,7 @@ get_partition_free (gpointer data)
     return NULL;
 }
 
-void 
-set_partition_filesystem (const gchar *path, const gchar *fs)
+void mkfs(const gchar *path, const gchar *fs)
 {
     if (path == NULL || fs == NULL) {
         g_warning ("set partition filesystem:invalid path->%s or fs->%s\n", path, fs);

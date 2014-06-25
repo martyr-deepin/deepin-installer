@@ -1,8 +1,22 @@
+#!/bin/bash
+
+. /etc/deepin-installer.conf
+
+array=`echo ${DI_MOUNTPOINTS//;/ }`
+for i in $array;do
+	mountpoint=$(echo $i | cut -d'=' -f1)
+	mountpath=$(echo $i | cut -d'=' -f2)
+	if [ $mountpath !=  '/' ];then
+        echo "mount ${mountpoint} -> ${mountpath}"
+		umount ${target}${mountpath}
+	fi
+done
 umount /target/host
 umount /target/media/cdrom
 umount /target/dev/pts
 umount /target/dev
 umount /target/proc
 umount /target/sys
+umount /target/boot/efi
 rm -rf /target/host
 umount /target/

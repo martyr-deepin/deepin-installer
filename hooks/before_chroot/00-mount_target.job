@@ -7,29 +7,21 @@
 
 target="/target"
 
-[ -z ${DI_MOUNTPOINTS} ] && echo "NO MOUNTPOINTS" && exit 101
+mkdir -p ${target}
+#must mount rootfs first
+echo "mount rootfs(${DI_ROOT_PARTITION}) to ${target}"
+mount ${DI_ROOT_PARTITION} ${target}
 
+[ ! -d ${target}/host ] && mkdir -p ${target}/host
+mount --bind / ${target}/host
 
 array=`echo ${DI_MOUNTPOINTS//;/ }`
-#must mount rootfs first
-for i in $array;do
-	mountpoint=$(echo $i | cut -d'=' -f1)
-	mountpath=$(echo $i | cut -d'=' -f2)
-	if [ $mountpath ==  '/' ];then
-	    echo "mount rootfs(${mountpoint}) to ${target}"
-	    mkdir -p ${target}
-	    mount $mountpoint $target
-	fi
-done
-
 for i in $array;do
 	mountpoint=$(echo $i | cut -d'=' -f1)
 	mountpath=$(echo $i | cut -d'=' -f2)
 	if [ $mountpath !=  '/' ];then
         echo "mount ${mountpoint} -> ${mountpath}"
+		mkdir -p ${target}${mountpath}
 		mount $mountpoint ${target}${mountpath}
 	fi
 done
-
-[ ! -d ${target}/host ] && mkdir -p ${target}/host
-mount --bind / ${target}/host

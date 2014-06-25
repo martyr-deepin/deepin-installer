@@ -51,8 +51,6 @@ double get_free_memory_size ();
 
 guint get_cpu_num ();
 
-gchar *get_partition_mount_point (const gchar *path);
-
 void unmount_partition_by_device (const gchar *path);
 
 guint get_mount_target_count (const gchar *target);

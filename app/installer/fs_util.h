@@ -39,7 +39,7 @@ gchar *get_mounted_partition_used (const gchar *path);
 
 gpointer get_partition_free (gpointer data);
 
-void set_partition_filesystem (const gchar *path, const gchar *fs);
+void mkfs(const gchar *path, const gchar *fs);
 
 gboolean inhibit_disk ();
 

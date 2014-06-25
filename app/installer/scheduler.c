@@ -3,6 +3,7 @@
 #include "misc.h"
 #include "info.h"
 
+#include "esp.h"
 #include <glib.h>
 
 void run_hooks_before_chroot();
@@ -20,6 +21,9 @@ enum {
 JS_EXPORT_API
 void installer_start_install()
 {
+    if (InstallerConf.simple_mode) {
+	auto_handle_esp();
+    }
     write_installer_conf("/etc/deepin-installer.conf");
     enter_next_stage();
 }

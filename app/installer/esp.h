@@ -3,6 +3,6 @@
 
 #include <parted/parted.h>
 
-PedPartition* create_esp_by_split(PedDisk* disk, PedPartition* old);
+void auto_handle_esp();
 
 #endif
