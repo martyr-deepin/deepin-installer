@@ -13,8 +13,3 @@ install(
     PROGRAMS ${PROJECT_BINARY_DIR}/${NAME}
     DESTINATION bin
 )
-
-install(
-    PROGRAMS ${PROJECT_BINARY_DIR}/genfstab
-    DESTINATION bin
-)
