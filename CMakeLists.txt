@@ -87,6 +87,7 @@ add_subdirectory(tools)
 install(
    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/hooks
    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/deepin-installer
+   USE_SOURCE_PERMISSIONS
 )
 install(
    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
