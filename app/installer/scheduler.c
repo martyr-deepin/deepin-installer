@@ -1,6 +1,5 @@
 #include "scheduler.h"
 #include "jsextension.h"
-#include "misc.h"
 #include "info.h"
 
 #include "esp.h"
@@ -29,10 +28,22 @@ void installer_start_install()
 }
 
 
+void update_install_progress(int v)
+{
+    if (v == 100) {
+	js_post_message("install_finished", NULL);
+    }
+    printf("INSTALL PROGRESS: %d%%\n", v);
+    /*js_post_message("install-progress", 100);*/
+}
+
+void monitor_extract_progress()
+{
+}
+
 void enter_next_stage()
 {
     static int current_stage = STAGE_START_INSTALL;
-    g_assert(current_stage != -1);
 
     switch (current_stage) {
 	case STAGE_START_INSTALL:
@@ -56,7 +67,7 @@ void enter_next_stage()
 	case STAGE_HOOKS_AFTER_CHROOT:
 	    current_stage = STAGE_INSTALL_FINISH;
 
-	    js_post_message("install_finished", NULL);
+	    update_install_progress(100);
 	    break;
 	default:
 	    g_assert_not_reached();

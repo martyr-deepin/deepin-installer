@@ -7,7 +7,6 @@
 #include <fcntl.h>
 #include "base.h"
 #include "scheduler.h"
-#include "misc.h"
 
 typedef struct _HookInfo {
     const char* jobs_path;
@@ -27,10 +26,10 @@ HookInfo before_chroot_info = { HOOKS_DIR"/before_chroot", 5, 70};
 //fix pxe network (Done)
 //update-grub (Done)
 //remove-unused-packages (Done)
-HookInfo in_chroot_info = { "/host/"HOOKS_DIR"/in_chroot", 70, 95 };
+HookInfo in_chroot_info = { "/host/"HOOKS_DIR"/in_chroot", 70, 85};
 
 //What to do?
-HookInfo after_chroot_info = { HOOKS_DIR"/after_chroot", 95, 99};
+HookInfo after_chroot_info = { HOOKS_DIR"/after_chroot", 85, 99};
 
 
 void run_hooks(HookInfo* info);

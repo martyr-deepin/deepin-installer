@@ -50,19 +50,6 @@ gboolean installer_is_running ()
     }
 }
 
-void emit_progress (const gchar *step, const gchar *progress)
-{
-    GRAB_CTX ();
-    if (step == NULL || progress == NULL) {
-        g_warning ("emit progress:invalid step->%s or progress->%s\n", step, progress);
-    }
-    JSObjectRef message = json_create ();
-    json_append_string (message, "stage", step);
-    json_append_string (message, "progress", progress);
-    js_post_message ("progress", message);
-    UNGRAB_CTX ();
-}
-
 gchar *
 get_matched_string (const gchar *target, const gchar *regex_string) 
 {
@@ -96,34 +83,6 @@ get_matched_string (const gchar *target, const gchar *regex_string)
     g_regex_unref (regex);
 
     return result;
-}
-
-gchar *
-get_xrandr_size ()
-{
-    gchar *size = NULL;
-    GError *error = NULL;
-    
-    const gchar *cmd = "sh -c \"xrandr | grep '*' | awk '{print $1}'\"";
-    gchar *output = NULL;
-    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error); 
-    if (error != NULL) {
-        g_warning ("get xrandr size:%s\n", error->message);
-        g_error_free (error);
-        error = NULL;
-        g_free (output);
-        return g_strdup("1024x768");
-    }
-    gchar **lines = g_strsplit(output, "\n", -1);
-    if (lines != NULL) {
-        size = g_strdup(g_strstrip(lines[0]));
-    } else {
-        size = g_strdup("1024x768");
-    }
-    g_strfreev (lines);
-    g_free(output);
-
-    return size;
 }
 
 JS_EXPORT_API 

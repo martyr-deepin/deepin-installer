@@ -27,7 +27,6 @@
 #include "i18n.h"
 #include "fs_util.h"
 #include "part_util.h"
-#include "misc.h"
 
 #define INSTALLER_HTML_PATH     "file://"RESOURCE_DIR"/installer/index.html"
 #define INSTALLER_WIN_WIDTH     786
@@ -35,7 +34,6 @@
 
 static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
-gchar *xrandr_size = NULL;
 
 static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
@@ -85,28 +83,9 @@ void installer_emit_webview_ok ()
     static gboolean inited = FALSE;
     if (!inited) {
         inited = TRUE;
-        xrandr_size = get_xrandr_size ();
         init_parted ();
     }
 }
-
-JS_EXPORT_API
-void installer_OpenUrl(const char* url)
-{
-    if ( url == NULL || url[0] == '\0' ) {
-        g_warning ("url error\n");
-        return ;
-    }
-
-    if (!dcore_open_browser(url)) {
-        g_warning("browser url failed\n");
-        return ;
-    }
-
-    return ;
-}
-
-
 
 static void
 sigterm_cb (int sig)
@@ -142,8 +121,6 @@ int main(int argc, char **argv)
     g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
 
     gtk_window_set_decorated (GTK_WINDOW (installer_container), FALSE);
-    //gtk_window_set_skip_taskbar_hint (GTK_WINDOW (installer_container), TRUE);
-    //gtk_window_set_skip_pager_hint (GTK_WINDOW (installer_container), TRUE);
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
     g_signal_connect (webview, "draw", G_CALLBACK (erase_background), NULL);
 
@@ -163,7 +140,9 @@ int main(int argc, char **argv)
 
     gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
-    //monitor_resource_file ("installer", webview);
+/*#ifndef NDEBUG*/
+    /*monitor_resource_file("installer", webview);*/
+/*#endif*/
     gtk_main ();
     
     return 0;

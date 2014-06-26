@@ -248,67 +248,6 @@ JSObjectRef installer_get_current_layout_variant ()
     return current;
 }
 
-//TODO: REMOVE
-void installer_set_keyboard_layout_variant (const gchar *layout, const gchar *variant)
-{
-    gchar *contents = NULL;
-    gchar **lines = NULL;
-    gchar **new = NULL;
-    gchar *result = NULL;
-    gboolean succeed = FALSE;
-    GError *error = NULL;
-
-    g_file_get_contents ("/etc/default/keyboard", &contents, NULL, &error);
-    if (error != NULL) {
-        g_warning ("set keyboard:get file contents\n");
-        goto out;
-    }
-
-    lines = g_strsplit (contents, "\n", -1);
-    if (lines == NULL) {
-        g_warning ("set keyboard:lines NULL\n");
-        goto out;
-    }
-    new = g_new0 (gchar *, g_strv_length (lines) + 1);
-    int i;
-    for (i = 0; i < g_strv_length (lines); i++) {
-        //g_warning ("line %d:%s\n", i, lines[i]);
-        if (g_str_has_prefix (lines[i], "XKBLAYOUT=")) {
-            new[i] = g_strdup_printf ("XKBLAYOUT=\"%s\"", layout != NULL ? layout : "");
-        } else if (g_str_has_prefix (lines[i], "XKBVARIANT=")) {
-            new[i] = g_strdup_printf ("XKBVARIANT=\"%s\"", variant != NULL ? variant: "");
-        } else {
-            new[i] = g_strdup (lines[i]);
-        }
-    }
-    result = g_strjoinv ("\n", new);
-    if (result == NULL) {
-        g_warning ("set keyboard:result NULL\n");
-        goto out;
-    }
-    g_file_set_contents ("/etc/default/keyboard", result, -1, &error);
-    if (error != NULL) {
-        g_warning ("set keyboard:set file contents\n");
-        goto out;
-    }
-    succeed = TRUE;
-    goto out;
-
-out:
-    g_free (contents);
-    g_strfreev (lines);
-    g_strfreev (new);
-    g_free (result);
-    if (error != NULL) {
-        g_error_free (error);
-        error = NULL;
-    }
-    if (!succeed) {
-        g_warning ("set keyboard failed, just skip\n");
-    }
-    emit_progress ("keyboard", "finish");
-}
-
 static void
 init_keyboard_detect ()
 {
