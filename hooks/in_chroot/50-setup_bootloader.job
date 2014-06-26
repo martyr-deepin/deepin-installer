@@ -41,3 +41,4 @@ case ${BOOT} in
 esac
 
 update-grub
+[ -x /usr/lib/deepin-daemon/grub2 ] && /usr/lib/deepin-daemon/grub2 --setup-theme
