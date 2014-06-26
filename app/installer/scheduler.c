@@ -30,16 +30,15 @@ void installer_start_install()
 
 void update_install_progress(int v)
 {
-    if (v == 100) {
-	js_post_message("install_finished", NULL);
+    static int current_per = 0;
+    if (v <= current_per) {
+	g_warning("--------------------------------INSTALL progress small previous PROGRESS: %d%%\n", v);
+	return;
     }
-    printf("INSTALL PROGRESS: %d%%\n", v);
-    /*js_post_message("install-progress", 100);*/
+    current_per=  v;
+    js_post_message("install_progress", jsvalue_from_number(get_global_context(), v));
 }
 
-void monitor_extract_progress()
-{
-}
 
 void enter_next_stage()
 {

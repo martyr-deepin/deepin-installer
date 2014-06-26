@@ -223,10 +223,10 @@ class Progress extends Page
         pc.add_page(finish_page)
         pc.remove_page(progress_page)
 
-DCore.signal_connect("install_finished", ->
-    #@update_progress("99%")
-    if __install_failed != true
+DCore.signal_connect("install_progress", (per)->
+    if per >= 100
         finish_page = new Finish("finish", true)
         pc.remove_page(progress_page)
         pc.add_page(finish_page)
+    progress_page?.update_progress("#{per}%")
 )

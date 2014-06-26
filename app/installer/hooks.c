@@ -12,27 +12,19 @@ typedef struct _HookInfo {
     const char* jobs_path;
     int progress_begin;
     int progress_end;
+    GList* jobs;
+    int current_job;
 } HookInfo;
 
-//TODO:
-//extract /cdrom/casper/filesystem.squashfs
-//extract /cdrom/casper/overlay-deepin-${lang_pack}.squashfs
-HookInfo before_chroot_info = { HOOKS_DIR"/before_chroot", 5, 70};
+HookInfo before_chroot_info = { HOOKS_DIR"/before_chroot", 5, 80, NULL, 0};
 
-//TODO:
-//setup accounts
-//setup locale
-//setup zoneinfo
-//fix pxe network (Done)
-//update-grub (Done)
-//remove-unused-packages (Done)
-HookInfo in_chroot_info = { "/host/"HOOKS_DIR"/in_chroot", 70, 85};
+HookInfo in_chroot_info = { "/host/"HOOKS_DIR"/in_chroot", 80, 90, NULL, 0};
 
-//What to do?
-HookInfo after_chroot_info = { HOOKS_DIR"/after_chroot", 85, 99};
+HookInfo after_chroot_info = { HOOKS_DIR"/after_chroot", 90, 100, NULL, 0};
 
 
-void run_hooks(HookInfo* info);
+static void run_hooks(HookInfo* info);
+static gboolean monitor_extract_progress();
 
 gboolean enter_chroot()
 {
@@ -77,10 +69,16 @@ gboolean break_chroot()
     }
 }
 
+#define PROGRESS_LOG_BASE "/tmp/deepin-installer/unsquashfs_base_progress"
+#define PROGRESS_LOG_LANG "/tmp/deepin-installer/unsquashfs_lang_progress"
 
 void run_hooks_before_chroot()
 {
     run_hooks(&before_chroot_info);
+
+    g_rmdir(PROGRESS_LOG_BASE);
+    g_rmdir(PROGRESS_LOG_LANG);
+    g_timeout_add_seconds(1, monitor_extract_progress, &before_chroot_info);
 }
 
 void run_hooks_in_chroot()
@@ -97,14 +95,25 @@ void run_hooks_after_chroot()
 }
 
 
-void run_one_by_one(GPid pid, gint status, GList* jobs)
+void update_hooks_progress(HookInfo* info)
+{
+    if (info == &before_chroot_info) {
+	// extract squashfs is in before chroot info, special treat it with monitor_extract_progress()
+	return;
+    }
+    double ratio = info->current_job * 1.0 / (g_list_length(info->jobs) - 1);
+    double p = info->progress_begin + (info->progress_end - info->progress_begin) * ratio;
+    update_install_progress((int)p);
+}
+
+void run_one_by_one(GPid pid, gint status, HookInfo* info)
 {
     if (pid != -1) {
 	g_spawn_close_pid(pid);
     }
 
-    if (jobs->data == NULL) {
-	g_list_free_full(g_list_first(jobs), g_free);
+    if (info->jobs->data == NULL) {
+	g_list_free_full(g_list_first(info->jobs), g_free);
 	enter_next_stage();
 	return;
     }
@@ -114,12 +123,11 @@ void run_one_by_one(GPid pid, gint status, GList* jobs)
     GError* error = NULL;
 
     char* argv[2];
-    argv[0] = jobs->data;
+    argv[0] = info->jobs->data;
     argv[1] = 0;
 
-    g_debug("RUN :%s\n", (char*)jobs->data);
-    char* dir = g_path_get_dirname(jobs->data);
-    g_spawn_async(dir,
+    g_debug("RUN :%s\n", (char*)info->jobs->data);
+    g_spawn_async(info->jobs_path,
 	    argv,
 	    NULL,
 	    G_SPAWN_DO_NOT_REAP_CHILD,
@@ -127,20 +135,21 @@ void run_one_by_one(GPid pid, gint status, GList* jobs)
 	    NULL,
 	    &child_pid,
 	    &error);
-    g_free(dir);
     if (error != NULL) {
 	g_error("can't spawn %s: %s\n", argv[0], error->message);
 	g_error_free(error);
 	return;
     }
-    g_child_watch_add(child_pid, (GChildWatchFunc)run_one_by_one, g_list_next(jobs));
+    g_child_watch_add(child_pid, (GChildWatchFunc)run_one_by_one, info);
+    info->jobs = g_list_next(info->jobs);
+    info->current_job = g_list_index(info->jobs, info->jobs->data) + 1;
+    update_hooks_progress(info);
 }
 
 void run_hooks(HookInfo* info)
 {
     const char* path = info->jobs_path;
     GError* error = NULL;
-    GList* jobs = NULL;
     GDir* dir = g_dir_open(path, 0, &error);
     if (error != NULL) {
 	g_error("can't exec_hoosk %s: %s\n", path, error->message);
@@ -151,16 +160,89 @@ void run_hooks(HookInfo* info)
     const char* job_name = NULL;
     while (job_name = g_dir_read_name(dir)) {
 	if (g_str_has_suffix(job_name, ".job")) {
-	    jobs = g_list_append(jobs, (gpointer)g_build_filename(path, job_name, NULL));
+	    info->jobs = g_list_append(info->jobs, (gpointer)g_build_filename(path, job_name, NULL));
 	}
     }
     g_dir_close(dir);
     chdir(path);
 
-    jobs = g_list_sort(jobs, (GCompareFunc)strcmp);
+    info->jobs = g_list_sort(info->jobs, (GCompareFunc)strcmp);
 
     //append the end guard element so that run_one_by_one can free the GList
-    jobs = g_list_append(jobs, NULL);
+    info->jobs = g_list_append(info->jobs, NULL);
 
-    run_one_by_one(-1, 0, jobs);
+    run_one_by_one(-1, 0, info);
+}
+
+enum {
+    EXTRACT_PROGRESS_NONE,
+
+    EXTRACT_PROGRESS_BASE,
+    EXTRACT_PROGRESS_BASE_END,
+
+    EXTRACT_PROGRESS_LANG,
+    EXTRACT_PROGRESS_LANG_END
+};
+
+static int read_progress(const char* path)
+{
+    char* contents = NULL;
+    if (g_file_get_contents(path, &contents, NULL, NULL)) {
+	char* endptr = NULL;
+	double v = g_strtod(contents, &endptr);
+	g_free(contents);
+	if (endptr == NULL) {
+	    return -1;
+	}
+	if (v < 0 || v > 100) {
+	    g_warning("invalid progress value(%d) read from %s(%s)\n", (int)v, path, contents);
+	    return 0;
+	}
+	return v;
+    } else {
+	g_free(contents);
+	return -1;
+    }
+}
+
+static gboolean monitor_extract_progress(HookInfo* info)
+{
+    static int stage = EXTRACT_PROGRESS_NONE;
+
+    int v = 0;
+    switch (stage) {
+	case EXTRACT_PROGRESS_NONE:
+	    v = read_progress(PROGRESS_LOG_BASE);
+	    if (v != -1) {
+		stage = EXTRACT_PROGRESS_BASE;
+	    }
+	    return TRUE;
+	case EXTRACT_PROGRESS_BASE:
+	    v = read_progress(PROGRESS_LOG_BASE);
+	    if (v >= 100) {
+		stage = EXTRACT_PROGRESS_BASE_END;
+	    }
+
+	    double ratio = v / 100.0;
+	    //extract lang pack use 10% time
+	    update_install_progress( info->progress_begin + (info->progress_end - 10 ) * ratio);
+	    return TRUE;
+	case EXTRACT_PROGRESS_BASE_END:
+	    v = read_progress(PROGRESS_LOG_LANG);
+	    if (v != -1) {
+		stage = EXTRACT_PROGRESS_LANG;
+	    }
+	    return TRUE;
+	case EXTRACT_PROGRESS_LANG:
+	    v = read_progress(PROGRESS_LOG_LANG);
+	    if (v >= 100) {
+		stage = EXTRACT_PROGRESS_LANG_END;
+	    }
+
+	    update_install_progress(info->progress_end - 10 + 10 * ratio);
+	    return TRUE;
+	case EXTRACT_PROGRESS_LANG_END:
+	    printf("END Monitor_extract_progress\n");
+	    return FALSE;
+    }
 }

@@ -1,4 +1,4 @@
-unsquashfs -f -d /target /cdrom/casper/filesystem.squashfs
+unsquashfs -f -d /target /cdrom/casper/filesystem.squashfs | unsquashfs_progress /tmp/deepin-installer/unsquashfs_base_progress
 
 [ ! -f /etc/deepin-installer.conf ] && exit 0
 
@@ -6,5 +6,5 @@ unsquashfs -f -d /target /cdrom/casper/filesystem.squashfs
 L=${DI_LOCALE%.*}
 
 if [ -f /cdrom/casper/overlay-deepin-${L}.squashfs ];then
-    unsquashfs -f -d /target /cdrom/casper/overlay-deepin-${L}.squashfs
+    unsquashfs -f -d /target /cdrom/casper/overlay-deepin-${L}.squashfs | unsquashfs_progress /tmp/deepin-installer/unsquashfs_lang_progress
 fi

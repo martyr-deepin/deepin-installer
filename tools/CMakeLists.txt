@@ -13,3 +13,11 @@ install(
     PROGRAMS ${PROJECT_BINARY_DIR}/${NAME}
     DESTINATION bin
 )
+
+
+add_executable(unsquashfs_progress unsquashfs_progress.c)
+target_link_libraries(unsquashfs_progress ${GLIB_LIBRARIES})
+install(
+    PROGRAMS ${PROJECT_BINARY_DIR}/unsquashfs_progress
+    DESTINATION bin
+)
