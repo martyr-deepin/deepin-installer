@@ -61,5 +61,4 @@ try_removed_start_install = ->
         sync_installer_conf()
         DCore.Installer.start_install()
 
-        progress_page = new Progress("progress")
         pc.switch_page(progress_page)

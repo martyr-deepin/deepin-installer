@@ -68,12 +68,8 @@ class Progress extends Page
 
         @ticker = 0
         @tu = 180
-        @display_progress = false
-        setTimeout(=>
-            if @display_progress == false
-                @display_progress = true
-                @start_progress()
-        , 2000)
+
+        @start_progress()
 
     update_rotate: ->
         if @deg > 360
@@ -92,6 +88,7 @@ class Progress extends Page
         apply_animation(@progress_container, "pptin", "2s", "linear")
         apply_animation(@ppt, "pptin", "2s", "linear")
         @progress_container.style.display = "block"
+        @update_progress("1%")
 
     update_progress: (progress) ->
         @progressbar.style.width = progress
