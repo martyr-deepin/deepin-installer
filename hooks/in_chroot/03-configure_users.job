@@ -31,11 +31,12 @@ gpasswd -a ${DI_USERNAME} network
 echo "[INFO] Fix Home directory permission to ${DI_USERNAME}."
 chown -hR ${DI_USERNAME}:${DI_USERNAME} /home/${DI_USERNAME}
 
-echo "[INFO] Set Hostname to ${DI_HOSTNAME}
+echo "[INFO] Set Hostname to ${DI_HOSTNAME}"
 echo "${DI_HOSTNAME}" | tee /etc/hostname
 
 
-HOSTS_CONTENTS="127.0.0.1	localhost
+cat > /etc/hosts <<EOF
+127.0.0.1	localhost
 127.0.1.1   ${DI_HOSTNAME}
 
 # The following lines are desirable for IPv6 capable hosts
@@ -44,6 +45,4 @@ fe00::0 ip6-localnet
 ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
-"
-echo ${HOSTS_CONTENTS} | tee /etc/hosts
-
+EOF

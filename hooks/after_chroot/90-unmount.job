@@ -2,14 +2,16 @@
 
 . /etc/deepin-installer.conf
 
+target="/target"
+
 array=`echo ${DI_MOUNTPOINTS//;/ }`
 for i in $array;do
-	mountpoint=$(echo $i | cut -d'=' -f1)
-	mountpath=$(echo $i | cut -d'=' -f2)
-	if [ $mountpath !=  '/' ];then
-        echo "mount ${mountpoint} -> ${mountpath}"
-		umount ${target}${mountpath}
-	fi
+    mountpoint=$(echo $i | cut -d'=' -f1)
+    mountpath=$(echo $i | cut -d'=' -f2)
+    if [ $mountpath !=  '/' ];then
+	echo "unmount ${target}${mountpath}"
+	umount ${target}${mountpath}
+    fi
 done
 umount /target/host
 umount /target/media/cdrom

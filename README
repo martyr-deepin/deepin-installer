@@ -1,33 +1,7 @@
 Deepin Installer
 
-用法：
-  deepin-installer [选项...] - Deepin Installer
-
-帮助选项：
-  -h, --help                       显示帮助选项
-  --help-all                       显示全部帮助选项
-  --help-gtk                       显示 GTK+ 选项
-
-应用程序选项：
-  -s, --schema=fast or safe        fast use unsquashfs, safe copy file one by one
-  -c, --cpu=count                  num of processors used in unsquashfs mode
-  -i, --iso=path                   set iso file path when install without live os
-  -a, --automatic                  gather info from command line then install automatic
-  -t, --target=/dev/sdaX           device to install system, required when automatic
-  -m, --home=/dev/sdaX             partition mount as home in target system, only work when automatic
-  -u, --username=deepin            username of target system, required when automatic
-  -n, --hostname=hostname          hostname of target system, only work when automatic
-  -p, --password=password          password of target system, required when automatic
-  -l, --layout=layout code         keyboard layout of target system, only work when automatic
-  -v, --variant=variant code       keyboard variant of target system, only work when automatic
-  -z, --zone=Asia/Shanghai         timezone of target system, only work when automatic
-  -e, --locale=zh_CN.UTF-8         locale of target system, only work when automatic
-  -g, --grub=/dev/sdaX or uefi     device path or uefi to install bootloader, only work when automatic
-  -d, --debug                      set log level to debug
-  --display=显示                   要使用的 X 显示
-
 
 TODO:
-1. locale/zoneinfo/accounts/extract等全部通过hooks机制完成
+1. BOOTLOADER 高级模式下生效
 2. os-probe 支持EFI系统
 3. 如果覆盖安装了一个EFI系统，需要清除对应系统在EFI变量中的信息
