@@ -37,110 +37,6 @@ __ppt_in_switch = false
 __ppt_switch_id = -1
 __install_failed = false
 
-class PptItem extends Widget
-    constructor: (@id, @src, @ppt) ->
-        super
-        @index = parseInt(@id[7..])
-        @length = @ppt.images.length
-        @img = create_img("", @src, @element)
-        @init_position()
-
-    init_position: ->
-        if @index == 1
-            update_el_attr(@element, "z-index", 50)
-        else if @index == @length
-            update_el_attr(@element, "z-index", 50)
-        else
-            update_el_attr(@element, "z-index", 70)
-        if @length > 1
-            left =  (@index + 1 - @length) * 750
-        else
-            left = 0
-        update_el_attr(@element, "-webkit-transform", "translateX(0)")
-        update_el_attr(@element, "left", left + "px")
-
-    switch_prev: ->
-        if @index == 1
-            @index = @length
-        else
-            @index = @index - 1
-        update_el_attr(@element, "-webkit-transform", "translateX(-750px)")
-        update_el_attr(@element, "-webkit-transition", "all 0.5s ease-out")
-
-    switch_next: ->
-        if @index == @length
-            @index = 1
-        else
-            @index = @index + 1
-        update_el_attr(@element, "-webkit-transform", "translateX(750px)")
-        update_el_attr(@element, "-webkit-transition", "all 0.5s ease-in")
-
-class Ppt extends Widget
-    constructor: (@id, @images)->
-        super
-        @container = create_element("div", "Container", @element)
-        @itemwidth = 750
-        @itemheight = 444
-        @items = []
-        i = 1
-        for img in @images
-            @create_item(i, img)
-            i = i + 1
-
-        if @images.length > 1
-            @init_switch()
-
-    init_switch: ->
-        @prev_btn = create_element("div", "PrevBtn", @element)
-        @prev_btn.addEventListener("click", (e) =>
-            if not __ppt_in_switch
-                __ppt_in_switch = true
-                @switch_prev()
-                setTimeout(->
-                    __ppt_in_switch = false
-                , 1000)
-        )
-
-        @next_btn = create_element("div", "NextBtn", @element)
-        @next_btn.addEventListener("click", (e) =>
-            if not __ppt_in_switch
-                __ppt_in_switch = true
-                @switch_next()
-                setTimeout(->
-                    __ppt_in_switch = false
-                , 1000)
-        )
-        __ppt_switch_id = setInterval(=>
-            @switch_next()
-        ,5000)
-
-    create_item: (index, img) ->
-        item = new PptItem("pptitem" + index, img, @)
-        @container.appendChild(item.element)
-        @items.push(item)
-
-    switch_prev: ->
-        clearInterval(__ppt_switch_id)
-        for item in @items
-            item.switch_next()
-            setTimeout(
-                item.init_position()
-            , 1000)
-        __ppt_switch_id = setInterval(=>
-            @switch_next()
-        ,5000)
-
-    switch_next: ->
-        clearInterval(__ppt_switch_id)
-        for item in @items
-            item.switch_prev()
-            setTimeout(
-                item.init_position()
-            , 1000)
-        __ppt_switch_id = setInterval(=>
-            @switch_next()
-        ,5000)
-
 class Progress extends Page
     constructor: (@id)->
         super
@@ -164,24 +60,11 @@ class Progress extends Page
         @light.style.webkitAnimationIterationCount = 1000
         @light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
 
-        ppt_method = "iframe"
-        switch ppt_method
-            when "slider"
-                @ppt = new Ppt("pptslider", _ppt_list)
-                @element.appendChild(@ppt.element)
-            when "iframe"
-                @ppt = create_element("iframe","ppt_iframe",@element)
-                if document.body.lang is "zh"
-                    @ppt.src = "ppt/slideshow2014/index.html"
-                else
-                    @ppt.src = "ppt/slideshow2014/index_en.html"
-            when "video"
-                @ppt = create_element("video","ppt_video",@element)
-                @ppt.autoplay = "autoplay"
-                @ppt.loop = "loop"
-                @ppt.width = "750"
-                @ppt.width = "450"
-                @ppt.src = "ppt/video_test.mp4"
+        @ppt = create_element("iframe","ppt_iframe",@element)
+        if document.body.lang is "zh"
+            @ppt.src = "ppt/slideshow2014/index.html"
+        else
+            @ppt.src = "ppt/slideshow2014/index_en.html"
 
         @ticker = 0
         @tu = 180
