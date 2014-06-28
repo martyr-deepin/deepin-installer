@@ -7,6 +7,7 @@
 typedef gboolean (*PartitionFilter)(PedPartition*, gpointer);
 
 PedPartition* find_partition(PedDisk* disk,  PartitionFilter filter, gpointer user_data, GDestroyNotify notify);
+PedPartition* create_and_add_partition(PedDisk* disk, PedPartitionType type, const PedFileSystemType* fs, PedSector start, PedSector end);
 
 gboolean partition_filter_by_path(PedPartition* part, const char* path);
 

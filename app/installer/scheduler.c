@@ -24,6 +24,9 @@ void installer_start_install()
 	auto_handle_esp();
     }
     write_installer_conf("/etc/deepin-installer.conf");
+
+    ped_device_free_all();
+
     enter_next_stage();
 }
 

@@ -7,9 +7,9 @@ struct _InstallerConf InstallerConf;
 
 char* find_path_by_uuid(const char* uuid)
 {
-    if (uuid == NULL) {
-	return NULL;
-    } else if (g_str_has_prefix (uuid, "disk")) {
+    g_assert(uuid != NULL);
+
+    if (g_str_has_prefix (uuid, "disk")) {
 	return installer_get_disk_path (uuid);
     } else if (g_str_has_prefix (uuid, "part")) {
 	return installer_get_partition_path (uuid);
@@ -20,12 +20,12 @@ char* find_path_by_uuid(const char* uuid)
 
 char* installer_conf_to_string()
 {
-    GString* mp = g_string_new(NULL);
-
-    GHashTableIter iter;
-    gpointer key, value;
     g_assert(InstallerConf.root_partition != NULL);
     g_assert(InstallerConf.root_disk != NULL);
+
+    GString* mp = g_string_new(NULL);
+    GHashTableIter iter;
+    gpointer key, value;
 
     if (InstallerConf.mount_points != NULL) {
 	g_hash_table_iter_init(&iter, InstallerConf.mount_points);
@@ -77,6 +77,8 @@ void normalization()
 
 void write_installer_conf(const char* path)
 {
+    g_assert(path != NULL);
+
     normalization();
     char* content = installer_conf_to_string();
     GError* error = NULL;
@@ -90,25 +92,35 @@ void write_installer_conf(const char* path)
 }
 
 JS_EXPORT_API
-void installer_record_mountpoint_info(const char* part, const char* mountpoint)
+void installer_record_mountpoint_info(const char* uuid, const char* mountpoint)
 {
+    g_return_if_fail(uuid != NULL);
+    g_return_if_fail(mountpoint != NULL);
+
     if (InstallerConf.mount_points == NULL) {
 	InstallerConf.mount_points = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
     }
-    g_debug("record_mountpoint_info :%s(%s) == %s \n", part, find_path_by_uuid(part), mountpoint);
+    char* path = find_path_by_uuid(uuid);
+    g_return_if_fail(path != NULL);
+
+    g_printf("record_mountpoint_info :%s(%s) == %s \n", uuid, path, mountpoint);
     if (g_strcmp0(mountpoint, "/") == 0) {
 	if (InstallerConf.root_partition)
 	    g_free(InstallerConf.root_partition);
 	ped_print();
-	InstallerConf.root_partition = find_path_by_uuid(part);
+	InstallerConf.root_partition = path;
     } else {
-	g_hash_table_insert(InstallerConf.mount_points, find_path_by_uuid(part), g_strdup(mountpoint));
+	g_hash_table_insert(InstallerConf.mount_points, path, g_strdup(mountpoint));
     }
 }
 
 JS_EXPORT_API
 void installer_record_accounts_info(const char* name, const char* hostname, const char* password)
 {
+    g_return_if_fail(name != NULL);
+    g_return_if_fail(hostname != NULL);
+    g_return_if_fail(password != NULL);
+
     if(InstallerConf.user_name)
 	g_free(InstallerConf.user_name);
     if(InstallerConf.password)
@@ -124,16 +136,23 @@ void installer_record_accounts_info(const char* name, const char* hostname, cons
 JS_EXPORT_API
 void installer_record_bootloader_info(const char* uuid, gboolean uefi)
 {
-    if (InstallerConf.bootloader)
-	g_free(InstallerConf.bootloader);
+    if (uefi == FALSE) {
+	g_assert(uuid != NULL);
+    }
 
-    InstallerConf.bootloader = find_path_by_uuid(uuid);
+    if (uefi && uuid != NULL) {
+	if (InstallerConf.bootloader)
+	    g_free(InstallerConf.bootloader);
+	InstallerConf.bootloader = find_path_by_uuid(uuid);
+    }
+
     InstallerConf.uefi = uefi;
 }
 
 JS_EXPORT_API
 void installer_record_locale_info(const char* locale)
 {
+    g_return_if_fail(locale != NULL);
     if (InstallerConf.locale)
 	g_free(InstallerConf.locale);
 
@@ -143,6 +162,7 @@ void installer_record_locale_info(const char* locale)
 JS_EXPORT_API
 void installer_record_timezone_info(const char* timezone)
 {
+    g_return_if_fail(timezone != NULL);
     if (InstallerConf.timezone)
 	g_free(InstallerConf.timezone);
 
@@ -152,6 +172,8 @@ void installer_record_timezone_info(const char* timezone)
 JS_EXPORT_API
 void installer_record_keyboard_layout_info(const char* layout, const char* variant)
 {
+    g_return_if_fail(layout != NULL);
+
     if (InstallerConf.layout)
 	g_free(InstallerConf.layout);
     if (InstallerConf.layout_variant)
@@ -166,12 +188,13 @@ JS_EXPORT_API
 void installer_record_simple_mode_info(gboolean simple)
 {
     InstallerConf.simple_mode = simple;
-    write_installer_conf("/dev/shm/deepin.conf");
 }
 
 JS_EXPORT_API
 void installer_record_root_disk_info(const char* disk)
 {
+    g_return_if_fail(disk != NULL);
+
     if (InstallerConf.root_disk)
 	g_free(InstallerConf.root_disk);
     InstallerConf.root_disk = find_path_by_uuid(disk);

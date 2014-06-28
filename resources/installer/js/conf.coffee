@@ -48,3 +48,16 @@ record_mount_points = ->
                         DCore.Installer.record_root_disk_info(disk)
                 catch error
                     echo error
+
+
+try_removed_start_install = ->
+        if __selected_mode == "simple"
+            undo_part_table_info()
+            auto_simple_partition(__selected_item.id, "part")
+        else if __selected_mode == "advance"
+            echo "do advance partition"
+        do_partition()
+
+        progress_page?.update_progress("2%")
+        sync_installer_conf()
+        DCore.Installer.start_install()

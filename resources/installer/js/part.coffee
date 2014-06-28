@@ -26,17 +26,6 @@ __selected_line = null
 __selected_mode = "simple"
 __selected_stage = null
 
-DCore.signal_connect("partition_apply_done",  ->
-    sync_installer_conf()
-
-    if progress_page? and progress_page.display_progress == false
-        progress_page.display_progress = true
-        progress_page.start_progress()
-    progress_page?.update_progress("2%")
-
-    DCore.Installer.start_install()
-)
-
 class AddPartDialog extends Dialog
     constructor: (@id, @partid) ->
         super(@id, true, @add_part_cb)
@@ -104,7 +93,7 @@ class AddPartDialog extends Dialog
         @size = create_element("div", "", @content)
         @size_desc = create_element("span", "AddDesc", @size)
         @size_desc.innerText = _("Size:")
-        @max_size_mb = v_part_info[@partid]["length"] / MB
+        @max_size_mb = (v_part_info[@partid]["length"] / MB).toFixed(0)
 
         @size_value = create_element("span", "AddValue", @size)
         @size_wrap = create_element("div", "SizeWrap", @size_value)
@@ -180,7 +169,7 @@ class AddPartDialog extends Dialog
         @fs_desc = create_element("span", "AddDesc", @fs)
         @fs_desc.innerText = _("Filesystem:")
         @fs_value = create_element("span", "AddValue", @fs)
-        @fs_select = new DropDown("dd_fs_" + @partid, false, fs_change_cb)
+        @fs_select = new DropDown("dd_fs_" + @partid, false, @fs_change_cb)
         @fs_value.appendChild(@fs_select.element)
 
         #TODO: update fs
@@ -234,6 +223,7 @@ class AddPartDialog extends Dialog
             @n_size = v_part_info[@partid]["length"]
         else
             @n_size = parseInt(@size_input.value) * MB
+        alert("size :#{@n_size}")
         if not @n_size?
             @tips.innerText = _("Please enter a valid partition size.")
         @n_align = @align_radio
@@ -344,15 +334,8 @@ class InstallDialog extends Dialog
         progress_page = new Progress("progress")
         pc.remove_page(part_page)
         pc.add_page(progress_page)
-        setTimeout(->
-            if __selected_mode == "simple"
-                undo_part_table_info()
-                auto_simple_partition(__selected_item.id, "part")
-            else if __selected_mode == "advance"
-                echo "do advance partition"
-            do_partition()
-            return
-        , 300)
+
+        try_removed_start_install()
 
     fill_install_info: ->
         if __selected_mode == "advance"
@@ -981,6 +964,7 @@ class Part extends Page
             @error = New UefiBootDialog("UefiBootMode")
             docuement.body.appendChild(@error.element)
         else
+            __selected_bootloader = __selected_disk
             @install_model = new InstallDialog("InstallModel")
             document.body.appendChild(@install_model.element)
 

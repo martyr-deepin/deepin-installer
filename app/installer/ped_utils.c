@@ -16,6 +16,20 @@ gboolean partition_filter_by_path(PedPartition* part, const char* path)
     }
 }
 
+PedPartition* create_and_add_partition(PedDisk* disk, PedPartitionType type, const PedFileSystemType* fs, PedSector start, PedSector end)
+{
+    PedPartition* part = ped_partition_new (disk, type, fs, start, end);
+    g_return_val_if_fail(part != NULL, FALSE);
+    PedGeometry* geom = ped_geometry_new (disk->dev, start, end - start + 1);
+    g_assert(geom != NULL);
+    PedConstraint* constraint = ped_constraint_new_from_max (geom);
+    g_assert(constraint != NULL);
+    ped_disk_add_partition(disk, part, constraint);
+    ped_constraint_destroy (constraint);
+    ped_geometry_destroy (geom);
+    return part;
+}
+
 PedPartition* find_partition(PedDisk* disk,  PartitionFilter filter, gpointer user_data, GDestroyNotify notify)
 {
     PedPartition* part = disk->part_list;

@@ -276,7 +276,6 @@ do_partition = ->
                     echo "just keep part"
         else
             echo "just keep disk"
-    DCore.Installer.start_part_operation()
 
 #auto partition for simple mode
 auto_simple_partition = (device, type) ->
@@ -663,6 +662,9 @@ update_part_mp = (part, mp) ->
 
 #when add part, set its path to max plus 1, after mark the part type
 #when delete part, set others part minus 1, before mark the part type
+#--------------------
+#TODO: above logic is wrong. next partition number is not euqal to
+#the last parition number + 1.
 update_part_display_path = (part, op) ->
     disk = v_part_info[part]["disk"]
     disk_path = v_disk_info[disk]["path"]
@@ -906,7 +908,7 @@ delete_part = (part) ->
     v_part_info[part]["label"] = ""
     v_part_info[part]["mp"] = "unused"
     v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
-    v_part_info[part]["used"] = v_part_info[part]["length"] / MB
+    v_part_info[part]["used"] = v_part_info[part]["length"]
 
     extended = get_extended_partition(disk)
     if extended? and get_logical_partitions(disk).length == 0
@@ -1032,7 +1034,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
 
     update_part_display_path(new_part, "add")
     v_part_info[new_part]["width"] = Math.floor((v_part_info[new_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
-    v_part_info[new_part]["used"] = v_part_info[new_part]["length"] / MB
+    v_part_info[new_part]["used"] = v_part_info[new_part]["length"]
     v_disk_info[disk]["partitions"].push(new_part)
     sort_v_disk_info(disk)
     mark_add(new_part)
