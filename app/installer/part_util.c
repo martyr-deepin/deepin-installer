@@ -34,6 +34,7 @@ static GHashTable *partitions;
 static GHashTable *disk_partitions;
 static GHashTable *partition_os = NULL;
 static GHashTable *partition_os_desc = NULL;
+void mkfs_latter(const char* path, const char* fs);
 
 JS_EXPORT_API 
 gchar* installer_rand_uuid (const char* prefix)
@@ -49,15 +50,11 @@ gchar* installer_rand_uuid (const char* prefix)
 static gpointer 
 thread_os_prober (gpointer data)
 {
-    partition_os = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                          (GEqualFunc) g_str_equal, 
-                                          (GDestroyNotify) g_free, 
-                                          (GDestroyNotify) g_free);
+    partition_os = g_hash_table_new_full ( g_str_hash, g_str_equal, 
+                                           g_free, g_free);
 
-    partition_os_desc = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                          (GEqualFunc) g_str_equal, 
-                                          (GDestroyNotify) g_free, 
-                                          (GDestroyNotify) g_free);
+    partition_os_desc = g_hash_table_new_full ( g_str_hash, g_str_equal, 
+                                           g_free, g_free);
 
     gchar *cmd = g_find_program_in_path ("os-prober");
     if (cmd == NULL) {
@@ -853,12 +850,12 @@ gboolean installer_update_partition_fs (const gchar *uuid, const gchar *fs)
 
     if (g_strcmp0 (fs, "efi") == 0) {
 	//TODO: async run this
-	mkfs(part_path, "fat32");
+	mkfs_latter(part_path, "fat32");
 	if (! installer_set_partition_flag (uuid, "boot", 1)) {
 	    g_warning ("set flag for uefi failed\n");
 	}
     } else {
-	mkfs(part_path, fs);
+	mkfs_latter(part_path, fs);
     }
     return TRUE;
 }
