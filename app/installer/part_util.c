@@ -765,7 +765,6 @@ out:
 JS_EXPORT_API 
 void installer_get_partition_free (const gchar *part)
 {
-    GRAB_CTX ();
     PedPartition *pedpartition = NULL;
     if (part == NULL) {
         g_warning ("get partition free:part NULL\n");
@@ -787,7 +786,15 @@ void installer_get_partition_free (const gchar *part)
         if (fs_type != NULL) {
             fs = fs_type->name;
         }
-        ped_geometry_destroy (geom);
+	ped_geometry_destroy (geom);
+	if (g_strstr_len(fs, -1, "swap")) {
+	    JSObjectRef message = json_create ();
+	    json_append_string (message, "part", part);
+	    json_append_number (message, "free", installer_get_partition_length (part) * 512 / (1000 * 1000));
+	    js_post_message ("used", message);
+	    return;
+	}
+
         if (fs == NULL) {
             g_warning ("get partition free:get partition file system failed\n");
             return;
@@ -811,7 +818,6 @@ void installer_get_partition_free (const gchar *part)
     } else {
         g_warning ("get partition free:find pedpartition %s failed\n", part);
     }
-    UNGRAB_CTX ();
 }
 
 JS_EXPORT_API 

@@ -606,7 +606,7 @@ void mkfs(const gchar *path, const gchar *fs)
         }
         cmd = g_strdup_printf ("mkfs.jfs -q %s", path);
 
-    } else if  (g_strcmp0 (fs, "linux-swap") == 0) {
+    } else if (g_strstr_len(fs, -1, "swap")) {
         fs_cmd = g_find_program_in_path ("mkswap");
         if (fs_cmd == NULL) {
             g_warning ("set partition filesystem:mkswap not installed\n");
