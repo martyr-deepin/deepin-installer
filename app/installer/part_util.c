@@ -27,6 +27,8 @@
 #include "ped_utils.h"
 #include "info.h"
 
+gboolean installer_system_support_efi ();
+
 #define PART_INFO_LENGTH 4096
 
 static GHashTable *disks;
@@ -34,24 +36,18 @@ static GHashTable *partitions;
 static GHashTable *disk_partitions;
 static GHashTable *partition_os = NULL;
 static GHashTable *partition_os_desc = NULL;
-int chroot_fd;
-gboolean in_chroot = FALSE;
 GList *mounted_list = NULL;
 static GAsyncQueue *op_queue = NULL;
 static GMutex op_mutex;
 static gint op_count = 0;
 
 JS_EXPORT_API 
-gchar* installer_rand_uuid ()
+gchar* installer_rand_uuid (const char* prefix)
 {
     gchar *result = NULL;
 
-    gint32 number;
-    GRand *rand = g_rand_new ();
-    number = g_rand_int_range (rand, 10000000, 99999999);
-    g_rand_free (rand);
-
-    result = g_strdup_printf("%i", number);
+    static gint32 number = 0;
+    result = g_strdup_printf("%s%i", prefix, number++);
 
     return result;
 }
@@ -111,22 +107,39 @@ thread_os_prober (gpointer data)
 
 
 
+gboolean is_freespace_and_smaller_than_10MB(PedPartition* part)
+{
+    if (part->type != PED_PARTITION_FREESPACE)
+	return FALSE;
+    int sector_size = part->disk->dev->sector_size;
+    return part->geom.length * sector_size < 10 * 1024 * 1024;
+}
+
 GList* build_part_list(PedDisk* disk)
 {
     GList *part_list = NULL;
 
-    PedPartition *partition = NULL;
-    for (partition = ped_disk_next_partition (disk, NULL); partition;
-	    partition = ped_disk_next_partition (disk, partition)) {
-	gchar *uuid_num = installer_rand_uuid ();
-	gchar *part_uuid = g_strdup_printf("part%s", uuid_num);
-	g_free (uuid_num);
+    PedPartition *part = NULL;
+    for (part = ped_disk_next_partition (disk, NULL); part; part = ped_disk_next_partition (disk, part)) {
+	if (is_freespace_and_smaller_than_10MB(part)) {
+	    continue;
+	}
 
+	gchar *part_uuid = installer_rand_uuid ("part");
 	part_list = g_list_append (part_list, g_strdup (part_uuid));
-	g_hash_table_insert (partitions, g_strdup (part_uuid), partition);
+	g_hash_table_insert (partitions, g_strdup (part_uuid), part);
 	g_free (part_uuid);
     }
     return part_list;
+}
+
+const PedDiskType* best_disk_type()
+{
+    if (installer_system_support_efi()) {
+	return ped_disk_type_get("gpt");
+    } else {
+	return ped_disk_type_get("msdos");
+    }
 }
 
 PedDisk* try_build_disk(PedDevice* device)
@@ -135,10 +148,14 @@ PedDisk* try_build_disk(PedDevice* device)
 	return 0;
     }
     PedDiskType* type = ped_disk_probe(device);
-    if (type == 0 || strncmp(type->name, "loop", 5) == 0) {
+    if (type == NULL) {
+	return ped_disk_new_fresh(device, best_disk_type());
+    } else if (strncmp(type->name, "gpt", 3) != 0 && strncmp(type->name, "msdos", 5) != 0) {
+	//filter other type of disks, like raid's partition type = "loop"
 	return 0;
+    } else {
+	return ped_disk_new (device);
     }
-    return ped_disk_new (device);
 }
 
 static gpointer
@@ -170,10 +187,8 @@ thread_init_parted (gpointer data)
 	    continue;
 	}
 
-        gchar *uuid_num = installer_rand_uuid ();
-        gchar *uuid = g_strdup_printf ("disk%s", uuid_num);
+        gchar *uuid = installer_rand_uuid("disk"); 
 	g_hash_table_insert (disks, g_strdup (uuid), disk);
-        g_free (uuid_num);
 
         g_hash_table_insert (disk_partitions, g_strdup (uuid), build_part_list(disk));
         g_free (uuid);
@@ -520,20 +535,21 @@ gchar *installer_get_partition_name (const gchar *part)
 }
 
 JS_EXPORT_API
-gchar* installer_get_partition_path (const gchar *part)
+gchar* installer_get_partition_path (const gchar *uuid)
 {
-    gchar *path = NULL;
-    PedPartition *pedpartition = NULL;
-    if (part == NULL) {
+
+    PedPartition *part = (PedPartition *) g_hash_table_lookup (partitions, uuid);
+
+    if (part == NULL || part->num == -1) {
         g_warning ("get partition path:part NULL\n");
-        return path;
+        return NULL;
     }
 
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition != NULL) {
-        path = ped_partition_get_path (pedpartition);
+    gchar *path = ped_partition_get_path (part);
+    if (part != NULL) {
+	printf("PPAR:%s === %s\n", uuid, path);
     } else {
-        g_warning ("get partition path:find pedpartition %s failed\n", part);
+        g_warning ("get partition path:find pedpartition %s failed\n", uuid);
     }
     return path;
 }
@@ -1225,8 +1241,8 @@ handle_part_operation_thread (gpointer data)
         g_mutex_unlock (&op_mutex);
         if (i == op_count - 1) {
             GRAB_CTX ();
-            js_post_message ("part_operation", NULL);
-	    ped_device_free_all();
+            js_post_message ("partition_apply_done", NULL);
+	    /*ped_device_free_all();*/
             UNGRAB_CTX ();
         }
     }
@@ -1237,141 +1253,6 @@ void installer_start_part_operation ()
 {
     GThread *handle_thread = g_thread_new ("handle_operation", (GThreadFunc) handle_part_operation_thread, NULL);
     g_thread_unref (handle_thread);
-}
-
-//call after chroot
-JS_EXPORT_API 
-gboolean installer_write_partition_mp (const gchar *part, const gchar *mp)
-{
-    gboolean ret = FALSE;
-    PedPartition *pedpartition = NULL;
-    gchar *path = NULL;
-    gchar *fs = NULL;
-    gchar *uuid = NULL;
-    gchar *fsname = NULL;
-    gchar *mount_cmd = NULL;
-    gchar *comment_line = NULL;
-    PedGeometry *geom = NULL;
-    PedFileSystemType *fs_type = NULL;
-    struct mntent mnt;
-    FILE *mount_file = NULL;
-    static gboolean header_inited = FALSE;
-
-    if (part == NULL || mp == NULL) {
-        g_warning ("write fs tab:part or mount point is NULL\n");
-        goto out;
-    }
-
-    if (!header_inited) {
-        const gchar *contents = "# /etc/fstab: static file system information.\n"                               \
-                                "#\n"                                                                           \
-                                "# Use 'blkid' to print the universally unique identifier for a\n"              \
-                                "# device; this may be used with UUID= as a more robust way to name devices\n"  \
-                                "# that works even if disks are added and removed. See fstab(5).\n"             \
-                                "#\n"                                                                           \
-                                "# <file system> <mount point>   <type>  <options>       <dump>  <pass>\n"; 
-        g_file_set_contents ("/etc/fstab", contents, -1, NULL);
-        header_inited = TRUE;
-    }
-
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition == NULL) {
-        g_warning ("write fs tab:find pedpartition %s failed\n", part);
-        goto out;
-    }
-    path = ped_partition_get_path (pedpartition);
-    if (path == NULL) {
-        g_warning ("write fs tab:get partition %s path failed\n", part);
-        goto out;
-    }
-
-    geom = ped_geometry_duplicate (&pedpartition->geom);
-    fs_type = ped_file_system_probe (geom);
-    if (fs_type == NULL) {
-        g_warning ("write fs tab:probe filesystem failed\n");
-        goto out;
-    }
-    fs = g_strdup (fs_type->name);
-    if (fs == NULL) {
-        g_warning ("write fs tab:get partition %s fs failed\n", part);
-        goto out;
-    }
-    uuid = get_partition_uuid (path);
-    if (uuid == NULL) {
-        g_warning ("write fs tab:uuid NULL\n");
-        goto out;
-    }
-    fsname = g_strdup_printf ("UUID=%s", g_strstrip(uuid));
-
-    mount_file = setmntent ("/etc/fstab", "a");
-    if (mount_file == NULL) {
-        g_warning ("write fs tab: setmntent failed\n");
-        goto out;
-    }
-    mnt.mnt_fsname = fsname;
-    mnt.mnt_dir = g_strdup (mp);
-    mnt.mnt_type = fs;
-    mnt.mnt_opts = "defaults";
-    mnt.mnt_freq = 0;
-    mnt.mnt_passno = 2;
-    if (g_strcmp0 ("/", mp) == 0) {
-        if (g_strcmp0 (fs, "btrfs") != 0) {
-            mnt.mnt_opts = "errors=remount-ro";
-        }
-        mnt.mnt_passno = 1;
-    } else if (g_strcmp0 ("swap", mp) == 0 || g_strcmp0 ("linux-swap", fs) == 0) {
-        mnt.mnt_dir = "none";
-        mnt.mnt_type = "swap";
-        mnt.mnt_opts = "sw";
-        mnt.mnt_passno = 0;
-    } else if (!g_str_has_prefix (mp, "/")) {
-        g_warning ("write fs tab:invalid mp->%s\n", mp);
-        goto out;
-    }
-
-    if (!g_file_test (mp, G_FILE_TEST_EXISTS)) {
-        g_mkdir_with_parents (mp, 0755);
-    }
-
-    if (g_strcmp0 ("fat16", fs) == 0 || g_strcmp0 ("fat32", fs) == 0) {
-        mnt.mnt_type = "vfat";
-    } else if (g_strcmp0 ("ntfs", fs) == 0) {
-        mnt.mnt_type = "ntfs-3g";
-    }
-
-    comment_line = g_strdup_printf ("# %s was on %s during installation\n", mp, path);
-    gchar *p = comment_line;
-    size_t s = 0;
-    while(*p != '\0') {
-        p++;
-        s++;
-    }
-    if (fwrite (comment_line, 1, s, mount_file) != s) {
-        g_warning ("write fs tab: fwrite %s failed\n", comment_line);
-    }
-
-    if ((addmntent(mount_file, &mnt)) != 0) {
-        g_warning ("write fs tab: addmntent failed %s\n", strerror (errno));
-        goto out;
-    }
-    fflush (mount_file);
-    ret = TRUE;
-    goto out;
-
-out:
-    g_free (path);
-    g_free (fs);
-    g_free (uuid);
-    g_free (fsname);
-    g_free (mount_cmd);
-    g_free (comment_line);
-    if (geom != NULL) {
-        ped_geometry_destroy (geom);
-    }
-    if (mount_file != NULL) {
-        endmntent (mount_file);
-    }
-    return ret;
 }
 
 JS_EXPORT_API 
@@ -1414,3 +1295,19 @@ void installer_unmount_partition (const gchar *part)
     unmount_partition_by_device (path);
     g_free (path);
 }
+
+
+void partition_print(char* uuid, PedPartition* part)
+{
+    printf("Partition: %s ==== %s(%d)\n", uuid, ped_partition_get_path(part), part->num);
+}
+void disk_print(char* uuid, PedDisk* disk)
+{
+    printf("Disk: %s ==== %s\n", uuid, disk->dev->path);
+}
+void ped_print()
+{
+    g_hash_table_foreach(disks, (GHFunc)disk_print, NULL);
+    g_hash_table_foreach(partitions, (GHFunc)partition_print, NULL);
+}
+

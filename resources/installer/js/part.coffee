@@ -19,23 +19,22 @@
 
 __selected_target = null
 __selected_home = null
-__selected_grub = null
+__selected_bootloader = null
 __selected_disk = null
 __selected_item = null
 __selected_line = null
 __selected_mode = "simple"
 __selected_stage = null
 
-DCore.signal_connect("part_operation",  ->
+DCore.signal_connect("partition_apply_done",  ->
+    sync_installer_conf()
+
     if progress_page? and progress_page.display_progress == false
         progress_page.display_progress = true
         progress_page.start_progress()
     progress_page?.update_progress("2%")
 
     DCore.Installer.start_install()
-
-    #__selected_stage = "extract"
-    #progress_page?.handle_extract("start")
 )
 
 class AddPartDialog extends Dialog
@@ -181,17 +180,20 @@ class AddPartDialog extends Dialog
         @fs_desc = create_element("span", "AddDesc", @fs)
         @fs_desc.innerText = _("Filesystem:")
         @fs_value = create_element("span", "AddValue", @fs)
-        @fs_select = new DropDown("dd_fs_" + @partid, false, @fs_change_cb)
+        @fs_select = new DropDown("dd_fs_" + @partid, false, fs_change_cb)
         @fs_value.appendChild(@fs_select.element)
-        if DCore.Installer.disk_support_efi(v_part_info[@partid]["disk"])
+
+        #TODO: update fs
+        if __selected_use_uefi
             @fs_select.set_drop_items(__fs_efi_keys, __fs_efi_values)
         else
             @fs_select.set_drop_items(__fs_keys, __fs_values)
+
         @fs_select.set_drop_size(130,22)
         @fs_select.set_selected("ext4")
         @fs_select.show_drop()
 
-    fs_change_cb: (part, fs) ->
+    fs_change_cb: (fs) ->
         if fs in ["efi", "swap", "unused", "fat16", "fat32", "ntfs"]
             Widget.look_up("AddModel").mp.style.display = "none"
         else
@@ -202,7 +204,7 @@ class AddPartDialog extends Dialog
         @mp_desc = create_element("span", "AddDesc", @mp)
         @mp_desc.innerText = _("Mount:")
         @mount_value = create_element("span", "AddValue", @mp)
-        @mount_select = new DropDown("dd_mp_" + @partid, true, @mp_change_cb)
+        @mount_select = new DropDown("dd_mp_" + @partid, true, (data) => @mp_change_cb(@partid, data))
         @mount_value.appendChild(@mount_select.element)
         @mount_select.set_drop_items(__mp_keys, __mp_values)
         @mount_select.set_drop_size(130,22)
@@ -345,11 +347,11 @@ class InstallDialog extends Dialog
         setTimeout(->
             if __selected_mode == "simple"
                 undo_part_table_info()
-                do_simple_partition(__selected_item.id, "part")
+                auto_simple_partition(__selected_item.id, "part")
             else if __selected_mode == "advance"
                 echo "do advance partition"
-                do_partition()
-            sync_installer_conf()
+            do_partition()
+            return
         , 300)
 
     fill_install_info: ->
@@ -597,14 +599,16 @@ class PartTableItem extends Widget
             @fill_fs_simple()
         else if __selected_mode == "advance"
             @fill_fs_advance()
+        else
+            assert(false, "not_reached")
 
     fill_fs_advance: ->
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
         if @active
-            @fs_select = new DropDown("dd_fs_" + @id, false, @fs_change_cb)
+            @fs_select = new DropDown("dd_fs_" + @id, false, (data)=> @fs_change_cb(@id, data))
             @fs.appendChild(@fs_select.element)
-            if DCore.Installer.disk_support_efi(v_part_info[@id]["disk"])
+            if __selected_use_uefi
                 @fs_select.set_drop_items(__fs_efi_keys, __fs_efi_values)
             else
                 @fs_select.set_drop_items(__fs_keys, __fs_values)
@@ -648,7 +652,7 @@ class PartTableItem extends Widget
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
         if @active 
-            @mount_select = new DropDown("dd_mp_" + @id, true, @mp_change_cb)
+            @mount_select = new DropDown("dd_mp_" + @id, true, (data)=>@mp_change_cb(@id, data))
             @mount.appendChild(@mount_select.element)
             if v_part_info[@id]["fs"]? 
                 @mount_select.set_drop_items(__mp_keys, __mp_values)
@@ -862,8 +866,6 @@ class PartTable extends Widget
             @fill_items_advance()
         else
             @fill_items_simple()
-        #if @partitems.length > 0 and @items.scrollHeight > @items.clientHeight
-        #    @partitems[@partitems.length - 1].element.setAttribute("class", "PartTableItem PartTableItemLast")
 
     fill_items_advance: ->
         @info_header.style.display = "none"
@@ -950,7 +952,7 @@ class Part extends Page
             return
         efi_boot = get_efi_boot_part()
         if efi_boot?
-            __selected_grub = "uefi"
+            __selected_use_uefi = "uefi"
             if v_part_info[efi_boot]["length"] <= mb_to_sector(100, 512)
                 @uefi_model = new UefiDialog("UefiModel")
                 document.body.appendChild(@uefi_model.element)
@@ -961,9 +963,9 @@ class Part extends Page
                 document.body.appendChild(@uefi_boot_model.element)
                 return
         else
-            __selected_grub = @grubdropdown?.get_selected()
-        if not __selected_grub
-            __selected_grub = v_part_info[target]["disk"]
+            __selected_bootloader = @grubdropdown?.get_selected()
+        if not __selected_bootloader
+            __selected_bootloader = v_part_info[target]["disk"]
         @install_model = new InstallDialog("InstallModel")
         document.body.appendChild(@install_model.element)
 
@@ -974,9 +976,12 @@ class Part extends Page
                     @parted_model = new UnavailablePartedDialog("PartedModel")
                     document.body.appendChild(@parted_model.element)
                     return
-        __selected_grub = __selected_disk
-        @install_model = new InstallDialog("InstallModel")
-        document.body.appendChild(@install_model.element)
+        if DCore.Installer.system_support_efi() and !DCore.Installer.disk_support_gpt(__selected_disk)
+            @error = New UefiBootDialog("UefiBootMode")
+            docuement.body.appendChild(@error.element)
+        else
+            @install_model = new InstallDialog("InstallModel")
+            document.body.appendChild(@install_model.element)
 
     init_part_page: ->
         if __selected_mode == null

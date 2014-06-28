@@ -1,6 +1,7 @@
 __selected_layout = "cn"
 __selected_layout_item = null
 __selected_variant_item = null
+__selected_use_uefi = DCore.Installer.system_support_efi()
 
 __selected_timezone = "Asia/Shanghai"
 __selected_username = null
@@ -16,11 +17,7 @@ sync_installer_conf = ->
 
     DCore.Installer.record_locale_info(__selected_locale)
 
-    if __selected_grub != "uefi"
-        DCore.Installer.record_bootloader_info(__selected_grub, false)
-    else
-        esp = get_efi_boot_part()
-        DCore.Installer.record_bootloader_info(esp, true)
+    DCore.Installer.record_bootloader_info(__selected_bootloader, __selected_use_uefi)
 
     if __selected_layout.indexOf(",") != -1
         layout = __selected_layout.split(",")[0]
@@ -34,7 +31,7 @@ sync_installer_conf = ->
     if __selected_mode == "simple"
         DCore.Installer.record_simple_mode_info(true)
     else
-        DCore.Installer.record_install_mode_info(false)
+        DCore.Installer.record_simple_mode_info(false)
 
 #write /etc/fstab, after extract iso
 record_mount_points = ->

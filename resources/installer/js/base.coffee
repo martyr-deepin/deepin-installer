@@ -188,7 +188,7 @@ class DropDownItem extends Widget
     do_click: (e) ->
         if @key != @dropdownlist.dropdown.selected 
             if @dropdownlist.dropdown.on_change_cb?
-                @dropdownlist.dropdown.on_change_cb(@id[6..17],@key)
+                @dropdownlist.dropdown.on_change_cb(@key)
         @dropdownlist.dropdown.set_selected(@key)
         @dropdownlist.hide()
 
@@ -295,7 +295,7 @@ class DropDown extends Widget
             @cur_input.style.height = @dropheight  + "px"
             @cur_input.addEventListener("blur", (e) =>
                 @set_selected(@cur_input.value)
-                @on_change_cb(@id[6..17], @cur_input.value)
+                @on_change_cb(@cur_input.value)
             )
         else
             @current.addEventListener("click", (e) =>
@@ -316,13 +316,12 @@ class DropDown extends Widget
         @listenable = true
 
     set_drop_items: (keys, values) ->
+        assert(keys.length == values.length, "invalid dropdown items")
         @keys = []
         @values = []
         @keys = keys
         @values = values
         @items = {}
-        if @keys.length != @values.length
-            echo "invalid dropdown items"
         i = 0
         while i < @keys.length
             @items[@keys[i]] = @values[i]

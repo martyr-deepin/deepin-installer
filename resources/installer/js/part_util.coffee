@@ -278,7 +278,8 @@ do_partition = ->
     DCore.Installer.start_part_operation()
 
 #auto partition for simple mode
-do_simple_partition = (device, type) ->
+auto_simple_partition = (device, type) ->
+    echo "auto_simple_partition: #{device} #{type}"
     if type == "part"
         #create a new part when install to freespace
         if m_part_info[device]["type"] == "freespace"
@@ -292,6 +293,7 @@ do_simple_partition = (device, type) ->
             fs = "ext4"
             mp = "/"
             add_part(partid, type, size, align, fs, mp)
+            echo "add_part", partid, type, size, align, fs, mp
         #just update the part fs and mp to install
         else if m_part_info[device]["type"] in ["normal", "logical"]
             update_part_fs(device,"ext4")
@@ -303,7 +305,6 @@ do_simple_partition = (device, type) ->
             update_part_mp(__selected_home, "/home")
     else
         echo "invalid type to do simple partition"
-    do_partition()
 
 #get recommand part to install target 
 get_recommand_target = ->
@@ -380,11 +381,9 @@ init_v_disk_info = ->
         for part in DCore.Installer.get_disk_partitions(disk)
             type = DCore.Installer.get_partition_type(part)
             if type == "freespace"
-                #only show freespace whose size greater than 10 MiB
-                if DCore.Installer.get_partition_length(part) > 20480
-                    v_disk_info[disk]["partitions"].push(part)
+                v_disk_info[disk]["partitions"].push(part)
             else if type in ["normal", "extended", "logical"]
-                    v_disk_info[disk]["partitions"].push(part)
+                v_disk_info[disk]["partitions"].push(part)
 
 v_part_info = {}
 init_v_part_info = ->
@@ -655,9 +654,8 @@ update_part_format = (part, format) ->
     mark_update(part)
 
 update_part_mp = (part, mp) ->
-    echo "--------update part mp--------"
+    echo "--------update part mp #{part} <==> #{mp}--------"
     echo v_part_info[part]["path"]
-    echo mp 
     v_part_info[part]["mp"] = mp
     mark_update(part)
 
@@ -961,7 +959,7 @@ _add_logical = (disk, free_part) ->
 #automaticly create an extended partition or expand extended size as needed 
     echo "add logical"
     if not get_extended_partition(disk)?
-        extended = "part" + DCore.Installer.rand_uuid()
+        extended = DCore.Installer.rand_uuid("part")
         v_part_info[extended] = {}
         v_part_info[extended]["disk"] = disk
         v_part_info[extended]["start"] = v_part_info[free_part]["start"]
@@ -985,7 +983,7 @@ _add_logical = (disk, free_part) ->
 
 #add partition
 add_part = (free_part, type, size, align, fs, mp) ->
-    new_part = "part"+DCore.Installer.rand_uuid()
+    new_part = DCore.Installer.rand_uuid("part")
     disk = v_part_info[free_part]["disk"]
     v_part_info[new_part] = {}
     v_part_info[new_part]["disk"] = disk
