@@ -186,7 +186,7 @@ class DropDownItem extends Widget
             @dropdownlist.hovered_index = -1
 
     do_click: (e) ->
-        if @key != @dropdownlist.dropdown.selected 
+        if @key != @dropdownlist.dropdown.selected
             if @dropdownlist.dropdown.on_change_cb?
                 @dropdownlist.dropdown.on_change_cb(@key)
         @dropdownlist.dropdown.set_selected(@key)
@@ -231,7 +231,7 @@ class DropDownList extends Widget
 
         #as we have space out of visiable area, just use webheight now
         webheight = 540
-        totalheight = @length * @dropdown.itemheight 
+        totalheight = @length * @dropdown.itemheight
         pageheight = document.body.clientHeight
         position = get_position(@dropdown.element)
         scrollheight = get_scroll_height(@dropdown.element)
@@ -241,7 +241,7 @@ class DropDownList extends Widget
 
         width = @dropdown.dropwidth
         height = totalheight
-        left = position["x"] 
+        left = position["x"]
 
         if bottomspace > totalheight + 5
             top = topspace + @dropdown.dropheight
@@ -418,7 +418,7 @@ class TimezoneToolTip extends Widget
         @content.innerText = @text
 
         @arrowwidth = 14
-        @arrowheight = 8 
+        @arrowheight = 8
         @xpadding = 5
         @ypadding = 0
         @radius = 4

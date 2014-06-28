@@ -49,7 +49,7 @@ class AddPartDialog extends Dialog
         @fill_fs()
         @fill_mount()
         @fill_tips()
-        
+
     add_part_cb: ->
         @gather_info()
         new_part = add_part(@partid, @n_type, @n_size, @n_align, @n_fs, @n_mp)
@@ -114,36 +114,36 @@ class AddPartDialog extends Dialog
         @size_input.addEventListener("blur", (e) =>
             parse = parseInt(@size_input.value)
             if isNaN(parse)
-                @size_input.value = @max_size_mb 
+                @size_input.value = @max_size_mb
             else
                 if parse < 0
-                    @size_input.value = 0 
+                    @size_input.value = 0
                 else if parse > @max_size_mb
-                    @size_input.value = @max_size_mb 
+                    @size_input.value = @max_size_mb
                 else
-                    @size_input.value = parse 
+                    @size_input.value = parse
         )
         @minus_img = create_element("div", "SizeMinus", @size_wrap)
         @minus_img.addEventListener("click", (e) =>
             parse = parseInt(@size_input.value)
             if isNaN(parse)
-                @size_input.value = @max_size_mb 
+                @size_input.value = @max_size_mb
             else
                 if parse >= 1
-                    @size_input.value = parse - 1 
+                    @size_input.value = parse - 1
         )
         @add_img = create_element("div", "SizeAdd", @size_wrap)
         @add_img.addEventListener("click", (e) =>
             parse = parseInt(@size_input.value)
             if isNaN(parse)
-                @size_input.value = @max_size_mb 
+                @size_input.value = @max_size_mb
             else
-                if parse <= @max_size_mb - 1 
-                    @size_input.value = parse + 1 
+                if parse <= @max_size_mb - 1
+                    @size_input.value = parse + 1
         )
         @dw = create_element("div", "SizeDw", @size_wrap)
         @dw.innerText = "MB"
-        
+
     fill_align: ->
         @align = create_element("div", "", @content)
         @align_desc = create_element("span", "AddDesc", @align)
@@ -228,7 +228,7 @@ class AddPartDialog extends Dialog
     gather_info: ->
         if @type_radio == "primary"
             @n_type = "normal"
-        else 
+        else
             @n_type = "logical"
         if parseInt(@size_input.value) == @max_size_mb
             @n_size = v_part_info[@partid]["length"]
@@ -355,14 +355,14 @@ class InstallDialog extends Dialog
         , 300)
 
     fill_install_info: ->
-	    if __selected_mode == "advance"
+        if __selected_mode == "advance"
             target = get_target_part()
         else
             target = __selected_item.id
         path = v_part_info[target]["path"]
-	    if v_part_info[target]["type"] == "freespace"
+        if v_part_info[target]["type"] == "freespace"
             @root_tips.innerText = _("Deepin OS will be installed to freespace.")
-	    else
+        else
             @root_tips.innerText = _("Deepin OS will be installed to ") + path
 
 class PartLineItem extends Widget
@@ -382,7 +382,7 @@ class PartLineItem extends Widget
     focus: ->
         @passive_focus()
         Widget.look_up(@part)?.passive_focus()
-    
+
     passive_focus: ->
         __selected_line?.blur()
         __selected_line = @
@@ -392,7 +392,7 @@ class PartLineItem extends Widget
         @element.setAttribute("class", "PartLineItem")
 
     do_click: (e)->
-        if __selected_line != @ 
+        if __selected_line != @
             @focus()
 
 class PartLineMaps extends Widget
@@ -495,7 +495,7 @@ class PartTableItem extends Widget
         if not @label_detail?
             @label_detail = create_element("div", "LabelDetail", @label)
             if __selected_mode == "advance"
-                @label_detail.innerText = v_part_info[@id]["label"] 
+                @label_detail.innerText = v_part_info[@id]["label"]
             else
                 @label_detail.innerText = m_part_info[@id]["label"]
         @label_detail.style.display = "block"
@@ -595,7 +595,7 @@ class PartTableItem extends Widget
 
     fill_fs: ->
         @fs.innerHTML = ""
-        if __selected_mode == "simple" 
+        if __selected_mode == "simple"
             @fill_fs_simple()
         else if __selected_mode == "advance"
             @fill_fs_advance()
@@ -640,7 +640,7 @@ class PartTableItem extends Widget
 
     fill_mount: ->
         @mount.innerHTML = ""
-        if __selected_mode != "advance" 
+        if __selected_mode != "advance"
             if @active
                 @mount.innerText = _("Install Here")
                 @mount.setAttribute("style", "text-align:right")
@@ -651,10 +651,10 @@ class PartTableItem extends Widget
     fill_mount_advance: ->
         if not v_part_info[@id]? or v_part_info[@id]["type"] == "freespace"
             return
-        if @active 
+        if @active
             @mount_select = new DropDown("dd_mp_" + @id, true, (data)=>@mp_change_cb(@id, data))
             @mount.appendChild(@mount_select.element)
-            if v_part_info[@id]["fs"]? 
+            if v_part_info[@id]["fs"]?
                 @mount_select.set_drop_items(__mp_keys, __mp_values)
             @mount_select.set_base_background("-webkit-gradient(linear, left top, left bottom, from(rgba(133,133,133,0.6)), color-stop(0.1, rgba(255,255,255,0.6)), to(rgba(255,255,255,0.6)));")
             if v_part_info[@id]["mp"].substring(0,1) != "/"
@@ -686,7 +686,7 @@ class PartTableItem extends Widget
 
     set_btn_status: ->
         if __selected_mode != "advance"
-            return 
+            return
         type = v_part_info[@id]["type"]
         add_btn = document.getElementById("part_add")
         delete_btn = document.getElementById("part_delete")
@@ -750,7 +750,7 @@ class PartTableItem extends Widget
         return false
 
     do_click: (e)->
-        if __selected_item != @ 
+        if __selected_item != @
             @focus()
 
     lock_busy: ->
@@ -805,7 +805,7 @@ class DiskTab extends Widget
         index = disks.indexOf(__selected_disk)
         if index > 0
             @focus_disk(disks[index-1])
-        
+
     switch_next: ->
         index = disks.indexOf(__selected_disk)
         if index < disks.length
@@ -840,7 +840,7 @@ class PartTable extends Widget
             echo "handle delete"
             if __in_model
                 echo "already had delete part mode dialog"
-                return 
+                return
             @del_model = new DeletePartDialog("DeleteModel", __selected_item.id)
             document.body.appendChild(@del_model.element)
         )
@@ -852,7 +852,7 @@ class PartTable extends Widget
             echo "handle add"
             if __in_model
                 echo "already had add part mode dialog"
-                return 
+                return
             @add_model = new AddPartDialog("AddModel", __selected_item.id)
             document.body.appendChild(@add_model.element)
         )
@@ -894,12 +894,12 @@ class PartTable extends Widget
                 @partitems.push(item)
         @items.setAttribute("style", "")
         @element.setAttribute("style", "")
-        
+
     update_mode: (mode) ->
         if __selected_item?
             id = __selected_item.id
             __selected_item = null
-        else 
+        else
             id = null
         @fill_items()
         if id?
@@ -1071,4 +1071,4 @@ class Part extends Page
         @linemap.element.setAttribute("style", "display:none")
         @part_grub.style.display = "none"
         @table.update_mode(__selected_mode)
-        @t_mode.innerText = _("Expert mode") 
+        @t_mode.innerText = _("Expert mode")

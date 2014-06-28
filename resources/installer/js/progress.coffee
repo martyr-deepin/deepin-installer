@@ -46,7 +46,7 @@ class PptItem extends Widget
         @init_position()
 
     init_position: ->
-        if @index == 1 
+        if @index == 1
             update_el_attr(@element, "z-index", 50)
         else if @index == @length
             update_el_attr(@element, "z-index", 50)

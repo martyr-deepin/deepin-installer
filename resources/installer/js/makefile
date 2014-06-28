@@ -4,5 +4,5 @@ com_coffee = ${com_dir}/utils.coffee ${com_dir}/animation.coffee ${com_dir}/modu
 
 installer_coffee = conf.coffee base.coffee welcome.coffee part_util.coffee part.coffee progress.coffee finish.coffee installer.coffee
 
-all: ${com_coffee} ${installer_coffee} 
+all: ${com_coffee} ${installer_coffee}
 	coffee -cj installer.js ${com_coffee} ${installer_coffee}

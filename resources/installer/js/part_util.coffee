@@ -45,7 +45,7 @@ mb_to_sector = (mb_size, sector_size) ->
     return Math.floor((mb_size) * 1000 * 1000 / sector_size)
 #
 #Model
-#Model: for origin disk partition table 
+#Model: for origin disk partition table
 #disks = DCore.Installer.list_disks()
 disks = null
 minimum_disk_size_required = 8
@@ -93,7 +93,7 @@ init_m_part_info = ->
             m_part_info[part]["lvm"] = v_part_info[part]["lvm"]
             m_part_info[part]["op"] = "keep"
             m_part_info[part]["path"] = v_part_info[part]["path"]
-    
+
 #sort part op flags as below:
 #1)first delete, then update and add
 #2)delete logical first than delete extended
@@ -106,16 +106,16 @@ _sort_part_op =  (part_a, part_b) ->
             return 1
         else
             return -1
-    else if m_part_info[part_a]["op"] == "update" 
+    else if m_part_info[part_a]["op"] == "update"
         if m_part_info[part_a]["type"] == "extended"
             if m_part_info[part_a]["length"] < v_part_info[part_a]["length"]
                 return -1
-            else 
+            else
                 return 1
         else if m_part_info[part_b]["type"] == "extended"
             if m_part_info[part_b]["length"] < v_part_info[part_b]["length"]
                 return 1
-            else 
+            else
                 return -1
         else
             return -1
@@ -306,7 +306,7 @@ auto_simple_partition = (device, type) ->
     else
         echo "invalid type to do simple partition"
 
-#get recommand part to install target 
+#get recommand part to install target
 get_recommand_target = ->
     recommand = null
     for disk in disks
@@ -314,7 +314,7 @@ get_recommand_target = ->
             if m_part_info[part]["type"] != "extended"
                 if recommand?
                     if m_part_info[part]["length"] > m_part_info[recommand]["length"]
-                        recommand = part 
+                        recommand = part
                 else
                     recommand = part
     return recommand
@@ -399,7 +399,7 @@ init_v_part_info = ->
             v_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
             v_part_info[part]["mp"] = "unused"
             v_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
-            v_part_info[part]["color"] = get_random_color() 
+            v_part_info[part]["color"] = get_random_color()
             v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
             v_part_info[part]["format"] = false
             if v_part_info[part]["type"] != "freespace"
@@ -413,7 +413,7 @@ init_v_part_info = ->
                             v_part_info[part]["fs"] = "efi"
                 v_part_info[part]["os"] = DCore.Installer.get_partition_os(part)
                 v_part_info[part]["label"] = DCore.Installer.get_partition_label(part)
-                v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm") 
+                v_part_info[part]["lvm"] = DCore.Installer.get_partition_flag(part, "lvm")
             else
                 v_part_info[part]["fs"] = "unused"
                 v_part_info[part]["os"] = null
@@ -543,7 +543,7 @@ get_prev_part = (part) ->
     sort_v_disk_info(disk)
     main_blocks = get_main_blocks(disk)
     secondary_blocks = get_secondary_blocks(disk)
-   
+
     if part in main_blocks
         index = main_blocks.indexOf(part)
         if index > 0
@@ -566,12 +566,12 @@ get_next_part = (part) ->
 
     if part in main_blocks
         index = main_blocks.indexOf(part)
-        if index < main_blocks.length-1 
+        if index < main_blocks.length-1
             return main_blocks[index+1]
 
     else if part in secondary_blocks
         index = secondary_blocks.indexOf(part)
-        if index < secondary_blocks.length - 1 
+        if index < secondary_blocks.length - 1
             return secondary_blocks[index+1]
 
     else
@@ -587,7 +587,7 @@ can_add_normal = (part) ->
         return false
     #whether the part between two logical partititons
     if is_in_extended(part)
-        logical_before = false 
+        logical_before = false
         logical_after = false
 
         for logical in get_logical_partitions(disk)
@@ -600,7 +600,7 @@ can_add_normal = (part) ->
         if logical_before and logical_after
             return false
     return true
-    
+
 #whether can add a logical partition in the freespace
 can_add_logical = (part) ->
     if v_part_info[part]["type"] != "freespace"
@@ -704,7 +704,7 @@ get_selected_mp = ->
     mp_list = []
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
-            if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused" 
+            if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused"
                 mp_list.push(v_part_info[part]["mp"])
     return mp_list
 
@@ -719,8 +719,8 @@ get_mp_partition = (mp) ->
 _delete_normal = (disk, part) ->
     echo "delete normal"
     prev = get_prev_part(part)
-    if prev? 
-        if v_part_info[prev]["type"] == "freespace" 
+    if prev?
+        if v_part_info[prev]["type"] == "freespace"
             echo "directly merge prev freespace"
             v_part_info[part]["start"] = v_part_info[prev]["start"]
             v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
@@ -739,7 +739,7 @@ _delete_normal = (disk, part) ->
                 v_part_info[part]["start"] = v_part_info[extended_last]["start"]
                 v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
-                #always reduce the extended size ,if need delete it, will handle this later 
+                #always reduce the extended size ,if need delete it, will handle this later
                 mark_update(prev)
                 v_part_info[prev]["end"] = v_part_info[extended_last]["start"] - 1
                 v_part_info[prev]["length"] = v_part_info[prev]["end"] - v_part_info[prev]["start"] + 1
@@ -750,7 +750,7 @@ _delete_normal = (disk, part) ->
                 delete v_part_info[extended_last]
 
     next = get_next_part(part)
-    if next? 
+    if next?
         if v_part_info[next]["type"] == "freespace"
             echo "directly merge next freespace"
             v_part_info[part]["end"] = v_part_info[next]["end"]
@@ -770,12 +770,12 @@ _delete_normal = (disk, part) ->
                 v_part_info[part]["end"] = v_part_info[extended_first]["end"]
                 v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
-                #always reduce the extended size ,if need delete it, will handle this later 
+                #always reduce the extended size ,if need delete it, will handle this later
                 mark_update(next)
                 v_part_info[next]["start"] = v_part_info[extended_first]["end"] + 1
                 v_part_info[next]["length"] = v_part_info[next]["end"] - v_part_info[next]["start"] + 1
                 v_part_info[next]["width"] = Math.floor((v_part_info[next]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
-                
+
                 extended_first_index = v_disk_info[disk]["partitions"].indexOf(extended_first)
                 v_disk_info[disk]["partitions"].splice(extended_first_index, 1)
                 delete v_part_info[extended_first]
@@ -808,7 +808,7 @@ _delete_logical = (disk, part) ->
             v_disk_info[disk]["partitions"].splice(before_extended_index, 1)
             delete v_part_info[before_extended]
 
-            #always reduce the extended size, if need delete it, will handle this later 
+            #always reduce the extended size, if need delete it, will handle this later
             mark_update(extended)
             v_part_info[extended]["start"] = v_part_info[part]["end"] + 1
             v_part_info[extended]["length"] = v_part_info[extended]["end"] - v_part_info[extended]["start"] + 1
@@ -820,7 +820,7 @@ _delete_logical = (disk, part) ->
             echo "directly merge next freespace"
             v_part_info[part]["end"] = v_part_info[next]["end"]
             v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
-    
+
             next_index = v_disk_info[disk]["partitions"].indexOf(next)
             v_disk_info[disk]["partitions"].splice(next_index, 1)
             delete v_part_info[next]
@@ -834,12 +834,12 @@ _delete_logical = (disk, part) ->
             echo "merge freespace block just after the extended partition"
             v_part_info[part]["end"] = v_part_info[after_extended]["end"]
             v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
-    
+
             after_extended_index = v_disk_info[disk]["partitions"].indexOf(after_extended)
             v_disk_info[disk]["partitions"].splice(after_extended_index, 1)
             delete v_part_info[after_extended]
 
-            #always reduce the extended size ,if need delete it, will handle this later 
+            #always reduce the extended size ,if need delete it, will handle this later
             mark_update(extended)
             v_part_info[extended]["end"] = v_part_info[part]["start"] - 1
             v_part_info[extended]["length"] = v_part_info[extended]["end"] - v_part_info[extended]["start"] + 1
@@ -856,7 +856,7 @@ _delete_extended = (disk, part) ->
         delete v_part_info[block]
 
     prev = get_prev_part(part)
-    if prev? and v_part_info[prev]["type"] == "freespace" 
+    if prev? and v_part_info[prev]["type"] == "freespace"
         echo "directly merge prev freespace"
         v_part_info[part]["start"] = v_part_info[prev]["start"]
         v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
@@ -950,13 +950,13 @@ _add_normal = (disk, free_part) ->
                     echo "error, can't add an normal deep inner an extended partition"
             else
                 echo "error in _add_normal, invalid secondary blocks"
-            
+
         v_part_info[extended]["length"] = v_part_info[extended]["end"] - v_part_info[extended]["start"] + 1
         v_part_info[extended]["width"] = Math.floor((v_part_info[extended]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
 #add logical partition adaption
 _add_logical = (disk, free_part) ->
-#automaticly create an extended partition or expand extended size as needed 
+#automaticly create an extended partition or expand extended size as needed
     echo "add logical"
     if not get_extended_partition(disk)?
         extended = DCore.Installer.rand_uuid("part")
@@ -1021,7 +1021,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
             v_part_info[free_part]["start"] = v_part_info[new_part]["end"] + 1
             v_part_info[free_part]["length"] = v_part_info[free_part]["end"] - v_part_info[free_part]["start"] + 1
         else
-            v_part_info[new_part]["length"] = size 
+            v_part_info[new_part]["length"] = size
             v_part_info[new_part]["end"] = v_part_info[free_part]["end"]
             v_part_info[new_part]["start"] = v_part_info[new_part]["end"] - v_part_info[new_part]["length"] + 1
 
@@ -1043,7 +1043,7 @@ undo_part_table_info = ->
         init_v_part_info()
         init_m_disk_info()
         init_m_part_info()
-    else 
+    else
         setTimeout(=>
             undo_part_table_info()
         ,1000)

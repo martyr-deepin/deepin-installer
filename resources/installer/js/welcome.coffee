@@ -219,7 +219,7 @@ class KeyboardDetectDialog extends  Widget
             echo "invalid code"
             return
         try
-            keycodes = DCore.Installer.keyboard_detect_get_keycodes() 
+            keycodes = DCore.Installer.keyboard_detect_get_keycodes()
         catch error
             echo error
         if keycodes?
@@ -352,7 +352,7 @@ class Keyboard extends Widget
         li.innerText = c
         li.addEventListener("click", (e) =>
             @selected_letter?.setAttribute("class", "")
-            @selected_letter = li 
+            @selected_letter = li
             @selected_letter.setAttribute("class","LetterActive")
             @execute_letter_query(c)
         )
@@ -387,7 +387,7 @@ class Keyboard extends Widget
         #    @search_list.push(item)
         #    @search_list.push(DCore.Installer.get_layout_description(item))
 
-    fill_layouts: (layouts) -> 
+    fill_layouts: (layouts) ->
         @layout_list.innerHTML = ""
         for layout in layouts
             item = new LayoutItem("layoutitem_" + layout, layout, @)
@@ -564,7 +564,7 @@ class Timezone extends Widget
         area.addEventListener("mouseout", (e) =>
             @destroy_canvas(area)
         )
-    
+
     show_pin: (area) ->
         pin = area.getAttribute("data-pin").split(",")
         @pin?.parentElement?.removeChild(@pin)
@@ -678,7 +678,7 @@ class Language extends Widget
         @lang_selected = null
         @lang_create()
         @hide()
-    
+
     lang_create: ->
         @li = []
         @lang_div = create_element("div","lang_div",@element)
@@ -729,7 +729,7 @@ class WelcomeFormItem extends Widget
                 Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
             if @id == "confirmpassword"
                 pwd = Widget.look_up("account")?.password.input.value
-                if pwd.indexOf(@input.value) == -1 
+                if pwd.indexOf(@input.value) == -1
                     @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
                 else
                     @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
@@ -752,7 +752,7 @@ class WelcomeFormItem extends Widget
 
     fill_widget: ->
         if @id == "username"
-            username_holder = _("User Name") 
+            username_holder = _("User Name")
             @input.setAttribute("placeholder", username_holder)
         else if @id == "hostname"
             hostname_holder = _("Computer Name")
@@ -777,7 +777,7 @@ class WelcomeFormItem extends Widget
             __selected_password = @input.value
 
     check_valid: ->
-        if not @is_valid() 
+        if not @is_valid()
             if @input.value.length != 0
                 @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
 
@@ -840,7 +840,7 @@ class Account extends Widget
     check_start_ready: ->
         if !__init_parted_finish
             return false
-        if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid() 
+        if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
             @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
             @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
             return true
@@ -869,10 +869,10 @@ class Welcome extends Page
         @titleimg = create_img("", "images/progress_account.png", @titleprogress)
 
         @title_set = create_element("div", "TitleSet", @title)
-        
+
         #@language_set = create_element("div", "LanguageSet", @title_set)
         #@language_set.innerText = _("Language")
-        
+
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
         @keyboard_set.innerText = _("Keyboard")
 
