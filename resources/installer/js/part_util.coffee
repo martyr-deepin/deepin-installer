@@ -650,14 +650,17 @@ update_part_mp = (part, mp) ->
 #when add part, set its path to max plus 1, after mark the part type
 #when delete part, set others part minus 1, before mark the part type
 #--------------------
-#TODO: above logic is wrong. next partition number is not euqal to
-#the last parition number + 1.
+#TODO: above logic is wrong!!!!
+#TODO: Rewrite above code, don't try mock the logic, let Parted do it.
+#next partition number is not equal to the last parition number + 1.
+#and the partition path is not equal disk_path + partition num
 update_part_display_path = (part, op) ->
     disk = v_part_info[part]["disk"]
     disk_path = v_disk_info[disk]["path"]
     if op == "add"
         maxnum = 0
         if v_part_info[part]["type"] == "logical"
+            maxnum = 4 #logical partition num is start at 5
             for item in get_logical_partitions(disk)
                 part_num = get_part_num(item)
                 if part_num > maxnum
