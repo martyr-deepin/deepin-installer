@@ -950,20 +950,20 @@ class Part extends Page
             @root_model = new RootDialog("RootModel")
             document.body.appendChild(@root_model.element)
             return
-        efi_boot = get_efi_boot_part()
-        if efi_boot?
-            __selected_use_uefi = "uefi"
-            if v_part_info[efi_boot]["length"] <= mb_to_sector(100, 512)
+        if __selected_use_uefi
+            #Warning, if capacity of esp is smaller than 100Mb
+            esp = get_efi_boot_part()
+            if not esp
+                #TODO: check gpt, esp
                 @uefi_model = new UefiDialog("UefiModel")
                 document.body.appendChild(@uefi_model.element)
                 return
-            legacy_boot = get_legacy_boot_part()
-            if legacy_boot?
-                @uefi_boot_model = new UefiBootDialog("UefiBootModel")
-                document.body.appendChild(@uefi_boot_model.element)
+            if v_part_info[esp]["length"] <= mb_to_sector(100, 512)
+                @uefi_model = new UefiDialog("UefiModel")
+                document.body.appendChild(@uefi_model.element)
                 return
         else
-            __selected_bootloader = @grubdropdown?.get_selected()
+            __selected_bootloader = @grub_dropdown?.get_selected()
         if not __selected_bootloader
             __selected_bootloader = v_part_info[target]["disk"]
         @install_model = new InstallDialog("InstallModel")
@@ -977,6 +977,7 @@ class Part extends Page
                     document.body.appendChild(@parted_model.element)
                     return
         if DCore.Installer.system_support_efi() and !DCore.Installer.disk_support_gpt(__selected_disk)
+            #TODO: warning, not uefi/gpt pair
             @error = New UefiBootDialog("UefiBootMode")
             docuement.body.appendChild(@error.element)
         else
