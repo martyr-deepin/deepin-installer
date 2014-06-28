@@ -440,7 +440,7 @@ class Keyboard extends Widget
             @detect_dialog.destroy()
             @detect_dialog = null
         @detect_dialog = new KeyboardDetectDialog("detect_dialog", null, @)
-        document.body.appendChild(@detect_dialog.element)
+        @detect_dialog.show_at(document.body)
         @detect_dialog.hide_dialog()
         @process_keyboard_detect(r)
 

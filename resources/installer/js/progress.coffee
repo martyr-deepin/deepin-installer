@@ -214,9 +214,6 @@ class Progress extends Page
         @progressbar.style.width = progress
 
     show_report: ->
-        #@report?.hide_dialog()
-        #@report =  new ReportDialog("report")
-        #document.body.appendChild(@report.element)
         __install_failed = true
         __selected_stage = "terminate"
         finish_page = new Finish("finish", false)

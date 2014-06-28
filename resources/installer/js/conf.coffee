@@ -58,6 +58,5 @@ try_removed_start_install = ->
             echo "do advance partition"
         do_partition()
 
-        progress_page?.update_progress("2%")
         sync_installer_conf()
         DCore.Installer.start_install()

@@ -25,8 +25,7 @@ DCore.signal_connect("init_parted", (msg) ->
     echo "signal tell init parted finish"
     __init_parted_finish = true
     if not is_match_install_require()
-        require_dialog = new RequireMatchDialog("require")
-        document.body.appendChild(require_dialog.element)
+        new RequireMatchDialog("require").show_at(document.body)
 )
 
 DCore.signal_connect("os_prober", (msg) ->
@@ -146,6 +145,9 @@ class Dialog extends Widget
         else
             @ok.setAttribute("style", "margin:31px 145px 0 0")
         @show_dialog()
+
+    show_at: (parent) ->
+        parent.appendChild(@element)
 
     show_dialog: ->
         __in_model = true

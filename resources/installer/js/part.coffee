@@ -223,7 +223,6 @@ class AddPartDialog extends Dialog
             @n_size = v_part_info[@partid]["length"]
         else
             @n_size = parseInt(@size_input.value) * MB
-        alert("size :#{@n_size}")
         if not @n_size?
             @tips.innerText = _("Please enter a valid partition size.")
         @n_align = @align_radio
@@ -824,8 +823,7 @@ class PartTable extends Widget
             if __in_model
                 echo "already had delete part mode dialog"
                 return
-            @del_model = new DeletePartDialog("DeleteModel", __selected_item.id)
-            document.body.appendChild(@del_model.element)
+            new DeletePartDialog("DeleteModel", __selected_item.id).show_at(document.body)
         )
 
         @part_add = create_element("div", "PartAddBtn", @op)
@@ -837,7 +835,7 @@ class PartTable extends Widget
                 echo "already had add part mode dialog"
                 return
             @add_model = new AddPartDialog("AddModel", __selected_item.id)
-            document.body.appendChild(@add_model.element)
+            @add_model.show_at(document.body)
         )
 
         @update_mode(__selected_mode)
@@ -930,43 +928,39 @@ class Part extends Page
     handle_install_advance: ->
         target = get_target_part()
         if not target?
-            @root_model = new RootDialog("RootModel")
-            document.body.appendChild(@root_model.element)
+            new RootDialog("RootModel").show_at(document.body)
             return
+
         if __selected_use_uefi
             #Warning, if capacity of esp is smaller than 100Mb
             esp = get_efi_boot_part()
             if not esp
                 #TODO: check gpt, esp
-                @uefi_model = new UefiDialog("UefiModel")
-                document.body.appendChild(@uefi_model.element)
+                new UefiDialog("UefiModel").show_at(document.body)
                 return
             if v_part_info[esp]["length"] <= 100 * MB
-                @uefi_model = new UefiDialog("UefiModel")
-                document.body.appendChild(@uefi_model.element)
+                new UefiDialog("UefiModel").show_at(document.body)
                 return
+            __selected_bootloader = esp
         else
             __selected_bootloader = @grub_dropdown?.get_selected()
-        if not __selected_bootloader
-            __selected_bootloader = v_part_info[target]["disk"]
-        @install_model = new InstallDialog("InstallModel")
-        document.body.appendChild(@install_model.element)
+            if not __selected_bootloader
+                __selected_bootloader = v_part_info[target]["disk"]
+
+        new InstallDialog("InstallModel").show_at(document.body)
 
     handle_install_simple: ->
         if __selected_item?
             if m_part_info[__selected_item.id]["type"] == "freespace"
                 if not can_add_normal(__selected_item.id) and not can_add_logical(__selected_item.id)
-                    @parted_model = new UnavailablePartedDialog("PartedModel")
-                    document.body.appendChild(@parted_model.element)
+                    new UnavailablePartedDialog("PartedModel").show_at(document.body)
                     return
         if DCore.Installer.system_support_efi() and !DCore.Installer.disk_support_gpt(__selected_disk)
             #TODO: warning, not uefi/gpt pair
-            @error = New UefiBootDialog("UefiBootMode")
-            docuement.body.appendChild(@error.element)
+            new UefiBootDialog("UefiBootMode").show_at(document.body)
         else
             __selected_bootloader = __selected_disk
-            @install_model = new InstallDialog("InstallModel")
-            document.body.appendChild(@install_model.element)
+            new InstallDialog("InstallMode").show_at(document.body)
 
     init_part_page: ->
         if __selected_mode == null
@@ -1034,7 +1028,7 @@ class Part extends Page
         __selected_mode = "advance"
         if check_has_mount()
             @unmount_model = new UnmountDialog("UnmountModel")
-            document.body.appendChild(@unmount_model.element)
+            @unmount_model.show_at(document.body)
         @linemap.element.setAttribute("style", "display:block")
         @part_grub.setAttribute("style", "display:block")
         efi_boot = get_efi_boot_part()
