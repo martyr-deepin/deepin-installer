@@ -108,5 +108,5 @@ DCore.signal_connect("install_progress", (per)->
     if per >= 100
         pc.switch_page(new Finish("finish", true))
         return
-    progress_page?.update_progress("#{per}%")
+    progress_page.update_progress("#{per}%")
 )

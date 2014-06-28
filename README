@@ -6,3 +6,4 @@ TODO:
 2. os-probe 支持EFI系统
 3. 如果覆盖安装了一个EFI系统，需要清除对应系统在EFI变量中的信息
 4. move dde-first-run to hooks
+5. 修复键盘模块(依赖com.deepin.daemon.Search模块)

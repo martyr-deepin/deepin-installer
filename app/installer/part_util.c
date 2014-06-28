@@ -151,22 +151,6 @@ PedDisk* try_build_disk(PedDevice* device)
 
 static gpointer thread_init_parted (gpointer data)
 {
-    disks = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                   (GEqualFunc) g_str_equal, 
-                                   (GDestroyNotify) g_free, 
-                                   NULL);
-
-    disk_partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                             (GEqualFunc) g_str_equal, 
-                                             (GDestroyNotify) g_free, 
-                                             (GDestroyNotify) g_list_free);
-
-    partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                        (GEqualFunc) g_str_equal, 
-                                        (GDestroyNotify) g_free, 
-                                        NULL);
-
-
     ped_device_probe_all ();
 
     PedDevice *device = NULL;
@@ -192,6 +176,22 @@ static gpointer thread_init_parted (gpointer data)
 
 void init_parted ()
 {
+    disks = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                   (GEqualFunc) g_str_equal, 
+                                   (GDestroyNotify) g_free, 
+                                   NULL);
+
+    disk_partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                             (GEqualFunc) g_str_equal, 
+                                             (GDestroyNotify) g_free, 
+                                             (GDestroyNotify) g_list_free);
+
+    partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, 
+                                        (GEqualFunc) g_str_equal, 
+                                        (GDestroyNotify) g_free, 
+                                        NULL);
+
+
     GThread *thread = g_thread_new ("init-parted", (GThreadFunc) thread_init_parted, NULL);
     g_thread_unref (thread);
 

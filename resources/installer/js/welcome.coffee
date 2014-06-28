@@ -49,18 +49,6 @@ __timezone_widget = null
 __language_widget = null
 __account_widget = null
 
-class RequireMatchDialog extends Dialog
-    constructor: (@id) ->
-        super(@id, false, @require_match_cb)
-        @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Installation Requirements")
-        @format_tips = create_element("p", "", @content)
-        @format_tips.innerText = _("To install Deepin OS, you need to have at least 15GB disk space.")
-
-    require_match_cb: ->
-        echo "require match cb"
-        DCore.Installer.finish_install()
-
 class LayoutItem extends Widget
     constructor: (@id, @layout, @keyboard)->
         super
@@ -273,6 +261,10 @@ class KeyboardDetectDialog extends  Widget
         else
             echo "invalid type"
             @hide_dialog()
+
+    #TODO: Should this directly inherit from Dialog ?
+    show_at: (parent)->
+        parent.appendChild(@element)
 
     show_dialog: ->
         __in_model = true
@@ -884,10 +876,6 @@ class Welcome extends Page
 
         @wrap = create_element("div", "WelcomeWrap", @element)
 
-        #@language = new Language("language")
-        #@wrap.appendChild(@language.element)
-        #__language_widget = @language
-
         @keyboard = new Keyboard("keyboard")
         @wrap.appendChild(@keyboard.element)
         __keyboard_widget = @keyboard
@@ -901,11 +889,6 @@ class Welcome extends Page
         __account_widget = @account
 
     do_click: (e) ->
-        #if is_ancestor(@language_set, e.target)
-        #    if @language.displayed
-        #        @account.show()
-        #    else
-        #        @language.show()
         if is_ancestor(@keyboard_set, e.target)
             if @keyboard.displayed
                 @account.show()

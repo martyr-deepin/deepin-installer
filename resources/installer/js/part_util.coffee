@@ -31,12 +31,6 @@ DCore.signal_connect("used", (msg) ->
     Widget.look_up(msg.part)?.update_part_used()
 )
 
-DCore.signal_connect("slow", (msg) ->
-    v_part_info[msg.uuid]["slow"] = true
-    Widget.look_up(msg.uuid)?.update_part_slow()
-)
-
-
 random_list = []
 get_random_color = ->
     if random_list.length == 0
@@ -342,13 +336,6 @@ check_has_mount = ->
             if DCore.Installer.get_partition_mp(part)
                 return true
     return false
-
-get_legacy_boot_part = ->
-    for disk in disks
-        for part in v_disk_info[disk]["partitions"]
-            if v_part_info[part]["mp"] == "/boot"
-                return part
-    return null
 
 get_efi_boot_part = ->
     for disk in disks
@@ -1052,6 +1039,3 @@ undo_part_table_info = ->
         ,1000)
 
 #Control end
-#Control
-#
-#

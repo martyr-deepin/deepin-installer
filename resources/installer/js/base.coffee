@@ -118,47 +118,6 @@ delete_el_attr = (el, name) ->
     style = delete_style_attr(origin, name)
     el.setAttribute("style", style)
 
-class Dialog extends Widget
-    constructor: (@id, @with_cancel, @cb) ->
-        super
-        @title = create_element("div", "DialogTitle", @element)
-        @title_txt = create_element("div", "DialogTxt", @title)
-        @title_close = create_element("div", "DialogClose", @title)
-        @title_close.addEventListener("click", (e) =>
-            @hide_dialog()
-        )
-
-        @content = create_element("div", "DialogContent", @element)
-        @foot = create_element("div", "DialogBtn", @element)
-        @ok = create_element("div", "", @foot)
-        @ok.innerText = _("OK")
-        @ok.addEventListener("click", (e) =>
-            @hide_dialog()
-            @cb()
-        )
-        if @with_cancel
-            @cancel = create_element("div", "", @foot)
-            @cancel.innerText = _("Cancel")
-            @cancel.addEventListener("click", (e) =>
-                @hide_dialog()
-            )
-        else
-            @ok.setAttribute("style", "margin:31px 145px 0 0")
-        @show_dialog()
-
-    show_at: (parent) ->
-        parent.appendChild(@element)
-
-    show_dialog: ->
-        __in_model = true
-        __board.setAttribute("style", "display:block")
-
-    hide_dialog: ->
-        __in_model = false
-        @destroy()
-        __board.setAttribute("style", "display:none")
-
-
 class DropDownItem extends Widget
     constructor: (@id, @key, @value, @index, @dropdownlist) ->
         super
