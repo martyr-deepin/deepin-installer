@@ -903,6 +903,23 @@ gboolean installer_set_partition_flag (const gchar *uuid, const gchar *flag_name
 }
 
 
+char* find_partition_path_by_sector_and_disk_path(const char* path, int byte_start)
+{
+    PedDevice* dev = ped_device_get(path);
+    g_return_val_if_fail(dev != NULL, NULL);
+    PedDisk* disk = ped_disk_new(dev);
+    g_return_val_if_fail(disk != NULL, NULL);
+
+    PedSector start = ceil(byte_start * 1.0 / dev->sector_size);
+
+    PedPartition* part = ped_disk_get_partition_by_sector(disk, start);
+    g_return_val_if_fail(part != NULL, NULL);
+    g_return_val_if_fail(part->num != -1, NULL);
+
+    return g_strdup(ped_partition_get_path(part));
+}
+
+
 //when dectect mount partition, tell user to unmount them
 JS_EXPORT_API
 void installer_unmount_partition (const gchar *part)

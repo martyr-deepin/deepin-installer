@@ -123,5 +123,6 @@ void installer_unmount_partition (const gchar *part);
 
 JS_EXPORT_API gboolean installer_system_support_efi ();
 
+char* find_partition_path_by_sector_and_disk_path(const char* path, int byte_start);
 void ped_print();
 #endif

@@ -13,6 +13,13 @@ char* find_path_by_uuid(const char* uuid)
 	return installer_get_disk_path (uuid);
     } else if (g_str_has_prefix (uuid, "part")) {
 	return installer_get_partition_path (uuid);
+    } else if (g_str_has_prefix (uuid, "free")) {
+	char** sets = g_strsplit(uuid, ":", 3);
+	g_assert(g_strv_length(sets) == 3);
+	char* path = find_partition_path_by_sector_and_disk_path(sets[1], g_ascii_strtod(sets[2], NULL));
+	g_debug("----------------------try find free partition's path: %s:%d = %s\n", sets[1], (int)g_ascii_strtod(sets[2], NULL), path);
+	g_strfreev(sets);
+	return path;
     } else {
 	return g_strdup(uuid);
     }
