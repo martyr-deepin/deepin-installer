@@ -734,7 +734,6 @@ gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk
     g_assert(part_uuid != NULL);
     g_assert(disk_uuid != NULL);
     g_assert(type != NULL);
-    g_assert(fs != NULL);
     g_assert(byte_start >= 0);
     g_assert(byte_end > 0);
 
