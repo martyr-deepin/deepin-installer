@@ -104,7 +104,7 @@ class AddPartDialog extends Dialog
         @size = create_element("div", "", @content)
         @size_desc = create_element("span", "AddDesc", @size)
         @size_desc.innerText = _("Size:")
-        @max_size_mb = sector_to_mb(v_part_info[@partid]["length"], 512)
+        @max_size_mb = v_part_info[@partid]["length"] / MB
 
         @size_value = create_element("span", "AddValue", @size)
         @size_wrap = create_element("div", "SizeWrap", @size_value)
@@ -233,7 +233,7 @@ class AddPartDialog extends Dialog
         if parseInt(@size_input.value) == @max_size_mb
             @n_size = v_part_info[@partid]["length"]
         else
-            @n_size = mb_to_sector(parseInt(@size_input.value), 512)
+            @n_size = parseInt(@size_input.value) * MB
         if not @n_size?
             @tips.innerText = _("Please enter a valid partition size.")
         @n_align = @align_radio
@@ -523,9 +523,9 @@ class PartTableItem extends Widget
     fill_size: ->
         @size.innerHTML = ""
         if __selected_mode == "advance"
-            @size.innerText += sector_to_gb(v_part_info[@id]["length"], 512).toFixed(1) + "G"
+            @size.innerText += (v_part_info[@id]["length"] / GB).toFixed(1) + "G"
         else
-            @size.innerText += sector_to_gb(m_part_info[@id]["length"], 512).toFixed(1) + "G"
+            @size.innerText += (m_part_info[@id]["length"] / GB).toFixed(1) + "G"
 
     fill_used: ->
         @used.innerHTML = ""
@@ -533,12 +533,12 @@ class PartTableItem extends Widget
             if isNaN(v_part_info[@id]["used"])
                 @used.innerText = _("Unknown")
             else
-                @used.innerText = (v_part_info[@id]["used"]/1000).toFixed(1) + "G"
+                @used.innerText = (v_part_info[@id]["used"] / GB).toFixed(1) + "G"
         else if __selected_mode == "simple" and m_part_info[@id]["type"] != "freespace"
             if isNaN(m_part_info[@id]["used"])
                 @used.innerText = _("Unknown")
             else
-                @used.innerText = (m_part_info[@id]["used"]/1000).toFixed(1) + "G"
+                @used.innerText = (m_part_info[@id]["used"] / GB).toFixed(1) + "G"
 
     update_part_used: ->
         @fill_used()
@@ -795,7 +795,7 @@ class DiskTab extends Widget
         index = disks.indexOf(disk) + 1
         if index > 0
             __selected_disk = disk
-            size = sector_to_gb(v_disk_info[disk]["length"], 512).toFixed(0)
+            size = (v_disk_info[disk]["length"] / GB).toFixed(0)
             @content.innerText = _("Disk") + index  + "  (" + +  size + "GB) "
             Widget.look_up("part_line_maps")?.fill_linemap()
             Widget.look_up("part_table")?.fill_items()
@@ -958,7 +958,7 @@ class Part extends Page
                 @uefi_model = new UefiDialog("UefiModel")
                 document.body.appendChild(@uefi_model.element)
                 return
-            if v_part_info[esp]["length"] <= mb_to_sector(100, 512)
+            if v_part_info[esp]["length"] <= 100 * MB
                 @uefi_model = new UefiDialog("UefiModel")
                 document.body.appendChild(@uefi_model.element)
                 return
@@ -1024,7 +1024,7 @@ class Part extends Page
         keys = []
         values = []
         for disk in disks
-            text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" + sector_to_gb(v_disk_info[disk]["length"], 512).toFixed(0) + "GB"
+            text = v_disk_info[disk]["path"] + "\t" + v_disk_info[disk]["model"] + "\t" + (v_disk_info[disk]["length"] / GB).toFixed(0) + "GB"
             keys.push(disk)
             values.push(text)
             for part in v_disk_info[disk]["partitions"]

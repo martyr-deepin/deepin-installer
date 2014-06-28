@@ -339,51 +339,24 @@ double installer_get_disk_max_primary_count (const gchar *disk)
 }
 
 JS_EXPORT_API
-double installer_get_disk_length (const gchar *disk)
+double installer_get_disk_size (const gchar *disk)
 {
-    double length = 0;
-    PedDisk *peddisk = NULL;
     if (disk == NULL) {
         g_warning ("get disk length:disk NULL\n");
-        return length;
+        return 0;
     }
 
-    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
+    PedDisk *peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
     if (peddisk != NULL) {
-        PedDevice *device = peddisk->dev;
-        if (device != NULL) {
-            length = device->length;
+        PedDevice *dev = peddisk->dev;
+        if (dev != NULL) {
+            return dev->length * dev->sector_size;
         }
-
     } else {
         g_warning ("get disk length:find peddisk by %s failed\n", disk);
     }
     
-    return length;
-}
-
-JS_EXPORT_API 
-double installer_get_disk_sector_size (const gchar *disk)
-{
-    double sector_size = 0;
-    PedDisk *peddisk = NULL;
-    if (disk == NULL) {
-        g_warning ("get disk sector size:disk NULL\n");
-        return sector_size;
-    }
-
-    peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
-    if (peddisk != NULL) {
-        PedDevice *device = peddisk->dev;
-        if (device != NULL) {
-            sector_size = device->sector_size;
-        }
-
-    } else {
-        g_warning ("get disk sector size:find peddisk by %s failed\n", disk);
-    }
-    
-    return sector_size;
+    return 0;
 }
 
 JS_EXPORT_API
@@ -582,65 +555,59 @@ gchar* installer_get_partition_mp (const gchar *part)
 }
 
 JS_EXPORT_API
-double installer_get_partition_start (const gchar *part)
+double installer_get_partition_start (const gchar *uuid)
 {
-    double start = 0;
-    PedPartition *pedpartition = NULL;
-    if (part == NULL) {
+    if (uuid == NULL) {
         g_warning ("get partition start:part NULL\n");
-        return start;
+        return 0;
     }
 
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition != NULL) {
-        start = pedpartition->geom.start;
+    PedPartition* part = (PedPartition *) g_hash_table_lookup (partitions, uuid);
+    if (part != NULL) {
+        return part->geom.start * part->disk->dev->sector_size;
 
     } else {
-        g_warning ("get partition start:find pedpartition %s failed\n", part);
+        g_warning ("get partition start:find pedpartition %s failed\n", uuid);
     }
 
-    return start;
+    return 0;
 }
 
 JS_EXPORT_API
-double installer_get_partition_length (const gchar *part)
+double installer_get_partition_size (const gchar *uuid)
 {
-    double length = 0;
-    PedPartition *pedpartition = NULL;
-    if (part == NULL) {
+    if (uuid == NULL) {
         g_warning ("get partition length:part NULL\n");
-        return length;
+        return 0;
     }
 
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition != NULL) {
-        length = pedpartition->geom.length;
+    PedPartition* part = (PedPartition *) g_hash_table_lookup (partitions, uuid);
+    if (part != NULL) {
+        return part->geom.length * part->disk->dev->sector_size;
 
     } else {
-        g_warning ("get partition length:find pedpartition %s failed\n", part);
+        g_warning ("get partition length:find pedpartition %s failed\n", uuid);
     }
 
-    return length;
+    return 0;
 }
 
 JS_EXPORT_API
-double installer_get_partition_end (const gchar *part)
+double installer_get_partition_end (const gchar *uuid)
 {
-    double end = 0;
-    PedPartition *pedpartition = NULL;
-    if (part == NULL) {
+    if (uuid == NULL) {
         g_warning ("get partition end:part NULL\n");
-        return end;
+        return 0;
     }
 
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition != NULL) {
-        end = pedpartition->geom.end;
+    PedPartition* part = (PedPartition *) g_hash_table_lookup (partitions, uuid);
+    if (part != NULL) {
+        return part->geom.end * part->disk->dev->sector_size;
     } else {
-        g_warning ("get partition end:find pedpartition %s failed\n", part);
+        g_warning ("get partition end:find pedpartition %s failed\n", uuid);
     }
 
-    return end;
+    return 0;
 }
 
 JS_EXPORT_API
@@ -790,7 +757,7 @@ void installer_get_partition_free (const gchar *part)
 	if (g_strstr_len(fs, -1, "swap")) {
 	    JSObjectRef message = json_create ();
 	    json_append_string (message, "part", part);
-	    json_append_number (message, "free", installer_get_partition_length (part) * 512 / (1000 * 1000));
+	    json_append_number (message, "free", installer_get_partition_size (part));
 	    js_post_message ("used", message);
 	    return;
 	}

@@ -17,6 +17,14 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+
+#there hasn't the concept of disk sector_size!
+#all the size unit is Byte, use these constant convert units which you want.
+KB = 1024.0
+MB = 1024 * KB
+GB = 1024 * MB
+
+
 DCore.signal_connect("used", (msg) ->
     v_part_info[msg.part]["used"] = msg.free
     m_part_info[msg.part]["used"] = msg.free
@@ -28,6 +36,7 @@ DCore.signal_connect("slow", (msg) ->
     Widget.look_up(msg.uuid)?.update_part_slow()
 )
 
+
 random_list = []
 get_random_color = ->
     if random_list.length == 0
@@ -35,24 +44,16 @@ get_random_color = ->
             random_list.push(item)
     random_list.splice(0,1)
 
-sector_to_mb = (sector_length, sector_size) ->
-    return Math.floor((sector_length * sector_size) / (1000 * 1000))
-
-sector_to_gb = (sector_length, sector_size) ->
-    return (sector_length * sector_size) / (1000 * 1000 * 1000)
-
-mb_to_sector = (mb_size, sector_size) ->
-    return Math.floor((mb_size) * 1000 * 1000 / sector_size)
 #
 #Model
 #Model: for origin disk partition table
 #disks = DCore.Installer.list_disks()
 disks = null
-minimum_disk_size_required = 8
+minimum_disk_size_required = 8 * GB
 
 is_match_install_require = ->
     for disk in DCore.Installer.list_disks()
-        if sector_to_gb(DCore.Installer.get_disk_length(disk), 512) > minimum_disk_size_required
+        if DCore.Installer.get_disk_size(disk) > minimum_disk_size_required
             return true
     return false
 
@@ -372,7 +373,7 @@ init_v_disk_info = ->
     v_disk_info = {}
     for disk in disks
         v_disk_info[disk] = {}
-        v_disk_info[disk]["length"] = DCore.Installer.get_disk_length(disk)
+        v_disk_info[disk]["length"] = DCore.Installer.get_disk_size(disk)
         v_disk_info[disk]["model"] = DCore.Installer.get_disk_model(disk)
         v_disk_info[disk]["max_primary"] = DCore.Installer.get_disk_max_primary_count(disk)
         v_disk_info[disk]["path"] = DCore.Installer.get_disk_path(disk)
@@ -395,7 +396,7 @@ init_v_part_info = ->
             v_part_info[part]["disk"] = disk
             v_part_info[part]["used"] = "unknown"
             v_part_info[part]["start"] = DCore.Installer.get_partition_start(part)
-            v_part_info[part]["length"] = DCore.Installer.get_partition_length(part)
+            v_part_info[part]["length"] = DCore.Installer.get_partition_size(part)
             v_part_info[part]["end"] = DCore.Installer.get_partition_end(part)
             v_part_info[part]["mp"] = "unused"
             v_part_info[part]["path"] = DCore.Installer.get_partition_path(part)
@@ -905,7 +906,7 @@ delete_part = (part) ->
     v_part_info[part]["label"] = ""
     v_part_info[part]["mp"] = "unused"
     v_part_info[part]["width"] = Math.floor((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
-    v_part_info[part]["used"] = sector_to_mb(v_part_info[part]["length"],512)
+    v_part_info[part]["used"] = v_part_info[part]["length"] / MB
 
     extended = get_extended_partition(disk)
     if extended? and get_logical_partitions(disk).length == 0
@@ -1031,7 +1032,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
 
     update_part_display_path(new_part, "add")
     v_part_info[new_part]["width"] = Math.floor((v_part_info[new_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
-    v_part_info[new_part]["used"] = sector_to_mb(v_part_info[new_part]["length"], 512)
+    v_part_info[new_part]["used"] = v_part_info[new_part]["length"] / MB
     v_disk_info[disk]["partitions"].push(new_part)
     sort_v_disk_info(disk)
     mark_add(new_part)

@@ -72,8 +72,7 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar
 
     g_free (output);
 
-    result = (free_double * size_double) / (1024 * 1024);
-    //result = (free_double * size_double) >> 20;
+    result = free_double * size_double;
 
     return result;
 }
@@ -301,7 +300,7 @@ _get_fat16_free (const gchar *path)
     }
     total_size = g_ascii_strtod (total_cluster, NULL);
 
-    free = unit_size * (total_size - used_size) / (1000 * 1000) ;
+    free = unit_size * (total_size - used_size);
     goto out;
 
 out:
@@ -383,7 +382,7 @@ _get_btrfs_free (const gchar *path)
     free = total_size - used_size;
 
     if (g_strrstr (total, "GB") != NULL) {
-        free = free * 1024;
+        free = free * 1024 * 1024;
     }
     goto out;
 
