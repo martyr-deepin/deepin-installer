@@ -13,7 +13,7 @@ typedef struct _HookInfo {
     int progress_begin;
     int progress_end;
     GList* jobs;
-    int current_job;
+    int current_job_num;
 } HookInfo;
 
 static int chroot_fd;
@@ -107,7 +107,6 @@ void run_hooks_after_chroot()
 {
     g_assert(break_chroot());
     run_hooks(&after_chroot_info);
-    //TODO: finish_cleanup
 }
 
 
@@ -117,8 +116,10 @@ void update_hooks_progress(HookInfo* info)
 	// extract squashfs is in before chroot info, special treat it with monitor_extract_progress()
 	return;
     }
-    double ratio = info->current_job * 1.0 / (g_list_length(info->jobs) - 1);
+    double ratio = info->current_job_num * 1.0 / (g_list_length(g_list_first(info->jobs)) - 1);
+    g_assert(ratio > 0 && ratio <= 1);
     double p = info->progress_begin + (info->progress_end - info->progress_begin) * ratio;
+    g_assert(p > 0 && p <= 100);
     update_install_progress((int)p);
 }
 
@@ -158,7 +159,7 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
     }
     g_child_watch_add(child_pid, (GChildWatchFunc)run_one_by_one, info);
     info->jobs = g_list_next(info->jobs);
-    info->current_job = g_list_index(info->jobs, info->jobs->data) + 1;
+    info->current_job_num = g_list_index(info->jobs, info->jobs->data) + 1;
     update_hooks_progress(info);
 }
 
@@ -226,7 +227,6 @@ static int read_progress(const char* path)
 
 static gboolean monitor_extract_progress(HookInfo* info)
 {
-
     static int stage = EXTRACT_PROGRESS_NONE;
 
     int v = 0;

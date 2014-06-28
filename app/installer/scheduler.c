@@ -106,7 +106,11 @@ static void start_prepare_conf()
 JS_EXPORT_API
 void installer_start_install()
 {
-    GTask* task = g_task_new(NULL, NULL, start_prepare_conf, NULL);
-    g_task_run_in_thread(task, do_mkfs);
+    if (mkfs_list != NULL) {
+	GTask* task = g_task_new(NULL, NULL, start_prepare_conf, NULL);
+	g_task_run_in_thread(task, do_mkfs);
+    } else {
+	start_prepare_conf();
+    }
 }
 

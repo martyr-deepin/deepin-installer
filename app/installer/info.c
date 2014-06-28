@@ -140,13 +140,16 @@ void installer_record_bootloader_info(const char* uuid, gboolean uefi)
 	g_assert(uuid != NULL);
     }
 
-    if (uefi && uuid != NULL) {
+    InstallerConf.uefi = uefi;
+
+    if (uuid != NULL) {
 	if (InstallerConf.bootloader)
 	    g_free(InstallerConf.bootloader);
 	InstallerConf.bootloader = find_path_by_uuid(uuid);
     }
 
-    InstallerConf.uefi = uefi;
+    g_debug("record_bootloader_info %s %d\n", uuid, uefi);
+
 }
 
 JS_EXPORT_API
