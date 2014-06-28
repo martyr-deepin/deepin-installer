@@ -7,7 +7,9 @@ struct _InstallerConf InstallerConf;
 
 char* find_path_by_uuid(const char* uuid)
 {
-    if (g_str_has_prefix (uuid, "disk")) {
+    if (uuid == NULL) {
+	return NULL;
+    } else if (g_str_has_prefix (uuid, "disk")) {
 	return installer_get_disk_path (uuid);
     } else if (g_str_has_prefix (uuid, "part")) {
 	return installer_get_partition_path (uuid);
@@ -16,20 +18,20 @@ char* find_path_by_uuid(const char* uuid)
     }
 }
 
-
 char* installer_conf_to_string()
 {
     GString* mp = g_string_new(NULL);
 
     GHashTableIter iter;
     gpointer key, value;
-    g_assert(InstallerConf.mount_points != NULL);
     g_assert(InstallerConf.root_partition != NULL);
     g_assert(InstallerConf.root_disk != NULL);
 
-    g_hash_table_iter_init(&iter, InstallerConf.mount_points);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-	g_string_append_printf(mp, "%s=%s;", (gchar*)key, (gchar*)value);
+    if (InstallerConf.mount_points != NULL) {
+	g_hash_table_iter_init(&iter, InstallerConf.mount_points);
+	while (g_hash_table_iter_next(&iter, &key, &value)) {
+	    g_string_append_printf(mp, "%s=%s;", (gchar*)key, (gchar*)value);
+	}
     }
 
     return g_strdup_printf("\n"
@@ -61,9 +63,21 @@ char* installer_conf_to_string()
 	    InstallerConf.root_disk
 	    );
 }
+void normalization()
+{
+    g_assert(InstallerConf.root_disk != NULL);
+    g_assert(g_file_test(InstallerConf.root_disk, G_FILE_TEST_EXISTS));
+    g_assert(InstallerConf.root_partition != NULL);
+    g_assert(g_file_test(InstallerConf.root_partition, G_FILE_TEST_EXISTS));
+    if (InstallerConf.simple_mode && InstallerConf.bootloader == NULL) {
+	InstallerConf.bootloader = g_strdup(InstallerConf.root_disk);
+    }
+    g_assert(InstallerConf.bootloader != NULL);
+}
 
 void write_installer_conf(const char* path)
 {
+    normalization();
     char* content = installer_conf_to_string();
     GError* error = NULL;
     g_file_set_contents(path, content, -1, &error);
@@ -81,9 +95,11 @@ void installer_record_mountpoint_info(const char* part, const char* mountpoint)
     if (InstallerConf.mount_points == NULL) {
 	InstallerConf.mount_points = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
     }
+    g_debug("record_mountpoint_info :%s(%s) == %s \n", part, find_path_by_uuid(part), mountpoint);
     if (g_strcmp0(mountpoint, "/") == 0) {
 	if (InstallerConf.root_partition)
 	    g_free(InstallerConf.root_partition);
+	ped_print();
 	InstallerConf.root_partition = find_path_by_uuid(part);
     } else {
 	g_hash_table_insert(InstallerConf.mount_points, find_path_by_uuid(part), g_strdup(mountpoint));
@@ -150,6 +166,7 @@ JS_EXPORT_API
 void installer_record_simple_mode_info(gboolean simple)
 {
     InstallerConf.simple_mode = simple;
+    write_installer_conf("/dev/shm/deepin.conf");
 }
 
 JS_EXPORT_API
@@ -159,8 +176,3 @@ void installer_record_root_disk_info(const char* disk)
 	g_free(InstallerConf.root_disk);
     InstallerConf.root_disk = find_path_by_uuid(disk);
 }
-
-char* get_target_disk()
-{
-}
-

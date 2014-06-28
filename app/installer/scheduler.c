@@ -20,7 +20,7 @@ enum {
 JS_EXPORT_API
 void installer_start_install()
 {
-    if (InstallerConf.simple_mode) {
+    if (InstallerConf.simple_mode && InstallerConf.uefi) {
 	auto_handle_esp();
     }
     write_installer_conf("/etc/deepin-installer.conf");
@@ -31,8 +31,8 @@ void installer_start_install()
 void update_install_progress(int v)
 {
     static int current_per = 0;
-    if (v <= current_per) {
-	g_warning("--------------------------------INSTALL progress small previous PROGRESS: %d%%\n", v);
+    if (v < current_per) {
+	g_warning("--------------------------------INSTALL progress small previous PROGRESS: %d%% <= %d%%\n", v, current_per);
 	return;
     }
     current_per=  v;

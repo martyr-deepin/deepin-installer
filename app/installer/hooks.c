@@ -16,28 +16,51 @@ typedef struct _HookInfo {
     int current_job;
 } HookInfo;
 
+static int chroot_fd;
+static gboolean in_chroot = FALSE;
+
 HookInfo before_chroot_info = { HOOKS_DIR"/before_chroot", 5, 80, NULL, 0};
 
-HookInfo in_chroot_info = { "/host/"HOOKS_DIR"/in_chroot", 80, 90, NULL, 0};
+#define TMP_HOOKS_DIR "/tmp/hooks/"
+HookInfo in_chroot_info = { TMP_HOOKS_DIR"/in_chroot", 80, 90, NULL, 0};
 
 HookInfo after_chroot_info = { HOOKS_DIR"/after_chroot", 90, 100, NULL, 0};
 
 
+
 static void run_hooks(HookInfo* info);
 static gboolean monitor_extract_progress();
+static void setup_monitor_extract_progress();
+
+
+void ensure_we_can_find_in_chroot_hooks()
+{
+#undef HOOKS_DIR
+#define HOOKS_DIR "/home/deepin/deepin-installer/hooks"
+
+    g_assert(!in_chroot);
+    g_mkdir_with_parents("/target/"TMP_HOOKS_DIR"/in_chroot", 0755);
+    GError* error = NULL;
+    g_spawn_command_line_sync("sh -c 'cp -rf "HOOKS_DIR"/in_chroot/* /target/"TMP_HOOKS_DIR"/in_chroot/'", NULL, NULL, NULL, &error);
+    if (error != NULL) {
+	g_error("can't setup in_chroot_hooks:%s", error->message);
+	g_error_free(error);
+	g_assert_not_reached();
+    }
+}
+
 
 gboolean enter_chroot()
 {
     gboolean ret = FALSE;
 
-    extern int chroot_fd;
     //Never use "." instead of "/" otherwise if "." equal TARGET then we can't break chroot"
     if ((chroot_fd = open ("/", O_RDONLY)) < 0) {
         g_warning ("chroot:set chroot fd failed\n");
 	return ret;
     }
 
-    extern gboolean in_chroot;
+    chdir("/target"); //change to an valid directory
     if (chroot ("/target") == 0) {
 	chdir("/"); //change to an valid directory
         in_chroot = TRUE;
@@ -51,9 +74,6 @@ gboolean enter_chroot()
 
 gboolean break_chroot()
 {
-    extern gboolean in_chroot;
-    extern int chroot_fd;
-
     if (in_chroot) {
 
 	if (fchdir (chroot_fd) != 0) {
@@ -67,29 +87,25 @@ gboolean break_chroot()
 	chroot (".");
 	in_chroot = FALSE;
     }
+    return !in_chroot;
 }
-
-#define PROGRESS_LOG_BASE "/tmp/deepin-installer/unsquashfs_base_progress"
-#define PROGRESS_LOG_LANG "/tmp/deepin-installer/unsquashfs_lang_progress"
 
 void run_hooks_before_chroot()
 {
     run_hooks(&before_chroot_info);
-
-    g_rmdir(PROGRESS_LOG_BASE);
-    g_rmdir(PROGRESS_LOG_LANG);
-    g_timeout_add_seconds(1, monitor_extract_progress, &before_chroot_info);
+    setup_monitor_extract_progress();
 }
 
 void run_hooks_in_chroot()
 {
-    enter_chroot();
+    ensure_we_can_find_in_chroot_hooks();
+    g_assert(enter_chroot());
     run_hooks(&in_chroot_info);
 }
 
 void run_hooks_after_chroot()
 {
-    break_chroot();
+    g_assert(break_chroot());
     run_hooks(&after_chroot_info);
     //TODO: finish_cleanup
 }
@@ -205,8 +221,12 @@ static int read_progress(const char* path)
     }
 }
 
+#define PROGRESS_LOG_BASE "/tmp/deepin-installer/unsquashfs_base_progress"
+#define PROGRESS_LOG_LANG "/tmp/deepin-installer/unsquashfs_lang_progress"
+
 static gboolean monitor_extract_progress(HookInfo* info)
 {
+
     static int stage = EXTRACT_PROGRESS_NONE;
 
     int v = 0;
@@ -245,4 +265,10 @@ static gboolean monitor_extract_progress(HookInfo* info)
 	    printf("END Monitor_extract_progress\n");
 	    return FALSE;
     }
+}
+void setup_monitor_extract_progress()
+{
+    g_remove(PROGRESS_LOG_BASE);
+    g_remove(PROGRESS_LOG_LANG);
+    g_timeout_add_seconds(1, (GSourceFunc)monitor_extract_progress, &before_chroot_info);
 }
