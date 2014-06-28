@@ -328,12 +328,6 @@ class InstallDialog extends Dialog
         @fill_install_info()
 
     confirm_install_cb: ->
-        echo "confirm install"
-
-        progress_page = new Progress("progress")
-        pc.remove_page(part_page)
-        pc.add_page(progress_page)
-
         try_removed_start_install()
 
     fill_install_info: ->

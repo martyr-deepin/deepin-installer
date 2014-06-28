@@ -99,14 +99,14 @@ class Progress extends Page
     show_report: ->
         __install_failed = true
         __selected_stage = "terminate"
-        finish_page = new Finish("finish", false)
-        pc.add_page(finish_page)
-        pc.remove_page(progress_page)
+        pc.switch_page(new Finish("finish", false))
+
+
+progress_page = new Progress("progress")
 
 DCore.signal_connect("install_progress", (per)->
     if per >= 100
-        finish_page = new Finish("finish", true)
-        pc.remove_page(progress_page)
-        pc.add_page(finish_page)
+        pc.switch_page(new Finish("finish", true))
+        return
     progress_page?.update_progress("#{per}%")
 )

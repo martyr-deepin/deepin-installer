@@ -852,9 +852,7 @@ class Account extends Widget
     start_install_cb: ->
         if @check_start_ready()
             undo_part_table_info()
-            part_page = new Part("part")
-            pc.remove_page(welcome_page)
-            pc.add_page(part_page)
+            pc.switch_page(new Part("Part"))
             __selected_item?.focus()
         else
             if __init_parted_finish

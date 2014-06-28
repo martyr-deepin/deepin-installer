@@ -33,7 +33,6 @@ sync_installer_conf = ->
     else
         DCore.Installer.record_simple_mode_info(false)
 
-#write /etc/fstab, after extract iso
 record_mount_points = ->
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
@@ -50,6 +49,7 @@ record_mount_points = ->
                     echo error
 
 
+#TODO: try remove
 try_removed_start_install = ->
         if __selected_mode == "simple"
             undo_part_table_info()
@@ -60,3 +60,6 @@ try_removed_start_install = ->
 
         sync_installer_conf()
         DCore.Installer.start_install()
+
+        progress_page = new Progress("progress")
+        pc.switch_page(progress_page)

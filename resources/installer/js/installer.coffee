@@ -20,5 +20,4 @@
 pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
-welcome_page = new Welcome("welcome")
-pc.add_page(welcome_page)
+pc.switch_page(new Welcome("welcom"))
