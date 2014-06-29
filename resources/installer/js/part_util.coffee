@@ -213,11 +213,13 @@ __update_fs_json = (part, fs) ->
 do_partition = ->
     echo "do partition"
     for disk in disks
-        if m_disk_info[disk]["change"] == true
-            for part in get_modeled_partitions(disk)
-                if m_part_info[part]["op"] == "delete"
+        if m_disk_info[disk]["change"] != true
+            continue
+        for part in get_modeled_partitions(disk)
+            switch m_part_info[part]["op"]
+                when "delete"
                     try
-                        DCore.Installer.delete_disk_partition(disk, part)
+                        DCore.Installer.delete_disk_partition(part)
                     catch error
                         echo error
                     try
@@ -225,7 +227,7 @@ do_partition = ->
                     catch error
                         echo error
 
-                else if m_part_info[part]["op"] == "update"
+                when "update"
                     if m_part_info[part]["start"] != v_part_info[part]["start"] or m_part_info[part]["length"] != v_part_info[part]["length"]
                         try
                             DCore.Installer.update_partition_geometry(part, v_part_info[part]["start"], v_part_info[part]["length"])
@@ -247,7 +249,7 @@ do_partition = ->
                     catch error
                         echo error
 
-                else if m_part_info[part]["op"] == "add"
+                when "add"
                     try
                         DCore.Installer.new_disk_partition(part, disk, m_part_info[part]["type"], m_part_info[part]["fs"], m_part_info[part]["start"], m_part_info[part]["end"])
                     catch error
@@ -266,10 +268,6 @@ do_partition = ->
                             DCore.Installer.write_disk(disk)
                         catch error
                             echo error
-                else
-                    echo "just keep part"
-        else
-            echo "just keep disk"
 
 #auto partition for simple mode
 auto_simple_partition = (device, type) ->

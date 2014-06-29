@@ -50,10 +50,11 @@ PedPartition* find_partition(PedDisk* disk,  PartitionFilter filter, gpointer us
 int has_efi_directory(PedPartition* part)
 {
     int is_busy = ped_partition_is_busy(part);
-    char *path = ped_partition_get_path(part);
-    //TODO: free path
-    char* mount_point = NULL; 
+
     GError* error = NULL;
+
+    char* mount_point = NULL;
+    char *path = ped_partition_get_path(part);
 
     if (!is_busy) {
 	mount_point = g_dir_make_tmp("efi_detectorXXXXXX", &error);
@@ -76,8 +77,9 @@ int has_efi_directory(PedPartition* part)
     if (mount_point == NULL) {
 	mount_point = get_partition_mount_point(path);
     }
-    char* esp_path = g_build_filename(mount_point, "EFI", NULL);
+    g_free(path);
 
+    char* esp_path = g_build_filename(mount_point, "EFI", NULL);
     int is_esp = g_file_test (esp_path, G_FILE_TEST_IS_DIR);
     g_free(esp_path);
 

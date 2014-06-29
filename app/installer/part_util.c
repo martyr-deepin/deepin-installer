@@ -389,8 +389,6 @@ gchar *installer_get_partition_name (const gchar *part)
 JS_EXPORT_API
 gchar* installer_get_partition_path (const gchar *uuid)
 {
-    //TODO:
-
     PedPartition *part = (PedPartition *) g_hash_table_lookup (partitions, uuid);
     g_assert(part != NULL);
 
@@ -400,11 +398,7 @@ gchar* installer_get_partition_path (const gchar *uuid)
     }
 
     gchar *path = ped_partition_get_path (part);
-    if (part != NULL) {
-	printf("PPAR:%s === %s\n", uuid, path);
-    } else {
-        g_warning ("get partition path:find pedpartition %s failed\n", uuid);
-    }
+    g_assert(path != NULL);
     return path;
 }
 
@@ -768,20 +762,13 @@ gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk
 }
 
 JS_EXPORT_API 
-gboolean installer_delete_disk_partition (const gchar *disk_uuid, const gchar *part_uuid)
+gboolean installer_delete_disk_partition (const gchar *part_uuid)
 {
-    //TODO: disk_uuid is no used.
-    g_assert(disk_uuid != NULL);
     g_assert(part_uuid != NULL);
 
-    g_message("-----------delete disk->%s partition->%s-----------\n", disk_uuid, part_uuid);
-
-
-    PedDisk* disk = (PedDisk *) g_hash_table_lookup (disks, disk_uuid);
     PedPartition* part = (PedPartition *) g_hash_table_lookup (partitions, part_uuid);
-    g_assert(disk != NULL);
     g_assert(part != NULL);
-    g_assert(part->disk == disk);
+    g_message("-----------delete %s:(%s)-----------\n", part->disk->dev->path, part_uuid);
     
     if ((ped_disk_delete_partition (part->disk, part) != 0)) {
 	g_message("delete disk partition:ok\n");
@@ -903,16 +890,14 @@ gboolean installer_set_partition_flag (const gchar *uuid, const gchar *flag_name
 }
 
 
-char* find_partition_path_by_sector_and_disk_path(const char* path, int byte_start)
+char* find_partition_path_by_sector_and_disk_path(const char* path, int start)
 {
     PedDevice* dev = ped_device_get(path);
     g_return_val_if_fail(dev != NULL, NULL);
     PedDisk* disk = ped_disk_new(dev);
     g_return_val_if_fail(disk != NULL, NULL);
 
-    PedSector start = ceil(byte_start * 1.0 / dev->sector_size);
-
-    PedPartition* part = ped_disk_get_partition_by_sector(disk, start);
+    PedPartition* part = ped_disk_get_partition_by_sector(disk, (PedSector)start);
     g_return_val_if_fail(part != NULL, NULL);
     g_return_val_if_fail(part->num != -1, NULL);
 
