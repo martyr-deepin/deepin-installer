@@ -328,11 +328,10 @@ check_target_part = ->
         return false
 
 #when had partition mount, should attention him unmount first before part operation
-check_has_mount = ->
-    for disk in disks
-        for part in m_disk_info[disk]["partitions"]
-            if DCore.Installer.get_partition_mp(part)
-                return true
+check_has_mount = (disk)->
+    for part in m_disk_info[disk]["partitions"]
+        if DCore.Installer.get_partition_mp(part)
+            return true
     return false
 
 get_efi_boot_part = ->

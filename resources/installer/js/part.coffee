@@ -722,7 +722,7 @@ class Part extends Page
 
     switch_mode_advance: ->
         __selected_mode = "advance"
-        if check_has_mount()
+        if check_has_mount(__selected_disk)
             @unmount_model = new PromptDialog(
                 _("Unmount Partition"),
                 _("Partition is detected to have been mounted.\nAre you sure you want to unmount it?")
