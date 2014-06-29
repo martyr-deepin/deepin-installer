@@ -26,7 +26,7 @@ DCore.signal_connect("init_parted", (msg) ->
     if not is_match_install_require()
         new MessageDialog(
             _("Installation Requirements"),
-            _("To install Deepin OS, you need to have at least #{(minimum_disk_size_required / GB).toFixed(0)}GB disk space."),
+            _("To install Deepin OS, you need to have at least %d GB disk space.").replace("%d", (minimum_disk_size_required / GB).toFixed(0)),
             DCore.Installer.finish_install
         ).show_at(document.body)
 )

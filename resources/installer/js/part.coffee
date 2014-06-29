@@ -611,22 +611,19 @@ class Part extends Page
             return
 
         if __selected_use_uefi
-            error_dialog = new MessageDialog(
-                _("Install Tips"),
-                _("UEFI can be successfully mounted to /boot only by a Fat32 partition greater than 100M.")
-            )
-
             if not DCore.Installer.disk_is_gpt(__selected_disk)
-                error_dialog.show_at(document.body)
+                new MessageDialog(
+                    _("Install Tips"),
+                    _("UEFI-native installation only support GPT-formatted disk.")
+                ).show_at(document.body)
                 return
 
             esp_uuid = get_efi_boot_part()
-            if not esp_uuid
-                #TODO: check gpt, esp
-                error_dialog.show_at(document.body)
-                return
-            if v_part_info[esp_uuid]["length"] <= 100 * MB
-                error_dialog.show_at(document.body)
+            if not esp_uuid or v_part_info[esp_uuid]["length"] < 100 * MB
+                new MessageDialog(
+                    _("Install Tips")
+                    _("UEFI-native installation need a ESP which at least have 100M space.")
+                ).show_at(document.body)
                 return
 
             __selected_bootloader = esp_uuid
