@@ -50,8 +50,36 @@ gboolean installer_is_running ()
     }
 }
 
-gchar *
-get_matched_string (const gchar *target, const gchar *regex_string) 
+gchar* get_matched_string (const gchar *target, const gchar *regex_string)
+{
+    g_return_val_if_fail(target != NULL, NULL);
+    g_return_val_if_fail(regex_string != NULL, NULL);
+
+    GError *error = NULL;
+    GRegex* regex = g_regex_new (regex_string, 0, 0, &error);
+    if (error != NULL) {
+        g_warning ("get matched string:%s\n", error->message);
+        g_error_free (error);
+        return NULL;
+    }
+
+    gchar *result = NULL;
+
+    GMatchInfo *match_info = NULL;
+    g_regex_match (regex, target, 0, &match_info);
+    if (g_match_info_matches (match_info)) {
+        result = g_match_info_fetch (match_info, 1);
+    } else {
+        g_debug("get matched string:failed in \"%s\" to find \"%s\"\n", target, regex_string);
+    }
+
+    g_match_info_free (match_info);
+    g_regex_unref (regex);
+
+    return result;
+}
+
+gchar* get_matched_string_old (const gchar *target, const gchar *regex_string)
 {
     gchar *result = NULL;
     GError *error = NULL;

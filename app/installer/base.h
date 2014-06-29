@@ -35,7 +35,8 @@
 
 gboolean installer_is_running ();
 
-gchar *get_matched_string (const gchar *target, const gchar *regex_string);
+gchar *get_matched_string_old (const gchar *target, const gchar *regex_string);
+gchar* get_matched_string (const gchar *target, const gchar *regex_string);
 
 JS_EXPORT_API double installer_get_memory_size ();
 
