@@ -338,6 +338,7 @@ class DropDown extends Widget
             keys.push(@get_selected())
             values.push(@get_selected())
             @dropdown_list.fill_dropdown(keys, values)
+            return
         @dropdown_list.show()
 
     set_current_txt: (txt) ->
