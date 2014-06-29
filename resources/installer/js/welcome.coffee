@@ -309,7 +309,11 @@ class Keyboard extends Widget
 
         @fill_layouts(@layouts)
         @hide()
-        @init_dbus_query()
+
+        @searcher = new Trie()
+        dict = {}
+        for item in @layouts
+            @searcher.insert(DCore.Installer.get_layout_description(item))
 
     show: ->
         __timezone_widget?.hide()
@@ -321,17 +325,6 @@ class Keyboard extends Widget
     hide: ->
         @displayed = false
         @element.style.display = "none"
-
-    init_dbus_query: ->
-        return
-        try
-            @search_bus = DCore.DBus.session("com.deepin.daemon.Search")
-            dict = {}
-            for item in @layouts
-                dict[item] = DCore.Installer.get_layout_description(item)
-            @search_handle = @search_bus.NewTrieWithString_sync(dict, "installer")
-        catch e
-            echo "init dbus query failed :#{e}"
 
     init_query_ul: ->
         @selected_letter = null
@@ -394,17 +387,16 @@ class Keyboard extends Widget
         __selected_layout = layout
 
     execute_letter_query: (letter) ->
-        try
-            matched = @search_bus.SearchKeysByFirstLetter_sync(letter, @search_handle)
-        catch error
-            echo error
-            matched = []
+        matched = @searcher.autoComplete(letter)
         @layout_list.innerHTML = ""
         @variant_list.innerHTML = ""
+
         matched_layouts = []
-        for item in matched
-            if item in @layouts
-                matched_layouts.push(item)
+        for key in @layouts
+            desc = DCore.Installer.get_layout_description(key)
+            if desc in matched
+                matched_layouts.push(key)
+
         @fill_layouts(matched_layouts)
         if matched_layouts.length > 0
             Widget.look_up("layoutitem_" + matched_layouts[0])?.focus()
