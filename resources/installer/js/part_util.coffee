@@ -43,8 +43,8 @@ get_random_color = ->
 #Model: for origin disk partition table
 #disks = DCore.Installer.list_disks()
 disks = null
-minimum_disk_size_required = 8 * GB
 
+minimum_disk_size_required = 8 * GB
 is_match_install_require = ->
     for disk in DCore.Installer.list_disks()
         if DCore.Installer.get_disk_size(disk) > minimum_disk_size_required

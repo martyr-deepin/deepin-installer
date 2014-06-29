@@ -14,7 +14,7 @@ class Dialog extends Widget
         @ok.innerText = _("OK")
         @ok.addEventListener("click", (e) =>
             @hide_dialog()
-            @cb()
+            @cb?()
         )
         if @with_cancel
             @cancel = create_element("div", "", @foot)
@@ -38,17 +38,22 @@ class Dialog extends Widget
         @destroy()
         __board.setAttribute("style", "display:none")
 
-class RequireMatchDialog extends Dialog
-    constructor: (@id) ->
-        super(@id, false, @require_match_cb)
-        @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Installation Requirements")
-        @format_tips = create_element("p", "", @content)
-        @format_tips.innerText = _("To install Deepin OS, you need to have at least 15GB disk space.")
 
-    require_match_cb: ->
-        echo "require match cb"
-        DCore.Installer.finish_install()
+class PromptDialog extends Dialog
+    constructor: (title, content, ok_cb) ->
+        super("PromptDialog", true, ok_cb)
+        @add_css_class("DialogCommon")
+        @title_txt.innerText = title
+        @root_tips = create_element("div", "", @content)
+        @root_tips.innerText = content
+
+class MessageDialog extends Dialog
+    constructor: (title, content, cancel_cb) ->
+        super("MessageDialog", false, cancel_cb)
+        @add_css_class("DialogCommon")
+        @title_txt.innerText = title
+        @root_tips = create_element("div", "", @content)
+        @root_tips.innerText = content
 
 class DeletePartDialog extends Dialog
     constructor: (@id,@partid) ->
@@ -65,26 +70,6 @@ class DeletePartDialog extends Dialog
         Widget.look_up(remain_part)?.focus()
         Widget.look_up("part")?.fill_bootloader()
 
-class UnmountDialog extends Dialog
-    constructor: (@id) ->
-        super(@id, true, @unmount_cb)
-        @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Unmount Partition")
-        @unmount_tips = create_element("div", "", @content)
-        @unmount_tips.innerText = _("Partition is detected to have been mounted.\nAre you sure you want to unmount it?")
-
-    unmount_cb: ->
-        echo "unmount all partitions"
-        for disk in disks
-            for part in m_disk_info[disk]["partitions"]
-                try
-                    if DCore.Installer.get_partition_mp(part) not in ["/", "/cdrom"]
-                        DCore.Installer.unmount_partition(part)
-                catch error
-                    echo error
-        for item in Widget.look_up("part_table")?.partitems
-            item.check_busy()
-
 class FormatDialog extends Dialog
     constructor: (@id) ->
         super(@id, true, @format_cb)
@@ -95,50 +80,6 @@ class FormatDialog extends Dialog
 
     format_cb: ->
         echo "format to do install"
-
-class UnavailablePartedDialog extends Dialog
-    constructor: (@id) ->
-        super(@id, true, @parted_cb)
-        @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Add Partition")
-        @format_tips = create_element("div", "", @content)
-        @format_tips.innerText = _("Can't create a partition here")
-
-    parted_cb: ->
-        echo "can't create partition here"
-
-class RootDialog extends Dialog
-    constructor: (@id) ->
-        super(@id, false, @need_root_cb)
-        @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Installation Tips")
-        @root_tips = create_element("div", "", @content)
-        @root_tips.innerText = _("A root partition (/) is required.")
-
-    need_root_cb: ->
-        echo "need mount root to do install"
-
-class UefiDialog extends Dialog
-    constructor: (@id) ->
-        super(@id, false, @uefi_require_cb)
-        @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Install Tips")
-        @root_tips = create_element("div", "", @content)
-        @root_tips.innerText = _("UEFI can be successfully mounted to /boot only by a Fat32 partition greater than 100M.")
-
-    uefi_require_cb: ->
-        echo "uefi require cb"
-
-class UefiBootDialog extends Dialog
-    constructor: (@id) ->
-        super(@id, false, @uefi_boot_cb)
-        @add_css_class("DialogCommon")
-        @title_txt.innerText = _("Install Tips")
-        @root_tips = create_element("div", "", @content)
-        @root_tips.innerText = _("In UEFI mode, manual mount/boot is not needed.")
-
-    uefi_boot_cb: ->
-        echo "uefi boot cb"
 
 class InstallDialog extends Dialog
     constructor: (@id) ->
@@ -159,7 +100,6 @@ class InstallDialog extends Dialog
 
     confirm_install_cb: ->
         try_removed_start_install()
-
 
 
 class AddPartDialog extends Dialog

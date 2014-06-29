@@ -17,7 +17,6 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-
 __init_parted_finish = false
 __os_prober_finish = false
 
@@ -25,7 +24,11 @@ DCore.signal_connect("init_parted", (msg) ->
     echo "signal tell init parted finish"
     __init_parted_finish = true
     if not is_match_install_require()
-        new RequireMatchDialog("require").show_at(document.body)
+        new MessageDialog(
+            _("Installation Requirements"),
+            _("To install Deepin OS, you need to have at least #{(minimum_disk_size_required / GB).toFixed(0)}GB disk space."),
+            DCore.Installer.finish_install
+        ).show_at(document.body)
 )
 
 DCore.signal_connect("os_prober", (msg) ->

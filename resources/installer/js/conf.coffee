@@ -62,3 +62,6 @@ try_removed_start_install = ->
         DCore.Installer.start_install()
 
         pc.switch_page(progress_page)
+
+install_by_anyway = (disk) ->
+    echo "rebuild at #{disk}"

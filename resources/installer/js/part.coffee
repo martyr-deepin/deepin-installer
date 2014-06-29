@@ -604,21 +604,29 @@ class Part extends Page
     handle_install_advance: ->
         target = get_target_part()
         if not target?
-            new RootDialog("RootModel").show_at(document.body)
+            new MessageDialog(
+                _("Installation Tips"),
+                _("A root partition (/) is required.")
+            ).show_at(document.body)
             return
 
         if __selected_use_uefi
-            if not disk_support_gpt(__selected_disk)
-                new UefiDialog("UefiMode").show_at(document.body)
+            error_dialog = new MessageDialog(
+                _("Install Tips"),
+                _("UEFI can be successfully mounted to /boot only by a Fat32 partition greater than 100M.")
+            )
+
+            if not DCore.Installer.disk_is_gpt(__selected_disk)
+                error_dialog.show_at(document.body)
                 return
 
             esp_uuid = get_efi_boot_part()
             if not esp_uuid
                 #TODO: check gpt, esp
-                new UefiDialog("UefiModel").show_at(document.body)
+                error_dialog.show_at(document.body)
                 return
             if v_part_info[esp_uuid]["length"] <= 100 * MB
-                new UefiDialog("UefiModel").show_at(document.body)
+                error_dialog.show_at(document.body)
                 return
 
             __selected_bootloader = esp_uuid
@@ -633,11 +641,18 @@ class Part extends Page
         if __selected_item?
             if m_part_info[__selected_item.id]["type"] == "freespace"
                 if not can_add_normal(__selected_item.id) and not can_add_logical(__selected_item.id)
-                    new UnavailablePartedDialog("PartedModel").show_at(document.body)
+                    new MessageDialog(
+                        _("Add Partition"),
+                        _("Can't create a partition here")
+                    ).show_at(document.body)
                     return
-        if DCore.Installer.system_support_efi() and !DCore.Installer.disk_support_gpt(__selected_disk)
+        if DCore.Installer.system_support_efi() and not DCore.Installer.disk_is_gpt(__selected_disk)
             #TODO: warning, not uefi/gpt pair
-            new UefiBootDialog("UefiBootMode").show_at(document.body)
+            new PromptDialog(
+                _("Install Tips"),
+                _("Can't use UEFI with MSDOS DL"),
+                -> install_by_anyway(__selected_disk)
+            ).show_at(document.body)
         else
             __selected_bootloader = __selected_disk
             new InstallDialog("InstallMode").show_at(document.body)
@@ -707,7 +722,20 @@ class Part extends Page
     switch_mode_advance: ->
         __selected_mode = "advance"
         if check_has_mount()
-            @unmount_model = new UnmountDialog("UnmountModel")
+            @unmount_model = new PromptDialog(
+                _("Unmount Partition"),
+                _("Partition is detected to have been mounted.\nAre you sure you want to unmount it?")
+                ->
+                    for disk in disks
+                        for part in m_disk_info[disk]["partitions"]
+                            try
+                                if DCore.Installer.get_partition_mp(part) not in ["/", "/cdrom"]
+                                    DCore.Installer.unmount_partition(part)
+                            catch error
+                                echo error
+                    for item in Widget.look_up("part_table")?.partitems
+                        item.check_busy()
+            )
             @unmount_model.show_at(document.body)
         @linemap.element.setAttribute("style", "display:block")
         @part_grub.setAttribute("style", "display:block")
