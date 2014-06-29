@@ -323,6 +323,7 @@ class Keyboard extends Widget
         @element.style.display = "none"
 
     init_dbus_query: ->
+        return
         try
             @search_bus = DCore.DBus.session("com.deepin.daemon.Search")
             dict = {}
