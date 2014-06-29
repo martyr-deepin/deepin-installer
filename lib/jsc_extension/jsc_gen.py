@@ -560,7 +560,9 @@ JSGlobalContextRef get_global_context()
 }
 gboolean invoke_js_garbage()
 {
+    GRAB_CTX();
     JSGarbageCollect(global_ctx);
+    UNGRAB_CTX();
     return TRUE;
 }
 void modules_reload()
@@ -569,8 +571,6 @@ void modules_reload()
 }
 void init_js_extension(JSGlobalContextRef context, void* webview)
 {
-    if (global_ctx == NULL)
-        g_timeout_add_seconds(5, (GSourceFunc)invoke_js_garbage, NULL);
     global_ctx = context;
     modules_reload();
     __webview = webview;
