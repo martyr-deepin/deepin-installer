@@ -46,7 +46,6 @@ is_ancestor = (ancestor, el) ->
 
 __keyboard_widget = null
 __timezone_widget = null
-__language_widget = null
 __account_widget = null
 
 class LayoutItem extends Widget
@@ -314,7 +313,6 @@ class Keyboard extends Widget
 
     show: ->
         __timezone_widget?.hide()
-        __language_widget?.hide()
         __account_widget?.hide()
         @displayed = true
         @element.style.display = "block"
@@ -326,13 +324,13 @@ class Keyboard extends Widget
 
     init_dbus_query: ->
         try
-            #@search_bus = DCore.DBus.session("com.deepin.daemon.Search")
+            @search_bus = DCore.DBus.session("com.deepin.daemon.Search")
             dict = {}
             for item in @layouts
                 dict[item] = DCore.Installer.get_layout_description(item)
-            #@search_handle = @search_bus.NewTrieWithString_sync(dict, "installer")
-        catch
-            echo "init dbus query failed"
+            @search_handle = @search_bus.NewTrieWithString_sync(dict, "installer")
+        catch e
+            echo "init dbus query failed :#{e}"
 
     init_query_ul: ->
         @selected_letter = null
@@ -516,7 +514,6 @@ class Timezone extends Widget
                 pass
 
     show: ->
-        __language_widget?.hide()
         __keyboard_widget?.hide()
         __account_widget?.hide()
         @displayed = true
@@ -663,42 +660,6 @@ class Timezone extends Widget
         if matched.length == 1
             @set_timezone(@zone_dict[matched[0]])
 
-class Language extends Widget
-    constructor: (@id)->
-        super
-        @lang_list = ["zh_CN","en_US"]
-        @lang_selected = null
-        @lang_create()
-        @hide()
-
-    lang_create: ->
-        @li = []
-        @lang_div = create_element("div","lang_div",@element)
-        @ul = create_element("ul","",@lang_div)
-        for lang,i in @lang_list
-            @li[i] = create_element("li","",@ul)
-            @li[i].textContent = lang
-            @li[i].value = i
-            that = @
-            @li[i].addEventListener("click",->
-                that.lang_selected = that.lang_list[this.value]
-                echo "click and lang_selected:#{that.lang_selected}"
-                DCore.Installer.set_lang_pack(that.lang_selected)
-            )
-
-    show: ->
-        echo "language show"
-        __keyboard_widget?.hide()
-        __timezone_widget?.hide()
-        __account_widget?.hide()
-        @displayed = true
-        @element.style.display = "block"
-        __selected_layout_item?.focus()
-
-    hide: ->
-        @displayed = false
-        @element.style.display = "none"
-
 class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
@@ -821,7 +782,6 @@ class Account extends Widget
         @start.setAttribute("style", "pointer-events:none")
 
     show: ->
-        __language_widget?.hide()
         __timezone_widget?.hide()
         __keyboard_widget?.hide()
         @element.style.display = "block"
