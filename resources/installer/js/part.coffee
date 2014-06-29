@@ -689,10 +689,12 @@ class Part extends Page
             @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
 
     fill_bootloader: ->
-        efi_boot = get_efi_boot_part()
-        if efi_boot?
+        if DCore.Installer.system_support_efi() and DCore.Installer.disk_is_gpt(__selected_disk)
             @part_grub.style.display = "none"
             return
+        #else if DCore.Installer.system_support_efi()
+            #TODO : UEFI with MBR
+            #Add an UEFI selection button
         keys = []
         values = []
         for disk in disks
@@ -738,8 +740,8 @@ class Part extends Page
             @unmount_model.show_at(document.body)
         @linemap.element.setAttribute("style", "display:block")
         @part_grub.setAttribute("style", "display:block")
-        efi_boot = get_efi_boot_part()
-        if efi_boot?
+
+        if DCore.Installer.system_support_efi()
             @part_grub.style.display = "none"
         else
             @part_grub.style.display = "block"

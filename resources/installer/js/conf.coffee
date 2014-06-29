@@ -36,8 +36,6 @@ sync_installer_conf = ->
 record_mount_points = ->
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
-            if v_part_info[part]["fs"] == "efi"
-                v_part_info[part]["mp"] = "/boot/efi"
             if v_part_info[part]["fs"] == "swap"
                 v_part_info[part]["mp"] = "swap"
             if v_part_info[part]["mp"]? and v_part_info[part]["mp"] != "unused"
