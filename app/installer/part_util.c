@@ -798,7 +798,6 @@ gboolean installer_update_partition_geometry (const gchar *uuid, double byte_sta
     PedSector start = (PedSector) ceil(byte_start / part->disk->dev->sector_size);
     PedSector length = (PedSector) floor(byte_size / part->disk->dev->sector_size);
     g_message("-----------update part->%s geometry start->%d length->%d\n------------", uuid, (int)start, (int)length);
-    //TODO:
     ped_geometry_set (geom,  start, length);
     return TRUE;
 }
@@ -834,8 +833,8 @@ gboolean installer_update_partition_fs (const gchar *uuid, const gchar *fs)
     const gchar *part_path = ped_partition_get_path (part);
     g_assert(part_path != NULL);
 
+    //TODO: create EFI directory
     if (g_strcmp0 (fs, "efi") == 0) {
-	//TODO: async run this
 	mkfs_latter(part_path, "fat32");
 	if (! installer_set_partition_flag (uuid, "boot", 1)) {
 	    g_warning ("set flag for uefi failed\n");

@@ -35,9 +35,6 @@ static void setup_monitor_extract_progress();
 
 void ensure_we_can_find_in_chroot_hooks()
 {
-#undef HOOKS_DIR
-#define HOOKS_DIR "/home/deepin/deepin-installer/hooks"
-
     g_assert(!in_chroot);
     g_mkdir_with_parents("/target/"TMP_HOOKS_DIR"/in_chroot", 0755);
     GError* error = NULL;

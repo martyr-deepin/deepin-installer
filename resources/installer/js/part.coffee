@@ -638,19 +638,21 @@ class Part extends Page
         new InstallDialog("InstallModel").show_at(document.body)
 
     handle_install_simple: ->
-        if __selected_item?
-            if m_part_info[__selected_item.id]["type"] == "freespace"
-                if not can_add_normal(__selected_item.id) and not can_add_logical(__selected_item.id)
-                    new MessageDialog(
-                        _("Add Partition"),
-                        _("Can't create a partition here")
-                    ).show_at(document.body)
-                    return
+        if not __selected_item
+            return
+
+        if m_part_info[__selected_item.id]["type"] == "freespace"
+            if not can_add_normal(__selected_item.id) and not can_add_logical(__selected_item.id)
+                new MessageDialog(
+                    _("Add Partition"),
+                    _("Can't create a partition here")
+                ).show_at(document.body)
+                return
+
         if DCore.Installer.system_support_efi() and not DCore.Installer.disk_is_gpt(__selected_disk)
-            #TODO: warning, not uefi/gpt pair
             new PromptDialog(
-                _("Install Tips"),
-                _("Can't use UEFI with MSDOS DL"),
+                _("Warning"),
+                _("UEFI-native installation must use a GPT-formatted disk. It will lost all your disk data, if you insist on installing.")
                 -> install_by_anyway(__selected_disk)
             ).show_at(document.body)
         else
