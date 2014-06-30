@@ -112,7 +112,7 @@ GList* build_part_list(PedDisk* disk)
 
     PedPartition *part = NULL;
     for (part = ped_disk_next_partition (disk, NULL); part; part = ped_disk_next_partition (disk, part)) {
-	if (part->type & PED_PARTITION_METADATA != 0 || part->type & PED_PARTITION_PROTECTED != 0) {
+	if ((part->type & PED_PARTITION_METADATA) == PED_PARTITION_METADATA) {
 	    continue;
 	}
 	if (is_freespace_and_smaller_than_10MB(part)) {
