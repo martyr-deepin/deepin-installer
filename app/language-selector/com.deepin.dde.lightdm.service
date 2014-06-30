@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.deepin.dde.lightdm
+Exec=lightdm
+User=root

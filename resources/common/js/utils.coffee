@@ -17,27 +17,48 @@
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-Storage.prototype.setObject = (key, value) ->
+Storage::setObject = (key, value) ->
     @setItem(key, JSON.stringify(value))
 
-Storage.prototype.getObject = (key) ->
+Storage::getObject = (key) ->
     JSON.parse(@getItem(key))
 
-String.prototype.endsWith = (suffix)->
+String::endsWith = (suffix)->
     return this.indexOf(suffix, this.length - suffix.length) != -1
+
+String::args = ->
+    o = this
+    len = arguments.length
+    for i in [1..len]
+        o = o.replace(new RegExp("%" + i, "g"), "#{arguments[i - 1]}")
+
+    return o
+
+String::addSlashes = ->
+    @replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0')
 
 Array.prototype.remove = (el)->
     i = this.indexOf(el)
     if i != -1
         this.splice(this.indexOf(el), 1)[0]
 
-String::args = ->
-    o = this
-    len = arguments.length
-    for i in [1..len]
-        o = o.replace(new RegExp("%" + i, "g"), arguments[i - 1])
-
-    return o
+# if typeof Object.clone != 'function'
+#     Object::clone = ->
+#         o = {}
+#         for i of @
+#             if @.hasOwnProperty(i)
+#                 o[i] = @[i]
+#         o
+#
+# Array::clone = (deep)->
+#     deep = deep || false
+#     if deep && typeof @[0] == 'object' && @[0].clone?
+#         res = []
+#         for i of @
+#             res.push(i.clone())
+#         res
+#     else
+#         @.slice(0)
 
 echo = (log) ->
     console.log log
@@ -58,23 +79,29 @@ bindtextdomain = (domain, locale_dir) ->
     DCore.bindtextdomain(domain, locale_dir)
 
 build_menu = (info) ->
-    m = new DeepinMenu
-    for v in info
-        if v.length == 0  #separater item
-            i = new DeepinMenuItem(2, 0, 0, 0)
-        else if typeof v[0] == "number"  #normal item
-            i = new DeepinMenuItem(0, v[0], v[1], null)
-            if v.length > 2 and v[2] == false
-                i.enabled = false
-            else
-                i.enabled = true
-        else  #sub menu item
-            sm = build_menu(v[1])
-            i = new DeepinMenuItem(1, 0, v[0], sm)
-        m.appendItem(i)
-    return m
+    len = info.length
+    if len < 2
+        return null
+    count = 10000
+    menu = new Menu(info[0])
+    for i in [1...len]
+        v = info[i]
+        if v.length == 0  # separator
+            menu.addSeparator()
+        else if typeof v[0] == "number"
+            item = new MenuItem(v[0], v[1])
+            if v[2]?
+                item.setActive(v[2])
+            menu.append(item)
+        else  # submenu
+            echo "submenu"
+            submenu = build_menu(v[1])
+            menu.append(new MenuItem(count, v[1]).setSubMenu(build_menu(v[1])))
+            count += 1
 
-get_page_xy = (el, x, y) ->
+    return menu
+
+get_page_xy = (el, x=0, y=0) ->
     p = webkitConvertPointFromNodeToPage(el, new WebKitPoint(x, y))
 
 find_drag_target = (el)->
@@ -101,16 +128,29 @@ run_post = (f, self)->
     f2 = f.bind(self or this)
     setTimeout(f2, 0)
 
-create_element = (type, clss, parent)->
-    el = document.createElement(type)
-    el.setAttribute("class", clss) if clss
+create_element = (opt, parent, compatible)->
+    if typeof compatible != 'undefined' || typeof parent == 'string'
+        opt = tag:opt, class: parent
+        parent = compatible
+
+    if not opt.tag?
+        return null
+    el = document.createElement(opt.tag)
+    delete opt.tag
+    for own k, v of opt
+        el.setAttribute(k, v)
+
     if parent
         parent.appendChild(el)
+
     return el
 
-create_img = (clss, src, parent)->
-    el = create_element('img', clss, parent)
-    el.src = src
+create_img = (opt, parent, compatible)->
+    if typeof compatible != 'undefined'
+        opt = class:opt, src: parent
+        parent = compatible
+    opt.tag = 'img'
+    el = create_element(opt, parent)
     el.draggable = false
     return el
 
@@ -176,3 +216,75 @@ sortNumber = (a , b) ->
     return a - b
 array_sort_min2max = (arr) ->
     arr.sort(sortNumber)
+
+# demo:inject_js(@element,"js/index.js")
+inject_js = (src) ->
+    js_element = create_element("script", null, document.body)
+    js_element.src = src
+
+# demo:inject_css(@element,"css/index.css")
+inject_css = (el,src)->
+    css_element = create_element('link', null, el)
+    css_element.rel = "stylesheet"
+    css_element.href = src
+
+get_dbus = (type, opt, testProperty)->
+    throw "get_dbus requires 3 arguments" if not testProperty
+    type = type.toLowerCase()
+    if type == "system"
+        type = "sys"
+
+    if typeof opt == 'string'
+        # console.log "get_dbus: #{type}"
+        dbusArg = [opt]
+        func = DCore.DBus[type]
+    else
+        # console.log "get_dbus: #{type}_object"
+        dbusArg = [opt.name, opt.path, opt.interface]
+        func = DCore.DBus["#{type}_object"]
+
+    d = null
+    try
+        d = func.apply(null, dbusArg)
+    catch e
+        if typeof opt == 'string'
+            console.log "Get DBus \"#{opt}\" failed: #{e}"
+        else
+            console.log "Get DBus \"#{opt.name} #{opt.path} #{opt.interface}\" failed: #{e}"
+        return null
+
+    if !d
+        if typeof opt == 'string'
+            console.log "Get DBus \"#{opt}\" failed"
+        else
+            console.log "Get DBus \"#{opt.name} #{opt.path} #{opt.interface}\" failed"
+        return null
+
+    count = 0
+    while d and not d[testProperty]
+        try
+            # cannot use setTimeout, setTimeout will lead to inifite loop
+            # because the callback will get no chance to be executed.
+            d = func.apply(null, dbusArg)
+            count += 1
+            if typeof opt == 'string'
+                console.log "Get DBus \"#{opt}\" failed"
+            else
+                console.log "Get DBus \"#{opt.name} #{opt.path} #{opt.interface}\" failed"
+
+            if count == 100
+                return null
+    d
+
+
+getRandomInt = (min,max) ->
+    c = max - min + 1
+    return Math.floor(Math.random() * c + min)
+
+set_pos_center = (el,y_scale = 0.8,x_scale = 0.8)  ->
+    top = (screen.height  - el.clientHeight) / 2 * y_scale
+    left = (screen.width  - el.clientWidth) / 2 * x_scale
+    el.style.position = "absolute"
+    el.style.top = "#{top}px"
+    el.style.left = "#{left}px"
+

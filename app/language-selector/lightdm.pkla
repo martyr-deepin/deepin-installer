@@ -1,0 +1,10 @@
+[lightdm stop system]
+Identity=unix-group:lightdm
+Action=org.freedesktop.consolekit.system.stop-multiple-users
+ResultActive=yes
+
+[lightdm start system]
+Identity=unix-group:lightdm
+Action=org.freedesktop.consolekit.system.restart-multiple-users
+ResultActive=yes
+

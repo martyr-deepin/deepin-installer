@@ -36,6 +36,8 @@ _events = [
     'mousemove',
     'mouseout',
     'mouseover',
+    'mouseenter',
+    'mouseleave',
     'mouseup',
     'mousewheel',
     'paste',
@@ -98,14 +100,19 @@ class Widget extends Module
             else
                 echo "found the do_ prefix but the name #{key} is not an dom events"
 
-        @element.addEventListener("contextmenu", (e) =>
-            if f_rclick
-                f_rclick(e)
-            if f_menu
-                @element.contextMenu = build_menu(f_menu())
-                e.stopPropagation()
-
-        )
+        # filter unnecessary event binding.
+        if f_menu || f_rclick
+            @element.addEventListener("contextmenu", (e) =>
+                if f_rclick
+                    f_rclick(e)
+                if f_menu
+                    menu = f_menu()
+                    menu.unshift(DEEPIN_MENU_TYPE.NORMAL)
+                    build_menu(menu)
+                        ?.addListener(@on_itemselected)
+                        .showMenu(e.clientX, e.clientY)
+                    e.preventDefault()
+            )
 
     destroy: ->
         @element.parentElement?.removeChild(@element)
