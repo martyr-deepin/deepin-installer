@@ -97,9 +97,10 @@ thread_os_prober (gpointer data)
 
 
 
+static
 gboolean is_freespace_and_smaller_than_10MB(PedPartition* part)
 {
-    if (part->type != PED_PARTITION_FREESPACE)
+    if (part->type & PED_PARTITION_FREESPACE == 0)
 	return FALSE;
     int sector_size = part->disk->dev->sector_size;
     return part->geom.length * sector_size < 10 * 1024 * 1024;
@@ -111,6 +112,9 @@ GList* build_part_list(PedDisk* disk)
 
     PedPartition *part = NULL;
     for (part = ped_disk_next_partition (disk, NULL); part; part = ped_disk_next_partition (disk, part)) {
+	if (part->type & PED_PARTITION_METADATA != 0 || part->type & PED_PARTITION_PROTECTED != 0) {
+	    continue;
+	}
 	if (is_freespace_and_smaller_than_10MB(part)) {
 	    continue;
 	}
