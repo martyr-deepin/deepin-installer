@@ -614,7 +614,7 @@ class Part extends Page
             if not DCore.Installer.disk_is_gpt(__selected_disk)
                 new MessageDialog(
                     _("Install Tips"),
-                    _("UEFI-native installation only support GPT-formatted disk.")
+                    _("UEFI-native installation only supports GPT-formatted disk.")
                 ).show_at(document.body)
                 return
 
@@ -622,7 +622,7 @@ class Part extends Page
             if not esp_uuid or v_part_info[esp_uuid]["length"] < 100 * MB
                 new MessageDialog(
                     _("Install Tips")
-                    _("UEFI-native installation need a ESP which at least have 100M space.")
+                    _("UEFI-native installation needs a ESP which at least has 100M space.")
                 ).show_at(document.body)
                 return
 
@@ -649,7 +649,7 @@ class Part extends Page
         if DCore.Installer.system_support_efi() and not DCore.Installer.disk_is_gpt(__selected_disk)
             new PromptDialog(
                 _("Warning"),
-                _("UEFI-native installation must use a GPT-formatted disk. It will lost all your disk data, if you insist on installing.")
+                _("UEFI-native installation only supports GPT-formatted disk. It will lose all disk data if you insist on installing.")
                 -> install_by_anyway(__selected_disk)
             ).show_at(document.body)
         else
