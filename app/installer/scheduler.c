@@ -24,7 +24,7 @@ void update_install_progress(int v)
 {
     static int current_per = 0;
     if (v < current_per) {
-	g_warning("--------------------------------INSTALL progress small previous PROGRESS: %d%% <= %d%%\n", v, current_per);
+	g_debug("--------------------------------INSTALL progress small previous PROGRESS: %d%% <= %d%%\n", v, current_per);
 	return;
     }
     current_per=  v;
