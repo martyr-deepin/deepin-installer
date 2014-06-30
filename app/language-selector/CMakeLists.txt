@@ -33,11 +33,6 @@ install(
 )
 
 install(
-    FILES ${CMAKE_CURRENT_SOURCE_DIR}/lightdm.pkla
-    DESTINATION /var/lib/polkit-1/localauthority/50-local.d/
-)
-
-install(
     FILES ${CMAKE_CURRENT_SOURCE_DIR}/deepin-lightdm-${NAME}.desktop
     DESTINATION /usr/share/xgreeters/
 )
