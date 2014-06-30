@@ -28,7 +28,7 @@ case ${BOOT} in
         grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck --debug
         ;;
     "legacy")
-        echo "INFO: Detected legacy machine"
+        echo "INFO: Detected legacy machine, installing grub to ${DI_BOOTLOADER}"
         DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
         grub-install --no-floppy --force ${DI_BOOTLOADER}
         ;;
