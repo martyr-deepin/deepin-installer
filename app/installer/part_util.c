@@ -393,8 +393,9 @@ gchar* installer_get_partition_path (const gchar *uuid)
     g_assert(part != NULL);
 
     if (part->num == -1) {
-        g_warning ("get partition path:part NULL\n");
-	return g_strdup_printf("free:%s:%d\n", part->disk->dev->path, (int)part->geom.start);
+	char* ret = g_strdup_printf("free:%s:%d", part->disk->dev->path, (int)part->geom.start);
+        g_warning ("installer_get_partition_path receive an free_path: %s\n", ret);
+	return ret;
     }
 
     gchar *path = ped_partition_get_path (part);
@@ -403,29 +404,17 @@ gchar* installer_get_partition_path (const gchar *uuid)
 }
 
 JS_EXPORT_API 
-gchar* installer_get_partition_mp (const gchar *part)
+gchar* installer_get_partition_mp (const gchar *uuid)
 {
-    gchar *mp = NULL;
-    PedPartition *pedpartition = NULL;
-    gchar *path = NULL;
-    if (part == NULL) {
-        g_warning ("get partition mp:part NULL\n");
-        return mp;
-    }
+    g_return_val_if_fail(uuid != NULL, NULL);
+    PedPartition* part = (PedPartition *) g_hash_table_lookup (partitions, uuid);
+    g_return_val_if_fail(part != NULL, NULL);
+    g_return_val_if_fail(part->num != -1, NULL);
 
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition == NULL) {
-        g_warning ("get partition mp:find pedpartition %s failed\n", part);
-        return mp;
-    }
-    path = ped_partition_get_path (pedpartition);
-    if (path == NULL) {
-        g_warning ("get partition mp:get partition path failed\n");
-        return mp;
-    }
-    mp = get_partition_mount_point (path);
-
+    gchar* path = ped_partition_get_path (part);
+    gchar* mp = get_partition_mount_point (path);
     g_free (path);
+
     return mp;
 }
 
@@ -548,26 +537,13 @@ gchar* installer_get_partition_label (const gchar *part)
 }
 
 JS_EXPORT_API 
-gboolean installer_get_partition_busy (const gchar *part)
+gboolean installer_is_partition_busy (const gchar *uuid)
 {
-    gboolean busy = FALSE;
-    PedPartition *pedpartition = NULL;
-    if (part == NULL) {
-        g_warning ("get partition busy:part NULL\n");
-        return busy;
-    }
+    g_return_val_if_fail(uuid != NULL, FALSE);
+    PedPartition* part = (PedPartition *) g_hash_table_lookup (partitions, uuid);
+    g_return_val_if_fail(part != NULL, FALSE);
 
-    pedpartition = (PedPartition *) g_hash_table_lookup (partitions, part);
-    if (pedpartition != NULL) {
-
-        if ((ped_partition_is_busy (pedpartition)) == 1) { 
-            busy = TRUE;
-        }
-    } else {
-        g_warning ("get partition busy:find pedpartition %s failed\n", part);
-    }
-
-    return busy;
+    return ped_partition_is_busy(part);
 }
 
 JS_EXPORT_API 
@@ -782,9 +758,9 @@ gboolean installer_delete_disk_partition (const gchar *part_uuid)
 JS_EXPORT_API 
 gboolean installer_update_partition_geometry (const gchar *uuid, double byte_start, double byte_size) 
 {
-    g_assert(uuid != NULL);
-    g_assert(byte_start >= 0);
-    g_assert(byte_size > 0);
+    g_return_val_if_fail(uuid != NULL, FALSE);
+    g_return_val_if_fail(byte_start >= 0, FALSE);
+    g_return_val_if_fail(byte_size > 0, FALSE);
 
 
     PedGeometry *geom = NULL;

@@ -5,6 +5,7 @@
 
 struct _InstallerConf InstallerConf;
 
+static
 char* find_path_by_uuid(const char* uuid)
 {
     g_assert(uuid != NULL);

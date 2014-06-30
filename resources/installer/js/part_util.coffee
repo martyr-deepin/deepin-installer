@@ -330,7 +330,7 @@ check_target_part = ->
 #when had partition mount, should attention him unmount first before part operation
 check_has_mount = (disk)->
     for part in m_disk_info[disk]["partitions"]
-        if DCore.Installer.get_partition_mp(part)
+        if DCore.Installer.is_partition_busy(part)
             return true
     return false
 

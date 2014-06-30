@@ -403,7 +403,7 @@ class PartTableItem extends Widget
                 if m_part_info[@id]["lvm"]? and m_part_info[@id]["lvm"] == true
                     return true
         if @id in m_disk_info[__selected_disk]["partitions"]
-            if DCore.Installer.get_partition_busy(@id)
+            if DCore.Installer.is_partition_busy(@id)
                 return true
         return false
 
