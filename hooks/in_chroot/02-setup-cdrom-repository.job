@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# add cdrom to source.list
+# add cdrom to sources.list
 [ ! -d /media/cdrom ] && { echo >&2 "[WARN] /media/cdrom not exits.Skip."; exit 1; }
 #commented source.list to let apt-get just using cdrom repo.
 sed -i 's/^/#/g' /etc/apt/sources.list

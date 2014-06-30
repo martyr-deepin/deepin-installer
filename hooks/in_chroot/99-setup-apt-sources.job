@@ -28,4 +28,4 @@ deb-src ${url}/ubuntu ${CODENAME}-security main restricted universe multiverse
 deb ${url}/deepin ${CODENAME} main universe non-free 
 deb-src ${url}/deepin ${CODENAME} main universe non-free 
 "
-echo "${APT_SOURCES}" | tee /etc/apt/source.list
+echo "${APT_SOURCES}" | tee /etc/apt/sources.list
