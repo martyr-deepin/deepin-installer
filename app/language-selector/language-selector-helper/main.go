@@ -22,7 +22,7 @@ func run_shell_content(code string, argv ...string) {
 
 	ioutil.WriteFile(f.Name(), ([]byte)(code), 0755)
 	argv = append([]string{f.Name()}, argv...)
-	cmd := exec.Command("sh", argv...)
+	cmd := exec.Command("/bin/sh", argv...)
 	d, err := cmd.Output()
 	logger.Info(string(d))
 	if err != nil {
