@@ -992,7 +992,7 @@ add_part = (free_part, type, size, align, fs, mp) ->
     else
         echo "error in add_part, invalid partition type"
     #handle new part geometry
-    if size == v_part_info[free_part]["length"]
+    if Math.abs(size - v_part_info[free_part]["length"]) < 10 * MB
         echo "whole freespace to new part"
         v_part_info[new_part]["start"] = v_part_info[free_part]["start"]
         v_part_info[new_part]["length"] = v_part_info[free_part]["length"]
