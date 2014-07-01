@@ -50,7 +50,7 @@ class Progress extends Page
         setInterval(=>
             @update_rotate()
         , 30)
-
+    
         @progress_container = create_element("div", "ProgressContainer", @element)
         @progress_container.style.display = "block"
         @progressbar = create_element("div", "ProgressBar", @progress_container)
@@ -61,15 +61,21 @@ class Progress extends Page
         @light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
 
         @ppt = create_element("iframe","ppt_iframe",@element)
-        if document.body.lang is "zh"
-            @ppt.src = "ppt/slideshow2014/index.html"
-        else
-            @ppt.src = "ppt/slideshow2014/index_en.html"
-
+        @ppt.setAttribute("id","ppt_iframe")
         @ticker = 0
         @tu = 180
 
         @start_progress()
+
+    ppt_show: ->
+        echo "lang:" + document.body.lang
+        if document.body.lang is "zh"
+            echo "zh"
+            @ppt.src = "ppt/slideshow2014/index.html"
+        else
+            echo "en"
+            @ppt.src = "ppt/slideshow2014/index_en.html"
+        @ppt.style.display = "block"
 
     update_rotate: ->
         if @deg > 360
@@ -82,7 +88,7 @@ class Progress extends Page
         setTimeout(=>
             @loading.style.display = "none"
             echo "@ppt show"
-            @ppt.style.display = "block"
+            @ppt_show()
         ,1000)
         apply_animation(@loading, "loadingout", "1s", "linear")
         apply_animation(@progress_container, "pptin", "2s", "linear")
