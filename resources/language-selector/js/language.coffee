@@ -73,8 +73,8 @@ class Language extends Widget
             )
         document.body.addEventListener("keydown",(e)=>
             echo "keydown:#{e.which}"
-            if e.which == KEYCODE.ESC
-                @start_session("ycl","1")
+            #if e.which == KEYCODE.ESC
+            #    @start_session("ycl","1")
             if e.which == KEYCODE.ENTER
                 if list.currentIndex < 0 then return
                 local = @local_list[list.currentIndex]["name"]
