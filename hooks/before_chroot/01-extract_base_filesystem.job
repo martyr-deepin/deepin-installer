@@ -1,3 +1,5 @@
+#!/bin/bash
+
 unsquashfs -f -d /target /cdrom/casper/filesystem.squashfs | unsquashfs_progress /tmp/deepin-installer/unsquashfs_base_progress
 
 [ ! -f /etc/deepin-installer.conf ] && exit 0
