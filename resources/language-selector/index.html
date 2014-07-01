@@ -11,6 +11,79 @@
 
         <script>
         nicesx = $("#boxscroll").niceScroll({touchbehavior:false,cursorcolor:"#fff",cursoropacitymax:0.6,cursorwidth:8});
+
+        Key = {};
+        Key.PAGE_UP = 33;
+        Key.PAGE_DOWN = 34;
+        Key.UP = 38;
+        Key.DOWN = 40;
+        
+        list = {};
+        list.currentIndex = -1;
+        
+        jQuery(function($){
+            var items = $('#boxscroll li'),
+                container = $('#boxscroll'),
+                item_height = items.height()
+                            + parseInt(items.css('padding-top'))
+                            + parseInt(items.css('padding-bottom')),
+                container_height = container.height(),
+                item_per_page = Math.ceil(container_height / item_height),
+                scroll = container.getNiceScroll().eq(0);
+        
+            item_height;
+        
+            items.mouseenter(function(e){
+                items.removeClass('active');
+                $(this).addClass('active');
+                list.currentIndex = $(e.target).index();
+            }).mouseleave(function(){
+                // $(this).removeClass('active');
+            });
+        
+            $(document).keydown(function(e){
+              switch(e.keyCode){
+                case Key.UP:
+                  items.removeClass('active');
+                  if(list.currentIndex >= 0) list.currentIndex--;
+                  if((list.currentIndex - 2) * item_height < 
+                      scroll.getScrollTop()){
+                      scroll.doScrollBy(item_height);
+                  }
+                  items.eq(list.currentIndex).addClass('active');
+                break;
+                case Key.DOWN:
+                  items.removeClass('active');
+                  if(list.currentIndex <= items.length - 1)list.currentIndex++;
+                  if((list.currentIndex + 2) * item_height > 
+                      scroll.getScrollTop() + container_height){
+                      scroll.doScrollBy(-item_height);
+                  }
+                  items.eq(list.currentIndex).addClass('active');
+                break;
+                case Key.PAGE_UP:
+                  items.removeClass('active');
+                  scroll.doScrollBy(container_height);
+                  list.currentIndex -= item_per_page;
+                  if(list.currentIndex <= 0){
+                    list.currentIndex = 0;
+                  }
+                  items.eq(list.currentIndex).addClass('active');
+                break;
+                case Key.PAGE_DOWN:
+                  items.removeClass('active');
+                  scroll.doScrollBy(-container_height);
+                  list.currentIndex += item_per_page;
+                  if(list.currentIndex >= items.length - 1){
+                    list.currentIndex = items.length - 1;
+                  }
+                  items.eq(list.currentIndex).addClass('active');
+                break;
+              }
+            })
+            container.niceScroll()
+        })
+        
         </script>
 </body>
 </html>

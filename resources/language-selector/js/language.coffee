@@ -34,12 +34,9 @@ class Language extends Widget
         @get_lang_list()
         @boxscroll_create()
 
-
     get_lang_list: ->
         @local_list = DCore.Greeter.get_local_list()
-        #echo @local_list
         @lang_list = DCore.Greeter.get_lang_list()
-        #echo @lang_list
 
     select_lang: (name) ->
         lang = la["lang"] for la in @lang_list when la["name"] is name
@@ -54,10 +51,10 @@ class Language extends Widget
     boxscroll_create: ->
         @wrap = create_element("div","wrap",@element)
         @wrap.setAttribute("draggable",false)
-        @logo = create_img("logo","img/logo.png",@wrap)
+        @logo = create_element("div","logo",@wrap)
+        @img = create_img("img","img/logo.png",@logo)
         @boxscroll = create_element("div","boxscroll",@wrap)
         @boxscroll.setAttribute("id","boxscroll")
-        #nicesx = @boxscroll.niceScroll({touchbehavior:false,cursorcolor:"#fff",cursoropacitymax:0.6,cursorwidth:8})
         @li = []
         @a = []
         @ul = create_element("ul","",@boxscroll)
@@ -69,13 +66,11 @@ class Language extends Widget
             @li[i] = create_element("li","",@ul)
             @a[i] = create_element("a","",@li[i])
             @li[i].setAttribute("id",local["name"])
-            @li[i].setAttribute("tabindex",-1)
             @a[i].innerText = local["local"]
             that = @
             @li[i].addEventListener("click",->
                 that.select_lang(this.id)
             )
-        @li[1].focus()
         document.body.addEventListener("keydown",(e)=>
             echo "keydown"
             if e.which == KEYCODE.ESC
@@ -86,7 +81,7 @@ document.body.addEventListener("contextmenu",(e)=>
     e.preventDefault()
     e.stopPropagation()
 )
-
-
+#document.ready = ->
+#    nicesx = $("#boxscroll").niceScroll({touchbehavior:false,cursorcolor:"#fff",cursoropacitymax:0.6,cursorwidth:8})
 
 new Language()

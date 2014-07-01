@@ -1,9 +1,8 @@
 html {
 }
 body {
-	/*margin: 0px;*/
-	/*background: url(../img/sky.png);*/
-	/*background-size: cover;*/
+    margin: 0px;
+    background-size: cover;
 }
 
 .Language{
@@ -21,24 +20,20 @@ body {
 .wrap {
 	width: 710px;
 	height: 500px;
-    overflow:hidden;
 }
+
 .logo {
 	text-align: center;
-	width:700px;
-    height:100px;
-	padding-bottom:10px;
+	height: 120px;
 }
 #boxscroll {
 	width: 700px;
-	margin: 0px auto;
-    height: 380px;
-    border-radius:4px;
-    background:rgba(255,255,255,0.05);
+	margin: 2px auto;
+	height: 396px;border-radius:4px;background:rgba(255,255,255,0.05);
 	border:rgba(0,0,0,0.7) 1px solid;
 	box-shadow:0 0 4px 4px rgba(0,0,0,0.2);
 }
-#boxscroll ul{ padding:0; margin:0; cursor:pointer;list-style:none;}
+#boxscroll ul{ padding:0; margin:0; cursor:pointer;}
 #boxscroll li{ padding:7px 15px;}
 #boxscroll li:nth-child(even){background:rgba(0,0,0,0.1);}
 #boxscroll a {
@@ -46,7 +41,8 @@ body {
 	/*font-family:Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;*/
 	font-size: 16px;
 }
-#boxscroll li:hover {
+#boxscroll li:hover,
+#boxscroll li.active{
 	background:#4774f5;
 }
 #boxscroll li:active {
@@ -64,3 +60,11 @@ body {
 	-webkit-border-radius: 5px;border-radius: 5px;
 	-webkit-box-shadow: none;
 }
+
+
+
+
+
+
+
+
