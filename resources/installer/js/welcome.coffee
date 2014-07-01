@@ -670,7 +670,6 @@ class WelcomeFormItem extends Widget
             @check_capslock()
             @input.setAttribute("style", "")
             @check_valid()
-            @fill_item_data()
             Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("input", (e) =>
@@ -774,7 +773,13 @@ class Account extends Widget
 
     show: ->
         __timezone_widget?.hide()
-        __keyboard_widget?.hide()
+        __keyboard_widget?.hide()        #if @id == "username"
+        #    __selected_username = @input.value
+        #else if @id == "hostname"
+        #    __selected_hostname = @input.value
+        #else if @id == "password"
+        #    __selected_password = @input.value
+
         @element.style.display = "block"
 
     hide: ->
@@ -796,7 +801,8 @@ class Account extends Widget
         __selected_username = @username.get_input_value()
         __selected_hostname = @hostname.get_input_value()
         __selected_password = @password.get_input_value()
-
+        echo "#{__selected_username};#{__selected_hostname};#{__selected_password}"
+    
     start_install_cb: ->
         @fill_item_data()
         if @check_start_ready()
