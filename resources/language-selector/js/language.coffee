@@ -69,12 +69,13 @@ class Language extends Widget
             @li[i] = create_element("li","",@ul)
             @a[i] = create_element("a","",@li[i])
             @li[i].setAttribute("id",local["name"])
+            @li[i].setAttribute("tabindex",-1)
             @a[i].innerText = local["local"]
             that = @
             @li[i].addEventListener("click",->
                 that.select_lang(this.id)
             )
-
+        @li[1].focus()
         document.body.addEventListener("keydown",(e)=>
             echo "keydown"
             if e.which == KEYCODE.ESC

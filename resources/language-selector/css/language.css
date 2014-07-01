@@ -19,7 +19,7 @@ body {
 }
 
 .wrap {
-	width: 700px;
+	width: 710px;
 	height: 500px;
     overflow:hidden;
 }
@@ -27,10 +27,11 @@ body {
 	text-align: center;
 	width:700px;
     height:100px;
+	padding-bottom:10px;
 }
 #boxscroll {
 	width: 700px;
-	margin: 10px auto;
+	margin: 0px auto;
     height: 380px;
     border-radius:4px;
     background:rgba(255,255,255,0.05);
