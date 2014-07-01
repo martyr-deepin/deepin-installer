@@ -311,10 +311,12 @@ class Keyboard extends Widget
         @hide()
 
         @searcher = new Trie()
-        dict = {}
+        @layouts_des_pinyin = {}
         for item in @layouts
-            @searcher.insert(DCore.Installer.get_layout_description(item))
-        echo @layouts
+            des = DCore.Installer.get_layout_description(item)
+            des_pinyin = codefans_net_CC2PY(des)
+            @layouts_des_pinyin[des_pinyin] = des
+            @searcher.insert(des_pinyin)
     
     show: ->
         __timezone_widget?.hide()
@@ -367,11 +369,6 @@ class Keyboard extends Widget
                 @variants[layout].push(layout + "," + variant)
         @layouts.sort(_sort_layout)
 
-        #@search_list = []
-        #for item in @layouts
-        #    @search_list.push(item)
-        #    @search_list.push(DCore.Installer.get_layout_description(item))
-
     fill_layouts: (layouts) ->
         @layout_list.innerHTML = ""
         for layout in layouts
@@ -388,7 +385,10 @@ class Keyboard extends Widget
         __selected_layout = layout
 
     execute_letter_query: (letter) ->
-        matched = @searcher.autoComplete(letter)
+        matched_pinyin = @searcher.autoComplete(letter)
+        matched = []
+        for match in matched_pinyin
+            matched.push(@layouts_des_pinyin[match])
         echo "finsish autoComplete and result is matched!!==========="
         echo matched
         @layout_list.innerHTML = ""

@@ -1,7 +1,7 @@
 class Trie
     constructor: ->
         @words = 0
-        @children = []
+        @children = {}
 
     insert : (str, pos=0)->
         return if str.length == 0
@@ -14,16 +14,17 @@ class Trie
         if not @children[k]
             @children[k] = new Trie()
         child = @children[k]
-        child.insert(str, pos+1)
+        child.insert(str, pos + 1)
 
     getAllWords: (str)->
         ret = []
         if @words > 0
             ret.push(str)
 
+        i = 0
         for key, child of @children
             if child.getAllWords?
-                ret = ret.concat(child.getAllWords(str+key))
+                ret = ret.concat(child.getAllWords(str + key))
         return ret
 
     autoComplete: (str, pos=0)->
@@ -34,4 +35,4 @@ class Trie
             return []
         if pos == str.length-1
             return child.getAllWords(str)
-        return child.autoComplete(str, pos+1)
+        return child.autoComplete(str,pos + 1)
