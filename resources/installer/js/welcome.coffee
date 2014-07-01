@@ -389,7 +389,6 @@ class Keyboard extends Widget
         matched = []
         for match in matched_pinyin
             matched.push(@layouts_des_pinyin[match])
-        echo "finsish autoComplete and result is matched!!==========="
         echo matched
         @layout_list.innerHTML = ""
         @variant_list.innerHTML = ""
