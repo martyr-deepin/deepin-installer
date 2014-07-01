@@ -108,12 +108,15 @@ class PartTableItem extends Widget
         else if __selected_mode == "simple"
             @fill_device_simple()
         txt = @path.innerText
+        @path.title = @path.innerText
         @path.addEventListener("mouseover", (e) =>
             if os? and os.length > 2
                 @path.innerText = DCore.Installer.get_partition_os_desc(@id).split("(")[0].trim()
+                @path.title = @path.innerText
         )
         @path.addEventListener("mouseout", (e) =>
             @path.innerText = txt
+            @path.title = @path.innerText
         )
 
     fill_device_advance: ->

@@ -230,6 +230,7 @@
     height:20px;
     line-height:20px;
     max-height:40px;
+    overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
 }
