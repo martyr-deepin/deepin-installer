@@ -206,10 +206,14 @@ unmount_partition_by_device (const gchar *path)
         } else {
             cmd = g_strdup_printf ("umount -l %s", mp);
         }
-        g_spawn_command_line_async (cmd, NULL);
+	GError* error = NULL;
+        g_spawn_command_line_sync(cmd, NULL, NULL, NULL, &error);
+	if (error != NULL) {
+	    g_warning("unmount_partition_by_device failed (cmd:%s) : %s\n", cmd, error->message);
+	    g_error_free(error);
+	}
         g_free (cmd);
         g_free (mp);
-        g_usleep (1000);
     }
 }
 
