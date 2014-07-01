@@ -314,7 +314,8 @@ class Keyboard extends Widget
         dict = {}
         for item in @layouts
             @searcher.insert(DCore.Installer.get_layout_description(item))
-
+        echo @layouts
+    
     show: ->
         __timezone_widget?.hide()
         __account_widget?.hide()
@@ -388,6 +389,8 @@ class Keyboard extends Widget
 
     execute_letter_query: (letter) ->
         matched = @searcher.autoComplete(letter)
+        echo "finsish autoComplete and result is matched!!==========="
+        echo matched
         @layout_list.innerHTML = ""
         @variant_list.innerHTML = ""
 
@@ -714,14 +717,6 @@ class WelcomeFormItem extends Widget
             @input.classList.add("PasswordStyle")
             @warn = create_element("div", "CapsWarning", @element)
 
-    fill_item_data: ->
-        if @id == "username"
-            __selected_username = @input.value
-        else if @id == "hostname"
-            __selected_hostname = @input.value
-        else if @id == "password"
-            __selected_password = @input.value
-
     check_valid: ->
         if not @is_valid()
             if @input.value.length != 0
@@ -743,6 +738,9 @@ class WelcomeFormItem extends Widget
             if @input.value != Widget.look_up("password")?.input.value
                 return false
         return true
+
+    get_input_value: ->
+        return @input.value
 
 class Account extends Widget
     constructor: (@id) ->
@@ -794,7 +792,13 @@ class Account extends Widget
             @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,0.5)), to(rgba(217,181,24,0.5)));")
             return false
 
+    fill_item_data: ->
+        __selected_username = @username.get_input_value()
+        __selected_hostname = @hostname.get_input_value()
+        __selected_password = @password.get_input_value()
+
     start_install_cb: ->
+        @fill_item_data()
         if @check_start_ready()
             undo_part_table_info()
             pc.switch_page(new Part("Part"))
