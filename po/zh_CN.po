@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-02 17:18+0800\n"
+"POT-Creation-Date: 2014-07-02 17:25+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Lihongwu\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,9 +98,9 @@ msgstr "UEFI模式安装仅支持分区表为GPT的硬盘。"
 
 #: ../resources/installer/js/part.coffee:642
 msgid ""
-"ESP needs to support in UEFI mode and please create a 100M or more partition "
-"in efi format."
-msgstr "UEFI模式安装需要ESP，请创建一个100M以上的efi格式分区。"
+"ESP needs to support in UEFI mode and please create a 100MB or more "
+"partition in efi format."
+msgstr "UEFI模式安装需要ESP，请创建一个100MB以上的efi格式分区。"
 
 #: ../resources/installer/js/part.coffee:661
 #: ../resources/installer/js/dialog.coffee:110
