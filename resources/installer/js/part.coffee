@@ -763,6 +763,7 @@ class Part extends Page
                 @uefi_radio.checked = true
                 if __selected_disk is null then return
                 if not DCore.Installer.disk_is_gpt(__selected_disk)
+                    @grub_select.style.display = "block"
                     @uefi_radio.checked = false
                     new PromptDialog(
                         _("Warning"),
@@ -773,6 +774,7 @@ class Part extends Page
                             @uefi_radio.checked = true
                     ).show_at(document.body)
                 else
+                    @grub_select.style.display = "none"
                     @grub_radio.checked = false
             )
             @grub_radio.addEventListener("click",=>
