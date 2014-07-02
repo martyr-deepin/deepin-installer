@@ -639,7 +639,7 @@ class Part extends Page
             if not esp_uuid or v_part_info[esp_uuid]["length"] < 100 * MB
                 new MessageDialog(
                     _("Install Tips")
-                    _("UEFI-native installation needs a ESP which at least has 100M space.")
+                    _("ESP needs to support in UEFI mode and please create  a 100M or more  partition in efi format.")
                 ).show_at(document.body)
                 return
 
