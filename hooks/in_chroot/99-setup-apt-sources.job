@@ -8,7 +8,7 @@ DI_LOCALE=${DI_LOCALE:-en_US}
 CODENAME=${CODENAME:-trusty}
 
 case ${DI_LOCALE} in
-    zh_TW)
+    zh_TW*)
         deepin_url="http://forum.cse.yzu.edu.tw/Linux/Deepin"
         ubuntu_url="http://linux.cse.yzu.edu.tw"
         ;;
