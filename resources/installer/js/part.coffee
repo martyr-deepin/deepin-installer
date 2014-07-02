@@ -757,13 +757,13 @@ class Part extends Page
             @unmount_model.show_at(document.body)
         @linemap.element.setAttribute("style", "display:block")
 
-        if true
-        #if DCore.Installer.system_support_efi()
+        if DCore.Installer.system_support_efi()
             @part_uefi.style.display = "-webkit-box"
             @uefi_radio.addEventListener("click",=>
-                @uefi_radio.checked = false
+                @uefi_radio.checked = true
                 if __selected_disk is null then return
                 if not DCore.Installer.disk_is_gpt(__selected_disk)
+                    @uefi_radio.checked = false
                     new PromptDialog(
                         _("Warning"),
                         _("UEFI-native installation only supports GPT-formatted disk. It will lose all disk data if you insist on installing.")
@@ -771,6 +771,8 @@ class Part extends Page
                             @grub_radio.checked = false
                             @uefi_radio.checked = true
                     ).show_at(document.body)
+                else
+                    @grub_radio.checked = false
             )
             @grub_radio.addEventListener("click",=>
                 @uefi_radio.checked = false
