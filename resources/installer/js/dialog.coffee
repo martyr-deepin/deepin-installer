@@ -44,7 +44,7 @@ class PromptDialog extends Dialog
         super("PromptDialog", true, ok_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = title
-        @root_tips = create_element("div", "", @content)
+        @root_tips = create_element("div", "dialog_tips", @content)
         @root_tips.innerText = content
 
 class MessageDialog extends Dialog
@@ -52,7 +52,7 @@ class MessageDialog extends Dialog
         super("MessageDialog", false, cancel_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = title
-        @root_tips = create_element("div", "", @content)
+        @root_tips = create_element("div", "dialog_tips", @content)
         @root_tips.innerText = content
 
 class DeletePartDialog extends Dialog
@@ -60,7 +60,7 @@ class DeletePartDialog extends Dialog
         super(@id, true, @delete_part_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Delete Partition")
-        @delete_tips = create_element("div", "", @content)
+        @delete_tips = create_element("div", "dialog_tips", @content)
         @delete_tips.innerText = _("Are you sure you want to delete this partition?")
 
     delete_part_cb: ->
@@ -75,7 +75,7 @@ class FormatDialog extends Dialog
         super(@id, true, @format_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Formatting Partition")
-        @format_tips = create_element("div", "", @content)
+        @format_tips = create_element("div", "dialog_tips", @content)
         @format_tips.innerText = _("Are you sure you want to format this partition?")
 
     format_cb: ->
@@ -86,7 +86,7 @@ class InstallDialog extends Dialog
         super(@id, true, @confirm_install_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = _("Proceed with installation")
-        @root_tips = create_element("div", "", @content)
+        @root_tips = create_element("div", "dialog_tips", @content)
 
         if __selected_mode == "advance"
             target = get_target_part()

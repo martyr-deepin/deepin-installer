@@ -706,9 +706,9 @@ class Part extends Page
 
 
     fill_bootloader: ->
-        if DCore.Installer.system_support_efi() and DCore.Installer.disk_is_gpt(__selected_disk)
-            @part_grub.style.display = "none"
-            return
+        #if DCore.Installer.system_support_efi() and DCore.Installer.disk_is_gpt(__selected_disk)
+        #    @part_grub.style.display = "none"
+        #    return
         #else if DCore.Installer.system_support_efi()
             #TODO : UEFI with MBR
             #Add an UEFI selection button
@@ -768,6 +768,7 @@ class Part extends Page
                         _("Warning"),
                         _("UEFI-native installation only supports GPT-formatted disk. It will lose all disk data if you insist on installing.")
                         =>
+                            @grub_select.style.display = "none"
                             @grub_radio.checked = false
                             @uefi_radio.checked = true
                     ).show_at(document.body)
@@ -775,6 +776,7 @@ class Part extends Page
                     @grub_radio.checked = false
             )
             @grub_radio.addEventListener("click",=>
+                @grub_select.style.display = "block"
                 @uefi_radio.checked = false
             )
         else
