@@ -3,6 +3,11 @@
     background-position:10px 0;
 }
 
+.part_wrap{
+    width:750px;
+    height:450px;
+}
+
 .DiskTab {
     height:16px;
     line-height:16px;
@@ -313,18 +318,34 @@
     color:rgba(255,255,255,1);
 }
 
-.PartGrub {
+.PartUefi {
     position:absolute;
-    top:420px;
-    bottom:100px;
+    display:-webkit-box;
+    bottom:110px;
     left:25px;
     right:25px;
     width:700px;
     height:24px;
 }
+.uefi_txt{
+    height:24px;
+    line-height:24px;
+}
+
+.uefi_radio .grub_radio{
+    height:25px;
+}
+
+.PartGrub {
+    position:absolute;
+    display:-webkit-box;
+    bottom:80px;
+    left:25px;
+    width:700px;
+    height:24px;
+}
 
 .PartGrubLoader {
-    float:left;
     position:relative;
     width:auto;
     height:24px;
@@ -332,6 +353,7 @@
 }
 
 .PartGrubSelect {
+    margin-left:10px;
     float:right;
     position:relative;
     width:auto;
@@ -342,9 +364,7 @@
 .NextStep {
     position:absolute;
     left:285px;
-    right:285px;
-    top:470px;
-    bottom:30px;
+    bottom:20px;
     width:180px;
     height:38px;
     border:1px solid rgba(0,0,0,0.3);
@@ -486,3 +506,4 @@
 .AddPartDialog .DropDown {
     clear:both;
 }
+

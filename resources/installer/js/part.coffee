@@ -584,8 +584,11 @@ class Part extends Page
         @close.addEventListener("click", (e) =>
             @exit_installer()
         )
+        
 
-        @wrap = create_element("div", "", @element)
+        @wrap = create_element("div", "part_wrap", @element)
+        
+        @init_part_page()
 
         @next_btn = create_element("div", "NextStep", @wrap)
         @next_btn.setAttribute("id", "mynextstep")
@@ -602,9 +605,20 @@ class Part extends Page
                 @handle_install_simple()
         )
 
-        @init_part_page()
+        @switch_mode_simple()
+        recommand = get_recommand_target()
+        if recommand?
+            @disktab.focus_disk(m_part_info[recommand]["disk"])
+            Widget.look_up(recommand)?.focus()
+        else
+            @disktab.focus_disk(__selected_disk)
+        if  __selected_item?
+            @next_btn.setAttribute("style", "pointer-events:auto")
+            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
+
 
     handle_install_advance: ->
+        __selected_use_uefi = @uefi_radio.checked
         target = get_target_part()
         if not target?
             new MessageDialog(
@@ -673,23 +687,28 @@ class Part extends Page
 
         @table = new PartTable("part_table")
         @wrap.appendChild(@table.element)
+        
+        @part_uefi = create_element("div","PartUefi",@wrap)
+        @uefi_radio = create_element("input","uefi_radio",@part_uefi)
+        @uefi_radio.setAttribute("type","radio")
+        @uefi_txt = create_element("div","uefi_txt",@part_uefi)
+        @uefi_txt.innerText = _("UEFI")
 
         @part_grub = create_element("div", "PartGrub", @wrap)
+        @grub_radio = create_element("input", "grub_radio", @part_grub)
+        @grub_radio.setAttribute("type","radio")
+        @grub_radio.defultChecked = true
         @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
         @grub_loader.innerText = _("Boot Loader")
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
         @fill_bootloader()
 
-        @switch_mode_simple()
-        recommand = get_recommand_target()
-        if recommand?
-            @disktab.focus_disk(m_part_info[recommand]["disk"])
-            Widget.look_up(recommand)?.focus()
-        else
-            @disktab.focus_disk(__selected_disk)
-        if  __selected_item?
-            @next_btn.setAttribute("style", "pointer-events:auto")
-            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
+        @uefi_radio.addEventListener("click",=>
+            if @grub_radio.checked then @grub_radio.checked = false
+        )
+        @grub_radio.addEventListener("click",=>
+            if @uefi_radio.checked then @uefi_radio.checked = false
+        )
 
     fill_bootloader: ->
         if DCore.Installer.system_support_efi() and DCore.Installer.disk_is_gpt(__selected_disk)
@@ -742,14 +761,18 @@ class Part extends Page
             )
             @unmount_model.show_at(document.body)
         @linemap.element.setAttribute("style", "display:block")
-        @part_grub.setAttribute("style", "display:block")
 
         if DCore.Installer.system_support_efi()
-            @part_grub.style.display = "none"
+            @part_uefi.style.display = "-webkit-box"
+            @part_grub.style.display = "-webkit-box"
         else
-            @part_grub.style.display = "block"
-            @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10, 20)
-            @grub_dropdown.show_drop()
+            @part_uefi.style.display = "none"
+            @part_grub.style.display = "-webkit-box"
+            @grub_radio.style.display = "none"
+            #@part_uefi.style.display = "-webkit-box"#for debug
+            #@grub_radio.style.display = "block"#for debug
+        @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10, 20)
+        @grub_dropdown.show_drop()
         @table.update_mode(__selected_mode)
         @t_mode.innerText = _("Simple Mode")
 
@@ -759,6 +782,7 @@ class Part extends Page
         @delete_model?.hide_dialog()
         @unmount_model?.hide_dialog()
         @linemap.element.setAttribute("style", "display:none")
+        @part_uefi.style.display = "none"
         @part_grub.style.display = "none"
         @table.update_mode(__selected_mode)
         @t_mode.innerText = _("Expert mode")
