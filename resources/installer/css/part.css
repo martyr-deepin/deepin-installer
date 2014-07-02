@@ -354,9 +354,8 @@
 
 .PartGrubSelect {
     margin-left:10px;
-    margin-right:20px;
     position:relative;
-    width:auto;
+    max-width:630px;
     height:24px;
     line-height:24px;
 }
