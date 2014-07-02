@@ -90,6 +90,11 @@ install(
    USE_SOURCE_PERMISSIONS
 )
 install(
+   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/casper-bottom/
+   DESTINATION ${CMAKE_INSTALL_PREFIX}/share/initramfs-tools/scripts
+   USE_SOURCE_PERMISSIONS
+)
+install(
    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/deepin-installer
 )

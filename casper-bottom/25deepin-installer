@@ -1,0 +1,31 @@
+#!/bin/sh
+
+PREREQ=""
+DESCRIPTION="Configure Deepin Installer..."
+
+prereqs()
+{
+       echo "$PREREQ"
+}
+
+case $1 in
+# get pre-requisites
+prereqs)
+       prereqs
+       exit 0
+       ;;
+esac
+
+. /scripts/casper-functions
+
+log_begin_msg "$DESCRIPTION"
+
+for file in /usr/share/applications/deepin-installer.desktop /usr/share/applications/skype.desktop; do
+    if [ -f "/root/$file" ]; then
+        chroot /root install -d -o $USERNAME -g $USERNAME /home/$USERNAME/Desktop
+        chroot /root install -D -o $USERNAME -g $USERNAME $file /home/$USERNAME/Desktop/$(basename "$file")
+        break
+    fi
+done
+
+log_end_msg
