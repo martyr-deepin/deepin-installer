@@ -8,6 +8,18 @@ DI_LOCALE=${DI_LOCALE:-en_US}
 DI_TIMEZONE=${DI_TIMEZONE:-UTC}
 LOCALE=${DI_LOCALE%.*}
 
+#alway generate en_US locale
+echo "Generating locale: en_US ${LOCALE}"
+locale-gen en_US.UTF-8
+
+if [ ! -z ${LOCALE} ];then
+    locale-gen ${LOCALE}.UTF-8
+    echo "LANG=\"${LOCALE}.UTF-8\"" | tee /etc/default/locale
+else
+    echo "LANG=\"en_US.UTF-8\"" | tee /etc/default/locale
+fi
+
+
 echo "Check timezone ${DI_TIMEZONE}"
 if awk '{print $3}' /usr/share/zoneinfo/zone.tab | grep -q "^${DI_TIMEZONE}$";then
     echo "${DI_TIMEZONE} is available"
@@ -28,14 +40,3 @@ else
     echo "${LOCALE} is not available, Fallback to en_US"
     unset LOCALE
 fi
-#alway generate en_US locale
-echo "Generating locale: en_US ${LOCALE}"
-locale-gen en_US.UTF-8
-
-if [ ! -z ${LOCALE} ];then
-    locale-gen ${LOCALE}.UTF-8
-    echo "LANG=\"${LOCALE}.UTF-8\"" | tee /etc/default/locale
-else
-    echo "LANG=\"en_US.UTF-8\"" | tee /etc/default/locale
-fi
-

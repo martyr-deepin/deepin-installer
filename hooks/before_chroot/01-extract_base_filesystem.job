@@ -8,6 +8,8 @@ L=${DI_LOCALE%.*}
 if [ ! -f /cdrom/casper/${L}.list ];then
     L="en_US"
 fi
+echo "Unsquashfs listed sqfs file"
+echo "$(cat /cdrom/casper/${L}.list)"
 for file in $(cat /cdrom/casper/${L}.list);do
     if [ ${file} == "filesystem.squashfs" ];then
         unsquashfs -f -d /target /cdrom/casper/filesystem.squashfs | unsquashfs_progress /tmp/deepin-installer/unsquashfs_base_progress
