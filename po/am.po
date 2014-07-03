@@ -1,0 +1,343 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# samson <sambelet@yahoo.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin Installer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-03 12:43+0800\n"
+"PO-Revision-Date: 2014-07-03 04:44+0000\n"
+"Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
+"Language-Team: Amharic (http://www.transifex.com/projects/p/deepin-installer/language/am/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: am\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../resources/installer/js/dialog.coffee:14
+msgid "OK"
+msgstr "እሺ "
+
+#: ../resources/installer/js/dialog.coffee:21
+msgid "Cancel"
+msgstr "መሰረዣ"
+
+#: ../resources/installer/js/dialog.coffee:62
+#: ../resources/installer/js/part.coffee:499
+msgid "Delete Partition"
+msgstr "ክፍልፋይ ማጥፊያ"
+
+#: ../resources/installer/js/dialog.coffee:64
+msgid "Are you sure you want to delete this partition?"
+msgstr "በእርግጥ ክፍልፋዩን ማጥፋት ይፈልጋሉ?"
+
+#: ../resources/installer/js/dialog.coffee:77
+msgid "Formatting Partition"
+msgstr "የ ክፍልፋይ አቀራረብ"
+
+#: ../resources/installer/js/dialog.coffee:79
+msgid "Are you sure you want to format this partition?"
+msgstr "ይህን ክፍልፋይ format ማድረግ ይፈልጋሉ?"
+
+#: ../resources/installer/js/dialog.coffee:88
+msgid "Proceed with installation"
+msgstr "መግጠሙን ይቀጥሉ"
+
+#: ../resources/installer/js/dialog.coffee:97
+msgid "Deepin OS will be installed to freespace."
+msgstr "ይህ ስርአት በ ነፃ ቦታ ላይ ይገጠማል"
+
+#: ../resources/installer/js/dialog.coffee:99
+msgid "Deepin OS will be installed to "
+msgstr "ስርአቱ አሁን እዚህ ይገጠማል "
+
+#: ../resources/installer/js/dialog.coffee:110
+#: ../resources/installer/js/part.coffee:661
+msgid "Add Partition"
+msgstr "ክፍልፋይ መጨመሪያ"
+
+#: ../resources/installer/js/dialog.coffee:130
+msgid "Type:"
+msgstr "አይነት:"
+
+#: ../resources/installer/js/dialog.coffee:136
+msgid "Primary"
+msgstr "ቀዳሚ"
+
+#: ../resources/installer/js/dialog.coffee:141
+msgid "Logical"
+msgstr "ሎጂካል"
+
+#: ../resources/installer/js/dialog.coffee:171
+msgid "Size:"
+msgstr "መጠን:"
+
+#: ../resources/installer/js/dialog.coffee:215
+msgid "Align:"
+msgstr "ማሰለፊያ:"
+
+#: ../resources/installer/js/dialog.coffee:221
+msgid "Begin"
+msgstr "መጀመሪያ"
+
+#: ../resources/installer/js/dialog.coffee:226
+msgid "End"
+msgstr "መጨረሻ"
+
+#: ../resources/installer/js/dialog.coffee:246
+msgid "Filesystem:"
+msgstr "የፋይሎች ስርአት:"
+
+#: ../resources/installer/js/dialog.coffee:270
+msgid "Mount:"
+msgstr "መጫኛ:"
+
+#: ../resources/installer/js/dialog.coffee:303
+msgid "Please enter a valid partition size."
+msgstr "እባክዎን ዋጋ ያለው የ ክፍልፋይ መጠን ይጨምሩ"
+
+#: ../resources/installer/js/progress.coffee:25
+msgid "Error Report"
+msgstr "የስህተት መግለጫ"
+
+#: ../resources/installer/js/progress.coffee:27
+msgid "System installation failed. Please send the log to Deepin Team."
+msgstr "ስርአቱን መግጠም አልተሳካም እባክዎን መግለጫውን ለቡድኑ ይላኩ"
+
+#: ../resources/installer/js/progress.coffee:47
+msgid "Prepare for Installation"
+msgstr "ለመግጠም በመሰናዳት ላይ"
+
+#: ../resources/installer/js/base.coffee:28
+msgid "Installation Requirements"
+msgstr "ለመግጠም የሚያስፈልገው"
+
+#: ../resources/installer/js/base.coffee:29
+#, python-format
+msgid "To install Deepin OS, you need to have at least %d GB disk space."
+msgstr "ይህን ስርአት ለመግጠም ቢያንስ %d ጌባ ነፃ የዲስክ ቦታ ያስፈልጋል"
+
+#: ../resources/installer/js/base.coffee:50
+#: ../resources/installer/js/base.coffee:52
+#: ../resources/installer/js/base.coffee:54
+msgid "Unused"
+msgstr "ያልተጠቀሙት"
+
+#: ../resources/installer/js/part.coffee:126
+#: ../resources/installer/js/part.coffee:145
+msgid "Freespace"
+msgstr "ነፃ ቦታ ያለው"
+
+#: ../resources/installer/js/part.coffee:198
+#: ../resources/installer/js/part.coffee:203
+msgid "Unknown"
+msgstr "ያልታወቀ"
+
+#: ../resources/installer/js/part.coffee:306
+msgid "Install Here"
+msgstr "እዚህ መግጠሚያ"
+
+#: ../resources/installer/js/part.coffee:460
+msgid "Disk"
+msgstr "ዲስክ"
+
+#: ../resources/installer/js/part.coffee:480
+msgid "Device"
+msgstr "አካል"
+
+#: ../resources/installer/js/part.coffee:482
+msgid "Size"
+msgstr "መጠን"
+
+#: ../resources/installer/js/part.coffee:484
+msgid "Free Space"
+msgstr "ነፃ ቦታ ያለው"
+
+#: ../resources/installer/js/part.coffee:486
+msgid "Filesystem"
+msgstr "የፋይል ስርአት"
+
+#: ../resources/installer/js/part.coffee:488
+msgid "Information"
+msgstr "መረጃ"
+
+#: ../resources/installer/js/part.coffee:490
+msgid "Mount Point"
+msgstr "መጫኛ ጣቢያ"
+
+#: ../resources/installer/js/part.coffee:492
+msgid "Formatting"
+msgstr "አቀራረብ"
+
+#: ../resources/installer/js/part.coffee:510
+msgid "New Partition"
+msgstr "አዲስ ክፍልፋይ"
+
+#: ../resources/installer/js/part.coffee:577
+msgid "Expert Mode"
+msgstr "በ ባለሞያ ዘዴ"
+
+#: ../resources/installer/js/part.coffee:597
+msgid "Install"
+msgstr "መግጠሚያ"
+
+#: ../resources/installer/js/part.coffee:625
+msgid "Installation Tips"
+msgstr "የ አገጣጠም ምክሮች"
+
+#: ../resources/installer/js/part.coffee:626
+msgid "A root partition (/) is required."
+msgstr "የ root ክፍልፋይ (/) ያስፈልጋል"
+
+#: ../resources/installer/js/part.coffee:633
+#: ../resources/installer/js/part.coffee:641
+msgid "Install Tips"
+msgstr "የ እገጣም ምክሮች"
+
+#: ../resources/installer/js/part.coffee:634
+msgid "UEFI-native installation only supports GPT-formatted disk."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:642
+msgid ""
+"ESP needs to support in UEFI mode and please create a 100MB or more "
+"partition in efi format."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:662
+msgid "Can't create a partition here"
+msgstr "እዚህ ክፍልፋይ መፍጠር አልተቻለም"
+
+#: ../resources/installer/js/part.coffee:668
+#: ../resources/installer/js/part.coffee:769
+msgid "Warning"
+msgstr "ማስጠንቀቂያ"
+
+#: ../resources/installer/js/part.coffee:669
+#: ../resources/installer/js/part.coffee:770
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. It will lose all "
+"disk data if you insist on installing."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:696
+msgid "UEFI"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:703
+msgid "Boot Loader"
+msgstr "Boot Loader"
+
+#: ../resources/installer/js/part.coffee:744
+msgid "Unmount Partition"
+msgstr "ክፍልፋዩን ማውረጃ"
+
+#: ../resources/installer/js/part.coffee:745
+msgid ""
+"Partition is detected to have been mounted.\n"
+"Are you sure you want to unmount it?"
+msgstr "ክፍልፋይ ተገኝቶ ተጭኗል\nበእርግጥ ማውረድ ይፈልጋሉ?"
+
+#: ../resources/installer/js/part.coffee:793
+msgid "Simple Mode"
+msgstr "በ ቀላል ዘዴ"
+
+#: ../resources/installer/js/part.coffee:804
+msgid "Expert mode"
+msgstr "በ ባለሞያ ዘዴ"
+
+#: ../resources/installer/js/finish.coffee:42
+msgid "Congratulations!"
+msgstr "እንኳን ደስ ያሎት!"
+
+#: ../resources/installer/js/finish.coffee:43
+msgid "You need to restart the computer to complete installation."
+msgstr "መግጠሙን ለመጨረስ ኮምፒዩተሩን አጥፍቶ እንደገና ማስነሳት ያስፈልጋል "
+
+#: ../resources/installer/js/finish.coffee:45
+msgid "Reboot Later"
+msgstr "በኋላ እንደገና ማስነሻ"
+
+#: ../resources/installer/js/finish.coffee:47
+msgid "Installation Failed"
+msgstr "መግጠሙ ወድቋል"
+
+#: ../resources/installer/js/finish.coffee:48
+msgid "Please send the log to Deepin Team."
+msgstr "ስርአቱን መግጠም አልተሳካም እባክዎን መግለጫውን ለቡድኑ ይላኩ"
+
+#: ../resources/installer/js/finish.coffee:59
+msgid "Start Over"
+msgstr "እንደገና መጀመሪያ"
+
+#: ../resources/installer/js/finish.coffee:76
+msgid "Reboot Now"
+msgstr "አሁን እነደገና ማስነሻ"
+
+#: ../resources/installer/js/welcome.coffee:149
+msgid "Yes"
+msgstr "አዎ"
+
+#: ../resources/installer/js/welcome.coffee:154
+msgid "No"
+msgstr "አይ"
+
+#: ../resources/installer/js/welcome.coffee:249
+msgid "Please press one of the following keys."
+msgstr "እባክዎን ከ እነዚህ አንዱን ቁልፍ ይጫኑ"
+
+#: ../resources/installer/js/welcome.coffee:255
+msgid "Please confirm you have the following keys."
+msgstr "እባክዎን እነዚህ ቁልፎች እንዳሉ ያረጋግጡ"
+
+#: ../resources/installer/js/welcome.coffee:298
+msgid "Detect Layout"
+msgstr "እቅዱን ፈልጎ ማግኛ"
+
+#: ../resources/installer/js/welcome.coffee:304
+msgid "View Current"
+msgstr "የአሁኑን መመልከቻ"
+
+#: ../resources/installer/js/welcome.coffee:460
+msgid "Please select or search your location."
+msgstr "እባክዎን ይምረጡ ወይንም አካቢውን ይፋልጉ"
+
+#: ../resources/installer/js/welcome.coffee:702
+msgid "User Name"
+msgstr "የተጠቃሚ ስም"
+
+#: ../resources/installer/js/welcome.coffee:705
+msgid "Computer Name"
+msgstr "የኮምፒዩተሩ ስም"
+
+#: ../resources/installer/js/welcome.coffee:708
+msgid "Password"
+msgstr "የመግቢያ ቃል"
+
+#: ../resources/installer/js/welcome.coffee:713
+msgid "Retype Password"
+msgstr "የመግቢያ ቃሉን እንደገና ይጻፉ"
+
+#: ../resources/installer/js/welcome.coffee:763
+msgid "Next"
+msgstr "ይቀጥሉ"
+
+#: ../resources/installer/js/welcome.coffee:829
+msgid "Keyboard"
+msgstr "የፊደል ገበታ"
+
+#: ../resources/installer/js/welcome.coffee:832
+msgid "Time Zone"
+msgstr "የሰአት አካባቢ"
+
+#: ../app/language-selector/mutils.c:84
+msgid "%a, %b %d, %Y"
+msgstr "%a, %b %d, %Y"
+
+#: ../app/language-selector/greeter.c:291
+msgid "Invalid Password"
+msgstr "ዋጋ የሌለው የመግቢያ ቃል"

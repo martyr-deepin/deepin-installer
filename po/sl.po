@@ -1,0 +1,343 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# andrej55 <andrej.marsetic@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin Installer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-03 12:43+0800\n"
+"PO-Revision-Date: 2014-07-03 04:44+0000\n"
+"Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
+"Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-installer/language/sl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+
+#: ../resources/installer/js/dialog.coffee:14
+msgid "OK"
+msgstr "Vredu"
+
+#: ../resources/installer/js/dialog.coffee:21
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: ../resources/installer/js/dialog.coffee:62
+#: ../resources/installer/js/part.coffee:499
+msgid "Delete Partition"
+msgstr "Brisanje particije"
+
+#: ../resources/installer/js/dialog.coffee:64
+msgid "Are you sure you want to delete this partition?"
+msgstr "Ali ste prepričani, da želite izbrisati to particijo?"
+
+#: ../resources/installer/js/dialog.coffee:77
+msgid "Formatting Partition"
+msgstr "Formatiranje patricij"
+
+#: ../resources/installer/js/dialog.coffee:79
+msgid "Are you sure you want to format this partition?"
+msgstr "Ali ste prepričani, da želite formatirati to particijo?"
+
+#: ../resources/installer/js/dialog.coffee:88
+msgid "Proceed with installation"
+msgstr "Nadaljujte z namestitvijo"
+
+#: ../resources/installer/js/dialog.coffee:97
+msgid "Deepin OS will be installed to freespace."
+msgstr "Deepin OS bo nameščen na prosti pomnilnik."
+
+#: ../resources/installer/js/dialog.coffee:99
+msgid "Deepin OS will be installed to "
+msgstr "Deepin OS bo nameščen na"
+
+#: ../resources/installer/js/dialog.coffee:110
+#: ../resources/installer/js/part.coffee:661
+msgid "Add Partition"
+msgstr "Dodaj patricijo"
+
+#: ../resources/installer/js/dialog.coffee:130
+msgid "Type:"
+msgstr "Vrsta:"
+
+#: ../resources/installer/js/dialog.coffee:136
+msgid "Primary"
+msgstr "Primarni"
+
+#: ../resources/installer/js/dialog.coffee:141
+msgid "Logical"
+msgstr "Logični"
+
+#: ../resources/installer/js/dialog.coffee:171
+msgid "Size:"
+msgstr "Velikost:"
+
+#: ../resources/installer/js/dialog.coffee:215
+msgid "Align:"
+msgstr "Prilagodi:"
+
+#: ../resources/installer/js/dialog.coffee:221
+msgid "Begin"
+msgstr "Začeti"
+
+#: ../resources/installer/js/dialog.coffee:226
+msgid "End"
+msgstr "Konec"
+
+#: ../resources/installer/js/dialog.coffee:246
+msgid "Filesystem:"
+msgstr "Datotečni sistem:"
+
+#: ../resources/installer/js/dialog.coffee:270
+msgid "Mount:"
+msgstr "Mount:"
+
+#: ../resources/installer/js/dialog.coffee:303
+msgid "Please enter a valid partition size."
+msgstr "Vnesite veljavno velikost particije."
+
+#: ../resources/installer/js/progress.coffee:25
+msgid "Error Report"
+msgstr "Prijavi napako"
+
+#: ../resources/installer/js/progress.coffee:27
+msgid "System installation failed. Please send the log to Deepin Team."
+msgstr "Namestitev sistema ni uspešna. Prosim, pošljite dnevnik  Deepin Teamu."
+
+#: ../resources/installer/js/progress.coffee:47
+msgid "Prepare for Installation"
+msgstr "Pripravite se za namestitev"
+
+#: ../resources/installer/js/base.coffee:28
+msgid "Installation Requirements"
+msgstr "Namestitvene zahteve "
+
+#: ../resources/installer/js/base.coffee:29
+#, python-format
+msgid "To install Deepin OS, you need to have at least %d GB disk space."
+msgstr ""
+
+#: ../resources/installer/js/base.coffee:50
+#: ../resources/installer/js/base.coffee:52
+#: ../resources/installer/js/base.coffee:54
+msgid "Unused"
+msgstr "neuporabljeno"
+
+#: ../resources/installer/js/part.coffee:126
+#: ../resources/installer/js/part.coffee:145
+msgid "Freespace"
+msgstr "Prostor"
+
+#: ../resources/installer/js/part.coffee:198
+#: ../resources/installer/js/part.coffee:203
+msgid "Unknown"
+msgstr "Neznan"
+
+#: ../resources/installer/js/part.coffee:306
+msgid "Install Here"
+msgstr "Namesti tukaj"
+
+#: ../resources/installer/js/part.coffee:460
+msgid "Disk"
+msgstr "Disk"
+
+#: ../resources/installer/js/part.coffee:480
+msgid "Device"
+msgstr "Naprava"
+
+#: ../resources/installer/js/part.coffee:482
+msgid "Size"
+msgstr "Velikost "
+
+#: ../resources/installer/js/part.coffee:484
+msgid "Free Space"
+msgstr "Prosti prostor"
+
+#: ../resources/installer/js/part.coffee:486
+msgid "Filesystem"
+msgstr "Datotečni sistem"
+
+#: ../resources/installer/js/part.coffee:488
+msgid "Information"
+msgstr "Informacije"
+
+#: ../resources/installer/js/part.coffee:490
+msgid "Mount Point"
+msgstr "Vpeta točka"
+
+#: ../resources/installer/js/part.coffee:492
+msgid "Formatting"
+msgstr "Formatiranje "
+
+#: ../resources/installer/js/part.coffee:510
+msgid "New Partition"
+msgstr "Nova patricija"
+
+#: ../resources/installer/js/part.coffee:577
+msgid "Expert Mode"
+msgstr "Strokovni način"
+
+#: ../resources/installer/js/part.coffee:597
+msgid "Install"
+msgstr "Namesti"
+
+#: ../resources/installer/js/part.coffee:625
+msgid "Installation Tips"
+msgstr "Namestitveni namig"
+
+#: ../resources/installer/js/part.coffee:626
+msgid "A root partition (/) is required."
+msgstr "Potreben je korenski razdelek (/)."
+
+#: ../resources/installer/js/part.coffee:633
+#: ../resources/installer/js/part.coffee:641
+msgid "Install Tips"
+msgstr "Nasveti za namestitev"
+
+#: ../resources/installer/js/part.coffee:634
+msgid "UEFI-native installation only supports GPT-formatted disk."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:642
+msgid ""
+"ESP needs to support in UEFI mode and please create a 100MB or more "
+"partition in efi format."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:662
+msgid "Can't create a partition here"
+msgstr "Ne morete ustvariti particije tukaj"
+
+#: ../resources/installer/js/part.coffee:668
+#: ../resources/installer/js/part.coffee:769
+msgid "Warning"
+msgstr "Opozorilo"
+
+#: ../resources/installer/js/part.coffee:669
+#: ../resources/installer/js/part.coffee:770
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. It will lose all "
+"disk data if you insist on installing."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:696
+msgid "UEFI"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:703
+msgid "Boot Loader"
+msgstr "Boot zaganjalnik"
+
+#: ../resources/installer/js/part.coffee:744
+msgid "Unmount Partition"
+msgstr "Izpeta patricija"
+
+#: ../resources/installer/js/part.coffee:745
+msgid ""
+"Partition is detected to have been mounted.\n"
+"Are you sure you want to unmount it?"
+msgstr "Patricije so bile zaznane,da so pripete.\nAli ste prepričani, da jo želite odklopiti?"
+
+#: ../resources/installer/js/part.coffee:793
+msgid "Simple Mode"
+msgstr "Preprosti način"
+
+#: ../resources/installer/js/part.coffee:804
+msgid "Expert mode"
+msgstr "Strokovni način"
+
+#: ../resources/installer/js/finish.coffee:42
+msgid "Congratulations!"
+msgstr "Čestitamo!"
+
+#: ../resources/installer/js/finish.coffee:43
+msgid "You need to restart the computer to complete installation."
+msgstr "Potreben ponoven zagon za dokončanje namestitve"
+
+#: ../resources/installer/js/finish.coffee:45
+msgid "Reboot Later"
+msgstr "Kasnejši ponovni zagon"
+
+#: ../resources/installer/js/finish.coffee:47
+msgid "Installation Failed"
+msgstr "Namestitev ni uspela"
+
+#: ../resources/installer/js/finish.coffee:48
+msgid "Please send the log to Deepin Team."
+msgstr "Prosim, pošljite dnevnik Deepin Teamu."
+
+#: ../resources/installer/js/finish.coffee:59
+msgid "Start Over"
+msgstr "Začni znova"
+
+#: ../resources/installer/js/finish.coffee:76
+msgid "Reboot Now"
+msgstr "Ponovni zagon zdaj"
+
+#: ../resources/installer/js/welcome.coffee:149
+msgid "Yes"
+msgstr "Da"
+
+#: ../resources/installer/js/welcome.coffee:154
+msgid "No"
+msgstr "Ne"
+
+#: ../resources/installer/js/welcome.coffee:249
+msgid "Please press one of the following keys."
+msgstr "Prosim pritisnite eno od sledečih tipk"
+
+#: ../resources/installer/js/welcome.coffee:255
+msgid "Please confirm you have the following keys."
+msgstr "Prosimo, potrdite, da imate naslednje tipke."
+
+#: ../resources/installer/js/welcome.coffee:298
+msgid "Detect Layout"
+msgstr "Odkrita postavitev"
+
+#: ../resources/installer/js/welcome.coffee:304
+msgid "View Current"
+msgstr "Poglej aktualno"
+
+#: ../resources/installer/js/welcome.coffee:460
+msgid "Please select or search your location."
+msgstr "Prosimo, izberite ali pa poiščete svojo lokacijo."
+
+#: ../resources/installer/js/welcome.coffee:702
+msgid "User Name"
+msgstr "Uporabniško ime"
+
+#: ../resources/installer/js/welcome.coffee:705
+msgid "Computer Name"
+msgstr "Ime računalnika"
+
+#: ../resources/installer/js/welcome.coffee:708
+msgid "Password"
+msgstr "Geslo"
+
+#: ../resources/installer/js/welcome.coffee:713
+msgid "Retype Password"
+msgstr "Ponovite geslo"
+
+#: ../resources/installer/js/welcome.coffee:763
+msgid "Next"
+msgstr "Naprej"
+
+#: ../resources/installer/js/welcome.coffee:829
+msgid "Keyboard"
+msgstr "Tipkovnica"
+
+#: ../resources/installer/js/welcome.coffee:832
+msgid "Time Zone"
+msgstr "Časovni pas"
+
+#: ../app/language-selector/mutils.c:84
+msgid "%a, %b %d, %Y"
+msgstr "%a, %b %d, %Y"
+
+#: ../app/language-selector/greeter.c:291
+msgid "Invalid Password"
+msgstr "Napačno geslo"
