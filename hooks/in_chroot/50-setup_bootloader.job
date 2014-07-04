@@ -25,7 +25,7 @@ case ${BOOT} in
     "uefi")
         echo "INFO: Detected efi machine"
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-efi
-        grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck --debug
+        grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck
         ;;
     "legacy")
         echo "INFO: Detected legacy machine, installing grub to ${DI_BOOTLOADER}"
@@ -34,7 +34,7 @@ case ${BOOT} in
         ;;
     "uefi-secureboot")
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated sbsigntool grub-efi-amd64-signed linux-signed-generic
-        grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck --debug
+        grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck 
         [ -d /boot/efi/EFI/ubuntu ] || mkdir -p /boot/efi/EFI/ubuntu
         cp  /boot/efi/EFI/linuxdeepin2014/* /boot/efi/EFI/ubuntu
         ;;
