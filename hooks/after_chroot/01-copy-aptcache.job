@@ -1,0 +1,4 @@
+#!/bin/bash
+# copy apt-cache list
+[ -d /target/var/lib/apt/lists ] && rm -rf /target/var/lib/apt/lists
+[ -d /target/host/var/lib/apt/lists ] && cp -r /target/host/var/lib/apt/lists /target/var/lib/apt
