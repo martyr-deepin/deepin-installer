@@ -9,8 +9,8 @@ CODENAME=${CODENAME:-trusty}
 
 case ${DI_LOCALE} in
     *)
-        deepin_url="http://ca1.packages.linuxdeepin.com"
-        ubuntu_url="http://ca1.packages.linuxdeepin.com"
+        deepin_url="http://packages.linuxdeepin.com"
+        ubuntu_url="http://packages.linuxdeepin.com"
         ;;
 esac
 
