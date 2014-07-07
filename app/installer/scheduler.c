@@ -30,6 +30,10 @@ void update_install_progress(int v)
     current_per=  v;
     js_post_message("install_progress", jsvalue_from_number(get_global_context(), v));
 }
+void installer_terminate()
+{
+    js_post_message("installer_terminate", NULL);
+}
 
 
 void enter_next_stage()

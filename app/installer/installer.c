@@ -95,10 +95,18 @@ sigterm_cb (int sig)
     installer_finish_install ();
 }
 
+#include <fcntl.h>
+void redirect_log()
+{
+    int log_file = open("/tmp/deepin-installer.log", O_CREAT | O_WRONLY, 0644);
+    dup2(log_file, 1);
+    dup2(log_file, 2);
+}
+
 int main(int argc, char **argv)
 {
+    redirect_log();
     gtk_init (&argc, &argv);
-    g_log_set_default_handler((GLogFunc)log_to_file, "deepin-installer");
 
     setlocale(LC_MESSAGES, "");
     textdomain("INSTALLER");

@@ -96,13 +96,13 @@ void run_hooks_before_chroot()
 void run_hooks_in_chroot()
 {
     ensure_we_can_find_in_chroot_hooks();
-    g_assert(enter_chroot());
+    enter_chroot();
     run_hooks(&in_chroot_info);
 }
 
 void run_hooks_after_chroot()
 {
-    g_assert(break_chroot());
+    break_chroot();
     run_hooks(&after_chroot_info);
 }
 
@@ -113,7 +113,7 @@ void update_hooks_progress(HookInfo* info)
 	// extract squashfs is in before chroot info, special treat it with monitor_extract_progress()
 	return;
     }
-    double ratio = info->current_job_num * 1.0 / (g_list_length(g_list_first(info->jobs)) - 1);
+    double ratio = (info->current_job_num + 1) * 1.0 / (g_list_length(g_list_first(info->jobs)) - 1);
     g_assert(ratio > 0 && ratio <= 1);
     double p = info->progress_begin + (info->progress_end - info->progress_begin) * ratio;
     g_assert(p > 0 && p <= 100);
@@ -122,8 +122,18 @@ void update_hooks_progress(HookInfo* info)
 
 void run_one_by_one(GPid pid, gint status, HookInfo* info)
 {
+    GError* error = NULL;
+
     if (pid != -1) {
 	g_spawn_close_pid(pid);
+	g_spawn_check_exit_status(status, &error);
+	if (error != NULL) {
+	    g_error("run hook(%s) failed: %s\n", (char*)g_list_nth_data(g_list_first(info->jobs), info->current_job_num), error->message);
+	    g_error_free(error);
+	    break_chroot();
+	    installer_terminate();
+	    return;
+	}
     }
 
     if (info->jobs->data == NULL) {
@@ -134,13 +144,14 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
 
     gint std_out, std_err;
     GPid child_pid;
-    GError* error = NULL;
 
     char* argv[2];
     argv[0] = info->jobs->data;
     argv[1] = 0;
 
-    g_debug("RUN :%s\n", (char*)info->jobs->data);
+    g_message("RUN :%s\n", (char*)info->jobs->data);
+    info->current_job_num = g_list_index(g_list_first(info->jobs), info->jobs->data);
+    info->jobs = g_list_next(info->jobs);
     g_spawn_async(info->jobs_path,
 	    argv,
 	    NULL,
@@ -154,9 +165,8 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
 	g_error_free(error);
 	return;
     }
+
     g_child_watch_add(child_pid, (GChildWatchFunc)run_one_by_one, info);
-    info->jobs = g_list_next(info->jobs);
-    info->current_job_num = g_list_index(info->jobs, info->jobs->data) + 1;
     update_hooks_progress(info);
 }
 
