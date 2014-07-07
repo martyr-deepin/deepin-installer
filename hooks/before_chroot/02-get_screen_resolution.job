@@ -1,0 +1,9 @@
+#!/bin/bash
+
+resolution=$(xrandr | grep Screen\ 0 | awk -F, '{print $2}' | sed -e 's/current//g' -e 's/ //g')
+
+if [ -z "$resolution" ];then
+    resolution="1024x768"
+fi
+
+echo "DI_CUR_RESOLUTION=$resolution" >> /etc/deepin-installer.conf
