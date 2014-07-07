@@ -35,7 +35,6 @@ apply_progress_flash = (el, time)->
 
 __ppt_in_switch = false
 __ppt_switch_id = -1
-__install_failed = false
 
 class Progress extends Page
     constructor: (@id)->
@@ -99,11 +98,6 @@ class Progress extends Page
     update_progress: (progress) ->
         @progressbar.style.width = progress
 
-    show_report: ->
-        __install_failed = true
-        __selected_stage = "terminate"
-        pc.switch_page(new Finish("finish", false))
-
 
 progress_page = new Progress("progress")
 
@@ -112,4 +106,7 @@ DCore.signal_connect("install_progress", (per)->
         pc.switch_page(new Finish("finish", true))
         return
     progress_page.update_progress("#{per}%")
+)
+DCore.signal_connect("install_terminate", ->
+        pc.switch_page(new Finish("finish", false))
 )

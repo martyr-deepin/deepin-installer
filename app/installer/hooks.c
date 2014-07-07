@@ -40,7 +40,7 @@ void ensure_we_can_find_in_chroot_hooks()
     GError* error = NULL;
     g_spawn_command_line_sync("sh -c 'cp -rf "HOOKS_DIR"/in_chroot/* /target/"TMP_HOOKS_DIR"/in_chroot/'", NULL, NULL, NULL, &error);
     if (error != NULL) {
-	g_error("can't setup in_chroot_hooks:%s", error->message);
+	g_warning("can't setup in_chroot_hooks:%s", error->message);
 	g_error_free(error);
 	g_assert_not_reached();
     }
@@ -128,7 +128,7 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
 	g_spawn_close_pid(pid);
 	g_spawn_check_exit_status(status, &error);
 	if (error != NULL) {
-	    g_error("run hook(%s) failed: %s\n", (char*)g_list_nth_data(g_list_first(info->jobs), info->current_job_num), error->message);
+	    g_warning("run hook(%s) failed: %s\n", (char*)g_list_nth_data(g_list_first(info->jobs), info->current_job_num), error->message);
 	    g_error_free(error);
 	    break_chroot();
 	    installer_terminate();
@@ -161,7 +161,7 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
 	    &child_pid,
 	    &error);
     if (error != NULL) {
-	g_error("can't spawn %s: %s\n", argv[0], error->message);
+	g_warning("can't spawn %s: %s\n", argv[0], error->message);
 	g_error_free(error);
 	return;
     }
@@ -176,7 +176,7 @@ void run_hooks(HookInfo* info)
     GError* error = NULL;
     GDir* dir = g_dir_open(path, 0, &error);
     if (error != NULL) {
-	g_error("can't exec_hoosk %s: %s\n", path, error->message);
+	g_warning("can't exec_hoosk %s: %s\n", path, error->message);
 	g_error_free(error);
 	return;
     }

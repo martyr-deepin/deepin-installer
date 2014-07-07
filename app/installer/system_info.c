@@ -94,7 +94,7 @@ out:
 
 
 
-#define LOG_FILE_PATH           "/tmp/installer.log"
+#define LOG_FILE_PATH           "/tmp/deepin-installer.log"
 
 JS_EXPORT_API 
 void  installer_show_log ()

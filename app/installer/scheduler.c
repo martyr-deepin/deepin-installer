@@ -32,7 +32,7 @@ void update_install_progress(int v)
 }
 void installer_terminate()
 {
-    js_post_message("installer_terminate", NULL);
+    js_post_message("install_terminate", NULL);
 }
 
 
