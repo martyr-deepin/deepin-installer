@@ -19,9 +19,12 @@ array=`echo ${DI_MOUNTPOINTS//;/ }`
 for i in $array;do
 	mountpoint=$(echo $i | cut -d'=' -f1)
 	mountpath=$(echo $i | cut -d'=' -f2)
-	if [ $mountpath !=  '/' ];then
+	if [ $mountpath !=  '/' ] && [ $mountpath != 'swap' ];then
         echo "mount ${mountpoint} -> ${mountpath}"
 		mkdir -p ${target}${mountpath}
 		mount $mountpoint ${target}${mountpath}
+    elif [ $mountpath == 'swap' ];then
+        echo "Detect swap partition, try swapon it first"
+        swapon $mountpoint || true
 	fi
 done
