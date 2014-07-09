@@ -48,6 +48,7 @@
                 case Key.UP:
                   items.removeClass('active');
                   if(list.currentIndex >= 0) list.currentIndex--;
+                  console.log("UP:" + list.currentIndex);
                   if((list.currentIndex - 2) * item_height < 
                       scroll.getScrollTop()){
                       scroll.doScrollBy(item_height);
@@ -56,7 +57,8 @@
                 break;
                 case Key.DOWN:
                   items.removeClass('active');
-                  if(list.currentIndex <= items.length - 1)list.currentIndex++;
+                  if(list.currentIndex <= items.length - 1) list.currentIndex++;
+                  console.log("DOWN:" + list.currentIndex);
                   if((list.currentIndex + 2) * item_height > 
                       scroll.getScrollTop() + container_height){
                       scroll.doScrollBy(-item_height);
