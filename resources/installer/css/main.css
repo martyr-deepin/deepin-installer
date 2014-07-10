@@ -212,6 +212,9 @@ input:focus {
 }
 
 .DropDownBase {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
     border-top:1px solid rgba(0,0,0,0.5);
     border-left:1px solid rgba(0,0,0,0.5);
     border-right:1px solid rgba(0,0,0,0.5);
@@ -237,6 +240,9 @@ input:focus {
     text-align:center;
     vertical-align:middle;
     text-shadow:rgba(0,0,0,0.3);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 .DropDownAngle {
@@ -253,6 +259,9 @@ input:focus {
 }
 
 .DropDownList {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
     position:absolute;
     background:rgba(255,255,255,0.9);
     color:rgba(0,0,0,0.9);
@@ -273,6 +282,9 @@ input:focus {
 
 .DropDownItem {
     padding-left:20px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 .DropDownItemHover {
