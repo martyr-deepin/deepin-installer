@@ -48,6 +48,18 @@ __keyboard_widget = null
 __timezone_widget = null
 __account_widget = null
 
+keyboardSet_div = null
+timezoneSet_div = null
+
+update_keyboard_text = ->
+    current_layout = DCore.Installer.get_layout_description(__selected_layout)
+    echo "current_layout:#{current_layout}"
+    keyboardSet_div?.innerText = current_layout
+
+update_timezone_text = ->
+    echo "__selected_timezone:#{__selected_timezone}"
+    timezoneSet_div?.innerText = __selected_timezone
+
 class LayoutItem extends Widget
     constructor: (@id, @layout, @keyboard)->
         super
@@ -317,7 +329,7 @@ class Keyboard extends Widget
             des_pinyin = codefans_net_CC2PY(des)
             @layouts_des_pinyin[des_pinyin] = des
             @searcher.insert(des_pinyin)
-    
+
     show: ->
         __timezone_widget?.hide()
         __account_widget?.hide()
@@ -358,6 +370,7 @@ class Keyboard extends Widget
             current = mylay
         if current?
             __selected_layout = current
+            update_keyboard_text()
 
         @layouts = []
         @variants = {}
@@ -383,6 +396,7 @@ class Keyboard extends Widget
 
     update_layout: (layout) ->
         __selected_layout = layout
+        update_keyboard_text()
 
     execute_letter_query: (letter) ->
         matched_pinyin = @searcher.autoComplete(letter)
@@ -490,6 +504,7 @@ class Timezone extends Widget
         @img.setAttribute("usemap", "#ImageMap")
         @construct_map()
         @hide()
+        update_timezone_text()
 
     init_search_list: ->
         @search_list = []
@@ -541,6 +556,7 @@ class Timezone extends Widget
         area.addEventListener("click", (e) =>
             @show_pin(area)
             __selected_timezone = area.getAttribute("data-timezone")
+            update_timezone_text()
         )
         area.addEventListener("mouseover", (e) =>
             @draw_timezone(area)
@@ -605,6 +621,7 @@ class Timezone extends Widget
             @draw_timezone(area)
             @show_pin(area)
             __selected_timezone = timezone
+            update_timezone_text()
 
     draw_canvas: (area) ->
         ctx = @canvas.getContext("2d")
@@ -822,14 +839,15 @@ class Welcome extends Page
 
         @title_set = create_element("div", "TitleSet", @title)
 
-        #@language_set = create_element("div", "LanguageSet", @title_set)
-        #@language_set.innerText = _("Language")
-
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
+        @keyboard_set.setAttribute("id","KeyboardSet")
         @keyboard_set.innerText = _("Keyboard")
+        keyboardSet_div = @keyboard_set
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
+        @timezone_set.setAttribute("id","TimezoneSet")
         @timezone_set.innerText = _("Time Zone", "INSTALLER")
+        timezoneSet_div = @timezone_set
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>

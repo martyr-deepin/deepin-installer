@@ -11,15 +11,19 @@
 }
 
 
-.LanguageSet, .KeyboardSet, .TimezoneSet, .PartTitleMode {
+.KeyboardSet, .TimezoneSet, .PartTitleMode {
     position:relative;
     float:left;
-    width:auto;
+    width:140px;
     height:30px;
     line-height:30px;
     padding-right:10px;
     color:#FFFFFF;
+    text-align:left;
     text-indent:40px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 .KeyboardSet {
@@ -260,7 +264,7 @@
 .KeyboardTri {
     position:absolute;
     top:-13px;
-    left:580px;
+    left:413px;
     width:22px;
     height:14px;
     background:url("../images/triangle.png") no-repeat;
@@ -407,7 +411,7 @@
 .TimezoneTri {
     position:absolute;
     top:-13px;
-    left:650px;
+    left:560px;
     width:22px;
     height:14px;
     background:url("../images/triangle.png") no-repeat;
