@@ -1,0 +1,11 @@
+#!/bin/bash
+# If not fstype btrfs exists, then remove btrfs-tools to speed startup
+
+detect_btrfs() {
+    for i in ` lsblk -o FSTYPE | sed '/^$/d' | uniq `;do
+        [ "${i}" = "btrfs" ] && return 0
+    done
+    return 1
+}
+
+detect_btrfs || apt-get purge btrfs-tools
