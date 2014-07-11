@@ -49,24 +49,21 @@ void ensure_we_can_find_in_chroot_hooks()
 
 gboolean enter_chroot()
 {
-    gboolean ret = FALSE;
-
     //Never use "." instead of "/" otherwise if "." equal TARGET then we can't break chroot"
     if ((chroot_fd = open ("/", O_RDONLY)) < 0) {
         g_warning ("chroot:set chroot fd failed\n");
-	return ret;
+	return FALSE;
     }
 
     chdir("/target"); //change to an valid directory
     if (chroot ("/target") == 0) {
 	chdir("/"); //change to an valid directory
         in_chroot = TRUE;
-        ret = TRUE;
+	return TRUE;
     } else {
         g_warning ("chroot:chroot to /target falied:%s\n", strerror (errno));
+	return FALSE;
     }
-
-    return ret;
 }
 
 gboolean break_chroot()
@@ -96,13 +93,17 @@ void run_hooks_before_chroot()
 void run_hooks_in_chroot()
 {
     ensure_we_can_find_in_chroot_hooks();
-    enter_chroot();
+    if (enter_chroot() == FALSE) {
+	installer_terminate();
+    }
     run_hooks(&in_chroot_info);
 }
 
 void run_hooks_after_chroot()
 {
-    break_chroot();
+    if (break_chroot() == FALSE) {
+	installer_terminate();
+    }
     run_hooks(&after_chroot_info);
 }
 
