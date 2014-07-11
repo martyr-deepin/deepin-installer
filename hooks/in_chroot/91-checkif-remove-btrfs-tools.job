@@ -8,4 +8,4 @@ detect_btrfs() {
     return 1
 }
 
-detect_btrfs || apt-get purge btrfs-tools
+detect_btrfs || apt-get purge -y --force-yes btrfs-tools
