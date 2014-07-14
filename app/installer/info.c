@@ -1,5 +1,7 @@
 #include "info.h"
 #include <glib.h>
+#include <time.h>
+#include <stdio.h>
 #include "jsextension.h"
 #include "part_util.h"
 
@@ -210,3 +212,25 @@ void installer_record_root_disk_info(const char* disk)
 	g_free(InstallerConf.root_disk);
     InstallerConf.root_disk = find_path_by_uuid(disk);
 }
+
+JS_EXPORT_API
+char* installer_get_utc(const char* timezone)
+{
+//    char* utc;
+//    g_setenv("TZ", timezone,FALSE);
+//    tzset();
+//    time_t t = time(NULL);
+//    struct tm lt = {0};
+//    localtime_r(&t, &lt);
+//
+//    long int gmt = lt.tm_gmtoff/3600;
+//    if(gmt > 0){
+//        utc = g_printf("%s+%ld",lt.tm_zone,gmt);
+//    }else{
+//        utc = g_printf("%s%ld",lt.tm_zone,gmt);
+//    }
+//    g_unsetenv("TZ");
+//    return utc;
+    return "";
+}
+
