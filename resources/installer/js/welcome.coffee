@@ -56,6 +56,11 @@ update_keyboard_text = ->
     echo "current_layout:#{current_layout}"
     keyboardSet_div?.innerText = current_layout
     keyboardSet_div?.title = current_layout
+    x = keyboardSet_div?.offsetLeft + 5
+    y = keyboardSet_div?.offsetTop + 30 + 5
+    echo "#{x},#{y}"
+    keyboard_tri = document.getElementsByClassName("KeyboardTri")
+    echo keyboard_tri
 
 update_timezone_text = ->
     echo "__selected_timezone:#{__selected_timezone}"
@@ -67,6 +72,12 @@ update_timezone_text = ->
     current_timezone = utc + ":00 " + right
     timezoneSet_div?.innerText = current_timezone
     timezoneSet_div?.title = current_timezone
+   
+    x = timezoneSet_div?.offsetLeft + 5
+    y = timezoneSet_div?.offsetTop + 30 + 5
+    echo "#{x},#{y}"
+    timezone_tri = document.getElementsByClassName("TimezoneTri")
+    echo timezone_tri
 
 class LayoutItem extends Widget
     constructor: (@id, @layout, @keyboard)->
@@ -847,15 +858,15 @@ class Welcome extends Page
 
         @title_set = create_element("div", "TitleSet", @title)
 
-        @keyboard_set = create_element("div", "KeyboardSet", @title_set)
-        @keyboard_set.setAttribute("id","KeyboardSet")
-        @keyboard_set.innerText = _("Keyboard")
-        keyboardSet_div = @keyboard_set
-
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
         @timezone_set.setAttribute("id","TimezoneSet")
         @timezone_set.innerText = _("Time Zone", "INSTALLER")
         timezoneSet_div = @timezone_set
+
+        @keyboard_set = create_element("div", "KeyboardSet", @title_set)
+        @keyboard_set.setAttribute("id","KeyboardSet")
+        @keyboard_set.innerText = _("Keyboard")
+        keyboardSet_div = @keyboard_set
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
