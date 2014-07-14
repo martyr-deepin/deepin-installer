@@ -55,10 +55,18 @@ update_keyboard_text = ->
     current_layout = DCore.Installer.get_layout_description(__selected_layout)
     echo "current_layout:#{current_layout}"
     keyboardSet_div?.innerText = current_layout
+    keyboardSet_div?.title = current_layout
 
 update_timezone_text = ->
     echo "__selected_timezone:#{__selected_timezone}"
-    timezoneSet_div?.innerText = __selected_timezone
+    utc= null
+    utc = cu.utc for cu in city_utc when cu.city is __selected_timezone
+    city = __selected_timezone.split("/")[1]
+    right = DCore.dgettext("tzdata", city)
+    if not right? then right = city
+    current_timezone = utc + ":00 " + right
+    timezoneSet_div?.innerText = current_timezone
+    timezoneSet_div?.title = current_timezone
 
 class LayoutItem extends Widget
     constructor: (@id, @layout, @keyboard)->
