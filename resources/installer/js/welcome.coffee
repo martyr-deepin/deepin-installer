@@ -51,33 +51,30 @@ __account_widget = null
 keyboardSet_div = null
 timezoneSet_div = null
 
-update_keyboard_text = ->
+update_keyboard_text = (tri) ->
     current_layout = DCore.Installer.get_layout_description(__selected_layout)
     echo "current_layout:#{current_layout}"
     keyboardSet_div?.innerText = current_layout
     keyboardSet_div?.title = current_layout
-    x = keyboardSet_div?.offsetLeft + 5
-    y = keyboardSet_div?.offsetTop + 30 + 5
-    echo "#{x},#{y}"
-    keyboard_tri = document.getElementsByClassName("KeyboardTri")
-    echo keyboard_tri
+    
+    x = keyboardSet_div?.offsetLeft - 15
+    echo "#{x}"
+    tri?.style.left = x if x > 0
 
-update_timezone_text = ->
-    echo "__selected_timezone:#{__selected_timezone}"
-    utc= null
+update_timezone_text = (tri) ->
     utc = cu.utc for cu in city_utc when cu.city is __selected_timezone
     city = __selected_timezone.split("/")[1]
     right = DCore.dgettext("tzdata", city)
     if not right? then right = city
+    if utc is undefined or utc is null then utc = "UTC+null"
     current_timezone = utc + ":00 " + right
+    echo "current_timezone:#{current_timezone}"
     timezoneSet_div?.innerText = current_timezone
     timezoneSet_div?.title = current_timezone
-   
-    x = timezoneSet_div?.offsetLeft + 5
-    y = timezoneSet_div?.offsetTop + 30 + 5
-    echo "#{x},#{y}"
-    timezone_tri = document.getElementsByClassName("TimezoneTri")
-    echo timezone_tri
+    
+    x = timezoneSet_div?.offsetLeft - 15
+    echo "#{x}"
+    tri?.style.left = x if x > 0
 
 class LayoutItem extends Widget
     constructor: (@id, @layout, @keyboard)->
@@ -389,7 +386,7 @@ class Keyboard extends Widget
             current = mylay
         if current?
             __selected_layout = current
-            update_keyboard_text()
+            update_keyboard_text(@tri)
 
         @layouts = []
         @variants = {}
@@ -415,7 +412,7 @@ class Keyboard extends Widget
 
     update_layout: (layout) ->
         __selected_layout = layout
-        update_keyboard_text()
+        update_keyboard_text(@tri)
 
     execute_letter_query: (letter) ->
         matched_pinyin = @searcher.autoComplete(letter)
@@ -523,7 +520,7 @@ class Timezone extends Widget
         @img.setAttribute("usemap", "#ImageMap")
         @construct_map()
         @hide()
-        update_timezone_text()
+        update_timezone_text(@tri)
 
     init_search_list: ->
         @search_list = []
@@ -575,7 +572,7 @@ class Timezone extends Widget
         area.addEventListener("click", (e) =>
             @show_pin(area)
             __selected_timezone = area.getAttribute("data-timezone")
-            update_timezone_text()
+            update_timezone_text(@tri)
         )
         area.addEventListener("mouseover", (e) =>
             @draw_timezone(area)
@@ -640,7 +637,7 @@ class Timezone extends Widget
             @draw_timezone(area)
             @show_pin(area)
             __selected_timezone = timezone
-            update_timezone_text()
+            update_timezone_text(@tri)
 
     draw_canvas: (area) ->
         ctx = @canvas.getContext("2d")
