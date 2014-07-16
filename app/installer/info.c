@@ -238,7 +238,7 @@ JS_EXPORT_API
 void installer_setenv_tz(const char* timezone)
 {
    g_setenv("TZ", timezone,FALSE);
-   tzset();
+   /*tzset();*/
 }
 
 JS_EXPORT_API
