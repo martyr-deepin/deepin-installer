@@ -96,7 +96,7 @@ class InstallDialog extends Dialog
         if v_part_info[target]["type"] == "freespace"
             @root_tips.innerText = _("Deepin OS will be installed to freespace.")
         else
-            @root_tips.innerText = _("Deepin OS will be installed to ") + path
+            @root_tips.innerText = _("Deepin OS will be installed to ") + path + _("\nThe partition will be formated if continue the installation, please backup the important data\n") + _("Do you want to continue the installation ?")
 
     confirm_install_cb: ->
         try_removed_start_install()

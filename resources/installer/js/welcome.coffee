@@ -72,7 +72,6 @@ update_keyboard_text = (tri) ->
     keyboardSet_div?.title = current_layout
     
     x = keyboardSet_div?.offsetLeft - 15
-    echo "#{x}"
     tri?.style.left = x if x > 0
 
 update_timezone_text = (tri) ->
@@ -88,7 +87,6 @@ update_timezone_text = (tri) ->
     timezoneSet_div?.title = current_timezone
     
     x = timezoneSet_div?.offsetLeft - 15
-    echo "#{x}"
     tri?.style.left = x if x > 0
 
 class LayoutItem extends Widget
@@ -820,13 +818,7 @@ class Account extends Widget
 
     show: ->
         __timezone_widget?.hide()
-        __keyboard_widget?.hide()        #if @id == "username"
-        #    __selected_username = @input.value
-        #else if @id == "hostname"
-        #    __selected_hostname = @input.value
-        #else if @id == "password"
-        #    __selected_password = @input.value
-
+        __keyboard_widget?.hide()
         @element.style.display = "block"
 
     hide: ->
@@ -848,7 +840,7 @@ class Account extends Widget
         __selected_username = @username.get_input_value()
         __selected_hostname = @hostname.get_input_value()
         __selected_password = @password.get_input_value()
-        echo "#{__selected_username};#{__selected_hostname};#{__selected_password}"
+        echo "#{__selected_username};#{__selected_hostname};"
     
     start_install_cb: ->
         @fill_item_data()
