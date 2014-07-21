@@ -451,6 +451,44 @@ class Page extends Widget
     exit_installer: ->
         DCore.Installer.finish_install()
 
+class NextStep extends Widget
+    constructor: (@id,@next_text,@next_cb) ->
+        super
+        @next_enable = false
+        @next_input = create_element("input", "InputBtn", @element)
+        @next_input.setAttribute("type", "submit")
+        @next_input.setAttribute("value", @next_text)
+        @element.addEventListener("mouseout", (e) =>
+            e.stopPropagation()
+            if !@next_enable then return
+            @next_bt_enable()
+        )
+        @element.addEventListener("click", (e) =>
+            e.stopPropagation()
+            if !@next_enable then return
+            @next_bt_press()
+            @next_cb?(e)
+        )
+
+    set_pos:(type,left,bottom) ->
+        @element.style.position = type
+        @element.style.left = left
+        @element.style.bottom = bottom
+
+    next_bt_disable: =>
+        @next_enable = false
+        @element.setAttribute("style", "pointer-events:none")
+        @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,0.5)), to(rgba(217,181,24,0.5)));color:rgba(0,0,0,0.3);cursor:default;")
+
+    next_bt_enable: =>
+        @next_enable = true
+        @element.setAttribute("style", "color:#00bdff;pointer-events:auto")
+        @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));color:rgba(0,0,0,1);cursor:pointer;")
+
+    next_bt_press: =>
+        @element.setAttribute("style", "color:#00bdff;pointer-events:auto")
+        @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#D69004), to(#E8C243));color:rgba(0,0,0,1);cursor:pointer;")
+
 class PageContainer extends Widget
     constructor: (@id)->
         super

@@ -584,26 +584,15 @@ class Part extends Page
         @close.addEventListener("click", (e) =>
             @exit_installer()
         )
-        
 
         @wrap = create_element("div", "part_wrap", @element)
-        
+
         @init_part_page()
 
-        @next_btn = create_element("div", "NextStep", @wrap)
-        @next_btn.setAttribute("id", "mynextstep")
-        @next_input = create_element("input", "InputBtn", @next_btn)
-        @next_input.setAttribute("type", "submit")
-        @next_input.setAttribute("value", _("Install"))
-        @next_btn.addEventListener("mousedown", (e) =>
-            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#D69004), to(#E8C243));color:rgba(0,0,0,1);")
-        )
-        @next_btn.addEventListener("click", (e) =>
-            if __selected_mode == "advance"
-                @handle_install_advance()
-            else
-                @handle_install_simple()
-        )
+        @next_step = new NextStep("mynextstep",_("Install"),@start_install_cb)
+        @wrap.appendChild(@next_step.element)
+        @next_step.set_pos("absolute","285px","20px")
+        @next_step.next_bt_disable()
 
         @switch_mode_simple()
         recommand = get_recommand_target()
@@ -612,9 +601,13 @@ class Part extends Page
             Widget.look_up(recommand)?.focus()
         else
             @disktab.focus_disk(__selected_disk)
-        if  __selected_item?
-            @next_btn.setAttribute("style", "pointer-events:auto")
-            @next_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
+        if  __selected_item? then @next_step.next_bt_enable()
+
+    @start_install_cb : =>
+        if __selected_mode == "advance"
+            @handle_install_advance()
+        else
+            @handle_install_simple()
 
 
     handle_install_advance: ->

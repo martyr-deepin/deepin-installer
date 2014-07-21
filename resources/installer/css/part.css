@@ -361,17 +361,6 @@
     line-height:24px;
 }
 
-.NextStep {
-    position:absolute;
-    left:285px;
-    bottom:20px;
-    width:180px;
-    height:38px;
-    border:1px solid rgba(0,0,0,0.3);
-    border-radius:5px;
-    pointer-events:none;
-}
-
 .AddPartDialog .AddDesc {
     display:block;
     float:left;
@@ -507,3 +496,8 @@
     clear:both;
 }
 
+#mynextstep {
+    position:absolute;
+    left:285px;
+    bottom:20px;
+}

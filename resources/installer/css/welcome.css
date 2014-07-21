@@ -114,27 +114,6 @@
     display:none;
 }
 
-.Welcome .Start {
-    position:absolute;
-    left:260px;
-    right:260px;
-    bottom:60px;
-    width:180px;
-    height:38px;
-    border:1px solid rgba(0,0,0,0.3);
-    border-radius:5px;
-}
-
-.Welcome .Start input, .Part .NextStep input {
-    width:180px;
-    height:38px;
-    padding-top:5px;
-    background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82, 0.5)), to(rgba(217,181,24,0.5)));
-    color:rgba(0,0,0,0.3);
-    font-size:18px;
-    font-style:bold;
-}
-
 .Keyboard {
     position:absolute;
     top:15px;
@@ -488,6 +467,12 @@
     height:14px;
     border-radius:15px;
     border:1px solid rgba(247,169,48,1.0);
+}
+
+#start {
+    position:absolute;
+    left:260px;
+    bottom:60px;
 }
 
 @-webkit-keyframes pinflash {

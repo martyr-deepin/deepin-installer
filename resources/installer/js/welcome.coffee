@@ -803,18 +803,10 @@ class Account extends Widget
         @confirmpassword = new WelcomeFormItem("confirmpassword")
         @form.appendChild(@confirmpassword.element)
 
-        @start = create_element("div", "Start", @element)
-        @start_input = create_element("input", "InputBtn", @start)
-        @start_input.setAttribute("type", "submit")
-        next = _("Next")
-        @start_input.setAttribute("value", next)
-        @start.addEventListener("mousedown", (e) =>
-            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(#D69004), to(#E8C243));color:rgba(0,0,0,1);")
-        )
-        @start.addEventListener("click", (e) =>
-            @start_install_cb()
-        )
-        @start.setAttribute("style", "pointer-events:none")
+        @next_step = new NextStep("start",_("Next"),@start_install_cb)
+        @element.appendChild(@next_step.element)
+        @next_step.set_pos("absolute","260px","60px")
+        @next_step.next_bt_disable()
 
     show: ->
         __timezone_widget?.hide()
@@ -828,12 +820,12 @@ class Account extends Widget
         if !__init_parted_finish
             return false
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
-            @start.setAttribute("style", "color:#00bdff;pointer-events:auto")
-            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,1)), to(rgba(217,181,24,1)));")
+            echo "check_start_ready true"
+            @next_step?.next_bt_enable()
             return true
         else
-            @start.setAttribute("style", "pointer-events:none")
-            @start_input.setAttribute("style", "background:-webkit-gradient(linear, left top, left bottom, from(rgba(240,242,82,0.5)), to(rgba(217,181,24,0.5)));")
+            echo "check_start_ready false"
+            @next_step?.next_bt_disable()
             return false
 
     fill_item_data: ->
@@ -841,8 +833,8 @@ class Account extends Widget
         __selected_hostname = @hostname.get_input_value()
         __selected_password = @password.get_input_value()
         echo "#{__selected_username};#{__selected_hostname};"
-    
-    start_install_cb: ->
+
+    start_install_cb: =>
         @fill_item_data()
         if @check_start_ready()
             undo_part_table_info()
@@ -889,6 +881,7 @@ class Welcome extends Page
 
         @account = new Account("account")
         @wrap.appendChild(@account.element)
+        @account.show()
         __account_widget = @account
 
     do_click: (e) ->

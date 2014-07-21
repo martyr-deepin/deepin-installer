@@ -309,6 +309,21 @@ input:focus {
     height:auto;
 }
 
+.NextStep {
+    width:180px;
+    height:38px;
+    border:1px solid rgba(0,0,0,0.3);
+    border-radius:5px;
+}
+
+.NextStep input {
+    width:180px;
+    height:38px;
+    padding-top:5px;
+    font-size:18px;
+    font-style:bold;
+}
+
 ::-webkit-scrollbar {
     background:rgba(255,255,255,0.15);
     width:8px;
