@@ -603,7 +603,7 @@ class Part extends Page
             @disktab.focus_disk(__selected_disk)
         if  __selected_item? then @next_step.next_bt_enable()
 
-    @start_install_cb : =>
+    start_install_cb: =>
         if __selected_mode == "advance"
             @handle_install_advance()
         else

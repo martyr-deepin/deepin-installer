@@ -467,7 +467,7 @@ class NextStep extends Widget
             e.stopPropagation()
             if !@next_enable then return
             @next_bt_press()
-            @next_cb?(e)
+            @next_cb?()
         )
 
     set_pos:(type,left,bottom) ->
