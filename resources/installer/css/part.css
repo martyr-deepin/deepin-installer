@@ -1,6 +1,7 @@
 .PartTitleMode {
     background:url("../images/mode.png") no-repeat;
     background-position:10px 0;
+    margin-right:20px;
 }
 
 .part_wrap{
