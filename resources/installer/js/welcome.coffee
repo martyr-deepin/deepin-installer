@@ -727,6 +727,7 @@ class WelcomeFormItem extends Widget
                 else
                     @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
 
+            @check_valid()
             Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("change", (e) =>
@@ -765,6 +766,8 @@ class WelcomeFormItem extends Widget
         if not @is_valid()
             if @input.value.length != 0
                 @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
+        else
+            @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
 
     is_valid: ->
         if not @input.value? or @input.value.length == 0
