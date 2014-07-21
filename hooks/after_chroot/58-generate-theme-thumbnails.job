@@ -7,6 +7,8 @@ if [ -x /usr/lib/deepin-daemon/theme-thumb-tool ];then
     /usr/lib/deepin-daemon/theme-thumb-tool --icon  /usr/share/personalization/thumbnail
     /usr/lib/deepin-daemon/theme-thumb-tool --cursor  /usr/share/personalization/thumbnail
     /usr/lib/deepin-daemon/theme-thumb-tool --background  /usr/share/personalization/thumbnail
+    [ -d /host/usr/share/personalization/thumbnail/autogen ] && rm -rf /host/usr/share/personalization/thumbnail/autogen
+    cp -ar /usr/share/personalization/thumbnail/autogen /host/usr/share/personalization/thumbnail/
 else
     echo "[WARN] No theme-thumb-tool found. Pass"
 fi
