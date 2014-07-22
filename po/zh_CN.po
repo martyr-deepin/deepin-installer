@@ -124,7 +124,7 @@ msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr ""
-"UEFI模式安装仅支持分区表为GPT的硬盘。如果执意安装所有硬盘数据都将丢失。"
+"UEFI模式安装仅支持分区表为GPT的硬盘。如果执意安装,所有硬盘数据都将丢失。"
 
 #: ../resources/installer/js/part.coffee:696
 msgid "UEFI"

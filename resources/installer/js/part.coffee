@@ -657,6 +657,7 @@ class Part extends Page
                 return
 
         if DCore.Installer.system_support_efi() and not DCore.Installer.disk_is_gpt(__selected_disk)
+            echo "handle_install_simple"
             new PromptDialog(
                 _("Warning"),
                 _("UEFI-native installation only supports GPT-formatted disk. It will lose all disk data if you insist on installing.")
@@ -699,12 +700,6 @@ class Part extends Page
 
 
     fill_bootloader: ->
-        #if DCore.Installer.system_support_efi() and DCore.Installer.disk_is_gpt(__selected_disk)
-        #    @part_grub.style.display = "none"
-        #    return
-        #else if DCore.Installer.system_support_efi()
-            #TODO : UEFI with MBR
-            #Add an UEFI selection button
         keys = []
         values = []
         for disk in disks
@@ -754,7 +749,9 @@ class Part extends Page
             @part_uefi.style.display = "-webkit-box"
             @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 88, 20)
             @grub_dropdown.show_drop()
-            @uefi_radio.addEventListener("click",=>
+            @uefi_radio.addEventListener("click",(e)=>
+                e.stopPropagation()
+                echo "uefi_radio click"
                 @uefi_radio.checked = true
                 if __selected_disk is null then return
                 if not DCore.Installer.disk_is_gpt(__selected_disk)
