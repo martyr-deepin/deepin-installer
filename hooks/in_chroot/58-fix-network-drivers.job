@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# BCM4313 [14e4:4727] wireless driver
+fix_bcm4313() {
+    # uninstall bcmwl-kernel-source
+    echo "fix bcm4313 ---------------------------"
+    apt-get purge --force-yes -f bcmwl-kernel-source
+    apt-get install --force-yes -f linux-firmware-nonfree
+
+    # blacklist b43 and wl driver
+    echo "blacklist b43" | tee -a /etc/modprobe.d/bcm.conf
+    echo "blacklist wl" | tee -a /etc/modprobe.d/bcm.conf
+
+    # enable brcmsmac
+    echo "brcmsmac" | tee -a /etc/modules
+}
+
+# AR9485 [168C:0032] wireless driver
+fix_ar9485_nohwcrypt() {
+    # fix AR9485 could not connect to wifi with password
+    echo "options ath9k nohwcrypt=1" | tee -a /etc/modprobe.d/ath9k.conf
+}
+
+pcis=$(lspci  -n | awk '{print $3}')
+product=$(cat /sys/class/dmi/id/product_name)
+for pci in ${pcis}; do
+    case $pci in
+        "14e4:4727")
+            fix_bcm4313
+            ;;
+        "168C:0032")
+            # TODO
+            if [ "${product}" = "" ]; then
+                fix_ar9485_nohwcrypt
+            fi
+            ;;
+        "1180:0476" | "1180:0822")
+            echo $pci
+            ;;
+        *);;
+    esac
+done
