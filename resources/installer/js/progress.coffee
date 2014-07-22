@@ -67,14 +67,13 @@ class Progress extends Page
         @start_progress()
 
     ppt_show: ->
-        @ppt.src = "ppt/slideshow2014/index_en.html"
-        #echo "lang:" + document.body.lang
-        #if document.body.lang is "zh"
-        #    echo "zh"
-        #    @ppt.src = "ppt/slideshow2014/index.html"
-        #else
-        #    echo "en"
-        #    @ppt.src = "ppt/slideshow2014/index_en.html"
+        echo "lang:" + document.body.lang
+        if document.body.lang is "zh"
+            echo "zh"
+            @ppt.src = "ppt/slideshow2014/index.html"
+        else
+            echo "en"
+            @ppt.src = "ppt/slideshow2014/index_en.html"
         @ppt.style.display = "block"
 
     update_rotate: ->
