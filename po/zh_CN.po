@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-21 14:41+0800\n"
+"POT-Creation-Date: 2014-07-22 11:45+0800\n"
 "PO-Revision-Date: 2014-07-03 04:47+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -77,68 +77,68 @@ msgstr "新建分区"
 msgid "Expert Mode"
 msgstr "专家模式"
 
-#: ../resources/installer/js/part.coffee:597
+#: ../resources/installer/js/part.coffee:592
 msgid "Install"
 msgstr "安装"
 
-#: ../resources/installer/js/part.coffee:625
+#: ../resources/installer/js/part.coffee:618
 msgid "Installation Tips"
 msgstr "安装提示"
 
-#: ../resources/installer/js/part.coffee:626
+#: ../resources/installer/js/part.coffee:619
 msgid "A root partition (/) is required."
 msgstr "至少需要一个根分区（/）。"
 
-#: ../resources/installer/js/part.coffee:633
-#: ../resources/installer/js/part.coffee:641
+#: ../resources/installer/js/part.coffee:626
+#: ../resources/installer/js/part.coffee:634
 msgid "Install Tips"
 msgstr "安装提示"
 
-#: ../resources/installer/js/part.coffee:634
+#: ../resources/installer/js/part.coffee:627
 msgid "UEFI-native installation only supports GPT-formatted disk."
 msgstr "UEFI模式安装仅支持分区表为GPT的硬盘。"
 
-#: ../resources/installer/js/part.coffee:642
+#: ../resources/installer/js/part.coffee:635
 msgid ""
 "ESP needs to support in UEFI mode and please create a 100MB or more "
 "partition in efi format."
 msgstr "UEFI模式安装需要ESP，请创建一个100MB以上的efi格式分区。"
 
-#: ../resources/installer/js/part.coffee:661
+#: ../resources/installer/js/part.coffee:654
 #: ../resources/installer/js/dialog.coffee:110
 msgid "Add Partition"
 msgstr "添加分区"
 
-#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/part.coffee:655
 msgid "Can't create a partition here"
 msgstr "不能在此创建分区"
 
-#: ../resources/installer/js/part.coffee:668
-#: ../resources/installer/js/part.coffee:769
+#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/part.coffee:761
 msgid "Warning"
 msgstr "警告"
 
-#: ../resources/installer/js/part.coffee:669
-#: ../resources/installer/js/part.coffee:770
+#: ../resources/installer/js/part.coffee:663
+#: ../resources/installer/js/part.coffee:762
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr ""
 "UEFI模式安装仅支持分区表为GPT的硬盘。如果执意安装,所有硬盘数据都将丢失。"
 
-#: ../resources/installer/js/part.coffee:696
+#: ../resources/installer/js/part.coffee:690
 msgid "UEFI"
-msgstr ""
+msgstr "UEFI"
 
-#: ../resources/installer/js/part.coffee:703
+#: ../resources/installer/js/part.coffee:697
 msgid "Boot Loader"
 msgstr "系统引导器"
 
-#: ../resources/installer/js/part.coffee:744
+#: ../resources/installer/js/part.coffee:732
 msgid "Unmount Partition"
 msgstr "卸载分区"
 
-#: ../resources/installer/js/part.coffee:745
+#: ../resources/installer/js/part.coffee:733
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
@@ -146,11 +146,11 @@ msgstr ""
 "检测到当前分区已挂载,\n"
 "确定要卸载已挂载分区？"
 
-#: ../resources/installer/js/part.coffee:793
+#: ../resources/installer/js/part.coffee:783
 msgid "Simple Mode"
 msgstr "简单模式"
 
-#: ../resources/installer/js/part.coffee:804
+#: ../resources/installer/js/part.coffee:794
 msgid "Expert mode"
 msgstr "专家模式"
 
@@ -182,19 +182,19 @@ msgstr "查看当前"
 msgid "Please select or search your location."
 msgstr "请选择或搜索您所在的区域。"
 
-#: ../resources/installer/js/welcome.coffee:748
+#: ../resources/installer/js/welcome.coffee:749
 msgid "User Name"
 msgstr "用户名"
 
-#: ../resources/installer/js/welcome.coffee:751
+#: ../resources/installer/js/welcome.coffee:752
 msgid "Computer Name"
 msgstr "计算机名"
 
-#: ../resources/installer/js/welcome.coffee:754
+#: ../resources/installer/js/welcome.coffee:755
 msgid "Password"
 msgstr "密码"
 
-#: ../resources/installer/js/welcome.coffee:759
+#: ../resources/installer/js/welcome.coffee:760
 msgid "Retype Password"
 msgstr "确认密码"
 
@@ -202,11 +202,11 @@ msgstr "确认密码"
 msgid "Next"
 msgstr "下一步"
 
-#: ../resources/installer/js/welcome.coffee:867
+#: ../resources/installer/js/welcome.coffee:862
 msgid "Time Zone"
 msgstr "时区"
 
-#: ../resources/installer/js/welcome.coffee:872
+#: ../resources/installer/js/welcome.coffee:867
 msgid "Keyboard"
 msgstr "键盘"
 
@@ -302,7 +302,9 @@ msgid ""
 "\n"
 "The partition will be formated if continue the installation, please backup "
 "the important data\n"
-msgstr "\n继续安装会格式化该分区，请做好重要数据备份\n"
+msgstr ""
+"\n"
+"继续安装会格式化该分区，请做好重要数据备份\n"
 
 #: ../resources/installer/js/dialog.coffee:99
 msgid "Do you want to continue the installation ?"
@@ -347,6 +349,26 @@ msgstr "挂载："
 #: ../resources/installer/js/dialog.coffee:303
 msgid "Please enter a valid partition size."
 msgstr "请输入一个有效的分区大小数值。"
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:12
+msgid "Deepin Software Center"
+msgstr "深度商店"
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:18
+msgid "Deepin Movie"
+msgstr "深度影院"
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:24
+msgid "Deepin Music Player"
+msgstr "深度音乐"
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:30
+msgid "Deepin Game Center"
+msgstr "深度游戏中心"
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:36
+msgid "Deepin Community"
+msgstr "深度社区"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"

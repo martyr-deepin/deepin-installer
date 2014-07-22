@@ -6,16 +6,17 @@ import os
 lang = ["zh_CN", "zh_TW"]
 
 coffee_files = []
+html_files = []
 c_files = []
 except_dirs = ["dbus_test", "memory_test", "dominant_color"]
 
 
 def get_files():
-    global coffee_files, c_files
+    global coffee_files,html_files, c_files
     for d in os.listdir("../resources"):
         if d != "common" and d not in except_dirs:
             coffee_files += glob.glob("../resources/%s/js/*.coffee" % d)
-
+            html_files += glob.glob("../resources/%s/ppt/*/*.html" % d)
     for d in os.listdir("../app"):
         if d not in except_dirs:
             c_files += glob.glob("../app/%s/*.c" % d);
@@ -26,13 +27,16 @@ def get_files():
 
 
 def scan():
-    global coffee_files, c_files, lang
+    global coffee_files, html_files, c_files, lang
     os.system("rm installer.pot")
     for l in lang:
         os.system("touch installer.pot")
         os.system("touch %s.po" % l)
 
         cmd= "xgettext --from-code=utf-8 -L python -j -o installer.pot " + " ".join(coffee_files)
+        os.system(cmd)
+
+        cmd= "xgettext --from-code=utf-8 -L python -j -o installer.pot " + " ".join(html_files)
         os.system(cmd)
 
         cmd = "xgettext --from-code=utf-8 -k_ -j -o installer.pot " + " ".join(c_files)

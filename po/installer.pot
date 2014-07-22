@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-21 14:41+0800\n"
+"POT-Creation-Date: 2014-07-22 11:45+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,77 +76,77 @@ msgstr ""
 msgid "Expert Mode"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:597
+#: ../resources/installer/js/part.coffee:592
 msgid "Install"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:625
+#: ../resources/installer/js/part.coffee:618
 msgid "Installation Tips"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:626
+#: ../resources/installer/js/part.coffee:619
 msgid "A root partition (/) is required."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:633
-#: ../resources/installer/js/part.coffee:641
+#: ../resources/installer/js/part.coffee:626
+#: ../resources/installer/js/part.coffee:634
 msgid "Install Tips"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:634
+#: ../resources/installer/js/part.coffee:627
 msgid "UEFI-native installation only supports GPT-formatted disk."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:642
+#: ../resources/installer/js/part.coffee:635
 msgid ""
 "ESP needs to support in UEFI mode and please create a 100MB or more "
 "partition in efi format."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:661
+#: ../resources/installer/js/part.coffee:654
 #: ../resources/installer/js/dialog.coffee:110
 msgid "Add Partition"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/part.coffee:655
 msgid "Can't create a partition here"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:668
-#: ../resources/installer/js/part.coffee:769
+#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/part.coffee:761
 msgid "Warning"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:669
-#: ../resources/installer/js/part.coffee:770
+#: ../resources/installer/js/part.coffee:663
+#: ../resources/installer/js/part.coffee:762
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:696
+#: ../resources/installer/js/part.coffee:690
 msgid "UEFI"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:703
+#: ../resources/installer/js/part.coffee:697
 msgid "Boot Loader"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:744
+#: ../resources/installer/js/part.coffee:732
 msgid "Unmount Partition"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:745
+#: ../resources/installer/js/part.coffee:733
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:793
+#: ../resources/installer/js/part.coffee:783
 msgid "Simple Mode"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:804
+#: ../resources/installer/js/part.coffee:794
 msgid "Expert mode"
 msgstr ""
 
@@ -178,19 +178,19 @@ msgstr ""
 msgid "Please select or search your location."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:748
+#: ../resources/installer/js/welcome.coffee:749
 msgid "User Name"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:751
+#: ../resources/installer/js/welcome.coffee:752
 msgid "Computer Name"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:754
+#: ../resources/installer/js/welcome.coffee:755
 msgid "Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:759
+#: ../resources/installer/js/welcome.coffee:760
 msgid "Retype Password"
 msgstr ""
 
@@ -198,11 +198,11 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:867
+#: ../resources/installer/js/welcome.coffee:862
 msgid "Time Zone"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:872
+#: ../resources/installer/js/welcome.coffee:867
 msgid "Keyboard"
 msgstr ""
 
@@ -342,6 +342,26 @@ msgstr ""
 
 #: ../resources/installer/js/dialog.coffee:303
 msgid "Please enter a valid partition size."
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:12
+msgid "Deepin Software Center"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:18
+msgid "Deepin Movie"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:24
+msgid "Deepin Music Player"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:30
+msgid "Deepin Game Center"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/index_en.html:36
+msgid "Deepin Community"
 msgstr ""
 
 #: ../app/language-selector/mutils.c:84
