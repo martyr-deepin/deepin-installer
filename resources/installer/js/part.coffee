@@ -721,7 +721,7 @@ class Part extends Page
         @grub_dropdown = new DropDown("dd_grub", false, null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
-        @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10, 20)
+        @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 65, 20)
         @grub_dropdown.show_drop()
 
     switch_mode: ->
@@ -752,6 +752,8 @@ class Part extends Page
 
         if DCore.Installer.system_support_efi()
             @part_uefi.style.display = "-webkit-box"
+            @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 88, 20)
+            @grub_dropdown.show_drop()
             @uefi_radio.addEventListener("click",=>
                 @uefi_radio.checked = true
                 if __selected_disk is null then return
@@ -777,11 +779,9 @@ class Part extends Page
         else
             @part_uefi.style.display = "none"
             @grub_radio.style.display = "none"
-        
+
         @part_grub.style.display = "-webkit-box"
-        @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10, 20)
-        @grub_dropdown.show_drop()
-        
+
         @table.update_mode(__selected_mode)
         @t_mode.innerText = _("Simple Mode")
 
