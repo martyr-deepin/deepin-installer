@@ -351,22 +351,20 @@ msgid "Please enter a valid partition size."
 msgstr "请输入一个有效的分区大小数值。"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
-#, fuzzy
 msgid "Deepin Store"
-msgstr "深度影院"
+msgstr "深度商店"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
-#, fuzzy
 msgid "One-stop Software Management"
-msgstr "深度商店"
+msgstr "一站式软件管理"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
 msgid "Continuous Update of Wonderful Software"
-msgstr ""
+msgstr "精彩软件滚动更新"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
 msgid "Unimpeded Online Communication"
-msgstr ""
+msgstr "在线交流畅通无阻"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
 msgid "Deepin Movie"
@@ -374,49 +372,47 @@ msgstr "深度影院"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
 msgid "Comprehensive Audio-visual Shock"
-msgstr ""
+msgstr "全面的视听震撼"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
 msgid "New Interactive Experience"
-msgstr ""
+msgstr "全新的交互体验"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
 msgid "Intelligent Subtitle Loading"
-msgstr ""
+msgstr "智能加载影视字幕"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
-#, fuzzy
 msgid "Deepin Music"
 msgstr "深度音乐"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
 msgid "Ultimate Music Journey"
-msgstr ""
+msgstr "极致的音乐之旅"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
 msgid "Rich Extended Function"
-msgstr ""
+msgstr "丰富的拓展功能"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
 msgid "Enjoy Online Strongest Voice"
-msgstr ""
+msgstr "品尝在线最强音"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
-#, fuzzy
 msgid "Deepin Game"
-msgstr "深度游戏中心"
+msgstr "深度游戏"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
 msgid "Provide Latest and Hottest Games"
-msgstr ""
+msgstr "提供最新、最热的游戏"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
 msgid "Gather Various Game Topics"
-msgstr ""
+msgstr "网罗各大游戏专题"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
 msgid "Collect Your Favorite Online"
-msgstr ""
+msgstr "线收藏你的最爱"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
 msgid "Deepin Community"
@@ -424,17 +420,17 @@ msgstr "深度社区"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
 msgid "Free and United Open Source Community"
-msgstr ""
+msgstr "自由团结的开源社"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin International Project"
-msgstr ""
+msgstr "欢迎参与Deepin国际化项目"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr ""
+msgstr "欢迎关注我们的微博、Twitter、Facebook和Google+，或邮件列表和IRC"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
