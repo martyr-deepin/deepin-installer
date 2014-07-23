@@ -1,22 +1,17 @@
 
-class BoxMessage extends Widget
-    constructor:(@id,@class) ->
-        super
-        @element.setAttribute("class",@class)
+class BoxMessage
+    constructor:(@id,@class,@parent) ->
+        @boxmessage = create_element("div",@class,@parent)
+        @boxmessage.setAttribute("id",@id)
 
-    set_msg_obj: (@msg_obj) ->
-
-    create_box_msg: ->
-        for obj in @msg_obj
-            @title = create_element("h1","",@element)
-            @title.innerText = obj.title
-            @ul = create_element("ul","",@title)
-            for msg,i in obj.msg
-                @msg[i] = create_element("li","",@ul)
-                @msg[i].innerText = msg
-
-
-
+    create_box_msg: (@msg_obj) ->
+        @title = create_element("h1","",@boxmessage)
+        @title.innerText = @msg_obj.title
+        @ul = create_element("ul","",@title)
+        @msg = []
+        for msg,i in @msg_obj.msg
+            @msg[i] = create_element("li","",@ul)
+            @msg[i].innerText = msg
 
 msg_obj_array = [
     {
@@ -62,13 +57,12 @@ msg_obj_array = [
 ]
 
 _b = document.body
-container = create_element("div","container",_b)
-canvas_slideStage = create_element("canvas","slideStage","@element")
+container = document.getElementById('container')
+#container = create_element("div","container",_b)
+#canvas_slideStage = create_element("canvas","slideStage",container)
 
 bmsg = []
 for msg_obj,i in msg_obj_array
-    bmsg[i] = new BoxMessage("text#{i + 1}", "text#{i + 1} messages")
-    container.appendChild(bmsg[i].element)
-    bmsg[i].set_msg_obj(msg_obj)
-    bmsg[i].create_box_msg()
+    bmsg[i] = new BoxMessage("text#{i + 1}", "text#{i + 1} messages", container)
+    bmsg[i].create_box_msg(msg_obj)
 
