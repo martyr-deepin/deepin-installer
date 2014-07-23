@@ -68,12 +68,8 @@ class Progress extends Page
 
     ppt_show: ->
         echo "lang:" + document.body.lang
-        if document.body.lang is "zh"
-            echo "zh"
-            @ppt.src = "ppt/slideshow2014/index.html"
-        else
-            echo "en"
-            @ppt.src = "ppt/slideshow2014/index_en.html"
+        @ppt.src = "ppt/slideshow2014/index.html"
+        #@ppt.src = "ppt/slideshow2014/index_#{document.body.lang}.html"
         @ppt.style.display = "block"
 
     update_rotate: ->
