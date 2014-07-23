@@ -16,7 +16,7 @@ def get_files():
     for d in os.listdir("../resources"):
         if d != "common" and d not in except_dirs:
             coffee_files += glob.glob("../resources/%s/js/*.coffee" % d)
-            html_files += glob.glob("../resources/%s/ppt/*/*.html" % d)
+            html_files += glob.glob("../resources/%s/ppt/*/*.coffee" % d)
     for d in os.listdir("../app"):
         if d not in except_dirs:
             c_files += glob.glob("../app/%s/*.c" % d);

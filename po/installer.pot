@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-22 11:45+0800\n"
+"POT-Creation-Date: 2014-07-23 18:23+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -344,24 +344,86 @@ msgstr ""
 msgid "Please enter a valid partition size."
 msgstr ""
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:12
-msgid "Deepin Software Center"
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
+msgid "Deepin Store"
 msgstr ""
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:18
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
+msgid "One-stop Software Management"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
+msgid "Continuous Update of Wonderful Software"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
+msgid "Unimpeded Online Communication"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
 msgid "Deepin Movie"
 msgstr ""
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:24
-msgid "Deepin Music Player"
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
+msgid "Comprehensive Audio-visual Shock"
 msgstr ""
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:30
-msgid "Deepin Game Center"
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
+msgid "New Interactive Experience"
 msgstr ""
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:36
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
+msgid "Intelligent Subtitle Loading"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
+msgid "Deepin Music"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
+msgid "Ultimate Music Journey"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
+msgid "Rich Extended Function"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
+msgid "Enjoy Online Strongest Voice"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
+msgid "Deepin Game"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
+msgid "Provide Latest and Hottest Games"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
+msgid "Gather Various Game Topics"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
+msgid "Collect Your Favorite Online"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
 msgid "Deepin Community"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
+msgid "Free and United Open Source Community"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
+msgid "Welcome to participate in Deepin International Project"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
+msgid ""
+"Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
+"IRC"
 msgstr ""
 
 #: ../app/language-selector/mutils.c:84

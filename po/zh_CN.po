@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-22 11:45+0800\n"
+"POT-Creation-Date: 2014-07-23 18:23+0800\n"
 "PO-Revision-Date: 2014-07-03 04:47+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -350,25 +350,91 @@ msgstr "挂载："
 msgid "Please enter a valid partition size."
 msgstr "请输入一个有效的分区大小数值。"
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:12
-msgid "Deepin Software Center"
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
+#, fuzzy
+msgid "Deepin Store"
+msgstr "深度影院"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
+#, fuzzy
+msgid "One-stop Software Management"
 msgstr "深度商店"
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:18
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
+msgid "Continuous Update of Wonderful Software"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
+msgid "Unimpeded Online Communication"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
 msgid "Deepin Movie"
 msgstr "深度影院"
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:24
-msgid "Deepin Music Player"
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
+msgid "Comprehensive Audio-visual Shock"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
+msgid "New Interactive Experience"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
+msgid "Intelligent Subtitle Loading"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
+#, fuzzy
+msgid "Deepin Music"
 msgstr "深度音乐"
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:30
-msgid "Deepin Game Center"
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
+msgid "Ultimate Music Journey"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
+msgid "Rich Extended Function"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
+msgid "Enjoy Online Strongest Voice"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
+#, fuzzy
+msgid "Deepin Game"
 msgstr "深度游戏中心"
 
-#: ../resources/installer/ppt/slideshow2014/index_en.html:36
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
+msgid "Provide Latest and Hottest Games"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
+msgid "Gather Various Game Topics"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
+msgid "Collect Your Favorite Online"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
 msgid "Deepin Community"
 msgstr "深度社区"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
+msgid "Free and United Open Source Community"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
+msgid "Welcome to participate in Deepin International Project"
+msgstr ""
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
+msgid ""
+"Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
+"IRC"
+msgstr ""
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
