@@ -343,7 +343,7 @@ class DropDown extends Widget
 
     set_current_txt: (txt) ->
         if @editable
-            @cur_input.setAttribute("value", txt)
+            @cur_input.value = txt
         else
             @current.innerText = txt
 
@@ -457,7 +457,7 @@ class NextStep extends Widget
         @next_enable = false
         @next_input = create_element("input", "InputBtn", @element)
         @next_input.setAttribute("type", "submit")
-        @next_input.setAttribute("value", @next_text)
+        @next_input.value = @next_text
         @element.addEventListener("mouseout", (e) =>
             e.stopPropagation()
             if !@next_enable then return
