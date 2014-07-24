@@ -725,23 +725,27 @@ class Part extends Page
         else
             @switch_mode_simple()
 
+    unmount_part: =>
+        for disk in disks
+            for part in m_disk_info[disk]["partitions"]
+                try
+                    if DCore.Installer.get_partition_mp(part) not in ["/", "/cdrom"]
+                        DCore.Installer.unmount_partition(part)
+                catch error
+                    echo error
+        for item in Widget.look_up("part_table")?.partitems
+            item.check_busy()
+
     switch_mode_advance: ->
         __selected_mode = "advance"
-        if check_has_mount(__selected_disk) && !check_only_swap_mount(__selected_disk)
-            @unmount_model = new PromptDialog(
-                _("Unmount Partition"),
-                _("Partition is detected to have been mounted.\nAre you sure you want to unmount it?")
-                ->
-                    for disk in disks
-                        for part in m_disk_info[disk]["partitions"]
-                            try
-                                if DCore.Installer.get_partition_mp(part) not in ["/", "/cdrom"]
-                                    DCore.Installer.unmount_partition(part)
-                            catch error
-                                echo error
-                    for item in Widget.look_up("part_table")?.partitems
-                        item.check_busy()
-            )
+        if check_has_mount(__selected_disk)
+            if !check_only_swap_mount(__selected_disk)
+                @unmount_model = new PromptDialog(
+                    _("Unmount Partition"),
+                    _("Partition is detected to have been mounted.\nAre you sure you want to unmount it?"),
+                    @unmount_part
+                )
+            else @unmount_part()
             @unmount_model.show_at(document.body)
         @linemap.element.setAttribute("style", "display:block")
 
