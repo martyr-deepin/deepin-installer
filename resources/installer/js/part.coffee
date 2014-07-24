@@ -745,8 +745,7 @@ class Part extends Page
             @unmount_model.show_at(document.body)
         @linemap.element.setAttribute("style", "display:block")
 
-        if true
-        #if DCore.Installer.system_support_efi()
+        if DCore.Installer.system_support_efi()
             @part_uefi.style.display = "-webkit-box"
             @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 90, 20)
             @grub_dropdown.show_drop()
