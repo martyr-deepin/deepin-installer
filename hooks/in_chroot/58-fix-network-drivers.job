@@ -30,9 +30,10 @@ for pci in ${pcis}; do
             ;;
         "168C:0032")
             # TODO
-            if [ "${product}" = "" ]; then
-                fix_ar9485_nohwcrypt
-            fi
+            echo $pci
+            #if [ "${product}" = "" ]; then
+            #    fix_ar9485_nohwcrypt
+            #fi
             ;;
         "1180:0476" | "1180:0822")
             echo $pci
