@@ -143,7 +143,7 @@ msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr ""
-"检测到当前分区已挂载,\n"
+"检测到已有分区被挂载,\n"
 "确定要卸载已挂载分区？"
 
 #: ../resources/installer/js/part.coffee:783
