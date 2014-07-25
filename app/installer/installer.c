@@ -98,10 +98,10 @@ sigterm_cb (int sig)
 #include <fcntl.h>
 void redirect_log()
 {
-    int log_file = open("/tmp/deepin-installer.log", O_CREAT | O_WRONLY, 0644);
+    int log_file = open("/tmp/deepin-installer.log", O_CREAT| O_APPEND| O_WRONLY, 0644);
     if (log_file == -1) {
-	perror("redirect_log");
-	return ;
+        perror("redirect_log");
+	    return ;
     }
     dup2(log_file, 1);
     dup2(log_file, 2);
