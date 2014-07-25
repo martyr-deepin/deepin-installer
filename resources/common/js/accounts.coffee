@@ -17,9 +17,10 @@
 #
 #You should have received a copy of the GNU General Public License
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
-    
+
 guest_id = "999"
 guest_name = _("Guest")
+guest_name_in_lightdm = "guest"
 
 class Accounts
     ACCOUNTS_DAEMON = "com.deepin.daemon.Accounts"
@@ -60,11 +61,6 @@ class Accounts
             echo "Dbus_Account #{ACCOUNTS_DAEMON} ERROR: #{e}"
             @get_dbus_failed = true
 
-        try
-            @Dbus_Graphic = DCore.DBus.session(GRAPHIC)
-        catch e
-            echo "#{GRAPHIC} dbus ERROR: #{e}"
-            @get_dbus_failed = true
 
 
     get_user_name: (uid) ->
@@ -135,26 +131,6 @@ class Accounts
             echo "get_user_bg #{e}"
         return bg
 
-    get_blur_background:(uid)->
-        bg = @get_user_bg(uid)
-        echo "get_blur_background #{uid},userbg:#{bg}"
-
-        BackgroundBlurPictPath = null
-        PATH_MSG = null
-        try
-            path = @Dbus_Graphic.BackgroundBlurPictPath_sync(bg,"",30.0,1.0)
-            switch path[0]
-                when -1 then PATH_MSG = "failed"
-                when 0 then PATH_MSG = "return_bg"
-                when 1 then PATH_MSG = "succeed"
-            echo "BackgroundBlurPictPath_sync: #{path[0]}: #{PATH_MSG}-----#{path[1]}-----"
-            BackgroundBlurPictPath = path[1]
-        catch e
-            echo "bg:#{e}"
-        BackgroundBlurPictPath = DEFAULT_BG if not BackgroundBlurPictPath?
-        echo "BackgroundBlurPictPath final:#{BackgroundBlurPictPath}"
-        return BackgroundBlurPictPath
-
     get_default_username:->
         try
             if APP is "Greeter"
@@ -170,11 +146,6 @@ class Accounts
         @_current_username = @get_default_username()
         @_current_userid = @get_user_id(@_current_username)
         return @get_user_bg(uid)
-
-    get_current_user_blur_background:->
-        @_current_username = @get_default_username()
-        @_current_userid = @get_user_id(@_current_username)
-        return @get_blur_background(@_current_userid)
 
     is_disable_user :(uid)->
         disable = false
