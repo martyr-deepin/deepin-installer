@@ -95,6 +95,7 @@ sigterm_cb (int sig)
     installer_finish_install ();
 }
 
+#ifdef NDEBUG
 #include <fcntl.h>
 void redirect_log()
 {
@@ -106,10 +107,13 @@ void redirect_log()
     dup2(log_file, 1);
     dup2(log_file, 2);
 }
+#endif
 
 int main(int argc, char **argv)
 {
+#ifdef NDEBUG
     redirect_log();
+#endif
     gtk_init (&argc, &argv);
 
     setlocale(LC_MESSAGES, "");
