@@ -77,28 +77,36 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar
     return result;
 }
 
-gchar*
-get_mounted_partition_used (const gchar *path) 
+gdouble
+get_mounted_partition_free (const gchar *path) 
 {
     gchar *result = NULL;
     gchar *output = NULL;
     gint exit_status;
 
     if (path == NULL) {
-        g_warning ("get mounted partition used:path NULL\n");
-        return result;
+        g_warning ("get mounted partition free:path NULL\n");
+        return -1;
     }
 
-    gchar *cmd = g_strdup_printf ("sh -c \"df -h %s | awk '{ print $3 }'\" ", path);
+    gchar *cmd = g_strdup_printf ("sh -c \"df %s | tail -1 | awk '{ print $4 }'\" ", path);
+    g_message("get_mounted_partition_free cmd:==%s==",cmd);
     g_spawn_command_line_sync (cmd, &output, NULL, &exit_status, NULL);
     if (exit_status == -1 ) {
-        g_warning ("get mounted partition used:run command %s failed\n", cmd);
+        g_warning ("get mounted partition free:run command %s failed\n", cmd);
+        g_free (cmd);
+        g_free (output);
+        g_free (result);
+        return -1;
     }
     g_free (cmd);
     result = g_strdup (output);
     g_free (output);
-
-    return result;
+    
+    gdouble free = g_ascii_strtod (result, NULL);
+    g_free(result);
+    g_message("get_mounted_partition_free:\n%s\n===%f===",path,free);
+    return free;
 }
 
 double
@@ -403,6 +411,7 @@ out:
 
 double _get_ntfs_free (const gchar *path)
 {
+    g_message("_get_ntfs_free:%s",path);
     gchar *ntfs_cmd = g_find_program_in_path ("ntfsinfo");
     if (ntfs_cmd == NULL) {
         g_warning ("_get_ntfs_free:ntfsresize not installed\n");
@@ -412,20 +421,21 @@ double _get_ntfs_free (const gchar *path)
     GError* error = NULL;
     char* cmd = g_strdup_printf ("%s -m %s", ntfs_cmd, path);
     char* output = NULL;
+    g_message("_get_ntfs_free:%s",cmd);
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("_get_ntfs_free:run cmd %s failed:%s\n", cmd, error->message);
-	g_error_free(error);
-	g_free(output);
-	return -1;
+	    g_error_free(error);
+	    g_free(output);
+        return -1;
     }
 
     char* cluster_size_str = get_matched_string(output, "Cluster Size:\\s+(\\d+)");
 
     if (cluster_size_str == NULL) {
         g_warning ("_get_ntfs_free:get cluster_size failed :%s\n", output);
-	g_free(output);
-	return -1;
+	    g_free(output);
+	    return get_mounted_partition_free(path);
     }
     long cluster_size = (int)g_ascii_strtod (cluster_size_str, NULL);
     g_free(cluster_size_str);
@@ -459,6 +469,7 @@ get_partition_free (gpointer data)
     gchar *path = handler->path;
     gchar *fs = handler->fs;
     gchar *part = handler->part;
+
 
     if (g_strcmp0 (fs, "ext4") == 0) {
         free = _get_ext4_free (path);
@@ -500,7 +511,7 @@ get_partition_free (gpointer data)
         g_warning ("get partition free:not support for fs %s\n", fs);
     }
 
-    //g_warning ("js_post message for used:part->%s, free->%f, fs->%s, path->%s", part, free, fs, path);
+    g_message ("js_post message for used:part->%s, free->%f, fs->%s, path->%s", part, free, fs, path);
     GRAB_CTX ();
     JSObjectRef message = json_create ();
     json_append_string (message, "part", part);

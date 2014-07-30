@@ -35,7 +35,7 @@ struct FsHandler {
     gchar *part;
 };
 
-gchar *get_mounted_partition_used (const gchar *path);
+double get_mounted_partition_free (const gchar *path);
 
 gpointer get_partition_free (gpointer data);
 
