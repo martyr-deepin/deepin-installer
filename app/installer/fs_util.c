@@ -354,12 +354,13 @@ _get_btrfs_free (const gchar *path)
     }
 
     cmd = g_strdup_printf ("%s filesystem show %s", btrfs_cmd, path);
+    /*g_message("_get_btrfs_free cmd:===%s===",cmd);*/
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("_get_btrfs_free:run cmd %s failed\n", cmd);
         goto out;
     }
-
+    g_message("====\n%s\n===",output);
     total = get_matched_string_old (output, "size.*used");
     if (total == NULL) {
         g_warning ("_get_btrfs_free:get total failed\n");
@@ -373,6 +374,9 @@ _get_btrfs_free (const gchar *path)
     }
 
     total_size = g_ascii_strtod (total_num, NULL);
+    if ((g_strrstr (total, "GB") != NULL) || (g_strrstr (total, "GiB") != NULL)){
+        total_size = total_size * 1024 * 1024;
+    }
 
     space_inuse = get_matched_string_old (output, "used.*path");
     if (space_inuse == NULL) {
@@ -386,12 +390,14 @@ _get_btrfs_free (const gchar *path)
         goto out;
     }
     used_size = g_ascii_strtod (used_num, NULL);
-
-    free = total_size - used_size;
-
-    if (g_strrstr (total, "GB") != NULL) {
-        free = free * 1024 * 1024;
+    if ((g_strrstr (space_inuse, "GB") != NULL) || (g_strrstr (space_inuse, "GiB") != NULL)){
+        used_size = used_size * 1024 * 1024;
     }
+
+    /*g_message("KiB::::total:%s,total_num:%s,total_size:%f",total,total_num,total_size);*/
+    /*g_message("KiB::::space_inuse:%s,used_num:%s,used_size:%f",space_inuse,used_num,used_size);*/
+    free = (total_size - used_size) * 1024;
+    g_message("_get_btrfs_free:%f = (%f  - %f ) * 1024",free,total_size,used_size);
     goto out;
 
 out:
@@ -406,6 +412,7 @@ out:
     g_free (used_num);
     g_free (space_inuse);
     g_free (output);
+    g_message("_get_btrfs_free :%f",free);
     return free;
 }
 
