@@ -2,7 +2,7 @@ package main
 
 import "io/ioutil"
 import "pkg.linuxdeepin.com/lib/dbus"
-import log "pkg.linuxdeepin.com/lib/logger"
+import log "pkg.linuxdeepin.com/lib/log"
 import "os"
 import "os/exec"
 
