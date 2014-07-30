@@ -103,7 +103,7 @@ get_mounted_partition_free (const gchar *path)
     result = g_strdup (output);
     g_free (output);
     
-    gdouble free = g_ascii_strtod (result, NULL);
+    gdouble free = g_ascii_strtod (result, NULL) * 1024;
     g_free(result);
     g_message("get_mounted_partition_free:\n%s\n===%f===",path,free);
     return free;
@@ -411,7 +411,6 @@ out:
 
 double _get_ntfs_free (const gchar *path)
 {
-    g_message("_get_ntfs_free:%s",path);
     gchar *ntfs_cmd = g_find_program_in_path ("ntfsinfo");
     if (ntfs_cmd == NULL) {
         g_warning ("_get_ntfs_free:ntfsresize not installed\n");
