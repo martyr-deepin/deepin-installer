@@ -745,8 +745,8 @@ class Part extends Page
                     _("Partition is detected to have been mounted.\nAre you sure you want to unmount it?"),
                     @unmount_part
                 )
+                @unmount_model.show_at(document.body)
             else @unmount_part()
-            @unmount_model.show_at(document.body)
         @linemap.element.setAttribute("style", "display:block")
 
         if DCore.Installer.system_support_efi()
