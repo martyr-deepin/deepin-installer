@@ -19,6 +19,7 @@
 
 __focused_layout_item = null
 
+ACCOUNTS = "com.deepin.daemon.Accounts"
 __illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/ '
 
 __selected_zone_index = 8
@@ -776,10 +777,10 @@ class WelcomeFormItem extends Widget
         if @id == "username"
             if @input.value in DCore.Installer.get_system_users()
                 return false
-            if not @account_dbus? then @account_dbus = DCore.DBus.sys("com.deepin.daemon.Account")
+            if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
             return @account_dbus?.IsUsernameValid_sync(@input.value)
         if @id == "password"
-            if not @account_dbus? then @account_dbus = DCore.DBus.sys("com.deepin.daemon.Account")
+            if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
             return @account_dbus?.IsPasswordValid(@input.value)
         else if @id == "confirmpassword"
             if @input.value != Widget.look_up("password")?.input.value
