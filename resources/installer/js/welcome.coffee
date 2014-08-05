@@ -775,14 +775,17 @@ class WelcomeFormItem extends Widget
         if not @input.value? or @input.value.length == 0
             return false
         if @id == "username"
+            echo "username:#{@input.value}"
             if @input.value in DCore.Installer.get_system_users()
                 return false
             if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
             return @account_dbus?.IsUsernameValid_sync(@input.value)
         if @id == "password"
+            echo "password:#{@input.value}"
             if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
-            return @account_dbus?.IsPasswordValid(@input.value)
+            return @account_dbus?.IsPasswordValid_sync(@input.value)
         else if @id == "confirmpassword"
+            echo "confirmpassword:#{@input.value}"
             if @input.value != Widget.look_up("password")?.input.value
                 return false
         return true
