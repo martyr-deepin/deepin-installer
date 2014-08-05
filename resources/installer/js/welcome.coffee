@@ -70,13 +70,13 @@ update_keyboard_text = (tri) ->
     echo "current_layout:#{current_layout}"
     keyboardSet_div?.innerText = current_layout
     keyboardSet_div?.title = current_layout
-    
+
     x = keyboardSet_div?.offsetLeft - 15
     tri?.style.left = x if x > 0
 
 update_timezone_text = (tri) ->
     utc = cu.utc for cu in city_utc when cu.city is __selected_timezone
-    
+
     city = __selected_timezone.split("/")[1]
     right = DCore.dgettext("tzdata", city)
     if not right? then right = city
@@ -85,7 +85,7 @@ update_timezone_text = (tri) ->
     echo "current_timezone:#{current_timezone}"
     timezoneSet_div?.innerText = current_timezone
     timezoneSet_div?.title = current_timezone
-    
+
     x = timezoneSet_div?.offsetLeft - 15
     tri?.style.left = x if x > 0
 
@@ -704,6 +704,7 @@ class Timezone extends Widget
 class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
+        @account_dbus = null
         @input = create_element("input", "", @element)
         @change = false
         @fill_widget()
@@ -775,12 +776,11 @@ class WelcomeFormItem extends Widget
         if @id == "username"
             if @input.value in DCore.Installer.get_system_users()
                 return false
-            for c in @input.value
-                if c in __illegal_keys
-                    return false
+            if not @account_dbus? then @account_dbus = DCore.DBus.sys("com.deepin.daemon.Account")
+            return @account_dbus?.IsUsernameValid_sync(@input.value)
         if @id == "password"
-            if @input.value.length > 16
-                return false
+            if not @account_dbus? then @account_dbus = DCore.DBus.sys("com.deepin.daemon.Account")
+            return @account_dbus?.IsPasswordValid(@input.value)
         else if @id == "confirmpassword"
             if @input.value != Widget.look_up("password")?.input.value
                 return false
@@ -823,11 +823,9 @@ class Account extends Widget
         if !__init_parted_finish
             return false
         if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
-            echo "check_start_ready true"
             @next_step?.next_bt_enable()
             return true
         else
-            echo "check_start_ready false"
             @next_step?.next_bt_disable()
             return false
 
