@@ -717,6 +717,13 @@ class WelcomeFormItem extends Widget
             @check_capslock()
             @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
         )
+        @input.addEventListener("focus", (e) =>
+            @check_capslock()
+            @input.setAttribute("style", "")
+            @check_valid()
+            Widget.look_up("account")?.check_start_ready()
+        )
+
         @input.addEventListener("blur", (e) =>
             @check_capslock()
             @input.setAttribute("style", "")
