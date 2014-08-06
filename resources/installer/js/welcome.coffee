@@ -767,30 +767,30 @@ class WelcomeFormItem extends Widget
             @warn = create_element("div", "CapsWarning", @element)
 
     check_valid: ->
-        if not @is_valid()
+        valid = @is_valid()
+        echo valid
+        if not valid[0]
             if @input.value.length != 0
                 @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
+                #TODO:tootip for unvalid msg
         else
             @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
 
     is_valid: ->
         if not @input.value? or @input.value.length == 0
-            return false
+            return [false,_("nothing input")]
         if @id == "username"
-            echo "username:#{@input.value}"
-            if @input.value in DCore.Installer.get_system_users()
-                return false
             if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
             return @account_dbus?.IsUsernameValid_sync(@input.value)
         if @id == "password"
-            echo "password:#{@input.value}"
             if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
-            return @account_dbus?.IsPasswordValid_sync(@input.value)
+            if @account_dbus?.IsPasswordValid_sync(@input.value)
+                return [true,""]
+            else return [false,_("wrong password")]
         else if @id == "confirmpassword"
-            echo "confirmpassword:#{@input.value}"
             if @input.value != Widget.look_up("password")?.input.value
-                return false
-        return true
+                return [false,_("different password")]
+        return [true,""]
 
     get_input_value: ->
         return @input.value
@@ -828,7 +828,7 @@ class Account extends Widget
     check_start_ready: ->
         if !__init_parted_finish
             return false
-        if @username.is_valid() and @hostname.is_valid() and @password.is_valid() and @confirmpassword.is_valid()
+        if @username.is_valid()[0] and @hostname.is_valid()[0] and @password.is_valid()[0] and @confirmpassword.is_valid()[0]
             @next_step?.next_bt_enable()
             return true
         else
