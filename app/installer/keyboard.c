@@ -24,6 +24,7 @@
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
 #include <libxklavier/xklavier.h>
+#include "utils.h"
 
 #define KEYBOARD_DETECT_FILE    "/usr/share/console-setup/pc105.tree"
 
@@ -453,10 +454,16 @@ JSObjectRef installer_keyboard_detect_get_keycodes ()
     }
     UNGRAB_CTX ();
     return json;
-}
-
+} 
 JS_EXPORT_API 
 gchar* installer_keyboard_detect_get_result ()
 {
     return g_strdup (result);
+}
+
+JS_EXPORT_API
+void installer_set_layout(const gchar* layout)
+{
+    const gchar* cmd = g_strdup_printf("/usr/bin/setxkbmap -layout %s",layout);
+    spawn_command_sync(cmd,TRUE);
 }

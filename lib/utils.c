@@ -145,7 +145,7 @@ char* get_name_by_pid(int pid)
     if (fd == -1) {
         return NULL;
     } else {
-        int dump = read(fd, content, LEN);
+        int dump __attribute__((unused)) = read(fd, content, LEN);
         close(fd);
     }
     for (int i=0; i<LEN; i++) {
@@ -214,6 +214,23 @@ gboolean write_to_file(const char* path, const char* content, size_t size/* if 0
         return FALSE;
     }
 }
+
+int close_std_stream()
+{
+    //close stdin, stdout, stderr
+    //redirect them to /dev/null
+    int fd;
+    close(STDIN_FILENO);
+    fd=open("/dev/null", O_RDWR);
+    if(fd!=STDIN_FILENO)
+        return 1;
+    if(dup2(STDIN_FILENO, STDOUT_FILENO)!=STDOUT_FILENO)
+        return 1;
+    if(dup2(STDIN_FILENO, STDERR_FILENO)!=STDERR_FILENO)
+        return 1;
+    return 0;
+}
+
 // reparent to init process.
 int reparent_to_init ()
 {
@@ -227,7 +244,7 @@ int reparent_to_init ()
 	    _exit(EXIT_SUCCESS);
     }
 }
-static void _consolidate_cmd_line (int subargc, char*** subargv_ptr)
+static void _consolidate_cmd_line (int subargc G_GNUC_UNUSED, char*** subargv_ptr G_GNUC_UNUSED)
 {
     //recursively consolidate
 }
@@ -263,18 +280,9 @@ void parse_cmd_line (int* argc_ptr, char*** argv_ptr)
 
     if (should_reparent)
     {
-	//close stdin, stdout, stderr
-	//redirect them to /dev/null
-	int fd;
-	close(STDIN_FILENO);
-	fd=open("/dev/null", O_RDWR);
-	//FIXME: shall we exit?
-	if(fd!=STDIN_FILENO)
-	    return;
-	if(dup2(STDIN_FILENO, STDOUT_FILENO)!=STDOUT_FILENO)
-	    return;
-	if(dup2(STDIN_FILENO, STDERR_FILENO)!=STDERR_FILENO)
-	    return;
+        //FIXME: shall we exit?
+        if (close_std_stream())
+            return;
 	reparent_to_init();
     }
     if (enable_debug)
@@ -393,5 +401,42 @@ char* bg_blur_pict_get_dest_path (const char* src_uri)
     g_free (file);
 
     return path;
+}
+
+gboolean is_livecd ()
+{
+    const gchar *filename = "/proc/cmdline";
+    gchar *contents = NULL;
+    gboolean result = FALSE;
+    gsize length = 0;
+    if (g_file_get_contents(filename,&contents,&length,NULL))
+    {
+        gchar* ptr = g_strstr_len(contents, -1, "boot=casper");
+        if (ptr == NULL) {
+            result =  FALSE;
+        } else {
+            result = TRUE;
+            g_message("====is livecd os=====");
+        }
+        g_free(contents);
+    }
+    return result;
+}
+
+void spawn_command_sync (const char* command,gboolean sync)
+{
+    GError *error = NULL;
+    const gchar *cmd = g_strdup_printf ("%s",command);
+    g_message ("g_spawn_command_line_sync:%s",cmd);
+    if(sync){
+        g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+    }else{
+        g_spawn_command_line_async (cmd, &error);
+    }
+    if (error != NULL) {
+        g_warning ("%s failed:%s\n",cmd, error->message);
+        g_error_free (error);
+        error = NULL;
+    }
 }
 

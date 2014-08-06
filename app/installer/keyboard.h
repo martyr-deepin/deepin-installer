@@ -47,4 +47,6 @@ JS_EXPORT_API JSObjectRef installer_keyboard_detect_get_keycodes ();
 
 JS_EXPORT_API gchar* installer_keyboard_detect_get_result ();
 
+JS_EXPORT_API void installer_set_layout(const gchar* layout);
+
 #endif

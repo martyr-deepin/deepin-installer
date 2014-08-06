@@ -75,6 +75,8 @@ update_keyboard_text = (tri) ->
     x = keyboardSet_div?.offsetLeft - 15
     tri?.style.left = x if x > 0
 
+    DCore.Installer.set_layout(__selected_layout)
+
 update_timezone_text = (tri) ->
     utc = cu.utc for cu in city_utc when cu.city is __selected_timezone
 
