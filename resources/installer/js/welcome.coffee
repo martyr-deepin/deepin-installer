@@ -707,7 +707,9 @@ class Timezone extends Widget
 class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
+        @tooltip = null
         @account_dbus = null
+        @valid = []
         @input = create_element("input", "", @element)
         @change = false
         @fill_widget()
@@ -731,7 +733,8 @@ class WelcomeFormItem extends Widget
                 else
                     @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
 
-            @check_valid()
+            if @check_valid() then @tooltip?.hide()
+            else @set_tooltip(@valid[1])
             Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("change", (e) =>
@@ -766,15 +769,28 @@ class WelcomeFormItem extends Widget
             @input.classList.add("PasswordStyle")
             @warn = create_element("div", "CapsWarning", @element)
 
+
+    set_tooltip: (text) ->
+        if @tooltip == null
+            #@tooltip = new ToolTip(@input, text)
+            @tooltip = new ArrowToolTip(@input, text)
+            @tooltip.set_delay_time(200)  # set delay time to the same as scale time
+        @tooltip.set_text(text)
+        @tooltip.show()
+
+    destroy_tooltip:->
+        @tooltip?.hide()
+        @tooltip?.destroy()
+        @tooltip = null
+
     check_valid: ->
-        valid = @is_valid()
-        echo valid
-        if not valid[0]
+        @valid = @is_valid()
+        if not @valid[0]
             if @input.value.length != 0
                 @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
-                #TODO:tootip for unvalid msg
         else
             @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
+        return @valid[0]
 
     is_valid: ->
         if not @input.value? or @input.value.length == 0
