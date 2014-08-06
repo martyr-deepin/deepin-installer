@@ -27,7 +27,10 @@
 #include "utils.h"
 
 #define KEYBOARD_DETECT_FILE    "/usr/share/console-setup/pc105.tree"
-
+/**
+ setxkbmap -query
+ can get current keyboard layout
+ **/
 XklConfigRec *config_rec = NULL;
 GHashTable *layout_variants_hash = NULL;
 GHashTable *layout_desc_hash = NULL;
