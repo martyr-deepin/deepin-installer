@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-07 09:56+0800\n"
+"POT-Creation-Date: 2014-08-07 10:00+0800\n"
 "PO-Revision-Date: 2014-07-03 04:47+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -203,8 +203,8 @@ msgid "nothing input"
 msgstr "未输入"
 
 #: ../resources/installer/js/welcome.coffee:812
-msgid "密码不合法"
-msgstr "密码"
+msgid "wrong password"
+msgstr "密码不合法"
 
 #: ../resources/installer/js/welcome.coffee:815
 msgid "different password"
