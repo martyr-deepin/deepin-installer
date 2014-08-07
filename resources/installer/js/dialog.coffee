@@ -1,5 +1,5 @@
 class Dialog extends Widget
-    constructor: (@id, @with_cancel, @cb) ->
+    constructor: (@id, @with_cancel, @ok_cb,@cancel_cb) ->
         super
         @title = create_element("div", "DialogTitle", @element)
         @title_txt = create_element("div", "DialogTxt", @title)
@@ -14,12 +14,13 @@ class Dialog extends Widget
         @ok.innerText = _("OK")
         @ok.addEventListener("click", (e) =>
             @hide_dialog()
-            @cb?()
+            @ok_cb?()
         )
         if @with_cancel
             @cancel = create_element("div", "", @foot)
             @cancel.innerText = _("Cancel")
             @cancel.addEventListener("click", (e) =>
+                @cancel_cb?()
                 @hide_dialog()
             )
         else
@@ -38,10 +39,13 @@ class Dialog extends Widget
         @destroy()
         __board.setAttribute("style", "display:none")
 
+    set_button_text:(@ok_text, @cancel_text) ->
+        @ok?.innerText = @ok_text if @ok_text?
+        @cancel?.innerText = @cancel_text if @cancel_text?
 
 class PromptDialog extends Dialog
-    constructor: (title, content, ok_cb) ->
-        super("PromptDialog", true, ok_cb)
+    constructor: (title, content, ok_cb,cancel_cb) ->
+        super("PromptDialog", true, ok_cb,cancel_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = title
         @root_tips = create_element("div", "dialog_tips", @content)

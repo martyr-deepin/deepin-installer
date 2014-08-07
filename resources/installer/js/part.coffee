@@ -753,30 +753,36 @@ class Part extends Page
             @part_uefi.style.display = "-webkit-box"
             @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 90, 20)
             @grub_dropdown.show_drop()
+
+            click_cb = =>
+                @grub_radio?.checked = false
+                @uefi_radio?.checked = true
+
+            ok_cb = =>
+                @grub_select?.style.display = "none"
+                @grub_radio?.checked = false
+                @uefi_radio?.checked = true
+
+            cancel_cb = =>
+                @grub_select?.style.display = "block"
+                @grub_radio?.checked = true
+                @uefi_radio?.checked = false
+
+            cancel_cb()
             @uefi_radio.addEventListener("click",(e)=>
                 e.stopPropagation()
-                echo "uefi_radio click"
-                @uefi_radio.checked = true
                 if __selected_disk is null then return
+                click_cb()
                 if not DCore.Installer.disk_is_gpt(__selected_disk)
-                    @grub_select.style.display = "block"
-                    @uefi_radio.checked = false
                     new PromptDialog(
                         _("Warning"),
-                        _("UEFI-native installation only supports GPT-formatted disk. It will lose all disk data if you insist on installing.")
-                        =>
-                            @grub_select.style.display = "none"
-                            @grub_radio.checked = false
-                            @uefi_radio.checked = true
+                        _("UEFI-native installation only supports GPT-formatted disk. It will lose all disk data if you insist on installing."),
+                        ok_cb,
+                        cancel_cb
                     ).show_at(document.body)
-                else
-                    @grub_select.style.display = "none"
-                    @grub_radio.checked = false
+                else ok_cb()
             )
-            @grub_radio.addEventListener("click",=>
-                @grub_select.style.display = "block"
-                @uefi_radio.checked = false
-            )
+            @grub_radio.addEventListener("click",cancel_cb)
         else
             @part_uefi.style.display = "none"
             @grub_radio.style.display = "none"
