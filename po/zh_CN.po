@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-23 18:23+0800\n"
+"POT-Creation-Date: 2014-08-07 09:56+0800\n"
 "PO-Revision-Date: 2014-07-03 04:47+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -65,7 +65,7 @@ msgid "Formatting"
 msgstr "格式化"
 
 #: ../resources/installer/js/part.coffee:499
-#: ../resources/installer/js/dialog.coffee:62
+#: ../resources/installer/js/dialog.coffee:69
 msgid "Delete Partition"
 msgstr "删除分区"
 
@@ -105,7 +105,7 @@ msgid ""
 msgstr "UEFI模式安装需要ESP，请创建一个100MB以上的efi格式分区。"
 
 #: ../resources/installer/js/part.coffee:654
-#: ../resources/installer/js/dialog.coffee:110
+#: ../resources/installer/js/dialog.coffee:117
 msgid "Add Partition"
 msgstr "添加分区"
 
@@ -114,12 +114,12 @@ msgid "Can't create a partition here"
 msgstr "不能在此创建分区"
 
 #: ../resources/installer/js/part.coffee:662
-#: ../resources/installer/js/part.coffee:761
+#: ../resources/installer/js/part.coffee:765
 msgid "Warning"
 msgstr "警告"
 
 #: ../resources/installer/js/part.coffee:663
-#: ../resources/installer/js/part.coffee:762
+#: ../resources/installer/js/part.coffee:766
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
@@ -134,11 +134,11 @@ msgstr "UEFI"
 msgid "Boot Loader"
 msgstr "系统引导器"
 
-#: ../resources/installer/js/part.coffee:732
+#: ../resources/installer/js/part.coffee:744
 msgid "Unmount Partition"
 msgstr "卸载分区"
 
-#: ../resources/installer/js/part.coffee:733
+#: ../resources/installer/js/part.coffee:745
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
@@ -146,67 +146,79 @@ msgstr ""
 "检测到已有分区被挂载,\n"
 "确定要卸载已挂载分区？"
 
-#: ../resources/installer/js/part.coffee:783
+#: ../resources/installer/js/part.coffee:787
 msgid "Simple Mode"
 msgstr "简单模式"
 
-#: ../resources/installer/js/part.coffee:794
+#: ../resources/installer/js/part.coffee:798
 msgid "Expert mode"
 msgstr "专家模式"
 
-#: ../resources/installer/js/welcome.coffee:190
+#: ../resources/installer/js/welcome.coffee:193
 msgid "Yes"
 msgstr "是"
 
-#: ../resources/installer/js/welcome.coffee:195
+#: ../resources/installer/js/welcome.coffee:198
 msgid "No"
 msgstr "否"
 
-#: ../resources/installer/js/welcome.coffee:290
+#: ../resources/installer/js/welcome.coffee:293
 msgid "Please press one of the following keys."
 msgstr "请按下面的一个按键。"
 
-#: ../resources/installer/js/welcome.coffee:296
+#: ../resources/installer/js/welcome.coffee:299
 msgid "Please confirm you have the following keys."
 msgstr "请确认您拥有以下按键。"
 
-#: ../resources/installer/js/welcome.coffee:339
+#: ../resources/installer/js/welcome.coffee:342
 msgid "Detect Layout"
 msgstr "探测布局"
 
-#: ../resources/installer/js/welcome.coffee:345
+#: ../resources/installer/js/welcome.coffee:348
 msgid "View Current"
 msgstr "查看当前"
 
-#: ../resources/installer/js/welcome.coffee:503
+#: ../resources/installer/js/welcome.coffee:506
 msgid "Please select or search your location."
 msgstr "请选择或搜索您所在的区域。"
 
-#: ../resources/installer/js/welcome.coffee:749
+#: ../resources/installer/js/welcome.coffee:763
 msgid "User Name"
 msgstr "用户名"
 
-#: ../resources/installer/js/welcome.coffee:752
+#: ../resources/installer/js/welcome.coffee:766
 msgid "Computer Name"
 msgstr "计算机名"
 
-#: ../resources/installer/js/welcome.coffee:755
+#: ../resources/installer/js/welcome.coffee:769
 msgid "Password"
 msgstr "密码"
 
-#: ../resources/installer/js/welcome.coffee:760
+#: ../resources/installer/js/welcome.coffee:774
 msgid "Retype Password"
 msgstr "确认密码"
 
-#: ../resources/installer/js/welcome.coffee:809
+#: ../resources/installer/js/welcome.coffee:804
+msgid "nothing input"
+msgstr "未输入"
+
+#: ../resources/installer/js/welcome.coffee:812
+msgid "密码不合法"
+msgstr "密码"
+
+#: ../resources/installer/js/welcome.coffee:815
+msgid "different password"
+msgstr "密码不一致"
+
+#: ../resources/installer/js/welcome.coffee:838
 msgid "Next"
 msgstr "下一步"
 
-#: ../resources/installer/js/welcome.coffee:862
+#: ../resources/installer/js/welcome.coffee:889
 msgid "Time Zone"
 msgstr "时区"
 
-#: ../resources/installer/js/welcome.coffee:867
+#: ../resources/installer/js/welcome.coffee:894
 msgid "Keyboard"
 msgstr "键盘"
 
@@ -273,31 +285,31 @@ msgstr "确定"
 msgid "Cancel"
 msgstr "取消"
 
-#: ../resources/installer/js/dialog.coffee:64
+#: ../resources/installer/js/dialog.coffee:71
 msgid "Are you sure you want to delete this partition?"
 msgstr "确认要删除该分区？"
 
-#: ../resources/installer/js/dialog.coffee:77
+#: ../resources/installer/js/dialog.coffee:84
 msgid "Formatting Partition"
 msgstr "格式化分区"
 
-#: ../resources/installer/js/dialog.coffee:79
+#: ../resources/installer/js/dialog.coffee:86
 msgid "Are you sure you want to format this partition?"
 msgstr "确定要格式化该分区？"
 
-#: ../resources/installer/js/dialog.coffee:88
+#: ../resources/installer/js/dialog.coffee:95
 msgid "Proceed with installation"
 msgstr "确认安装"
 
-#: ../resources/installer/js/dialog.coffee:97
+#: ../resources/installer/js/dialog.coffee:104
 msgid "Deepin OS will be installed to freespace."
 msgstr "Deepin操作系统将安装到空余空间。"
 
-#: ../resources/installer/js/dialog.coffee:99
+#: ../resources/installer/js/dialog.coffee:106
 msgid "Deepin OS will be installed to "
 msgstr "Deepin操作系统将安装到 "
 
-#: ../resources/installer/js/dialog.coffee:99
+#: ../resources/installer/js/dialog.coffee:106
 msgid ""
 "\n"
 "The partition will be formated if continue the installation, please backup "
@@ -306,47 +318,47 @@ msgstr ""
 "\n"
 "继续安装会格式化该分区，请做好重要数据备份\n"
 
-#: ../resources/installer/js/dialog.coffee:99
+#: ../resources/installer/js/dialog.coffee:106
 msgid "Do you want to continue the installation ?"
 msgstr "是否继续安装？"
 
-#: ../resources/installer/js/dialog.coffee:130
+#: ../resources/installer/js/dialog.coffee:137
 msgid "Type:"
 msgstr "类型："
 
-#: ../resources/installer/js/dialog.coffee:136
+#: ../resources/installer/js/dialog.coffee:143
 msgid "Primary"
 msgstr "主分区"
 
-#: ../resources/installer/js/dialog.coffee:141
+#: ../resources/installer/js/dialog.coffee:148
 msgid "Logical"
 msgstr "逻辑分区"
 
-#: ../resources/installer/js/dialog.coffee:171
+#: ../resources/installer/js/dialog.coffee:178
 msgid "Size:"
 msgstr "大小："
 
-#: ../resources/installer/js/dialog.coffee:215
+#: ../resources/installer/js/dialog.coffee:222
 msgid "Align:"
 msgstr "对齐："
 
-#: ../resources/installer/js/dialog.coffee:221
+#: ../resources/installer/js/dialog.coffee:228
 msgid "Begin"
 msgstr "起始"
 
-#: ../resources/installer/js/dialog.coffee:226
+#: ../resources/installer/js/dialog.coffee:233
 msgid "End"
 msgstr "结束"
 
-#: ../resources/installer/js/dialog.coffee:246
+#: ../resources/installer/js/dialog.coffee:253
 msgid "Filesystem:"
 msgstr "文件系统："
 
-#: ../resources/installer/js/dialog.coffee:270
+#: ../resources/installer/js/dialog.coffee:277
 msgid "Mount:"
 msgstr "挂载："
 
-#: ../resources/installer/js/dialog.coffee:303
+#: ../resources/installer/js/dialog.coffee:310
 msgid "Please enter a valid partition size."
 msgstr "请输入一个有效的分区大小数值。"
 
