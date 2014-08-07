@@ -11,20 +11,19 @@ class Dialog extends Widget
         @content = create_element("div", "DialogContent", @element)
         @foot = create_element("div", "DialogBtn", @element)
         @ok = create_element("div", "", @foot)
-        @ok.innerText = _("OK")
         @ok.addEventListener("click", (e) =>
             @hide_dialog()
             @ok_cb?()
         )
         if @with_cancel
             @cancel = create_element("div", "", @foot)
-            @cancel.innerText = _("Cancel")
             @cancel.addEventListener("click", (e) =>
                 @cancel_cb?()
                 @hide_dialog()
             )
         else
             @ok.setAttribute("style", "margin:31px 145px 0 0")
+        @set_button_text()
         @show_dialog()
 
     show_at: (parent) ->
@@ -39,9 +38,9 @@ class Dialog extends Widget
         @destroy()
         __board.setAttribute("style", "display:none")
 
-    set_button_text:(@ok_text, @cancel_text) ->
-        @ok?.innerText = @ok_text if @ok_text?
-        @cancel?.innerText = @cancel_text if @cancel_text?
+    set_button_text:(@ok_text = _("OK"), @cancel_text = _("Cancel")) ->
+        @ok?.innerText = @ok_text
+        @cancel?.innerText = @cancel_text
 
 class PromptDialog extends Dialog
     constructor: (title, content, ok_cb,cancel_cb) ->
