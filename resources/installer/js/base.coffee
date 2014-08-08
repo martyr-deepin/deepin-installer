@@ -152,7 +152,9 @@ class DropDownItem extends Widget
     do_click: (e) ->
         if @key != @dropdownlist.dropdown.selected
             if @dropdownlist.dropdown.on_change_cb?
-                @dropdownlist.dropdown.on_change_cb(@key)
+                if @dropdownlist.dropdown.on_change_cb(@key) is false
+                    @dropdownlist.hide()
+                    return
         @dropdownlist.dropdown.set_selected(@key)
         @dropdownlist.hide()
 

@@ -336,6 +336,14 @@ class PartTableItem extends Widget
     mp_change_cb: (partid, mp) ->
         if mp.substring(0,1) != "/"
             mp = "unused"
+
+        if mp is "/boot" and v_part_info[partid]["length"] < BOOT_SIZE_MIN
+            new MessageDialog(
+                _("Waring"),
+                _("You  may not boot due to too small space of /boot mount point, please improve the space to 300M at least.")
+            ).show_at(document.body)
+            return false
+
         if mp in get_selected_mp()
             part = get_mp_partition(mp)
             if part? and part != partid

@@ -24,6 +24,8 @@ KB = 1024.0
 MB = 1024 * KB
 GB = 1024 * MB
 
+BOOT_SIZE_MIN = 300 * MB
+minimum_disk_size_required = 8 * GB
 
 DCore.signal_connect("used", (msg) ->
     v_part_info[msg.part]["used"] = msg.free
@@ -44,7 +46,6 @@ get_random_color = ->
 #disks = DCore.Installer.list_disks()
 disks = null
 
-minimum_disk_size_required = 8 * GB
 is_match_install_require = ->
     for disk in DCore.Installer.list_disks()
         if DCore.Installer.get_disk_size(disk) > minimum_disk_size_required

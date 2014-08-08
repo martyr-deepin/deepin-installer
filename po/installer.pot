@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-07 10:00+0800\n"
+"POT-Creation-Date: 2014-08-08 10:35+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,122 +31,132 @@ msgstr ""
 msgid "Install Here"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:460
+#: ../resources/installer/js/part.coffee:342
+msgid "Waring"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:343
+msgid ""
+"You  may not boot due to too small space of /boot mount point, please "
+"improve the space to 300M at least."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:468
 msgid "Disk"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:480
+#: ../resources/installer/js/part.coffee:488
 msgid "Device"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:482
+#: ../resources/installer/js/part.coffee:490
 msgid "Size"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:484
+#: ../resources/installer/js/part.coffee:492
 msgid "Free Space"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:486
+#: ../resources/installer/js/part.coffee:494
 msgid "Filesystem"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:488
+#: ../resources/installer/js/part.coffee:496
 msgid "Information"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:490
+#: ../resources/installer/js/part.coffee:498
 msgid "Mount Point"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:492
+#: ../resources/installer/js/part.coffee:500
 msgid "Formatting"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:499
-#: ../resources/installer/js/dialog.coffee:69
+#: ../resources/installer/js/part.coffee:507
+#: ../resources/installer/js/dialog.coffee:65
 msgid "Delete Partition"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:510
+#: ../resources/installer/js/part.coffee:518
 msgid "New Partition"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:577
+#: ../resources/installer/js/part.coffee:585
 msgid "Expert Mode"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:592
+#: ../resources/installer/js/part.coffee:600
 msgid "Install"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:618
+#: ../resources/installer/js/part.coffee:626
 msgid "Installation Tips"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:619
+#: ../resources/installer/js/part.coffee:627
 msgid "A root partition (/) is required."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:626
 #: ../resources/installer/js/part.coffee:634
+#: ../resources/installer/js/part.coffee:642
 msgid "Install Tips"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:627
+#: ../resources/installer/js/part.coffee:635
 msgid "UEFI-native installation only supports GPT-formatted disk."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:635
+#: ../resources/installer/js/part.coffee:643
 msgid ""
 "ESP needs to support in UEFI mode and please create a 100MB or more "
 "partition in efi format."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:654
-#: ../resources/installer/js/dialog.coffee:117
+#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/dialog.coffee:113
 msgid "Add Partition"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:655
+#: ../resources/installer/js/part.coffee:663
 msgid "Can't create a partition here"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:662
-#: ../resources/installer/js/part.coffee:765
+#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:786
 msgid "Warning"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:663
-#: ../resources/installer/js/part.coffee:766
+#: ../resources/installer/js/part.coffee:671
+#: ../resources/installer/js/part.coffee:787
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:690
+#: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:697
+#: ../resources/installer/js/part.coffee:705
 msgid "Boot Loader"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:744
+#: ../resources/installer/js/part.coffee:752
 msgid "Unmount Partition"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:745
+#: ../resources/installer/js/part.coffee:753
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:787
+#: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:798
+#: ../resources/installer/js/part.coffee:812
 msgid "Expert mode"
 msgstr ""
 
@@ -273,86 +283,86 @@ msgstr ""
 msgid "Reboot Now"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:14
+#: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:21
+#: ../resources/installer/js/dialog.coffee:41
 msgid "Cancel"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:71
+#: ../resources/installer/js/dialog.coffee:67
 msgid "Are you sure you want to delete this partition?"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:84
+#: ../resources/installer/js/dialog.coffee:80
 msgid "Formatting Partition"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:86
+#: ../resources/installer/js/dialog.coffee:82
 msgid "Are you sure you want to format this partition?"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:95
+#: ../resources/installer/js/dialog.coffee:91
 msgid "Proceed with installation"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:104
+#: ../resources/installer/js/dialog.coffee:100
 msgid "Deepin OS will be installed to freespace."
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:106
+#: ../resources/installer/js/dialog.coffee:102
 msgid "Deepin OS will be installed to "
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:106
+#: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
 "The partition will be formated if continue the installation, please backup "
 "the important data\n"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:106
+#: ../resources/installer/js/dialog.coffee:102
 msgid "Do you want to continue the installation ?"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:137
+#: ../resources/installer/js/dialog.coffee:133
 msgid "Type:"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:143
+#: ../resources/installer/js/dialog.coffee:139
 msgid "Primary"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:148
+#: ../resources/installer/js/dialog.coffee:144
 msgid "Logical"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:178
+#: ../resources/installer/js/dialog.coffee:174
 msgid "Size:"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:222
+#: ../resources/installer/js/dialog.coffee:218
 msgid "Align:"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:228
+#: ../resources/installer/js/dialog.coffee:224
 msgid "Begin"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:233
+#: ../resources/installer/js/dialog.coffee:229
 msgid "End"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:253
+#: ../resources/installer/js/dialog.coffee:249
 msgid "Filesystem:"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:277
+#: ../resources/installer/js/dialog.coffee:273
 msgid "Mount:"
 msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:310
+#: ../resources/installer/js/dialog.coffee:306
 msgid "Please enter a valid partition size."
 msgstr ""
 
