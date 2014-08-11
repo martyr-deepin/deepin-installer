@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-08 10:35+0800\n"
+"POT-Creation-Date: 2014-08-11 12:45+0800\n"
 "PO-Revision-Date: 2014-07-03 04:47+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -40,7 +40,9 @@ msgstr ""
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "您当前的/boot挂载点空间过小可能会导致无法开机，请将/boot挂载点空间提升到至少300M"
+msgstr ""
+"您当前的/boot挂载点空间过小可能会导致无法开机，请将/boot挂载点空间提升到至少"
+"300M"
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -259,31 +261,37 @@ msgstr "安装系统失败，请将安装日志反馈至Deepin团队。"
 msgid "Prepare for Installation"
 msgstr "正在为安装做准备"
 
-#: ../resources/installer/js/finish.coffee:42
+#: ../resources/installer/js/finish.coffee:37
+msgid ""
+"Tips: Please remove the installation media before reboot, so as to avoid "
+"reentering into the installation environment  in next time."
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:46
 msgid "Congratulations!"
 msgstr "祝贺您！"
 
-#: ../resources/installer/js/finish.coffee:43
+#: ../resources/installer/js/finish.coffee:47
 msgid "You need to restart the computer to complete installation."
 msgstr "需要重新启动以完成安装。"
 
-#: ../resources/installer/js/finish.coffee:45
+#: ../resources/installer/js/finish.coffee:49
 msgid "Reboot Later"
 msgstr "稍后重启"
 
-#: ../resources/installer/js/finish.coffee:47
+#: ../resources/installer/js/finish.coffee:51
 msgid "Installation Failed"
 msgstr "安装失败"
 
-#: ../resources/installer/js/finish.coffee:48
+#: ../resources/installer/js/finish.coffee:52
 msgid "Please send the log to Deepin Team."
 msgstr "请将安装日志反馈至Deepin团队。"
 
-#: ../resources/installer/js/finish.coffee:59
+#: ../resources/installer/js/finish.coffee:63
 msgid "Start Over"
 msgstr "再试一次"
 
-#: ../resources/installer/js/finish.coffee:76
+#: ../resources/installer/js/finish.coffee:80
 msgid "Reboot Now"
 msgstr "立即重启"
 

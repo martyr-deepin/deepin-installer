@@ -33,11 +33,15 @@ class Finish extends Page
         @info = create_element("div", "FinishInfo", @element)
         @desc = create_element("div", "Desc", @info)
         @detail = create_element("div", "Detail", @info)
+        @tips = create_element("div","Tips",@info)
+        tips_text  = _("Tips: Please remove the installation media before reboot, so as to avoid reentering into the installation environment  in next time.")
+        @tips.innerText = tips_text
 
         @ops = create_element("div", "FinishOps", @element)
 
         @later = create_element("div", "", @ops)
         @later_txt = create_element("div", "Txt", @later)
+
         if @succeed
             @desc.innerText = _("Congratulations!")
             @detail.innerText = _("You need to restart the computer to complete installation.")

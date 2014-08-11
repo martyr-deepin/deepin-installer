@@ -1,29 +1,38 @@
+.Finish{
+    text-shadow:1px 3px 5px rgba(0,0,0,0.35);
+}
+
 .FinishInfo {
     position:absolute;
     top:160px;
-    left:225px;
-    width:300px;
+    left:120px;
+    width:500px;
     height:60px;
     text-align:center;
 }
 
-.Finish .Desc {
+.Desc{
     font-size:30px;
     height:40px;
     line-height:40px;
-    text-shadow:1px 3px 5px rgba(0,0,0,0.35);
 }
 
-.Finish .Detail {
+.Detail{
+    margin-top:20px;
+    font-size:13px;
+    line-height:150%;
+    color:rgba(255,255,255,0.6);
+}
+
+.Tips{
+    margin-top:5px;
+    line-height:150%;
     font-size:14px;
-    height:20px;
-    line-height:20px;
     color:rgba(255,255,255,0.7);
 }
-
 .FinishOps {
     position:absolute;
-    top:300px;
+    top:320px;
     left:200px;
     width:350px;
     height:90px;
