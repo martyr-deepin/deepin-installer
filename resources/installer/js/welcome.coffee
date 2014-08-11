@@ -708,22 +708,15 @@ class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
         @tooltip = null
-        @account_dbus = null
         @valid = []
+        @invalid_msg = null
+        @account_dbus = null
         @input = create_element("input", "", @element)
         @change = false
         @fill_widget()
         @input.addEventListener("focus", (e) =>
             @check_capslock()
-            @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
         )
-        @input.addEventListener("focus", (e) =>
-            @check_capslock()
-            @input.setAttribute("style", "")
-            @check_valid()
-            Widget.look_up("account")?.check_start_ready()
-        )
-
         @input.addEventListener("blur", (e) =>
             @check_capslock()
             @input.setAttribute("style", "")
@@ -740,8 +733,8 @@ class WelcomeFormItem extends Widget
                 else
                     @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
 
-            if @check_valid() then @tooltip?.hide()
-            else @set_tooltip(@valid[1])
+            if @check_valid() then @destroy_tooltip()
+            else @set_tooltip(@invalid_msg)
             Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("change", (e) =>
@@ -778,10 +771,10 @@ class WelcomeFormItem extends Widget
 
 
     set_tooltip: (text) ->
+        if text is null then return
         if @tooltip == null
-            #@tooltip = new ToolTip(@input, text)
             @tooltip = new ArrowToolTip(@input, text)
-            @tooltip.set_delay_time(200)  # set delay time to the same as scale time
+            @tooltip.set_delay_time(200)
         @tooltip.set_text(text)
         @tooltip.show()
 
@@ -793,6 +786,7 @@ class WelcomeFormItem extends Widget
     check_valid: ->
         @valid = @is_valid()
         if not @valid[0]
+            @invalid_msg = @valid[1]
             if @input.value.length != 0
                 @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
         else
@@ -851,7 +845,7 @@ class Account extends Widget
     check_start_ready: ->
         if !__init_parted_finish
             return false
-        if @username.is_valid()[0] and @hostname.is_valid()[0] and @password.is_valid()[0] and @confirmpassword.is_valid()[0]
+        if @username.check_valid() and @hostname.check_valid() and @password.check_valid() and @confirmpassword.check_valid()
             @next_step?.next_bt_enable()
             return true
         else
