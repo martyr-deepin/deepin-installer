@@ -34,7 +34,7 @@ class Finish extends Page
         @desc = create_element("div", "Desc", @info)
         @detail = create_element("div", "Detail", @info)
         @tips = create_element("div","Tips",@info)
-        tips_text  = _("Tips: Please remove the installation media before reboot, so as to avoid reentering into the installation environment  in next time.")
+        tips_text  = _("Tips: Please remove the installation media before reboot, so as to avoid reentering into the installation environment when you start the computer next time. ")
         @tips.innerText = tips_text
 
         @ops = create_element("div", "FinishOps", @element)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-11 12:45+0800\n"
+"POT-Creation-Date: 2014-08-12 13:34+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -188,43 +188,43 @@ msgstr ""
 msgid "Please select or search your location."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:756
 msgid "User Name"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:766
+#: ../resources/installer/js/welcome.coffee:759
 msgid "Computer Name"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:769
+#: ../resources/installer/js/welcome.coffee:762
 msgid "Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:774
+#: ../resources/installer/js/welcome.coffee:767
 msgid "Retype Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:804
+#: ../resources/installer/js/welcome.coffee:798
 msgid "nothing input"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:812
+#: ../resources/installer/js/welcome.coffee:806
 msgid "wrong password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:815
+#: ../resources/installer/js/welcome.coffee:809
 msgid "different password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:838
+#: ../resources/installer/js/welcome.coffee:832
 msgid "Next"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:889
+#: ../resources/installer/js/welcome.coffee:883
 msgid "Time Zone"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:894
+#: ../resources/installer/js/welcome.coffee:888
 msgid "Keyboard"
 msgstr ""
 
@@ -258,7 +258,8 @@ msgstr ""
 #: ../resources/installer/js/finish.coffee:37
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
-"reentering into the installation environment  in next time."
+"reentering into the installation environment when you start the computer "
+"next time. "
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:46
