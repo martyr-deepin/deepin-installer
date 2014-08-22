@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-12 13:34+0800\n"
+"POT-Creation-Date: 2014-08-22 11:45+0800\n"
 "PO-Revision-Date: 2014-07-03 04:44+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Indonesian (Indonesia) (http://www.transifex.com/projects/p/"
@@ -34,8 +34,10 @@ msgid "Install Here"
 msgstr "Pasang disini"
 
 #: ../resources/installer/js/part.coffee:342
-msgid "Waring"
-msgstr ""
+#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:786
+msgid "Warning"
+msgstr "Peringatan"
 
 #: ../resources/installer/js/part.coffee:343
 msgid ""
@@ -111,8 +113,8 @@ msgstr "Instalasi UEFI-native hanya mendukung GPT-formated disk."
 
 #: ../resources/installer/js/part.coffee:643
 msgid ""
-"ESP needs to support in UEFI mode and please create a 100MB or more "
-"partition in efi format."
+"ESP’s support is needed in UEFI mode and please create a partition of 100MB "
+"or more in efi format."
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:662
@@ -123,11 +125,6 @@ msgstr "Tambah Partisi"
 #: ../resources/installer/js/part.coffee:663
 msgid "Can't create a partition here"
 msgstr "Tidak dapat membuat partisi"
-
-#: ../resources/installer/js/part.coffee:670
-#: ../resources/installer/js/part.coffee:786
-msgid "Warning"
-msgstr "Peringatan"
 
 #: ../resources/installer/js/part.coffee:671
 #: ../resources/installer/js/part.coffee:787
@@ -193,7 +190,7 @@ msgid "Please select or search your location."
 msgstr "Silakan pilih atau cari lokasi Anda"
 
 #: ../resources/installer/js/welcome.coffee:756
-msgid "User Name"
+msgid "Username"
 msgstr "Nama Pengguna"
 
 #: ../resources/installer/js/welcome.coffee:759
@@ -209,17 +206,16 @@ msgid "Retype Password"
 msgstr "Tulis kembali Kata Sandi"
 
 #: ../resources/installer/js/welcome.coffee:798
-msgid "nothing input"
+msgid "Nothing Input"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:806
-#, fuzzy
-msgid "wrong password"
-msgstr "Kata Sandi"
+#: ../app/language-selector/greeter.c:291
+msgid "Invalid Password"
+msgstr "Kata Sandi Salah"
 
 #: ../resources/installer/js/welcome.coffee:809
-#, fuzzy
-msgid "different password"
+msgid "Different Password"
 msgstr "Tulis kembali Kata Sandi"
 
 #: ../resources/installer/js/welcome.coffee:832
@@ -259,7 +255,7 @@ msgid "System installation failed. Please send the log to Deepin Team."
 msgstr "Pemasangan sistem gagal. Silakan kirim laporan pada Tim Deepin"
 
 #: ../resources/installer/js/progress.coffee:46
-msgid "Prepare for Installation"
+msgid "Preparing for Installation"
 msgstr "Menyiapkan pemasangan"
 
 #: ../resources/installer/js/finish.coffee:37
@@ -332,8 +328,8 @@ msgstr "OS Deepin akan dipasang pada"
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
-"The partition will be formated if continue the installation, please backup "
-"the important data\n"
+"The partition will be formatted if you continue the installation. Please "
+"make a backup for the important data. \n"
 msgstr ""
 
 #: ../resources/installer/js/dialog.coffee:102
@@ -454,7 +450,7 @@ msgid "Free and United Open Source Community"
 msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
-msgid "Welcome to participate in Deepin International Project"
+msgid "Welcome to participate in Deepin Internationalization Project"
 msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
@@ -467,6 +463,10 @@ msgstr ""
 msgid "%a, %b %d, %Y"
 msgstr "%a, %b %d, %Y"
 
-#: ../app/language-selector/greeter.c:291
-msgid "Invalid Password"
-msgstr "Kata Sandi Salah"
+#, fuzzy
+#~ msgid "invalid password"
+#~ msgstr "Kata Sandi Salah"
+
+#, fuzzy
+#~ msgid "wrong password"
+#~ msgstr "Kata Sandi"

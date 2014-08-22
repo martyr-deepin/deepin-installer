@@ -50,7 +50,7 @@ msg_obj_array = [
         title:_("Deepin Community")
         msg:[
             _("Free and United Open Source Community"),
-            _("Welcome to participate in Deepin International Project"),
+            _("Welcome to participate in Deepin Internationalization Project"),
             _("Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and IRC")
         ]
     }

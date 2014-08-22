@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-12 13:34+0800\n"
+"POT-Creation-Date: 2014-08-22 11:45+0800\n"
 "PO-Revision-Date: 2014-07-03 04:44+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/"
@@ -35,8 +35,10 @@ msgid "Install Here"
 msgstr "Instalar Aqui"
 
 #: ../resources/installer/js/part.coffee:342
-msgid "Waring"
-msgstr ""
+#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:786
+msgid "Warning"
+msgstr "Aviso"
 
 #: ../resources/installer/js/part.coffee:343
 msgid ""
@@ -112,8 +114,8 @@ msgstr ""
 
 #: ../resources/installer/js/part.coffee:643
 msgid ""
-"ESP needs to support in UEFI mode and please create a 100MB or more "
-"partition in efi format."
+"ESP’s support is needed in UEFI mode and please create a partition of 100MB "
+"or more in efi format."
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:662
@@ -124,11 +126,6 @@ msgstr "Adicionar Partição"
 #: ../resources/installer/js/part.coffee:663
 msgid "Can't create a partition here"
 msgstr "Não é possível criar a partição aqui"
-
-#: ../resources/installer/js/part.coffee:670
-#: ../resources/installer/js/part.coffee:786
-msgid "Warning"
-msgstr "Aviso"
 
 #: ../resources/installer/js/part.coffee:671
 #: ../resources/installer/js/part.coffee:787
@@ -194,7 +191,7 @@ msgid "Please select or search your location."
 msgstr "Por favor selecione ou procure a sua localização."
 
 #: ../resources/installer/js/welcome.coffee:756
-msgid "User Name"
+msgid "Username"
 msgstr "Nome de Utilizador"
 
 #: ../resources/installer/js/welcome.coffee:759
@@ -210,17 +207,16 @@ msgid "Retype Password"
 msgstr "Reescreva Palavra-passe"
 
 #: ../resources/installer/js/welcome.coffee:798
-msgid "nothing input"
+msgid "Nothing Input"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:806
-#, fuzzy
-msgid "wrong password"
-msgstr "Palavra-passe"
+#: ../app/language-selector/greeter.c:291
+msgid "Invalid Password"
+msgstr "Palavra-passe Inválida"
 
 #: ../resources/installer/js/welcome.coffee:809
-#, fuzzy
-msgid "different password"
+msgid "Different Password"
 msgstr "Reescreva Palavra-passe"
 
 #: ../resources/installer/js/welcome.coffee:832
@@ -261,7 +257,7 @@ msgstr ""
 "Deepin."
 
 #: ../resources/installer/js/progress.coffee:46
-msgid "Prepare for Installation"
+msgid "Preparing for Installation"
 msgstr "Preparar para Instalação"
 
 #: ../resources/installer/js/finish.coffee:37
@@ -334,8 +330,8 @@ msgstr "O Deepin OS será instalado em"
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
-"The partition will be formated if continue the installation, please backup "
-"the important data\n"
+"The partition will be formatted if you continue the installation. Please "
+"make a backup for the important data. \n"
 msgstr ""
 
 #: ../resources/installer/js/dialog.coffee:102
@@ -456,7 +452,7 @@ msgid "Free and United Open Source Community"
 msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
-msgid "Welcome to participate in Deepin International Project"
+msgid "Welcome to participate in Deepin Internationalization Project"
 msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
@@ -469,6 +465,10 @@ msgstr ""
 msgid "%a, %b %d, %Y"
 msgstr "%a, %d %b. %Y"
 
-#: ../app/language-selector/greeter.c:291
-msgid "Invalid Password"
-msgstr "Palavra-passe Inválida"
+#, fuzzy
+#~ msgid "invalid password"
+#~ msgstr "Palavra-passe Inválida"
+
+#, fuzzy
+#~ msgid "wrong password"
+#~ msgstr "Palavra-passe"

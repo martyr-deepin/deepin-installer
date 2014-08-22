@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-12 13:34+0800\n"
+"POT-Creation-Date: 2014-08-22 11:45+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../resources/installer/js/part.coffee:126
@@ -32,7 +32,9 @@ msgid "Install Here"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:342
-msgid "Waring"
+#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:786
+msgid "Warning"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:343
@@ -109,8 +111,8 @@ msgstr ""
 
 #: ../resources/installer/js/part.coffee:643
 msgid ""
-"ESP needs to support in UEFI mode and please create a 100MB or more "
-"partition in efi format."
+"ESP’s support is needed in UEFI mode and please create a partition of 100MB "
+"or more in efi format."
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:662
@@ -120,11 +122,6 @@ msgstr ""
 
 #: ../resources/installer/js/part.coffee:663
 msgid "Can't create a partition here"
-msgstr ""
-
-#: ../resources/installer/js/part.coffee:670
-#: ../resources/installer/js/part.coffee:786
-msgid "Warning"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:671
@@ -189,7 +186,7 @@ msgid "Please select or search your location."
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:756
-msgid "User Name"
+msgid "Username"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:759
@@ -205,15 +202,16 @@ msgid "Retype Password"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:798
-msgid "nothing input"
+msgid "Nothing Input"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:806
-msgid "wrong password"
+#: ../app/language-selector/greeter.c:291
+msgid "Invalid Password"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:809
-msgid "different password"
+msgid "Different Password"
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:832
@@ -252,7 +250,7 @@ msgid "System installation failed. Please send the log to Deepin Team."
 msgstr ""
 
 #: ../resources/installer/js/progress.coffee:46
-msgid "Prepare for Installation"
+msgid "Preparing for Installation"
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:37
@@ -325,8 +323,8 @@ msgstr ""
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
-"The partition will be formated if continue the installation, please backup "
-"the important data\n"
+"The partition will be formatted if you continue the installation. Please "
+"make a backup for the important data. \n"
 msgstr ""
 
 #: ../resources/installer/js/dialog.coffee:102
@@ -446,7 +444,7 @@ msgid "Free and United Open Source Community"
 msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
-msgid "Welcome to participate in Deepin International Project"
+msgid "Welcome to participate in Deepin Internationalization Project"
 msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
@@ -457,8 +455,4 @@ msgstr ""
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
-msgstr ""
-
-#: ../app/language-selector/greeter.c:291
-msgid "Invalid Password"
 msgstr ""

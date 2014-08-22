@@ -43,13 +43,13 @@ class Progress extends Page
 
         @loading = create_element("div", "Loading", @element)
         @loading_tips = create_element("div", "LoadingTxt", @loading)
-        @loading_tips.innerText = _("Prepare for Installation")
+        @loading_tips.innerText = _("Preparing for Installation")
         @rotate = create_element("div", "Rotate", @loading)
         @deg = 0
         setInterval(=>
             @update_rotate()
         , 30)
-    
+
         @progress_container = create_element("div", "ProgressContainer", @element)
         @progress_container.style.display = "block"
         @progressbar = create_element("div", "ProgressBar", @progress_container)

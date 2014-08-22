@@ -753,7 +753,7 @@ class WelcomeFormItem extends Widget
 
     fill_widget: ->
         if @id == "username"
-            username_holder = _("User Name")
+            username_holder = _("Username")
             @input.setAttribute("placeholder", username_holder)
         else if @id == "hostname"
             hostname_holder = _("Computer Name")
@@ -795,7 +795,7 @@ class WelcomeFormItem extends Widget
 
     is_valid: ->
         if not @input.value? or @input.value.length == 0
-            return [false,_("nothing input")]
+            return [false,_("Nothing Input")]
         if @id == "username"
             if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
             return @account_dbus?.IsUsernameValid_sync(@input.value)
@@ -803,10 +803,10 @@ class WelcomeFormItem extends Widget
             if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
             if @account_dbus?.IsPasswordValid_sync(@input.value)
                 return [true,""]
-            else return [false,_("wrong password")]
+            else return [false,_("Invalid Password")]
         else if @id == "confirmpassword"
             if @input.value != Widget.look_up("password")?.input.value
-                return [false,_("different password")]
+                return [false,_("Different Password")]
         return [true,""]
 
     get_input_value: ->

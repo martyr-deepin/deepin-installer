@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-12 13:34+0800\n"
+"POT-Creation-Date: 2014-08-22 11:45+0800\n"
 "PO-Revision-Date: 2014-07-03 04:47+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -33,8 +33,10 @@ msgid "Install Here"
 msgstr "安装到此"
 
 #: ../resources/installer/js/part.coffee:342
-msgid "Waring"
-msgstr ""
+#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:786
+msgid "Warning"
+msgstr "警告"
 
 #: ../resources/installer/js/part.coffee:343
 msgid ""
@@ -112,8 +114,8 @@ msgstr "UEFI模式安装仅支持分区表为GPT的硬盘。"
 
 #: ../resources/installer/js/part.coffee:643
 msgid ""
-"ESP needs to support in UEFI mode and please create a 100MB or more "
-"partition in efi format."
+"ESP’s support is needed in UEFI mode and please create a partition of 100MB "
+"or more in efi format."
 msgstr "UEFI模式安装需要ESP，请创建一个100MB以上的efi格式分区。"
 
 #: ../resources/installer/js/part.coffee:662
@@ -124,11 +126,6 @@ msgstr "添加分区"
 #: ../resources/installer/js/part.coffee:663
 msgid "Can't create a partition here"
 msgstr "不能在此创建分区"
-
-#: ../resources/installer/js/part.coffee:670
-#: ../resources/installer/js/part.coffee:786
-msgid "Warning"
-msgstr "警告"
 
 #: ../resources/installer/js/part.coffee:671
 #: ../resources/installer/js/part.coffee:787
@@ -195,7 +192,7 @@ msgid "Please select or search your location."
 msgstr "请选择或搜索您所在的区域。"
 
 #: ../resources/installer/js/welcome.coffee:756
-msgid "User Name"
+msgid "Username"
 msgstr "用户名"
 
 #: ../resources/installer/js/welcome.coffee:759
@@ -211,15 +208,16 @@ msgid "Retype Password"
 msgstr "确认密码"
 
 #: ../resources/installer/js/welcome.coffee:798
-msgid "nothing input"
+msgid "Nothing Input"
 msgstr "未输入"
 
 #: ../resources/installer/js/welcome.coffee:806
-msgid "wrong password"
-msgstr "密码不合法"
+#: ../app/language-selector/greeter.c:291
+msgid "Invalid Password"
+msgstr "无效密码"
 
 #: ../resources/installer/js/welcome.coffee:809
-msgid "different password"
+msgid "Different Password"
 msgstr "密码不一致"
 
 #: ../resources/installer/js/welcome.coffee:832
@@ -258,7 +256,7 @@ msgid "System installation failed. Please send the log to Deepin Team."
 msgstr "安装系统失败，请将安装日志反馈至Deepin团队。"
 
 #: ../resources/installer/js/progress.coffee:46
-msgid "Prepare for Installation"
+msgid "Preparing for Installation"
 msgstr "正在为安装做准备"
 
 #: ../resources/installer/js/finish.coffee:37
@@ -331,8 +329,8 @@ msgstr "Deepin操作系统将安装到 "
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
-"The partition will be formated if continue the installation, please backup "
-"the important data\n"
+"The partition will be formatted if you continue the installation. Please "
+"make a backup for the important data. \n"
 msgstr ""
 "\n"
 "继续安装会格式化该分区，请做好重要数据备份\n"
@@ -443,7 +441,7 @@ msgstr "网罗各大游戏专题"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
 msgid "Collect Your Favorite Online"
-msgstr "线收藏你的最爱"
+msgstr "在线收藏你的最爱"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
 msgid "Deepin Community"
@@ -451,10 +449,10 @@ msgstr "深度社区"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
 msgid "Free and United Open Source Community"
-msgstr "自由团结的开源社"
+msgstr "自由团结的开源社区"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
-msgid "Welcome to participate in Deepin International Project"
+msgid "Welcome to participate in Deepin Internationalization Project"
 msgstr "欢迎参与Deepin国际化项目"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
@@ -466,7 +464,3 @@ msgstr "欢迎关注我们的微博、Twitter、Facebook和Google+，或邮件�
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
 msgstr "%Y年%b%d日 %A"
-
-#: ../app/language-selector/greeter.c:291
-msgid "Invalid Password"
-msgstr "无效密码"

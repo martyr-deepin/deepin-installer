@@ -339,7 +339,7 @@ class PartTableItem extends Widget
 
         if mp is "/boot" and v_part_info[partid]["length"] < BOOT_SIZE_MIN
             new MessageDialog(
-                _("Waring"),
+                _("Warning"),
                 _("You  may not boot due to too small space of /boot mount point, please improve the space to 300M at least.")
             ).show_at(document.body)
             return false
@@ -640,7 +640,7 @@ class Part extends Page
             if not esp_uuid or v_part_info[esp_uuid]["length"] < 100 * MB
                 new MessageDialog(
                     _("Install Tips")
-                    _("ESP needs to support in UEFI mode and please create a 100MB or more partition in efi format.")
+                    _("ESP’s support is needed in UEFI mode and please create a partition of 100MB or more in efi format.")
                 ).show_at(document.body)
                 return
 
