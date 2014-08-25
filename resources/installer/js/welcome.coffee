@@ -798,7 +798,13 @@ class WelcomeFormItem extends Widget
             return [false,_("Nothing Input")]
         if @id == "username"
             if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
-            return @account_dbus?.IsUsernameValid_sync(@input.value)
+            valid = @account_dbus?.IsUsernameValid_sync(@input.value)
+            #TODO:this is only a temporary solution
+            #The Account dbus must provide a function for installer to check username and hostname
+            if not valid[0]
+                user = @account_dbus.FindUserByName_sync(@input.value)
+                if user isnt "" then return [true,""]
+            return valid
         if @id == "password"
             if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
             if @account_dbus?.IsPasswordValid_sync(@input.value)
