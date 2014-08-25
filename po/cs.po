@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # fri, 2014
 # fri, 2014
@@ -10,14 +10,13 @@ msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-22 11:45+0800\n"
-"PO-Revision-Date: 2014-07-03 04:44+0000\n"
-"Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/deepin-installer/"
-"language/cs/)\n"
-"Language: cs\n"
+"PO-Revision-Date: 2014-08-22 11:42+0000\n"
+"Last-Translator: fri\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/deepin-installer/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../resources/installer/js/part.coffee:126
@@ -44,7 +43,7 @@ msgstr "Varování"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "Nemusíte být schopen systém zavést kvůli příliš malému místu přípojného bodu /boot. Zvyšte, prosím, prostor volného místa na alespoň 300 MB."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -110,13 +109,13 @@ msgstr "Rady pro instalaci"
 
 #: ../resources/installer/js/part.coffee:635
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr ""
+msgstr "UEFI-nativní instalace podporuje pouze disk formátovaný GPT."
 
 #: ../resources/installer/js/part.coffee:643
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr ""
+msgstr "Podpora pro ESPje potřeba v režimu UEFI. Vytvořte také, prosím, diskový oddíl o velikosti 100 MB nebo větší ve formátu efi."
 
 #: ../resources/installer/js/part.coffee:662
 #: ../resources/installer/js/dialog.coffee:113
@@ -132,11 +131,11 @@ msgstr "Zde nelze vytvořit diskový oddíl"
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
-msgstr ""
+msgstr "UEFI-nativní instalace podporuje pouze disk formátovaný GPT. ztratíte všechna data, pokud budete trvat na provedení instalace."
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
-msgstr ""
+msgstr "UEFI"
 
 #: ../resources/installer/js/part.coffee:705
 msgid "Boot Loader"
@@ -150,9 +149,7 @@ msgstr "Odpojit diskový oddíl"
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr ""
-"Bylo zjištěno, že diskový oddíl je připojen.\n"
-"Opravdu jej chcete odpojit?"
+msgstr "Bylo zjištěno, že diskový oddíl je připojen.\nOpravdu jej chcete odpojit?"
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
@@ -192,7 +189,7 @@ msgstr "Vyberte, prosím, nebo najděte své umístění."
 
 #: ../resources/installer/js/welcome.coffee:756
 msgid "Username"
-msgstr "Jméno uživatele"
+msgstr "Uživatelské jméno"
 
 #: ../resources/installer/js/welcome.coffee:759
 msgid "Computer Name"
@@ -208,7 +205,7 @@ msgstr "Napište heslo znovu"
 
 #: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
-msgstr ""
+msgstr "Nic vloženo"
 
 #: ../resources/installer/js/welcome.coffee:806
 #: ../app/language-selector/greeter.c:291
@@ -217,7 +214,7 @@ msgstr "Neplatné heslo"
 
 #: ../resources/installer/js/welcome.coffee:809
 msgid "Different Password"
-msgstr "Napište heslo znovu"
+msgstr "Odlišné heslo"
 
 #: ../resources/installer/js/welcome.coffee:832
 msgid "Next"
@@ -238,7 +235,7 @@ msgstr "Požadavky na instalaci"
 #: ../resources/installer/js/base.coffee:29
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr ""
+msgstr "Pro instalaci operačního systému Deepin potřebujete mít alespoň %d GB volného místa na disku."
 
 #: ../resources/installer/js/base.coffee:50
 #: ../resources/installer/js/base.coffee:52
@@ -252,20 +249,18 @@ msgstr "Zpráva o chybách"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr ""
-"Instalace systému se nezdařila. Pošlete, prosím, zápis z instalace pracovní "
-"skupině Deepinu."
+msgstr "Instalace systému se nezdařila. Pošlete, prosím, zápis z instalace pracovní skupině Deepinu."
 
 #: ../resources/installer/js/progress.coffee:46
 msgid "Preparing for Installation"
-msgstr "Připravit na instalaci"
+msgstr "Připravuje se na instalaci"
 
 #: ../resources/installer/js/finish.coffee:37
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr ""
+msgstr "Rada: Před restartováním počítače, prosím, odstraňte instalační nosiče, abyste se vyhnul opětovnému vstupu do prostředí instalátoru, až příště počítač spustíte."
 
 #: ../resources/installer/js/finish.coffee:46
 msgid "Congratulations!"
@@ -273,8 +268,7 @@ msgstr "Blahopřejeme!"
 
 #: ../resources/installer/js/finish.coffee:47
 msgid "You need to restart the computer to complete installation."
-msgstr ""
-"Pro dokončení instalace je potřeba počítač restartovat, tedy spustit znovu."
+msgstr "Pro dokončení instalace je potřeba počítač restartovat, tedy spustit znovu."
 
 #: ../resources/installer/js/finish.coffee:49
 msgid "Reboot Later"
@@ -331,14 +325,12 @@ msgstr "Deepin OS bude nainstalován do"
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
-"The partition will be formatted if you continue the installation. Please "
-"make a backup for the important data. \n"
-msgstr ""
+"The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
+msgstr "\nDikový oddíl bude při pokračování v instalaci zformátován. Zazálohujte si, prosím, svá důležitá data\n"
 
 #: ../resources/installer/js/dialog.coffee:102
-#, fuzzy
 msgid "Do you want to continue the installation ?"
-msgstr "Opravdu chcete smazat tento diskový oddíl?"
+msgstr "Chcete pokračovat v instalaci?"
 
 #: ../resources/installer/js/dialog.coffee:133
 msgid "Type:"
@@ -382,94 +374,86 @@ msgstr "Zadejte, prosím, platnou velikost diskového oddílu."
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
 msgid "Deepin Store"
-msgstr ""
+msgstr "Obchod"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
 msgid "One-stop Software Management"
-msgstr ""
+msgstr "Přehledná správa programů"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
 msgid "Continuous Update of Wonderful Software"
-msgstr ""
+msgstr "Nepřetržitá aktualizace báječných programů"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
 msgid "Unimpeded Online Communication"
-msgstr ""
+msgstr "Spojeni po internetu bez překážek"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
 msgid "Deepin Movie"
-msgstr ""
+msgstr "Filmy"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
 msgid "Comprehensive Audio-visual Shock"
-msgstr ""
+msgstr "Všem přístupný zážitek složený z obrazu a zvuku"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
 msgid "New Interactive Experience"
-msgstr ""
+msgstr "Nová skvělá zkušenost"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
 msgid "Intelligent Subtitle Loading"
-msgstr ""
+msgstr "Chytré nahrávání titulků"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
 msgid "Deepin Music"
-msgstr ""
+msgstr "Hudba Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
 msgid "Ultimate Music Journey"
-msgstr ""
+msgstr "Základní hudební cesta"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
 msgid "Rich Extended Function"
-msgstr ""
+msgstr "Bohatě rozšířené funkce"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
 msgid "Enjoy Online Strongest Voice"
-msgstr ""
+msgstr "Radost se z nejsilnějšího hlasu na internetu"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
 msgid "Deepin Game"
-msgstr ""
+msgstr "Hry Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
 msgid "Provide Latest and Hottest Games"
-msgstr ""
+msgstr "Nejnovější a nejžhavější hry"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
 msgid "Gather Various Game Topics"
-msgstr ""
+msgstr "Shromaždění různých herních témat"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
 msgid "Collect Your Favorite Online"
-msgstr ""
+msgstr "Sbírka vašich oblíbených na internetu"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
 msgid "Deepin Community"
-msgstr ""
+msgstr "Společenství Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
 msgid "Free and United Open Source Community"
-msgstr ""
+msgstr "Svobodná a sjednocená společnost otevřeného zdrojového kódu"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr ""
+msgstr "Účastněte se na mezinárodním projektu překládání Deepinu"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr ""
+msgstr "Sledujte nás na Weibo, Twitter, Facebook, Google+, Mailing List a IRC"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
 msgstr "%a, %b %d, %Y"
-
-#, fuzzy
-#~ msgid "invalid password"
-#~ msgstr "Neplatné heslo"
-
-#, fuzzy
-#~ msgid "wrong password"
-#~ msgstr "Heslo"

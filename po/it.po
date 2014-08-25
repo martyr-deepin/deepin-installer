@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Gioacchino Nigrelli <gioacchino.nigrelli@gmail.com>, 2014
 # Maxximo88 <real.massimo@hotmail.it>, 2014
@@ -10,14 +10,13 @@ msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-22 11:45+0800\n"
-"PO-Revision-Date: 2014-07-03 04:44+0000\n"
-"Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/deepin-installer/"
-"language/it/)\n"
-"Language: it\n"
+"PO-Revision-Date: 2014-08-23 12:10+0000\n"
+"Last-Translator: Maxximo88 <real.massimo@hotmail.it>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/deepin-installer/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../resources/installer/js/part.coffee:126
@@ -44,7 +43,7 @@ msgstr "Attenzione"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "Non puoi effettuare il boot per via del poco spazio nel punto di mount /boot, aumenta lo spazio ad almeno 300 Mb."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -116,7 +115,7 @@ msgstr "L'installazione UEFI-native supporta solo dischi formattati in GPT"
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr ""
+msgstr "Il supporto ESP è richiesto in modalità UEFI ed inoltre occorre una partizione in formato EFI da almeno 100 Mb."
 
 #: ../resources/installer/js/part.coffee:662
 #: ../resources/installer/js/dialog.coffee:113
@@ -132,13 +131,11 @@ msgstr "Non posso creare una partizione qui."
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
-msgstr ""
-"L'installazione UEFI-native supporta solo dischi formattati in GPT. Si "
-"perderanno tutti i dati del disco se si continua con l'installazione"
+msgstr "L'installazione nativa UEFI supporta solo dischi formattati in GPT. Continuando con l'installazione si perderanno tutti i dati sul disco."
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
-msgstr "UEFI - Unified Extensible Firmware Interface"
+msgstr "UEFI"
 
 #: ../resources/installer/js/part.coffee:705
 msgid "Boot Loader"
@@ -152,9 +149,7 @@ msgstr "Smonta partizione"
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr ""
-"La partizione è stata rilevata come montata. \n"
-"Sicuro di volerla smontare?"
+msgstr "La partizione è stata rilevata come montata. \nSicuro di volerla smontare?"
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
@@ -210,16 +205,16 @@ msgstr "Conferma password"
 
 #: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
-msgstr ""
+msgstr "Nessun Input"
 
 #: ../resources/installer/js/welcome.coffee:806
 #: ../app/language-selector/greeter.c:291
 msgid "Invalid Password"
-msgstr "Password Non Valida"
+msgstr "Password non valida"
 
 #: ../resources/installer/js/welcome.coffee:809
 msgid "Different Password"
-msgstr "Conferma password"
+msgstr "Password differente"
 
 #: ../resources/installer/js/welcome.coffee:832
 msgid "Next"
@@ -240,8 +235,7 @@ msgstr "Requisiti minimi"
 #: ../resources/installer/js/base.coffee:29
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr ""
-"Per installare Deepin OS, si necessita di almeno %d GB di spazio sul disco"
+msgstr "Per installare Deepin OS servono almeno %d GB di spazio sul disco"
 
 #: ../resources/installer/js/base.coffee:50
 #: ../resources/installer/js/base.coffee:52
@@ -255,20 +249,18 @@ msgstr "Report errori"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr ""
-"L'installazione del sistema è fallita. Per cortesia invia un feedback al "
-"team Deepin."
+msgstr "L'installazione del sistema è fallita. Per cortesia invia un feedback al team Deepin."
 
 #: ../resources/installer/js/progress.coffee:46
 msgid "Preparing for Installation"
-msgstr "Preparo l'installazione"
+msgstr "Preparazione all'installazione"
 
 #: ../resources/installer/js/finish.coffee:37
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr ""
+msgstr "Trucco: rimuovi il dispositivo di installazione dopo il reboot, in questo modo non si avvierà nuovamente il processo di installazione."
 
 #: ../resources/installer/js/finish.coffee:46
 msgid "Congratulations!"
@@ -333,14 +325,12 @@ msgstr "Deepin OS sarà installato in"
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
-"The partition will be formatted if you continue the installation. Please "
-"make a backup for the important data. \n"
-msgstr ""
+"The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
+msgstr "\nProseguendo la partizione sarà formattata. Effettua un backup se hai dati importanti.\n"
 
 #: ../resources/installer/js/dialog.coffee:102
-#, fuzzy
 msgid "Do you want to continue the installation ?"
-msgstr "Sicuro di voler cancellare la partizione?"
+msgstr "Vuoi continuare con l'installazione?"
 
 #: ../resources/installer/js/dialog.coffee:133
 msgid "Type:"
@@ -384,94 +374,86 @@ msgstr "Inserisci una dimensione della partizione valida."
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
 msgid "Deepin Store"
-msgstr ""
+msgstr "Deepin Store"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
 msgid "One-stop Software Management"
-msgstr ""
+msgstr "One-stop Software Management"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
 msgid "Continuous Update of Wonderful Software"
-msgstr ""
+msgstr "Continui aggiornamenti di un software magnifico"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
 msgid "Unimpeded Online Communication"
-msgstr ""
+msgstr "Comunicazioni online senza fronzoli"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
 msgid "Deepin Movie"
-msgstr ""
+msgstr "Deepin Movie"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
 msgid "Comprehensive Audio-visual Shock"
-msgstr ""
+msgstr "Un vero shock audio-visivo"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
 msgid "New Interactive Experience"
-msgstr ""
+msgstr "Nuova esperienza interattiva"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
 msgid "Intelligent Subtitle Loading"
-msgstr ""
+msgstr "Caricamento intelligente sottotitoli"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
 msgid "Deepin Music"
-msgstr ""
+msgstr "Deepin Music"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
 msgid "Ultimate Music Journey"
-msgstr ""
+msgstr "Un vero viaggio nella musica"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
 msgid "Rich Extended Function"
-msgstr ""
+msgstr "Innumerevoli funzioni implementate"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
 msgid "Enjoy Online Strongest Voice"
-msgstr ""
+msgstr "Goditi la musica online"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
 msgid "Deepin Game"
-msgstr ""
+msgstr "Deepin Game"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
 msgid "Provide Latest and Hottest Games"
-msgstr ""
+msgstr "Apprezza gli ultimi giochi disponibili"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
 msgid "Gather Various Game Topics"
-msgstr ""
+msgstr "Scegli tra varie tipologie di giochi"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
 msgid "Collect Your Favorite Online"
-msgstr ""
+msgstr "Colleziona i tuoi giochi preferiti online"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
 msgid "Deepin Community"
-msgstr ""
+msgstr "Deepin Community"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
 msgid "Free and United Open Source Community"
-msgstr ""
+msgstr "Open Source Community libera ed unita"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr ""
+msgstr "Benvenuto al Deepin Internationalization Project"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr ""
+msgstr "Seguici su Weibo, Twitter, Facebook, Google+, Mailing List ed IRC"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
 msgstr "%a, %b %d, %Y"
-
-#, fuzzy
-#~ msgid "invalid password"
-#~ msgstr "Password Non Valida"
-
-#, fuzzy
-#~ msgid "wrong password"
-#~ msgstr "Password"

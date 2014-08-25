@@ -1,21 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-22 11:45+0800\n"
-"PO-Revision-Date: 2014-07-03 04:47+0000\n"
-"Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
-"installer/language/zh_CN/)\n"
-"Language: zh_CN\n"
+"PO-Revision-Date: 2014-08-22 07:02+0000\n"
+"Last-Translator: Catherinelin <linhongxia@linuxdeepin.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-installer/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../resources/installer/js/part.coffee:126
@@ -42,9 +41,7 @@ msgstr "警告"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
-"您当前的/boot挂载点空间过小可能会导致无法开机，请将/boot挂载点空间提升到至少"
-"300M"
+msgstr "您当前的/boot挂载点空间过小可能会导致无法开机，请将/boot挂载点空间提升到至少300M"
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -132,8 +129,7 @@ msgstr "不能在此创建分区"
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
-msgstr ""
-"UEFI模式安装仅支持分区表为GPT的硬盘。如果执意安装,所有硬盘数据都将丢失。"
+msgstr "UEFI模式安装仅支持分区表为GPT的硬盘。如果执意安装,所有硬盘数据都将丢失。"
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
@@ -151,9 +147,7 @@ msgstr "卸载分区"
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr ""
-"检测到已有分区被挂载,\n"
-"确定要卸载已挂载分区？"
+msgstr "检测到已有分区被挂载,\n确定要卸载已挂载分区？"
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
@@ -329,11 +323,8 @@ msgstr "Deepin操作系统将安装到 "
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
-"The partition will be formatted if you continue the installation. Please "
-"make a backup for the important data. \n"
-msgstr ""
-"\n"
-"继续安装会格式化该分区，请做好重要数据备份\n"
+"The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
+msgstr "\n继续安装会格式化该分区，请做好重要数据备份\n"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Do you want to continue the installation ?"

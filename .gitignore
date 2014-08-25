@@ -1,4 +1,5 @@
 .gitignore
+pxe_launch
 
 .tag*
 tags

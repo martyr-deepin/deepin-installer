@@ -1,22 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
-# trid <tristan.denni@viacesi.fr>, 2014
+# lexross <its4moi@gmail.com>, 2014
+# Tristan Denni <tristan.denni@viacesi.fr>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-22 11:45+0800\n"
-"PO-Revision-Date: 2014-07-03 04:44+0000\n"
-"Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/deepin-installer/"
-"language/fr/)\n"
-"Language: fr\n"
+"PO-Revision-Date: 2014-08-22 11:51+0000\n"
+"Last-Translator: lexross <its4moi@gmail.com>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/deepin-installer/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../resources/installer/js/part.coffee:126
@@ -43,7 +43,7 @@ msgstr "Attention"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "Votre partition de montage /boot est trop petite, veuillez l'agrandir s'il vous plaît -au moins 300M-"
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -109,15 +109,13 @@ msgstr "Astuces d'installation"
 
 #: ../resources/installer/js/part.coffee:635
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr ""
-"Une installation native UEFI supporte uniquement les disques formattés en "
-"GPT."
+msgstr "Une installation native UEFI supporte uniquement les disques formatés en GPT."
 
 #: ../resources/installer/js/part.coffee:643
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr ""
+msgstr "l'ESP est nécessaire en mode UEFI,veuillez s'il vous plaît créer une partition de 100 Mo ou plus au format EFI."
 
 #: ../resources/installer/js/part.coffee:662
 #: ../resources/installer/js/dialog.coffee:113
@@ -133,10 +131,7 @@ msgstr "Impossible de créer une partition ici"
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
-msgstr ""
-"Une installation native UEFI supporte uniquement les disques formattés en "
-"GPT. Cela entraînera la perte de toutes les données du disque si vous "
-"continuez l'installation."
+msgstr "Une installation native UEFI supporte uniquement les disques formatés en GPT. Cela entraînera la perte de toutes les données du disque si vous continuez l'installation."
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
@@ -154,9 +149,7 @@ msgstr "Partition démontée"
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr ""
-"La partition est montée.\n"
-"Êtes vous sûr de vouloir la démonter ?"
+msgstr "La partition est montée.\nÊtes vous sûr de vouloir la démonter ?"
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
@@ -196,7 +189,7 @@ msgstr "Veuillez sélectionner ou rechercher votre position."
 
 #: ../resources/installer/js/welcome.coffee:756
 msgid "Username"
-msgstr "Nom d'utilisateur"
+msgstr "Utilisateur"
 
 #: ../resources/installer/js/welcome.coffee:759
 msgid "Computer Name"
@@ -212,7 +205,7 @@ msgstr "Ressaisir le mot de passe"
 
 #: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
-msgstr ""
+msgstr "Rien n'a été écrit"
 
 #: ../resources/installer/js/welcome.coffee:806
 #: ../app/language-selector/greeter.c:291
@@ -221,7 +214,7 @@ msgstr "Mot de Passe invalide"
 
 #: ../resources/installer/js/welcome.coffee:809
 msgid "Different Password"
-msgstr "Ressaisir le mot de passe"
+msgstr "Mot de passe différent"
 
 #: ../resources/installer/js/welcome.coffee:832
 msgid "Next"
@@ -242,9 +235,7 @@ msgstr "Pré-requis de l'installation"
 #: ../resources/installer/js/base.coffee:29
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr ""
-"Pour installer Deepin OS, vous avez besoin d'au moins %d GB d'espace sur "
-"votre disque."
+msgstr "Pour installer Deepin OS, vous avez besoin d'au moins %d GB d'espace sur votre disque."
 
 #: ../resources/installer/js/base.coffee:50
 #: ../resources/installer/js/base.coffee:52
@@ -258,20 +249,18 @@ msgstr "Rapport d'erreur"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr ""
-"L'installation du système a échoué. Veuillez envoyer le log à l'équipe de "
-"Deepin."
+msgstr "L'installation du système a échoué. Veuillez envoyer le log à l'équipe de Deepin."
 
 #: ../resources/installer/js/progress.coffee:46
 msgid "Preparing for Installation"
-msgstr "Préparer l'installation"
+msgstr "Préparation pour l'installation"
 
 #: ../resources/installer/js/finish.coffee:37
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr ""
+msgstr "Conseil:  Hôter le support d'installation de Deepin avant le redémarrage de l'ordinateur, afin d'éviter que le processus d'installation ne se lance à nouveau."
 
 #: ../resources/installer/js/finish.coffee:46
 msgid "Congratulations!"
@@ -336,14 +325,12 @@ msgstr "Deepin OS sera installée dans "
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
-"The partition will be formatted if you continue the installation. Please "
-"make a backup for the important data. \n"
-msgstr ""
+"The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
+msgstr "\nLa partition sera formatée si vous continuez l'installation. S'il vous plaît faite une sauvegarde de vos données importantes.\n"
 
 #: ../resources/installer/js/dialog.coffee:102
-#, fuzzy
 msgid "Do you want to continue the installation ?"
-msgstr "Êtes vous sûr de vouloir supprimer cette partition ?"
+msgstr "Voulez-vous continuer l'installation ?"
 
 #: ../resources/installer/js/dialog.coffee:133
 msgid "Type:"
@@ -387,27 +374,27 @@ msgstr "Veuillez entrer une taille de partition valide."
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
 msgid "Deepin Store"
-msgstr ""
+msgstr "Deepin Store"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
 msgid "One-stop Software Management"
-msgstr ""
+msgstr "Logiciel de gestion \"One-Stop\""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
 msgid "Continuous Update of Wonderful Software"
-msgstr ""
+msgstr "Mise à jour du fabuleux logiciel"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
 msgid "Unimpeded Online Communication"
-msgstr ""
+msgstr "Communication en ligne inninterompue"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
 msgid "Deepin Movie"
-msgstr ""
+msgstr "Deepin Film"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
 msgid "Comprehensive Audio-visual Shock"
-msgstr ""
+msgstr "Choc audiovisuel total"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
 msgid "New Interactive Experience"
@@ -419,7 +406,7 @@ msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
 msgid "Deepin Music"
-msgstr ""
+msgstr "Deepin Musique"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
 msgid "Ultimate Music Journey"
@@ -435,7 +422,7 @@ msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
 msgid "Deepin Game"
-msgstr ""
+msgstr "Jeux Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
 msgid "Provide Latest and Hottest Games"
@@ -470,11 +457,3 @@ msgstr ""
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
 msgstr "%a, %d, %b, %Y"
-
-#, fuzzy
-#~ msgid "invalid password"
-#~ msgstr "Mot de Passe invalide"
-
-#, fuzzy
-#~ msgid "wrong password"
-#~ msgstr "Mot de passe"
