@@ -16,6 +16,11 @@ execute_process(
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/resources/installer/js
     )
 
+execute_process(
+    COMMAND make
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/resources/installer/ppt/slideshow2014
+    )
+
 install(
     PROGRAMS ${PROJECT_BINARY_DIR}/${NAME}
     DESTINATION bin
