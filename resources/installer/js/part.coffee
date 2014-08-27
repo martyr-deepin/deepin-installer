@@ -667,8 +667,8 @@ class Part extends Page
         if DCore.Installer.system_support_efi() and not DCore.Installer.disk_is_gpt(__selected_disk)
             echo "handle_install_simple"
             new PromptDialog(
-                _("Warning"),
-                _("UEFI-native installation only supports GPT-formatted disk. It will lose all disk data if you insist on installing.")
+                _("Install Tips"),
+                _("UEFI-native installation only supports GPT-formatted disk. For installation, please enter the Expert Mode.")
                 -> install_by_anyway(__selected_disk)
             ).show_at(document.body)
         else
@@ -689,7 +689,7 @@ class Part extends Page
 
         @table = new PartTable("part_table")
         @wrap.appendChild(@table.element)
-        
+
         @part_uefi = create_element("div","PartUefi",@wrap)
         @uefi_radio = create_element("input","uefi_radio",@part_uefi)
         @uefi_radio.setAttribute("type","radio")

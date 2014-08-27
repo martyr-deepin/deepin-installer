@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-22 11:45+0800\n"
+"POT-Creation-Date: 2014-09-05 09:28+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,6 @@ msgid "Install Here"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:670
 #: ../resources/installer/js/part.coffee:786
 msgid "Warning"
 msgstr ""
@@ -102,6 +101,7 @@ msgstr ""
 
 #: ../resources/installer/js/part.coffee:634
 #: ../resources/installer/js/part.coffee:642
+#: ../resources/installer/js/part.coffee:670
 msgid "Install Tips"
 msgstr ""
 
@@ -125,10 +125,9 @@ msgid "Can't create a partition here"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:671
-#: ../resources/installer/js/part.coffee:787
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
+"UEFI-native installation only supports GPT-formatted disk. For installation, "
+"please enter the Expert Mode."
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:698
@@ -147,6 +146,12 @@ msgstr ""
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:787
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. It will lose all "
+"disk data if you insist on installing."
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:801
@@ -205,24 +210,24 @@ msgstr ""
 msgid "Nothing Input"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:806
+#: ../resources/installer/js/welcome.coffee:812
 #: ../app/language-selector/greeter.c:291
 msgid "Invalid Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:809
+#: ../resources/installer/js/welcome.coffee:815
 msgid "Different Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:832
+#: ../resources/installer/js/welcome.coffee:838
 msgid "Next"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:883
+#: ../resources/installer/js/welcome.coffee:889
 msgid "Time Zone"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:888
+#: ../resources/installer/js/welcome.coffee:894
 msgid "Keyboard"
 msgstr ""
 

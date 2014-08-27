@@ -5,9 +5,9 @@ import os
 import re
 
 coffee_files = []
-html_files = []
 c_files = []
 except_dirs = ["dbus_test", "memory_test", "dominant_color"]
+app = "deepin-installer"
 
 def get_lang():
     pos = glob.glob("./*.po")
@@ -18,34 +18,38 @@ def get_lang():
 
 
 def get_files():
-    global coffee_files,html_files, c_files
+    global coffee_files, c_files
+
     for d in os.listdir("../resources"):
         if d != "common" and d not in except_dirs:
-            coffee_files += glob.glob("../resources/%s/js/*.coffee" % d)
-            html_files += glob.glob("../resources/%s/ppt/*/*.coffee" % d)
+            coffee_dir = "../resources/%s/js/" % d
+            for dirpath, dirnames, filenames in os.walk(coffee_dir):
+                for filename in filenames:
+                    if filename.endswith(".coffee"):
+                        coffee_files.append(os.path.join(dirpath, filename))
+    #TODO:Here add your app coffee files in special dir
+    coffee_files.append(os.path.join("../resources/installer/ppt/*/*.coffee"))
+
     for d in os.listdir("../app"):
         if d not in except_dirs:
             c_files += glob.glob("../app/%s/*.c" % d);
             c_files += glob.glob("../app/%s/*.h" % d);
 
+    #TODO:Here add your app c files in special dir
     c_files += [
             ]
 
+def scan_pot():
+    global coffee_files, c_files
+    os.system("rm %s.pot" % app)
+    os.system("touch %s.pot" % app)
 
-def scan():
-    global coffee_files, html_files, c_files
-    os.system("rm installer.pot")
-    os.system("touch installer.pot")
-
-    cmd= "xgettext --from-code=utf-8 -L python -j -o installer.pot " + " ".join(coffee_files)
+    cmd= "xgettext --from-code=utf-8 -L python -j -o %s.pot " % app + " ".join(coffee_files)
     os.system(cmd)
 
-    cmd= "xgettext --from-code=utf-8 -L python -j -o installer.pot " + " ".join(html_files)
-    os.system(cmd)
-
-    cmd = "xgettext --from-code=utf-8 -k_ -j -o installer.pot " + " ".join(c_files)
+    cmd = "xgettext --from-code=utf-8 -k_ -j -o %s.pot " % app + " ".join(c_files)
     os.system(cmd)
 
 if __name__ == '__main__':
     get_files()
-    scan()
+    scan_pot()
