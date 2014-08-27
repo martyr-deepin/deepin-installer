@@ -56,13 +56,22 @@ msg_obj_array = [
     }
 ]
 
-_b = document.body
+
+getQueryParams = (qs) ->
+    qs = qs.split("+").join(" ")
+    params = {}
+    re = /[?&]?([^=]+)=([^&]*)/g
+    tokens = null
+    while (tokens = re.exec(qs))
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2])
+    params
+
 container = document.getElementById('container')
-#container = create_element("div","container",_b)
-#canvas_slideStage = create_element("canvas","slideStage",container)
 
 bmsg = []
 for msg_obj,i in msg_obj_array
     bmsg[i] = new BoxMessage("text#{i + 1}", "text#{i + 1} messages", container)
     bmsg[i].create_box_msg(msg_obj)
 
+document.body.lang = getQueryParams(document.location.search).lang
+echo "slideshow2014 lang:#{document.body.lang}"
