@@ -67,8 +67,14 @@ JS_EXPORT_API
 void installer_finish_reboot ()
 {
     g_warning("installer_finish_reboot()");
-    g_spawn_command_line_async ("reboot", NULL);
     gtk_main_quit ();
+    GError* error=NULL;
+    g_spawn_command_line_async ("sh -c \"echo b > /proc/sysrq-trigger\"", &error);
+    if(error != NULL){
+        g_warning("use echo to write b into /proc/sysrq-trigger failed:%s",error->message);
+        g_error_free(error);
+        error = NULL;
+    }
 }
 
 JS_EXPORT_API
@@ -102,7 +108,7 @@ void redirect_log()
     int log_file = open("/tmp/deepin-installer.log", O_CREAT| O_APPEND| O_WRONLY, 0644);
     if (log_file == -1) {
         perror("redirect_log");
-	    return ;
+        return ;
     }
     dup2(log_file, 1);
     dup2(log_file, 2);
