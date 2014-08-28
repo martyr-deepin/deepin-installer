@@ -7,7 +7,7 @@ class BoxMessage
     create_box_msg: (@msg_obj) ->
         @title = create_element("h1","",@boxmessage)
         @title.innerText = @msg_obj.title
-        @ul = create_element("ul","",@title)
+        @ul = create_element("ul","",@boxmessage)
         @msg = []
         for msg,i in @msg_obj.msg
             @msg[i] = create_element("li","",@ul)
