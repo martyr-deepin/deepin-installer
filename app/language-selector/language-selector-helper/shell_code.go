@@ -41,7 +41,7 @@ locale="$(lang2locale "$language")"
 LANG=$(grep "^${locale}" /usr/share/i18n/SUPPORTED | grep UTF-8 | sed -e 's/ .*//' -e q)
 
 echo $LANG
-printf 'LANGUAGE="%s"\nLANG="%s"' "${LANG}" "${LANG}" > /etc/default/locale
+printf 'LANGUAGE="%s"\nLANG="%s"' "${LANG%%.*}" "${LANG}" > /etc/default/locale
 printf '%s UTF-8' "${LANG}" > /etc/locale.gen
 /usr/sbin/locale-gen ${LANG}
 `
