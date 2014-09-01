@@ -1,43 +1,57 @@
 #!/bin/bash
 
-# BCM4313 [14e4:4727] wireless driver
-fix_bcm4313() {
-    # uninstall bcmwl-kernel-source
-    echo "fix bcm4313 ---------------------------"
-    apt-get purge --force-yes -f bcmwl-kernel-source
-    apt-get install --force-yes -f linux-firmware-nonfree
-
-    # blacklist b43 and wl driver
-    echo "blacklist b43" | tee -a /etc/modprobe.d/bcm.conf
-    echo "blacklist wl" | tee -a /etc/modprobe.d/bcm.conf
-
-    # enable brcmsmac
-    echo "brcmsmac" | tee -a /etc/modules
+is_pci_exists() {
+    local pci_info="$(lspci -d "${1}" 2>/dev/null)"
+    if [ "${pci_info}" ]; then
+        return 0
+    fi
+    return 1
 }
 
-# AR9485 [168C:0032] wireless driver
-fix_ar9485_nohwcrypt() {
-    # fix AR9485 could not connect to wifi with password
-    echo "options ath9k nohwcrypt=1" | tee -a /etc/modprobe.d/ath9k.conf
+is_usb_exists() {
+    local usb_info="$(lsusb -d "${1}" 2>/dev/null)"
+    if [ "${usb_info}" ]; then
+        return 0
+    fi
+    return 1
 }
 
-pcis=$(lspci  -n | awk '{print $3}')
-product=$(cat /sys/class/dmi/id/product_name)
-for pci in ${pcis}; do
-    case $pci in
-        "14e4:4727")
-            fix_bcm4313
-            ;;
-        "168C:0032")
-            # TODO
-            echo $pci
-            #if [ "${product}" = "" ]; then
-            #    fix_ar9485_nohwcrypt
-            #fi
-            ;;
-        "1180:0476" | "1180:0822")
-            echo $pci
-            ;;
-        *);;
-    esac
-done
+# bcm4313 [14e4:4727] wireless driver
+fix_pci_bcm4313() {
+    if is_pci_exists "14e4:4727"; then
+        echo "fix bcm4313 --------------------------------"
+
+        # uninstall bcmwl-kernel-source
+        apt-get purge --force-yes -f bcmwl-kernel-source
+        apt-get install --force-yes -f linux-firmware-nonfree
+
+        # blacklist b43 and wl driver
+        echo "blacklist b43" | tee -a /etc/modprobe.d/bcm.conf
+        echo "blacklist wl" | tee -a /etc/modprobe.d/bcm.conf
+
+        # enable brcmsmac
+        echo "brcmsmac" | tee -a /etc/modules
+    fi
+}
+
+# ar9485 [168C:0032] wireless driver
+fix_pci_ar9485_nohwcrypt() {
+    # fix ar9485 issue that could not connect to wifi with password protect
+    if is_pci_exists "168C:0032"; then
+        echo "fix ar9485 --------------------------------"
+        echo "options ath9k nohwcrypt=1" | tee -a /etc/modprobe.d/ath9k.conf
+    fi
+}
+
+# rtl8723au [0bda:1724] wireless driver
+# TODO: do not need any more after updating kernel to 3.15
+fix_usb_rtl8723au() {
+    if  is_usb_exists "0bda:1724"; then
+        echo "fix rtl8723au --------------------------------"
+        apt-get install --force-yes -f rtl8723au-dkms
+    fi
+}
+
+# fix device driver problems
+fix_pci_bcm4313
+fix_usb_rtl8723au
