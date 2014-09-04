@@ -165,6 +165,11 @@ class VariantItem extends Widget
         if __selected_variant_item != @
             @focus()
 
+    do_dblclick: =>
+        if __selected_variant_item != @
+            @focus()
+        __account_widget.show()
+
     do_mouseover: (e) ->
         if __selected_variant_item != @
             @element.setAttribute("class", "VariantItem KeyboardHover")
@@ -598,11 +603,13 @@ class Timezone extends Widget
         )
 
     show_pin: (area) ->
+        if not @pin?
+            @pin = create_element("div", "Pin", @picker_wrap)
+            @pin_img = create_img("", "images/pin.png", @pin)
+            @pin.addEventListener("dblclick",=>
+                __account_widget.show()
+            )
         pin = area.getAttribute("data-pin").split(",")
-        @pin?.parentElement?.removeChild(@pin)
-        @pin = null
-        @pin = create_element("div", "Pin", @picker_wrap)
-        @pin_img = create_img("", "images/pin.png", @pin)
         x = parseInt(pin[0]) - 6
         y = parseInt(pin[1]) + 50 - 6
         style = "left:" + x + "px;" + "top:" + y + "px"
