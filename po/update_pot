@@ -35,22 +35,16 @@ def get_files():
 def scan():
     global coffee_files, html_files, c_files
     os.system("rm installer.pot")
-    for l in get_lang():
-        os.system("touch installer.pot")
-        os.system("touch %s.po" % l)
+    os.system("touch installer.pot")
 
-        cmd= "xgettext --from-code=utf-8 -L python -j -o installer.pot " + " ".join(coffee_files)
-        os.system(cmd)
+    cmd= "xgettext --from-code=utf-8 -L python -j -o installer.pot " + " ".join(coffee_files)
+    os.system(cmd)
 
-        cmd= "xgettext --from-code=utf-8 -L python -j -o installer.pot " + " ".join(html_files)
-        os.system(cmd)
+    cmd= "xgettext --from-code=utf-8 -L python -j -o installer.pot " + " ".join(html_files)
+    os.system(cmd)
 
-        cmd = "xgettext --from-code=utf-8 -k_ -j -o installer.pot " + " ".join(c_files)
-        os.system(cmd)
-
-        os.system("msgmerge %s.po installer.pot > new_%s.po" % (l, l))
-
-        os.system("mv new_%s.po %s.po" % (l, l))
+    cmd = "xgettext --from-code=utf-8 -k_ -j -o installer.pot " + " ".join(c_files)
+    os.system(cmd)
 
 if __name__ == '__main__':
     get_files()
