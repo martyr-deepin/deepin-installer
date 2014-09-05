@@ -3,10 +3,10 @@ host = https://www.transifex.com
 minimum_perc = 80
 mode = developer
 
-[deepin-installer.installerpot-1]
+[deepin-installer.master]
 file_filter = po/<lang>.po
 source_lang = en
-source_file = po/installer.pot
+source_file = po/deepin-installer.pot
 type = PO
 
 [deepin-installer.desktop]
