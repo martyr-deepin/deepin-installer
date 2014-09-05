@@ -45,5 +45,7 @@ Depends: ${shlibs:Depends},
  squashfs-tools,
  tzdata-l10n,
  xfsprogs,
+ hfsprogs,
+ gdisk
 Description: New installer for linuxdeepin
  New installer for Linuxdeepin. 
