@@ -139,7 +139,7 @@ void installer_record_accounts_info(const char* name, const char* hostname, cons
 	g_free(InstallerConf.host_name);
 
     InstallerConf.user_name = g_strdup(name);
-    InstallerConf.password = g_strdup(password);
+    InstallerConf.password = g_base64_encode(password, strlen(password));
     InstallerConf.host_name = g_strdup(hostname);
 }
 

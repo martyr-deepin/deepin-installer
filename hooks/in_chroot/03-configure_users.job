@@ -11,7 +11,8 @@ fi
 [ -z ${DI_HOSTNAME} ] && DI_HOSTNAME="deepin"
 
 useradd -U -m --skel /etc/skel --shell /bin/bash ${DI_USERNAME} 
-echo "${DI_USERNAME}:${DI_PASSWORD}" | chpasswd
+REAL_PASSWD=`echo ${DI_PASSWORD} | base64 -d -`
+echo ${DI_USERNAME}:"${REAL_PASSWD}" | chpasswd
 gpasswd -a ${DI_USERNAME} users
 gpasswd -a ${DI_USERNAME} cdrom
 gpasswd -a ${DI_USERNAME} floppy
