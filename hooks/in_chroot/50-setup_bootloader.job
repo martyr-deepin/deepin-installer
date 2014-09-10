@@ -1,12 +1,13 @@
 #!/bin/bash
 # install grub to detect machine
+set -e
 
 if [ -f /host/etc/deepin-installer.conf ];then
     . /host/etc/deepin-installer.conf
 fi
 
 # if no DI_BOOTLOADER, treat as not installing bootloader
-[ -z ${DI_BOOTLOADER} ] && { echo >&2 "[WARN] DI_BOOTLOADER not set. Treat as not install bootloader. Skip."; exit 1;}
+[ -z ${DI_BOOTLOADER} ] && { echo >&2 "[WARN] DI_BOOTLOADER not set. Treat as not install bootloader. Skip."; exit 0;}
 
 if [ x${DI_UEFI} == xtrue ];then
     BOOT="uefi"

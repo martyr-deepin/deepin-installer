@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e 
 
 if [ -f /host/etc/deepin-installer.conf ];then
     . /host/etc/deepin-installer.conf

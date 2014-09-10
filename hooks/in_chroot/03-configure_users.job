@@ -1,5 +1,6 @@
 #!/bin/bash
 # TODO: add more than one users
+set -e
 
 if [ -f /host/etc/deepin-installer.conf ];then
     . /host/etc/deepin-installer.conf
@@ -9,7 +10,7 @@ fi
 [ -z ${DI_PASSWORD} ] && { echo >&2 "[ERROR] Variable DI_PASSWORD not set. Aborting."; exit 1; }
 [ -z ${DI_HOSTNAME} ] && DI_HOSTNAME="deepin"
 
-useradd -U -m --skel /etc/skel --shell /bin/bash ${DI_USERNAME}
+useradd -U -m --skel /etc/skel --shell /bin/bash ${DI_USERNAME} 
 echo "${DI_USERNAME}:${DI_PASSWORD}" | chpasswd
 gpasswd -a ${DI_USERNAME} users
 gpasswd -a ${DI_USERNAME} cdrom
