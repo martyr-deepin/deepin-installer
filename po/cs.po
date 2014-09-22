@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-22 11:45+0800\n"
-"PO-Revision-Date: 2014-08-22 11:42+0000\n"
+"POT-Creation-Date: 2014-09-05 09:28+0800\n"
+"PO-Revision-Date: 2014-09-15 10:41+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/deepin-installer/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,6 @@ msgid "Install Here"
 msgstr "Instalovat zde"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:670
 #: ../resources/installer/js/part.coffee:786
 msgid "Warning"
 msgstr "Varování"
@@ -104,6 +103,7 @@ msgstr "Je požadován diskový oddíl root (/)."
 
 #: ../resources/installer/js/part.coffee:634
 #: ../resources/installer/js/part.coffee:642
+#: ../resources/installer/js/part.coffee:670
 msgid "Install Tips"
 msgstr "Rady pro instalaci"
 
@@ -127,11 +127,10 @@ msgid "Can't create a partition here"
 msgstr "Zde nelze vytvořit diskový oddíl"
 
 #: ../resources/installer/js/part.coffee:671
-#: ../resources/installer/js/part.coffee:787
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
-msgstr "UEFI-nativní instalace podporuje pouze disk formátovaný GPT. ztratíte všechna data, pokud budete trvat na provedení instalace."
+"UEFI-native installation only supports GPT-formatted disk. For installation,"
+" please enter the Expert Mode."
+msgstr "UEFI-nativní instalace podporuje pouze disk formátovaný GPT. Pro instalaci vstupte, prosím, do znaleckého režimu."
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
@@ -150,6 +149,12 @@ msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "Bylo zjištěno, že diskový oddíl je připojen.\nOpravdu jej chcete odpojit?"
+
+#: ../resources/installer/js/part.coffee:787
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. It will lose all "
+"disk data if you insist on installing."
+msgstr "UEFI-nativní instalace podporuje pouze disk formátovaný GPT. ztratíte všechna data, pokud budete trvat na provedení instalace."
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
@@ -207,24 +212,24 @@ msgstr "Napište heslo znovu"
 msgid "Nothing Input"
 msgstr "Nic vloženo"
 
-#: ../resources/installer/js/welcome.coffee:806
+#: ../resources/installer/js/welcome.coffee:812
 #: ../app/language-selector/greeter.c:291
 msgid "Invalid Password"
 msgstr "Neplatné heslo"
 
-#: ../resources/installer/js/welcome.coffee:809
+#: ../resources/installer/js/welcome.coffee:815
 msgid "Different Password"
 msgstr "Odlišné heslo"
 
-#: ../resources/installer/js/welcome.coffee:832
+#: ../resources/installer/js/welcome.coffee:838
 msgid "Next"
 msgstr "Další"
 
-#: ../resources/installer/js/welcome.coffee:883
+#: ../resources/installer/js/welcome.coffee:889
 msgid "Time Zone"
 msgstr "Časová zóna"
 
-#: ../resources/installer/js/welcome.coffee:888
+#: ../resources/installer/js/welcome.coffee:894
 msgid "Keyboard"
 msgstr "Klávesnice"
 

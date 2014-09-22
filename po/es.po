@@ -6,13 +6,14 @@
 # ICesarI <icesari@msn.com>, 2014
 # jose manuel <josemdance@outlook.com>, 2014
 # Luis Castillo <castilloluis2005@gmail.com>, 2014
+# efedezeta <pocodance@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-22 11:45+0800\n"
-"PO-Revision-Date: 2014-08-22 07:11+0000\n"
-"Last-Translator: Catherinelin <linhongxia@linuxdeepin.com>\n"
+"POT-Creation-Date: 2014-09-05 09:28+0800\n"
+"PO-Revision-Date: 2014-09-16 02:30+0000\n"
+"Last-Translator: efedezeta <pocodance@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/deepin-installer/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -35,7 +36,6 @@ msgid "Install Here"
 msgstr "Instale Aquí"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:670
 #: ../resources/installer/js/part.coffee:786
 msgid "Warning"
 msgstr "Advertencia"
@@ -44,7 +44,7 @@ msgstr "Advertencia"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "No debería arrancar el sistema debido al poco espacio en el punto de montaje /boot, por favor, incremente el espacio hasta al menos 300 MB."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -105,6 +105,7 @@ msgstr "Una partición de raíz (/) es requerida."
 
 #: ../resources/installer/js/part.coffee:634
 #: ../resources/installer/js/part.coffee:642
+#: ../resources/installer/js/part.coffee:670
 msgid "Install Tips"
 msgstr "Instalar Consejos"
 
@@ -116,7 +117,7 @@ msgstr "Instalación en UEFI nativo sólo admite discos con formato GPT."
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr ""
+msgstr "El soporte de ESP es necesario en el modo UEFI, y por favor, cree una partición de al menos 100 MB en formato EFI."
 
 #: ../resources/installer/js/part.coffee:662
 #: ../resources/installer/js/dialog.coffee:113
@@ -128,11 +129,10 @@ msgid "Can't create a partition here"
 msgstr "No se puede crear una partición aquí"
 
 #: ../resources/installer/js/part.coffee:671
-#: ../resources/installer/js/part.coffee:787
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
-msgstr "Instalación en UEFI nativo sólo admite discos con formato GPT. Perderá todos los datos del disco si prosigue la instalación."
+"UEFI-native installation only supports GPT-formatted disk. For installation,"
+" please enter the Expert Mode."
+msgstr "La instalación UEFI-Nativa solo soporta un disco con formato GPT. Para la instalación, por favor entre al Modo Experto."
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
@@ -151,6 +151,12 @@ msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "Se ha dedectado la partición como montada. \n¿Seguro de que deseas desmontarla?"
+
+#: ../resources/installer/js/part.coffee:787
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. It will lose all "
+"disk data if you insist on installing."
+msgstr "Instalación en UEFI nativo sólo admite discos con formato GPT. Perderá todos los datos del disco si prosigue la instalación."
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
@@ -206,26 +212,26 @@ msgstr "Vuelva a escribir la contraseña"
 
 #: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
-msgstr ""
+msgstr "Nada introducido"
 
-#: ../resources/installer/js/welcome.coffee:806
+#: ../resources/installer/js/welcome.coffee:812
 #: ../app/language-selector/greeter.c:291
 msgid "Invalid Password"
 msgstr "Contraseña Incorrecta"
 
-#: ../resources/installer/js/welcome.coffee:809
+#: ../resources/installer/js/welcome.coffee:815
 msgid "Different Password"
-msgstr ""
+msgstr "Contraseñas diferentes"
 
-#: ../resources/installer/js/welcome.coffee:832
+#: ../resources/installer/js/welcome.coffee:838
 msgid "Next"
 msgstr "Siguiente"
 
-#: ../resources/installer/js/welcome.coffee:883
+#: ../resources/installer/js/welcome.coffee:889
 msgid "Time Zone"
 msgstr "Zona Horaria"
 
-#: ../resources/installer/js/welcome.coffee:888
+#: ../resources/installer/js/welcome.coffee:894
 msgid "Keyboard"
 msgstr "Teclado"
 
@@ -254,14 +260,14 @@ msgstr "La instalación del sistema ha fallado. Por favor, enviar el registro al
 
 #: ../resources/installer/js/progress.coffee:46
 msgid "Preparing for Installation"
-msgstr ""
+msgstr "Preparando la instalación"
 
 #: ../resources/installer/js/finish.coffee:37
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr ""
+msgstr "Consejo: Por favor, remueva el medio de instalación antes de reiniciar, con el fin de evitar el reingreso al entorno de instalación cuando la computadora inicie nuevamente."
 
 #: ../resources/installer/js/finish.coffee:46
 msgid "Congratulations!"
@@ -327,7 +333,7 @@ msgstr "Deepin OS será instalado en"
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr ""
+msgstr "\nLa partición será formateada si continua la instalación. Por favor, haga una copia de seguridad de los datos importantes.\n"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Do you want to continue the installation ?"
@@ -447,7 +453,7 @@ msgstr "Libre y unida comunidad open-source."
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr ""
+msgstr "¡Eres bienvenido a participar en el proyecto internacional Deepin!"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""

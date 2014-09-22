@@ -4,13 +4,14 @@
 # 
 # Translators:
 # freddy4212 <freddy4212@gmail.com>, 2014
+# Catherinelin <linhongxia@linuxdeepin.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-22 11:45+0800\n"
-"PO-Revision-Date: 2014-08-25 03:50+0000\n"
-"Last-Translator: freddy4212 <freddy4212@gmail.com>\n"
+"POT-Creation-Date: 2014-09-05 09:28+0800\n"
+"PO-Revision-Date: 2014-09-05 08:20+0000\n"
+"Last-Translator: Catherinelin <linhongxia@linuxdeepin.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-installer/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,7 +34,6 @@ msgid "Install Here"
 msgstr "安裝到這裡"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:670
 #: ../resources/installer/js/part.coffee:786
 msgid "Warning"
 msgstr "警告"
@@ -103,6 +103,7 @@ msgstr "至少需要一個 root (/) 分割區。"
 
 #: ../resources/installer/js/part.coffee:634
 #: ../resources/installer/js/part.coffee:642
+#: ../resources/installer/js/part.coffee:670
 msgid "Install Tips"
 msgstr "安裝提示"
 
@@ -126,11 +127,10 @@ msgid "Can't create a partition here"
 msgstr "無法在此建立分割區"
 
 #: ../resources/installer/js/part.coffee:671
-#: ../resources/installer/js/part.coffee:787
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
-msgstr "UEFI 模式僅支援磁碟分割表為 GPT 的硬碟。若您執意安裝將導致硬碟資料遺失。"
+"UEFI-native installation only supports GPT-formatted disk. For installation,"
+" please enter the Expert Mode."
+msgstr "UEFI模式僅支援磁碟分割表為 GPT 的硬碟。如需安裝請進入專家模式。"
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
@@ -149,6 +149,12 @@ msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "偵測到分割區已經掛載。\n您確定要卸載嗎？"
+
+#: ../resources/installer/js/part.coffee:787
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. It will lose all "
+"disk data if you insist on installing."
+msgstr "UEFI 模式僅支援磁碟分割表為 GPT 的硬碟。若您執意安裝將導致硬碟資料遺失。"
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
@@ -188,7 +194,7 @@ msgstr "請選擇或搜尋您的所在位置。"
 
 #: ../resources/installer/js/welcome.coffee:756
 msgid "Username"
-msgstr "用戶名"
+msgstr "使用者名稱"
 
 #: ../resources/installer/js/welcome.coffee:759
 msgid "Computer Name"
@@ -206,24 +212,24 @@ msgstr "確認密碼"
 msgid "Nothing Input"
 msgstr "沒有輸入"
 
-#: ../resources/installer/js/welcome.coffee:806
+#: ../resources/installer/js/welcome.coffee:812
 #: ../app/language-selector/greeter.c:291
 msgid "Invalid Password"
 msgstr "無效的密碼"
 
-#: ../resources/installer/js/welcome.coffee:809
+#: ../resources/installer/js/welcome.coffee:815
 msgid "Different Password"
 msgstr "密碼不相同"
 
-#: ../resources/installer/js/welcome.coffee:832
+#: ../resources/installer/js/welcome.coffee:838
 msgid "Next"
 msgstr "下一步"
 
-#: ../resources/installer/js/welcome.coffee:883
+#: ../resources/installer/js/welcome.coffee:889
 msgid "Time Zone"
 msgstr "時區"
 
-#: ../resources/installer/js/welcome.coffee:888
+#: ../resources/installer/js/welcome.coffee:894
 msgid "Keyboard"
 msgstr "鍵盤"
 

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-22 11:45+0800\n"
-"PO-Revision-Date: 2014-08-23 12:10+0000\n"
+"POT-Creation-Date: 2014-09-05 09:28+0800\n"
+"PO-Revision-Date: 2014-09-05 11:50+0000\n"
 "Last-Translator: Maxximo88 <real.massimo@hotmail.it>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/deepin-installer/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,6 @@ msgid "Install Here"
 msgstr "Installa qui"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:670
 #: ../resources/installer/js/part.coffee:786
 msgid "Warning"
 msgstr "Attenzione"
@@ -104,6 +103,7 @@ msgstr "E' necessaria una partizione root (/)."
 
 #: ../resources/installer/js/part.coffee:634
 #: ../resources/installer/js/part.coffee:642
+#: ../resources/installer/js/part.coffee:670
 msgid "Install Tips"
 msgstr "Suggerimenti dell'installazione"
 
@@ -127,11 +127,10 @@ msgid "Can't create a partition here"
 msgstr "Non posso creare una partizione qui."
 
 #: ../resources/installer/js/part.coffee:671
-#: ../resources/installer/js/part.coffee:787
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
-msgstr "L'installazione nativa UEFI supporta solo dischi formattati in GPT. Continuando con l'installazione si perderanno tutti i dati sul disco."
+"UEFI-native installation only supports GPT-formatted disk. For installation,"
+" please enter the Expert Mode."
+msgstr "L'installazione nativa UEFI supporta solo dischi formattati in GPT. Per proseguire nell'installazione si prega di entrare in Modalita' esperto"
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
@@ -150,6 +149,12 @@ msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "La partizione è stata rilevata come montata. \nSicuro di volerla smontare?"
+
+#: ../resources/installer/js/part.coffee:787
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. It will lose all "
+"disk data if you insist on installing."
+msgstr "L'installazione nativa UEFI supporta solo dischi formattati in GPT. Continuando con l'installazione si perderanno tutti i dati sul disco."
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
@@ -207,24 +212,24 @@ msgstr "Conferma password"
 msgid "Nothing Input"
 msgstr "Nessun Input"
 
-#: ../resources/installer/js/welcome.coffee:806
+#: ../resources/installer/js/welcome.coffee:812
 #: ../app/language-selector/greeter.c:291
 msgid "Invalid Password"
 msgstr "Password non valida"
 
-#: ../resources/installer/js/welcome.coffee:809
+#: ../resources/installer/js/welcome.coffee:815
 msgid "Different Password"
 msgstr "Password differente"
 
-#: ../resources/installer/js/welcome.coffee:832
+#: ../resources/installer/js/welcome.coffee:838
 msgid "Next"
 msgstr "Avanti"
 
-#: ../resources/installer/js/welcome.coffee:883
+#: ../resources/installer/js/welcome.coffee:889
 msgid "Time Zone"
 msgstr "Fuso orario"
 
-#: ../resources/installer/js/welcome.coffee:888
+#: ../resources/installer/js/welcome.coffee:894
 msgid "Keyboard"
 msgstr "Tastiera"
 

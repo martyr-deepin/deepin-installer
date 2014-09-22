@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-22 11:45+0800\n"
-"PO-Revision-Date: 2014-08-25 10:35+0000\n"
+"POT-Creation-Date: 2014-09-05 09:28+0800\n"
+"PO-Revision-Date: 2014-09-18 12:51+0000\n"
 "Last-Translator: webcrush <chris.plescher@yahoo.de>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/deepin-installer/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,6 @@ msgid "Install Here"
 msgstr "Hier installieren"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:670
 #: ../resources/installer/js/part.coffee:786
 msgid "Warning"
 msgstr "Warnung"
@@ -47,7 +46,7 @@ msgstr "Warnung"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "Sie können nicht starten wegen zu kleinem Speicher von /Boot Bereitstellungspunkt, verbessern Sie bitte mindestens den Platz auf 300 M."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -108,6 +107,7 @@ msgstr "Eine root-Partition (/) wird benötigt."
 
 #: ../resources/installer/js/part.coffee:634
 #: ../resources/installer/js/part.coffee:642
+#: ../resources/installer/js/part.coffee:670
 msgid "Install Tips"
 msgstr "Tips zur Einrichtung"
 
@@ -119,7 +119,7 @@ msgstr "Die native UEFI Installation unterstützt nur GPT-formatierte Laufwerke.
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr ""
+msgstr "Für ESP Unterstützung wird der UEFI-Modus benötigt und bitte erstellen Sie eine Partition von 100 MB oder mehr im efi-Format."
 
 #: ../resources/installer/js/part.coffee:662
 #: ../resources/installer/js/dialog.coffee:113
@@ -131,11 +131,10 @@ msgid "Can't create a partition here"
 msgstr "Partition kann hier nicht erstellt werden"
 
 #: ../resources/installer/js/part.coffee:671
-#: ../resources/installer/js/part.coffee:787
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
-msgstr "Die native UEFI Installation unterstützt nur GPT-formatierte Laufwerke. Alle darauf gespeicherten Daten gehen verloren, wenn Sie fortfahren."
+"UEFI-native installation only supports GPT-formatted disk. For installation,"
+" please enter the Expert Mode."
+msgstr "UEFI-native Installation unterstützt nur GPT-formatierte Festplatten. Für die Installation gehen Sie bitte in den Experten-Modus."
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
@@ -154,6 +153,12 @@ msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "Es wurde erkannt, dass die Partition eingehängt wurde.\nSind Sie sicher, dass Sie sie aushängen möchten?"
+
+#: ../resources/installer/js/part.coffee:787
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. It will lose all "
+"disk data if you insist on installing."
+msgstr "Die native UEFI Installation unterstützt nur GPT-formatierte Laufwerke. Alle darauf gespeicherten Daten gehen verloren, wenn Sie fortfahren."
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
@@ -209,26 +214,26 @@ msgstr "Passwort wiederholen"
 
 #: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
-msgstr ""
+msgstr "Kein Eingang"
 
-#: ../resources/installer/js/welcome.coffee:806
+#: ../resources/installer/js/welcome.coffee:812
 #: ../app/language-selector/greeter.c:291
 msgid "Invalid Password"
 msgstr "Ungültiges Passwort"
 
-#: ../resources/installer/js/welcome.coffee:809
+#: ../resources/installer/js/welcome.coffee:815
 msgid "Different Password"
 msgstr "Unterschiedliches Passwort"
 
-#: ../resources/installer/js/welcome.coffee:832
+#: ../resources/installer/js/welcome.coffee:838
 msgid "Next"
 msgstr "Weiter"
 
-#: ../resources/installer/js/welcome.coffee:883
+#: ../resources/installer/js/welcome.coffee:889
 msgid "Time Zone"
 msgstr "Zeitzone"
 
-#: ../resources/installer/js/welcome.coffee:888
+#: ../resources/installer/js/welcome.coffee:894
 msgid "Keyboard"
 msgstr "Tastatur"
 
@@ -264,7 +269,7 @@ msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr ""
+msgstr "Tipps: Bitte entfernen Sie die Installationsmedien vor dem Neustart, um zu vermeiden das die Installationsumgebung erneut aufgerufen wird, wenn Sie den Computer das nächste Mal starten."
 
 #: ../resources/installer/js/finish.coffee:46
 msgid "Congratulations!"
@@ -330,7 +335,7 @@ msgstr "Deepin OS wird installiert in"
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr ""
+msgstr "\nDie Partition wird formatiert, wenn Sie die Installation fortsetzen. Bitte erstellen Sie eine Sicherungskopie für die wichtigen Daten. \n"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Do you want to continue the installation ?"
@@ -398,7 +403,7 @@ msgstr "Deepin Film"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
 msgid "Comprehensive Audio-visual Shock"
-msgstr ""
+msgstr "Umfassende audiovisuelle Schock"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
 msgid "New Interactive Experience"
@@ -406,7 +411,7 @@ msgstr "Neue Interaktive Erfahrung"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
 msgid "Intelligent Subtitle Loading"
-msgstr "Intelligentes Untertitel"
+msgstr "Intelligentes Untertitel laden"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
 msgid "Deepin Music"
@@ -418,11 +423,11 @@ msgstr "Ultimative Musik-Reise"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
 msgid "Rich Extended Function"
-msgstr ""
+msgstr "Zahlreich erweiterte Funktionen"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
 msgid "Enjoy Online Strongest Voice"
-msgstr ""
+msgstr "Genießen Sie Online stärkste Stimme"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
 msgid "Deepin Game"
@@ -434,7 +439,7 @@ msgstr "Die neuesten und heißesten Games"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
 msgid "Gather Various Game Topics"
-msgstr ""
+msgstr "Sammeln Sie verschiedene Spiel-Themen"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
 msgid "Collect Your Favorite Online"
@@ -450,7 +455,7 @@ msgstr "Freie und vereinte Open Source Community"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr ""
+msgstr "Herzlich Willkommen bei der Teilnahme im Deepin Internationalisierungsprojekt"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""
