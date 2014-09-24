@@ -11,6 +11,8 @@ mkdir -p ${target}
 #must mount rootfs first
 echo "mount rootfs(${DI_ROOT_PARTITION}) to ${target}"
 mount ${DI_ROOT_PARTITION} ${target}
+#Try to fix wrong permission (owned by 1001)
+chown root:root ${target}
 
 [ ! -d ${target}/host ] && mkdir -p ${target}/host
 mount --bind / ${target}/host
