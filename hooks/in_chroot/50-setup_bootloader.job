@@ -1,6 +1,5 @@
 #!/bin/bash
 # install grub to detect machine
-set -e
 
 if [ -f /host/etc/deepin-installer.conf ];then
     . /host/etc/deepin-installer.conf

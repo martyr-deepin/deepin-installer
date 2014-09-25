@@ -13,6 +13,7 @@ fi
 useradd -U -m --skel /etc/skel --shell /bin/bash ${DI_USERNAME} 
 REAL_PASSWD=`echo ${DI_PASSWORD} | base64 -d -`
 echo ${DI_USERNAME}:"${REAL_PASSWD}" | chpasswd
+set +e
 gpasswd -a ${DI_USERNAME} users
 gpasswd -a ${DI_USERNAME} cdrom
 gpasswd -a ${DI_USERNAME} floppy
@@ -29,6 +30,7 @@ gpasswd -a ${DI_USERNAME} lpadmin
 gpasswd -a ${DI_USERNAME} sudo
 gpasswd -a ${DI_USERNAME} storage
 gpasswd -a ${DI_USERNAME} network
+set -e 
 
 echo "[INFO] Fix Home directory permission to ${DI_USERNAME}."
 chown -hR ${DI_USERNAME}:${DI_USERNAME} /home/${DI_USERNAME}
