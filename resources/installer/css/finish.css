@@ -11,13 +11,13 @@
     text-align:center;
 }
 
-.Desc{
+.Finish .Desc{
     font-size:30px;
     height:40px;
     line-height:40px;
 }
 
-.Detail{
+.Finish .Detail{
     margin-top:20px;
     font-size:13px;
     line-height:150%;
@@ -25,7 +25,7 @@
     cursor:pointer;
 }
 
-.Tips{
+.Finish .Tips{
     margin-top:5px;
     line-height:150%;
     font-size:14px;
