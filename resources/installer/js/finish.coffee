@@ -34,22 +34,21 @@ class Finish extends Page
         @desc = create_element("div", "Desc", @info)
         @detail = create_element("div", "Detail", @info)
         @tips = create_element("div","Tips",@info)
-        tips_text  = _("Tips: Please remove the installation media before reboot, so as to avoid reentering into the installation environment when you start the computer next time. ")
-        @tips.innerText = tips_text
 
         @ops = create_element("div", "FinishOps", @element)
-
         @later = create_element("div", "", @ops)
         @later_txt = create_element("div", "Txt", @later)
 
         if @succeed
             @desc.innerText = _("Congratulations!")
             @detail.innerText = _("You need to restart the computer to complete installation.")
+            @tips.innerText = _("Tips: Please remove the installation media before reboot, so as to avoid reentering into the installation environment when you start the computer next time. ")
             @later.setAttribute("class", "Later")
             @later_txt.innerText = _("Reboot Later")
         else
-            @desc.innerText = _("Installation Failed")
-            @detail.innerText = _("Please send the log to Deepin Team.")
+            @desc.innerText = _("Installation Failed!")
+            @detail.style.color = "rgba(255,255,255,1.0)"
+            @detail.innerText = _("The installation log has been saved on the desktop for you.\n To help us improve the system better, please send the log to Deepin Team. Thank you! ")
             @detail.addEventListener("click", (e) =>
                 DCore.Installer.show_log()
             )

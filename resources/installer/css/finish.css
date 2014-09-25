@@ -7,7 +7,7 @@
     top:160px;
     left:120px;
     width:500px;
-    height:60px;
+    /*height:60px;*/
     text-align:center;
 }
 
@@ -22,13 +22,14 @@
     font-size:13px;
     line-height:150%;
     color:rgba(255,255,255,0.6);
+    cursor:pointer;
 }
 
 .Tips{
     margin-top:5px;
     line-height:150%;
     font-size:14px;
-    color:rgba(255,255,255,0.7);
+    color:rgba(255,255,255,1.0);
 }
 .FinishOps {
     position:absolute;
@@ -40,6 +41,8 @@
 }
 
 .Finish .Later {
+    display:block;
+    cursor:pointer;
     float:left;
     width:100px;
     height:90px;
@@ -54,6 +57,7 @@
 }
 
 .Finish .Startover {
+    cursor:pointer;
     float:left;
     width:100px;
     height:90px;
@@ -68,6 +72,7 @@
 }
 
 .Finish .Now {
+    cursor:pointer;
     float:right;
     width:100px;
     height:90px;

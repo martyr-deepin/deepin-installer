@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-05 09:28+0800\n"
+"POT-Creation-Date: 2014-09-25 13:10+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,59 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../resources/installer/js/finish.coffee:43
+msgid "Congratulations!"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:44
+msgid "You need to restart the computer to complete installation."
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:45
+msgid ""
+"Tips: Please remove the installation media before reboot, so as to avoid "
+"reentering into the installation environment when you start the computer "
+"next time. "
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:47
+msgid "Reboot Later"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:49
+msgid "Installation Failed!"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:51
+msgid ""
+"The installation log has been saved on the desktop for you.\n"
+" To help us improve the system better, please send the log to Deepin Team. "
+"Thank you! "
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:62
+msgid "Start Over"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:79
+msgid "Reboot Now"
+msgstr ""
+
+#: ../resources/installer/js/base.coffee:28
+msgid "Installation Requirements"
+msgstr ""
+
+#: ../resources/installer/js/base.coffee:29
+#, python-format
+msgid "To install Deepin OS, you need to have at least %d GB disk space."
+msgstr ""
+
+#: ../resources/installer/js/base.coffee:50
+#: ../resources/installer/js/base.coffee:52
+#: ../resources/installer/js/base.coffee:54
+msgid "Unused"
+msgstr ""
 
 #: ../resources/installer/js/part.coffee:126
 #: ../resources/installer/js/part.coffee:145
@@ -162,137 +215,6 @@ msgstr ""
 msgid "Expert mode"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:193
-msgid "Yes"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:198
-msgid "No"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:293
-msgid "Please press one of the following keys."
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:299
-msgid "Please confirm you have the following keys."
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:342
-msgid "Detect Layout"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:348
-msgid "View Current"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:506
-msgid "Please select or search your location."
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:756
-msgid "Username"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:759
-msgid "Computer Name"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:762
-msgid "Password"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:767
-msgid "Retype Password"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:798
-msgid "Nothing Input"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:812
-#: ../app/language-selector/greeter.c:291
-msgid "Invalid Password"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:815
-msgid "Different Password"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:838
-msgid "Next"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:889
-msgid "Time Zone"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:894
-msgid "Keyboard"
-msgstr ""
-
-#: ../resources/installer/js/base.coffee:28
-msgid "Installation Requirements"
-msgstr ""
-
-#: ../resources/installer/js/base.coffee:29
-#, python-format
-msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr ""
-
-#: ../resources/installer/js/base.coffee:50
-#: ../resources/installer/js/base.coffee:52
-#: ../resources/installer/js/base.coffee:54
-msgid "Unused"
-msgstr ""
-
-#: ../resources/installer/js/progress.coffee:25
-msgid "Error Report"
-msgstr ""
-
-#: ../resources/installer/js/progress.coffee:27
-msgid "System installation failed. Please send the log to Deepin Team."
-msgstr ""
-
-#: ../resources/installer/js/progress.coffee:46
-msgid "Preparing for Installation"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:37
-msgid ""
-"Tips: Please remove the installation media before reboot, so as to avoid "
-"reentering into the installation environment when you start the computer "
-"next time. "
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:46
-msgid "Congratulations!"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:47
-msgid "You need to restart the computer to complete installation."
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:49
-msgid "Reboot Later"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:51
-msgid "Installation Failed"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:52
-msgid "Please send the log to Deepin Team."
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:63
-msgid "Start Over"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:80
-msgid "Reboot Now"
-msgstr ""
-
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
 msgstr ""
@@ -374,6 +296,87 @@ msgstr ""
 
 #: ../resources/installer/js/dialog.coffee:306
 msgid "Please enter a valid partition size."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:198
+msgid "Yes"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:203
+msgid "No"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:298
+msgid "Please press one of the following keys."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:304
+msgid "Please confirm you have the following keys."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:347
+msgid "Detect Layout"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:353
+msgid "View Current"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:511
+msgid "Please select or search your location."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:763
+msgid "Username"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:766
+msgid "Computer Name"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:769
+msgid "Password"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:774
+msgid "Retype Password"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:805
+msgid "Nothing Input"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:819
+#: ../app/language-selector/greeter.c:291
+msgid "Invalid Password"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:822
+msgid "Different Password"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:845
+msgid "Next"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:896
+msgid "Time Zone"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:901
+msgid "Keyboard"
+msgstr ""
+
+#: ../resources/installer/js/progress.coffee:25
+msgid "Error Report"
+msgstr ""
+
+#: ../resources/installer/js/progress.coffee:27
+msgid "System installation failed. Please send the log to Deepin Team."
+msgstr ""
+
+#: ../resources/installer/js/progress.coffee:46
+msgid "Preparing for Installation"
 msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
