@@ -731,6 +731,8 @@ class WelcomeFormItem extends Widget
             Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("input", (e) =>
+            if @id == "username"
+                @input.value = @input.value.toLowerCase()
             if @id == "username" and Widget.look_up("account")?.hostname.change == false
                 Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
             if @id == "confirmpassword"
