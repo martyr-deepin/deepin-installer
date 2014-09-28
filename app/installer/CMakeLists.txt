@@ -1,4 +1,4 @@
-SET(NAME "deepin-installer")
+SET(NAME "installer")
 
 GEN_JSC_SOURCE2(JSC_GEN "jsc" "installer" "installer.cfg" "dbus.cfg")
 
@@ -11,18 +11,22 @@ target_link_libraries(${NAME} dcom dbus ${DWEBVIEW_LIBRARIES} ${PARTED_LIBRARIES
 
 include_directories(${DWEBVIEW_INCLUDE_DIRS} ${PARTED_INCLUDE_DIRS} ${XKLAVIER_INCLUDE_DIRS})
 
-execute_process(
-    COMMAND make
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/resources/installer/js
+SET_TARGET_PROPERTIES(${NAME}
+    PROPERTIES OUTPUT_NAME deepin-${NAME}
     )
 
 execute_process(
     COMMAND make
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/resources/installer/ppt/slideshow2014
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/resources/${NAME}/js
+    )
+
+execute_process(
+    COMMAND make
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/resources/${NAME}/ppt/slideshow2014
     )
 
 install(
-    PROGRAMS ${PROJECT_BINARY_DIR}/${NAME}
+    PROGRAMS ${PROJECT_BINARY_DIR}/deepin-${NAME}
     DESTINATION bin
     )
 
@@ -40,3 +44,5 @@ install(
     FILES ${PROJECT_SOURCE_DIR}/app/installer/com.deepin.pkexec.installer.policy
     DESTINATION /usr/share/polkit-1/actions/
     )
+
+GEN_JS_FILE(${NAME})

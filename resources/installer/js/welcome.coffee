@@ -86,7 +86,7 @@ update_timezone_text = (tri) ->
     if utc is undefined or utc is null then utc = get_utc_by_city(__selected_timezone)
     current_timezone = utc + ":00 " + right
     echo "current_timezone:#{current_timezone}"
-    timezoneSet_div?.innerText = current_timezone
+    timezoneSet_div?.innerText = right
     timezoneSet_div?.title = current_timezone
 
     x = timezoneSet_div?.offsetLeft - 15
