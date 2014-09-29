@@ -22,10 +22,13 @@
 
 #ifndef THEME_H
 #define THEME_H
+#include "display_info.h"
 
+const char* get_theme_path();
 char* get_theme_config();
 char* get_current_bg_path();
 void set_theme_background(GtkWidget* container,GtkWidget* child);
+void draw_background_by_theme(GtkWidget* widget, GtkWidget* child, struct DisplayInfo info);
 void init_theme();
 
 #endif /* end of THEME_H */

@@ -3,6 +3,7 @@
  *               2011 ~ 2012 Liqiang Lee
  *
  * Author:      Liqiang Lee <liliqiang@linuxdeepin.com>
+ *              bluth <yuanchenglu001@gmail.com>
  * Maintainer:  Liqiang Lee <liliqiang@linuxdeepin.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,22 +19,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
-#ifndef DESKTOP_ACTION_H
-#define DESKTOP_ACTION_H
 
+#ifndef MOUSE_H
+#define MOUSE_H
 
-#include <glib.h>
-#include <gio/gdesktopappinfo.h>
+gboolean update_workarea_rect_by_mouse(struct DisplayInfo* area);
 
+void listen_leave_notify_signal(GtkWidget* widget, gpointer data);
 
-struct Action {
-    char* name;
-    char* exec;
-};
-
-
-GPtrArray* get_app_actions(GDesktopAppInfo* app);
-
-
-#endif /* end of include guard: DESKTOP_ACTION_H */
+#endif /* end of THEME_H */
 

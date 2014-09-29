@@ -28,11 +28,16 @@ gboolean background_info_draw_callback(GtkWidget* w, cairo_t* cr, BackgroundInfo
 void background_info_set_background_by_drawable(BackgroundInfo* info, guint32 drawable)
 {
     gint x, y;
-    Window root;
     guint border,depth, width=0, height=0;
     Display* dpy = gdk_x11_get_default_xdisplay();
     gdk_error_trap_push();
+    //TODO:
+    //we shoul use xatom_name window to set events instead of root window
+    //because the monitors changed signal will came before root window rect changed
+    //so the Xroot window rect maybe keep old rect in update_bg function and in Display DBus signal "PrimaryChanged"
+    Window root;
     XGetGeometry(dpy, drawable, &root, &x, &y, &width, &height, &border, &depth);
+    g_debug("[%s] %d*%d(%d,%d)",__func__,width,height,x,y);
     if (gdk_error_trap_pop()) {
         g_warning("set_background_by_drawable invalid drawable %d \n", drawable);
         return;
@@ -40,18 +45,18 @@ void background_info_set_background_by_drawable(BackgroundInfo* info, guint32 dr
 
     g_mutex_lock(&info->m);
     if (info->bg != NULL) {
-	cairo_surface_destroy(info->bg);
-	info->bg = NULL;
+        cairo_surface_destroy(info->bg);
+        info->bg = NULL;
     }
     info->bg = cairo_xlib_surface_create(
             dpy, drawable,
-	    gdk_x11_visual_get_xvisual(gdk_visual_get_system()),
+            gdk_x11_visual_get_xvisual(gdk_visual_get_system()),
             width, height
             );
     g_mutex_unlock(&info->m);
 
     if (gtk_widget_get_realized(info->container)) {
-	gdk_window_invalidate_rect(gtk_widget_get_window(info->container), NULL, TRUE);
+        gdk_window_invalidate_rect(gtk_widget_get_window(info->container), NULL, TRUE);
     }
 }
 
@@ -59,7 +64,7 @@ void background_info_set_background_by_file(BackgroundInfo* info, const char* fi
 {
     g_message("background_info_set_background_by_file:%s",file);
     GError* error = NULL;
-    
+
     GdkScreen *screen;
     screen = gtk_window_get_screen (GTK_WINDOW (info->container));
     gint w = gdk_screen_get_width(screen);
@@ -88,7 +93,7 @@ void background_info_change_alpha(BackgroundInfo* info, double alpha)
 {
     info->alpha = alpha;
     if (gtk_widget_get_realized(info->container)) {
-	gdk_window_invalidate_rect(gtk_widget_get_window(info->container), NULL, TRUE);
+        gdk_window_invalidate_rect(gtk_widget_get_window(info->container), NULL, TRUE);
     }
 }
 
@@ -102,22 +107,6 @@ void background_info_clear(BackgroundInfo* info)
 }
 
 
-void monitors_adaptive(GtkWidget* container, GtkWidget* child)
-{
-    ensure_fullscreen (container);
-    gtk_window_fullscreen (GTK_WINDOW (container));
-    
-    GdkScreen *screen;
-    GdkRectangle geometry;
-
-    screen = gdk_screen_get_default();
-    gdk_screen_get_monitor_geometry (screen, gdk_screen_get_primary_monitor(screen), &geometry);
-    g_message("primary monitor width:%d,height:%d;",geometry.width,geometry.height);
-    gtk_window_move (GTK_WINDOW (child), geometry.x, geometry.y);
-    gtk_window_resize (GTK_WINDOW (child), geometry.width, geometry.height);
-
-}
-
 BackgroundInfo* create_background_info(GtkWidget* container, GtkWidget* child)
 {
     g_message("create_background_info");
@@ -126,8 +115,10 @@ BackgroundInfo* create_background_info(GtkWidget* container, GtkWidget* child)
     info->alpha = 1;
     info->container = container;
 
-    gtk_widget_realize (child);
-    gdk_window_set_composited(gtk_widget_get_window(child), TRUE);
+    if (child != NULL){
+        gtk_widget_realize (child);
+        gdk_window_set_composited(gtk_widget_get_window(child), TRUE);
+    }
     g_signal_connect (container, "draw", G_CALLBACK (background_info_draw_callback), info);
     gtk_widget_realize (container);
     GdkRGBA color = {0,0,0,0};
@@ -136,3 +127,42 @@ BackgroundInfo* create_background_info(GtkWidget* container, GtkWidget* child)
     return info;
 }
 
+static Atom _BG_ATOM = 0;
+
+Drawable get_blurred_background()
+{
+    gulong n_item;
+    gpointer data = get_window_property(gdk_x11_get_default_xdisplay(), GDK_ROOT_WINDOW(), _BG_ATOM, &n_item);
+    if (data == NULL)
+        return 0;
+    Drawable bg = X_FETCH_32(data, 0);
+    XFree(data);
+    return bg;
+}
+
+GdkFilterReturn update_bg(XEvent* xevent, GdkEvent* event, BackgroundInfo* info)
+{
+    (void)event;
+    if (xevent->type == PropertyNotify) {
+        if (((XPropertyEvent*)xevent)->atom == _BG_ATOM) {
+            background_info_set_background_by_drawable(info, get_blurred_background());
+        }
+    }
+    return GDK_FILTER_CONTINUE;
+}
+
+
+void setup_background(GtkWidget* container, GtkWidget* webview,const char* xatom_name)
+{
+    _BG_ATOM = gdk_x11_get_xatom_by_name(xatom_name);
+
+    BackgroundInfo* info = create_background_info(container, webview);
+    background_info_set_background_by_drawable(info, get_blurred_background());
+
+    //TODO:
+    //we shoul use xatom_name window to set events instead of root window
+    //because the monitors changed signal will came before root window rect changed
+    //so the Xroot window rect maybe keep old rect in update_bg function
+    gdk_window_set_events(gdk_get_default_root_window(), GDK_PROPERTY_CHANGE_MASK);
+    gdk_window_add_filter(gdk_get_default_root_window(), (GdkFilterFunc)update_bg, info);
+}

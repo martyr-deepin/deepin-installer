@@ -67,7 +67,7 @@ char* check_absolute_path_icon(char const* app_id, char const* icon_path);
 gboolean is_chrome_app(char const* name);
 char* bg_blur_pict_get_dest_path (const char* src_uri);
 gboolean is_livecd();
-void spawn_command_sync (const char* command,gboolean sync);
+gboolean spawn_command_sync (const char* command,gboolean sync);
 
 #endif
 

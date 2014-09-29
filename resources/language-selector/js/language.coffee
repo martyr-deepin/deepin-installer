@@ -22,13 +22,9 @@ class Language extends Widget
 
     constructor:->
         super
-        #inject_js("js/jquery/jquery.min.js")
-        #inject_js("js/jquery/jquery.nicescroll.js")
-        inject_css(_b,"css/language.css")
+        inject_css(document.body,"css/language.css")
         @local_list = []
         @lang_list = []
-        document.body.style.width = screen.width
-        document.body.style.height = screen.height
 
         document.body.appendChild(@element)
         @get_lang_list()
@@ -73,20 +69,21 @@ class Language extends Widget
             )
         document.body.addEventListener("keydown",(e)=>
             echo "keydown:#{e.which}"
-            #if e.which == KEYCODE.ESC
-            #    @start_session("ycl","1")
             if e.which == KEYCODE.ENTER
                 if list.currentIndex < 0 then return
                 local = @local_list[list.currentIndex]["name"]
                 echo "#{list.currentIndex}:#{local}"
                 @select_lang(local)
         )
- 
+
 document.body.addEventListener("contextmenu",(e)=>
     e.preventDefault()
     e.stopPropagation()
 )
-#document.ready = ->
-#    nicesx = $("#boxscroll").niceScroll({touchbehavior:false,cursorcolor:"#fff",cursoropacitymax:0.6,cursorwidth:8})
 
 new Language()
+
+DCore.signal_connect("leave-notify", (area) ->
+    document.body.style.width = area.width
+    document.body.style.height = area.height
+)

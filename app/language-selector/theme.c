@@ -22,11 +22,18 @@
  **/
 #include <gtk/gtk.h>
 #include "background.h"
+#include "theme.h"
 
 #define SCHEMA_ID "com.deepin.dde.personalization"
 #define GREETER_THEME_KEY "greeter-theme"
-#define GREETER_THEME_PATH ""RESOURCE_DIR"greeter/greeter-theme"
+#define GREETER_THEME_PATH ""RESOURCE_DIR"language-selector/greeter-theme"
+
 GSettings* s;
+
+const char* get_theme_path()
+{
+    return GREETER_THEME_PATH;
+}
 
 char* get_theme_config()
 {
@@ -41,6 +48,7 @@ char* get_current_bg_path()
 void set_theme_background(GtkWidget* container,GtkWidget* child)
 {
     char* theme = get_theme_config();
+    g_message("theme:%s",theme);
     const char* bg_path = g_strdup_printf("%s/%s/bg.jpg",GREETER_THEME_PATH,theme);
     g_free(theme);
     g_message("theme_bg_path:%s",bg_path);
@@ -56,8 +64,22 @@ void set_theme_background(GtkWidget* container,GtkWidget* child)
     background_info_set_background_by_file(bg_info, bg_path);
 }
 
+void draw_background_by_theme(GtkWidget* widget, GtkWidget* child, struct DisplayInfo info)
+{
+    g_message("[%s], :%dx%d(%d,%d)",__func__, info.width, info.height, info.x, info.y);
+
+    gtk_widget_set_size_request(widget, info.width, info.height);
+    gtk_window_move(GTK_WINDOW(widget), info.x, info.y);
+
+    set_theme_background(widget,child);
+    gtk_widget_realize (widget);
+    GdkWindow* gdkwindow = gtk_widget_get_window (widget);
+    gdk_window_set_accept_focus(gdkwindow,FALSE);
+    gdk_window_set_override_redirect (gdkwindow, TRUE);
+    gtk_widget_show (widget);
+}
+
 void init_theme()
 {
     s = g_settings_new(SCHEMA_ID);
 }
-
