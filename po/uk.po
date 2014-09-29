@@ -3,188 +3,185 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# ICesarI <icesari@msn.com>, 2014
-# jose manuel <josemdance@outlook.com>, 2014
-# Luis Castillo <castilloluis2005@gmail.com>, 2014
-# efedezeta <pocodance@gmail.com>, 2014
+# Yuri Chornoivan <yurchor@ukr.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-25 13:10+0800\n"
 "PO-Revision-Date: 2014-10-17 06:02+0000\n"
-"Last-Translator: cxbii <chenxiangbang@linuxdeepin.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/deepin-installer/language/es/)\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian (http://www.transifex.com/projects/p/deepin-installer/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../resources/installer/js/finish.coffee:43
 msgid "Congratulations!"
-msgstr "¡Felicitaciones!"
+msgstr "Вітання!"
 
 #: ../resources/installer/js/finish.coffee:44
 msgid "You need to restart the computer to complete installation."
-msgstr "Es necesario reiniciar el equipo para completar la instalación."
+msgstr "Для завершення встановлення вам слід перезапустити комп’ютер."
 
 #: ../resources/installer/js/finish.coffee:45
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Consejo: Por favor, remueva el medio de instalación antes de reiniciar, con el fin de evitar el reingreso al entorno de instalación cuando la computadora inicie nuevamente."
+msgstr "Підказки: будь ласка, вилучте носій для встановлення перед перезавантаженням, щоб не перейти до повторного початку процедури встановлення після наступного запуску комп’ютера. "
 
 #: ../resources/installer/js/finish.coffee:47
 msgid "Reboot Later"
-msgstr "Reiniciar más tarde"
+msgstr "Перезавантажитися пізніше"
 
 #: ../resources/installer/js/finish.coffee:49
 msgid "Installation Failed!"
-msgstr ""
+msgstr "Невдала спроба встановлення!"
 
 #: ../resources/installer/js/finish.coffee:51
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr ""
+msgstr "На стільниці збережено журнал встановлення.\n Щоб допомогти нам в удосконаленні системи, будь ласка, надішліть журнал команді розробників Deepin. Дякуємо! "
 
 #: ../resources/installer/js/finish.coffee:62
 msgid "Start Over"
-msgstr "Comenzar de Nuevo"
+msgstr "Почати знову"
 
 #: ../resources/installer/js/finish.coffee:79
 msgid "Reboot Now"
-msgstr "Reiniciar ahora"
+msgstr "Перезавантажити зараз"
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
-msgstr "Requisitos de instalación"
+msgstr "Вимоги для встановлення"
 
 #: ../resources/installer/js/base.coffee:29
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr "Para instalar Deepin OS es necesario tener al menos %d GB de espacio disponible en el disco."
+msgstr "Для встановлення Deepin вам знадобиться принаймні %d ГБ вільного місця на диску."
 
 #: ../resources/installer/js/base.coffee:50
 #: ../resources/installer/js/base.coffee:52
 #: ../resources/installer/js/base.coffee:54
 msgid "Unused"
-msgstr "No usado"
+msgstr "Не використовується"
 
 #: ../resources/installer/js/part.coffee:126
 #: ../resources/installer/js/part.coffee:145
 msgid "Freespace"
-msgstr "Espacio Libre"
+msgstr "Вільне місце"
 
 #: ../resources/installer/js/part.coffee:198
 #: ../resources/installer/js/part.coffee:203
 msgid "Unknown"
-msgstr "Desconocido"
+msgstr "Невідомо"
 
 #: ../resources/installer/js/part.coffee:306
 msgid "Install Here"
-msgstr "Instale Aquí"
+msgstr "Встановити тут"
 
 #: ../resources/installer/js/part.coffee:342
 #: ../resources/installer/js/part.coffee:786
 msgid "Warning"
-msgstr "Advertencia"
+msgstr "Попередження"
 
 #: ../resources/installer/js/part.coffee:343
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "No debería arrancar el sistema debido al poco espacio en el punto de montaje /boot, por favor, incremente el espacio hasta al menos 300 MB."
+msgstr "Ви не зможете завантажити систему через те, що у точці монтування /boot надто мало місця. Будь ласка, збільште її розмір принаймні до 300 МБ."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
-msgstr "Disco"
+msgstr "Диск"
 
 #: ../resources/installer/js/part.coffee:488
 msgid "Device"
-msgstr "Dispositivo"
+msgstr "Пристрій"
 
 #: ../resources/installer/js/part.coffee:490
 msgid "Size"
-msgstr "Tamaño"
+msgstr "Розмір"
 
 #: ../resources/installer/js/part.coffee:492
 msgid "Free Space"
-msgstr "Espacio Libre"
+msgstr "Вільне місце"
 
 #: ../resources/installer/js/part.coffee:494
 msgid "Filesystem"
-msgstr "Sistema de Archivos"
+msgstr "Файлова система"
 
 #: ../resources/installer/js/part.coffee:496
 msgid "Information"
-msgstr "Información"
+msgstr "Інформація"
 
 #: ../resources/installer/js/part.coffee:498
 msgid "Mount Point"
-msgstr "Punto de montaje"
+msgstr "Точка монтування"
 
 #: ../resources/installer/js/part.coffee:500
 msgid "Formatting"
-msgstr "Formato"
+msgstr "Форматування"
 
 #: ../resources/installer/js/part.coffee:507
 #: ../resources/installer/js/dialog.coffee:65
 msgid "Delete Partition"
-msgstr "Eliminar partición"
+msgstr "Вилучити розділ"
 
 #: ../resources/installer/js/part.coffee:518
 msgid "New Partition"
-msgstr "Nueva Partición"
+msgstr "Новий розділ"
 
 #: ../resources/installer/js/part.coffee:585
 msgid "Expert Mode"
-msgstr "Modo Experto"
+msgstr "Режим експерта"
 
 #: ../resources/installer/js/part.coffee:600
 msgid "Install"
-msgstr "Instalar"
+msgstr "Встановити"
 
 #: ../resources/installer/js/part.coffee:626
 msgid "Installation Tips"
-msgstr "Consejo de Instalación"
+msgstr "Підказки щодо встановлення"
 
 #: ../resources/installer/js/part.coffee:627
 msgid "A root partition (/) is required."
-msgstr "Una partición de raíz (/) es requerida."
+msgstr "Потрібен кореневий розділ (/)."
 
 #: ../resources/installer/js/part.coffee:634
 #: ../resources/installer/js/part.coffee:642
 #: ../resources/installer/js/part.coffee:670
 msgid "Install Tips"
-msgstr "Instalar Consejos"
+msgstr "Підказки щодо встановлення"
 
 #: ../resources/installer/js/part.coffee:635
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "Instalación en UEFI nativo sólo admite discos con formato GPT."
+msgstr "У природному встановленні UEFI передбачено лише підтримку дисків у форматуванні GPT."
 
 #: ../resources/installer/js/part.coffee:643
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr "El soporte de ESP es necesario en el modo UEFI, y por favor, cree una partición de al menos 100 MB en formato EFI."
+msgstr "Потрібна підтримка ESP у режимі UEFI. Будь ласка, створіть розділ у 100 МБ або більше у форматі efi."
 
 #: ../resources/installer/js/part.coffee:662
 #: ../resources/installer/js/dialog.coffee:113
 msgid "Add Partition"
-msgstr "Añadir partición"
+msgstr "Додати розділ"
 
 #: ../resources/installer/js/part.coffee:663
 msgid "Can't create a partition here"
-msgstr "No se puede crear una partición aquí"
+msgstr "Тут не можна створити розділу"
 
 #: ../resources/installer/js/part.coffee:671
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. For installation,"
 " please enter the Expert Mode."
-msgstr "La instalación UEFI-Nativa solo soporta un disco con formato GPT. Para la instalación, por favor entre al Modo Experto."
+msgstr "У природному встановленні UEFI передбачено лише підтримку дисків у форматуванні GPT. Для встановлення, будь ласка, перейдіть у режим експерта."
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
@@ -192,277 +189,277 @@ msgstr "UEFI"
 
 #: ../resources/installer/js/part.coffee:705
 msgid "Boot Loader"
-msgstr "Gestor de Arranque"
+msgstr "Завантажувач"
 
 #: ../resources/installer/js/part.coffee:752
 msgid "Unmount Partition"
-msgstr "Desmonte la partición"
+msgstr "Демонтувати розділ"
 
 #: ../resources/installer/js/part.coffee:753
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr "Se ha dedectado la partición como montada. \n¿Seguro de que deseas desmontarla?"
+msgstr "Виявлено розділ, який слід змонтувати.\nВи справді хочете демонтувати його?"
 
 #: ../resources/installer/js/part.coffee:787
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
-msgstr "Instalación en UEFI nativo sólo admite discos con formato GPT. Perderá todos los datos del disco si prosigue la instalación."
+msgstr "У природному встановленні UEFI передбачено лише підтримку дисків у форматуванні GPT. Якщо ви наполягатимете на встановленні, усі дані на диску буде втрачено."
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
-msgstr "Modo Simple"
+msgstr "Простий режим"
 
 #: ../resources/installer/js/part.coffee:812
 msgid "Expert mode"
-msgstr "Modo experto"
+msgstr "Режим експерта"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
-msgstr "Bueno"
+msgstr "Гаразд"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr "Скасувати"
 
 #: ../resources/installer/js/dialog.coffee:67
 msgid "Are you sure you want to delete this partition?"
-msgstr "¿Está seguro de que desea eliminar esta partición?"
+msgstr "Ви справді хочете вилучити цей розділ?"
 
 #: ../resources/installer/js/dialog.coffee:80
 msgid "Formatting Partition"
-msgstr "Formateando Partición"
+msgstr "Форматування розділу"
 
 #: ../resources/installer/js/dialog.coffee:82
 msgid "Are you sure you want to format this partition?"
-msgstr "¿Está seguro que desea formatear esta partición?"
+msgstr "Ви справді хочете форматувати цей розділ?"
 
 #: ../resources/installer/js/dialog.coffee:91
 msgid "Proceed with installation"
-msgstr "Proceda con la instalación"
+msgstr "Продовжити встановлення"
 
 #: ../resources/installer/js/dialog.coffee:100
 msgid "Deepin OS will be installed to freespace."
-msgstr "Deepin OS será instalado en espacio libre."
+msgstr "Deepin буде встановлено на вільне місце."
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Deepin OS will be installed to "
-msgstr "Deepin OS será instalado en"
+msgstr "Deepin буде встановлено на "
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\nLa partición será formateada si continua la instalación. Por favor, haga una copia de seguridad de los datos importantes.\n"
+msgstr "\nЯкщо ви продовжите встановлення, розділ буде форматовано. Будь ласка, створіть резервну копію важливих даних. \n"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Do you want to continue the installation ?"
-msgstr "¿Desea continuar la instalación?"
+msgstr "Хочете продовжити встановлення?"
 
 #: ../resources/installer/js/dialog.coffee:133
 msgid "Type:"
-msgstr "Tipo:"
+msgstr "Тип:"
 
 #: ../resources/installer/js/dialog.coffee:139
 msgid "Primary"
-msgstr "Primaria"
+msgstr "Основний"
 
 #: ../resources/installer/js/dialog.coffee:144
 msgid "Logical"
-msgstr "Lógica"
+msgstr "Логічний"
 
 #: ../resources/installer/js/dialog.coffee:174
 msgid "Size:"
-msgstr "Tamaño:"
+msgstr "Розмір:"
 
 #: ../resources/installer/js/dialog.coffee:218
 msgid "Align:"
-msgstr "Alinear:"
+msgstr "Вирівнювання:"
 
 #: ../resources/installer/js/dialog.coffee:224
 msgid "Begin"
-msgstr "Comenzar"
+msgstr "Початок"
 
 #: ../resources/installer/js/dialog.coffee:229
 msgid "End"
-msgstr "Fin"
+msgstr "Кінець"
 
 #: ../resources/installer/js/dialog.coffee:249
 msgid "Filesystem:"
-msgstr "Sistema de archivos:"
+msgstr "Файлова система:"
 
 #: ../resources/installer/js/dialog.coffee:273
 msgid "Mount:"
-msgstr "Montar:"
+msgstr "Монтування:"
 
 #: ../resources/installer/js/dialog.coffee:306
 msgid "Please enter a valid partition size."
-msgstr "Por favor, introduzca un tamaño de partición válida."
+msgstr "Будь ласка, вкажіть коректний розмір розділу."
 
 #: ../resources/installer/js/welcome.coffee:198
 msgid "Yes"
-msgstr "Sí"
+msgstr "Так"
 
 #: ../resources/installer/js/welcome.coffee:203
 msgid "No"
-msgstr "No"
+msgstr "Ні"
 
 #: ../resources/installer/js/welcome.coffee:298
 msgid "Please press one of the following keys."
-msgstr "Por favor, presione una de las siguientes teclas."
+msgstr "Будь ласка, натисніть одну із вказаних нижче клавіш."
 
 #: ../resources/installer/js/welcome.coffee:304
 msgid "Please confirm you have the following keys."
-msgstr "Por favor, confirme que usted tiene las siguientes teclas."
+msgstr "Будь ласка, підтвердіть, що у вас є вказані нижче клавіші."
 
 #: ../resources/installer/js/welcome.coffee:347
 msgid "Detect Layout"
-msgstr "Detectar Distribución"
+msgstr "Виявити розкладку"
 
 #: ../resources/installer/js/welcome.coffee:353
 msgid "View Current"
-msgstr "Vista Actual"
+msgstr "Переглянути поточну"
 
 #: ../resources/installer/js/welcome.coffee:511
 msgid "Please select or search your location."
-msgstr "Por favor, seleccione o busque su ubicación."
+msgstr "Будь ласка, виберіть або знайдіть ваше місце перебування."
 
 #: ../resources/installer/js/welcome.coffee:763
 msgid "Username"
-msgstr "Nombre de Usuario"
+msgstr "Користувач"
 
 #: ../resources/installer/js/welcome.coffee:766
 msgid "Computer Name"
-msgstr "Nombre de Equipo"
+msgstr "Назва комп'ютера"
 
 #: ../resources/installer/js/welcome.coffee:769
 msgid "Password"
-msgstr "Contraseña:"
+msgstr "Пароль"
 
 #: ../resources/installer/js/welcome.coffee:774
 msgid "Retype Password"
-msgstr "Vuelva a escribir la contraseña"
+msgstr "Введіть пароль ще раз"
 
 #: ../resources/installer/js/welcome.coffee:805
 msgid "Nothing Input"
-msgstr "Nada introducido"
+msgstr "Нічого не введено"
 
 #: ../resources/installer/js/welcome.coffee:819
 #: ../app/language-selector/greeter.c:291
 msgid "Invalid Password"
-msgstr "Contraseña Incorrecta"
+msgstr "Некоректний пароль"
 
 #: ../resources/installer/js/welcome.coffee:822
 msgid "Different Password"
-msgstr "Contraseñas diferentes"
+msgstr "Інший пароль"
 
 #: ../resources/installer/js/welcome.coffee:845
 msgid "Next"
-msgstr "Siguiente"
+msgstr "Далі"
 
 #: ../resources/installer/js/welcome.coffee:896
 msgid "Time Zone"
-msgstr "Zona Horaria"
+msgstr "Часовий пояс"
 
 #: ../resources/installer/js/welcome.coffee:901
 msgid "Keyboard"
-msgstr "Teclado"
+msgstr "Клавіатура"
 
 #: ../resources/installer/js/progress.coffee:25
 msgid "Error Report"
-msgstr "Notificar un error"
+msgstr "Звіт щодо помилки"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "La instalación del sistema ha fallado. Por favor, enviar el registro al personal de Deepin."
+msgstr "Спроба встановлення зазнала невдачі. Будь ласка, надішліть журнал команді Deepin."
 
 #: ../resources/installer/js/progress.coffee:46
 msgid "Preparing for Installation"
-msgstr "Preparando la instalación"
+msgstr "Готуємося до встановлення"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
 msgid "Deepin Store"
-msgstr "Deepin tienda"
+msgstr "Сховище Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
 msgid "One-stop Software Management"
-msgstr "Software de gestión multiservicio."
+msgstr "Універсальне керування програмами"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
 msgid "Continuous Update of Wonderful Software"
-msgstr "Prosigue la actualización de este grandioso programa."
+msgstr "Неперервне оновлення чудових програм"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
 msgid "Unimpeded Online Communication"
-msgstr "Comunicación en línea sin contratiempos."
+msgstr "Безперешкодне спілкування у інтернеті"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
 msgid "Deepin Movie"
-msgstr "Película Deepin "
+msgstr "Відео Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
 msgid "Comprehensive Audio-visual Shock"
-msgstr "Audio-visualmente impactante."
+msgstr "Повноцінне захоплення звуком і відео"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
 msgid "New Interactive Experience"
-msgstr "Nueva experiencia interactiva."
+msgstr "Нові інтерактивні враження"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
 msgid "Intelligent Subtitle Loading"
-msgstr "Carga inteligente de subtítulos."
+msgstr "Розумне завантаження субтитрів"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
 msgid "Deepin Music"
-msgstr "Música Deepin"
+msgstr "Музика Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
 msgid "Ultimate Music Journey"
-msgstr "Máxima experiencia musical."
+msgstr "Цілковите занурення у музику"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
 msgid "Rich Extended Function"
-msgstr "Amplia cantidad de funciones."
+msgstr "Багаті функціональні можливості"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
 msgid "Enjoy Online Strongest Voice"
-msgstr "Disfruta de las mejores voces en línea."
+msgstr "Насолоджуйтеся інтернетом на повен голос"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
 msgid "Deepin Game"
-msgstr "Deepin Game"
+msgstr "Гра Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
 msgid "Provide Latest and Hottest Games"
-msgstr "Provee los más recientes y divertidos juegos."
+msgstr "Надання найсвіжіших ігор"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
 msgid "Gather Various Game Topics"
-msgstr "Reúne varias categorías de juegos."
+msgstr "Зібрання різноманітних тем щодо ігор"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
 msgid "Collect Your Favorite Online"
-msgstr "Almacena tu lista de favoritos en línea."
+msgstr "Зберіть ваші улюблені сторінки інтернету"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
 msgid "Deepin Community"
-msgstr "Comunidad Deepin."
+msgstr "Спільнота Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
 msgid "Free and United Open Source Community"
-msgstr "Libre y unida comunidad open-source."
+msgstr "Вільна і об’єднана спільнота розробників вільного ПЗ"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "¡Eres bienvenido a participar en el proyecto internacional Deepin!"
+msgstr "Візьміть участь у проекті з перекладу Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "Eres bienvenido a seguirnos en Weibo, Twitter, Facebook, Google+, Mailing List and IRC."
+msgstr "Стежте за нами у Weibo, Twitter, Facebook, Google+, Mailing List та IRC"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
-msgstr "%a, %b %d, %Y"
+msgstr "%a, %d-%b-%Y"

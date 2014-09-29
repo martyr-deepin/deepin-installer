@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Alan Jhone <alanjhone9@gmail.com>, 2014
+# Eduardo Martello <edubitcoin@gmail.com>, 2014
 # RAFAEL GAUNA <rafaelgt.mbin@gmail.com>, 2014
 # viniciusarl <vinniciusal@outlook.com>, 2014
 msgid ""
@@ -11,8 +12,8 @@ msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-25 13:10+0800\n"
-"PO-Revision-Date: 2014-09-25 09:59+0000\n"
-"Last-Translator: cxbii <chenxiangbang@linuxdeepin.com>\n"
+"PO-Revision-Date: 2014-10-19 04:00+0000\n"
+"Last-Translator: Eduardo Martello <edubitcoin@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/deepin-installer/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,7 +34,7 @@ msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr ""
+msgstr "Dica: Por favor, remova a mídia de instalação antes de reiniciar, a modo de evitar entrar novamente no ambiente de instalação quando você iniciar o computador na próxima vez."
 
 #: ../resources/installer/js/finish.coffee:47
 msgid "Reboot Later"
@@ -41,7 +42,7 @@ msgstr "Reiniciar Depois"
 
 #: ../resources/installer/js/finish.coffee:49
 msgid "Installation Failed!"
-msgstr ""
+msgstr "A instalação falhou!"
 
 #: ../resources/installer/js/finish.coffee:51
 msgid ""
