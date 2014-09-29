@@ -95,8 +95,6 @@ class Progress extends Page
         @progressbar.style.width = progress
 
 
-progress_page = new Progress("progress")
-
 DCore.signal_connect("install_progress", (per)->
     if per >= 100
         pc.switch_page(new Finish("finish", true))

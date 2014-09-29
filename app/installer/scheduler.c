@@ -7,6 +7,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#define CONF_PATH "/etc/deepin-installer.conf"
 
 void run_hooks_before_chroot();
 void run_hooks_in_chroot();
@@ -69,28 +70,28 @@ void enter_next_stage()
     }
 }
 
-static GHashTable* mkfs_list = NULL;
+static GHashTable* mkfs_pending_list = NULL;
 
 void mkfs_latter(const char* path, const char* fs)
 {
     g_return_if_fail(path != NULL);
     g_return_if_fail(fs != NULL);
-    if (mkfs_list == NULL) {
-	mkfs_list = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
+    if (mkfs_pending_list == NULL) {
+	mkfs_pending_list = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
     }
-    g_hash_table_insert(mkfs_list, g_strdup(path), g_strdup(fs));
+    g_hash_table_insert(mkfs_pending_list, g_strdup(path), g_strdup(fs));
 }
 
 static void do_mkfs()
 {
-    g_assert(mkfs_list != NULL);
+    g_assert(mkfs_pending_list != NULL);
     GHashTableIter iter;
     gpointer key, value;
-    g_hash_table_iter_init(&iter, mkfs_list);
+    g_hash_table_iter_init(&iter, mkfs_pending_list);
     while (g_hash_table_iter_next(&iter, &key, &value)) {
 	mkfs((char*)key, (char*)value);
     }
-    g_hash_table_destroy(mkfs_list);
+    g_hash_table_destroy(mkfs_pending_list);
 }
 static void start_run_installer()
 {
@@ -98,23 +99,46 @@ static void start_run_installer()
 
     enter_next_stage();
 }
+
 static void start_prepare_conf()
 {
-    if (InstallerConf.simple_mode && InstallerConf.uefi) {
-	auto_handle_esp();
+    extern char* auto_conf_path;
+    if (auto_conf_path != NULL) {
+        GError* error = NULL;
+        char* cmd = g_strdup_printf("sh -c '[ %s -ef %s ] || cp -f %s %s'",
+                auto_conf_path, CONF_PATH,
+                auto_conf_path, CONF_PATH);
+        g_warning(cmd);
+        int exit_code = 0;
+        g_spawn_command_line_sync(cmd, NULL, NULL, &exit_code, &error);
+        g_free(cmd);
+        if (error != NULL) {
+            //TODO: report error
+            g_warning("auto install mode failed: %s", error->message);
+            g_clear_error(&error);
+            installer_terminate();
+            return;
+        }
+        if (exit_code != 0) {
+            installer_terminate();
+            return;
+        }
+    } else {
+        if (InstallerConf.simple_mode && InstallerConf.uefi) {
+            auto_handle_esp();
+        }
+        write_installer_conf(CONF_PATH);
     }
-    write_installer_conf("/etc/deepin-installer.conf");
 
     start_run_installer();
 }
 JS_EXPORT_API
 void installer_start_install()
 {
-    if (mkfs_list != NULL) {
+    if (mkfs_pending_list != NULL) {
 	GTask* task = g_task_new(NULL, NULL, start_prepare_conf, NULL);
 	g_task_run_in_thread(task, do_mkfs);
     } else {
-	start_prepare_conf();
+        start_prepare_conf();
     }
 }
-

@@ -4,5 +4,6 @@
 void enter_next_stage();
 void update_install_progress(int v);
 void installer_terminate();
+void installer_start_install();
 
 #endif

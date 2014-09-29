@@ -22,6 +22,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <signal.h>
+#include <glib.h>
 #include "dwebview.h"
 #include "dcore.h"
 #include "i18n.h"
@@ -35,6 +36,13 @@
 static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
 
+char* auto_conf_path = NULL;
+static GOptionEntry entries[] =
+{
+    { "conf", 'c', 0, G_OPTION_ARG_STRING, &auto_conf_path, "set configure file path when installing with automate mode ", "path"},
+    { NULL }
+};
+
 static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
@@ -47,8 +55,8 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
         gtk_widget_set_can_focus (widget, TRUE);
         gtk_widget_grab_focus (widget);
 
-        gtk_window_begin_move_drag (GTK_WINDOW (widget), 
-                                    event->button, 
+        gtk_window_begin_move_drag (GTK_WINDOW (widget),
+                                    event->button,
                                     event->x_root,
                                     event->y_root,
                                     event->time);
@@ -91,7 +99,11 @@ void installer_emit_webview_ok ()
     static gboolean inited = FALSE;
     if (!inited) {
         inited = TRUE;
-        init_parted ();
+        if (auto_conf_path != NULL) {
+            js_post_message("auto_mode", NULL);
+        } else {
+            init_parted ();
+        }
     }
 }
 
@@ -117,6 +129,18 @@ void redirect_log()
 
 int main(int argc, char **argv)
 {
+    GOptionContext *context = g_option_context_new("- Deepin Installer");
+    g_option_context_add_main_entries(context, entries, "INSTALLER");
+    g_option_context_add_group (context, gtk_get_option_group (TRUE));
+    if (!g_option_context_parse (context, &argc, &argv, NULL)) {
+        g_warning ("context parse failed\n");
+    }
+    if (auto_conf_path != NULL && !g_file_test(auto_conf_path, G_FILE_TEST_IS_REGULAR)) {
+        g_warning("the configure is valid: %s", auto_conf_path);
+        exit(1);
+    }
+    g_option_context_free(context);
+
 #ifdef NDEBUG
     redirect_log();
 #endif
@@ -168,6 +192,6 @@ int main(int argc, char **argv)
     /*monitor_resource_file("installer", webview);*/
 /*#endif*/
     gtk_main ();
-    
+
     return 0;
 }

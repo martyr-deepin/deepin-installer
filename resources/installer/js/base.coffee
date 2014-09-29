@@ -38,7 +38,6 @@ DCore.signal_connect("os_prober", (msg) ->
         sync_part_os()
 )
 
-DCore.Installer.emit_webview_ok()
 
 _ppt_list = ["images/ppt.jpg"]
 
