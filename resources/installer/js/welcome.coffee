@@ -618,6 +618,7 @@ class Timezone extends Widget
         text = area.getAttribute("data-timezone").split("/")[1]
         if @tip?
             @tip.destroy()
+        console.debug "#{text}-->#{_(text, "tzdata")},(#{pin[0]},#{pin[1]})-->#{style}"
         @tip = new TimezoneToolTip("timezone", _(text, "tzdata"))
         @pin.appendChild(@tip.element)
         left = @tip.content.clientWidth + 2 * (@tip.radius + @tip.xpadding) - 2
