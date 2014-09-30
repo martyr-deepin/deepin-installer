@@ -595,7 +595,7 @@ class Timezone extends Widget
             __selected_timezone = area.getAttribute("data-timezone")
             update_timezone_text(@tri)
         )
-        area.addEventListener("mouseover", (e) =>
+        area.addEventListener("mousemove", (e) =>
             @draw_timezone(area)
         )
         area.addEventListener("mouseout", (e) =>

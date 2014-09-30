@@ -379,6 +379,7 @@ class DropDown extends Widget
 class TimezoneToolTip extends Widget
     constructor: (@id, @text)->
         super
+        @element.style.pointerEvents = "none"
         @canvas = create_element("canvas", "Canvas", @element)
         @content = create_element("div", "Content", @element)
         @content.innerText = @text
