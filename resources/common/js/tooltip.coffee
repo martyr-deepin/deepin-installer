@@ -107,6 +107,11 @@ class ArrowToolTip extends ToolTipBase
     isShown: =>
         ArrowToolTip.container.style.display != 'none'
 
+    setPointerEvents:(eventMask)->
+        ArrowToolTip.container?.style.pointerEvents = eventMask
+        ArrowToolTip.content?.style.pointerEvents = eventMask
+        @buddy?.style.pointerEvents = eventMask
+
     draw: ->
         content = ArrowToolTip._hidden_content
         canvas = ArrowToolTip.tooltip
@@ -252,14 +257,7 @@ class ArrowToolTip extends ToolTipBase
         ArrowToolTip.container.style.display = 'none'
         ArrowToolTip.container.style.opacity = 0
 
-    @move_to: (self, x, y) ->
-        if y <= 0
-            self.hide()
-            return
-        ArrowToolTip.container.style.left = "#{x}px"
-        ArrowToolTip.container.style.bottom = "#{y}px"
-
-    _move_tooltip: =>
+    get_xy: =>
         page_xy= get_page_xy(@buddy, 0, 0)
         offset = (@buddy.clientWidth - ArrowToolTip.container.clientWidth) / 2
 
@@ -268,4 +266,15 @@ class ArrowToolTip extends ToolTipBase
         if x + ArrowToolTip.container.clientWidth > screen.width
             x = screen.width - ArrowToolTip.container.clientWidth
         y = document.body.clientHeight - page_xy.y
-        ArrowToolTip.move_to(@, x - 20, y - 10)
+        {x:x, y:y}
+
+    @move_to: (self, x, y) ->
+        if y <= 0
+            self.hide()
+            return
+        ArrowToolTip.container.style.left = "#{x}px"
+        ArrowToolTip.container.style.bottom = "#{y}px"
+
+    _move_tooltip: =>
+        pos = @get_xy()
+        ArrowToolTip.move_to(@, pos.x, pos.y)

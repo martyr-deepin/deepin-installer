@@ -375,7 +375,6 @@ class DropDown extends Widget
     set_item_left: (offset) ->
         @itemleft = offset
 
-
 class TimezoneToolTip extends Widget
     constructor: (@id, @text)->
         super
@@ -442,7 +441,6 @@ class TimezoneToolTip extends Widget
         ctx.fillStyle = grd
         ctx.fill()
         ctx.restore()
-
 
 class Page extends Widget
     constructor: (@id)->

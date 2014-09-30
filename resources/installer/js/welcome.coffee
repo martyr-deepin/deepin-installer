@@ -565,10 +565,12 @@ class Timezone extends Widget
         __account_widget?.hide()
         @displayed = true
         @element.style.display = "block"
+        ArrowToolTip.container?.style.display = "block"
 
     hide: ->
         @displayed = false
         @element.style.display = "none"
+        ArrowToolTip.container?.style.display = "none"
 
     construct_map: ->
         @imagemap = create_element("map", "", @element)
@@ -596,6 +598,7 @@ class Timezone extends Widget
             update_timezone_text(@tri)
         )
         area.addEventListener("mousemove", (e) =>
+            @destroy_canvas(area)
             @draw_timezone(area)
         )
         area.addEventListener("mouseout", (e) =>
@@ -616,15 +619,16 @@ class Timezone extends Widget
         @pin.setAttribute("style", style)
 
         text = area.getAttribute("data-timezone").split("/")[1]
-        if @tip?
-            @tip.destroy()
         console.debug "#{text}-->#{_(text, "tzdata")},(#{pin[0]},#{pin[1]})-->#{style}"
-        @tip = new TimezoneToolTip("timezone", _(text, "tzdata"))
-        @pin.appendChild(@tip.element)
-        left = @tip.content.clientWidth + 2 * (@tip.radius + @tip.xpadding) - 2
-        @tip.element.style.top = "-40px"
-        @tip.element.style.left = (0 - left / 2) + "px"
-        @tip.draw()
+
+        if not @tip?
+            @tip = new ArrowToolTip(@pin, _(text,"tzdata"))
+        @tip.set_text(_(text,"tzdata"))
+        @tip.setPointerEvents('none')
+        @tip.show()
+        pos = @tip.get_xy()
+        #TODO:the first tooltip style:left must +4, I do not know the reason
+        ArrowToolTip.move_to(@tip,pos.x - 16,pos.y - 20)
 
         if @circle?
             @circle.parentElement.removeChild(@circle)
