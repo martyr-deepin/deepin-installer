@@ -2,8 +2,8 @@
 # TODO: add more than one users
 set -e
 
-if [ -f /host/etc/deepin-installer.conf ];then
-    . /host/etc/deepin-installer.conf
+if [ -f /deepinhost/etc/deepin-installer.conf ];then
+    . /deepinhost/etc/deepin-installer.conf
 fi
 
 [ -z ${DI_USERNAME} ] && { echo >&2 "[ERROR] Variable DI_USERNAME not set. Aborting"; exit 1; }

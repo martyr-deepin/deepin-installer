@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -f /host/etc/deepin-installer.conf ];then
-    . /host/etc/deepin-installer.conf
+if [ -f /deepinhost/etc/deepin-installer.conf ];then
+    . /deepinhost/etc/deepin-installer.conf
 fi
 
 DI_LOCALE=${DI_LOCALE:-en_US}

@@ -13,12 +13,15 @@ for i in $array;do
 	umount ${target}${mountpath}
     fi
 done
-umount /target/host
+umount /target/deepinhost
 umount /target/media/cdrom
 umount /target/dev/pts
 umount /target/dev
 umount /target/proc
 umount /target/sys
 umount /target/boot/efi
-rm -rf /target/host
+rm -rf /target/deepinhost
+umount /target/host
 umount /target/
+
+echo "umount target finish"

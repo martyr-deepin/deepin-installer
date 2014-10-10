@@ -1,8 +1,8 @@
 #!/bin/bash
 # install grub to detect machine
 
-if [ -f /host/etc/deepin-installer.conf ];then
-    . /host/etc/deepin-installer.conf
+if [ -f /deepinhost/etc/deepin-installer.conf ];then
+    . /deepinhost/etc/deepin-installer.conf
 fi
 
 # if no DI_BOOTLOADER, treat as not installing bootloader
@@ -30,6 +30,11 @@ case ${BOOT} in
     "legacy")
         echo "INFO: Detected legacy machine, installing grub to ${DI_BOOTLOADER}"
         DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
+	if [ x${DI_LUPIN} = xtrue ];then
+	    echo "(hd0) ${DI_BOOTLOADER}" > /boot/grub/device.map
+	    mkdir /host
+	    mount ${DI_HOST_DEV} /host
+	fi
         grub-install --no-floppy --force ${DI_BOOTLOADER}
         ;;
     "uefi-secureboot")

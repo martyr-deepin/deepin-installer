@@ -1,0 +1,63 @@
+#!/bin/sh
+
+PREREQ=""
+DESCRIPTION="Configure Auto Deepin Installer..."
+
+prereqs()
+{
+       echo "$PREREQ"
+}
+
+case $1 in
+# get pre-requisites
+prereqs)
+       prereqs
+       exit 0
+       ;;
+esac
+
+. /scripts/casper-functions
+
+log_begin_msg "$DESCRIPTION"
+
+generate_auto_installer()
+{
+(
+cat <<EOF
+[Desktop Entry]
+Name=DeepinAutoInstaller
+Comment=Deepin Auto Installer
+Exec=gksudo -- /usr/bin/deepin-installer -c /isodevice/deepin/install/deepin-installer.conf
+TryExec=gksudo
+EOF
+) > $1
+}
+
+generate_lightdm_conf()
+{
+(
+cat <<EOF
+[SeatDefaults]
+greeter-session=lightdm-deepin-greeter
+user-session=deepin-auto-installer
+autologin-user=deepin
+autologin-user-time=0
+EOF
+) > $1
+}
+
+for x in $(cat /proc/cmdline); do
+    case $x in
+	auto-deepin-installer)
+	chroot /root mount -o remount,rw /
+
+	$(generate_auto_installer /root/usr/share/xsessions/deepin-auto-installer.desktop)
+	$(generate_lightdm_conf /root/etc/lightdm/lightdm.conf)
+
+	chroot /root mount -o remount,ro /
+	;;
+    esac
+done
+
+
+log_end_msg
