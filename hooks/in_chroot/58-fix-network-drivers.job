@@ -53,5 +53,5 @@ fix_usb_rtl8723au() {
 }
 
 # fix device driver problems
-fix_pci_bcm4313
-fix_usb_rtl8723au
+fix_pci_bcm4313 || true
+fix_usb_rtl8723au || true
