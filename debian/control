@@ -33,6 +33,7 @@ Architecture: any
 Depends: ${shlibs:Depends},
  ${misc:Depends},
  btrfs-tools,
+ oh-my-zsh,
  casper,
  dosfstools,
  e2fsprogs,

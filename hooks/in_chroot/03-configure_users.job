@@ -10,7 +10,11 @@ fi
 [ -z ${DI_PASSWORD} ] && { echo >&2 "[ERROR] Variable DI_PASSWORD not set. Aborting."; exit 1; }
 [ -z ${DI_HOSTNAME} ] && DI_HOSTNAME="deepin"
 
-useradd -U -m --skel /etc/skel --shell /bin/bash ${DI_USERNAME} 
+if [ -x /bin/zsh ] ;then
+    useradd -U -m --skel /etc/skel --shell /bin/zsh ${DI_USERNAME} 
+else
+    useradd -U -m --skel /etc/skel --shell /bin/bash ${DI_USERNAME} 
+fi
 REAL_PASSWD=`echo ${DI_PASSWORD} | base64 -d -`
 echo ${DI_USERNAME}:"${REAL_PASSWD}" | chpasswd
 set +e

@@ -44,4 +44,5 @@ echo $LANG
 printf 'LANGUAGE="%s"\nLANG="%s"' "${LANG%%.*}" "${LANG}" > /etc/default/locale
 printf '%s UTF-8' "${LANG}" > /etc/locale.gen
 /usr/sbin/locale-gen ${LANG}
+[ -x /bin/zsh ] && echo | chsh -s /bin/zsh
 `
