@@ -337,11 +337,12 @@ check_has_mount = (disk)->
 
 #when only swap partition mount, should not show dialog of attention him unmount first before part operation
 check_only_swap_mount = (disk)->
-    busy_part = []
     for part in m_disk_info[disk]["partitions"]
-        if DCore.Installer.is_partition_busy(part) then busy_part.push(part)
-    if busy_part.length == 1 and v_part_info[busy_part[0]]["fs"] is "swap" then return true
-    return false
+       if DCore.Installer.is_partition_busy(part)
+            if v_part_info[part]["type"] != "extended"
+                if v_part_info[part]["fs"] != "swap"
+                    return false
+    return true
 
 get_efi_boot_part = ->
     for disk in disks
