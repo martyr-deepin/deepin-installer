@@ -1,0 +1,38 @@
+#!/bin/bash
+
+. /deepinhost/etc/deepin-installer.conf
+
+detect_rootblk(){
+    if [[ ! -z ${DI_ROOT_PARTITION} ]];then
+        local PDEVICE=$(stat -c "%02t" ${DI_ROOT_PARTITION})
+        for file in $(find /dev -type b 2>/dev/null);do
+            local CURRENT_DEVICE=$(stat -c "%02t%02T" $file)
+            if [[ "$CURRENT_DEVICE" == "${PDEVICE}00" ]];then
+                ROOTBLK=${file##*/}
+            fi
+        done
+    fi
+}
+
+detect_solid(){
+    FILEPATH=/sys/block/${ROOTBLK}/queue/rotational
+    [[ -e ${FILEPATH} ]] && read CHECK < ${FILEPATH} 
+    [[ ! -z $CHECK ]] && [[ x$CHECK == x"0" ]] && return 0
+    return 1
+}
+
+update_plymouth(){
+    if [[ -e /lib/plymouth/themes/deepin-ssd-logo ]] && detect_solid;then
+        update-alternatives \
+            --install /lib/plymouth/themes/default.plymouth default.plymouth \
+            /lib/plymouth/themes/deepin-ssd-logo/deepin-ssd-logo.plymouth 130 \
+            --slave /lib/plymouth/themes/default.grub default.plymouth.grub \
+            /lib/plymouth/themes/deepin-ssd-logo/deepin-ssd-logo.grub
+        if which update-initramfs > /dev/null 2>&1;then
+            update-initramfs -u
+        fi
+    fi
+}
+
+detect_rootblk 
+[[ ! -z $ROOTBLK ]] && update_plymouth
