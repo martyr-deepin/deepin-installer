@@ -359,6 +359,8 @@ class Keyboard extends Widget
         @fill_layouts(@layouts)
         @hide()
 
+        update_keyboard_text(@tri)
+
         @searcher = new Trie()
         @layouts_des_pinyin = {}
         for item in @layouts
@@ -407,7 +409,6 @@ class Keyboard extends Widget
             current = mylay
         if current?
             __selected_layout = current
-            update_keyboard_text(@tri)
 
         @layouts = []
         @variants = {}
