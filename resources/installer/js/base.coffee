@@ -448,6 +448,13 @@ class Page extends Widget
         @title = create_element("div", "Title", @element)
         @titleprogress = create_element("div", "TitleProgress", @title)
 
+        @close = create_element("div", "Close", @title)
+        @close.addEventListener("click", (e) =>
+            @exit_installer()
+        )
+        if auto_mode
+            @close.style.display = "none"
+
     exit_installer: ->
         DCore.Installer.finish_install()
 

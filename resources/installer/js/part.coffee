@@ -588,11 +588,6 @@ class Part extends Page
             @switch_mode()
         )
 
-        @close = create_element("div", "Close", @title)
-        @close.addEventListener("click", (e) =>
-            @exit_installer()
-        )
-
         @wrap = create_element("div", "part_wrap", @element)
 
         @init_part_page()

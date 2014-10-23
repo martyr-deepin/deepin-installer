@@ -28,10 +28,12 @@
 #include "i18n.h"
 #include "fs_util.h"
 #include "part_util.h"
+#include "background.h"
 
 #define INSTALLER_HTML_PATH     "file://"RESOURCE_DIR"/installer/index.html"
-#define INSTALLER_WIN_WIDTH     786
-#define INSTALLER_WIN_HEIGHT    576
+
+guint INSTALLER_WIN_WIDTH = 786;
+guint INSTALLER_WIN_HEIGHT = 576;
 
 static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
@@ -93,13 +95,22 @@ void installer_restart_installer ()
     execv (global_argv[0], global_argv);
 }
 
+gboolean installer_is_auto_mode ()
+{
+    if (auto_conf_path != NULL) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
 JS_EXPORT_API
 void installer_emit_webview_ok ()
 {
     static gboolean inited = FALSE;
     if (!inited) {
         inited = TRUE;
-        if (auto_conf_path != NULL) {
+        if (installer_is_auto_mode()) {
             js_post_message("auto_mode", NULL);
         } else {
             init_parted ();
@@ -126,6 +137,13 @@ void redirect_log()
     dup2(log_file, 2);
 }
 #endif
+
+void fix_without_wm()
+{
+    GdkCursor* cursor = gdk_cursor_new (GDK_LEFT_PTR);
+    gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
+    g_object_unref(cursor);
+}
 
 int main(int argc, char **argv)
 {
@@ -165,18 +183,26 @@ int main(int argc, char **argv)
     signal (SIGKILL, sigterm_cb);
     signal (SIGTSTP, sigterm_cb);
 
+    gboolean auto_mode = installer_is_auto_mode();
     installer_container = create_web_container (FALSE, TRUE);
-    g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
-
     gtk_window_set_decorated (GTK_WINDOW (installer_container), FALSE);
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
     g_signal_connect (webview, "draw", G_CALLBACK (erase_background), NULL);
-
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
+
+    if (auto_mode){
+        fix_without_wm();
+        INSTALLER_WIN_WIDTH = gdk_screen_width();
+        INSTALLER_WIN_HEIGHT = gdk_screen_height();
+        gtk_window_move(GTK_WINDOW(installer_container), 0, 0);
+        BackgroundInfo* bg_info = create_background_info(installer_container, webview);
+        background_info_set_background_by_file(bg_info, "/usr/share/backgrounds/default_background.jpg");
+    }else{
+        g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
+        gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
+    }
     gtk_window_set_default_size (GTK_WINDOW (installer_container), INSTALLER_WIN_WIDTH, INSTALLER_WIN_HEIGHT);
     gtk_window_set_resizable (GTK_WINDOW (installer_container), FALSE);
-    gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
-
     GdkGeometry geometry;
     geometry.min_width = INSTALLER_WIN_WIDTH;
     geometry.max_width = INSTALLER_WIN_WIDTH;
@@ -186,7 +212,6 @@ int main(int argc, char **argv)
     geometry.base_height = INSTALLER_WIN_HEIGHT;
     gtk_window_set_geometry_hints (GTK_WINDOW (installer_container), webview, &geometry, GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE | GDK_HINT_BASE_SIZE);
 
-    gtk_widget_realize (installer_container);
     gtk_widget_show_all (installer_container);
 /*#ifndef NDEBUG*/
     /*monitor_resource_file("installer", webview);*/

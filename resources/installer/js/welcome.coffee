@@ -909,11 +909,6 @@ class Welcome extends Page
         @keyboard_set.innerText = _("Keyboard")
         keyboardSet_div = @keyboard_set
 
-        @close = create_element("div", "Close", @title)
-        @close.addEventListener("click", (e) =>
-            @exit_installer()
-        )
-
         @wrap = create_element("div", "WelcomeWrap", @element)
 
         @keyboard = new Keyboard("keyboard")

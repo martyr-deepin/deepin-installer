@@ -20,12 +20,12 @@
 pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
-progress_page = new Progress("progress")
-
 DCore.signal_connect("auto_mode", (msg) ->
+    auto_mode = true
+    progress_page = new Progress("progress") if not progress_page?
     pc.switch_page(progress_page)
     DCore.Installer.start_install()
 )
-
 pc.switch_page(new Welcome("welcom"))
 DCore.Installer.emit_webview_ok()
+

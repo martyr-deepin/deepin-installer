@@ -86,10 +86,39 @@
     color:#FBE90B;
 }
 
-.Finish .Txt {
+.Finish .BtTxt {
     position:relative;
     top:70px;
     font-size:14px;
     font-style:bold;
     text-shadow:1px 2px 3px rgba(0,0,0,0.35);
+}
+
+.FinishOpsForAutoMode {
+    position:absolute;
+    top:280px;
+    left:192px;
+    width:350px;
+    height:90px;
+    text-align:center;
+    display:-webkit-box;
+    -webkit-box-pack:center;
+}
+
+.Finish .NowForAutoMode {
+    height:90px;
+}
+
+.Finish .BtTxtForAutoMode {
+    cursor:pointer;
+    position:relative;
+    top:70px;
+    font-size:16px;
+    font-style:bold;
+    text-shadow:1px 2px 3px rgba(0,0,0,0.35);
+}
+
+.Finish .BtTxtForAutoMode:hover {
+    color:#FBE90B;
+    text-decoration:underline;
 }

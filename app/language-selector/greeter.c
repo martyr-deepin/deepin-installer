@@ -75,6 +75,7 @@ char** get_lang_groups()
     gsize len;
     char** list = g_key_file_get_groups(key,&len);
     g_message("get_lang_groups length:%d,load:%d",(int)len,load);
+    g_key_file_unref(key);
     return list;
 }
 
@@ -102,6 +103,7 @@ JSObjectRef greeter_get_local_list()
         json_array_insert(array,i,json);
     }
     g_strfreev(list);
+    g_key_file_unref(key);
     return array;
 }
 JS_EXPORT_API
@@ -126,6 +128,7 @@ JSObjectRef greeter_get_lang_list()
         json_array_insert(array,i,json);
     }
     g_strfreev(list);
+    g_key_file_unref(key);
     return array;
 }
 
@@ -148,6 +151,7 @@ char* greeter_get_lang_by_name(gchar* lang_name)
         g_free(name);
     } 
     g_strfreev(list);
+    g_key_file_unref(key);
     return g_strdup(local);
 }
 

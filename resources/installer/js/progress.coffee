@@ -39,6 +39,7 @@ __ppt_switch_id = -1
 class Progress extends Page
     constructor: (@id)->
         super
+        @close.style.display = "none"
         @titleimg = create_img("", "images/progress_part.png", @titleprogress)
 
         @loading = create_element("div", "Loading", @element)
@@ -97,10 +98,11 @@ class Progress extends Page
 
 DCore.signal_connect("install_progress", (per)->
     if per >= 100
-        pc.switch_page(new Finish("finish", true))
+        pc.switch_page(new Finish("finish", true, auto_mode))
         return
+    progress_page = new Progress("progress") if not progress_page?
     progress_page.update_progress("#{per}%")
 )
 DCore.signal_connect("install_terminate", ->
-        pc.switch_page(new Finish("finish", false))
+        pc.switch_page(new Finish("finish", false, auto_mode))
 )

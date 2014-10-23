@@ -73,5 +73,10 @@ for msg_obj,i in msg_obj_array
     bmsg[i] = new BoxMessage("text#{i + 1}", "text#{i + 1} messages", container)
     bmsg[i].create_box_msg(msg_obj)
 
+document.body.addEventListener("contextmenu",(e)=>
+    e.preventDefault()
+    e.stopPropagation()
+)
+
 document.body.lang = getQueryParams(document.location.search).lang
 echo "slideshow2014 lang:#{document.body.lang}"

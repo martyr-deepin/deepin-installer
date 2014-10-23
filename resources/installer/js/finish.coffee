@@ -18,17 +18,12 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 class Finish extends Page
-    constructor: (@id, @succeed)->
+    constructor: (@id, @succeed,@auto_mode = false)->
         super
         if @succeed
             @titleimg = create_img("", "images/progress_succeed.png", @titleprogress)
         else
             @titleimg = create_img("", "images/progress_failed.png", @titleprogress)
-
-        @close = create_element("div", "Close", @title)
-        @close.addEventListener("click", (e) =>
-            @exit_installer()
-        )
 
         @info = create_element("div", "FinishInfo", @element)
         @desc = create_element("div", "Desc", @info)
@@ -36,8 +31,8 @@ class Finish extends Page
         @tips = create_element("div","Tips",@info)
 
         @ops = create_element("div", "FinishOps", @element)
-        @later = create_element("div", "", @ops)
-        @later_txt = create_element("div", "Txt", @later)
+        @later = create_element("div", "Later", @ops)
+        @later_txt = create_element("div", "BtTxt", @later)
 
         if @succeed
             @desc.innerText = _("Congratulations!")
@@ -75,7 +70,7 @@ class Finish extends Page
         )
 
         @now = create_element("div", "Now", @ops)
-        @now_txt = create_element("div", "Txt", @now)
+        @now_txt = create_element("div", "BtTxt", @now)
         @now_txt.innerText = _("Reboot Now")
         @now.addEventListener("click", (e) =>
             try
@@ -88,3 +83,15 @@ class Finish extends Page
         if not @succeed
             @later.style.display = "none"
             @now.style.display = "none"
+
+        #just hide close/later/tips in auto_mode
+        if @auto_mode
+            @later.style.display = "none"
+            @tips.style.display = "none"
+            @now.style.display = "block"
+            @ops.setAttribute("class","FinishOpsForAutoMode")
+            @now.setAttribute("class", "NowForAutoMode")
+            @now_txt.setAttribute("class", "BtTxtForAutoMode")
+            if not @succeed
+                @detail.style.display = "none"
+                @now_txt.innerText = _("Exit Installation")

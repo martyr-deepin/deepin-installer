@@ -10,6 +10,8 @@ __selected_password = null
 
 __selected_locale = DCore.Installer.get_current_locale()
 
+auto_mode = false
+
 sync_installer_conf = ->
     DCore.Installer.record_accounts_info(__selected_username, __selected_hostname, __selected_password)
 
@@ -59,6 +61,7 @@ try_removed_start_install = ->
         sync_installer_conf()
         DCore.Installer.start_install()
 
+        progress_page = new Progress("progress") if not progress_page?
         pc.switch_page(progress_page)
 
 install_by_anyway = (disk) ->

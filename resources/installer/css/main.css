@@ -4,13 +4,17 @@
 @import url(finish.css);
 @import url("../../common/css/animation.css");
 
+html {
+    display:-webkit-box;
+    -webkit-box-align:center;
+    -webkit-box-pack:center;
+}
+
 body {
     position:relative;
     margin:14px 16px 18px 16px;
     width:752px;
     height:542px;
-    background: url("../images/background.png") no-repeat fixed top;
-    background-position:17px 15px;
     overflow:hidden;
     color:rgb(255,255,255);
     text-shadow:0 1px rgba(0,0,0,0.5);
@@ -80,6 +84,7 @@ input:focus {
 .PageContainer {
     width:750px;
     height:540px;
+    background: url("../images/background.png") no-repeat;
     overflow:hidden;
     border:1px rgba(0,0,0,0.75) solid;
     border-radius:5px;
