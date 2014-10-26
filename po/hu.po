@@ -5,14 +5,15 @@
 # Translators:
 # ddabrahim <ddabrahim@googlemail.com>, 2014
 # kdavid97 <kdavid97@gmail.hu>, 2014
+# SlazO <blum1866@gmail.com>, 2014
 # unicum99 <stampf99@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-25 13:10+0800\n"
-"PO-Revision-Date: 2014-10-11 02:21+0000\n"
-"Last-Translator: kdavid97 <kdavid97@gmail.hu>\n"
+"PO-Revision-Date: 2014-10-24 16:01+0000\n"
+"Last-Translator: SlazO <blum1866@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/deepin-installer/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,7 +34,7 @@ msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Tipp: Kérjük, távolítsa el a telepítő médiát újraindítás előtt , annak érdekében, hogy elkerülje az ujrabelépést a telepítési környezetbe, amikor elindítja a számítógépet legközelebb."
+msgstr "Tipp: Kérjük, távolítsa el a telepítő médiát újraindítás előtt , annak érdekében, hogy elkerülje a telepítőbe való ismételt belépést."
 
 #: ../resources/installer/js/finish.coffee:47
 msgid "Reboot Later"
@@ -47,7 +48,7 @@ msgstr "Telepítés sikertelen!"
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr "A telepítési napló elmentve az asztalon.\nEzzel lehet javítani a rendszeren, kérem küldje el a naplót a Deepin csapatának. Köszönjük!"
+msgstr "A telepítési napló elmentve az asztalon.\nAnnak érdekében, hogy a hibát javíthassuk, kérjük küldje el a naplót a Deepin csapatának. Köszönjük!"
 
 #: ../resources/installer/js/finish.coffee:62
 msgid "Start Over"
@@ -95,7 +96,7 @@ msgstr "Figyelmeztetés"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "Lehet, hogy nem indul el a túl kicsi hely miatt / boot csatolási pont, kérem javítsa a helyet legalább 300M."
+msgstr "Előfordulhat, hogy a rendszer nem fog elindulni mert a /boot csatolási pont túl kicsi, adjon meg legalább 300M tárhelyet."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -162,7 +163,7 @@ msgstr "Telepítési Tippek"
 
 #: ../resources/installer/js/part.coffee:635
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "UEFI natív telepítés csak GPT formatált lemezt támogat."
+msgstr "Az UEFI telepítés csak GPT formatált lemezt támogat."
 
 #: ../resources/installer/js/part.coffee:643
 msgid ""
@@ -177,7 +178,7 @@ msgstr "Partíció Hozzáadása"
 
 #: ../resources/installer/js/part.coffee:663
 msgid "Can't create a partition here"
-msgstr "Nem lehet partíciót létrehozni itt"
+msgstr "Itt nem lehet létrehozni partíciót"
 
 #: ../resources/installer/js/part.coffee:671
 msgid ""
@@ -191,7 +192,7 @@ msgstr "UEFI"
 
 #: ../resources/installer/js/part.coffee:705
 msgid "Boot Loader"
-msgstr "Boot Loader"
+msgstr "Rendszerbetöltő"
 
 #: ../resources/installer/js/part.coffee:752
 msgid "Unmount Partition"
@@ -201,7 +202,7 @@ msgstr "Partíció Leválasztása"
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr "A partíció csatolva van.\nBiztos benne hogy szeretné leválasztani?"
+msgstr "A partíció csatolva van.\nBiztos benne hogy leválasztja?"
 
 #: ../resources/installer/js/part.coffee:787
 msgid ""
@@ -354,7 +355,7 @@ msgstr "Hibás jelszó"
 
 #: ../resources/installer/js/welcome.coffee:822
 msgid "Different Password"
-msgstr "Különböző jelszó"
+msgstr "Eltérő jelszó"
 
 #: ../resources/installer/js/welcome.coffee:845
 msgid "Next"
@@ -390,7 +391,7 @@ msgstr "Egyablakos szoftver kezelés"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
 msgid "Continuous Update of Wonderful Software"
-msgstr "Folyamatos frissítések csodálatos szoftvereihez"
+msgstr "A Wonderful Software folyamatos frissítése"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
 msgid "Unimpeded Online Communication"
@@ -402,7 +403,7 @@ msgstr "Deepin Film"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
 msgid "Comprehensive Audio-visual Shock"
-msgstr "Átfogó Audiovizuális Ütés"
+msgstr "Átfogó Audiovizuális Hatás"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
 msgid "New Interactive Experience"
@@ -410,7 +411,7 @@ msgstr "Új interaktív élmény"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
 msgid "Intelligent Subtitle Loading"
-msgstr "Intelligens Felirat Betöltése"
+msgstr "Intelligens Felirat Betöltés"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
 msgid "Deepin Music"
@@ -418,11 +419,11 @@ msgstr "Deepin Zene"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
 msgid "Ultimate Music Journey"
-msgstr "Univerzális zenei utazás"
+msgstr "Határtalan Zenei Utazás"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
 msgid "Rich Extended Function"
-msgstr "Bővített lehetőségek"
+msgstr "Rengeteg kibővített Funkció"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
 msgid "Enjoy Online Strongest Voice"
@@ -434,7 +435,7 @@ msgstr "Deepin Játék"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
 msgid "Provide Latest and Hottest Games"
-msgstr "Mutassa meg legújabb és legmenőbb játékokat"
+msgstr "A legújabb és legmenőbb játékok szolgáltatása"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
 msgid "Gather Various Game Topics"
@@ -450,17 +451,17 @@ msgstr "Deepin Közösség"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
 msgid "Free and United Open Source Community"
-msgstr "Szabad és együttműködő nyílt forráskódú közösség"
+msgstr "Szabad és együttműködő Open Source közösség"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "Üdvözöljük résztvevőt a Deepin Nemzetközi projektnél"
+msgstr "Üdövözöljük a Deepin Nemzetközi Project résztvevői között"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "Üdvözöljük, kövessen minket a Weibon, Twitteren, Facebookon, Googlen, levelezőlistán és IRC-n"
+msgstr "Örömmel vennénk ha követne minket a Weibon, Twitteren, Facebookon, Goole+-on, levelezési listánkon vagy IRC-n."
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"

@@ -3,187 +3,186 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Анатолий Валерианович <ffox909@mail.ru>, 2014
+# cricri8o <cricri8o@yahoo.com>, 2014
 # Vasilii Rusu <basil_russu@hotmail.com>, 2014
-# Анатолий Валерианович <ffox909@mail.ru>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-25 13:10+0800\n"
-"PO-Revision-Date: 2014-10-24 15:51+0000\n"
+"PO-Revision-Date: 2014-10-24 16:11+0000\n"
 "Last-Translator: Vasilii Rusu <basil_russu@hotmail.com>\n"
-"Language-Team: Russian (http://www.transifex.com/projects/p/deepin-installer/language/ru/)\n"
+"Language-Team: Romanian (http://www.transifex.com/projects/p/deepin-installer/language/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 #: ../resources/installer/js/finish.coffee:43
 msgid "Congratulations!"
-msgstr "Поздравляем!"
+msgstr "Felicitări!"
 
 #: ../resources/installer/js/finish.coffee:44
 msgid "You need to restart the computer to complete installation."
-msgstr "Вам нужно перезагрузить компьютер для завершения установки."
+msgstr "Pentru finalizarea instalării este necesară repornirea calculatorului."
 
 #: ../resources/installer/js/finish.coffee:45
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Советы: Удалите установочный носитель перед перезагрузкой, чтобы избежать повторного входа в среду установки, при Вашем следующем включении компьютера."
+msgstr "Sfat:  scoateţi dispozitivul media de instalare înainte de a reporni sistemul, astfel evitaţi restartarea mediului de instalare data viitoare când porniţi computerul dvs."
 
 #: ../resources/installer/js/finish.coffee:47
 msgid "Reboot Later"
-msgstr "Презагрузить позже"
+msgstr "Amânare Repornire"
 
 #: ../resources/installer/js/finish.coffee:49
 msgid "Installation Failed!"
-msgstr "Установка не удалась!"
+msgstr "Instalare eşuată!"
 
 #: ../resources/installer/js/finish.coffee:51
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr "Журнал установки был сохранен для вас на рабочем столе. \nЧтобы помочь нам сделать систему лучше, отправьте журнал в Deepin Team. Спасибо!"
+msgstr "Jurnalul de instalare a fost salvat pentru dvs pe spațiul de lucru.\nPentru a ne ajuta la îmbunătăţirea sistemului, vă rugăm să  expediaţi acest jurnal Echipei Deepin. Mulţumim!"
 
 #: ../resources/installer/js/finish.coffee:62
 msgid "Start Over"
-msgstr "Начать Заново"
+msgstr "Incepeți din nou"
 
 #: ../resources/installer/js/finish.coffee:79
 msgid "Reboot Now"
-msgstr "Перезагрузить сейчас"
+msgstr "Repornire Acum"
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
-msgstr "Требования к установке"
+msgstr "Cerințe pentru instalare"
 
 #: ../resources/installer/js/base.coffee:29
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr "Для установки Deepin ОС, необходимо минимум %d GB дискового пространства."
+msgstr "Pentru a instala Deepin OS, este necesar să aveți cel puțin %d GB loc liber."
 
 #: ../resources/installer/js/base.coffee:50
 #: ../resources/installer/js/base.coffee:52
 #: ../resources/installer/js/base.coffee:54
 msgid "Unused"
-msgstr "Не используется"
+msgstr "Nefolosit"
 
 #: ../resources/installer/js/part.coffee:126
 #: ../resources/installer/js/part.coffee:145
 msgid "Freespace"
-msgstr "Свободно место"
+msgstr "Loc liber"
 
 #: ../resources/installer/js/part.coffee:198
 #: ../resources/installer/js/part.coffee:203
 msgid "Unknown"
-msgstr "Неизвестный"
+msgstr "Necunoscut"
 
 #: ../resources/installer/js/part.coffee:306
 msgid "Install Here"
-msgstr "Установить здесь"
+msgstr "Instalare în acest loc"
 
 #: ../resources/installer/js/part.coffee:342
 #: ../resources/installer/js/part.coffee:786
 msgid "Warning"
-msgstr "Предупреждение"
+msgstr "Atenționare"
 
 #: ../resources/installer/js/part.coffee:343
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "Вы не можете загрузиться из-за очень маленького пространства в точки монтирования /boot, увеличите его минимум до 300Мб."
+msgstr "Nu puteţi începe încărcare deoarece nu dispuneţi de suficient loc în punctul de montare /boot,  alocaţi-i cel puţin300Мo"
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
-msgstr "Диск"
+msgstr "Disc"
 
 #: ../resources/installer/js/part.coffee:488
 msgid "Device"
-msgstr "Устройство"
+msgstr "Dispozitiv"
 
 #: ../resources/installer/js/part.coffee:490
 msgid "Size"
-msgstr "Размер"
+msgstr "Mărime"
 
 #: ../resources/installer/js/part.coffee:492
 msgid "Free Space"
-msgstr "Свободное пространство"
+msgstr "Locul Liber"
 
 #: ../resources/installer/js/part.coffee:494
 msgid "Filesystem"
-msgstr "Файловая система"
+msgstr "Sistem de fișiere"
 
 #: ../resources/installer/js/part.coffee:496
 msgid "Information"
-msgstr "Информация"
+msgstr "Informație"
 
 #: ../resources/installer/js/part.coffee:498
 msgid "Mount Point"
-msgstr "Точка монтирования"
+msgstr "Punct de Montare"
 
 #: ../resources/installer/js/part.coffee:500
 msgid "Formatting"
-msgstr "Форматирование"
+msgstr "Formatare în curs"
 
 #: ../resources/installer/js/part.coffee:507
 #: ../resources/installer/js/dialog.coffee:65
 msgid "Delete Partition"
-msgstr "Удалить раздел"
+msgstr "Ștergere Partiție"
 
 #: ../resources/installer/js/part.coffee:518
 msgid "New Partition"
-msgstr "Новый раздел"
+msgstr "Partiție Nouă"
 
 #: ../resources/installer/js/part.coffee:585
 msgid "Expert Mode"
-msgstr "Экспертный режим"
+msgstr "Mod Expert"
 
 #: ../resources/installer/js/part.coffee:600
 msgid "Install"
-msgstr "Установить"
+msgstr "Instalare"
 
 #: ../resources/installer/js/part.coffee:626
 msgid "Installation Tips"
-msgstr "Советы по установке"
+msgstr "Sugestii pentru instalare"
 
 #: ../resources/installer/js/part.coffee:627
 msgid "A root partition (/) is required."
-msgstr "Требуется корневой раздел (/)."
+msgstr "Este necesară o partiție rădăcină (/)."
 
 #: ../resources/installer/js/part.coffee:634
 #: ../resources/installer/js/part.coffee:642
 #: ../resources/installer/js/part.coffee:670
 msgid "Install Tips"
-msgstr "Установите Советы"
+msgstr "Instalare Sugestii"
 
 #: ../resources/installer/js/part.coffee:635
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "UEFI-исходная установка поддерживает только GPT-формат диска."
+msgstr "Instalarea nativă UEFI suportă doar discuri formatate în GPT."
 
 #: ../resources/installer/js/part.coffee:643
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr "Поддержка ESP необходима в UEFI-режиме, создайте раздел 100Мб или более в формате EFI."
+msgstr "Este necesar suportul ESP în mod UEFI, creaţi o partiţie de 100Mo sau mai mult în efi format."
 
 #: ../resources/installer/js/part.coffee:662
 #: ../resources/installer/js/dialog.coffee:113
 msgid "Add Partition"
-msgstr "Добавить раздел"
+msgstr "Adăugare Partiție"
 
 #: ../resources/installer/js/part.coffee:663
 msgid "Can't create a partition here"
-msgstr "Нельзя создать здесь раздел"
+msgstr "Nu se poate crea partiția aici"
 
 #: ../resources/installer/js/part.coffee:671
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. For installation,"
 " please enter the Expert Mode."
-msgstr "UEFI установка поддерживает только GPT формат диска. Для установки войдите в экспертный режим."
+msgstr "Instalarea nativă UEFI suportă doar discuri formatate GPT. Pentru instalare accesaţi Mod Expert."
 
 #: ../resources/installer/js/part.coffee:698
 msgid "UEFI"
@@ -191,242 +190,242 @@ msgstr "UEFI"
 
 #: ../resources/installer/js/part.coffee:705
 msgid "Boot Loader"
-msgstr "Загрузчик"
+msgstr "Încărcător de sistem"
 
 #: ../resources/installer/js/part.coffee:752
 msgid "Unmount Partition"
-msgstr "Отмонтировать раздел"
+msgstr "Demontare Partiție"
 
 #: ../resources/installer/js/part.coffee:753
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr "Раздел определён как примотированный.\nВы уверены, что хотите отмонтировать его?"
+msgstr "Partiția este detectată ca fiind montată. Sunteți sigur că doriți demontarea ei?"
 
 #: ../resources/installer/js/part.coffee:787
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
-msgstr "UEFI-исходная установка поддерживает только GPT-формат диска. Если вы настаиваете на установке, все данные на диске будут утрачены"
+msgstr "Instalarea nativă UEFI suportă doar discuri formatate în GPT. Continuarea instalării va cauza pierderea informaţiei."
 
 #: ../resources/installer/js/part.coffee:801
 msgid "Simple Mode"
-msgstr "Простой режим"
+msgstr "Mod Simplu"
 
 #: ../resources/installer/js/part.coffee:812
 msgid "Expert mode"
-msgstr "Экспертный режим"
+msgstr "Mod expert"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
-msgstr "ОК"
+msgstr "OK"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "Cancel"
-msgstr "Отмена"
+msgstr "Anulare"
 
 #: ../resources/installer/js/dialog.coffee:67
 msgid "Are you sure you want to delete this partition?"
-msgstr "Вы действительно хотите удалить этот раздел?"
+msgstr "Sunteți sigur că doriți ștergerea acestei partiții?"
 
 #: ../resources/installer/js/dialog.coffee:80
 msgid "Formatting Partition"
-msgstr "Форматирование раздела"
+msgstr "Se formatează partiția"
 
 #: ../resources/installer/js/dialog.coffee:82
 msgid "Are you sure you want to format this partition?"
-msgstr "Вы уверены, что хотите форматировать этот раздел?"
+msgstr "Sunteți sigur că doriți formatarea acestei partiții?"
 
 #: ../resources/installer/js/dialog.coffee:91
 msgid "Proceed with installation"
-msgstr "Приступить к установке"
+msgstr "Continuare Instalare"
 
 #: ../resources/installer/js/dialog.coffee:100
 msgid "Deepin OS will be installed to freespace."
-msgstr "Deepin OS будет установлен на свободное место."
+msgstr "Deepin OS va fi instalat în locul liber."
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Deepin OS will be installed to "
-msgstr "Deepin OS будет установлен на"
+msgstr "Deepin OS va fi instalat în"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\nРаздел будет отформатирован, если Вы продолжите установку. Сделайте резервную копию важных данных.\n"
+msgstr "\nPartiţia va fi formatată, dacă  continuaţi instalare. Salvaţi toate datele importante.\n"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Do you want to continue the installation ?"
-msgstr "Уверены что хотите продолжить установку?"
+msgstr "Doriţi să continuaţi instalare?"
 
 #: ../resources/installer/js/dialog.coffee:133
 msgid "Type:"
-msgstr "Тип:"
+msgstr "Tip:"
 
 #: ../resources/installer/js/dialog.coffee:139
 msgid "Primary"
-msgstr "Основной"
+msgstr "Primară"
 
 #: ../resources/installer/js/dialog.coffee:144
 msgid "Logical"
-msgstr "Лигический"
+msgstr "Logică"
 
 #: ../resources/installer/js/dialog.coffee:174
 msgid "Size:"
-msgstr "Размер:"
+msgstr "Mărime:"
 
 #: ../resources/installer/js/dialog.coffee:218
 msgid "Align:"
-msgstr "Ровнять по:"
+msgstr "Aliniere:"
 
 #: ../resources/installer/js/dialog.coffee:224
 msgid "Begin"
-msgstr "Начало"
+msgstr "Început"
 
 #: ../resources/installer/js/dialog.coffee:229
 msgid "End"
-msgstr "Коенц"
+msgstr "Sfârșit"
 
 #: ../resources/installer/js/dialog.coffee:249
 msgid "Filesystem:"
-msgstr "Файловая система:"
+msgstr "Sistem de fișiere:"
 
 #: ../resources/installer/js/dialog.coffee:273
 msgid "Mount:"
-msgstr "Монтировать:"
+msgstr "Montare:"
 
 #: ../resources/installer/js/dialog.coffee:306
 msgid "Please enter a valid partition size."
-msgstr "Введите верный размер раздела."
+msgstr "Vă rugăm introduceți marimea corectă a partiției."
 
 #: ../resources/installer/js/welcome.coffee:198
 msgid "Yes"
-msgstr "Да"
+msgstr "Da"
 
 #: ../resources/installer/js/welcome.coffee:203
 msgid "No"
-msgstr "Нет"
+msgstr "Nu"
 
 #: ../resources/installer/js/welcome.coffee:298
 msgid "Please press one of the following keys."
-msgstr "Нажмите одну из следующих клавиш."
+msgstr "Vă rugam apasați una dintre tastele următoare."
 
 #: ../resources/installer/js/welcome.coffee:304
 msgid "Please confirm you have the following keys."
-msgstr "Подтвердите наличие следующих клавиш."
+msgstr "Vă rugam să confirmați existența următoarelor taste."
 
 #: ../resources/installer/js/welcome.coffee:347
 msgid "Detect Layout"
-msgstr "Определить раскладку"
+msgstr "Detectare amplasare (Layout)"
 
 #: ../resources/installer/js/welcome.coffee:353
 msgid "View Current"
-msgstr "Показать текущее"
+msgstr "Vizualizare Curent"
 
 #: ../resources/installer/js/welcome.coffee:511
 msgid "Please select or search your location."
-msgstr "Выберите или найдите свое местоположение."
+msgstr "Vă rugăm selectați sau căutați locația dvs."
 
 #: ../resources/installer/js/welcome.coffee:763
 msgid "Username"
-msgstr "Имя пользователя"
+msgstr "Nume de utilizator"
 
 #: ../resources/installer/js/welcome.coffee:766
 msgid "Computer Name"
-msgstr "Имя компьютера"
+msgstr "Nume Calculator"
 
 #: ../resources/installer/js/welcome.coffee:769
 msgid "Password"
-msgstr "Пароль"
+msgstr "Parolă"
 
 #: ../resources/installer/js/welcome.coffee:774
 msgid "Retype Password"
-msgstr "Повторите пароль"
+msgstr "Reintroduceți Parola"
 
 #: ../resources/installer/js/welcome.coffee:805
 msgid "Nothing Input"
-msgstr "Не введено"
+msgstr "Nimic Introdus"
 
 #: ../resources/installer/js/welcome.coffee:819
 #: ../app/language-selector/greeter.c:291
 msgid "Invalid Password"
-msgstr "Неверный пароль"
+msgstr "Parola Incorectă"
 
 #: ../resources/installer/js/welcome.coffee:822
 msgid "Different Password"
-msgstr "Пароли не совпадают"
+msgstr "Parola Diferită"
 
 #: ../resources/installer/js/welcome.coffee:845
 msgid "Next"
-msgstr "Следующий"
+msgstr "Urmatorul"
 
 #: ../resources/installer/js/welcome.coffee:896
 msgid "Time Zone"
-msgstr "Часовой пояс"
+msgstr "Fus Orar"
 
 #: ../resources/installer/js/welcome.coffee:901
 msgid "Keyboard"
-msgstr "Клавиатура"
+msgstr "Tastatură"
 
 #: ../resources/installer/js/progress.coffee:25
 msgid "Error Report"
-msgstr "Отчёт об ошибке"
+msgstr "Raportare Eroare"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "Установка системы не удалась. Отправьте журнал команде Deepin."
+msgstr "Instalarea sistemului a eșuat. Vă rugăm sa trimiteți jurnalul errorilor Echipei Deepin."
 
 #: ../resources/installer/js/progress.coffee:46
 msgid "Preparing for Installation"
-msgstr "Подготовка к установке"
+msgstr "Pregătire pentru Instalare"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
 msgid "Deepin Store"
-msgstr "Deepin Store"
+msgstr "Magazinul Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
 msgid "One-stop Software Management"
-msgstr "Универсальное управление программами"
+msgstr "Manager Universal al Programelor"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
 msgid "Continuous Update of Wonderful Software"
-msgstr "Непрерывное обновление превосходных программ"
+msgstr "Actualizări continue a programelor perfecte"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
 msgid "Unimpeded Online Communication"
-msgstr "Беспрепятственная онлайн связь"
+msgstr "Comunicarea liberă Online"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
 msgid "Deepin Movie"
-msgstr "Deepin Movie"
+msgstr "Player-ul video Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
 msgid "Comprehensive Audio-visual Shock"
-msgstr "Комплексный Audio-visual Shock"
+msgstr "Audio-visual Shock complex"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
 msgid "New Interactive Experience"
-msgstr "Новый интерактивный опыт"
+msgstr "Experiența Interactivă Nouă"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
 msgid "Intelligent Subtitle Loading"
-msgstr "Интеллектуальная загрузка субтитров"
+msgstr "Încărcare Subtitrare Inteligentă"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
 msgid "Deepin Music"
-msgstr "Deepin Music"
+msgstr " Deepin Music"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
 msgid "Ultimate Music Journey"
-msgstr "Всеобщее музыкальное погружение"
+msgstr "Imersiunea Totală în  Muzica"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
 msgid "Rich Extended Function"
-msgstr "Богатые Расширенные Функции"
+msgstr "Functii avansate "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
 msgid "Enjoy Online Strongest Voice"
-msgstr "Наслаждайтесь мощным звуком онлайн"
+msgstr "Bucurați-vă de un sunet puternic on-line"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
 msgid "Deepin Game"
@@ -434,33 +433,33 @@ msgstr "Deepin Game"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
 msgid "Provide Latest and Hottest Games"
-msgstr "Предоставить последние и популярные игры"
+msgstr "Oferta celor mai recente și celor mai populare jocuri"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
 msgid "Gather Various Game Topics"
-msgstr "Сбор различных игровых жанров"
+msgstr "Colectia de diferite genuri de jocuri"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
 msgid "Collect Your Favorite Online"
-msgstr "Соберите Ваше избранное онлайн"
+msgstr "Selectați Preferabilul Dvs Online"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
 msgid "Deepin Community"
-msgstr "Сообщество Deepin"
+msgstr "Comunitatea Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
 msgid "Free and United Open Source Community"
-msgstr "Свободное и Объединенное Сообщество Open Source"
+msgstr "Comunitatea Liberă și Unită Open Source"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "Приглашаем принять участие в проекте интернационализации Deepin"
+msgstr "Vă  invităm să participați în Proiectul de Internaționalizare Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "Добро пожаловать к нам на Weibo, Twitter, Facebook, Google+, Mailing List и IRC"
+msgstr "Vă invităm să ne urmaţi pe Weibo, Twitter, Facebook, Google+, poşta electronică şi IRC"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
