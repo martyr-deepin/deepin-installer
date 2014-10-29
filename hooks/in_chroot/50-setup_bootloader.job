@@ -21,11 +21,13 @@ if [ x${BOOT} == xuefi ];then
     fi
 fi
 
+BOOTLOADER_ID="${BOOTLOADER_ID:-linuxdeepin2014}"
+
 case ${BOOT} in
     "uefi")
         echo "INFO: Detected efi machine"
-        apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-efi
-        grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck
+        apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-efi efibootmgr
+        grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=${BOOTLOADER_ID} --recheck
         ;;
     "legacy")
         echo "INFO: Detected legacy machine, installing grub to ${DI_BOOTLOADER}"
@@ -38,10 +40,51 @@ case ${BOOT} in
         grub-install --no-floppy --force ${DI_BOOTLOADER}
         ;;
     "uefi-secureboot")
-        apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated sbsigntool grub-efi-amd64-signed linux-signed-generic
-        grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id=linuxdeepin2014 --recheck 
+        apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated sbsigntool grub-efi-amd64-signed linux-signed-generic efibootmgr
+        grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id=${BOOTLOADER_ID} --recheck 
         [ -d /boot/efi/EFI/ubuntu ] || mkdir -p /boot/efi/EFI/ubuntu
-        cp  /boot/efi/EFI/linuxdeepin2014/* /boot/efi/EFI/ubuntu
+        cp  /boot/efi/EFI/${BOOTLOADER_ID}/* /boot/efi/EFI/ubuntu
+        ;;
+esac
+
+fix_boot_order(){
+    command -v efibootmgr >/dev/null 2>&1 || { echo >&2 "Require efibootmgr installed but not found.Skip"; exit 0;}
+    local bootinfo=$(efibootmgr)
+    IFS=$'\n'
+    for line in $bootinfo;do
+        case $line in 
+            Boot[0-9A-F][0-9A-F][0-9A-F][0-9A-F]\*\ "${BOOTLOADER_ID}")
+                line="${line%%\**}"
+                default_bootid="${line##Boot}"
+            ;;
+        esac
+    done
+
+    [ -z ${default_bootid} ] && { echo >&2 "No ${BOOTLOADER_ID} found, exit..."; exit 0; }
+
+    declare -a orderids
+    for line in $bootinfo;do
+        case $line in
+            Boot[0-9A-F][0-9A-F][0-9A-F][0-9A-F]\*\ "${BOOTLOADER_ID}")
+            ;;
+            Boot[0-9A-F][0-9A-F][0-9A-F][0-9A-F]\*\ ?*)
+                line="${line%%\**}"
+                orderids[${#orderids[@]}]="${line##Boot}"
+            ;;
+        esac
+    done
+
+    local cmdargs=${default_bootid}
+    for arg in ${orderids[@]};do cmdargs=${cmdargs}","${arg};done
+    efibootmgr -o ${cmdargs}
+}
+
+case ${BOOT} in
+    uefi*)
+        echo "Try to fix efi boot order to deepin first"
+        fix_boot_order
+        ;;
+    *)
         ;;
 esac
 
