@@ -6,14 +6,15 @@
 # Alan Jhone <alanjhone9@gmail.com>, 2014
 # Eduardo Martello <edubitcoin@gmail.com>, 2014
 # RAFAEL GAUNA <rafaelgt.mbin@gmail.com>, 2014
+# Tati Navarro <tahh.vampyra@gmail.com>, 2014
 # viniciusarl <vinniciusal@outlook.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-25 13:10+0800\n"
-"PO-Revision-Date: 2014-10-19 04:00+0000\n"
-"Last-Translator: Eduardo Martello <edubitcoin@gmail.com>\n"
+"POT-Creation-Date: 2014-10-23 10:42+0800\n"
+"PO-Revision-Date: 2014-10-30 10:02+0000\n"
+"Last-Translator: cxbii <chenxiangbang@linuxdeepin.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/deepin-installer/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,42 +22,46 @@ msgstr ""
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../resources/installer/js/finish.coffee:43
+#: ../resources/installer/js/finish.coffee:38
 msgid "Congratulations!"
 msgstr "Parabéns!"
 
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
 msgstr "Você precisa reiniciar o computador para completar a instalação."
 
-#: ../resources/installer/js/finish.coffee:45
+#: ../resources/installer/js/finish.coffee:40
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr "Dica: Por favor, remova a mídia de instalação antes de reiniciar, a modo de evitar entrar novamente no ambiente de instalação quando você iniciar o computador na próxima vez."
 
-#: ../resources/installer/js/finish.coffee:47
+#: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Later"
 msgstr "Reiniciar Depois"
 
-#: ../resources/installer/js/finish.coffee:49
+#: ../resources/installer/js/finish.coffee:44
 msgid "Installation Failed!"
 msgstr "A instalação falhou!"
 
-#: ../resources/installer/js/finish.coffee:51
+#: ../resources/installer/js/finish.coffee:46
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr ""
+msgstr "O log de instalação foi salvo na Área de Trabalho para você.\nPara nos ajudar a melhorar o sistema, por favor envie o log para a Equipe Deepin. Obrigado!"
 
-#: ../resources/installer/js/finish.coffee:62
+#: ../resources/installer/js/finish.coffee:57
 msgid "Start Over"
 msgstr "Começar de Novo"
 
-#: ../resources/installer/js/finish.coffee:79
+#: ../resources/installer/js/finish.coffee:74
 msgid "Reboot Now"
 msgstr "Reiniciar Agora"
+
+#: ../resources/installer/js/finish.coffee:97
+msgid "Exit Installation"
+msgstr ""
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
@@ -67,9 +72,9 @@ msgstr "Requisitos de Instalação"
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
 msgstr "Para instalar o Deepin OS, você precisará de, no mínimo, %d GB de espaço."
 
-#: ../resources/installer/js/base.coffee:50
-#: ../resources/installer/js/base.coffee:52
-#: ../resources/installer/js/base.coffee:54
+#: ../resources/installer/js/base.coffee:49
+#: ../resources/installer/js/base.coffee:51
+#: ../resources/installer/js/base.coffee:53
 msgid "Unused"
 msgstr "Não usado"
 
@@ -88,7 +93,7 @@ msgid "Install Here"
 msgstr "Instalar Aqui"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:786
+#: ../resources/installer/js/part.coffee:781
 msgid "Warning"
 msgstr "Aviso"
 
@@ -96,7 +101,7 @@ msgstr "Aviso"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "Você pode não bootar devido ao espaço pequeno do ponto de montagem /boot, por favor aumente o espaço para ao menos 300M."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -143,78 +148,78 @@ msgstr "Nova Partição"
 msgid "Expert Mode"
 msgstr "Modo Expert"
 
-#: ../resources/installer/js/part.coffee:600
+#: ../resources/installer/js/part.coffee:595
 msgid "Install"
 msgstr "Instalar"
 
-#: ../resources/installer/js/part.coffee:626
+#: ../resources/installer/js/part.coffee:621
 msgid "Installation Tips"
 msgstr "Dicas de Instalação"
 
-#: ../resources/installer/js/part.coffee:627
+#: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
 msgstr "Uma partição raiz (/) é requirida."
 
-#: ../resources/installer/js/part.coffee:634
-#: ../resources/installer/js/part.coffee:642
-#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
+#: ../resources/installer/js/part.coffee:665
 msgid "Install Tips"
 msgstr "Dicas para Instalar"
 
-#: ../resources/installer/js/part.coffee:635
+#: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
 msgstr "A instalação em UEFI só funciona em discos formatados em GPT."
 
-#: ../resources/installer/js/part.coffee:643
+#: ../resources/installer/js/part.coffee:638
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr ""
+msgstr "O suporte à ESP é necessário no mode UEFI e por favor crie uma partição de 100MB ou mais no formato EFI."
 
-#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:113
 msgid "Add Partition"
 msgstr "Adicionar Partição"
 
-#: ../resources/installer/js/part.coffee:663
+#: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
 msgstr "Não pode criar uma partição aqui."
 
-#: ../resources/installer/js/part.coffee:671
+#: ../resources/installer/js/part.coffee:666
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. For installation,"
 " please enter the Expert Mode."
-msgstr ""
+msgstr "A instalação UEFI nativa suporta somente discos formatados em GPT. Para instalar, por favor entre no modo expert."
 
-#: ../resources/installer/js/part.coffee:698
+#: ../resources/installer/js/part.coffee:693
 msgid "UEFI"
 msgstr "UEFI"
 
-#: ../resources/installer/js/part.coffee:705
+#: ../resources/installer/js/part.coffee:700
 msgid "Boot Loader"
 msgstr "Carregador de Inicialização"
 
-#: ../resources/installer/js/part.coffee:752
+#: ../resources/installer/js/part.coffee:747
 msgid "Unmount Partition"
 msgstr "Partição Desmontada"
 
-#: ../resources/installer/js/part.coffee:753
+#: ../resources/installer/js/part.coffee:748
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "A partição foi detectada como montada.\nTem certeza que quer desmontá-la?"
 
-#: ../resources/installer/js/part.coffee:787
+#: ../resources/installer/js/part.coffee:782
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr "A instalação em UEFI só funciona em discos formatados em GPT. Se você continuar, todos os dados do disco serão apagados."
 
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:796
 msgid "Simple Mode"
 msgstr "Modo Simples"
 
-#: ../resources/installer/js/part.coffee:812
+#: ../resources/installer/js/part.coffee:807
 msgid "Expert mode"
 msgstr "Modo Expert"
 
@@ -254,7 +259,7 @@ msgstr "Deepin OS será instalado em"
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr ""
+msgstr "\nA partição será formatada se você continuar a instalação. Por favor faça uma cópia de segurança dos dados importantes.\n"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Do you want to continue the installation ?"
@@ -328,44 +333,44 @@ msgstr "Ver Atual"
 msgid "Please select or search your location."
 msgstr "Por favor selecione ou procure sua localização"
 
-#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:766
 msgid "Username"
 msgstr "Nome de Usuário"
 
-#: ../resources/installer/js/welcome.coffee:766
+#: ../resources/installer/js/welcome.coffee:769
 msgid "Computer Name"
 msgstr "Nome do Computador"
 
-#: ../resources/installer/js/welcome.coffee:769
+#: ../resources/installer/js/welcome.coffee:772
 msgid "Password"
 msgstr "Senha"
 
-#: ../resources/installer/js/welcome.coffee:774
+#: ../resources/installer/js/welcome.coffee:777
 msgid "Retype Password"
 msgstr "Redigitar Senha"
 
-#: ../resources/installer/js/welcome.coffee:805
+#: ../resources/installer/js/welcome.coffee:808
 msgid "Nothing Input"
-msgstr ""
+msgstr "Nada Inserido"
 
-#: ../resources/installer/js/welcome.coffee:819
-#: ../app/language-selector/greeter.c:291
+#: ../resources/installer/js/welcome.coffee:822
+#: ../app/language-selector/greeter.c:297
 msgid "Invalid Password"
 msgstr "Senha Inválida"
 
-#: ../resources/installer/js/welcome.coffee:822
+#: ../resources/installer/js/welcome.coffee:825
 msgid "Different Password"
-msgstr ""
+msgstr "Senha diferente"
 
-#: ../resources/installer/js/welcome.coffee:845
+#: ../resources/installer/js/welcome.coffee:848
 msgid "Next"
 msgstr "Próximo"
 
-#: ../resources/installer/js/welcome.coffee:896
+#: ../resources/installer/js/welcome.coffee:899
 msgid "Time Zone"
 msgstr "Fuso Horário"
 
-#: ../resources/installer/js/welcome.coffee:901
+#: ../resources/installer/js/welcome.coffee:904
 msgid "Keyboard"
 msgstr "Teclado"
 
@@ -377,9 +382,9 @@ msgstr "Relatório de Erro"
 msgid "System installation failed. Please send the log to Deepin Team."
 msgstr "A instalação do sistema falhou. Por favor envie o log para o Time Deepin."
 
-#: ../resources/installer/js/progress.coffee:46
+#: ../resources/installer/js/progress.coffee:47
 msgid "Preparing for Installation"
-msgstr ""
+msgstr "Preparando para Instalação"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
 msgid "Deepin Store"
@@ -455,7 +460,7 @@ msgstr "Comunidade Open Source Gratuita e Unida"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr ""
+msgstr "Seja Bem Vindo à Participar do Projeto Internacional Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""

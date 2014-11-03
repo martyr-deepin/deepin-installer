@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-25 13:10+0800\n"
-"PO-Revision-Date: 2014-10-24 15:51+0000\n"
-"Last-Translator: Vasilii Rusu <basil_russu@hotmail.com>\n"
+"POT-Creation-Date: 2014-10-23 10:42+0800\n"
+"PO-Revision-Date: 2014-11-01 21:01+0000\n"
+"Last-Translator: Анатолий Валерианович <ffox909@mail.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/deepin-installer/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,42 +20,46 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../resources/installer/js/finish.coffee:43
+#: ../resources/installer/js/finish.coffee:38
 msgid "Congratulations!"
 msgstr "Поздравляем!"
 
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
 msgstr "Вам нужно перезагрузить компьютер для завершения установки."
 
-#: ../resources/installer/js/finish.coffee:45
+#: ../resources/installer/js/finish.coffee:40
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr "Советы: Удалите установочный носитель перед перезагрузкой, чтобы избежать повторного входа в среду установки, при Вашем следующем включении компьютера."
 
-#: ../resources/installer/js/finish.coffee:47
+#: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Later"
 msgstr "Презагрузить позже"
 
-#: ../resources/installer/js/finish.coffee:49
+#: ../resources/installer/js/finish.coffee:44
 msgid "Installation Failed!"
 msgstr "Установка не удалась!"
 
-#: ../resources/installer/js/finish.coffee:51
+#: ../resources/installer/js/finish.coffee:46
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
 msgstr "Журнал установки был сохранен для вас на рабочем столе. \nЧтобы помочь нам сделать систему лучше, отправьте журнал в Deepin Team. Спасибо!"
 
-#: ../resources/installer/js/finish.coffee:62
+#: ../resources/installer/js/finish.coffee:57
 msgid "Start Over"
 msgstr "Начать Заново"
 
-#: ../resources/installer/js/finish.coffee:79
+#: ../resources/installer/js/finish.coffee:74
 msgid "Reboot Now"
 msgstr "Перезагрузить сейчас"
+
+#: ../resources/installer/js/finish.coffee:97
+msgid "Exit Installation"
+msgstr "Выход из установки"
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
@@ -66,9 +70,9 @@ msgstr "Требования к установке"
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
 msgstr "Для установки Deepin ОС, необходимо минимум %d GB дискового пространства."
 
-#: ../resources/installer/js/base.coffee:50
-#: ../resources/installer/js/base.coffee:52
-#: ../resources/installer/js/base.coffee:54
+#: ../resources/installer/js/base.coffee:49
+#: ../resources/installer/js/base.coffee:51
+#: ../resources/installer/js/base.coffee:53
 msgid "Unused"
 msgstr "Не используется"
 
@@ -87,7 +91,7 @@ msgid "Install Here"
 msgstr "Установить здесь"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:786
+#: ../resources/installer/js/part.coffee:781
 msgid "Warning"
 msgstr "Предупреждение"
 
@@ -142,78 +146,78 @@ msgstr "Новый раздел"
 msgid "Expert Mode"
 msgstr "Экспертный режим"
 
-#: ../resources/installer/js/part.coffee:600
+#: ../resources/installer/js/part.coffee:595
 msgid "Install"
 msgstr "Установить"
 
-#: ../resources/installer/js/part.coffee:626
+#: ../resources/installer/js/part.coffee:621
 msgid "Installation Tips"
 msgstr "Советы по установке"
 
-#: ../resources/installer/js/part.coffee:627
+#: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
 msgstr "Требуется корневой раздел (/)."
 
-#: ../resources/installer/js/part.coffee:634
-#: ../resources/installer/js/part.coffee:642
-#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
+#: ../resources/installer/js/part.coffee:665
 msgid "Install Tips"
 msgstr "Установите Советы"
 
-#: ../resources/installer/js/part.coffee:635
+#: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
 msgstr "UEFI-исходная установка поддерживает только GPT-формат диска."
 
-#: ../resources/installer/js/part.coffee:643
+#: ../resources/installer/js/part.coffee:638
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
 msgstr "Поддержка ESP необходима в UEFI-режиме, создайте раздел 100Мб или более в формате EFI."
 
-#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:113
 msgid "Add Partition"
 msgstr "Добавить раздел"
 
-#: ../resources/installer/js/part.coffee:663
+#: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
 msgstr "Нельзя создать здесь раздел"
 
-#: ../resources/installer/js/part.coffee:671
+#: ../resources/installer/js/part.coffee:666
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. For installation,"
 " please enter the Expert Mode."
 msgstr "UEFI установка поддерживает только GPT формат диска. Для установки войдите в экспертный режим."
 
-#: ../resources/installer/js/part.coffee:698
+#: ../resources/installer/js/part.coffee:693
 msgid "UEFI"
 msgstr "UEFI"
 
-#: ../resources/installer/js/part.coffee:705
+#: ../resources/installer/js/part.coffee:700
 msgid "Boot Loader"
 msgstr "Загрузчик"
 
-#: ../resources/installer/js/part.coffee:752
+#: ../resources/installer/js/part.coffee:747
 msgid "Unmount Partition"
 msgstr "Отмонтировать раздел"
 
-#: ../resources/installer/js/part.coffee:753
+#: ../resources/installer/js/part.coffee:748
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "Раздел определён как примотированный.\nВы уверены, что хотите отмонтировать его?"
 
-#: ../resources/installer/js/part.coffee:787
+#: ../resources/installer/js/part.coffee:782
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr "UEFI-исходная установка поддерживает только GPT-формат диска. Если вы настаиваете на установке, все данные на диске будут утрачены"
 
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:796
 msgid "Simple Mode"
 msgstr "Простой режим"
 
-#: ../resources/installer/js/part.coffee:812
+#: ../resources/installer/js/part.coffee:807
 msgid "Expert mode"
 msgstr "Экспертный режим"
 
@@ -327,44 +331,44 @@ msgstr "Показать текущее"
 msgid "Please select or search your location."
 msgstr "Выберите или найдите свое местоположение."
 
-#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:766
 msgid "Username"
 msgstr "Имя пользователя"
 
-#: ../resources/installer/js/welcome.coffee:766
+#: ../resources/installer/js/welcome.coffee:769
 msgid "Computer Name"
 msgstr "Имя компьютера"
 
-#: ../resources/installer/js/welcome.coffee:769
+#: ../resources/installer/js/welcome.coffee:772
 msgid "Password"
 msgstr "Пароль"
 
-#: ../resources/installer/js/welcome.coffee:774
+#: ../resources/installer/js/welcome.coffee:777
 msgid "Retype Password"
 msgstr "Повторите пароль"
 
-#: ../resources/installer/js/welcome.coffee:805
+#: ../resources/installer/js/welcome.coffee:808
 msgid "Nothing Input"
 msgstr "Не введено"
 
-#: ../resources/installer/js/welcome.coffee:819
-#: ../app/language-selector/greeter.c:291
+#: ../resources/installer/js/welcome.coffee:822
+#: ../app/language-selector/greeter.c:297
 msgid "Invalid Password"
 msgstr "Неверный пароль"
 
-#: ../resources/installer/js/welcome.coffee:822
+#: ../resources/installer/js/welcome.coffee:825
 msgid "Different Password"
 msgstr "Пароли не совпадают"
 
-#: ../resources/installer/js/welcome.coffee:845
+#: ../resources/installer/js/welcome.coffee:848
 msgid "Next"
 msgstr "Следующий"
 
-#: ../resources/installer/js/welcome.coffee:896
+#: ../resources/installer/js/welcome.coffee:899
 msgid "Time Zone"
 msgstr "Часовой пояс"
 
-#: ../resources/installer/js/welcome.coffee:901
+#: ../resources/installer/js/welcome.coffee:904
 msgid "Keyboard"
 msgstr "Клавиатура"
 
@@ -376,7 +380,7 @@ msgstr "Отчёт об ошибке"
 msgid "System installation failed. Please send the log to Deepin Team."
 msgstr "Установка системы не удалась. Отправьте журнал команде Deepin."
 
-#: ../resources/installer/js/progress.coffee:46
+#: ../resources/installer/js/progress.coffee:47
 msgid "Preparing for Installation"
 msgstr "Подготовка к установке"
 

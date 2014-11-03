@@ -3,190 +3,191 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Catherinelin <linhongxia@linuxdeepin.com>, 2014
-# szd_liufei <liufei@linuxdeepin.com>, 2014
+# Jesse Wayde Brandao <www.jwb@gmail.com>, 2014
+# Luis Jorge Simões das Neves <luisjneves@gmail.com>, 2014
+# Ricardo Simões <xmcorporation@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-23 10:42+0800\n"
-"PO-Revision-Date: 2014-10-31 05:21+0000\n"
-"Last-Translator: szd_liufei <liufei@linuxdeepin.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-installer/language/zh_CN/)\n"
+"PO-Revision-Date: 2014-10-30 10:02+0000\n"
+"Last-Translator: cxbii <chenxiangbang@linuxdeepin.com>\n"
+"Language-Team: Portuguese (http://www.transifex.com/projects/p/deepin-installer/language/pt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_CN\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: pt\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../resources/installer/js/finish.coffee:38
 msgid "Congratulations!"
-msgstr "祝贺您！"
+msgstr "Parabéns!"
 
 #: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
-msgstr "需要重新启动以完成安装。"
+msgstr "Precisa de reiniciar o computador para completar a instalação."
 
 #: ../resources/installer/js/finish.coffee:40
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "提示：为避免您下次启动时再次进入安装环境，重启前请移除安装介质。"
+msgstr "Dicas: Por favor remova a mídia de instalação antes de reiniciar, para evitar reentrar no ambiente de instalação quando iniciar o computador da próxima vez."
 
 #: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Later"
-msgstr "稍后重启"
+msgstr "Reiniciar Mais Tarde"
 
 #: ../resources/installer/js/finish.coffee:44
 msgid "Installation Failed!"
-msgstr "安装失败"
+msgstr "A instalação Falhou!"
 
 #: ../resources/installer/js/finish.coffee:46
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr "安装日志已为您保存到桌面，为帮助我们更好的改进系统请反馈安装日志给Deepin团队。谢谢！"
+msgstr "O histórico da instalação foi guardado para si no ambiente de trabalho.\nPara ajudar-nos a melhorar o sistema, por favor envie o histórico para a Equipa Deepin. Obrigado!"
 
 #: ../resources/installer/js/finish.coffee:57
 msgid "Start Over"
-msgstr "再试一次"
+msgstr "Começar de Novo"
 
 #: ../resources/installer/js/finish.coffee:74
 msgid "Reboot Now"
-msgstr "立即重启"
+msgstr "Reiniciar Agora"
 
 #: ../resources/installer/js/finish.coffee:97
 msgid "Exit Installation"
-msgstr "退出安装"
+msgstr ""
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
-msgstr "安装需求"
+msgstr "Requisitos para Instalação"
 
 #: ../resources/installer/js/base.coffee:29
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr "要安装Deepin系统，必须有%dGB以上的可用磁盘空间。"
+msgstr "Para instalar Deepin OS, necessita de pelo menos %d GB de espaço em disco."
 
 #: ../resources/installer/js/base.coffee:49
 #: ../resources/installer/js/base.coffee:51
 #: ../resources/installer/js/base.coffee:53
 msgid "Unused"
-msgstr "未使用"
+msgstr "Não usado"
 
 #: ../resources/installer/js/part.coffee:126
 #: ../resources/installer/js/part.coffee:145
 msgid "Freespace"
-msgstr "空余"
+msgstr "Espaço Livre"
 
 #: ../resources/installer/js/part.coffee:198
 #: ../resources/installer/js/part.coffee:203
 msgid "Unknown"
-msgstr "未知"
+msgstr "Desconhecido"
 
 #: ../resources/installer/js/part.coffee:306
 msgid "Install Here"
-msgstr "安装到此"
+msgstr "Instalar Aqui"
 
 #: ../resources/installer/js/part.coffee:342
 #: ../resources/installer/js/part.coffee:781
 msgid "Warning"
-msgstr "警告"
+msgstr "Aviso"
 
 #: ../resources/installer/js/part.coffee:343
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "您当前的/boot挂载点空间过小可能会导致无法开机，请将/boot挂载点空间提升到至少300M"
+msgstr "Não pode arrancar devido a pouco espaço no ponto de montagem /boot, por favor aumente o espaço para no mínimo 300M."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
-msgstr "硬盘"
+msgstr "Disco"
 
 #: ../resources/installer/js/part.coffee:488
 msgid "Device"
-msgstr "设备"
+msgstr "Dispositivo"
 
 #: ../resources/installer/js/part.coffee:490
 msgid "Size"
-msgstr "大小"
+msgstr "Tamanho"
 
 #: ../resources/installer/js/part.coffee:492
 msgid "Free Space"
-msgstr "可用空间"
+msgstr "Espaço Livre"
 
 #: ../resources/installer/js/part.coffee:494
 msgid "Filesystem"
-msgstr "文件系统"
+msgstr "Sistema de Ficheiros"
 
 #: ../resources/installer/js/part.coffee:496
 msgid "Information"
-msgstr "分区信息"
+msgstr "Informação"
 
 #: ../resources/installer/js/part.coffee:498
 msgid "Mount Point"
-msgstr "挂载点"
+msgstr "Ponto de Montagem"
 
 #: ../resources/installer/js/part.coffee:500
 msgid "Formatting"
-msgstr "格式化"
+msgstr "A Formatar"
 
 #: ../resources/installer/js/part.coffee:507
 #: ../resources/installer/js/dialog.coffee:65
 msgid "Delete Partition"
-msgstr "删除分区"
+msgstr "Eliminar Partição"
 
 #: ../resources/installer/js/part.coffee:518
 msgid "New Partition"
-msgstr "新建分区"
+msgstr "Nova Partição"
 
 #: ../resources/installer/js/part.coffee:585
 msgid "Expert Mode"
-msgstr "专家模式"
+msgstr "Modo Especialista"
 
 #: ../resources/installer/js/part.coffee:595
 msgid "Install"
-msgstr "安装"
+msgstr "Instalar"
 
 #: ../resources/installer/js/part.coffee:621
 msgid "Installation Tips"
-msgstr "安装提示"
+msgstr "Dicas de Instalação"
 
 #: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
-msgstr "至少需要一个根分区（/）。"
+msgstr "É necessária uma partição root (/)."
 
 #: ../resources/installer/js/part.coffee:629
 #: ../resources/installer/js/part.coffee:637
 #: ../resources/installer/js/part.coffee:665
 msgid "Install Tips"
-msgstr "安装提示"
+msgstr "Dicas para Instalar"
 
 #: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "UEFI模式安装仅支持分区表为GPT的硬盘。"
+msgstr "A instalação nativa UEFI só suporta discos formatados no formato GPT."
 
 #: ../resources/installer/js/part.coffee:638
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr "UEFI模式安装需要ESP，请创建一个100MB以上的efi格式分区。"
+msgstr "O suporte de ESP é necessário em modo UEFI e por favor crie uma partição de 100MB ou mais em formato EFI."
 
 #: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:113
 msgid "Add Partition"
-msgstr "添加分区"
+msgstr "Adicionar Partição"
 
 #: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
-msgstr "不能在此创建分区"
+msgstr "Não é possível criar a partição aqui"
 
 #: ../resources/installer/js/part.coffee:666
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. For installation,"
 " please enter the Expert Mode."
-msgstr "UEFI模式安装仅支持分区表为GPT的硬盘。如需安装请进入专家模式。"
+msgstr "A instalação UEFI-nativa suporta apenas disco formatado-GPT. Para instalação, por favor entre em Modo Especialista."
 
 #: ../resources/installer/js/part.coffee:693
 msgid "UEFI"
@@ -194,277 +195,277 @@ msgstr "UEFI"
 
 #: ../resources/installer/js/part.coffee:700
 msgid "Boot Loader"
-msgstr "系统引导器"
+msgstr "Carregador de Arranque"
 
 #: ../resources/installer/js/part.coffee:747
 msgid "Unmount Partition"
-msgstr "卸载分区"
+msgstr "Desmontar Partição"
 
 #: ../resources/installer/js/part.coffee:748
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr "检测到已有分区被挂载,\n确定要卸载已挂载分区？"
+msgstr "A partição é detetada como tendo sido montada.\nTem a certeza que a quer desmontar?"
 
 #: ../resources/installer/js/part.coffee:782
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
-msgstr "UEFI模式安装仅支持分区表为GPT的硬盘。如果执意安装,所有硬盘数据都将丢失。"
+msgstr "A instalação nativa UEFI só suporta discos formatados em GPT. Irá perder todos os seus dados se insistir na instalação."
 
 #: ../resources/installer/js/part.coffee:796
 msgid "Simple Mode"
-msgstr "简单模式"
+msgstr "Modo Simples"
 
 #: ../resources/installer/js/part.coffee:807
 msgid "Expert mode"
-msgstr "专家模式"
+msgstr "Modo Especialista"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
-msgstr "确定"
+msgstr "OK"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "Cancel"
-msgstr "取消"
+msgstr "Cancelar"
 
 #: ../resources/installer/js/dialog.coffee:67
 msgid "Are you sure you want to delete this partition?"
-msgstr "确认要删除该分区？"
+msgstr "Tem a certeza que quer eliminar esta partição?"
 
 #: ../resources/installer/js/dialog.coffee:80
 msgid "Formatting Partition"
-msgstr "格式化分区"
+msgstr "A formatar a Partição"
 
 #: ../resources/installer/js/dialog.coffee:82
 msgid "Are you sure you want to format this partition?"
-msgstr "确定要格式化该分区？"
+msgstr "Tem a certeza que deseja formatar esta partição?"
 
 #: ../resources/installer/js/dialog.coffee:91
 msgid "Proceed with installation"
-msgstr "确认安装"
+msgstr "Prosseguir com a instalação"
 
 #: ../resources/installer/js/dialog.coffee:100
 msgid "Deepin OS will be installed to freespace."
-msgstr "Deepin操作系统将安装到空余空间。"
+msgstr "O Deepin OS será instalado no espaço livre."
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Deepin OS will be installed to "
-msgstr "Deepin操作系统将安装到 "
+msgstr "O Deepin OS será instalado em"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\n继续安装会格式化该分区，请做好重要数据备份\n"
+msgstr "\nA partição será formatada se continuar a instalação. Por favor faça uma cópia de segurança dos dados importantes.\n"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Do you want to continue the installation ?"
-msgstr "是否继续安装？"
+msgstr "Deseja continuar com a instalação?"
 
 #: ../resources/installer/js/dialog.coffee:133
 msgid "Type:"
-msgstr "类型："
+msgstr "Tipo:"
 
 #: ../resources/installer/js/dialog.coffee:139
 msgid "Primary"
-msgstr "主分区"
+msgstr "Primária"
 
 #: ../resources/installer/js/dialog.coffee:144
 msgid "Logical"
-msgstr "逻辑分区"
+msgstr "Lógica"
 
 #: ../resources/installer/js/dialog.coffee:174
 msgid "Size:"
-msgstr "大小："
+msgstr "Tamanho:"
 
 #: ../resources/installer/js/dialog.coffee:218
 msgid "Align:"
-msgstr "对齐："
+msgstr "Alinhar:"
 
 #: ../resources/installer/js/dialog.coffee:224
 msgid "Begin"
-msgstr "起始"
+msgstr "Começar"
 
 #: ../resources/installer/js/dialog.coffee:229
 msgid "End"
-msgstr "结束"
+msgstr "Fim"
 
 #: ../resources/installer/js/dialog.coffee:249
 msgid "Filesystem:"
-msgstr "文件系统："
+msgstr "Sistema de ficheiros:"
 
 #: ../resources/installer/js/dialog.coffee:273
 msgid "Mount:"
-msgstr "挂载："
+msgstr "Montar:"
 
 #: ../resources/installer/js/dialog.coffee:306
 msgid "Please enter a valid partition size."
-msgstr "请输入一个有效的分区大小数值。"
+msgstr "Por favor introduza um tamanho válido de partição."
 
 #: ../resources/installer/js/welcome.coffee:198
 msgid "Yes"
-msgstr "是"
+msgstr "Sim"
 
 #: ../resources/installer/js/welcome.coffee:203
 msgid "No"
-msgstr "否"
+msgstr "Não"
 
 #: ../resources/installer/js/welcome.coffee:298
 msgid "Please press one of the following keys."
-msgstr "请按下面的一个按键。"
+msgstr "Por favor pressione uma das seguintes teclas."
 
 #: ../resources/installer/js/welcome.coffee:304
 msgid "Please confirm you have the following keys."
-msgstr "请确认您拥有以下按键。"
+msgstr "Por favor confirme que tem as seguintes teclas."
 
 #: ../resources/installer/js/welcome.coffee:347
 msgid "Detect Layout"
-msgstr "探测布局"
+msgstr "Detetar Disposição"
 
 #: ../resources/installer/js/welcome.coffee:353
 msgid "View Current"
-msgstr "查看当前"
+msgstr "Ver Atual"
 
 #: ../resources/installer/js/welcome.coffee:511
 msgid "Please select or search your location."
-msgstr "请选择或搜索您所在的区域。"
+msgstr "Por favor selecione ou procure a sua localização."
 
 #: ../resources/installer/js/welcome.coffee:766
 msgid "Username"
-msgstr "用户名"
+msgstr "Nome de Utilizador"
 
 #: ../resources/installer/js/welcome.coffee:769
 msgid "Computer Name"
-msgstr "计算机名"
+msgstr "Nome do Computador"
 
 #: ../resources/installer/js/welcome.coffee:772
 msgid "Password"
-msgstr "密码"
+msgstr "Palavra-passe"
 
 #: ../resources/installer/js/welcome.coffee:777
 msgid "Retype Password"
-msgstr "确认密码"
+msgstr "Reescreva Palavra-passe"
 
 #: ../resources/installer/js/welcome.coffee:808
 msgid "Nothing Input"
-msgstr "未输入"
+msgstr "Nenhuma Entrada"
 
 #: ../resources/installer/js/welcome.coffee:822
 #: ../app/language-selector/greeter.c:297
 msgid "Invalid Password"
-msgstr "无效密码"
+msgstr "Palavra-passe Inválida"
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Different Password"
-msgstr "密码不一致"
+msgstr " Palavra-passe Diferente"
 
 #: ../resources/installer/js/welcome.coffee:848
 msgid "Next"
-msgstr "下一步"
+msgstr "Seguinte"
 
 #: ../resources/installer/js/welcome.coffee:899
 msgid "Time Zone"
-msgstr "时区"
+msgstr "Fuso Horário"
 
 #: ../resources/installer/js/welcome.coffee:904
 msgid "Keyboard"
-msgstr "键盘"
+msgstr "Teclado"
 
 #: ../resources/installer/js/progress.coffee:25
 msgid "Error Report"
-msgstr "错误报告"
+msgstr "Relatório de Erro"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "安装系统失败，请将安装日志反馈至Deepin团队。"
+msgstr "A instalação do Sistema falhou. Por favor envie o histórico para a Equipa Deepin."
 
 #: ../resources/installer/js/progress.coffee:47
 msgid "Preparing for Installation"
-msgstr "正在为安装做准备"
+msgstr "A preparar para Instalação"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
 msgid "Deepin Store"
-msgstr "深度商店"
+msgstr "Loja Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
 msgid "One-stop Software Management"
-msgstr "一站式软件管理"
+msgstr "Gestão de Software de Uma-paragem"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
 msgid "Continuous Update of Wonderful Software"
-msgstr "精彩软件滚动更新"
+msgstr "Actualização contínua de um Software Maravilhoso"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
 msgid "Unimpeded Online Communication"
-msgstr "在线交流畅通无阻"
+msgstr "Comunicação Online Desimpedida"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
 msgid "Deepin Movie"
-msgstr "深度影院"
+msgstr "Filme Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
 msgid "Comprehensive Audio-visual Shock"
-msgstr "全面的视听震撼"
+msgstr "Choque Audio-visual Compreensivo"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
 msgid "New Interactive Experience"
-msgstr "全新的交互体验"
+msgstr "Nova Experiência Interactiva"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
 msgid "Intelligent Subtitle Loading"
-msgstr "智能加载影视字幕"
+msgstr "A Carregar Legendas Inteligentes"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
 msgid "Deepin Music"
-msgstr "深度音乐"
+msgstr "Música Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
 msgid "Ultimate Music Journey"
-msgstr "极致的音乐之旅"
+msgstr "Jornada de Música Final"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
 msgid "Rich Extended Function"
-msgstr "丰富的拓展功能"
+msgstr "Função Estendida Rica"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
 msgid "Enjoy Online Strongest Voice"
-msgstr "品尝在线最强音"
+msgstr "Desfrute da Mais Forte Voz Online"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
 msgid "Deepin Game"
-msgstr "深度游戏"
+msgstr "Jogo Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
 msgid "Provide Latest and Hottest Games"
-msgstr "提供最新、最热的游戏"
+msgstr "Fornecer os Jogos Mais Quentes e Recentes"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
 msgid "Gather Various Game Topics"
-msgstr "网罗各大游戏专题"
+msgstr "Reúna vários Tópicos de jogos"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
 msgid "Collect Your Favorite Online"
-msgstr "在线收藏你的最爱"
+msgstr "Recolha seu favorito online"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
 msgid "Deepin Community"
-msgstr "深度社区"
+msgstr "Comunidade Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
 msgid "Free and United Open Source Community"
-msgstr "自由团结的开源社区"
+msgstr "Comunidade Livre e Unida de Open Source"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "欢迎参与Deepin国际化项目"
+msgstr "Agradecidos por participar no Projeto de Internacionalização do Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "欢迎关注我们的微博、Twitter、Facebook和Google+，或邮件列表和IRC"
+msgstr "Agradecidos por nos seguir no Weibo, Twitter, Facebook, Google+, Lista de Mail e IRC"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
-msgstr "%Y年%b%d日 %A"
+msgstr "%a, %d %b. %Y"

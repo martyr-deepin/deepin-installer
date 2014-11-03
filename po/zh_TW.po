@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-25 13:10+0800\n"
-"PO-Revision-Date: 2014-10-17 06:02+0000\n"
+"POT-Creation-Date: 2014-10-23 10:42+0800\n"
+"PO-Revision-Date: 2014-10-30 10:02+0000\n"
 "Last-Translator: cxbii <chenxiangbang@linuxdeepin.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-installer/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -19,42 +19,46 @@ msgstr ""
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../resources/installer/js/finish.coffee:43
+#: ../resources/installer/js/finish.coffee:38
 msgid "Congratulations!"
 msgstr "恭喜您！"
 
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
 msgstr "您需要重新啟動電腦以完成安裝。"
 
-#: ../resources/installer/js/finish.coffee:45
+#: ../resources/installer/js/finish.coffee:40
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr "提示：為避免重新啟動後再次進入安裝環境，請先移除安裝媒介。"
 
-#: ../resources/installer/js/finish.coffee:47
+#: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Later"
 msgstr "稍後重新啟動"
 
-#: ../resources/installer/js/finish.coffee:49
+#: ../resources/installer/js/finish.coffee:44
 msgid "Installation Failed!"
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:51
+#: ../resources/installer/js/finish.coffee:46
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:62
+#: ../resources/installer/js/finish.coffee:57
 msgid "Start Over"
 msgstr "再次嘗試"
 
-#: ../resources/installer/js/finish.coffee:79
+#: ../resources/installer/js/finish.coffee:74
 msgid "Reboot Now"
 msgstr "立即重新啟動"
+
+#: ../resources/installer/js/finish.coffee:97
+msgid "Exit Installation"
+msgstr ""
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
@@ -65,9 +69,9 @@ msgstr "安裝需求"
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
 msgstr "欲安裝 Deepin 作業系統，您必須擁有最少 %d GB 的硬碟空間。"
 
-#: ../resources/installer/js/base.coffee:50
-#: ../resources/installer/js/base.coffee:52
-#: ../resources/installer/js/base.coffee:54
+#: ../resources/installer/js/base.coffee:49
+#: ../resources/installer/js/base.coffee:51
+#: ../resources/installer/js/base.coffee:53
 msgid "Unused"
 msgstr "未使用"
 
@@ -86,7 +90,7 @@ msgid "Install Here"
 msgstr "安裝到這裡"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:786
+#: ../resources/installer/js/part.coffee:781
 msgid "Warning"
 msgstr "警告"
 
@@ -141,78 +145,78 @@ msgstr "新建分割區"
 msgid "Expert Mode"
 msgstr "專家模式"
 
-#: ../resources/installer/js/part.coffee:600
+#: ../resources/installer/js/part.coffee:595
 msgid "Install"
 msgstr "安裝"
 
-#: ../resources/installer/js/part.coffee:626
+#: ../resources/installer/js/part.coffee:621
 msgid "Installation Tips"
 msgstr "安裝提示"
 
-#: ../resources/installer/js/part.coffee:627
+#: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
 msgstr "至少需要一個 root (/) 分割區。"
 
-#: ../resources/installer/js/part.coffee:634
-#: ../resources/installer/js/part.coffee:642
-#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
+#: ../resources/installer/js/part.coffee:665
 msgid "Install Tips"
 msgstr "安裝提示"
 
-#: ../resources/installer/js/part.coffee:635
+#: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
 msgstr "UEFI 模式僅支援磁碟分割表為 GPT 的硬碟。"
 
-#: ../resources/installer/js/part.coffee:643
+#: ../resources/installer/js/part.coffee:638
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
 msgstr "UEFI 模式必須要有 ESP 的支援，請建立一個 100 MB 以上的 EFI 分割區"
 
-#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:113
 msgid "Add Partition"
 msgstr "添加分割區"
 
-#: ../resources/installer/js/part.coffee:663
+#: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
 msgstr "無法在此建立分割區"
 
-#: ../resources/installer/js/part.coffee:671
+#: ../resources/installer/js/part.coffee:666
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. For installation,"
 " please enter the Expert Mode."
 msgstr "UEFI模式僅支援磁碟分割表為 GPT 的硬碟。如需安裝請進入專家模式。"
 
-#: ../resources/installer/js/part.coffee:698
+#: ../resources/installer/js/part.coffee:693
 msgid "UEFI"
 msgstr "UEFI"
 
-#: ../resources/installer/js/part.coffee:705
+#: ../resources/installer/js/part.coffee:700
 msgid "Boot Loader"
 msgstr "啟動程式"
 
-#: ../resources/installer/js/part.coffee:752
+#: ../resources/installer/js/part.coffee:747
 msgid "Unmount Partition"
 msgstr "卸載分割區"
 
-#: ../resources/installer/js/part.coffee:753
+#: ../resources/installer/js/part.coffee:748
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "偵測到分割區已經掛載。\n您確定要卸載嗎？"
 
-#: ../resources/installer/js/part.coffee:787
+#: ../resources/installer/js/part.coffee:782
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr "UEFI 模式僅支援磁碟分割表為 GPT 的硬碟。若您執意安裝將導致硬碟資料遺失。"
 
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:796
 msgid "Simple Mode"
 msgstr "簡易模式"
 
-#: ../resources/installer/js/part.coffee:812
+#: ../resources/installer/js/part.coffee:807
 msgid "Expert mode"
 msgstr "專家模式"
 
@@ -326,44 +330,44 @@ msgstr "查看目前"
 msgid "Please select or search your location."
 msgstr "請選擇或搜尋您的所在位置。"
 
-#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:766
 msgid "Username"
 msgstr "使用者名稱"
 
-#: ../resources/installer/js/welcome.coffee:766
+#: ../resources/installer/js/welcome.coffee:769
 msgid "Computer Name"
 msgstr "電腦名稱"
 
-#: ../resources/installer/js/welcome.coffee:769
+#: ../resources/installer/js/welcome.coffee:772
 msgid "Password"
 msgstr "密碼"
 
-#: ../resources/installer/js/welcome.coffee:774
+#: ../resources/installer/js/welcome.coffee:777
 msgid "Retype Password"
 msgstr "確認密碼"
 
-#: ../resources/installer/js/welcome.coffee:805
+#: ../resources/installer/js/welcome.coffee:808
 msgid "Nothing Input"
 msgstr "沒有輸入"
 
-#: ../resources/installer/js/welcome.coffee:819
-#: ../app/language-selector/greeter.c:291
+#: ../resources/installer/js/welcome.coffee:822
+#: ../app/language-selector/greeter.c:297
 msgid "Invalid Password"
 msgstr "無效的密碼"
 
-#: ../resources/installer/js/welcome.coffee:822
+#: ../resources/installer/js/welcome.coffee:825
 msgid "Different Password"
 msgstr "密碼不相同"
 
-#: ../resources/installer/js/welcome.coffee:845
+#: ../resources/installer/js/welcome.coffee:848
 msgid "Next"
 msgstr "下一步"
 
-#: ../resources/installer/js/welcome.coffee:896
+#: ../resources/installer/js/welcome.coffee:899
 msgid "Time Zone"
 msgstr "時區"
 
-#: ../resources/installer/js/welcome.coffee:901
+#: ../resources/installer/js/welcome.coffee:904
 msgid "Keyboard"
 msgstr "鍵盤"
 
@@ -375,7 +379,7 @@ msgstr "錯誤報告"
 msgid "System installation failed. Please send the log to Deepin Team."
 msgstr "安裝系統失敗。請將日誌回饋到 Deepin 團隊。"
 
-#: ../resources/installer/js/progress.coffee:46
+#: ../resources/installer/js/progress.coffee:47
 msgid "Preparing for Installation"
 msgstr "正在為安裝做準備"
 

@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-25 13:10+0800\n"
-"PO-Revision-Date: 2014-10-17 06:02+0000\n"
-"Last-Translator: cxbii <chenxiangbang@linuxdeepin.com>\n"
+"POT-Creation-Date: 2014-10-23 10:42+0800\n"
+"PO-Revision-Date: 2014-11-02 14:11+0000\n"
+"Last-Translator: Yuval Bar-On <hyuvii@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/deepin-installer/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,42 +18,46 @@ msgstr ""
 "Language: he\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../resources/installer/js/finish.coffee:43
+#: ../resources/installer/js/finish.coffee:38
 msgid "Congratulations!"
 msgstr "מזל טוב!"
 
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
 msgstr "עליך לאתחל את המחשב על מנת להשלים את ההתקנה"
 
-#: ../resources/installer/js/finish.coffee:45
+#: ../resources/installer/js/finish.coffee:40
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr ""
+msgstr "טיפ: אנא הסר את אמצעי ההתקנה לפני אתחול, על מנת להמנע מכניסה מחודשת לסביבת ההתקנה כאשר תפעיל את המחשב בפעם הבא "
 
-#: ../resources/installer/js/finish.coffee:47
+#: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Later"
 msgstr "אתחל מאוחר יותר"
 
-#: ../resources/installer/js/finish.coffee:49
+#: ../resources/installer/js/finish.coffee:44
 msgid "Installation Failed!"
-msgstr ""
+msgstr "ההתקנה נכשלה!"
 
-#: ../resources/installer/js/finish.coffee:51
+#: ../resources/installer/js/finish.coffee:46
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr ""
+msgstr "לוג ההתקנה נשמר על שולחן העבודה עבורך\nעל מנת לעזור לנו לשפר את המערכת, אנא שלח את הלוג לצוות Deepin. תודה רבה!"
 
-#: ../resources/installer/js/finish.coffee:62
+#: ../resources/installer/js/finish.coffee:57
 msgid "Start Over"
 msgstr "התחל מחדש"
 
-#: ../resources/installer/js/finish.coffee:79
+#: ../resources/installer/js/finish.coffee:74
 msgid "Reboot Now"
 msgstr "אתחל עכשיו"
+
+#: ../resources/installer/js/finish.coffee:97
+msgid "Exit Installation"
+msgstr "צא מההתקנה"
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
@@ -64,9 +68,9 @@ msgstr "דרישות התקנה"
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
 msgstr "על מנת להתקין את מערכת ההפעלה Deepin, אתה צריך לפחות %d GB של מקום פנוי"
 
-#: ../resources/installer/js/base.coffee:50
-#: ../resources/installer/js/base.coffee:52
-#: ../resources/installer/js/base.coffee:54
+#: ../resources/installer/js/base.coffee:49
+#: ../resources/installer/js/base.coffee:51
+#: ../resources/installer/js/base.coffee:53
 msgid "Unused"
 msgstr "לא בשימוש"
 
@@ -85,7 +89,7 @@ msgid "Install Here"
 msgstr "התקן פה"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:786
+#: ../resources/installer/js/part.coffee:781
 msgid "Warning"
 msgstr "אזהרה"
 
@@ -93,7 +97,7 @@ msgstr "אזהרה"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "אינך יכול לאתחל בשל מעט מדי מקום בכתובת /boot, אנא הגדל את השטח כך שיהיה לכל הפחות 300MB"
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -140,78 +144,78 @@ msgstr "מחיצה חדשה"
 msgid "Expert Mode"
 msgstr "מצב מומחה"
 
-#: ../resources/installer/js/part.coffee:600
+#: ../resources/installer/js/part.coffee:595
 msgid "Install"
 msgstr "התקן"
 
-#: ../resources/installer/js/part.coffee:626
+#: ../resources/installer/js/part.coffee:621
 msgid "Installation Tips"
 msgstr "טיפים להתקנה"
 
-#: ../resources/installer/js/part.coffee:627
+#: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
 msgstr "יש צורך במחיצה עיקרית (/)"
 
-#: ../resources/installer/js/part.coffee:634
-#: ../resources/installer/js/part.coffee:642
-#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
+#: ../resources/installer/js/part.coffee:665
 msgid "Install Tips"
 msgstr "טיפים להתקנה"
 
-#: ../resources/installer/js/part.coffee:635
+#: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
 msgstr "ההתקנה מסוג UEFI תומכת אך ורק בכונן עם פרמוט GPT "
 
-#: ../resources/installer/js/part.coffee:643
+#: ../resources/installer/js/part.coffee:638
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr ""
+msgstr "במצב UEFI יש צורך בתמיכת ESP, אנא צור מחיצה של לפחות 100MB או יותר בפורמט EFI"
 
-#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:113
 msgid "Add Partition"
 msgstr "הוסף מחיצה"
 
-#: ../resources/installer/js/part.coffee:663
+#: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
 msgstr "לא יכול ליצור מחיצה פה"
 
-#: ../resources/installer/js/part.coffee:671
+#: ../resources/installer/js/part.coffee:666
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. For installation,"
 " please enter the Expert Mode."
-msgstr ""
+msgstr "התקנת UEFI-מקומי תומכת רק בכונן המפורמט כ-GPT. להתקנה, אנא עבור למצב מומחה"
 
-#: ../resources/installer/js/part.coffee:698
+#: ../resources/installer/js/part.coffee:693
 msgid "UEFI"
 msgstr "UEFI"
 
-#: ../resources/installer/js/part.coffee:705
+#: ../resources/installer/js/part.coffee:700
 msgid "Boot Loader"
 msgstr "Boot Loader"
 
-#: ../resources/installer/js/part.coffee:752
+#: ../resources/installer/js/part.coffee:747
 msgid "Unmount Partition"
 msgstr "בטל עיגון (unmount) למחיצה"
 
-#: ../resources/installer/js/part.coffee:753
+#: ../resources/installer/js/part.coffee:748
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "נראה כי המחיצה עגונה (mount). האם אתה בטוח שברצונך לנתק (unmount) אותה?"
 
-#: ../resources/installer/js/part.coffee:787
+#: ../resources/installer/js/part.coffee:782
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr "ההתקנה מסוג UEFI תומכת אך ורק בכונן עם פרמוט GPT. אתה תאבד את כל המידע על הכונן אם תתעקש להמשיך בהתקנה"
 
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:796
 msgid "Simple Mode"
 msgstr "מצב פשוט"
 
-#: ../resources/installer/js/part.coffee:812
+#: ../resources/installer/js/part.coffee:807
 msgid "Expert mode"
 msgstr "מצב מומחה"
 
@@ -251,7 +255,7 @@ msgstr "מערכת ההפעלה Deepin תותקן על"
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr ""
+msgstr "\nהמחיצה תפורמט אם תמשיך בהתקנה. אנא דאג לגיבוי של המידע החשוב\n"
 
 #: ../resources/installer/js/dialog.coffee:102
 msgid "Do you want to continue the installation ?"
@@ -325,44 +329,44 @@ msgstr "צפה בנוכחי"
 msgid "Please select or search your location."
 msgstr "אנא בחר או חפש את המיקום שלך"
 
-#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:766
 msgid "Username"
 msgstr "שם משתמש"
 
-#: ../resources/installer/js/welcome.coffee:766
+#: ../resources/installer/js/welcome.coffee:769
 msgid "Computer Name"
 msgstr "שם המחשב"
 
-#: ../resources/installer/js/welcome.coffee:769
+#: ../resources/installer/js/welcome.coffee:772
 msgid "Password"
 msgstr "סיסמא"
 
-#: ../resources/installer/js/welcome.coffee:774
+#: ../resources/installer/js/welcome.coffee:777
 msgid "Retype Password"
 msgstr "הקש סיסמא מחדש"
 
-#: ../resources/installer/js/welcome.coffee:805
+#: ../resources/installer/js/welcome.coffee:808
 msgid "Nothing Input"
-msgstr ""
+msgstr "לא הוכנס ערך"
 
-#: ../resources/installer/js/welcome.coffee:819
-#: ../app/language-selector/greeter.c:291
+#: ../resources/installer/js/welcome.coffee:822
+#: ../app/language-selector/greeter.c:297
 msgid "Invalid Password"
 msgstr "סיסמא לא חוקית"
 
-#: ../resources/installer/js/welcome.coffee:822
+#: ../resources/installer/js/welcome.coffee:825
 msgid "Different Password"
-msgstr ""
+msgstr "סיסמא שונה"
 
-#: ../resources/installer/js/welcome.coffee:845
+#: ../resources/installer/js/welcome.coffee:848
 msgid "Next"
 msgstr "הבא"
 
-#: ../resources/installer/js/welcome.coffee:896
+#: ../resources/installer/js/welcome.coffee:899
 msgid "Time Zone"
 msgstr "איזור זמן"
 
-#: ../resources/installer/js/welcome.coffee:901
+#: ../resources/installer/js/welcome.coffee:904
 msgid "Keyboard"
 msgstr "מקלדת"
 
@@ -374,9 +378,9 @@ msgstr "דו\"ח שגיאה"
 msgid "System installation failed. Please send the log to Deepin Team."
 msgstr "התקנת מערכת כשלה. אנא שלח את ה-log לצוות של Deepin"
 
-#: ../resources/installer/js/progress.coffee:46
+#: ../resources/installer/js/progress.coffee:47
 msgid "Preparing for Installation"
-msgstr ""
+msgstr "מתכונן להתקנה"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
 msgid "Deepin Store"
@@ -452,7 +456,7 @@ msgstr "קהילת קוד פתוח מאוחדת וחופשייה"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr ""
+msgstr "ברוך הבא על השתתפותך בפרויקט Deepin הבינלאומי"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
 msgid ""

@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-25 13:10+0800\n"
-"PO-Revision-Date: 2014-10-17 06:02+0000\n"
-"Last-Translator: fri\n"
+"POT-Creation-Date: 2014-10-23 10:42+0800\n"
+"PO-Revision-Date: 2014-10-30 10:02+0000\n"
+"Last-Translator: cxbii <chenxiangbang@linuxdeepin.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/deepin-installer/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,42 +19,46 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../resources/installer/js/finish.coffee:43
+#: ../resources/installer/js/finish.coffee:38
 msgid "Congratulations!"
 msgstr "Blahopřejeme!"
 
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
 msgstr "Pro dokončení instalace je potřeba počítač restartovat, tedy spustit znovu."
 
-#: ../resources/installer/js/finish.coffee:45
+#: ../resources/installer/js/finish.coffee:40
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr "Rada: Před restartováním počítače, prosím, odstraňte instalační nosiče, abyste se vyhnul opětovnému vstupu do prostředí instalátoru, až příště počítač spustíte."
 
-#: ../resources/installer/js/finish.coffee:47
+#: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Later"
 msgstr "Restartovat později"
 
-#: ../resources/installer/js/finish.coffee:49
+#: ../resources/installer/js/finish.coffee:44
 msgid "Installation Failed!"
 msgstr "Instalace se nezdařila!"
 
-#: ../resources/installer/js/finish.coffee:51
+#: ../resources/installer/js/finish.coffee:46
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
 msgstr "Zápis o průběhu instalace byl uložen na pracovní plochu.\nAbyste nám pomohli při vylepšování systému, pošlete, prosím, záznam týmu Deepinu. Děkujeme! "
 
-#: ../resources/installer/js/finish.coffee:62
+#: ../resources/installer/js/finish.coffee:57
 msgid "Start Over"
 msgstr "Začít znovu"
 
-#: ../resources/installer/js/finish.coffee:79
+#: ../resources/installer/js/finish.coffee:74
 msgid "Reboot Now"
 msgstr "Restartovat nyní"
+
+#: ../resources/installer/js/finish.coffee:97
+msgid "Exit Installation"
+msgstr ""
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
@@ -65,9 +69,9 @@ msgstr "Požadavky na instalaci"
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
 msgstr "Pro instalaci operačního systému Deepin potřebujete mít alespoň %d GB volného místa na disku."
 
-#: ../resources/installer/js/base.coffee:50
-#: ../resources/installer/js/base.coffee:52
-#: ../resources/installer/js/base.coffee:54
+#: ../resources/installer/js/base.coffee:49
+#: ../resources/installer/js/base.coffee:51
+#: ../resources/installer/js/base.coffee:53
 msgid "Unused"
 msgstr "Nepoužito "
 
@@ -86,7 +90,7 @@ msgid "Install Here"
 msgstr "Instalovat zde"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:786
+#: ../resources/installer/js/part.coffee:781
 msgid "Warning"
 msgstr "Varování"
 
@@ -141,78 +145,78 @@ msgstr "Nový diskový oddíl"
 msgid "Expert Mode"
 msgstr "Znalecký režim"
 
-#: ../resources/installer/js/part.coffee:600
+#: ../resources/installer/js/part.coffee:595
 msgid "Install"
 msgstr "Instalovat"
 
-#: ../resources/installer/js/part.coffee:626
+#: ../resources/installer/js/part.coffee:621
 msgid "Installation Tips"
 msgstr "Rady pro instalaci"
 
-#: ../resources/installer/js/part.coffee:627
+#: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
 msgstr "Je požadován diskový oddíl root (/)."
 
-#: ../resources/installer/js/part.coffee:634
-#: ../resources/installer/js/part.coffee:642
-#: ../resources/installer/js/part.coffee:670
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
+#: ../resources/installer/js/part.coffee:665
 msgid "Install Tips"
 msgstr "Rady pro instalaci"
 
-#: ../resources/installer/js/part.coffee:635
+#: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
 msgstr "UEFI-nativní instalace podporuje pouze disk formátovaný GPT."
 
-#: ../resources/installer/js/part.coffee:643
+#: ../resources/installer/js/part.coffee:638
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
 msgstr "Podpora pro ESPje potřeba v režimu UEFI. Vytvořte také, prosím, diskový oddíl o velikosti 100 MB nebo větší ve formátu efi."
 
-#: ../resources/installer/js/part.coffee:662
+#: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:113
 msgid "Add Partition"
 msgstr "Přidat diskový oddíl"
 
-#: ../resources/installer/js/part.coffee:663
+#: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
 msgstr "Zde nelze vytvořit diskový oddíl"
 
-#: ../resources/installer/js/part.coffee:671
+#: ../resources/installer/js/part.coffee:666
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. For installation,"
 " please enter the Expert Mode."
 msgstr "UEFI-nativní instalace podporuje pouze disk formátovaný GPT. Pro instalaci vstupte, prosím, do znaleckého režimu."
 
-#: ../resources/installer/js/part.coffee:698
+#: ../resources/installer/js/part.coffee:693
 msgid "UEFI"
 msgstr "UEFI"
 
-#: ../resources/installer/js/part.coffee:705
+#: ../resources/installer/js/part.coffee:700
 msgid "Boot Loader"
 msgstr "Zavaděč"
 
-#: ../resources/installer/js/part.coffee:752
+#: ../resources/installer/js/part.coffee:747
 msgid "Unmount Partition"
 msgstr "Odpojit diskový oddíl"
 
-#: ../resources/installer/js/part.coffee:753
+#: ../resources/installer/js/part.coffee:748
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "Bylo zjištěno, že diskový oddíl je připojen.\nOpravdu jej chcete odpojit?"
 
-#: ../resources/installer/js/part.coffee:787
+#: ../resources/installer/js/part.coffee:782
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr "UEFI-nativní instalace podporuje pouze disk formátovaný GPT. ztratíte všechna data, pokud budete trvat na provedení instalace."
 
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:796
 msgid "Simple Mode"
 msgstr "Jednoduchý režim"
 
-#: ../resources/installer/js/part.coffee:812
+#: ../resources/installer/js/part.coffee:807
 msgid "Expert mode"
 msgstr "Znalecký režim"
 
@@ -326,44 +330,44 @@ msgstr "Zobrazit nynější"
 msgid "Please select or search your location."
 msgstr "Vyberte, prosím, nebo najděte své umístění."
 
-#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:766
 msgid "Username"
 msgstr "Uživatelské jméno"
 
-#: ../resources/installer/js/welcome.coffee:766
+#: ../resources/installer/js/welcome.coffee:769
 msgid "Computer Name"
 msgstr "Název počítače"
 
-#: ../resources/installer/js/welcome.coffee:769
+#: ../resources/installer/js/welcome.coffee:772
 msgid "Password"
 msgstr "Heslo"
 
-#: ../resources/installer/js/welcome.coffee:774
+#: ../resources/installer/js/welcome.coffee:777
 msgid "Retype Password"
 msgstr "Napište heslo znovu"
 
-#: ../resources/installer/js/welcome.coffee:805
+#: ../resources/installer/js/welcome.coffee:808
 msgid "Nothing Input"
 msgstr "Nic vloženo"
 
-#: ../resources/installer/js/welcome.coffee:819
-#: ../app/language-selector/greeter.c:291
+#: ../resources/installer/js/welcome.coffee:822
+#: ../app/language-selector/greeter.c:297
 msgid "Invalid Password"
 msgstr "Neplatné heslo"
 
-#: ../resources/installer/js/welcome.coffee:822
+#: ../resources/installer/js/welcome.coffee:825
 msgid "Different Password"
 msgstr "Odlišné heslo"
 
-#: ../resources/installer/js/welcome.coffee:845
+#: ../resources/installer/js/welcome.coffee:848
 msgid "Next"
 msgstr "Další"
 
-#: ../resources/installer/js/welcome.coffee:896
+#: ../resources/installer/js/welcome.coffee:899
 msgid "Time Zone"
 msgstr "Časová zóna"
 
-#: ../resources/installer/js/welcome.coffee:901
+#: ../resources/installer/js/welcome.coffee:904
 msgid "Keyboard"
 msgstr "Klávesnice"
 
@@ -375,7 +379,7 @@ msgstr "Zpráva o chybách"
 msgid "System installation failed. Please send the log to Deepin Team."
 msgstr "Instalace systému se nezdařila. Pošlete, prosím, zápis z instalace pracovní skupině Deepinu."
 
-#: ../resources/installer/js/progress.coffee:46
+#: ../resources/installer/js/progress.coffee:47
 msgid "Preparing for Installation"
 msgstr "Připravuje se na instalaci"
 
