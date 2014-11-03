@@ -23,6 +23,7 @@
 #include <gdk/gdkx.h>
 #include <signal.h>
 #include <glib.h>
+#include <fcntl.h>
 #include "dwebview.h"
 #include "dcore.h"
 #include "i18n.h"
@@ -39,9 +40,11 @@ static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
 
 char* auto_conf_path = NULL;
+char* log_path = NULL;
 static GOptionEntry entries[] =
 {
     { "conf", 'c', 0, G_OPTION_ARG_STRING, &auto_conf_path, "set configure file path when installing with automate mode ", "path"},
+    { "log", 'l', 0, G_OPTION_ARG_STRING, &log_path, "write log message to ", "log path"},
     { NULL }
 };
 
@@ -124,11 +127,12 @@ sigterm_cb (int sig)
     installer_finish_install ();
 }
 
-#ifdef NDEBUG
-#include <fcntl.h>
-void redirect_log()
+void redirect_log(const char* path)
 {
-    int log_file = open("/tmp/deepin-installer.log", O_CREAT| O_APPEND| O_WRONLY, 0644);
+    if (path == NULL) {
+        return;
+    }
+    int log_file = open(path, O_CREAT| O_APPEND| O_WRONLY, 0644);
     if (log_file == -1) {
         perror("redirect_log");
         return ;
@@ -136,7 +140,6 @@ void redirect_log()
     dup2(log_file, 1);
     dup2(log_file, 2);
 }
-#endif
 
 void fix_without_wm()
 {
@@ -159,9 +162,8 @@ int main(int argc, char **argv)
     }
     g_option_context_free(context);
 
-#ifdef NDEBUG
-    redirect_log();
-#endif
+    redirect_log(log_path);
+
     gtk_init (&argc, &argv);
 
     setlocale(LC_MESSAGES, "");
