@@ -192,6 +192,11 @@ int main(int argc, char **argv)
     g_signal_connect (webview, "draw", G_CALLBACK (erase_background), NULL);
     gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
 
+    WebKitWebSettings *setting = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(webview));
+    g_object_set(G_OBJECT(setting),
+            "enable-default-context-menu", FALSE,
+            NULL);
+
     if (auto_mode){
         fix_without_wm();
         INSTALLER_WIN_WIDTH = gdk_screen_width();
