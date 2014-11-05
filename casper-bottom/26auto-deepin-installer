@@ -27,7 +27,7 @@ cat <<EOF
 [Desktop Entry]
 Name=DeepinAutoInstaller
 Comment=Deepin Auto Installer
-Exec=gksudo -- /usr/bin/deepin-installer -c /isodevice/deepin/install/deepin-installer.conf
+Exec=gksudo -- $2
 TryExec=gksudo
 EOF
 ) > $1
@@ -46,18 +46,53 @@ EOF
 ) > $1
 }
 
+generate_install_helper()
+{
+(
+cat <<EOF
+#!/bin/sh
+
+/usr/bin/deepin-installer -c "$3" -l "$4"
+EOF
+) > $1
+}
+
 for x in $(cat /proc/cmdline); do
     case $x in
 	auto-deepin-installer)
-	chroot /root mount -o remount,rw /
-
-	$(generate_auto_installer /root/usr/share/xsessions/deepin-auto-installer.desktop)
-	$(generate_lightdm_conf /root/etc/lightdm/lightdm.conf)
-
-	chroot /root mount -o remount,ro /
-	;;
+        auto_mode=true
+        ;;
+    install-path=*)
+        install_path="/isodevice/${x#install-path=}"
+        ;;
+    deepin-installer/locale=*)
+        locale=${x#deepin-installer/locale=}
+        ;;
     esac
 done
 
+if [ $auto_mode==true ]; then
+	chroot /root mount -o remount,rw /
+	lang=$(echo $locale | awk -F '.' '{print $1}')
+
+	# set locale
+	echo $locale
+	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" > /root/etc/default/locale
+	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" >> /root/etc/environment
+	chroot /root /usr/sbin/locale-gen "$locale" || true
+
+	install_conf=$install_path/install/deepin-installer.conf
+	install_log=$install_path/install/deepin-installer.log
+	install_helper=/usr/lib/deepin-install-helper
+	root_install_helper=/root$install_helper
+	echo $install_log $install_conf
+	$(generate_install_helper $root_install_helper $locale $install_conf $install_log)
+	$(generate_auto_installer /root/usr/share/xsessions/deepin-auto-installer.desktop $install_helper)
+	$(generate_lightdm_conf /root/etc/lightdm/lightdm.conf)
+
+	chmod +x $root_install_helper
+	chroot /root mount -o remount,ro /
+fi
 
 log_end_msg
+
