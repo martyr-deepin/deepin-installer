@@ -71,7 +71,7 @@ for x in $(cat /proc/cmdline); do
     esac
 done
 
-if [ $auto_mode==true ]; then
+if [ "$auto_mode" = "true" ]; then
 	chroot /root mount -o remount,rw /
 	lang=$(echo $locale | awk -F '.' '{print $1}')
 
