@@ -660,15 +660,10 @@ class Part extends Page
                 return
 
         if DCore.Installer.system_support_efi() and not DCore.Installer.disk_is_gpt(__selected_disk)
-            echo "handle_install_simple"
-            new PromptDialog(
-                _("Install Tips"),
-                _("UEFI-native installation only supports GPT-formatted disk. For installation, please enter the Expert Mode.")
-                -> install_by_anyway(__selected_disk)
-            ).show_at(document.body)
-        else
-            __selected_bootloader = __selected_disk
-            new InstallDialog("InstallMode").show_at(document.body)
+            #TODO:auto use bootloader mode to install silently instead of Dialog choose
+            __selected_use_uefi = false
+        __selected_bootloader = __selected_disk
+        new InstallDialog("InstallMode").show_at(document.body)
 
     init_part_page: ->
         if __selected_mode == null
