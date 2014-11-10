@@ -132,6 +132,7 @@ void redirect_log(const char* path)
     if (path == NULL) {
         return;
     }
+    g_message ("[%s]:deepin-installer.log path is:====%s=========",__func__ , path);
     int log_file = open(path, O_CREAT| O_APPEND| O_WRONLY, 0644);
     if (log_file == -1) {
         perror("redirect_log");

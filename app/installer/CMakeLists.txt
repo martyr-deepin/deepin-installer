@@ -32,6 +32,11 @@ install(
     )
 
 install(
+    PROGRAMS ${PROJECT_SOURCE_DIR}/app/installer/deepin-installer-launcher
+    DESTINATION bin
+    )
+
+install(
     DIRECTORY ${PROJECT_SOURCE_DIR}/resources/installer
     DESTINATION ${RESOURCE_DIR}
     )

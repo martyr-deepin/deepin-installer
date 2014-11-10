@@ -1,0 +1,4 @@
+#!/bin/sh
+
+. "$HOME/.config/user-dirs.dirs"
+pkexec deepin-installer -l "$XDG_DESKTOP_DIR/deepin-installer.log"
