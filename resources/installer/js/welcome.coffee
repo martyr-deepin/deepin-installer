@@ -19,8 +19,15 @@
 
 __focused_layout_item = null
 
-ACCOUNTS = "com.deepin.daemon.Accounts"
-__illegal_keys='\t\n\r~`!@#$%^&*()+}{|\\\':;<,>.?/ '
+__legal_keys='abcdefghijklmnopqrstuvwxyz' + '0123456789' + '-_'
+illegalErrCode =
+    define:-1
+    empty:1
+    invalid:2
+    firstUpper:3
+    exist:4
+    systemUsed:5
+    different:6
 
 __selected_zone_index = 8
 
@@ -721,11 +728,13 @@ class WelcomeFormItem extends Widget
     constructor: (@id)->
         super
         @tooltip = null
-        @valid = []
-        @invalid_msg = null
+        @valid = {}
         @account_dbus = null
-        @input = create_element("input", "", @element)
+        @value_origin = null
         @change = false
+        @msg_tid = null
+
+        @input = create_element("input", "", @element)
         @fill_widget()
         @input.addEventListener("focus", (e) =>
             @check_capslock()
@@ -733,23 +742,34 @@ class WelcomeFormItem extends Widget
         @input.addEventListener("blur", (e) =>
             @check_capslock()
             @input.setAttribute("style", "")
-            @check_valid()
-            Widget.look_up("account")?.check_start_ready()
+            if @check_valid()
+                @destroy_tooltip()
+            else
+                @set_tooltip(@valid.msg)
         )
         @input.addEventListener("input", (e) =>
-            if @id == "username"
-                @input.value = @input.value.toLowerCase()
-            if @id == "username" and Widget.look_up("account")?.hostname.change == false
-                Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
-            if @id == "confirmpassword"
-                pwd = Widget.look_up("account")?.password.input.value
-                if pwd.indexOf(@input.value) == -1
-                    @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
-                else
-                    @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
+            switch @id
+                when "username"
+                    @input.value = @input.value.toLowerCase()
+                    if @check_valid()
+                        @destroy_tooltip()
+                    else
+                        if @valid.code in [illegalErrCode.invalid,illegalErrCode.firstUpper,illegalErrCode.systemUsed,illegalErrCode.exist]
+                            @input.value = @value_origin
+                            @set_tooltip(@valid.msg)
+                    if Widget.look_up("account")?.hostname.change == false
+                        Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
+                when "confirmpassword"
+                    clearTimeout(@msg_tid)
+                    if @check_valid()
+                        @destroy_tooltip()
+                    else
+                        if @valid.code in [illegalErrCode.different]
+                            @msg_tid = setTimeout(=>
+                                @set_tooltip(@valid.msg)
+                            ,500)
 
-            if @check_valid() then @destroy_tooltip()
-            else @set_tooltip(@invalid_msg)
+            @value_origin = @input.value
             Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("change", (e) =>
@@ -757,7 +777,68 @@ class WelcomeFormItem extends Widget
         )
         @input.addEventListener("keydown", (e) =>
             @check_capslock()
+            if @id == "confirmpassword" and e.keyCode == 13
+                Widget.look_up("account")?.start_install_cb()
         )
+
+    set_tooltip: (text) ->
+        if text is null then return
+        if @input.value.length != 0
+            @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
+        if @tooltip == null
+            @tooltip = new ArrowToolTip(@input, text)
+            @tooltip.set_delay_time(0)
+            @tooltip.buddy.removeEventListener('mouseover', @tooltip.on_mouseover)
+        @tooltip.set_text(text)
+        @tooltip.show()
+        pos = @tooltip.get_xy()
+        ArrowToolTip.move_to(@tooltip,pos.x - 16,pos.y - 20)
+
+    destroy_tooltip:->
+        @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
+        @tooltip?.hide()
+        @tooltip?.destroy()
+        @tooltip = null
+
+    check_valid: ->
+        @valid = @get_valid_msg_code()
+        return @valid.valid
+
+    get_valid_msg_code: ->
+        console.debug "[get_valid_msg_code]:value:===#{@input.value}---"
+        if not @input.value? or @input.value.length == 0
+            return {valid:false,msg:_("Nothing Input"),code:illegalErrCode.empty}
+        ACCOUNTS = "com.deepin.daemon.Accounts"
+        if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
+        switch @id
+            when "username"
+                val = @account_dbus.IsUsernameValid_sync(@input.value)
+                #TODO:this is only a temporary solution
+                #fixed the deepin username in pxe is invalid
+                echo "[get_valid_msg_code]:len:#{val.length}===========#{val.toString()}-------"
+                if not val[0]
+                    user_path = @account_dbus.FindUserByName_sync(@input.value)
+                    if user_path != ""
+                        return {valid:true,msg:"",code:val[2]}
+                return {valid:val[0],msg:val[1],code:val[2]}
+            when "hostname"
+                #TODO:The Account dbus must provide a function to check hostname
+                return {valid:true,msg:"",code:-1}
+            when "password"
+                if not @account_dbus.IsPasswordValid_sync(@input.value)
+                    return {valid:false,msg:_("Invalid Password"),code:illegalErrCode.invalid}
+                else
+                    return {valid:true,msg:"",code:-1}
+            when "confirmpassword"
+                if @input.value != Widget.look_up("password")?.input.value
+                    return {valid:false,msg:_("Different Password"),code:illegalErrCode.different}
+                else
+                    return {valid:true,msg:"",code:-1}
+            else
+                return {valid:true,msg:"",code:-1}
+
+    get_input_value: ->
+        return @input.value
 
     check_capslock: ->
         if @id == "password" or @id == "confirmpassword"
@@ -784,54 +865,6 @@ class WelcomeFormItem extends Widget
             @input.classList.add("PasswordStyle")
             @warn = create_element("div", "CapsWarning", @element)
 
-
-    set_tooltip: (text) ->
-        if text is null then return
-        if @tooltip == null
-            @tooltip = new ArrowToolTip(@input, text)
-            @tooltip.set_delay_time(200)
-        @tooltip.set_text(text)
-        @tooltip.show()
-
-    destroy_tooltip:->
-        @tooltip?.hide()
-        @tooltip?.destroy()
-        @tooltip = null
-
-    check_valid: ->
-        @valid = @is_valid()
-        if not @valid[0]
-            @invalid_msg = @valid[1]
-            if @input.value.length != 0
-                @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
-        else
-            @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
-        return @valid[0]
-
-    is_valid: ->
-        if not @input.value? or @input.value.length == 0
-            return [false,_("Nothing Input")]
-        if @id == "username"
-            if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
-            valid = @account_dbus?.IsUsernameValid_sync(@input.value)
-            #TODO:this is only a temporary solution
-            #The Account dbus must provide a function for installer to check username and hostname
-            if not valid[0]
-                user = @account_dbus.FindUserByName_sync(@input.value)
-                if user isnt "" then return [true,""]
-            return valid
-        if @id == "password"
-            if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
-            if @account_dbus?.IsPasswordValid_sync(@input.value)
-                return [true,""]
-            else return [false,_("Invalid Password")]
-        else if @id == "confirmpassword"
-            if @input.value != Widget.look_up("password")?.input.value
-                return [false,_("Different Password")]
-        return [true,""]
-
-    get_input_value: ->
-        return @input.value
 
 class Account extends Widget
     constructor: (@id) ->

@@ -108,7 +108,7 @@ static void start_prepare_conf()
         char* cmd = g_strdup_printf("sh -c '[ %s -ef %s ] || cp -f %s %s'",
                 auto_conf_path, CONF_PATH,
                 auto_conf_path, CONF_PATH);
-        g_warning(cmd);
+        g_warning("%s\n", cmd);
         int exit_code = 0;
         g_spawn_command_line_sync(cmd, NULL, NULL, &exit_code, &error);
         g_free(cmd);
