@@ -59,6 +59,8 @@ __account_widget = null
 keyboardSet_div = null
 timezoneSet_div = null
 
+tooltipOffsetX = (document.body.clientWidth - document.body.offsetWidth) / 2
+tooltipOffsetY = (document.body.clientHeight - document.body.offsetHeight) / 2
 
 get_utc_by_city = (cityzone) ->
     DCore.Installer.setenv_tz(cityzone)
@@ -629,14 +631,13 @@ class Timezone extends Widget
         text = area.getAttribute("data-timezone").split("/")[1]
         console.debug "#{text}-->#{_(text, "tzdata")},(#{pin[0]},#{pin[1]})-->#{style}"
 
-        if not @tip?
-            @tip = new ArrowToolTip(@pin, _(text,"tzdata"))
-        @tip.set_text(_(text,"tzdata"))
-        @tip.setPointerEvents('none')
-        @tip.show()
-        pos = @tip.get_xy()
-        #TODO:the first tooltip style:left must +4, I do not know the reason
-        ArrowToolTip.move_to(@tip,pos.x - 16,pos.y - 20)
+        if not @tooltip?
+            @tooltip = new ArrowToolTip(@pin, _(text,"tzdata"))
+        @tooltip.set_text(_(text,"tzdata"))
+        @tooltip.setPointerEvents('none')
+        @tooltip.show()
+        pos = @tooltip.get_xy()
+        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY)
 
         if @circle?
             @circle.parentElement.removeChild(@circle)
@@ -734,7 +735,7 @@ class WelcomeFormItem extends Widget
         @change = false
         @msg_tid = null
 
-        @input = create_element("input", "", @element)
+        @input = create_element("input", "input_#{@id}", @element)
         @fill_widget()
         @input.addEventListener("focus", (e) =>
             @check_capslock()
@@ -792,7 +793,7 @@ class WelcomeFormItem extends Widget
         @tooltip.set_text(text)
         @tooltip.show()
         pos = @tooltip.get_xy()
-        ArrowToolTip.move_to(@tooltip,pos.x - 16,pos.y - 20)
+        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY)
 
     destroy_tooltip:->
         @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")

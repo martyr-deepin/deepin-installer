@@ -41,10 +41,12 @@ char **global_argv = NULL;
 
 char* auto_conf_path = NULL;
 char* log_path = NULL;
+gboolean nowm = FALSE;
 static GOptionEntry entries[] =
 {
     { "conf", 'c', 0, G_OPTION_ARG_STRING, &auto_conf_path, "set configure file path when installing with automate mode ", "path"},
     { "log", 'l', 0, G_OPTION_ARG_STRING, &log_path, "write log message to ", "log path"},
+    { "without-wm", 'w', 0, G_OPTION_ARG_NONE, &nowm, "launch deepin-installer without window manager", NULL},
     { NULL }
 };
 
@@ -98,25 +100,20 @@ void installer_restart_installer ()
     execv (global_argv[0], global_argv);
 }
 
-gboolean installer_is_auto_mode ()
-{
-    if (auto_conf_path != NULL) {
-        return TRUE;
-    } else {
-        return FALSE;
-    }
-}
-
 JS_EXPORT_API
 void installer_emit_webview_ok ()
 {
     static gboolean inited = FALSE;
     if (!inited) {
         inited = TRUE;
-        if (installer_is_auto_mode()) {
-            js_post_message("auto_mode", NULL);
-        } else {
+        if (auto_conf_path == NULL) {
             init_parted ();
+        }else{
+            js_post_signal("auto_mode");
+        }
+
+        if (nowm){
+            js_post_signal("cannot_closed");
         }
     }
 }
@@ -142,11 +139,16 @@ void redirect_log(const char* path)
     dup2(log_file, 2);
 }
 
-void fix_without_wm()
+void fix_without_wm(GtkWidget* child)
 {
     GdkCursor* cursor = gdk_cursor_new (GDK_LEFT_PTR);
     gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
     g_object_unref(cursor);
+    INSTALLER_WIN_WIDTH = gdk_screen_width();
+    INSTALLER_WIN_HEIGHT = gdk_screen_height();
+    gtk_window_move(GTK_WINDOW(installer_container), 0, 0);
+    BackgroundInfo* bg_info = create_background_info(installer_container, child);
+    background_info_set_background_by_file(bg_info, "/usr/share/backgrounds/default_background.jpg");
 }
 
 int main(int argc, char **argv)
@@ -186,7 +188,6 @@ int main(int argc, char **argv)
     signal (SIGKILL, sigterm_cb);
     signal (SIGTSTP, sigterm_cb);
 
-    gboolean auto_mode = installer_is_auto_mode();
     installer_container = create_web_container (FALSE, TRUE);
     gtk_window_set_decorated (GTK_WINDOW (installer_container), FALSE);
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
@@ -198,13 +199,8 @@ int main(int argc, char **argv)
             "enable-default-context-menu", FALSE,
             NULL);
 
-    if (auto_mode){
-        fix_without_wm();
-        INSTALLER_WIN_WIDTH = gdk_screen_width();
-        INSTALLER_WIN_HEIGHT = gdk_screen_height();
-        gtk_window_move(GTK_WINDOW(installer_container), 0, 0);
-        BackgroundInfo* bg_info = create_background_info(installer_container, webview);
-        background_info_set_background_by_file(bg_info, "/usr/share/backgrounds/default_background.jpg");
+    if (nowm){
+        fix_without_wm(webview);
     }else{
         g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
         gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);

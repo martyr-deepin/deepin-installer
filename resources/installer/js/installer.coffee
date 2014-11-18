@@ -20,12 +20,17 @@
 pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
-DCore.signal_connect("auto_mode", (msg) ->
+DCore.signal_connect("auto_mode", ->
     auto_mode = true
     progress_page = new Progress("progress") if not progress_page?
     pc.switch_page(progress_page)
     DCore.Installer.start_install()
 )
+
+DCore.signal_connect("cannot_closed", ->
+    pc.cannot_closed = true
+    pc.hide_close_button()
+)
+
 pc.switch_page(new Welcome("welcom"))
 DCore.Installer.emit_webview_ok()
-
