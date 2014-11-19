@@ -43,6 +43,16 @@ fix_pci_ar9485_nohwcrypt() {
     fi
 }
 
+# rtl8723be [10ec:b723] wireless driver
+fix_pci_rtl8723be_fwlps() {
+    # fix rtl8723be issue that could not re-connect to wifi after a
+    # period of time
+    if is_pci_exists "10ec:b723"; then
+        echo "fix rtl8723be --------------------------------"
+        echo "options rtl8723be fwlps=0" | tee -a /etc/modprobe.d/rtl8723be.conf
+    fi
+}
+
 # rtl8723au [0bda:1724] wireless driver
 # TODO: do not need any more after updating kernel to 3.15
 fix_usb_rtl8723au() {
@@ -54,4 +64,5 @@ fix_usb_rtl8723au() {
 
 # fix device driver problems
 fix_pci_bcm4313 || true
+fix_pci_rtl8723be_fwlps || true
 fix_usb_rtl8723au || true
