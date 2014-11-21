@@ -52,7 +52,7 @@ generate_install_helper()
 cat <<EOF
 #!/bin/sh
 
-/usr/bin/deepin-installer -c "$3" -l "$4"
+/usr/bin/deepin-installer -c "$3" -l "$4" --without-wm
 EOF
 ) > $1
 }
