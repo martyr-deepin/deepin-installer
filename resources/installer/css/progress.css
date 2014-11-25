@@ -48,6 +48,7 @@
     width:0%;
     height:5px;
     background:-webkit-gradient(linear, left top, right top, from(rgba(255,255,255,0.4)), color-stop(0.95, rgba(255,255,255,0.9)), to(rgba(255,255,255,1.0)));
+    border-radius:0 3px 3px 0;
 }
 
 .ProgressLight {
@@ -60,94 +61,17 @@
     margin-left:-4px;
 }
 
-.Ppt {
-    position:absolute;
-    top:96px;
-    left:0;
-    width:750px;
-    height:444px;
-    text-align:center;
-    display:none;
-}
-
-.Ppt .Container {
-    position:absolute;
-    width:750px;
-    height:444px;
-    margin:0 1px;
-    text-align:center;
-    overflow:hidden;
-}
-
 .ppt_iframe{
     position:absolute;
-    display:none;
-    width:750px;
-    height:450px;
-    margin:0 1px;
-    text-align:center;
-    overflow:hidden;
-    border:0;
-}
-
-.ppt_video{
-    position:absolute;
-    display:none;
-    width:750px;
-    height:450px;
-    margin:0 1px;
-    text-align:center;
-    overflow:hidden;
-    border:0;
-}
-
-.PptItem {
-    position:absolute;
-    width:750px;
-    height:444px;
-}
-
-.PptItem img {
-    width:750px;
-    height:444px;
-}
-
-.Ppt .PrevBtn {
-    position:absolute;
-    width:80px;
-    height:120px;
-    margin-top:134px;
-    background:url("../images/previous_normal.png") no-repeat;
-    background-position:0 10px;
+    top:100;
     left:0;
-    opacity:0;
-    z-index:500;
-}
-
-.Ppt .PrevBtn:hover {
-    background:url("../images/previous_hover.png") no-repeat;
-    background-position:0 10px;
-    opacity:0.5;
-    z-index:500;
-}
-
-.Ppt .NextBtn {
-    position:absolute;
-    width:80px;
-    height:120px;
-    margin-top:134px;
-    background:url("../images/next_normal.png") no-repeat;
-    background-position:20px 10px;
-    right:0;
-    opacity:0;
-    z-index:500;
-}
-
-.Ppt .NextBtn:hover {
-    background:url("../images/next_hover.png") no-repeat;
-    background-position:20px 10px;
-    opacity:0.5;
-    z-index:500;
+    display:none;
+    width:750px;
+    height:450px;
+    margin:0 1px;
+    text-align:center;
+    overflow:hidden;
+    border:0;
 }
 
 @-webkit-keyframes loadingout {

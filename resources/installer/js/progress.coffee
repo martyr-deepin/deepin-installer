@@ -30,12 +30,6 @@ class ReportDialog extends Dialog
         echo "report dialog cb"
         DCore.Installer.finish_install()
 
-apply_progress_flash = (el, time)->
-    apply_animation(el, "progressflash", "#{time}s", "cubic-bezier(0, 0, 0.35, -1)")
-
-__ppt_in_switch = false
-__ppt_switch_id = -1
-
 class Progress extends Page
     constructor: (@id)->
         super
@@ -52,26 +46,18 @@ class Progress extends Page
         , 30)
 
         @progress_container = create_element("div", "ProgressContainer", @element)
-        @progress_container.style.display = "block"
         @progressbar = create_element("div", "ProgressBar", @progress_container)
-        @light = create_element("div", "ProgressLight", @progress_container)
-        @light.style.webkitAnimationName = "progressflash"
-        @light.style.webkitAnimationDuration = "5s"
-        @light.style.webkitAnimationIterationCount = 1000
-        @light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
+        #@light = create_element("div", "ProgressLight", @progress_container)
+        #@light.style.webkitAnimationName = "progressflash"
+        #@light.style.webkitAnimationDuration = "5s"
+        #@light.style.webkitAnimationIterationCount = 1000
+        #@light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
 
         @ppt = create_element("iframe","ppt_iframe",@element)
         @ppt.setAttribute("id","ppt_iframe")
-        @ticker = 0
-        @tu = 180
+        @ppt.name = "ppt_iframe"
 
-        @start_progress()
-
-    ppt_show: ->
-        lang = document.body.lang
-        echo "Installer lang:" + lang
-        @ppt.src = "ppt/slideshow2014/index.html?lang=#{lang}"
-        @ppt.style.display = "block"
+        @ppt_prepare()
 
     update_rotate: ->
         if @deg > 360
@@ -79,21 +65,33 @@ class Progress extends Page
         @rotate.style.webkitTransform = "rotate(#{@deg}deg)"
         @deg += 12
 
-    start_progress: ->
-        @titleimg.setAttribute("src", "images/progress_extract.png")
-        setTimeout(=>
-            @loading.style.display = "none"
-            echo "@ppt show"
+    update_progress: (progress) ->
+        console.debug "update_progress:=============#{progress}================="
+        @progressbar.style.width = progress
+
+    ppt_prepare: ->
+        @ppt.onload = =>
+            console.debug "===========iframe onload"
             @ppt_show()
-        ,1000)
-        apply_animation(@loading, "loadingout", "1s", "linear")
-        apply_animation(@progress_container, "pptin", "2s", "linear")
-        apply_animation(@ppt, "pptin", "2s", "linear")
+        @ppt.onerror = =>
+            console.debug "===========iframe onerror"
+            window.frames['ppt_iframe'].window.location.reload()
+        lang = document.body.lang
+        echo "Installer lang:" + lang
+        @ppt.src = "ppt/slideshow2014/index.html?lang=#{lang}"
+
+        #apply_animation(@progress_container, "pptin", "2s", "linear")
+        @titleimg.setAttribute("src", "images/progress_extract.png")
         @progress_container.style.display = "block"
         @update_progress("1%")
 
-    update_progress: (progress) ->
-        @progressbar.style.width = progress
+    ppt_show: ->
+        setTimeout(=>
+            @loading.style.display = "none"
+            @ppt.style.display = "block"
+        ,500)
+        #apply_animation(@loading, "loadingout", "1s", "linear")
+        #apply_animation(@ppt, "pptin", "2s", "linear")
 
 progress_page = new Progress("progress")
 

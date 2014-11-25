@@ -1,7 +1,7 @@
-var 
-    canvas = document.getElementById('slideStage'),
-    stage  = new createjs.Stage(canvas),
-
+var
+    fileCount = 0;
+    canvas = null,
+    stage  = null,
     manifest = [
         {src:'assets/img/action.png', id:'action'},
         {src:'assets/img/background1.png', id:'background1'},
@@ -31,7 +31,7 @@ var
         {src:'assets/img/people6_5.png', id:'people6_5'},
         {src:'assets/img/table.png', id:'table'}
     ],
-    loader = new createjs.LoadQueue(false),
+    loader = null,
     COMMON = {};
 
 COMMON.screen = {
@@ -42,8 +42,6 @@ COMMON.screen = {
 }
 
 
-loader.addEventListener('complete', handleComplete);
-loader.loadManifest(manifest);
 
 function assetLoader(id){
     return new createjs.Bitmap(loader.getResult(id));
@@ -492,29 +490,57 @@ function restartStage(){
 }
 
 function handleComplete(){
-    createjs.Ticker.addEventListener("tick", handleTick);
-
-    function handleTick() {
-        stage.update();
+    console.log("handleComplete=============");
+    if (fileCount < manifest.length){
+        console.log("handleFileLoad lost file=============");
+        window.location.reload();
+        return;
     }
-
-    var mainline = new TimelineMax();
-    mainline
-    .add(Stage1())
-    .add(Stage2())
-    .add(Stage3())
-    .add(Stage4())
-    .add(Stage5())
-	.add(restartStage());
-
-    window.mainline = mainline;
-}
-
-if(DCore){
-    document.addEventListener('click',function(e){
-        e.preventDefault();
-        if(e.target.tagName === "A"){
-            DCore.Installer.OpenUrl(e.target.href);
+    console.log("handleFileLoad finish=============");
+    setTimeout(function() {
+        createjs.Ticker.addEventListener("tick", handleTick);
+        function handleTick() {
+            stage.update();
         }
-    },false);
+
+        var mainline = new TimelineMax();
+        mainline
+        .add(Stage1())
+        .add(Stage2())
+        .add(Stage3())
+        .add(Stage4())
+        .add(Stage5())
+	    .add(restartStage());
+
+        window.mainline = mainline;
+    },500);
 }
+
+function handleReload(){
+    console.log("handleReload=============");
+    window.location.reload();
+}
+function handleFileLoad(){
+    fileCount++;
+    console.log("handleFileLoad=============" + fileCount );
+}
+
+document.body.onload = function() {
+    console.debug("===========iframe document.body.onload");
+    setTimeout(function() {
+        canvas = document.getElementById('slideStage'),
+        stage  = new createjs.Stage(canvas),
+        loader = new createjs.LoadQueue(false),
+        loader.addEventListener('fileload', handleFileLoad);
+        loader.addEventListener('complete', handleComplete);
+        loader.addEventListener('error', handleReload);
+        loader.addEventListener('interrupted', handleReload);
+        loader.addEventListener('failed', handleReload);
+        loader.loadManifest(manifest);
+    },1000);
+};
+
+document.body.onerror = function() {
+    console.debug("===========iframe document.body.onerror");
+    window.location.reload()
+};

@@ -5,6 +5,7 @@ body, html{
 }
 
 h1{
+    padding-left:10px;
     font-size:0.9em;
     margin:0.2em;
 }
@@ -19,7 +20,7 @@ ul{
 
 li{
     font-size:0.65em;
-    font-weight:lighter;
+    font-weight:bold;
 }
 
 [lang=zh] li{
