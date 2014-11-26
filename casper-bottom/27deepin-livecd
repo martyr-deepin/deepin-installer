@@ -38,7 +38,7 @@ generate_lightdm_conf()
 (
 cat <<EOF
 [SeatDefaults]
-greeter-session=lightdm-deepin-greeter
+greeter-session=deepin-lightdm-language-selector
 user-session=deepin-livecd-installer
 EOF
 ) > $1
