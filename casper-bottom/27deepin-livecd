@@ -1,0 +1,82 @@
+#!/bin/sh
+
+PREREQ=""
+DESCRIPTION="Configure Auto Deepin Installer..."
+
+prereqs()
+{
+       echo "$PREREQ"
+}
+
+case $1 in
+# get pre-requisites
+prereqs)
+       prereqs
+       exit 0
+       ;;
+esac
+
+. /scripts/casper-functions
+
+log_begin_msg "$DESCRIPTION"
+
+generate_livecd_installer()
+{
+(
+cat <<EOF
+[Desktop Entry]
+Name=DeepinLiveCDInstaller
+Comment=Deepin LiveCD Installer
+Exec=gksudo -- $2
+TryExec=gksudo
+EOF
+) > $1
+}
+
+generate_lightdm_conf()
+{
+(
+cat <<EOF
+[SeatDefaults]
+greeter-session=lightdm-deepin-greeter
+user-session=deepin-livecd-installer
+autologin-user=deepin
+autologin-user-time=0
+EOF
+) > $1
+}
+
+generate_install_helper()
+{
+(
+cat <<EOF
+#!/bin/sh
+
+/usr/bin/deepin-installer --without-wm
+EOF
+) > $1
+}
+
+for x in $(cat /proc/cmdline); do
+    case $x in
+	livecd-installer)
+        live_mode=true
+        ;;
+    esac
+done
+
+if [ "$live_mode" = "true" ]; then
+	chroot /root mount -o remount,rw /
+
+	install_helper=/usr/lib/deepin-install-helper
+	root_install_helper=/root$install_helper
+    $(generate_install_helper $root_install_helper)
+	$(generate_livecd_installer /root/usr/share/xsessions/deepin-livecd-installer.desktop $install_helper)
+	$(generate_lightdm_conf /root/etc/lightdm/lightdm.conf)
+
+	chmod +x $root_install_helper
+	chroot /root mount -o remount,ro /
+fi
+
+log_end_msg
+
