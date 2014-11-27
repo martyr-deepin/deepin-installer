@@ -41,23 +41,18 @@ class Progress extends Page
         @loading_tips.innerText = _("Preparing for Installation")
         @rotate = create_element("div", "Rotate", @loading)
         @deg = 0
-        setInterval(=>
+        @tid_rotate = setInterval(=>
             @update_rotate()
         , 30)
 
         @progress_container = create_element("div", "ProgressContainer", @element)
         @progressbar = create_element("div", "ProgressBar", @progress_container)
-        #@light = create_element("div", "ProgressLight", @progress_container)
-        #@light.style.webkitAnimationName = "progressflash"
-        #@light.style.webkitAnimationDuration = "5s"
-        #@light.style.webkitAnimationIterationCount = 1000
-        #@light.style.webkitAnimationTimingFunction = "cubic-bezier(0, 0, 0.35, -1)"
 
         @ppt = create_element("iframe","ppt_iframe",@element)
         @ppt.setAttribute("id","ppt_iframe")
         @ppt.name = "ppt_iframe"
 
-        @ppt_prepare()
+        setTimeout(@ppt_prepare,500)
 
     update_rotate: ->
         if @deg > 360
@@ -69,7 +64,7 @@ class Progress extends Page
         console.debug "update_progress:=============#{progress}================="
         @progressbar.style.width = progress
 
-    ppt_prepare: ->
+    ppt_prepare: =>
         @ppt.onload = =>
             console.debug "===========iframe onload"
             @ppt_show()
@@ -86,7 +81,20 @@ class Progress extends Page
         @update_progress("1%")
 
     ppt_show: ->
+        reload_tid = setInterval(->
+            try
+                if window.frames['ppt_iframe'].document.body
+                    clearInterval(reload_tid)
+                else
+                    console.debug "===========iframe document.body is null and reload interval:#{reload_tid}"
+                    window.frames['ppt_iframe'].window.location.reload()
+            catch e
+                console.debug "===========iframe document.body is null and reload interval:#{reload_tid}:#{e}"
+                window.frames['ppt_iframe'].window.location.reload()
+
+        ,800)
         setTimeout(=>
+            clearInterval(@tid_rotate)
             @loading.style.display = "none"
             @ppt.style.display = "block"
         ,500)

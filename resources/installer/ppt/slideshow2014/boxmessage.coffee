@@ -1,3 +1,46 @@
+echo = (log) ->
+    console.log log
+
+_ = (s, d)->
+    try
+        if d
+            DCore.dgettext(d, s)
+        else
+            DCore.gettext(s)
+    catch e
+        s
+
+create_element = (opt, parent, compatible)->
+    if typeof compatible != 'undefined' || typeof parent == 'string'
+        opt = tag:opt, class: parent
+        parent = compatible
+
+    if not opt.tag?
+        return null
+    el = document.createElement(opt.tag)
+    delete opt.tag
+    for own k, v of opt
+        el.setAttribute(k, v)
+
+    if parent
+        parent.appendChild(el)
+
+    return el
+
+getQueryParams = (qs) ->
+    qs = qs.split("+").join(" ")
+    params = {}
+    re = /[?&]?([^=]+)=([^&]*)/g
+    tokens = null
+    while (tokens = re.exec(qs))
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2])
+    params
+
+lang = getQueryParams(document.location.search).lang
+if not lang?
+    lang = "en"
+document.body.lang = lang
+echo "slideshow2014 lang:#{document.body.lang}"
 
 class BoxMessage
     constructor:(@id,@class,@parent) ->
@@ -39,14 +82,6 @@ msg_obj_array = [
         ]
     },
     {
-        title:_("Deepin Game")
-        msg:[
-            _("Provide Latest and Hottest Games"),
-            _("Gather Various Game Topics"),
-            _("Collect Your Favorite Online")
-        ]
-    },
-    {
         title:_("Deepin Community")
         msg:[
             _("Free and United Open Source Community"),
@@ -57,17 +92,8 @@ msg_obj_array = [
 ]
 
 
-getQueryParams = (qs) ->
-    qs = qs.split("+").join(" ")
-    params = {}
-    re = /[?&]?([^=]+)=([^&]*)/g
-    tokens = null
-    while (tokens = re.exec(qs))
-        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2])
-    params
 
 container = document.getElementById('container')
-
 bmsg = []
 for msg_obj,i in msg_obj_array
     bmsg[i] = new BoxMessage("text#{i + 1}", "text#{i + 1} messages", container)
@@ -77,6 +103,3 @@ document.body.addEventListener("contextmenu",(e)=>
     e.preventDefault()
     e.stopPropagation()
 )
-
-document.body.lang = getQueryParams(document.location.search).lang
-echo "slideshow2014 lang:#{document.body.lang}"

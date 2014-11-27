@@ -2,12 +2,12 @@ var
     fileCount = 0;
     canvas = null,
     stage  = null,
+    stage_progress = 0;
     manifest = [
         {src:'assets/img/action.png', id:'action'},
         {src:'assets/img/background1.png', id:'background1'},
         {src:'assets/img/background2.png', id:'background2'},
         {src:'assets/img/background3.png', id:'background3'},
-        {src:'assets/img/background4.png', id:'background4'},
         {src:'assets/img/background5_1.png', id:'background5_1'},
         {src:'assets/img/background5_2.png', id:'background5_2'},
         {src:'assets/img/chart.png', id:'chart'},
@@ -22,10 +22,8 @@ var
         {src:'assets/img/logo2.png', id:'logo2'},
         {src:'assets/img/logo3.png', id:'logo3'},
         {src:'assets/img/logo4.png', id:'logo4'},
-        {src:'assets/img/medal.png', id:'medal'},
         {src:'assets/img/people1_2.png', id:'people1_2'},
         {src:'assets/img/people2_3.png', id:'people2_3'},
-        {src:'assets/img/people3_4.png', id:'people3_4'},
         {src:'assets/img/people4_5.png', id:'people4_5'},
         {src:'assets/img/people5_5.png', id:'people5_5'},
         {src:'assets/img/people6_5.png', id:'people6_5'},
@@ -65,6 +63,8 @@ function SpriteMask(x, y, width, height){
 }
 
 function Stage1(){
+    stage_progress = 1;
+    console.debug("=================stage_progress" + stage_progress);
     var computer = new assetLoader('computer');
     computer.x = getWidthCenter(computer);
     computer.y = 50;
@@ -96,7 +96,7 @@ function Stage1(){
         x: getWidthCenter(icon1) - 135,
         y: getHeightCenter(icon1) + 48
     };
-    icon1.x = iconAlign.x;
+    icon1.x = iconAlign.x - 15;
     icon1.y = iconAlign.y;
     icon1.alpha = 0;
     stage.addChild(icon1);
@@ -136,18 +136,18 @@ function Stage1(){
     chart.y = stage.canvas.height - chart.image.height;
     stage.addChild(chart);
 
-    var shadow1 = new createjs.Shape();
-    shadow1.graphics
-    .beginLinearGradientFill(["#ce5e1b","#ce5e1b"], [0, 1], 100, 50, 230, -50)
-    .moveTo(0,0)
-    .bezierCurveTo(200,-40,220,10,230,20)
-    .bezierCurveTo(200,20,194,98,196,102)
-    // .lineTo(0,105)
-    .lineTo(0,0);
-    shadow1.alpha = 0.45;
-    shadow1.x = 56;
-    shadow1.y = 86;
-    stage.addChild(shadow1);
+    //var shadow1 = new createjs.Shape();
+    //shadow1.graphics
+    //.beginLinearGradientFill(["#ce5e1b","#ce5e1b"], [0, 1], 100, 50, 230, -50)
+    //.moveTo(0,0)
+    //.bezierCurveTo(200,-40,220,10,230,20)
+    //.bezierCurveTo(200,20,194,98,196,102)
+    //// .lineTo(0,105)
+    //.lineTo(0,0);
+    //shadow1.alpha = 0.45;
+    //shadow1.x = 56;
+    //shadow1.y = 86;
+    //stage.addChild(shadow1);
 
     var mask1 = new SpriteMask(
         table.x,
@@ -170,7 +170,7 @@ function Stage1(){
     stage.addChild(maskScreen);
 
     table.mask = mask1;
-    shadow1.mask = mask2;
+    //shadow1.mask = mask2;
     background1.mask = maskScreen;
 
     COMMON.maskScreen = maskScreen;
@@ -218,6 +218,8 @@ function Stage1(){
 }
 
 function Stage2(){
+    stage_progress = 2;
+    console.debug("=================stage_progress" + stage_progress);
     var background2 = assetLoader('background2');
     background2.x = 175;
     background2.y = 34;
@@ -242,24 +244,24 @@ function Stage2(){
     action.alpha = 0;
     stage.addChildAt(action, stage.getChildIndex(COMMON.computer));
 
-    var shadow2 = new createjs.Shape();
-    shadow2.graphics
-    .beginLinearGradientFill(["#4158db","#2494e2"], [0, 1], 100, 50, 230, 0)
-    .moveTo(0,0)
-    .bezierCurveTo(135,-44,205,-27,230,0)
-    .bezierCurveTo(210,-10,144,74,145,103)
-    .lineTo(0,0);
-    shadow2.alpha = 0.45;
-    shadow2.x = 82;
-    shadow2.y = 140;
-    stage.addChild(shadow2);
+    //var shadow2 = new createjs.Shape();
+    //shadow2.graphics
+    //.beginLinearGradientFill(["#4158db","#2494e2"], [0, 1], 100, 50, 230, 0)
+    //.moveTo(0,0)
+    //.bezierCurveTo(135,-44,205,-27,230,0)
+    //.bezierCurveTo(210,-10,144,74,145,103)
+    //.lineTo(0,0);
+    //shadow2.alpha = 0.45;
+    //shadow2.x = 82;
+    //shadow2.y = 140;
+    //stage.addChild(shadow2);
 
     var mask3 = new SpriteMask(280,-190,250,200);
     mask3.rotation = 40;
     // mask3.alpha = 0.8;
     stage.addChild(mask3);
 
-    shadow2.mask = mask3;
+    //shadow2.mask = mask3;
 
     var textBox2_Show = function(){
         var tl = new TimelineMax();
@@ -289,6 +291,8 @@ function Stage2(){
 }
 
 function Stage3(){
+    stage_progress = 3;
+    console.debug("=================stage_progress" + stage_progress);
     var background3 = new assetLoader("background3");
     background3.x = 575;
     background3.y = 34 - background3.image.height;
@@ -339,71 +343,8 @@ function Stage3(){
 }
 
 function Stage4(){
-    var background4 = new assetLoader('background4');
-    background4.x = 576;
-    background4.y = 34;
-    stage.addChild(background4);
-
-    background4.mask = COMMON.maskScreen;
-
-    var medal = new assetLoader('medal');
-    medal.x = 467;
-    medal.y = -medal.image.height;
-    stage.addChild(medal);
-
-    var people3_4 = new assetLoader('people3_4');
-    people3_4.x = getWidthCenter(people3_4) - 50;
-    people3_4.y = 500;
-    stage.addChild(people3_4);
-
-    var shadow3 = new createjs.Shape();
-    shadow3.graphics
-    .beginLinearGradientFill(["#f49741","#e2a724"], [0, 1], 0, 0, 442, 170)
-    .moveTo(205,0).lineTo(442,170).lineTo(0,105).lineTo(205,0);
-    shadow3.alpha = 0.45;
-    shadow3.x = 86;
-    shadow3.y = 66;
-    stage.addChildAt(shadow3, stage.getChildIndex(medal));
-
-    var mask4 = new SpriteMask(530,235,450,200);
-    stage.addChild(mask4);
-
-    shadow3.mask = mask4;
-
-    var textBox4_Show = function(){
-        var tl = new TimelineMax();
-        tl.to('#text4', 0, {alpha:0, scale:0.1,x:"+=335",y:"+=115"})
-        .to('#text4', 0.8, {alpha:0.95,scale:1,x:"-=335",y:"-=115"},0)
-        .to(mask4, 0.9, {x:"-=450",y:"-=190"},0);
-        return tl;
-    }
-
-    var textBox4_Exit = function(){
-        var tl = new TimelineMax();
-        tl.to(mask4, 1,{x:"+=450",y:"+=190"},0)
-        .to('#text4', 0.8, {alpha:0, scale:0.1,x:"+=335",y:"+=115"},0);
-        return tl;
-    }
-
-    var tl = new TimelineMax();
-
-    background4.alpha = 0;
-    background4.x = COMMON.screen.x;
-
-    tl.to(background4, 1.2, {alpha:1,delay:2})
-    .to(medal, 1.4, {y:162,ease:Bounce.easeOut})
-    .add(textBox4_Show());
-
-
-    tl.add(textBox4_Exit(),"+="+3)
-    .to(medal, 0.8, {alpha:0})
-    tl.to(background4, 0.8, {alpha:0});
-
-    return tl;
-}
-
-
-function Stage5(){
+    stage_progress = 4;
+    console.debug("=================stage_progress" + stage_progress);
     var background5_1 = new assetLoader('background5_1');
     background5_1.x = 174;
     background5_1.y = 34 - background5_1.image.height;
@@ -443,27 +384,27 @@ function Stage5(){
 
     logo4.mask = mask5;
 
-    var shadow4 = new createjs.Shape();
-    shadow4.graphics
-    .beginLinearGradientFill(["#58d0ff","#2494e2"], [0, 1], 376, 151, 21, 411)
-    .moveTo(352,0)
-    .lineTo(0,154)
-    .lineTo(304,272)
-    .lineTo(352,0);
-    shadow4.alpha = 0.45;
-    shadow4.x = 21;
-    shadow4.y = 144;
-    stage.addChild(shadow4);
+    //var shadow4 = new createjs.Shape();
+    //shadow4.graphics
+    //.beginLinearGradientFill(["#58d0ff","#2494e2"], [0, 1], 376, 151, 21, 411)
+    //.moveTo(352,0)
+    //.lineTo(0,154)
+    //.lineTo(304,272)
+    //.lineTo(352,0);
+    //shadow4.alpha = 0.45;
+    //shadow4.x = 21;
+    //shadow4.y = 144;
+    //stage.addChild(shadow4);
 
     var mask6 = new SpriteMask(230,-158,460,300);
     stage.addChild(mask6);
 
-    shadow4.mask = mask6;
+    //shadow4.mask = mask6;
 
     var textBox5_Show = function(){
         var tl = new TimelineMax();
-        tl.to('#text5', 0, {alpha:0, scale:0.1,x:"+=200",y:"-=205"})
-        .to('#text5', 0.8, {alpha:0.95,scale:1,x:"-=200",y:"+=205"},0)
+        tl.to('#text4', 0, {alpha:0, scale:0.1,x:"+=200",y:"-=205"})
+        .to('#text4', 0.8, {alpha:0.95,scale:1,x:"-=200",y:"+=205"},0)
         .to(mask6, 1.2, {x:"-=260",y:"+=300"},0)
         return tl;
     }
@@ -485,12 +426,14 @@ function restartStage(){
 	var tl = new TimelineMax();
 	tl.to(COMMON.computer, 0, {delay:5,onComplete:function(){
 		mainline.restart();
+        stage_progress = 0;
 	}});
 	return tl;
 }
 
 function handleComplete(){
     console.log("handleComplete=============");
+    stage_progress = 0;
     if (fileCount < manifest.length){
         console.log("handleFileLoad lost file=============");
         window.location.reload();
@@ -508,9 +451,8 @@ function handleComplete(){
         .add(Stage1())
         .add(Stage2())
         .add(Stage3())
-        //.add(Stage4())
-        .add(Stage5())
-	    .add(restartStage());
+        .add(Stage4())
+        .add(restartStage());
 
         window.mainline = mainline;
     },500);

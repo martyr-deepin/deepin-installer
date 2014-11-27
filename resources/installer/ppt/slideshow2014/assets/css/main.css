@@ -5,39 +5,29 @@ body, html{
 }
 
 h1{
+    padding-top:5px;
     padding-left:10px;
-    font-size:0.9em;
-    margin:0.2em;
-}
-
-[lang=zh] h1{
-    font-size:1.2em;
+    font-size:16px;
+    margin:2px;
 }
 
 ul{
-    margin:0.5em 0;
+    margin:5px 0;
 }
 
 li{
-    font-size:0.65em;
-    font-weight:bold;
-}
-
-[lang=zh] li{
-    font-size:0.795em;
+    font-size:12px;
+    font-weight:normal;
+    padding-right:10px;
 }
 
 p{
-    margin: 0 0.625em;
-    font-size: 0.75em;
+    margin: 0 6.25px;
+    font-size: 7.5px;
 }
 
 a{
     color:#e4e4e4;
-}
-
-[lang=en] .messages{
-    font-family: Arial;
 }
 
 .container{
@@ -49,13 +39,14 @@ a{
 
 .messages{
     position:absolute;
+    font-family: Arial;
     color:white;
     border-radius:3px;
     opacity:0;
 }
 
 .text1{
-    width:200px;
+    min-width:200px;
     height:105px;
     top:85px;
     left:52px;
@@ -63,7 +54,7 @@ a{
 }
 
 .text2{
-    width:145px;
+    min-width:145px;
     height:103px;
     top:140px;
     left:82px;
@@ -71,7 +62,7 @@ a{
 }
 
 .text3{
-    width:183px;
+    min-width:183px;
     height:103px;
     top:132px;
     left:90px;
@@ -79,15 +70,11 @@ a{
     background:#7fa628;
 }
 
-[lang=en] .text3 h1{
-    font-size: 0.9em;
-}
-
 .text3:after{
     content:'';
     display:block;
     position:relative;
-    width:199px;
+    min-width:199px;
     height:300px;
     right:25px;
     bottom:86px;
@@ -95,16 +82,8 @@ a{
 }
 
 .text4{
-    width:205px;
-    height:105px;
-    top:65px;
-    left:85px;
-    background:#f49741;
-}
-
-.text5{
-    width:305px;
-    height:120px;
+    min-width:305px;
+    height:115px;
     top:296px;
     left:21px;
     background:#30b3e5;
