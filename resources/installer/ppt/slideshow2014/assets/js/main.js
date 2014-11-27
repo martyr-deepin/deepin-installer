@@ -508,7 +508,7 @@ function handleComplete(){
         .add(Stage1())
         .add(Stage2())
         .add(Stage3())
-        .add(Stage4())
+        //.add(Stage4())
         .add(Stage5())
 	    .add(restartStage());
 
