@@ -38,9 +38,14 @@ class Language extends Widget
         lang = la["lang"] for la in @lang_list when la["name"] is name
         echo lang + "===for  lang_list  name===" + name
         DCore.Greeter.set_language(lang)
-        @start_session()
+        session = DCore.Greeter.get_session_by_conf()
+        if not session?
+            session = DCore.Greeter.get_default_session()
+        @start_session("deepin","",session)
 
-    start_session: (@username = "deepin",@password = "",@session = "deepin") ->
+    start_session: (@username = "deepin",@password = "",@session = DCore.Greeter.get_default_session()) ->
+        if not @session?
+            @session = "deepin"
         document.body.cursor = "wait"
         DCore.Greeter.start_session(@username, @password, @session)
 

@@ -22,6 +22,8 @@
 
 #include "session.h"
 
+#define LIGHTDM_PATH "/etc/lightdm/lightdm.conf"
+
 static GList *sessions = NULL;
 
 JS_EXPORT_API
@@ -136,6 +138,31 @@ gchar* greeter_get_session_icon (const gchar *key)
     g_free (session);
 
     return icon;
+}
+
+JS_EXPORT_API
+gchar* greeter_get_session_by_conf ()
+{
+    GKeyFile* file = g_key_file_new();
+    gboolean load = g_key_file_load_from_file (file, LIGHTDM_PATH, G_KEY_FILE_NONE, NULL);
+    if (!load){
+        g_key_file_unref(file);
+        return NULL;
+    }
+    gsize len;
+    gchar** groups = g_key_file_get_groups(file,&len);
+    const gchar* session = NULL;
+    for (guint i = 0;i < len; i++)
+    {
+        if (g_strcmp0(groups[i], "SeatDefaults") == 0){
+            session = g_key_file_get_string(file,groups[i],"user-session", NULL);
+            g_debug ("[%s]::groups[%d]:%s,user-session=%s", __func__, i, groups[i], session);
+        }
+    }
+    g_strfreev(groups);
+    g_key_file_unref(file);
+    return g_strdup(session);
+
 }
 
 JS_EXPORT_API
