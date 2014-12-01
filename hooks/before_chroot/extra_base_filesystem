@@ -300,8 +300,8 @@ class Install:
             progress_file.seek(0)
             progress_file.write(str(fixed_progress))
             progress_file.truncate()
-            sys.stdout.write('\rDone: '+str(fixed_progress) +'%')
-            sys.stdout.flush()
+            #sys.stdout.write('\rDone: '+str(fixed_progress) +'%')
+            #sys.stdout.flush()
         progress_file.close()
         print('\rFinished')
 
@@ -375,8 +375,8 @@ class Install:
                 progress_file.seek(0)
                 progress_file.write(str(progress))
                 progress_file.truncate()
-                sys.stdout.write('\rDone: '+str(progress) +'%')
-                sys.stdout.flush()
+                #sys.stdout.write('\rDone: '+str(progress) +'%')
+                #sys.stdout.flush()
         progress_file.close()
         os.umask(old_umask)
 
