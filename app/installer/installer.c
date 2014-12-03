@@ -127,12 +127,12 @@ sigterm_cb (int sig)
 void redirect_log(const char* path)
 {
     if (path == NULL) {
-        return;
+        path="/var/log/deepin-installer.log";
     }
     g_message ("[%s]:deepin-installer.log path is:====%s=========",__func__ , path);
-    int log_file = open(path, O_CREAT| O_APPEND| O_WRONLY, 0644);
+    int log_file = open(path, O_RDWR| O_CREAT| O_TRUNC, 0644);
     if (log_file == -1) {
-        perror("redirect_log");
+        perror("redirect_log failed!");
         return ;
     }
     dup2(log_file, 1);
