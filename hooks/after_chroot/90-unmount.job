@@ -23,6 +23,8 @@ umount /target/sys
 umount /target/boot/efi
 rm -rf /target/deepinhost
 umount /target/host
+#Try to fix wrong permission (owned by 1001)
+chown root:root /target
 umount /target/
 
 echo "umount target finish"
