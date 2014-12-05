@@ -9,7 +9,7 @@ if [ ! -f /cdrom/casper/${L}.list ];then
     L="en_US"
 fi
 
-extra_base_filesystem_as_unsquashfs() {
+extract_base_filesystem_as_unsquashfs() {
     if [ -f /cdrom/casper/${L}.list ];then
         echo "Unsquashfs listed sqfs file"
         echo "$(cat /cdrom/casper/${L}.list)"
@@ -29,13 +29,13 @@ extra_base_filesystem_as_unsquashfs() {
 # Do DI_EXTRACT_METHOD first
 if [ x"${DI_EXTRACT_METHOD}" = x"unsquashfs" ];then
     echo "[Info] Detect DI_EXTRACT_METHOD as unsquashfs"
-    extra_base_filesystem_as_unsquashfs
+    extract_base_filesystem_as_unsquashfs
     exit 0
 fi
 
 if [ x"${DI_EXTRACT_METHOD}" = x"fallback" ];then
     echo "[Info] Detect DI_EXTRACT_METHOD as fallback"
-    ./extra_base_filesystem --lang ${L}
+    ./extract_base_filesystem --lang ${L}
     exit 0
 fi
 
@@ -46,8 +46,8 @@ MEM=$(cat /proc/meminfo | grep MemTotal | awk '{print $2}')
 # Check if mem less than 2G
 if [ $MEM -le 2000000 ] ;then
     echo "[Info] Detect memory less than 2G"
-    ./extra_base_filesystem --lang ${L}
+    ./extract_base_filesystem --lang ${L}
 else
     echo "[Info] Detect memory more than 2G"
-    extra_base_filesystem_as_unsquashfs
+    extract_base_filesystem_as_unsquashfs
 fi
