@@ -200,7 +200,7 @@ class Install:
                     udevinfo_cmd.extend(['-q','name','-p', os.path.join('/block',sysloop)])
                     with open('/dev/null') as devnull:
                         udevinfo = subprocess.Popen(udevinfo_cmd, stdout=subprocess.PIPE, stderr=devnull, universal_newlines=True)
-                    devbase = udevinfo.communicate()[0]
+                    devbase = udevinfo.communicate()[0].strip()
                     if udevinfo.returncode != 0:
                         devbase=sysloop
                     dev = '/dev/%s' % devbase
