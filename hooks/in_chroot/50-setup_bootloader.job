@@ -21,13 +21,15 @@ if [ x${BOOT} == xuefi ];then
     fi
 fi
 
-BOOTLOADER_ID="${BOOTLOADER_ID:-linuxdeepin2014}"
+[ -e /etc/lsb-release ] && BOOTLOADER_ID=$(cat /etc/lsb-release | grep -e '^DISTRIB_DESCRIPTION' | cut -d '=' -f2 | sed 's/"//g')
+
+BOOTLOADER_ID="${BOOTLOADER_ID:-linuxdeepin}"
 
 case ${BOOT} in
     "uefi")
         echo "INFO: Detected efi machine"
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-efi efibootmgr
-        grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=${BOOTLOADER_ID} --recheck
+        grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck
         ;;
     "legacy")
         echo "INFO: Detected legacy machine, installing grub to ${DI_BOOTLOADER}"
@@ -41,9 +43,9 @@ case ${BOOT} in
         ;;
     "uefi-secureboot")
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated sbsigntool grub-efi-amd64-signed linux-signed-generic efibootmgr
-        grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id=${BOOTLOADER_ID} --recheck 
+        grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck 
         [ -d /boot/efi/EFI/ubuntu ] || mkdir -p /boot/efi/EFI/ubuntu
-        cp  /boot/efi/EFI/${BOOTLOADER_ID}/* /boot/efi/EFI/ubuntu
+        cp  /boot/efi/EFI/"${BOOTLOADER_ID}"/* /boot/efi/EFI/ubuntu
         ;;
 esac
 
