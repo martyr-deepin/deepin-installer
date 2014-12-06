@@ -36,7 +36,7 @@ static GHashTable *partition_os = NULL;
 static GHashTable *partition_os_desc = NULL;
 void mkfs_latter(const char* path, const char* fs);
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gchar* installer_rand_uuid (const char* prefix)
 {
     gchar *result = NULL;
@@ -47,24 +47,20 @@ gchar* installer_rand_uuid (const char* prefix)
     return result;
 }
 
-static gpointer 
+static gpointer
 thread_os_prober (gpointer data)
 {
-    partition_os = g_hash_table_new_full ( g_str_hash, g_str_equal, 
+    partition_os = g_hash_table_new_full ( g_str_hash, g_str_equal,
                                            g_free, g_free);
 
-    partition_os_desc = g_hash_table_new_full ( g_str_hash, g_str_equal, 
+    partition_os_desc = g_hash_table_new_full ( g_str_hash, g_str_equal,
                                            g_free, g_free);
 
-    gchar *cmd = g_find_program_in_path ("os-prober");
-    if (cmd == NULL) {
-        g_warning ("os:os-prober not installed\n");
-    }
     g_spawn_command_line_sync ("pkill -9 os-prober", NULL, NULL, NULL, NULL);
 
     gchar *output = NULL;
     GError *error = NULL;
-    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
+    g_spawn_command_line_sync ("env WINOSDATA=1 os-prober", &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("get partition os:os-prober %s\n", error->message);
         g_error_free (error);
@@ -87,7 +83,6 @@ thread_os_prober (gpointer data)
     }
     g_strfreev (items);
     g_free (output);
-    g_free (cmd);
 
     GRAB_CTX ();
     js_post_message ("os_prober", NULL);
@@ -164,7 +159,7 @@ static gpointer thread_init_parted (gpointer data)
 	    continue;
 	}
 
-        gchar *uuid = installer_rand_uuid("disk"); 
+        gchar *uuid = installer_rand_uuid("disk");
 	g_hash_table_insert (disks, g_strdup (uuid), disk);
 
         g_hash_table_insert (disk_partitions, g_strdup (uuid), build_part_list(disk));
@@ -180,19 +175,19 @@ static gpointer thread_init_parted (gpointer data)
 
 void init_parted ()
 {
-    disks = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                   (GEqualFunc) g_str_equal, 
-                                   (GDestroyNotify) g_free, 
+    disks = g_hash_table_new_full ((GHashFunc) g_str_hash,
+                                   (GEqualFunc) g_str_equal,
+                                   (GDestroyNotify) g_free,
                                    NULL);
 
-    disk_partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                             (GEqualFunc) g_str_equal, 
-                                             (GDestroyNotify) g_free, 
+    disk_partitions = g_hash_table_new_full ((GHashFunc) g_str_hash,
+                                             (GEqualFunc) g_str_equal,
+                                             (GDestroyNotify) g_free,
                                              (GDestroyNotify) g_list_free);
 
-    partitions = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                        (GEqualFunc) g_str_equal, 
-                                        (GDestroyNotify) g_free, 
+    partitions = g_hash_table_new_full ((GHashFunc) g_str_hash,
+                                        (GEqualFunc) g_str_equal,
+                                        (GDestroyNotify) g_free,
                                         NULL);
 
 
@@ -203,7 +198,7 @@ void init_parted ()
     g_thread_unref (prober_thread);
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 JSObjectRef installer_list_disks()
 {
     g_return_val_if_fail(disks != NULL, json_array_create());
@@ -284,7 +279,7 @@ JSObjectRef installer_get_disk_partitions (const gchar *disk)
     } else {
         parts = (GList *) g_hash_table_lookup (disk_partitions, disk);
     }
-   
+
     if (parts != NULL) {
         for (i = 0; i < g_list_length (parts); i++) {
             json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), g_list_nth_data (parts, i)));
@@ -301,7 +296,7 @@ gboolean installer_system_support_efi ()
     return g_file_test("/sys/firmware/efi", G_FILE_TEST_IS_DIR);
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gboolean installer_disk_is_gpt(const char* disk)
 {
     PedDisk* peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
@@ -407,7 +402,7 @@ gchar* installer_get_partition_path (const gchar *uuid)
     return path;
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gchar* installer_get_partition_mp (const gchar *uuid)
 {
     g_return_val_if_fail(uuid != NULL, NULL);
@@ -505,12 +500,12 @@ gchar *installer_get_partition_fs (const gchar *part)
         if (g_strrstr (fs, "swap") != NULL) {
             return g_strdup ("swap");
         }
-    } 
+    }
 
     return fs;
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gchar* installer_get_partition_label (const gchar *part)
 {
     gchar *label = NULL;
@@ -540,7 +535,7 @@ gchar* installer_get_partition_label (const gchar *part)
     return label;
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gboolean installer_is_partition_busy (const gchar *uuid)
 {
     g_return_val_if_fail(uuid != NULL, FALSE);
@@ -550,7 +545,7 @@ gboolean installer_is_partition_busy (const gchar *uuid)
     return ped_partition_is_busy(part);
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gboolean installer_get_partition_flag (const gchar *part, const gchar *flag_name)
 {
     gboolean result = FALSE;
@@ -584,7 +579,7 @@ out:
     return result;
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 void installer_get_partition_free (const gchar *part)
 {
     PedPartition *pedpartition = NULL;
@@ -628,8 +623,8 @@ void installer_get_partition_free (const gchar *part)
             handler->path = g_strdup (path);
             handler->part = g_strdup (part);
             handler->fs = g_strdup (fs);
-            GThread *thread = g_thread_new ("get_partition_free", 
-                                            (GThreadFunc) get_partition_free, 
+            GThread *thread = g_thread_new ("get_partition_free",
+                                            (GThreadFunc) get_partition_free,
                                             (gpointer) handler);
             g_thread_unref (thread);
         } else {
@@ -642,7 +637,7 @@ void installer_get_partition_free (const gchar *part)
     }
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gchar* installer_get_partition_os (const gchar *part)
 {
     gchar* result = NULL;
@@ -672,7 +667,7 @@ gchar* installer_get_partition_os (const gchar *part)
     return result;
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gchar* installer_get_partition_os_desc (const gchar *part)
 {
     gchar* result = NULL;
@@ -702,7 +697,7 @@ gchar* installer_get_partition_os_desc (const gchar *part)
     return result;
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk_uuid, const gchar *type, const gchar *fs, double byte_start, double byte_end)
 {
     g_assert(part_uuid != NULL);
@@ -741,7 +736,7 @@ gboolean installer_new_disk_partition (const gchar *part_uuid, const gchar *disk
     return TRUE;
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gboolean installer_delete_disk_partition (const gchar *part_uuid)
 {
     g_assert(part_uuid != NULL);
@@ -749,7 +744,7 @@ gboolean installer_delete_disk_partition (const gchar *part_uuid)
     PedPartition* part = (PedPartition *) g_hash_table_lookup (partitions, part_uuid);
     g_assert(part != NULL);
     g_message("-----------delete %s:(%s)-----------\n", part->disk->dev->path, part_uuid);
-    
+
     if ((ped_disk_delete_partition (part->disk, part) != 0)) {
 	g_message("delete disk partition:ok\n");
 	return TRUE;
@@ -759,8 +754,8 @@ gboolean installer_delete_disk_partition (const gchar *part_uuid)
     }
 }
 
-JS_EXPORT_API 
-gboolean installer_update_partition_geometry (const gchar *uuid, double byte_start, double byte_size) 
+JS_EXPORT_API
+gboolean installer_update_partition_geometry (const gchar *uuid, double byte_start, double byte_size)
 {
     g_return_val_if_fail(uuid != NULL, FALSE);
     g_return_val_if_fail(byte_start >= 0, FALSE);
@@ -825,7 +820,7 @@ gboolean installer_update_partition_fs (const gchar *uuid, const gchar *fs)
     return TRUE;
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gboolean installer_write_disk (const gchar *uuid)
 {
     g_assert(uuid != NULL);
@@ -849,7 +844,7 @@ gboolean installer_write_disk (const gchar *uuid)
     }
 }
 
-JS_EXPORT_API 
+JS_EXPORT_API
 gboolean installer_set_partition_flag (const gchar *uuid, const gchar *flag_name, gboolean status)
 {
     g_return_val_if_fail(uuid!= NULL, FALSE);
