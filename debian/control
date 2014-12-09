@@ -47,6 +47,7 @@ Depends: ${shlibs:Depends},
  tzdata-l10n,
  xfsprogs,
  hfsprogs,
+ dmidecode,
  gdisk
 Description: New installer for linuxdeepin
  New installer for Linuxdeepin. 

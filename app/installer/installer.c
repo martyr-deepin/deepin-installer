@@ -72,10 +72,29 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 }
 
 JS_EXPORT_API
+void installer_spawn_command_sync (const char* cmd,gboolean sync )
+{
+    spawn_command_sync(cmd,sync);
+}
+
+JS_EXPORT_API
 void installer_finish_install ()
 {
     g_warning("installer_finish_install()");
     gtk_main_quit ();
+}
+
+JS_EXPORT_API
+void installer_shutdown ()
+{
+    g_warning("installer_shutdown()");
+    GError* error=NULL;
+    g_spawn_command_line_async ("sh -c \"echo o > /proc/sysrq-trigger\"", &error);
+    if(error != NULL){
+        g_warning("use echo to write b into /proc/sysrq-trigger failed:%s",error->message);
+        g_error_free(error);
+        error = NULL;
+    }
 }
 
 JS_EXPORT_API
@@ -106,15 +125,21 @@ void installer_emit_webview_ok ()
     static gboolean inited = FALSE;
     if (!inited) {
         inited = TRUE;
+
+        if (nowm){
+            js_post_signal("without_wm");
+        }
+
+        if (is_virtual_pc()){
+            js_post_signal("is_virtual_machine");
+        }
+
         if (auto_conf_path == NULL) {
             init_parted ();
         }else{
             js_post_signal("auto_mode");
         }
 
-        if (nowm){
-            js_post_signal("cannot_closed");
-        }
     }
 }
 
@@ -153,6 +178,8 @@ void fix_without_wm(GtkWidget* child)
 
 int main(int argc, char **argv)
 {
+    if (argc == 2 && 0 == g_strcmp0(argv[1], "-d"))
+        g_setenv("G_MESSAGES_DEBUG", "all", FALSE);
     GOptionContext *context = g_option_context_new("- Deepin Installer");
     g_option_context_add_main_entries(context, entries, "INSTALLER");
     g_option_context_add_group (context, gtk_get_option_group (TRUE));

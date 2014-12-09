@@ -411,17 +411,35 @@ gboolean is_livecd ()
     gsize length = 0;
     if (g_file_get_contents(filename,&contents,&length,NULL))
     {
-        gchar* ptr = g_strstr_len(contents, -1, "boot=casper");
-        if (ptr == NULL) {
-            result =  FALSE;
-        } else {
-            result = TRUE;
-            g_message("====is livecd os=====");
-        }
+        result = (g_strstr_len(contents, -1, "boot=casper") != NULL);
         g_free(contents);
     }
     return result;
 }
+
+gboolean is_virtual_pc ()
+{
+    gboolean result = FALSE;
+    GError *error = NULL;
+    gchar* output = NULL;
+    const gchar* cmd = "dmidecode -s system-product-name";
+    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
+    if (error != NULL) {
+        g_warning ("[%s] cmd: %s ;failed:%s\n", __func__, cmd, error->message);
+        g_clear_error(&error);
+    }else{
+        if (output != NULL){
+            gchar* low = g_utf8_casefold(output, -1);
+            result = (g_strstr_len(low, -1, "virtual") != NULL);
+            g_free(low);
+        }
+    }
+    g_free(output);
+    g_debug ("[%s]:cmd:%s;output:%s; result:%d\n", __func__, cmd, output, result);
+    cmd = NULL;
+    return result;
+}
+
 
 gboolean spawn_command_sync (const char* command,gboolean sync)
 {

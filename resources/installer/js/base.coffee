@@ -54,6 +54,7 @@ __mp_values = [_("Unused"), "/","/boot","/home","/tmp","/usr", "/var","/srv","/o
 
 __current_page = null
 pc = null
+virtual_page = null
 welcome_page = null
 part_page = null
 progress_page = null
@@ -450,7 +451,13 @@ class Page extends Widget
 
         @close = create_element("div", "Close", @title)
         @close.addEventListener("click", (e) =>
-            @exit_installer()
+            if pc.without_wm or pc.is_virtual_machine
+                new ExitDialog(->
+                    DCore.Installer.finish_install()
+                    DCore.Installer.spawn_command_sync("/sbin/poweroff",false)
+                ).show_at(document.body)
+            else
+                @exit_installer()
         )
 
     exit_installer: ->
@@ -498,14 +505,14 @@ class PageContainer extends Widget
     constructor: (@id)->
         super
         @current_page = null
-        @cannot_closed = false
+        @without_wm = false
+        @auto_mode = false
 
     switch_page: (page) ->
         if @current_page?
             @element.removeChild(@current_page.element)
         @current_page = page
         @element.appendChild(@current_page.element)
-        if @cannot_closed then @hide_close_button()
 
     hide_close_button: ->
         @current_page.close.style.display = "none"

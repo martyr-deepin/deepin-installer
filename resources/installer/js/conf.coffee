@@ -10,8 +10,6 @@ __selected_password = null
 
 __selected_locale = DCore.Installer.get_current_locale()
 
-auto_mode = false
-
 sync_installer_conf = ->
     DCore.Installer.record_accounts_info(__selected_username, __selected_hostname, __selected_password)
 

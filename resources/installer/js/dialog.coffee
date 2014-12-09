@@ -42,8 +42,16 @@ class Dialog extends Widget
         @ok?.innerText = @ok_text
         @cancel?.innerText = @cancel_text
 
+class ExitDialog extends Dialog
+    constructor: (exit_installer_cb) ->
+        super("ExitDialog", true, exit_installer_cb)
+        @add_css_class("DialogCommon")
+        @exit_tips = create_element("div", "dialog_tips", @content)
+        @exit_tips.innerText = _("Are you sure to exit from installation?")
+
+
 class PromptDialog extends Dialog
-    constructor: (title, content, ok_cb,cancel_cb) ->
+    constructor: (title, content, ok_cb, cancel_cb) ->
         super("PromptDialog", true, ok_cb,cancel_cb)
         @add_css_class("DialogCommon")
         @title_txt.innerText = title

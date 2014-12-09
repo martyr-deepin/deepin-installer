@@ -20,17 +20,27 @@
 pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
+DCore.signal_connect("without_wm", ->
+    console.log "signal_connect:without_wm==============="
+    pc.without_wm = true
+)
+
+DCore.signal_connect("is_virtual_machine", ->
+    console.log "signal_connect:is_virtual_machine===================="
+    pc.is_virtual_machine = true
+    virtual_page = new VirtualMachine("VirtualMachine") if not virtual_page?
+    pc.switch_page(virtual_page)
+)
+
 DCore.signal_connect("auto_mode", ->
-    auto_mode = true
+    console.log "signal_connect:auto_mode========================"
+    pc.auto_mode = true
+    if pc.is_virtual_machine then return
     progress_page = new Progress("progress") if not progress_page?
     pc.switch_page(progress_page)
     DCore.Installer.start_install()
 )
 
-DCore.signal_connect("cannot_closed", ->
-    pc.cannot_closed = true
-    pc.hide_close_button()
-)
-
-pc.switch_page(new Welcome("welcom"))
+welcome_page = new Welcome("welcome") if not welcome_page?
+pc.switch_page(welcome_page)
 DCore.Installer.emit_webview_ok()

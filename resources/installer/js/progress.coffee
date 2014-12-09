@@ -105,10 +105,10 @@ progress_page = new Progress("progress")
 
 DCore.signal_connect("install_progress", (per)->
     if per >= 100
-        pc.switch_page(new Finish("finish", true, auto_mode))
+        pc.switch_page(new Finish("finish", true, pc.without_wm))
         return
     progress_page.update_progress("#{per}%")
 )
 DCore.signal_connect("install_terminate", ->
-        pc.switch_page(new Finish("finish", false, auto_mode))
+        pc.switch_page(new Finish("finish", false, pc.without_wm))
 )

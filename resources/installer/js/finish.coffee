@@ -18,7 +18,7 @@
 #along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 class Finish extends Page
-    constructor: (@id, @succeed,@auto_mode = false)->
+    constructor: (@id, @succeed,@without_wm = false)->
         super
         if @succeed
             @titleimg = create_img("", "images/progress_succeed.png", @titleprogress)
@@ -84,8 +84,8 @@ class Finish extends Page
             @later.style.display = "none"
             @now.style.display = "none"
 
-        #just hide close/later/tips in auto_mode
-        if @auto_mode
+        #just hide close/later/tips in without_wm
+        if @without_wm
             @later.style.display = "none"
             @tips.style.display = "none"
             @now.style.display = "block"
