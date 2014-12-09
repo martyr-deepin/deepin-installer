@@ -45,9 +45,24 @@ case ${BOOT} in
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated sbsigntool grub-efi-amd64-signed linux-signed-generic efibootmgr
         grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck 
         [ -d /boot/efi/EFI/ubuntu ] || mkdir -p /boot/efi/EFI/ubuntu
-        cp  /boot/efi/EFI/"${BOOTLOADER_ID}"/* /boot/efi/EFI/ubuntu
+        cp  "/boot/efi/EFI/${BOOTLOADER_ID}/*" /boot/efi/EFI/ubuntu
         ;;
 esac
+
+fix_efi_no_boot_dir(){
+    files=$(find /boot/efi -mindepth 1 -maxdepth 1 -type d)
+    for file in $files;do
+        local f=$(echo $file | tr '[:upper:]' '[:lower:]')
+        if [ x"/boot/efi/boot" = x"$f" ];then
+            echo "[Info] /boot/efi/boot folder found"
+            has_efi_boot_dir="yes"
+            break
+        fi
+    done
+    if [ -z $has_efi_boot_dir ];then
+        install -Dm755 "/boot/efi/${BOOTLOADER_ID}/grubx64.efi" /boot/efi/Boot/BootX64.efi
+    fi
+}
 
 fix_boot_order(){
     command -v efibootmgr >/dev/null 2>&1 || { echo >&2 "Require efibootmgr installed but not found.Skip"; exit 0;}
@@ -85,6 +100,7 @@ case ${BOOT} in
     uefi*)
         echo "Try to fix efi boot order to deepin first"
         fix_boot_order
+        fix_efi_no_boot_dir
         ;;
     *)
         ;;
