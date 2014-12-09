@@ -43,5 +43,14 @@ LANG=$(grep "^${locale}" /usr/share/i18n/SUPPORTED | grep UTF-8 | sed -e 's/ .*/
 echo $LANG
 printf 'LANGUAGE="%s"\nLANG="%s"' "${LANG%%.*}" "${LANG}" > /etc/default/locale
 printf '%s UTF-8' "${LANG}" > /etc/locale.gen
+case $LANG in 
+    zh_CN*)
+        ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+        ;;
+    zh_TW*)
+        ln -sf /usr/share/zoneinfo/Asia/Taipei /etc/localtime
+        ;;
+    *)
+esac
 /usr/sbin/locale-gen ${LANG}
 `
