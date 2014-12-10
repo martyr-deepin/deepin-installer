@@ -68,6 +68,7 @@ gboolean is_chrome_app(char const* name);
 char* bg_blur_pict_get_dest_path (const char* src_uri);
 gboolean is_livecd();
 gboolean is_virtual_pc();
+gchar* get_timezone_local ();
 gboolean spawn_command_sync (const char* command,gboolean sync);
 
 #endif

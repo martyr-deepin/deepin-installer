@@ -408,8 +408,7 @@ gboolean is_livecd ()
     const gchar *filename = "/proc/cmdline";
     gchar *contents = NULL;
     gboolean result = FALSE;
-    gsize length = 0;
-    if (g_file_get_contents(filename,&contents,&length,NULL))
+    if (g_file_get_contents(filename,&contents,NULL,NULL))
     {
         result = (g_strstr_len(contents, -1, "boot=casper") != NULL);
         g_free(contents);
@@ -440,6 +439,16 @@ gboolean is_virtual_pc ()
     return result;
 }
 
+gchar* get_timezone_local ()
+{
+    const gchar *filename = "/etc/timezone";
+    gchar *contents = NULL;
+    if (g_file_get_contents(filename,&contents,NULL,NULL))
+    {
+        return g_strstrip(contents);
+    }
+    return NULL;
+}
 
 gboolean spawn_command_sync (const char* command,gboolean sync)
 {

@@ -62,19 +62,6 @@ timezoneSet_div = null
 tooltipOffsetX = (document.body.clientWidth - document.body.offsetWidth) / 2
 tooltipOffsetY = (document.body.clientHeight - document.body.offsetHeight) / 2
 
-get_utc_by_city = (cityzone) ->
-    DCore.Installer.setenv_tz(cityzone)
-    d = new Date()
-    gmtHours = Math.round(d.getTimezoneOffset() / 60)
-    if Math.abs(gmtHours) < 10
-        utc  = "UTC-0#{Math.abs(gmtHours)}" if gmtHours < 0
-        utc  = "UTC+0#{gmtHours}" if gmtHours >= 0
-    else
-        utc  = "UTC#{gmtHours}"
-    DCore.Installer.unsetenv_tz()
-    echo "get_utc_by_city js:#{cityzone}:::#{utc}"
-    return utc
-
 update_keyboard_text = (tri) ->
     current_layout = DCore.Installer.get_layout_description(__selected_layout)
     echo "current_layout:#{current_layout}"
@@ -87,16 +74,16 @@ update_keyboard_text = (tri) ->
     DCore.Installer.set_layout(__selected_layout)
 
 update_timezone_text = (tri) ->
-    utc = cu.utc for cu in city_utc when cu.city is __selected_timezone
+    console.debug "[update_timezone_text]: __selected_timezone:#{__selected_timezone}"
+
+    utc = DCore.Installer.get_timezone_utc(__selected_timezone)
+    echo "current_timezone_utc:#{utc}"
+    timezoneSet_div?.title = utc
 
     city = __selected_timezone.split("/")[1]
     right = DCore.dgettext("tzdata", city)
     if not right? then right = city
-    if utc is undefined or utc is null then utc = get_utc_by_city(__selected_timezone)
-    current_timezone = utc + ":00 " + right
-    echo "current_timezone:#{current_timezone}"
     timezoneSet_div?.innerText = right
-    timezoneSet_div?.title = current_timezone
 
     x = timezoneSet_div?.offsetLeft - 15
     tri?.style.left = x if x > 0
