@@ -22,3 +22,6 @@ if [ x${DI_UEFI} == xtrue ];then
     mount ${DI_BOOTLOADER} /target/boot/efi
 fi
 
+mkdir -p /target/run
+mount --bind /run /target/run
+
