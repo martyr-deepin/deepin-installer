@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 10:42+0800\n"
-"PO-Revision-Date: 2014-11-10 13:47+0000\n"
-"Last-Translator: Yuval Bar-On <hyuvii@gmail.com>\n"
+"POT-Creation-Date: 2014-12-11 12:30+0800\n"
+"PO-Revision-Date: 2014-12-11 06:13+0000\n"
+"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/deepin-installer/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -59,6 +59,21 @@ msgstr "אתחל עכשיו"
 msgid "Exit Installation"
 msgstr "צא מההתקנה"
 
+#: ../resources/installer/js/virtual.coffee:24
+msgid "Tips"
+msgstr ""
+
+#: ../resources/installer/js/virtual.coffee:27
+msgid ""
+"It is detected that you are using a virtual machine. Installing Deepin on a "
+"virtual machine will affect its performances. You are recommended to "
+"experience it in a real environment."
+msgstr ""
+
+#: ../resources/installer/js/virtual.coffee:29
+msgid "Continue"
+msgstr "המשך"
+
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
 msgstr "דרישות התקנה"
@@ -89,7 +104,7 @@ msgid "Install Here"
 msgstr "התקן פה"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:781
+#: ../resources/installer/js/part.coffee:775
 msgid "Warning"
 msgstr "אזהרה"
 
@@ -132,7 +147,7 @@ msgid "Formatting"
 msgstr "מפרמט"
 
 #: ../resources/installer/js/part.coffee:507
-#: ../resources/installer/js/dialog.coffee:65
+#: ../resources/installer/js/dialog.coffee:73
 msgid "Delete Partition"
 msgstr "מחק מחיצה"
 
@@ -158,7 +173,6 @@ msgstr "יש צורך במחיצה עיקרית (/)"
 
 #: ../resources/installer/js/part.coffee:629
 #: ../resources/installer/js/part.coffee:637
-#: ../resources/installer/js/part.coffee:665
 msgid "Install Tips"
 msgstr "טיפים להתקנה"
 
@@ -173,7 +187,7 @@ msgid ""
 msgstr "במצב UEFI יש צורך בתמיכת ESP, אנא צור מחיצה של לפחות 100MB או יותר בפורמט EFI"
 
 #: ../resources/installer/js/part.coffee:657
-#: ../resources/installer/js/dialog.coffee:113
+#: ../resources/installer/js/dialog.coffee:121
 msgid "Add Partition"
 msgstr "הוסף מחיצה"
 
@@ -181,41 +195,35 @@ msgstr "הוסף מחיצה"
 msgid "Can't create a partition here"
 msgstr "לא יכול ליצור מחיצה פה"
 
-#: ../resources/installer/js/part.coffee:666
-msgid ""
-"UEFI-native installation only supports GPT-formatted disk. For installation,"
-" please enter the Expert Mode."
-msgstr "התקנת UEFI-מקומי תומכת רק בכונן המפורמט כ-GPT. להתקנה, אנא עבור למצב מומחה"
-
-#: ../resources/installer/js/part.coffee:693
+#: ../resources/installer/js/part.coffee:687
 msgid "UEFI"
 msgstr "UEFI"
 
-#: ../resources/installer/js/part.coffee:700
+#: ../resources/installer/js/part.coffee:694
 msgid "Boot Loader"
 msgstr "Boot Loader"
 
-#: ../resources/installer/js/part.coffee:747
+#: ../resources/installer/js/part.coffee:741
 msgid "Unmount Partition"
 msgstr "בטל עיגון (unmount) למחיצה"
 
-#: ../resources/installer/js/part.coffee:748
+#: ../resources/installer/js/part.coffee:742
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "נראה כי המחיצה עגונה (mount). האם אתה בטוח שברצונך לנתק (unmount) אותה?"
 
-#: ../resources/installer/js/part.coffee:782
+#: ../resources/installer/js/part.coffee:776
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. It will lose all "
 "disk data if you insist on installing."
 msgstr "ההתקנה מסוג UEFI תומכת אך ורק בכונן עם פרמוט GPT. אתה תאבד את כל המידע על הכונן אם תתעקש להמשיך בהתקנה"
 
-#: ../resources/installer/js/part.coffee:796
+#: ../resources/installer/js/part.coffee:790
 msgid "Simple Mode"
 msgstr "מצב פשוט"
 
-#: ../resources/installer/js/part.coffee:807
+#: ../resources/installer/js/part.coffee:801
 msgid "Expert mode"
 msgstr "מצב מומחה"
 
@@ -227,146 +235,150 @@ msgstr "אישור"
 msgid "Cancel"
 msgstr "ביטול"
 
-#: ../resources/installer/js/dialog.coffee:67
+#: ../resources/installer/js/dialog.coffee:50
+msgid "Are you sure to exit from installation?"
+msgstr ""
+
+#: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure you want to delete this partition?"
 msgstr "האם אתה בטוח שברצונך למחוק מחיצה זו?"
 
-#: ../resources/installer/js/dialog.coffee:80
+#: ../resources/installer/js/dialog.coffee:88
 msgid "Formatting Partition"
 msgstr "מפרמט מחיצה"
 
-#: ../resources/installer/js/dialog.coffee:82
+#: ../resources/installer/js/dialog.coffee:90
 msgid "Are you sure you want to format this partition?"
 msgstr "האם אתה בטוח שברצונך למחוק מחיצה זו?"
 
-#: ../resources/installer/js/dialog.coffee:91
+#: ../resources/installer/js/dialog.coffee:99
 msgid "Proceed with installation"
 msgstr "המשך עם ההתקנה"
 
-#: ../resources/installer/js/dialog.coffee:100
+#: ../resources/installer/js/dialog.coffee:108
 msgid "Deepin OS will be installed to freespace."
 msgstr "מערכת ההפעלה Deepin תותקן על השטח הפנוי"
 
-#: ../resources/installer/js/dialog.coffee:102
+#: ../resources/installer/js/dialog.coffee:110
 msgid "Deepin OS will be installed to "
 msgstr "מערכת ההפעלה Deepin תותקן על"
 
-#: ../resources/installer/js/dialog.coffee:102
+#: ../resources/installer/js/dialog.coffee:110
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
 msgstr "\nהמחיצה תפורמט אם תמשיך בהתקנה. אנא דאג לגיבוי של המידע החשוב\n"
 
-#: ../resources/installer/js/dialog.coffee:102
+#: ../resources/installer/js/dialog.coffee:110
 msgid "Do you want to continue the installation ?"
 msgstr "האם ברצונך להמשיך בהתקנה?"
 
-#: ../resources/installer/js/dialog.coffee:133
+#: ../resources/installer/js/dialog.coffee:141
 msgid "Type:"
 msgstr "סוג"
 
-#: ../resources/installer/js/dialog.coffee:139
+#: ../resources/installer/js/dialog.coffee:147
 msgid "Primary"
 msgstr "עיקרי"
 
-#: ../resources/installer/js/dialog.coffee:144
+#: ../resources/installer/js/dialog.coffee:152
 msgid "Logical"
 msgstr "לוגי"
 
-#: ../resources/installer/js/dialog.coffee:174
+#: ../resources/installer/js/dialog.coffee:182
 msgid "Size:"
 msgstr "גודל"
 
-#: ../resources/installer/js/dialog.coffee:218
+#: ../resources/installer/js/dialog.coffee:226
 msgid "Align:"
 msgstr "יישור:"
 
-#: ../resources/installer/js/dialog.coffee:224
+#: ../resources/installer/js/dialog.coffee:232
 msgid "Begin"
 msgstr "התחלה"
 
-#: ../resources/installer/js/dialog.coffee:229
+#: ../resources/installer/js/dialog.coffee:237
 msgid "End"
 msgstr "סוף"
 
-#: ../resources/installer/js/dialog.coffee:249
+#: ../resources/installer/js/dialog.coffee:257
 msgid "Filesystem:"
 msgstr "מערכת קבצים"
 
-#: ../resources/installer/js/dialog.coffee:273
+#: ../resources/installer/js/dialog.coffee:281
 msgid "Mount:"
 msgstr "עיגון (mount):"
 
-#: ../resources/installer/js/dialog.coffee:306
+#: ../resources/installer/js/dialog.coffee:314
 msgid "Please enter a valid partition size."
 msgstr "אנא הכנס גודל מחיצה תקין"
 
-#: ../resources/installer/js/welcome.coffee:198
+#: ../resources/installer/js/welcome.coffee:207
 msgid "Yes"
 msgstr "כן"
 
-#: ../resources/installer/js/welcome.coffee:203
+#: ../resources/installer/js/welcome.coffee:212
 msgid "No"
 msgstr "לא"
 
-#: ../resources/installer/js/welcome.coffee:298
+#: ../resources/installer/js/welcome.coffee:307
 msgid "Please press one of the following keys."
 msgstr "אנא לחץ על אחד מהמקשים הבאים"
 
-#: ../resources/installer/js/welcome.coffee:304
+#: ../resources/installer/js/welcome.coffee:313
 msgid "Please confirm you have the following keys."
 msgstr "אנא אשר שיש לך את המקשים הבאים"
 
-#: ../resources/installer/js/welcome.coffee:347
+#: ../resources/installer/js/welcome.coffee:356
 msgid "Detect Layout"
 msgstr "זהה Layout"
 
-#: ../resources/installer/js/welcome.coffee:353
+#: ../resources/installer/js/welcome.coffee:362
 msgid "View Current"
 msgstr "צפה בנוכחי"
 
-#: ../resources/installer/js/welcome.coffee:511
+#: ../resources/installer/js/welcome.coffee:521
 msgid "Please select or search your location."
 msgstr "אנא בחר או חפש את המיקום שלך"
 
-#: ../resources/installer/js/welcome.coffee:766
-msgid "Username"
-msgstr "שם משתמש"
-
-#: ../resources/installer/js/welcome.coffee:769
-msgid "Computer Name"
-msgstr "שם המחשב"
-
-#: ../resources/installer/js/welcome.coffee:772
-msgid "Password"
-msgstr "סיסמא"
-
-#: ../resources/installer/js/welcome.coffee:777
-msgid "Retype Password"
-msgstr "הקש סיסמא מחדש"
-
-#: ../resources/installer/js/welcome.coffee:808
+#: ../resources/installer/js/welcome.coffee:811
 msgid "Nothing Input"
 msgstr "לא הוכנס ערך"
 
-#: ../resources/installer/js/welcome.coffee:822
-#: ../app/language-selector/greeter.c:297
+#: ../resources/installer/js/welcome.coffee:830
+#: ../app/language-selector/greeter.c:301
 msgid "Invalid Password"
 msgstr "סיסמא לא חוקית"
 
-#: ../resources/installer/js/welcome.coffee:825
+#: ../resources/installer/js/welcome.coffee:835
 msgid "Different Password"
 msgstr "סיסמא שונה"
 
-#: ../resources/installer/js/welcome.coffee:848
+#: ../resources/installer/js/welcome.coffee:853
+msgid "Username"
+msgstr "שם משתמש"
+
+#: ../resources/installer/js/welcome.coffee:856
+msgid "Computer Name"
+msgstr "שם המחשב"
+
+#: ../resources/installer/js/welcome.coffee:859
+msgid "Password"
+msgstr "סיסמא"
+
+#: ../resources/installer/js/welcome.coffee:864
+msgid "Retype Password"
+msgstr "הקש סיסמא מחדש"
+
+#: ../resources/installer/js/welcome.coffee:887
 msgid "Next"
 msgstr "הבא"
 
-#: ../resources/installer/js/welcome.coffee:899
+#: ../resources/installer/js/welcome.coffee:938
 msgid "Time Zone"
 msgstr "איזור זמן"
 
-#: ../resources/installer/js/welcome.coffee:904
+#: ../resources/installer/js/welcome.coffee:943
 msgid "Keyboard"
 msgstr "מקלדת"
 
@@ -378,87 +390,71 @@ msgstr "דו\"ח שגיאה"
 msgid "System installation failed. Please send the log to Deepin Team."
 msgstr "התקנת מערכת כשלה. אנא שלח את ה-log לצוות של Deepin"
 
-#: ../resources/installer/js/progress.coffee:47
+#: ../resources/installer/js/progress.coffee:41
 msgid "Preparing for Installation"
 msgstr "מתכונן להתקנה"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:18
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "Deepin Store"
 msgstr "חנות Deepin"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:20
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "One-stop Software Management"
 msgstr "ניהול תוכנה בעצירה אחת"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:21
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:64
 msgid "Continuous Update of Wonderful Software"
 msgstr "שדרוג מתמשך של תוכנות מצויינות"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:22
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:65
 msgid "Unimpeded Online Communication"
 msgstr "תקשורת רשת ללא הפרעה"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:26
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Deepin Movie"
 msgstr "נגן הסרטים של Deepin "
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:28
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
 msgid "Comprehensive Audio-visual Shock"
 msgstr "הלם ויזואלי-קולי מקיף "
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:29
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:72
 msgid "New Interactive Experience"
 msgstr "חוויה אינטרקטיבית חדשה"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:30
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:73
 msgid "Intelligent Subtitle Loading"
 msgstr "טעינת כתוביות חכמה"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:34
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
 msgid "Deepin Music"
 msgstr "מוסיקה Deepin"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:36
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
 msgid "Ultimate Music Journey"
 msgstr "מסע המוסיקה האולטימטיבי"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:37
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Function"
 msgstr "פונקציונליות מורחבת ועשירה"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:38
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
 msgstr "תהנה מהקול החזק ברשת"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:42
-msgid "Deepin Game"
-msgstr "משחקים Deepin"
-
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:44
-msgid "Provide Latest and Hottest Games"
-msgstr "מספק את המשחקים החמים והחדשים ביותר"
-
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:45
-msgid "Gather Various Game Topics"
-msgstr "אסוף נושאי משחק שונים"
-
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:46
-msgid "Collect Your Favorite Online"
-msgstr "אסוף את האהובים עלייך ברשת"
-
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:50
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
 msgid "Deepin Community"
 msgstr "קהילת Deepin"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:52
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
 msgid "Free and United Open Source Community"
 msgstr "קהילת קוד פתוח מאוחדת וחופשייה"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:53
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:88
 msgid "Welcome to participate in Deepin Internationalization Project"
 msgstr "ברוך הבא על השתתפותך בפרויקט Deepin הבינלאומי"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:54
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:89
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
