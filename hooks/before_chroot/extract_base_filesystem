@@ -382,6 +382,7 @@ class Install:
 
 
     def umount_source(self):
+        execute('sync')
         devs= self.devs
         devs.reverse()
 
@@ -389,7 +390,7 @@ class Install:
         mountpoints.reverse()
 
         for mountpoint in mountpoints:
-            if not execute('umount',mountpoint):
+            if not execute('umount', '-vl', mountpoint):
                 raise InstallError("Failed to umount %s" % mountpoint)
         for dev in devs:
             if (dev != '' and dev != 'unused' and not execute('losetup', '-d', dev)):
