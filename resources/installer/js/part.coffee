@@ -626,7 +626,7 @@ class Part extends Page
         if __selected_use_uefi
             if not DCore.Installer.disk_is_gpt(__selected_disk)
                 new MessageDialog(
-                    _("Install Tips"),
+                    _("Installation Tips"),
                     _("UEFI-native installation only supports GPT-formatted disk.")
                 ).show_at(document.body)
                 return
@@ -634,7 +634,7 @@ class Part extends Page
             esp_uuid = get_efi_boot_part()
             if not esp_uuid or v_part_info[esp_uuid]["length"] < 100 * MB
                 new MessageDialog(
-                    _("Install Tips")
+                    _("Installation Tips"),
                     _("ESP’s support is needed in UEFI mode and please create a partition of 100MB or more in efi format.")
                 ).show_at(document.body)
                 return
@@ -773,7 +773,7 @@ class Part extends Page
                 if not DCore.Installer.disk_is_gpt(__selected_disk)
                     new PromptDialog(
                         _("Warning"),
-                        _("UEFI-native installation only supports GPT-formatted disk. It will lose all disk data if you insist on installing."),
+                        _("UEFI-native installation only supports GPT-formatted disk. You will lose all disk data if you insist on installing."),
                         ok_cb,
                         cancel_cb
                     ).show_at(document.body)
@@ -798,4 +798,4 @@ class Part extends Page
         @part_uefi.style.display = "none"
         @part_grub.style.display = "none"
         @table.update_mode(__selected_mode)
-        @t_mode.innerText = _("Expert mode")
+        @t_mode.innerText = _("Expert Mode")

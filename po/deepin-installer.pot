@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-11 12:30+0800\n"
+"POT-Creation-Date: 2014-12-12 10:46+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../resources/installer/js/finish.coffee:38
-msgid "Congratulations!"
+msgid "Installation Succeed!"
 msgstr ""
 
 #: ../resources/installer/js/finish.coffee:39
@@ -156,6 +156,7 @@ msgid "New Partition"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:585
+#: ../resources/installer/js/part.coffee:801
 msgid "Expert Mode"
 msgstr ""
 
@@ -164,16 +165,13 @@ msgid "Install"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:621
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
 msgid "Installation Tips"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
-msgstr ""
-
-#: ../resources/installer/js/part.coffee:629
-#: ../resources/installer/js/part.coffee:637
-msgid "Install Tips"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:630
@@ -215,16 +213,12 @@ msgstr ""
 
 #: ../resources/installer/js/part.coffee:776
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
+"UEFI-native installation only supports GPT-formatted disk. You will lose all "
 "disk data if you insist on installing."
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:790
 msgid "Simple Mode"
-msgstr ""
-
-#: ../resources/installer/js/part.coffee:801
-msgid "Expert mode"
 msgstr ""
 
 #: ../resources/installer/js/dialog.coffee:41
@@ -314,72 +308,72 @@ msgstr ""
 msgid "Please enter a valid partition size."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:207
+#: ../resources/installer/js/welcome.coffee:194
 msgid "Yes"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:212
+#: ../resources/installer/js/welcome.coffee:199
 msgid "No"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:307
+#: ../resources/installer/js/welcome.coffee:294
 msgid "Please press one of the following keys."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:313
+#: ../resources/installer/js/welcome.coffee:300
 msgid "Please confirm you have the following keys."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:356
+#: ../resources/installer/js/welcome.coffee:343
 msgid "Detect Layout"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:362
+#: ../resources/installer/js/welcome.coffee:349
 msgid "View Current"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:521
+#: ../resources/installer/js/welcome.coffee:508
 msgid "Please select or search your location."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:811
+#: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:830
+#: ../resources/installer/js/welcome.coffee:817
 #: ../app/language-selector/greeter.c:301
 msgid "Invalid Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:835
+#: ../resources/installer/js/welcome.coffee:822
 msgid "Different Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:853
+#: ../resources/installer/js/welcome.coffee:840
 msgid "Username"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:856
+#: ../resources/installer/js/welcome.coffee:843
 msgid "Computer Name"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:859
+#: ../resources/installer/js/welcome.coffee:846
 msgid "Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:864
+#: ../resources/installer/js/welcome.coffee:851
 msgid "Retype Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:887
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Next"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:938
+#: ../resources/installer/js/welcome.coffee:925
 msgid "Time Zone"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:943
+#: ../resources/installer/js/welcome.coffee:930
 msgid "Keyboard"
 msgstr ""
 
@@ -436,7 +430,7 @@ msgid "Ultimate Music Journey"
 msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
-msgid "Rich Extended Function"
+msgid "Rich Extended Functions"
 msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81

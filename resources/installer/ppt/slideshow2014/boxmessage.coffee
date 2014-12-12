@@ -77,7 +77,7 @@ msg_obj_array = [
         title:_("Deepin Music")
         msg:[
             _("Ultimate Music Journey"),
-            _("Rich Extended Function"),
+            _("Rich Extended Functions"),
             _("Enjoy Online Strongest Voice")
         ]
     },

@@ -35,7 +35,7 @@ class Finish extends Page
         @later_txt = create_element("div", "BtTxt", @later)
 
         if @succeed
-            @desc.innerText = _("Congratulations!")
+            @desc.innerText = _("Installation Succeed!")
             @detail.innerText = _("You need to restart the computer to complete installation.")
             @tips.innerText = _("Tips: Please remove the installation media before reboot, so as to avoid reentering into the installation environment when you start the computer next time. ")
             @later.setAttribute("class", "Later")
