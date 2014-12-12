@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-11 12:30+0800\n"
-"PO-Revision-Date: 2014-12-11 06:13+0000\n"
+"POT-Creation-Date: 2014-12-12 10:46+0800\n"
+"PO-Revision-Date: 2014-12-12 03:12+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Romanian (http://www.transifex.com/projects/p/deepin-installer/language/ro/)\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,8 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
 #: ../resources/installer/js/finish.coffee:38
-msgid "Congratulations!"
-msgstr "Felicitări!"
+msgid "Installation Succeed!"
+msgstr ""
 
 #: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
@@ -157,6 +157,7 @@ msgid "New Partition"
 msgstr "Partiție Nouă"
 
 #: ../resources/installer/js/part.coffee:585
+#: ../resources/installer/js/part.coffee:801
 msgid "Expert Mode"
 msgstr "Mod Expert"
 
@@ -165,17 +166,14 @@ msgid "Install"
 msgstr "Instalare"
 
 #: ../resources/installer/js/part.coffee:621
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
 msgid "Installation Tips"
 msgstr "Sugestii pentru instalare"
 
 #: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
 msgstr "Este necesară o partiție rădăcină (/)."
-
-#: ../resources/installer/js/part.coffee:629
-#: ../resources/installer/js/part.coffee:637
-msgid "Install Tips"
-msgstr "Instalare Sugestii"
 
 #: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
@@ -216,17 +214,13 @@ msgstr "Partiția este detectată ca fiind montată. Sunteți sigur că doriți 
 
 #: ../resources/installer/js/part.coffee:776
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
-msgstr "Instalarea nativă UEFI suportă doar discuri formatate în GPT. Continuarea instalării va cauza pierderea informaţiei."
+"UEFI-native installation only supports GPT-formatted disk. You will lose all"
+" disk data if you insist on installing."
+msgstr ""
 
 #: ../resources/installer/js/part.coffee:790
 msgid "Simple Mode"
 msgstr "Mod Simplu"
-
-#: ../resources/installer/js/part.coffee:801
-msgid "Expert mode"
-msgstr "Mod expert"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
@@ -314,72 +308,72 @@ msgstr "Montare:"
 msgid "Please enter a valid partition size."
 msgstr "Vă rugăm introduceți marimea corectă a partiției."
 
-#: ../resources/installer/js/welcome.coffee:207
+#: ../resources/installer/js/welcome.coffee:194
 msgid "Yes"
 msgstr "Da"
 
-#: ../resources/installer/js/welcome.coffee:212
+#: ../resources/installer/js/welcome.coffee:199
 msgid "No"
 msgstr "Nu"
 
-#: ../resources/installer/js/welcome.coffee:307
+#: ../resources/installer/js/welcome.coffee:294
 msgid "Please press one of the following keys."
 msgstr "Vă rugam apasați una dintre tastele următoare."
 
-#: ../resources/installer/js/welcome.coffee:313
+#: ../resources/installer/js/welcome.coffee:300
 msgid "Please confirm you have the following keys."
 msgstr "Vă rugam să confirmați existența următoarelor taste."
 
-#: ../resources/installer/js/welcome.coffee:356
+#: ../resources/installer/js/welcome.coffee:343
 msgid "Detect Layout"
 msgstr "Detectare amplasare (Layout)"
 
-#: ../resources/installer/js/welcome.coffee:362
+#: ../resources/installer/js/welcome.coffee:349
 msgid "View Current"
 msgstr "Vizualizare Curent"
 
-#: ../resources/installer/js/welcome.coffee:521
+#: ../resources/installer/js/welcome.coffee:508
 msgid "Please select or search your location."
 msgstr "Vă rugăm selectați sau căutați locația dvs."
 
-#: ../resources/installer/js/welcome.coffee:811
+#: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
 msgstr "Nimic Introdus"
 
-#: ../resources/installer/js/welcome.coffee:830
+#: ../resources/installer/js/welcome.coffee:817
 #: ../app/language-selector/greeter.c:301
 msgid "Invalid Password"
 msgstr "Parola Incorectă"
 
-#: ../resources/installer/js/welcome.coffee:835
+#: ../resources/installer/js/welcome.coffee:822
 msgid "Different Password"
 msgstr "Parola Diferită"
 
-#: ../resources/installer/js/welcome.coffee:853
+#: ../resources/installer/js/welcome.coffee:840
 msgid "Username"
 msgstr "Nume de utilizator"
 
-#: ../resources/installer/js/welcome.coffee:856
+#: ../resources/installer/js/welcome.coffee:843
 msgid "Computer Name"
 msgstr "Nume Calculator"
 
-#: ../resources/installer/js/welcome.coffee:859
+#: ../resources/installer/js/welcome.coffee:846
 msgid "Password"
 msgstr "Parolă"
 
-#: ../resources/installer/js/welcome.coffee:864
+#: ../resources/installer/js/welcome.coffee:851
 msgid "Retype Password"
 msgstr "Reintroduceți Parola"
 
-#: ../resources/installer/js/welcome.coffee:887
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Next"
 msgstr "Urmatorul"
 
-#: ../resources/installer/js/welcome.coffee:938
+#: ../resources/installer/js/welcome.coffee:925
 msgid "Time Zone"
 msgstr "Fus Orar"
 
-#: ../resources/installer/js/welcome.coffee:943
+#: ../resources/installer/js/welcome.coffee:930
 msgid "Keyboard"
 msgstr "Tastatură"
 
@@ -436,8 +430,8 @@ msgid "Ultimate Music Journey"
 msgstr "Imersiunea Totală în  Muzica"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
-msgid "Rich Extended Function"
-msgstr "Functii avansate "
+msgid "Rich Extended Functions"
+msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"

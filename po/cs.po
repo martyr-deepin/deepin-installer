@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-11 12:30+0800\n"
-"PO-Revision-Date: 2014-12-11 06:13+0000\n"
+"POT-Creation-Date: 2014-12-12 10:46+0800\n"
+"PO-Revision-Date: 2014-12-12 03:12+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/deepin-installer/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,8 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../resources/installer/js/finish.coffee:38
-msgid "Congratulations!"
-msgstr "Blahopřejeme!"
+msgid "Installation Succeed!"
+msgstr ""
 
 #: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
@@ -157,6 +157,7 @@ msgid "New Partition"
 msgstr "Nový diskový oddíl"
 
 #: ../resources/installer/js/part.coffee:585
+#: ../resources/installer/js/part.coffee:801
 msgid "Expert Mode"
 msgstr "Znalecký režim"
 
@@ -165,17 +166,14 @@ msgid "Install"
 msgstr "Instalovat"
 
 #: ../resources/installer/js/part.coffee:621
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
 msgid "Installation Tips"
 msgstr "Rady pro instalaci"
 
 #: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
 msgstr "Je požadován diskový oddíl root (/)."
-
-#: ../resources/installer/js/part.coffee:629
-#: ../resources/installer/js/part.coffee:637
-msgid "Install Tips"
-msgstr "Rady pro instalaci"
 
 #: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
@@ -216,17 +214,13 @@ msgstr "Bylo zjištěno, že diskový oddíl je připojen.\nOpravdu jej chcete o
 
 #: ../resources/installer/js/part.coffee:776
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
-msgstr "UEFI-nativní instalace podporuje pouze disk formátovaný GPT. ztratíte všechna data, pokud budete trvat na provedení instalace."
+"UEFI-native installation only supports GPT-formatted disk. You will lose all"
+" disk data if you insist on installing."
+msgstr ""
 
 #: ../resources/installer/js/part.coffee:790
 msgid "Simple Mode"
 msgstr "Jednoduchý režim"
-
-#: ../resources/installer/js/part.coffee:801
-msgid "Expert mode"
-msgstr "Znalecký režim"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
@@ -314,72 +308,72 @@ msgstr "Připojit:"
 msgid "Please enter a valid partition size."
 msgstr "Zadejte, prosím, platnou velikost diskového oddílu."
 
-#: ../resources/installer/js/welcome.coffee:207
+#: ../resources/installer/js/welcome.coffee:194
 msgid "Yes"
 msgstr "Ano"
 
-#: ../resources/installer/js/welcome.coffee:212
+#: ../resources/installer/js/welcome.coffee:199
 msgid "No"
 msgstr "Ne"
 
-#: ../resources/installer/js/welcome.coffee:307
+#: ../resources/installer/js/welcome.coffee:294
 msgid "Please press one of the following keys."
 msgstr "Stiskněte, prosím, jeden z následujících klíčů."
 
-#: ../resources/installer/js/welcome.coffee:313
+#: ../resources/installer/js/welcome.coffee:300
 msgid "Please confirm you have the following keys."
 msgstr "Potvrďte, prosím, že máte následující klíče."
 
-#: ../resources/installer/js/welcome.coffee:356
+#: ../resources/installer/js/welcome.coffee:343
 msgid "Detect Layout"
 msgstr "Rozpoznat rozvržení"
 
-#: ../resources/installer/js/welcome.coffee:362
+#: ../resources/installer/js/welcome.coffee:349
 msgid "View Current"
 msgstr "Zobrazit nynější"
 
-#: ../resources/installer/js/welcome.coffee:521
+#: ../resources/installer/js/welcome.coffee:508
 msgid "Please select or search your location."
 msgstr "Vyberte, prosím, nebo najděte své umístění."
 
-#: ../resources/installer/js/welcome.coffee:811
+#: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
 msgstr "Nic vloženo"
 
-#: ../resources/installer/js/welcome.coffee:830
+#: ../resources/installer/js/welcome.coffee:817
 #: ../app/language-selector/greeter.c:301
 msgid "Invalid Password"
 msgstr "Neplatné heslo"
 
-#: ../resources/installer/js/welcome.coffee:835
+#: ../resources/installer/js/welcome.coffee:822
 msgid "Different Password"
 msgstr "Odlišné heslo"
 
-#: ../resources/installer/js/welcome.coffee:853
+#: ../resources/installer/js/welcome.coffee:840
 msgid "Username"
 msgstr "Uživatelské jméno"
 
-#: ../resources/installer/js/welcome.coffee:856
+#: ../resources/installer/js/welcome.coffee:843
 msgid "Computer Name"
 msgstr "Název počítače"
 
-#: ../resources/installer/js/welcome.coffee:859
+#: ../resources/installer/js/welcome.coffee:846
 msgid "Password"
 msgstr "Heslo"
 
-#: ../resources/installer/js/welcome.coffee:864
+#: ../resources/installer/js/welcome.coffee:851
 msgid "Retype Password"
 msgstr "Napište heslo znovu"
 
-#: ../resources/installer/js/welcome.coffee:887
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Next"
 msgstr "Další"
 
-#: ../resources/installer/js/welcome.coffee:938
+#: ../resources/installer/js/welcome.coffee:925
 msgid "Time Zone"
 msgstr "Časová zóna"
 
-#: ../resources/installer/js/welcome.coffee:943
+#: ../resources/installer/js/welcome.coffee:930
 msgid "Keyboard"
 msgstr "Klávesnice"
 
@@ -436,8 +430,8 @@ msgid "Ultimate Music Journey"
 msgstr "Základní hudební cesta"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
-msgid "Rich Extended Function"
-msgstr "Bohatě rozšířené funkce"
+msgid "Rich Extended Functions"
+msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-11 12:30+0800\n"
-"PO-Revision-Date: 2014-12-11 06:13+0000\n"
+"POT-Creation-Date: 2014-12-12 10:46+0800\n"
+"PO-Revision-Date: 2014-12-12 03:12+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-installer/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,8 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../resources/installer/js/finish.coffee:38
-msgid "Congratulations!"
-msgstr "恭喜您！"
+msgid "Installation Succeed!"
+msgstr ""
 
 #: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
@@ -157,6 +157,7 @@ msgid "New Partition"
 msgstr "新建分割區"
 
 #: ../resources/installer/js/part.coffee:585
+#: ../resources/installer/js/part.coffee:801
 msgid "Expert Mode"
 msgstr "專家模式"
 
@@ -165,17 +166,14 @@ msgid "Install"
 msgstr "安裝"
 
 #: ../resources/installer/js/part.coffee:621
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
 msgid "Installation Tips"
 msgstr "安裝提示"
 
 #: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
 msgstr "至少需要一個 root (/) 分割區。"
-
-#: ../resources/installer/js/part.coffee:629
-#: ../resources/installer/js/part.coffee:637
-msgid "Install Tips"
-msgstr "安裝提示"
 
 #: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
@@ -216,17 +214,13 @@ msgstr "偵測到分割區已經掛載。\n您確定要卸載嗎？"
 
 #: ../resources/installer/js/part.coffee:776
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
-msgstr "UEFI 模式僅支援磁碟分割表為 GPT 的硬碟。若您執意安裝將導致硬碟資料遺失。"
+"UEFI-native installation only supports GPT-formatted disk. You will lose all"
+" disk data if you insist on installing."
+msgstr ""
 
 #: ../resources/installer/js/part.coffee:790
 msgid "Simple Mode"
 msgstr "簡易模式"
-
-#: ../resources/installer/js/part.coffee:801
-msgid "Expert mode"
-msgstr "專家模式"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
@@ -314,72 +308,72 @@ msgstr "掛載於："
 msgid "Please enter a valid partition size."
 msgstr "請輸入一個有效的分割區大小。"
 
-#: ../resources/installer/js/welcome.coffee:207
+#: ../resources/installer/js/welcome.coffee:194
 msgid "Yes"
 msgstr "昰"
 
-#: ../resources/installer/js/welcome.coffee:212
+#: ../resources/installer/js/welcome.coffee:199
 msgid "No"
 msgstr "否"
 
-#: ../resources/installer/js/welcome.coffee:307
+#: ../resources/installer/js/welcome.coffee:294
 msgid "Please press one of the following keys."
 msgstr "請按下其中一個按鍵。"
 
-#: ../resources/installer/js/welcome.coffee:313
+#: ../resources/installer/js/welcome.coffee:300
 msgid "Please confirm you have the following keys."
 msgstr "請確認您擁有以下按鍵。"
 
-#: ../resources/installer/js/welcome.coffee:356
+#: ../resources/installer/js/welcome.coffee:343
 msgid "Detect Layout"
 msgstr "測試鍵盤佈局"
 
-#: ../resources/installer/js/welcome.coffee:362
+#: ../resources/installer/js/welcome.coffee:349
 msgid "View Current"
 msgstr "查看目前"
 
-#: ../resources/installer/js/welcome.coffee:521
+#: ../resources/installer/js/welcome.coffee:508
 msgid "Please select or search your location."
 msgstr "請選擇或搜尋您的所在位置。"
 
-#: ../resources/installer/js/welcome.coffee:811
+#: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
 msgstr "沒有輸入"
 
-#: ../resources/installer/js/welcome.coffee:830
+#: ../resources/installer/js/welcome.coffee:817
 #: ../app/language-selector/greeter.c:301
 msgid "Invalid Password"
 msgstr "無效的密碼"
 
-#: ../resources/installer/js/welcome.coffee:835
+#: ../resources/installer/js/welcome.coffee:822
 msgid "Different Password"
 msgstr "密碼不相同"
 
-#: ../resources/installer/js/welcome.coffee:853
+#: ../resources/installer/js/welcome.coffee:840
 msgid "Username"
 msgstr "使用者名稱"
 
-#: ../resources/installer/js/welcome.coffee:856
+#: ../resources/installer/js/welcome.coffee:843
 msgid "Computer Name"
 msgstr "電腦名稱"
 
-#: ../resources/installer/js/welcome.coffee:859
+#: ../resources/installer/js/welcome.coffee:846
 msgid "Password"
 msgstr "密碼"
 
-#: ../resources/installer/js/welcome.coffee:864
+#: ../resources/installer/js/welcome.coffee:851
 msgid "Retype Password"
 msgstr "確認密碼"
 
-#: ../resources/installer/js/welcome.coffee:887
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Next"
 msgstr "下一步"
 
-#: ../resources/installer/js/welcome.coffee:938
+#: ../resources/installer/js/welcome.coffee:925
 msgid "Time Zone"
 msgstr "時區"
 
-#: ../resources/installer/js/welcome.coffee:943
+#: ../resources/installer/js/welcome.coffee:930
 msgid "Keyboard"
 msgstr "鍵盤"
 
@@ -436,8 +430,8 @@ msgid "Ultimate Music Journey"
 msgstr "極致的音樂旅程"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
-msgid "Rich Extended Function"
-msgstr "豐富的附加原件"
+msgid "Rich Extended Functions"
+msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"

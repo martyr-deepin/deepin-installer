@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-11 12:30+0800\n"
-"PO-Revision-Date: 2014-12-11 06:13+0000\n"
+"POT-Creation-Date: 2014-12-12 10:46+0800\n"
+"PO-Revision-Date: 2014-12-12 03:12+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/deepin-installer/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -20,8 +20,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../resources/installer/js/finish.coffee:38
-msgid "Congratulations!"
-msgstr "Félicitations !"
+msgid "Installation Succeed!"
+msgstr ""
 
 #: ../resources/installer/js/finish.coffee:39
 msgid "You need to restart the computer to complete installation."
@@ -157,6 +157,7 @@ msgid "New Partition"
 msgstr "Nouvelle partition"
 
 #: ../resources/installer/js/part.coffee:585
+#: ../resources/installer/js/part.coffee:801
 msgid "Expert Mode"
 msgstr "Mode expert"
 
@@ -165,17 +166,14 @@ msgid "Install"
 msgstr "Installation"
 
 #: ../resources/installer/js/part.coffee:621
+#: ../resources/installer/js/part.coffee:629
+#: ../resources/installer/js/part.coffee:637
 msgid "Installation Tips"
 msgstr "Astuces d'installation"
 
 #: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
 msgstr "Une partition root (/) est nécessaire."
-
-#: ../resources/installer/js/part.coffee:629
-#: ../resources/installer/js/part.coffee:637
-msgid "Install Tips"
-msgstr "Conseils d'installation"
 
 #: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
@@ -216,17 +214,13 @@ msgstr "La partition est montée.\nÊtes vous sûr de vouloir la démonter ?"
 
 #: ../resources/installer/js/part.coffee:776
 msgid ""
-"UEFI-native installation only supports GPT-formatted disk. It will lose all "
-"disk data if you insist on installing."
-msgstr "Une installation native UEFI supporte uniquement les disques formatés en GPT. Cela entraînera la perte de toutes les données du disque si vous continuez l'installation."
+"UEFI-native installation only supports GPT-formatted disk. You will lose all"
+" disk data if you insist on installing."
+msgstr ""
 
 #: ../resources/installer/js/part.coffee:790
 msgid "Simple Mode"
 msgstr "Mode simple"
-
-#: ../resources/installer/js/part.coffee:801
-msgid "Expert mode"
-msgstr "Mode expert"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
@@ -314,72 +308,72 @@ msgstr "Mouture : "
 msgid "Please enter a valid partition size."
 msgstr "Veuillez entrer une taille de partition valide."
 
-#: ../resources/installer/js/welcome.coffee:207
+#: ../resources/installer/js/welcome.coffee:194
 msgid "Yes"
 msgstr "Oui"
 
-#: ../resources/installer/js/welcome.coffee:212
+#: ../resources/installer/js/welcome.coffee:199
 msgid "No"
 msgstr "Non"
 
-#: ../resources/installer/js/welcome.coffee:307
+#: ../resources/installer/js/welcome.coffee:294
 msgid "Please press one of the following keys."
 msgstr "Veuillez appuyer sur une des touches suivantes."
 
-#: ../resources/installer/js/welcome.coffee:313
+#: ../resources/installer/js/welcome.coffee:300
 msgid "Please confirm you have the following keys."
 msgstr "Veuillez confirmer que vous avez les touches suivantes."
 
-#: ../resources/installer/js/welcome.coffee:356
+#: ../resources/installer/js/welcome.coffee:343
 msgid "Detect Layout"
 msgstr "Détection de la disposition"
 
-#: ../resources/installer/js/welcome.coffee:362
+#: ../resources/installer/js/welcome.coffee:349
 msgid "View Current"
 msgstr "Voir clavier actuel"
 
-#: ../resources/installer/js/welcome.coffee:521
+#: ../resources/installer/js/welcome.coffee:508
 msgid "Please select or search your location."
 msgstr "Veuillez indiquer ou rechercher votre position."
 
-#: ../resources/installer/js/welcome.coffee:811
+#: ../resources/installer/js/welcome.coffee:798
 msgid "Nothing Input"
 msgstr "Rien n'a été écrit"
 
-#: ../resources/installer/js/welcome.coffee:830
+#: ../resources/installer/js/welcome.coffee:817
 #: ../app/language-selector/greeter.c:301
 msgid "Invalid Password"
 msgstr "Mot de Passe invalide"
 
-#: ../resources/installer/js/welcome.coffee:835
+#: ../resources/installer/js/welcome.coffee:822
 msgid "Different Password"
 msgstr "Mot de passe différent"
 
-#: ../resources/installer/js/welcome.coffee:853
+#: ../resources/installer/js/welcome.coffee:840
 msgid "Username"
 msgstr "Utilisateur"
 
-#: ../resources/installer/js/welcome.coffee:856
+#: ../resources/installer/js/welcome.coffee:843
 msgid "Computer Name"
 msgstr "Nom de l'ordinateur"
 
-#: ../resources/installer/js/welcome.coffee:859
+#: ../resources/installer/js/welcome.coffee:846
 msgid "Password"
 msgstr "Mot de passe"
 
-#: ../resources/installer/js/welcome.coffee:864
+#: ../resources/installer/js/welcome.coffee:851
 msgid "Retype Password"
 msgstr "Répéter le mot de passe"
 
-#: ../resources/installer/js/welcome.coffee:887
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Next"
 msgstr "Suivant"
 
-#: ../resources/installer/js/welcome.coffee:938
+#: ../resources/installer/js/welcome.coffee:925
 msgid "Time Zone"
 msgstr "Zone de temps"
 
-#: ../resources/installer/js/welcome.coffee:943
+#: ../resources/installer/js/welcome.coffee:930
 msgid "Keyboard"
 msgstr "Clavier"
 
@@ -436,8 +430,8 @@ msgid "Ultimate Music Journey"
 msgstr "Experience Musicale Ultime"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
-msgid "Rich Extended Function"
-msgstr "Riche en fonctions étendues"
+msgid "Rich Extended Functions"
+msgstr ""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
