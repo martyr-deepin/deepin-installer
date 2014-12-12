@@ -16,6 +16,7 @@ done
 
 umount /target/deepinhost
 umount /target/media/cdrom
+umount /target/run
 umount /target/dev/pts
 umount /target/dev
 umount /target/proc
