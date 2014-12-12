@@ -3,29 +3,10 @@
 . /etc/deepin-installer.conf
 
 target="/target"
+chown root:root ${target} 
 
-array=`echo ${DI_MOUNTPOINTS//;/ }`
-for i in $array;do
-    mountpoint=$(echo $i | cut -d'=' -f1)
-    mountpath=$(echo $i | cut -d'=' -f2)
-    if [ $mountpath !=  '/' ];then
-	echo "unmount ${target}${mountpath}"
-	umount ${target}${mountpath}
-    fi
+umount /target/deepinhost && rm -rf /target/deepinhost
+for i in $(cat /proc/mounts | awk '{print $2}' | grep -e ^$target | sort -r);do
+    umount $i
 done
-
-umount /target/deepinhost
-umount /target/media/cdrom
-umount /target/run
-umount /target/dev/pts
-umount /target/dev
-umount /target/proc
-umount /target/sys
-umount /target/boot/efi
-rm -rf /target/deepinhost
-umount /target/host
-#Try to fix wrong permission (owned by 1001)
-chown root:root /target
-umount /target/
-
 echo "umount target finish"
