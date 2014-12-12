@@ -3,122 +3,41 @@
 }
 
 .FinishInfo {
-    position:absolute;
-    top:160px;
-    left:120px;
-    width:500px;
-    /*height:60px;*/
+    margin-top:60px;
+    width:100%;
     text-align:center;
+    display:-webkit-box;
+    -webkit-box-align:center;
+    -webkit-box-pack:center;
+    -webkit-box-orient:vertical;
 }
 
-.Finish .Desc{
+.FinishInfo .Image{
+    width:98px;
+    height:98px;
+}
+
+.FinishInfo .Desc{
+    margin-top:20px;
     font-size:30px;
     height:40px;
     line-height:40px;
 }
 
-.Finish .Detail{
+.FinishInfo .Detail{
     margin-top:20px;
-    font-size:13px;
+    font-size:15px;
+    padding:5px 50px;
     line-height:150%;
-    color:rgba(255,255,255,0.6);
+    color:rgba(255,255,255,1.0);
     cursor:pointer;
 }
 
-.Finish .Tips{
-    margin-top:5px;
-    line-height:150%;
-    font-size:14px;
-    color:rgba(255,255,255,1.0);
-}
 .FinishOps {
     position:absolute;
-    top:320px;
-    left:200px;
-    width:350px;
-    height:90px;
-    text-align:center;
-}
-
-.Finish .Later {
-    display:block;
-    cursor:pointer;
-    float:left;
-    width:100px;
-    height:90px;
-    background:url("../images/reboot_later_normal.png") no-repeat;
-    background-position:17px 7px;
-}
-
-.Finish .Later:hover {
-    background:url("../images/reboot_later_hover.png") no-repeat;
-    background-position:17px 7px;
-    color:#FBE90B;
-}
-
-.Finish .Startover {
-    cursor:pointer;
-    float:left;
-    width:100px;
-    height:90px;
-    background:url("../images/startover_normal.png") no-repeat;
-    background-position:17px 7px;
-}
-
-.Finish .Startover:hover {
-    background:url("../images/startover_hover.png") no-repeat;
-    background-position:17px 7px;
-    color:#FBE90B;
-}
-
-.Finish .Now {
-    cursor:pointer;
-    float:right;
-    width:100px;
-    height:90px;
-    background:url("../images/reboot_normal.png") no-repeat;
-    background-position:17px 7px;
-}
-
-.Finish .Now:hover {
-    background:url("../images/reboot_hover.png") no-repeat;
-    background-position:17px 7px;
-    color:#FBE90B;
-}
-
-.Finish .BtTxt {
-    position:relative;
-    top:70px;
-    font-size:14px;
-    font-style:bold;
-    text-shadow:1px 2px 3px rgba(0,0,0,0.35);
-}
-
-.FinishOpsForAutoMode {
-    position:absolute;
-    top:280px;
-    left:192px;
-    width:350px;
-    height:90px;
-    text-align:center;
+    bottom:50px;
+    width:100%;
     display:-webkit-box;
+    -webkit-box-align:center;
     -webkit-box-pack:center;
-}
-
-.Finish .NowForAutoMode {
-    height:90px;
-}
-
-.Finish .BtTxtForAutoMode {
-    cursor:pointer;
-    position:relative;
-    top:70px;
-    font-size:16px;
-    font-style:bold;
-    text-shadow:1px 2px 3px rgba(0,0,0,0.35);
-}
-
-.Finish .BtTxtForAutoMode:hover {
-    color:#FBE90B;
-    text-decoration:underline;
 }

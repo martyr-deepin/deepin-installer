@@ -482,6 +482,9 @@ class NextStep extends Widget
             @next_cb?()
         )
 
+    set_text: (text) ->
+        @next_input.value = text
+
     set_pos:(type,left,bottom) ->
         @element.style.position = type
         @element.style.left = left

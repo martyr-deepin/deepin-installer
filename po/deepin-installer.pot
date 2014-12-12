@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-12 10:46+0800\n"
+"POT-Creation-Date: 2014-12-12 11:15+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,45 +17,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../resources/installer/js/finish.coffee:38
+#: ../resources/installer/js/finish.coffee:35
+#: ../resources/installer/js/finish.coffee:44
+msgid "Reboot Now"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:41
 msgid "Installation Succeed!"
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:39
+#: ../resources/installer/js/finish.coffee:42
 msgid "You need to restart the computer to complete installation."
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:40
+#: ../resources/installer/js/finish.coffee:43
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:42
-msgid "Reboot Later"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:47
 msgid "Installation Failed!"
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:46
+#: ../resources/installer/js/finish.coffee:49
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. "
 "Thank you! "
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:57
-msgid "Start Over"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:74
-msgid "Reboot Now"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:97
+#: ../resources/installer/js/finish.coffee:50
 msgid "Exit Installation"
 msgstr ""
 
