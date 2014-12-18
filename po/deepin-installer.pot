@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-18 14:39+0800\n"
+"POT-Creation-Date: 2014-12-19 10:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -325,47 +325,49 @@ msgstr ""
 msgid "Please select or search your location."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:813
-msgid "Computer name can not be empty"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:819
-msgid "Password can not be empty"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:821
-msgid "Invalid password."
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:835
+#: ../resources/installer/js/welcome.coffee:740
+#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:847
 msgid "The two passwords do not match."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:851
+#: ../resources/installer/js/welcome.coffee:825
+msgid "Computer name can not be empty."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:831
+msgid "Password can not be empty."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:833
+msgid "Invalid password."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:854
+#: ../resources/installer/js/welcome.coffee:866
 msgid "Computer Name"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:857
+#: ../resources/installer/js/welcome.coffee:869
 msgid "Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:862
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Retype Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:885
+#: ../resources/installer/js/welcome.coffee:901
 msgid "Next"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:936
+#: ../resources/installer/js/welcome.coffee:958
 msgid "Time Zone"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:941
+#: ../resources/installer/js/welcome.coffee:963
 msgid "Keyboard"
 msgstr ""
 

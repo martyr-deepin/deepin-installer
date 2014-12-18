@@ -734,7 +734,12 @@ class WelcomeFormItem extends Widget
                 @destroy_tooltip()
             else
                 setTimeout(=>
-                    @set_tooltip(@valid.msg)
+                    msg = @valid.msg
+                    if @id == "confirmpassword"
+                        if Widget.look_up("password").input.value.length != 0
+                            msg = _("The two passwords do not match.")
+                        else msg = ""
+                    @set_tooltip(msg)
                 ,500)
         )
         @input.addEventListener("input", (e) =>
@@ -751,6 +756,14 @@ class WelcomeFormItem extends Widget
                             @set_tooltip(@valid.msg)
                     if Widget.look_up("account")?.hostname.change == false
                         Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
+                when "password"
+                    @destroy_tooltip()
+                    confirm = Widget.look_up("confirmpassword")
+                    if @input.value != confirm.input.value and confirm.change
+                        msg = _("The two passwords do not match.")
+                        confirm.set_tooltip(msg)
+                    else
+                        confirm.destroy_tooltip()
                 when "confirmpassword"
                     clearTimeout(@msg_tid)
                     if not @check_valid() and @valid.code in [illegalErrCode.different]
@@ -772,8 +785,7 @@ class WelcomeFormItem extends Widget
 
     set_tooltip: (text) ->
         if text is null or text is "" then return
-        if @input.value.length != 0
-            @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
+        @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
         if @tooltip == null
             @tooltip = new ArrowToolTip(@input, text)
             @input.removeEventListener('mouseover', @tooltip.on_mouseover)
@@ -810,13 +822,13 @@ class WelcomeFormItem extends Widget
             when "hostname"
                 #TODO:The Account dbus must provide a function to check hostname
                 if not @input.value? or @input.value.length == 0
-                    return {valid:false,msg:_("Computer name can not be empty"),code:illegalErrCode.empty}
+                    return {valid:false,msg:_("Computer name can not be empty."),code:illegalErrCode.empty}
                 else
                     return {valid:true,msg:"",code:-1}
             when "password"
                 #TODO:The Account dbus must provide a function to check password
                 if not @input.value? or @input.value.length == 0
-                    return {valid:false,msg:_("Password can not be empty"),code:illegalErrCode.empty}
+                    return {valid:false,msg:_("Password can not be empty."),code:illegalErrCode.empty}
                 else if not @account_dbus.IsPasswordValid_sync(@input.value)
                     return {valid:false,msg:_("Invalid password."),code:illegalErrCode.invalid}
                 else
@@ -864,6 +876,10 @@ class WelcomeFormItem extends Widget
             @input.classList.add("PasswordStyle")
             @warn = create_element("div", "CapsWarning", @element)
 
+    input_focus: ->
+        @input.setAttribute("autofocus","autofocus")
+        @input.focus()
+
 
 class Account extends Widget
     constructor: (@id) ->
@@ -886,6 +902,8 @@ class Account extends Widget
         @element.appendChild(@next_step.element)
         @next_step.set_pos("absolute","260px","60px")
         @next_step.next_bt_disable()
+
+        @username.input_focus()
 
     show: ->
         __timezone_widget?.hide()
@@ -915,6 +933,10 @@ class Account extends Widget
         @fill_item_data()
         if @check_start_ready()
             undo_part_table_info()
+            @username.destroy_tooltip()
+            @hostname.destroy_tooltip()
+            @password.destroy_tooltip()
+            @confirmpassword.destroy_tooltip()
             pc.switch_page(new Part("Part"))
             __selected_item?.focus()
         else
