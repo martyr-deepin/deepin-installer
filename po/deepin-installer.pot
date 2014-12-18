@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-12 11:15+0800\n"
+"POT-Creation-Date: 2014-12-18 14:39+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,38 +17,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../resources/installer/js/finish.coffee:35
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:34
+#: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Now"
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:41
+#: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:42
-msgid "You need to restart the computer to complete installation."
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:43
+#: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:47
+#: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:49
+#: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. "
 "Thank you! "
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:50
+#: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
 msgstr ""
 
@@ -97,7 +93,7 @@ msgid "Install Here"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:775
+#: ../resources/installer/js/part.coffee:780
 msgid "Warning"
 msgstr ""
 
@@ -149,7 +145,7 @@ msgid "New Partition"
 msgstr ""
 
 #: ../resources/installer/js/part.coffee:585
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:805
 msgid "Expert Mode"
 msgstr ""
 
@@ -204,13 +200,13 @@ msgid ""
 "Are you sure you want to unmount it?"
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:776
+#: ../resources/installer/js/part.coffee:781
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all "
 "disk data if you insist on installing."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:790
+#: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
 msgstr ""
 
@@ -301,72 +297,75 @@ msgstr ""
 msgid "Please enter a valid partition size."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:194
+#: ../resources/installer/js/welcome.coffee:193
 msgid "Yes"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:199
+#: ../resources/installer/js/welcome.coffee:198
 msgid "No"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:294
+#: ../resources/installer/js/welcome.coffee:293
 msgid "Please press one of the following keys."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:300
+#: ../resources/installer/js/welcome.coffee:299
 msgid "Please confirm you have the following keys."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:343
+#: ../resources/installer/js/welcome.coffee:342
 msgid "Detect Layout"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:349
+#: ../resources/installer/js/welcome.coffee:348
 msgid "View Current"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:508
+#: ../resources/installer/js/welcome.coffee:507
 msgid "Please select or search your location."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:798
-msgid "Nothing Input"
+#: ../resources/installer/js/welcome.coffee:813
+msgid "Computer name can not be empty"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:817
-#: ../app/language-selector/greeter.c:301
-msgid "Invalid Password"
+#: ../resources/installer/js/welcome.coffee:819
+msgid "Password can not be empty"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:822
-msgid "Different Password"
+#: ../resources/installer/js/welcome.coffee:821
+msgid "Invalid password."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:840
-msgid "Username"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:843
-msgid "Computer Name"
-msgstr ""
-
-#: ../resources/installer/js/welcome.coffee:846
-msgid "Password"
+#: ../resources/installer/js/welcome.coffee:835
+msgid "The two passwords do not match."
 msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:851
+msgid "Username"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:854
+msgid "Computer Name"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:857
+msgid "Password"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:862
 msgid "Retype Password"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:874
+#: ../resources/installer/js/welcome.coffee:885
 msgid "Next"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:925
+#: ../resources/installer/js/welcome.coffee:936
 msgid "Time Zone"
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:930
+#: ../resources/installer/js/welcome.coffee:941
 msgid "Keyboard"
 msgstr ""
 
@@ -450,4 +449,8 @@ msgstr ""
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
+msgstr ""
+
+#: ../app/language-selector/greeter.c:301
+msgid "Invalid Password"
 msgstr ""
