@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-12 10:46+0800\n"
-"PO-Revision-Date: 2014-12-12 03:12+0000\n"
+"POT-Creation-Date: 2014-12-19 10:27+0800\n"
+"PO-Revision-Date: 2014-12-19 03:51+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Croatian (http://www.transifex.com/projects/p/deepin-installer/language/hr/)\n"
 "MIME-Version: 1.0\n"
@@ -18,44 +18,33 @@ msgstr ""
 "Language: hr\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: ../resources/installer/js/finish.coffee:38
+#: ../resources/installer/js/finish.coffee:34
+#: ../resources/installer/js/finish.coffee:42
+msgid "Reboot Now"
+msgstr "Ponovno podigni sustav sada "
+
+#: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:39
-msgid "You need to restart the computer to complete installation."
-msgstr "Morate ponovno pokrenuti računalo da biste dovršili instalaciju."
-
-#: ../resources/installer/js/finish.coffee:40
+#: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr "Savjeti: Molim uklonite instlacijski medij prije ponovnog podizanja sustava, kako bi izbjegli ponovni ulazak u instalacijsko okruženje kada idući put pokrenete vaše računalo."
 
-#: ../resources/installer/js/finish.coffee:42
-msgid "Reboot Later"
-msgstr "Ponovno podigni sustav kasnije"
-
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
 msgstr "Instalacija nije uspjela!"
 
-#: ../resources/installer/js/finish.coffee:46
+#: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
 msgstr "Instalacijski zapis je za vas spremljen na radnoj površini.\nDa biste nam pomogli poboljšati sustav, molim pošaljite zapis Deepin timu. Hvala vam!"
 
-#: ../resources/installer/js/finish.coffee:57
-msgid "Start Over"
-msgstr "Počni ispočetka"
-
-#: ../resources/installer/js/finish.coffee:74
-msgid "Reboot Now"
-msgstr "Ponovno podigni sustav sada "
-
-#: ../resources/installer/js/finish.coffee:97
+#: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
 msgstr "Izađi iz instalacije"
 
@@ -104,7 +93,7 @@ msgid "Install Here"
 msgstr "Instaliraj ovdje"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:775
+#: ../resources/installer/js/part.coffee:780
 msgid "Warning"
 msgstr "Upozorenje"
 
@@ -156,7 +145,7 @@ msgid "New Partition"
 msgstr "Nova particija"
 
 #: ../resources/installer/js/part.coffee:585
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:805
 msgid "Expert Mode"
 msgstr "Ekspertni način"
 
@@ -211,13 +200,13 @@ msgid ""
 "Are you sure you want to unmount it?"
 msgstr "Otkriveno je da je paticija montirana.\nJeste li sigurni da je želite odmontirati?"
 
-#: ../resources/installer/js/part.coffee:776
+#: ../resources/installer/js/part.coffee:781
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:790
+#: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
 msgstr "Jednostavni način"
 
@@ -307,72 +296,77 @@ msgstr "Montiraj:"
 msgid "Please enter a valid partition size."
 msgstr "Molim unesite valjanu particijsku veličinu."
 
-#: ../resources/installer/js/welcome.coffee:194
+#: ../resources/installer/js/welcome.coffee:193
 msgid "Yes"
 msgstr "Da"
 
-#: ../resources/installer/js/welcome.coffee:199
+#: ../resources/installer/js/welcome.coffee:198
 msgid "No"
 msgstr "Ne"
 
-#: ../resources/installer/js/welcome.coffee:294
+#: ../resources/installer/js/welcome.coffee:293
 msgid "Please press one of the following keys."
 msgstr "Molim pritisnite jednu od slijedećih tipki."
 
-#: ../resources/installer/js/welcome.coffee:300
+#: ../resources/installer/js/welcome.coffee:299
 msgid "Please confirm you have the following keys."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:343
+#: ../resources/installer/js/welcome.coffee:342
 msgid "Detect Layout"
 msgstr "Otkrij raspored"
 
-#: ../resources/installer/js/welcome.coffee:349
+#: ../resources/installer/js/welcome.coffee:348
 msgid "View Current"
 msgstr "Pogledaj trenutno"
 
-#: ../resources/installer/js/welcome.coffee:508
+#: ../resources/installer/js/welcome.coffee:507
 msgid "Please select or search your location."
 msgstr "Molim odaberite ili tražite vašu lokaciju."
 
-#: ../resources/installer/js/welcome.coffee:798
-msgid "Nothing Input"
+#: ../resources/installer/js/welcome.coffee:740
+#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:847
+msgid "The two passwords do not match."
+msgstr "Dvije lozinke se ne podudaraju."
+
+#: ../resources/installer/js/welcome.coffee:825
+msgid "Computer name can not be empty."
 msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:817
-#: ../app/language-selector/greeter.c:301
-msgid "Invalid Password"
-msgstr "Neispravna lozinka"
+#: ../resources/installer/js/welcome.coffee:831
+msgid "Password can not be empty."
+msgstr "Lozinka ne može biti prazna."
 
-#: ../resources/installer/js/welcome.coffee:822
-msgid "Different Password"
-msgstr "Različita lozinka"
+#: ../resources/installer/js/welcome.coffee:833
+msgid "Invalid password."
+msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:840
+#: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
 msgstr "Korisničko ime"
 
-#: ../resources/installer/js/welcome.coffee:843
+#: ../resources/installer/js/welcome.coffee:866
 msgid "Computer Name"
 msgstr "Ime računala"
 
-#: ../resources/installer/js/welcome.coffee:846
+#: ../resources/installer/js/welcome.coffee:869
 msgid "Password"
 msgstr "Lozinka"
 
-#: ../resources/installer/js/welcome.coffee:851
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Retype Password"
 msgstr "Ponovno utipkajte lozinku"
 
-#: ../resources/installer/js/welcome.coffee:874
+#: ../resources/installer/js/welcome.coffee:901
 msgid "Next"
 msgstr "Sljedeće"
 
-#: ../resources/installer/js/welcome.coffee:925
+#: ../resources/installer/js/welcome.coffee:958
 msgid "Time Zone"
 msgstr "Vremenska zona"
 
-#: ../resources/installer/js/welcome.coffee:930
+#: ../resources/installer/js/welcome.coffee:963
 msgid "Keyboard"
 msgstr "Tipkovnica"
 
@@ -457,3 +451,7 @@ msgstr "Dobrodošli ste da nas pratite na  Weibo, Twitter, Facebook, Google+, Ma
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
 msgstr "%a, %b %d, %Y"
+
+#: ../app/language-selector/greeter.c:301
+msgid "Invalid Password"
+msgstr "Neispravna lozinka"

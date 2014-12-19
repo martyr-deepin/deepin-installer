@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-12 10:46+0800\n"
-"PO-Revision-Date: 2014-12-12 03:12+0000\n"
+"POT-Creation-Date: 2014-12-19 10:27+0800\n"
+"PO-Revision-Date: 2014-12-19 03:06+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/deepin-installer/language/uk/)\n"
 "MIME-Version: 1.0\n"
@@ -18,44 +18,33 @@ msgstr ""
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../resources/installer/js/finish.coffee:38
+#: ../resources/installer/js/finish.coffee:34
+#: ../resources/installer/js/finish.coffee:42
+msgid "Reboot Now"
+msgstr "Перезавантажити зараз"
+
+#: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:39
-msgid "You need to restart the computer to complete installation."
-msgstr "Для завершення встановлення вам слід перезапустити комп’ютер."
-
-#: ../resources/installer/js/finish.coffee:40
+#: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr "Підказки: будь ласка, вилучте носій для встановлення перед перезавантаженням, щоб не перейти до повторного початку процедури встановлення після наступного запуску комп’ютера. "
 
-#: ../resources/installer/js/finish.coffee:42
-msgid "Reboot Later"
-msgstr "Перезавантажитися пізніше"
-
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
 msgstr "Невдала спроба встановлення!"
 
-#: ../resources/installer/js/finish.coffee:46
+#: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
 msgstr "На стільниці збережено журнал встановлення.\n Щоб допомогти нам в удосконаленні системи, будь ласка, надішліть журнал команді розробників Deepin. Дякуємо! "
 
-#: ../resources/installer/js/finish.coffee:57
-msgid "Start Over"
-msgstr "Почати знову"
-
-#: ../resources/installer/js/finish.coffee:74
-msgid "Reboot Now"
-msgstr "Перезавантажити зараз"
-
-#: ../resources/installer/js/finish.coffee:97
+#: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
 msgstr ""
 
@@ -104,7 +93,7 @@ msgid "Install Here"
 msgstr "Встановити тут"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:775
+#: ../resources/installer/js/part.coffee:780
 msgid "Warning"
 msgstr "Попередження"
 
@@ -156,7 +145,7 @@ msgid "New Partition"
 msgstr "Новий розділ"
 
 #: ../resources/installer/js/part.coffee:585
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:805
 msgid "Expert Mode"
 msgstr "Режим експерта"
 
@@ -211,13 +200,13 @@ msgid ""
 "Are you sure you want to unmount it?"
 msgstr "Виявлено розділ, який слід змонтувати.\nВи справді хочете демонтувати його?"
 
-#: ../resources/installer/js/part.coffee:776
+#: ../resources/installer/js/part.coffee:781
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:790
+#: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
 msgstr "Простий режим"
 
@@ -307,72 +296,77 @@ msgstr "Монтування:"
 msgid "Please enter a valid partition size."
 msgstr "Будь ласка, вкажіть коректний розмір розділу."
 
-#: ../resources/installer/js/welcome.coffee:194
+#: ../resources/installer/js/welcome.coffee:193
 msgid "Yes"
 msgstr "Так"
 
-#: ../resources/installer/js/welcome.coffee:199
+#: ../resources/installer/js/welcome.coffee:198
 msgid "No"
 msgstr "Ні"
 
-#: ../resources/installer/js/welcome.coffee:294
+#: ../resources/installer/js/welcome.coffee:293
 msgid "Please press one of the following keys."
 msgstr "Будь ласка, натисніть одну із вказаних нижче клавіш."
 
-#: ../resources/installer/js/welcome.coffee:300
+#: ../resources/installer/js/welcome.coffee:299
 msgid "Please confirm you have the following keys."
 msgstr "Будь ласка, підтвердіть, що у вас є вказані нижче клавіші."
 
-#: ../resources/installer/js/welcome.coffee:343
+#: ../resources/installer/js/welcome.coffee:342
 msgid "Detect Layout"
 msgstr "Виявити розкладку"
 
-#: ../resources/installer/js/welcome.coffee:349
+#: ../resources/installer/js/welcome.coffee:348
 msgid "View Current"
 msgstr "Переглянути поточну"
 
-#: ../resources/installer/js/welcome.coffee:508
+#: ../resources/installer/js/welcome.coffee:507
 msgid "Please select or search your location."
 msgstr "Будь ласка, виберіть або знайдіть ваше місце перебування."
 
-#: ../resources/installer/js/welcome.coffee:798
-msgid "Nothing Input"
-msgstr "Нічого не введено"
+#: ../resources/installer/js/welcome.coffee:740
+#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:847
+msgid "The two passwords do not match."
+msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:817
-#: ../app/language-selector/greeter.c:301
-msgid "Invalid Password"
-msgstr "Некоректний пароль"
+#: ../resources/installer/js/welcome.coffee:825
+msgid "Computer name can not be empty."
+msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:822
-msgid "Different Password"
-msgstr "Інший пароль"
+#: ../resources/installer/js/welcome.coffee:831
+msgid "Password can not be empty."
+msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:840
+#: ../resources/installer/js/welcome.coffee:833
+msgid "Invalid password."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
 msgstr "Користувач"
 
-#: ../resources/installer/js/welcome.coffee:843
+#: ../resources/installer/js/welcome.coffee:866
 msgid "Computer Name"
 msgstr "Назва комп'ютера"
 
-#: ../resources/installer/js/welcome.coffee:846
+#: ../resources/installer/js/welcome.coffee:869
 msgid "Password"
 msgstr "Пароль"
 
-#: ../resources/installer/js/welcome.coffee:851
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Retype Password"
 msgstr "Введіть пароль ще раз"
 
-#: ../resources/installer/js/welcome.coffee:874
+#: ../resources/installer/js/welcome.coffee:901
 msgid "Next"
 msgstr "Далі"
 
-#: ../resources/installer/js/welcome.coffee:925
+#: ../resources/installer/js/welcome.coffee:958
 msgid "Time Zone"
 msgstr "Часовий пояс"
 
-#: ../resources/installer/js/welcome.coffee:930
+#: ../resources/installer/js/welcome.coffee:963
 msgid "Keyboard"
 msgstr "Клавіатура"
 
@@ -457,3 +451,7 @@ msgstr "Стежте за нами у Weibo, Twitter, Facebook, Google+, Mailing
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
 msgstr "%a, %d-%b-%Y"
+
+#: ../app/language-selector/greeter.c:301
+msgid "Invalid Password"
+msgstr "Некоректний пароль"

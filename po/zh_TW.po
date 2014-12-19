@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-12 10:46+0800\n"
-"PO-Revision-Date: 2014-12-12 03:12+0000\n"
+"POT-Creation-Date: 2014-12-19 10:27+0800\n"
+"PO-Revision-Date: 2014-12-19 03:51+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-installer/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -19,44 +19,33 @@ msgstr ""
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../resources/installer/js/finish.coffee:38
+#: ../resources/installer/js/finish.coffee:34
+#: ../resources/installer/js/finish.coffee:42
+msgid "Reboot Now"
+msgstr "立即重新啟動"
+
+#: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
 msgstr ""
 
-#: ../resources/installer/js/finish.coffee:39
-msgid "You need to restart the computer to complete installation."
-msgstr "您需要重新啟動電腦以完成安裝。"
-
-#: ../resources/installer/js/finish.coffee:40
+#: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr "提示：為避免重新啟動後再次進入安裝環境，請先移除安裝媒介。"
 
-#: ../resources/installer/js/finish.coffee:42
-msgid "Reboot Later"
-msgstr "稍後重新啟動"
-
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
 msgstr "安裝失敗！"
 
-#: ../resources/installer/js/finish.coffee:46
+#: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
 msgstr "安裝日誌已經為您儲存到桌面。\n為了幫助我們改進系統，請將日誌檔案發送給 Deepin 團隊。謝謝您！"
 
-#: ../resources/installer/js/finish.coffee:57
-msgid "Start Over"
-msgstr "再次嘗試"
-
-#: ../resources/installer/js/finish.coffee:74
-msgid "Reboot Now"
-msgstr "立即重新啟動"
-
-#: ../resources/installer/js/finish.coffee:97
+#: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
 msgstr "退出安裝"
 
@@ -105,7 +94,7 @@ msgid "Install Here"
 msgstr "安裝到這裡"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:775
+#: ../resources/installer/js/part.coffee:780
 msgid "Warning"
 msgstr "警告"
 
@@ -157,7 +146,7 @@ msgid "New Partition"
 msgstr "新建分割區"
 
 #: ../resources/installer/js/part.coffee:585
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:805
 msgid "Expert Mode"
 msgstr "專家模式"
 
@@ -212,13 +201,13 @@ msgid ""
 "Are you sure you want to unmount it?"
 msgstr "偵測到分割區已經掛載。\n您確定要卸載嗎？"
 
-#: ../resources/installer/js/part.coffee:776
+#: ../resources/installer/js/part.coffee:781
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
 msgstr ""
 
-#: ../resources/installer/js/part.coffee:790
+#: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
 msgstr "簡易模式"
 
@@ -308,72 +297,77 @@ msgstr "掛載於："
 msgid "Please enter a valid partition size."
 msgstr "請輸入一個有效的分割區大小。"
 
-#: ../resources/installer/js/welcome.coffee:194
+#: ../resources/installer/js/welcome.coffee:193
 msgid "Yes"
 msgstr "昰"
 
-#: ../resources/installer/js/welcome.coffee:199
+#: ../resources/installer/js/welcome.coffee:198
 msgid "No"
 msgstr "否"
 
-#: ../resources/installer/js/welcome.coffee:294
+#: ../resources/installer/js/welcome.coffee:293
 msgid "Please press one of the following keys."
 msgstr "請按下其中一個按鍵。"
 
-#: ../resources/installer/js/welcome.coffee:300
+#: ../resources/installer/js/welcome.coffee:299
 msgid "Please confirm you have the following keys."
 msgstr "請確認您擁有以下按鍵。"
 
-#: ../resources/installer/js/welcome.coffee:343
+#: ../resources/installer/js/welcome.coffee:342
 msgid "Detect Layout"
 msgstr "測試鍵盤佈局"
 
-#: ../resources/installer/js/welcome.coffee:349
+#: ../resources/installer/js/welcome.coffee:348
 msgid "View Current"
 msgstr "查看目前"
 
-#: ../resources/installer/js/welcome.coffee:508
+#: ../resources/installer/js/welcome.coffee:507
 msgid "Please select or search your location."
 msgstr "請選擇或搜尋您的所在位置。"
 
-#: ../resources/installer/js/welcome.coffee:798
-msgid "Nothing Input"
-msgstr "沒有輸入"
+#: ../resources/installer/js/welcome.coffee:740
+#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:847
+msgid "The two passwords do not match."
+msgstr "兩次輸入的密碼不相符"
 
-#: ../resources/installer/js/welcome.coffee:817
-#: ../app/language-selector/greeter.c:301
-msgid "Invalid Password"
-msgstr "無效的密碼"
+#: ../resources/installer/js/welcome.coffee:825
+msgid "Computer name can not be empty."
+msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:822
-msgid "Different Password"
-msgstr "密碼不相同"
+#: ../resources/installer/js/welcome.coffee:831
+msgid "Password can not be empty."
+msgstr "密碼不能空白"
 
-#: ../resources/installer/js/welcome.coffee:840
+#: ../resources/installer/js/welcome.coffee:833
+msgid "Invalid password."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
 msgstr "使用者名稱"
 
-#: ../resources/installer/js/welcome.coffee:843
+#: ../resources/installer/js/welcome.coffee:866
 msgid "Computer Name"
 msgstr "電腦名稱"
 
-#: ../resources/installer/js/welcome.coffee:846
+#: ../resources/installer/js/welcome.coffee:869
 msgid "Password"
 msgstr "密碼"
 
-#: ../resources/installer/js/welcome.coffee:851
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Retype Password"
 msgstr "確認密碼"
 
-#: ../resources/installer/js/welcome.coffee:874
+#: ../resources/installer/js/welcome.coffee:901
 msgid "Next"
 msgstr "下一步"
 
-#: ../resources/installer/js/welcome.coffee:925
+#: ../resources/installer/js/welcome.coffee:958
 msgid "Time Zone"
 msgstr "時區"
 
-#: ../resources/installer/js/welcome.coffee:930
+#: ../resources/installer/js/welcome.coffee:963
 msgid "Keyboard"
 msgstr "鍵盤"
 
@@ -458,3 +452,7 @@ msgstr "歡迎關注我們的微博、Twitter、Facebook、Google+、通訊論�
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
 msgstr "%Y 年 %b%d 日 %A"
+
+#: ../app/language-selector/greeter.c:301
+msgid "Invalid Password"
+msgstr "無效的密碼"

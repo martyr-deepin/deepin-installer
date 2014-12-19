@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-12 10:46+0800\n"
-"PO-Revision-Date: 2014-12-12 03:12+0000\n"
+"POT-Creation-Date: 2014-12-19 10:27+0800\n"
+"PO-Revision-Date: 2014-12-19 03:51+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/deepin-installer/language/tr/)\n"
 "MIME-Version: 1.0\n"
@@ -20,44 +20,33 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../resources/installer/js/finish.coffee:38
-msgid "Installation Succeed!"
-msgstr ""
-
-#: ../resources/installer/js/finish.coffee:39
-msgid "You need to restart the computer to complete installation."
-msgstr "Kurulumun tamamlanabilmesi için bilgisayarı tekrar başlatın."
+#: ../resources/installer/js/finish.coffee:34
+#: ../resources/installer/js/finish.coffee:42
+msgid "Reboot Now"
+msgstr "Şimdi Tekrar Başlat"
 
 #: ../resources/installer/js/finish.coffee:40
+msgid "Installation Succeed!"
+msgstr "Kurulum başarılı!"
+
+#: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
 msgstr "İpucu: Lütfen yeniden başlatmadan önce kurulum ortamını kaldırın, böylece bilgisayar bir sonraki açılışında kurulum ortamının tekrar kurmaya başlamasını önlenir."
 
-#: ../resources/installer/js/finish.coffee:42
-msgid "Reboot Later"
-msgstr "Sonra Tekrar Başlat"
-
-#: ../resources/installer/js/finish.coffee:44
+#: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
 msgstr "Kurulum Başarısız!"
 
-#: ../resources/installer/js/finish.coffee:46
+#: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
 msgstr "Bu kurulum günlüğü senin için masaüstüne kayıt edildi.\nBu sistemi daha iyi geliştirmemize yadım etmek için, lütfen günlüğü Deepin Takımına gönderin. Teşekkürler"
 
-#: ../resources/installer/js/finish.coffee:57
-msgid "Start Over"
-msgstr "Baştan Başla"
-
-#: ../resources/installer/js/finish.coffee:74
-msgid "Reboot Now"
-msgstr "Şimdi Tekrar Başlat"
-
-#: ../resources/installer/js/finish.coffee:97
+#: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
 msgstr "Kurulumdan Çık"
 
@@ -106,7 +95,7 @@ msgid "Install Here"
 msgstr "Buraya Kur"
 
 #: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:775
+#: ../resources/installer/js/part.coffee:780
 msgid "Warning"
 msgstr "Uyarı"
 
@@ -158,7 +147,7 @@ msgid "New Partition"
 msgstr "Yeni Bölüm"
 
 #: ../resources/installer/js/part.coffee:585
-#: ../resources/installer/js/part.coffee:801
+#: ../resources/installer/js/part.coffee:805
 msgid "Expert Mode"
 msgstr "Uzman Mod"
 
@@ -213,13 +202,13 @@ msgid ""
 "Are you sure you want to unmount it?"
 msgstr "Bağlı bölüm algılandı.\nOnu ayırmak istediğinize emin misiniz?"
 
-#: ../resources/installer/js/part.coffee:776
+#: ../resources/installer/js/part.coffee:781
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr ""
+msgstr "UEFI-destekli kurulum yanlız GPT formatlama desteği olan disklere uygulanabilir. Eğer yüklemekte ısrar ederseniz diskteki tüm verilerinizi kaybedebilirsiniz."
 
-#: ../resources/installer/js/part.coffee:790
+#: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
 msgstr "Basit Mod"
 
@@ -309,72 +298,77 @@ msgstr "Bağ:"
 msgid "Please enter a valid partition size."
 msgstr "Lütfen geçerli bir bölüm boyutu girin."
 
-#: ../resources/installer/js/welcome.coffee:194
+#: ../resources/installer/js/welcome.coffee:193
 msgid "Yes"
 msgstr "Evet"
 
-#: ../resources/installer/js/welcome.coffee:199
+#: ../resources/installer/js/welcome.coffee:198
 msgid "No"
 msgstr "Hayır"
 
-#: ../resources/installer/js/welcome.coffee:294
+#: ../resources/installer/js/welcome.coffee:293
 msgid "Please press one of the following keys."
 msgstr "Aşağıdaki tuşlarından birine basınız."
 
-#: ../resources/installer/js/welcome.coffee:300
+#: ../resources/installer/js/welcome.coffee:299
 msgid "Please confirm you have the following keys."
 msgstr "Aşağıdaki tuşlara basarak onaylayın lütfen."
 
-#: ../resources/installer/js/welcome.coffee:343
+#: ../resources/installer/js/welcome.coffee:342
 msgid "Detect Layout"
 msgstr "Düzen Algıla"
 
-#: ../resources/installer/js/welcome.coffee:349
+#: ../resources/installer/js/welcome.coffee:348
 msgid "View Current"
 msgstr "Mevcutu Göster"
 
-#: ../resources/installer/js/welcome.coffee:508
+#: ../resources/installer/js/welcome.coffee:507
 msgid "Please select or search your location."
 msgstr "Lütfen konumunuzu seçin veya arayın."
 
-#: ../resources/installer/js/welcome.coffee:798
-msgid "Nothing Input"
-msgstr "Giriş yapılmadı"
+#: ../resources/installer/js/welcome.coffee:740
+#: ../resources/installer/js/welcome.coffee:763
+#: ../resources/installer/js/welcome.coffee:847
+msgid "The two passwords do not match."
+msgstr "İki şifre uyuşmuyor."
 
-#: ../resources/installer/js/welcome.coffee:817
-#: ../app/language-selector/greeter.c:301
-msgid "Invalid Password"
-msgstr "Yanlış Şifre"
+#: ../resources/installer/js/welcome.coffee:825
+msgid "Computer name can not be empty."
+msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:822
-msgid "Different Password"
-msgstr "Farklı şifre"
+#: ../resources/installer/js/welcome.coffee:831
+msgid "Password can not be empty."
+msgstr "Şifre boş olamaz."
 
-#: ../resources/installer/js/welcome.coffee:840
+#: ../resources/installer/js/welcome.coffee:833
+msgid "Invalid password."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
 msgstr "Kullanıcı adı"
 
-#: ../resources/installer/js/welcome.coffee:843
+#: ../resources/installer/js/welcome.coffee:866
 msgid "Computer Name"
 msgstr "Bilgisayar Adı"
 
-#: ../resources/installer/js/welcome.coffee:846
+#: ../resources/installer/js/welcome.coffee:869
 msgid "Password"
 msgstr "Şifre"
 
-#: ../resources/installer/js/welcome.coffee:851
+#: ../resources/installer/js/welcome.coffee:874
 msgid "Retype Password"
 msgstr "Şifreyi Tekrarlayın"
 
-#: ../resources/installer/js/welcome.coffee:874
+#: ../resources/installer/js/welcome.coffee:901
 msgid "Next"
 msgstr "Sonraki"
 
-#: ../resources/installer/js/welcome.coffee:925
+#: ../resources/installer/js/welcome.coffee:958
 msgid "Time Zone"
 msgstr "Zaman Dilimi"
 
-#: ../resources/installer/js/welcome.coffee:930
+#: ../resources/installer/js/welcome.coffee:963
 msgid "Keyboard"
 msgstr "Klavye"
 
@@ -432,7 +426,7 @@ msgstr "Mükemmel Müzik Yolculuğu"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr ""
+msgstr "Zengin Genişletilmiş Fonksiyonlar"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
@@ -459,3 +453,7 @@ msgstr "Bizi Weibo, Twitter, Facebook, Google+, E-posta Listesi ve IRC'de takip 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
 msgstr "%a, %b %d, %Y"
+
+#: ../app/language-selector/greeter.c:301
+msgid "Invalid Password"
+msgstr "Yanlış Şifre"
