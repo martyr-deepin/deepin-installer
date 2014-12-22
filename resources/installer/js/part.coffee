@@ -747,7 +747,7 @@ class Part extends Page
         @linemap.element.setAttribute("style", "display:block")
 
         if DCore.Installer.system_support_efi()
-            @part_uefi.style.display = "-webkit-box"
+            @part_uefi.style.display = ""
             @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 90, 20)
             @grub_dropdown.show_drop()
 
@@ -765,26 +765,30 @@ class Part extends Page
                 @grub_radio?.checked = true
                 @uefi_radio?.checked = false
 
-            cancel_cb()
+            if DCore.Installer.disk_is_gpt(__selected_disk)
+                ok_cb()
+            else
+                cancel_cb()
             @uefi_radio.addEventListener("click",(e)=>
                 e.stopPropagation()
                 if __selected_disk is null then return
                 click_cb()
-                if not DCore.Installer.disk_is_gpt(__selected_disk)
+                if DCore.Installer.disk_is_gpt(__selected_disk)
+                    ok_cb()
+                else
                     new PromptDialog(
                         _("Warning"),
                         _("UEFI-native installation only supports GPT-formatted disk. You will lose all disk data if you insist on installing."),
                         ok_cb,
                         cancel_cb
                     ).show_at(document.body)
-                else ok_cb()
             )
             @grub_radio.addEventListener("click",cancel_cb)
         else
             @part_uefi.style.display = "none"
             @grub_radio.style.display = "none"
 
-        @part_grub.style.display = "-webkit-box"
+        @part_grub.style.display = ""
 
         @table.update_mode(__selected_mode)
         @t_mode.innerText = _("Simple Mode")

@@ -322,6 +322,7 @@
 .PartUefi {
     position:absolute;
     display:-webkit-box;
+    -webkit-box-align:center;
     bottom:110px;
     left:25px;
     right:25px;
@@ -333,13 +334,14 @@
     line-height:24px;
 }
 
-.uefi_radio .grub_radio{
+.PartUefi input{
     height:25px;
 }
 
 .PartGrub {
     position:absolute;
     display:-webkit-box;
+    -webkit-box-align:center;
     bottom:80px;
     left:25px;
     width:700px;
