@@ -38,4 +38,4 @@ KEYCODE =
     ALT:18
     BACKSPACE:8
     F12:123
-
+    TAB:9

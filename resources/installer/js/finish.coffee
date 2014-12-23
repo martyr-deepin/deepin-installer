@@ -61,6 +61,9 @@ class Finish extends Page
 
     now_cb: =>
         try
-            DCore.Installer.finish_reboot()
+            if DEBUG
+                console.debug "now_cb in finish page"
+            else
+                DCore.Installer.finish_reboot()
         catch error
             echo "#{error}"

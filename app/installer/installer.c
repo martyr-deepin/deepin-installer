@@ -71,6 +71,18 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
     return FALSE;
 }
 
+
+JS_EXPORT_API
+gboolean installer_is_debug()
+{
+#ifdef NDEBUG
+    return FALSE;
+#endif
+    return TRUE;
+}
+
+
+
 JS_EXPORT_API
 void installer_spawn_command_sync (const char* cmd,gboolean sync )
 {

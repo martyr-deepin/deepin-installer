@@ -30,7 +30,7 @@ div {
 }
 
 div:focus {
-    outline:none; 
+    outline:none;
 }
 
 input {
@@ -164,6 +164,8 @@ input:focus {
     background:url("../images/close_press.png") no-repeat;
 }
 
+
+
 .DialogContent {
     text-align:center;
     min-height:30px;
@@ -202,6 +204,10 @@ input:focus {
     background:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.1)), to(rgba(0,0,0, 0.02)));
     background-clip:padding-box;
     color:rgba(255,255,255,0.5);
+}
+
+.DialogBtn div:focus {
+    box-shadow:0 0 2px 1px #7bbefb;
 }
 
 .DropBoard {
@@ -318,8 +324,12 @@ input:focus {
 .NextStep {
     width:180px;
     height:38px;
-    border:1px solid rgba(0,0,0,0.3);
-    border-radius:5px;
+    border:2px solid rgba(0,0,0,0.0);
+    border-radius:7px;
+}
+
+.NextStep:focus {
+    border-color:#cf7938;
 }
 
 .NextStep input {
@@ -329,6 +339,13 @@ input:focus {
     font-size:18px;
     font-style:bold;
 }
+
+
+.DialogClose:focus, .Close:focus {
+    box-shadow:0 0 2px 1px #7bbefb;
+    background-color:rgba(0,0,0,.05);
+}
+
 
 ::-webkit-scrollbar {
     background:rgba(255,255,255,0.15);
