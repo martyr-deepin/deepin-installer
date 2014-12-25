@@ -887,6 +887,7 @@ class Account extends Widget
         @form = create_element("div", "WelcomeForm", @element)
 
         @username = new WelcomeFormItem("username")
+        @username.input.setAttribute("maxLength",32)
         @form.appendChild(@username.element)
 
         @hostname = new WelcomeFormItem("hostname")
