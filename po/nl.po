@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-19 03:51+0000\n"
+"PO-Revision-Date: 2014-12-26 08:41+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/deepin-installer/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Nu herstarten"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "Installatie geslaagd!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -53,14 +53,14 @@ msgstr "Installatie afbreken"
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
-msgstr ""
+msgstr "Tips"
 
 #: ../resources/installer/js/virtual.coffee:27
 msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "Er werd gedetecteerd dat je een virtuele machine gebruikt. Deepin installeren op een virtuele machine zal de performantie beïnvloeden. Je beleeft de beste ervaring in een echte omgeving."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -207,7 +207,7 @@ msgstr "De partitie is aangekoppeld.\nWeet u zeker dat u hem wilt ontkoppelen?"
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr ""
+msgstr "Installatie gebaseerd op UEFI ondersteunt enkel schijven met GPT-verdeling. Je verliest alle gegevens op de schijf als je doorgaat met installeren."
 
 #: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
@@ -223,7 +223,7 @@ msgstr "Annuleren"
 
 #: ../resources/installer/js/dialog.coffee:50
 msgid "Are you sure to exit from installation?"
-msgstr ""
+msgstr "Ben je zeker dat je het installatieproces wil verlaten?"
 
 #: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure you want to delete this partition?"
@@ -335,7 +335,7 @@ msgstr "De twee wachtwoorden komen niet overeen."
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Computer name can not be empty."
-msgstr ""
+msgstr "De naam van de computer mag niet leeg zijn."
 
 #: ../resources/installer/js/welcome.coffee:831
 msgid "Password can not be empty."
@@ -343,7 +343,7 @@ msgstr "Wachtwoord mag niet leeg zijn."
 
 #: ../resources/installer/js/welcome.coffee:833
 msgid "Invalid password."
-msgstr ""
+msgstr "Ongeldig wachtwoord."
 
 #: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
@@ -427,7 +427,7 @@ msgstr "Ultieme muziekreis"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr ""
+msgstr "Rich Extended-functies"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"

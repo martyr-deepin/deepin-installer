@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-19 03:51+0000\n"
+"PO-Revision-Date: 2014-12-26 08:41+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/deepin-installer/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Reiniciar ahora"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "¡Instalación realizada!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -54,14 +54,14 @@ msgstr "Salir de la instalación"
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
-msgstr ""
+msgstr "Consejos"
 
 #: ../resources/installer/js/virtual.coffee:27
 msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "Se ha detectado que está instalando una máquina virtual. Instalar Deepin en un dispositivo virtual afecta a su rendimiento. Le recomendamos que lo utilice en un entorno real."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -208,7 +208,7 @@ msgstr "Se ha dedectado la partición como montada. \n¿Seguro de que deseas des
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr ""
+msgstr "La instalación nativa UEFI solo soporta discos formateados GPT. Perderá todos los datos del disco si insiste en la instalación."
 
 #: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
@@ -224,7 +224,7 @@ msgstr "Cancelar"
 
 #: ../resources/installer/js/dialog.coffee:50
 msgid "Are you sure to exit from installation?"
-msgstr ""
+msgstr "¿Está seguro de salir de la instalación?"
 
 #: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure you want to delete this partition?"
@@ -336,7 +336,7 @@ msgstr "Las dos contraseñas no coinciden."
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Computer name can not be empty."
-msgstr ""
+msgstr "El nombre del ordenador no puede estar vacío."
 
 #: ../resources/installer/js/welcome.coffee:831
 msgid "Password can not be empty."
@@ -344,7 +344,7 @@ msgstr "La contraseña no puede estar vacía."
 
 #: ../resources/installer/js/welcome.coffee:833
 msgid "Invalid password."
-msgstr ""
+msgstr "Contraseña no válida"
 
 #: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
@@ -428,7 +428,7 @@ msgstr "Máxima experiencia musical."
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr ""
+msgstr "Funciones extensivas"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
