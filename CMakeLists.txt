@@ -102,3 +102,8 @@ install(
     FILES ${CMAKE_CURRENT_SOURCE_DIR}/deepin-installer.svg
     DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/scalable/apps/
 )
+
+install(
+    FILES ${CMAKE_CURRENT_SOURCE_DIR}/deepin-installer.png
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/48x48/apps/
+)
