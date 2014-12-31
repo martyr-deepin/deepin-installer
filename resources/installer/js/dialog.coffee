@@ -32,10 +32,17 @@ class Dialog extends Widget
     show_dialog: ->
         __in_model = true
         __board.setAttribute("style", "display:block")
+        for el in tabEnableElements
+            el.setAttribute("tabindex","-1")
+        enable_tab(@title_close)
+        enable_tab(@ok)
+        enable_tab(@cancel) if @cancel
 
     hide_dialog: ->
         __in_model = false
         @destroy()
+        for el in tabEnableElements
+            el.setAttribute("tabindex","0")
         __board.setAttribute("style", "display:none")
 
     set_button_text:(@ok_text = _("OK"), @cancel_text = _("Cancel")) ->

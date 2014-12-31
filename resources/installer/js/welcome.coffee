@@ -313,7 +313,7 @@ class KeyboardDetectDialog extends  Widget
         __in_model = true
         __board.setAttribute("style", "display:block")
         @element.style.display = "block"
-        @element.setAttribute("tabindex", 100)
+        enable_tab(@element)
         @element.focus()
 
     hide_dialog: ->
@@ -506,6 +506,7 @@ class Timezone extends Widget
         @query_input = create_element("input", "", @query_wrap)
         @query_input.setAttribute("placeholder", _("Please select or search your location."))
         @query_input.addEventListener("keyup", (e) =>
+            console.debug "query_input keyup"
             if e.which == 13
                 @execute_query()
             else if e.which == 27
@@ -561,11 +562,15 @@ class Timezone extends Widget
         __account_widget?.hide()
         @displayed = true
         @element.style.display = "block"
+        console.debug "set query_input tabindex 0"
+        enable_tab(@query_input)
         ArrowToolTip.container?.style.display = "block"
 
     hide: ->
         @displayed = false
         @element.style.display = "none"
+        console.debug "set query_input tabindex -1"
+        disable_tab(@query_input)
         ArrowToolTip.container?.style.display = "none"
 
     construct_map: ->
@@ -577,6 +582,7 @@ class Timezone extends Widget
 
     construct_area: (key) ->
         area = create_element("area", "TimezoneArea", @imagemap)
+        disable_tab(area)
         area.setAttribute("data-timezone", key)
         area.setAttribute("data-country", __database[key]["country"])
         area.setAttribute("data-pin", __database[key]["pin"])
@@ -589,6 +595,7 @@ class Timezone extends Widget
             area.setAttribute("shape", "rect")
             area.setAttribute("coords", __database[key]["rects"])
         area.addEventListener("click", (e) =>
+            console.debug "area click"
             @show_pin(area)
             __selected_timezone = area.getAttribute("data-timezone")
             update_timezone_text(@tri)
@@ -726,8 +733,10 @@ class WelcomeFormItem extends Widget
         @fill_widget()
         @input.addEventListener("focus", (e) =>
             @check_capslock()
+            @input.style.borderColor = "#7bbefb"
         )
         @input.addEventListener("blur", (e) =>
+            @input.style.borderColor = ""
             @check_capslock()
             @input.setAttribute("style", "")
             if @check_valid()
@@ -785,7 +794,6 @@ class WelcomeFormItem extends Widget
 
     set_tooltip: (text) ->
         if text is null or text is "" then return
-        @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
         if @tooltip == null
             @tooltip = new ArrowToolTip(@input, text)
             @input.removeEventListener('mouseover', @tooltip.on_mouseover)
@@ -797,7 +805,6 @@ class WelcomeFormItem extends Widget
         ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY - 10)
 
     destroy_tooltip:->
-        @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
         @tooltip?.hide()
         @tooltip?.destroy()
         @tooltip = null
@@ -887,6 +894,7 @@ class Account extends Widget
         @form = create_element("div", "WelcomeForm", @element)
 
         @username = new WelcomeFormItem("username")
+        @username.input.setAttribute("maxLength",32)
         @form.appendChild(@username.element)
 
         @hostname = new WelcomeFormItem("hostname")
@@ -914,6 +922,7 @@ class Account extends Widget
         @element.style.display = "none"
 
     check_start_ready: ->
+        if DEBUG then __init_parted_finish = true
         if !__init_parted_finish
             return false
         if @username.check_valid() and @hostname.check_valid() and @password.check_valid() and @confirmpassword.check_valid()
@@ -955,11 +964,13 @@ class Welcome extends Page
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
         @timezone_set.setAttribute("id","TimezoneSet")
+        enable_tab(@timezone_set)
         @timezone_set.innerText = _("Time Zone", "INSTALLER")
         timezoneSet_div = @timezone_set
 
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
         @keyboard_set.setAttribute("id","KeyboardSet")
+        enable_tab(@keyboard_set)
         @keyboard_set.innerText = _("Keyboard")
         keyboardSet_div = @keyboard_set
 

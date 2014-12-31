@@ -396,6 +396,7 @@ class PartTableItem extends Widget
         style += "font-style:bold;"
         style += "text-shadow:0 1px 2px rgba(0,0,0,0.7);"
         @element.setAttribute("style", style)
+        @onfocus = true
 
     blur: ->
         @active = false
@@ -404,6 +405,7 @@ class PartTableItem extends Widget
         @fill_format()
         @lock.innerHTML = ""
         @element.setAttribute("style", "")
+        @onfocus = false
 
     is_busy: ->
         if __selected_mode == "advance"
@@ -447,12 +449,14 @@ class DiskTab extends Widget
     constructor: (@id) ->
         super
         @prev = create_element("div", "Prev", @element)
+        enable_tab(@prev)
         @prev.addEventListener("click", (e) =>
             @prev.style.background = "images/arrow_left_press.png"
             @switch_prev()
         )
         @content = create_element("div", "Content", @element)
         @next = create_element("div", "Next", @element)
+        enable_tab(@next)
         @next.addEventListener("click", (e) =>
             @next.style.background = "images/arrow_right_press.png"
             @switch_next()
@@ -535,6 +539,30 @@ class PartTable extends Widget
         else
             @fill_items_simple()
 
+    key_select: (enter_cb) =>
+        enable_tab(@element)
+        @element.addEventListener("keyup",(e)=>
+            e.stopPropagation()
+            currentIndex = i for item,i in @partitems when item.onfocus
+            switch e.keyCode
+                when KEYCODE.UP_ARROW
+                    currentIndex--
+                when KEYCODE.DOWN_ARROW
+                    currentIndex++
+                when KEYCODE.ENTER
+                    console.log "========ENTER"
+                    enter_cb?()
+                else
+                    return
+            if currentIndex < 0 then currentIndex = @partitems.length - 1
+            else if currentIndex > @partitems.length - 1 then currentIndex = 0
+            console.debug "to index #{currentIndex}"
+            select = @partitems[currentIndex]
+            select?.focus()
+            select?.click()
+        )
+
+
     fill_items_advance: ->
         @info_header.style.display = "none"
         @mount_header.style.display = "block"
@@ -582,6 +610,7 @@ class Part extends Page
         @helpset = create_element("div", "TitleSet", @title)
 
         @t_mode = create_element("div", "PartTitleMode", @helpset)
+        enable_tab(@t_mode)
         @t_mode.innerText = _("Expert Mode")
         @t_mode.addEventListener("click", (e) =>
             @t_mode.setAttribute("class", "PartTitleMode TitlesetActive")
@@ -677,9 +706,11 @@ class Part extends Page
         @wrap.appendChild(@linemap.element)
 
         @table = new PartTable("part_table")
+        @table.key_select(@start_install_cb)
         @wrap.appendChild(@table.element)
 
         @part_uefi = create_element("div","PartUefi",@wrap)
+        enable_tab(@part_uefi)
         @uefi_radio = create_element("input","uefi_radio",@part_uefi)
         @uefi_radio.setAttribute("type","radio")
         @uefi_radio.defaultChecked = false
@@ -687,6 +718,7 @@ class Part extends Page
         @uefi_txt.innerText = _("UEFI")
 
         @part_grub = create_element("div", "PartGrub", @wrap)
+        enable_tab(@part_grub)
         @grub_radio = create_element("input", "grub_radio", @part_grub)
         @grub_radio.setAttribute("type","radio")
         @grub_radio.defaultChecked = true

@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-19 03:51+0000\n"
+"PO-Revision-Date: 2014-12-26 08:41+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/deepin-installer/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Újraindítás Most"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "Telepítés sikeres!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -53,14 +53,14 @@ msgstr "Kilépés a telepítőből"
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
-msgstr ""
+msgstr "Tippek"
 
 #: ../resources/installer/js/virtual.coffee:27
 msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "Virtuális számítógépet használ. A Deep virtuális számítógépre való telepítése befolyásolni fogja a teljesítményét. Valós  körülmények között ajánlott a használata."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -207,7 +207,7 @@ msgstr "A partíció csatolva van.\nBiztos benne hogy leválasztja?"
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr ""
+msgstr "Az UEFI -natív telepítést csak a GPT-formatált lemez támogatja. Ha ragaszkodik a telepítéshez, elveszíti a lemezen tárolt összes adatot."
 
 #: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
@@ -223,7 +223,7 @@ msgstr "Mégsem"
 
 #: ../resources/installer/js/dialog.coffee:50
 msgid "Are you sure to exit from installation?"
-msgstr ""
+msgstr "Biztosan ki akar lépni a telepítésből?"
 
 #: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure you want to delete this partition?"
@@ -335,7 +335,7 @@ msgstr "A két jelszó nem egyezik."
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Computer name can not be empty."
-msgstr ""
+msgstr "A számítógép nevét nem lehet üresen hagyni."
 
 #: ../resources/installer/js/welcome.coffee:831
 msgid "Password can not be empty."
@@ -343,7 +343,7 @@ msgstr "A jelszó nem lehet üres."
 
 #: ../resources/installer/js/welcome.coffee:833
 msgid "Invalid password."
-msgstr ""
+msgstr "Érvénytelen jelszó."
 
 #: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
@@ -427,7 +427,7 @@ msgstr "Határtalan Zenei Utazás"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr ""
+msgstr "Számos kibővített funkció"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
