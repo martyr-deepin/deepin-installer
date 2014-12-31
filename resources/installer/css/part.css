@@ -20,8 +20,10 @@
     float:left;
     width:16px;
     height:16px;
-    margin-right:14px;
+    margin-right:12px;
     background:url("../images/arrow_left_normal.png") no-repeat;
+    background-position:2px 2px;
+    padding:2px;
 }
 
 .DiskTab .Prev:hover {
@@ -30,20 +32,28 @@
 
 .DiskTab .Content {
     float:left;
-    height:16px;
-    line-height:16px;
+    height:18px;
+    line-height:18px;
 }
 
 .DiskTab .Next {
     float:left;
     width:16px;
     height:16px;
-    margin-left:14px;
+    margin-left:12px;
     background:url("../images/arrow_right_normal.png") no-repeat;
+    background-position:2px 2px;
+    padding:2px;
 }
 
 .DiskTab .Next:hover {
     background:url("../images/arrow_right_hover.png") no-repeat;
+}
+
+
+.DiskTab .Prev:focus,.DiskTab .Next:focus {
+    box-shadow:0 0 2px 1px #7bbefb;
+    background-color:rgba(0,0,0,.05);
 }
 
 .PartLineMaps {
@@ -110,6 +120,10 @@
     background:rgba(255,255,255,0.15);
 }
 
+.PartTable:focus {
+    box-shadow:0 0 2px 1px #7bbefb;
+}
+
 .PartTableHeader {
     width:700px;
     height:26px;
@@ -123,6 +137,10 @@
     line-height:27px;
     border-right:1px solid rgba(0,0,0,0.2);
     box-shadow:inset 1px 0 rgba(255,255,255,0.2);
+}
+
+.PartTableHeader .Info{
+    border-right:none;
 }
 
 .PartTableHeader .Fat {
@@ -322,6 +340,7 @@
 .PartUefi {
     position:absolute;
     display:-webkit-box;
+    -webkit-box-align:center;
     bottom:110px;
     left:25px;
     right:25px;
@@ -333,13 +352,14 @@
     line-height:24px;
 }
 
-.uefi_radio .grub_radio{
+.PartUefi input{
     height:25px;
 }
 
 .PartGrub {
     position:absolute;
     display:-webkit-box;
+    -webkit-box-align:center;
     bottom:80px;
     left:25px;
     width:700px;

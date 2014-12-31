@@ -3,460 +3,455 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Alan Jhone <alanjhone9@gmail.com>, 2014
-# Eduardo Martello <edubitcoin@gmail.com>, 2014
-# RAFAEL GAUNA <rafaelgt.mbin@gmail.com>, 2014
-# Ruy Sabino <ruysabino@gmail.com>, 2014
-# Tati Navarro <tahh.vampyra@gmail.com>, 2014
-# viniciusarl <vinniciusal@outlook.com>, 2014
+# Hadi Kamell <beemeyl@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
 "PO-Revision-Date: 2014-12-26 08:41+0000\n"
-"Last-Translator: Ruy Sabino <ruysabino@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/deepin-installer/language/pt_BR/)\n"
+"Last-Translator: Hadi Kamell <beemeyl@gmail.com>\n"
+"Language-Team: Persian (http://www.transifex.com/projects/p/deepin-installer/language/fa/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fa\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../resources/installer/js/finish.coffee:34
 #: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Now"
-msgstr "Reiniciar Agora"
+msgstr "هم اکنون راه اندازی مجدد شود"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr "Instalado com Sucesso!"
+msgstr "نصب با موفقیت به پایان رسید!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Dica: Por favor, remova a mídia de instalação antes de reiniciar, a modo de evitar entrar novamente no ambiente de instalação quando você iniciar o computador na próxima vez."
+msgstr "نکته: لطفا برای جلوگیری از ورود مجدد به محیط نصب، قبل از راه اندازی مجدد دیسک یا usb نصب را خارج کنید."
 
 #: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
-msgstr "A instalação falhou!"
+msgstr "نصب ناموفق بود!"
 
 #: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr "O log de instalação foi salvo na Área de Trabalho para você.\nPor favor envie o log para a Equipe Deepin para nos ajudar a melhorar o sistema. Obrigado!"
+msgstr "log نصب بر روی میزکار شما ذخیره شد.\nبرای کمک به ما جهت بهبود نواقص لطفا log را برای تیم دیپین بفرستید. متشکریم!"
 
 #: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
-msgstr "Sair da Instalação"
+msgstr "خروج از نصب"
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
-msgstr "Dicas"
+msgstr "نکته ها"
 
 #: ../resources/installer/js/virtual.coffee:27
 msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr "Foi detectado que você está usando uma máquina virtual. Instalando Deepin em uma máquina virtual afetará seu desempenho. Para uma melhor experiência, recomendamos utilizar um equipamento real."
+msgstr "شما در حال استفاده از شبیه ساز هستید. نصب دیپین بر روی شبیه ساز کارایی لازم را برای استفاده نخواهد داشت.پیشنهاد میشود آن را بر روی سیستم واقعی امتحان کنید."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
-msgstr "Continuar"
+msgstr "ادامه"
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
-msgstr "Requisitos de Instalação"
+msgstr "ملزومات نصب"
 
 #: ../resources/installer/js/base.coffee:29
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr "Para instalar o Deepin OS, você precisará de, no mínimo, %d GB de espaço."
+msgstr "برای نصب سیستم عامل دیپین ، شما حداقل به %d GB فضای هارد دیسک نیاز دارید."
 
 #: ../resources/installer/js/base.coffee:49
 #: ../resources/installer/js/base.coffee:51
 #: ../resources/installer/js/base.coffee:53
 msgid "Unused"
-msgstr "Não usado"
+msgstr "استفاده نشده"
 
 #: ../resources/installer/js/part.coffee:126
 #: ../resources/installer/js/part.coffee:145
 msgid "Freespace"
-msgstr "Espaço livre"
+msgstr "فضای خالی"
 
 #: ../resources/installer/js/part.coffee:198
 #: ../resources/installer/js/part.coffee:203
 msgid "Unknown"
-msgstr "Desconhecido"
+msgstr "ناشناخته"
 
 #: ../resources/installer/js/part.coffee:306
 msgid "Install Here"
-msgstr "Instalar Aqui"
+msgstr "نصب در اینجا"
 
 #: ../resources/installer/js/part.coffee:342
 #: ../resources/installer/js/part.coffee:780
 msgid "Warning"
-msgstr "Aviso"
+msgstr "هشدار"
 
 #: ../resources/installer/js/part.coffee:343
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "Você pode não inicializar devido ao espaço pequeno do ponto de montagem /boot, por favor aumente o espaço para ao menos 300M."
+msgstr "ممکن است بخاطر فضای کم محل /boot بوت شما مشکل دار شود. لطفا فضای آن را به حداقل 300M افزایش بدهید."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
-msgstr "Disco"
+msgstr "دیسک"
 
 #: ../resources/installer/js/part.coffee:488
 msgid "Device"
-msgstr "Dispositivo"
+msgstr "دستگاه"
 
 #: ../resources/installer/js/part.coffee:490
 msgid "Size"
-msgstr "Tamanho"
+msgstr "حجم"
 
 #: ../resources/installer/js/part.coffee:492
 msgid "Free Space"
-msgstr "Espaço Livre"
+msgstr "فضای خالی"
 
 #: ../resources/installer/js/part.coffee:494
 msgid "Filesystem"
-msgstr "Sistema de Arquivos"
+msgstr "فایل سیستمی"
 
 #: ../resources/installer/js/part.coffee:496
 msgid "Information"
-msgstr "Informação"
+msgstr "اطلاعات"
 
 #: ../resources/installer/js/part.coffee:498
 msgid "Mount Point"
-msgstr "Ponto de Montagem"
+msgstr "محل انتخاب"
 
 #: ../resources/installer/js/part.coffee:500
 msgid "Formatting"
-msgstr "Formatando"
+msgstr "در حال فرمت"
 
 #: ../resources/installer/js/part.coffee:507
 #: ../resources/installer/js/dialog.coffee:73
 msgid "Delete Partition"
-msgstr "Excluir Partição"
+msgstr "حذف پارتیشن"
 
 #: ../resources/installer/js/part.coffee:518
 msgid "New Partition"
-msgstr "Nova Partição"
+msgstr "پارتیشن جدید"
 
 #: ../resources/installer/js/part.coffee:585
 #: ../resources/installer/js/part.coffee:805
 msgid "Expert Mode"
-msgstr "Modo Expert"
+msgstr "حالت تخصصی"
 
 #: ../resources/installer/js/part.coffee:595
 msgid "Install"
-msgstr "Instalar"
+msgstr "نصب"
 
 #: ../resources/installer/js/part.coffee:621
 #: ../resources/installer/js/part.coffee:629
 #: ../resources/installer/js/part.coffee:637
 msgid "Installation Tips"
-msgstr "Dicas de Instalação"
+msgstr "نکته های نصب"
 
 #: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
-msgstr "Uma partição raiz (/) é requirida."
+msgstr "یک پارتیشن ریشه (/) مورد نیاز است."
 
 #: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "A instalação em UEFI só funciona em discos formatados em GPT."
+msgstr "برای نصب در وضعیت UEFI-native دیسک شما باید به فرمت GPT باشد."
 
 #: ../resources/installer/js/part.coffee:638
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr "O suporte à ESP é necessário no mode UEFI e, por favor, crie uma partição de 100MB ou mais no formato EFI."
+msgstr "پشتیبانی ESP  در حالت UEFI  مورد نیاز است. لطفا یک پارتیشن با حجم 100MB  یا بیشتر در فرمت efi  بسازید."
 
 #: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:121
 msgid "Add Partition"
-msgstr "Adicionar Partição"
+msgstr "افزودن پارتیشن"
 
 #: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
-msgstr "Não pode criar uma partição aqui."
+msgstr "نمیتوانیم در اینجا پارتیشن بسازیم"
 
 #: ../resources/installer/js/part.coffee:687
 msgid "UEFI"
-msgstr "UEFI"
+msgstr ""
 
 #: ../resources/installer/js/part.coffee:694
 msgid "Boot Loader"
-msgstr "Carregador de Inicialização"
+msgstr ""
 
 #: ../resources/installer/js/part.coffee:741
 msgid "Unmount Partition"
-msgstr "Partição Desmontada"
+msgstr "خارج کردن پارتیشن"
 
 #: ../resources/installer/js/part.coffee:742
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr "A partição foi detectada como montada.\nTem certeza que quer desmontá-la?"
+msgstr "بنظر میرسد پارتیشن فعال است.\nآیا در مورد خارج کردن آن اطمینان دارید؟"
 
 #: ../resources/installer/js/part.coffee:781
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr "A instalação nativa via UEFI só tem suporte em discos formatados com a tabela de partições GPT. Você pode perder todos os seus dados se continuar com a instalação."
+msgstr "نصب در حالت UEFI-native تنها بر روی دیسک های فرمت شده با GPT ساپورت میشود. اگر به نصب در این حالت ادامه بدهید تمام اطلاعات قبلی هارد شما از دست خواهد رفت."
 
 #: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
-msgstr "Modo Simples"
+msgstr "حالت آسان"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
-msgstr "OK"
+msgstr "تایید"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "Cancel"
-msgstr "Cancelar"
+msgstr "انصراف"
 
 #: ../resources/installer/js/dialog.coffee:50
 msgid "Are you sure to exit from installation?"
-msgstr "Você tem certeza que deseja cancelar a instalação?"
+msgstr "آیا در مورد خارج شدن از نصب اطمینان دارید؟"
 
 #: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure you want to delete this partition?"
-msgstr "Tem certeza que quer excluir essa partição?"
+msgstr "مطمئن هستید که میخواهید پارتیشن را حذف کنید؟"
 
 #: ../resources/installer/js/dialog.coffee:88
 msgid "Formatting Partition"
-msgstr "Formatando Partição"
+msgstr "در حال فرمت کردن پارتیشن"
 
 #: ../resources/installer/js/dialog.coffee:90
 msgid "Are you sure you want to format this partition?"
-msgstr "Tem certeza que quer formatar essa partição?"
+msgstr "برای فرمت کردن پارتیشن مطمئن هستید؟"
 
 #: ../resources/installer/js/dialog.coffee:99
 msgid "Proceed with installation"
-msgstr "Prosseguir com instalação"
+msgstr "ادامه ی مراحل نصب"
 
 #: ../resources/installer/js/dialog.coffee:108
 msgid "Deepin OS will be installed to freespace."
-msgstr "Deepin OS será instalado no espaço livre."
+msgstr "دیپین بر روی فضای خالی نصب خواهد شد."
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid "Deepin OS will be installed to "
-msgstr "Deepin OS será instalado em"
+msgstr "دیپین نصب خواهد شد بر روی"
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\nA partição será formatada se você continuar a instalação. Por favor faça uma cópia de segurança dos dados importantes.\n"
+msgstr "\nاگر به نصب ادامه بدهید پارتیشن فرمت خواهد شد. لطفا از اطلاعات مهم خود پشتیبان بگیرید.\n"
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid "Do you want to continue the installation ?"
-msgstr "Você quer continuar a instalação?"
+msgstr "آیا میخواهید به نصب ادامه بدهید؟"
 
 #: ../resources/installer/js/dialog.coffee:141
 msgid "Type:"
-msgstr "Tipo:"
+msgstr "نوع:"
 
 #: ../resources/installer/js/dialog.coffee:147
 msgid "Primary"
-msgstr "Primária"
+msgstr ""
 
 #: ../resources/installer/js/dialog.coffee:152
 msgid "Logical"
-msgstr "Lógica"
+msgstr ""
 
 #: ../resources/installer/js/dialog.coffee:182
 msgid "Size:"
-msgstr "Tamanho:"
+msgstr "حجم:"
 
 #: ../resources/installer/js/dialog.coffee:226
 msgid "Align:"
-msgstr "Alinhamento:"
+msgstr "تراز:"
 
 #: ../resources/installer/js/dialog.coffee:232
 msgid "Begin"
-msgstr "Início"
+msgstr "شروع"
 
 #: ../resources/installer/js/dialog.coffee:237
 msgid "End"
-msgstr "Fim"
+msgstr "پایان"
 
 #: ../resources/installer/js/dialog.coffee:257
 msgid "Filesystem:"
-msgstr "Sistema de Arquivos:"
+msgstr "فایل سیستم:"
 
 #: ../resources/installer/js/dialog.coffee:281
 msgid "Mount:"
-msgstr "Montar:"
+msgstr "محل:"
 
 #: ../resources/installer/js/dialog.coffee:314
 msgid "Please enter a valid partition size."
-msgstr "Por favor insira um tamanho de partição válido."
+msgstr "لطفا حجم را بصورت صحیح وارد کنید."
 
 #: ../resources/installer/js/welcome.coffee:193
 msgid "Yes"
-msgstr "Sim"
+msgstr "بله"
 
 #: ../resources/installer/js/welcome.coffee:198
 msgid "No"
-msgstr "Não"
+msgstr "خیر"
 
 #: ../resources/installer/js/welcome.coffee:293
 msgid "Please press one of the following keys."
-msgstr "Por favor pressione uma das seguintes teclas."
+msgstr "لطفا یکی از کلید های زیر را بزنید."
 
 #: ../resources/installer/js/welcome.coffee:299
 msgid "Please confirm you have the following keys."
-msgstr "Por favor confirme que você possui as seguintes teclas."
+msgstr "لطفا تایید کنید که شما کلیدهای زیر را میتوانید استفاده کنید."
 
 #: ../resources/installer/js/welcome.coffee:342
 msgid "Detect Layout"
-msgstr "Detectar Layout"
+msgstr "یافتن طرح صفحه کلید"
 
 #: ../resources/installer/js/welcome.coffee:348
 msgid "View Current"
-msgstr "Ver Atual"
+msgstr "مشاهده طرح فعلی"
 
 #: ../resources/installer/js/welcome.coffee:507
 msgid "Please select or search your location."
-msgstr "Por favor selecione ou procure sua localização"
+msgstr "لطفا محل جغرافیایی خود را جستجو یا وارد کنید."
 
 #: ../resources/installer/js/welcome.coffee:740
 #: ../resources/installer/js/welcome.coffee:763
 #: ../resources/installer/js/welcome.coffee:847
 msgid "The two passwords do not match."
-msgstr "As duas senhas não conferem."
+msgstr "گذرواژه ها یکسان نیستند."
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Computer name can not be empty."
-msgstr "O nome do Computador não pode ser vazio."
+msgstr "نام کامپیوتر را تکمیل کنید."
 
 #: ../resources/installer/js/welcome.coffee:831
 msgid "Password can not be empty."
-msgstr "Senha não pode ficar vazia."
+msgstr "گذرواژه نمیتواند خالی باشد."
 
 #: ../resources/installer/js/welcome.coffee:833
 msgid "Invalid password."
-msgstr "Senha inválida."
+msgstr "گذرواژه اشتباه"
 
 #: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
-msgstr "Nome de Usuário"
+msgstr "نام کاربری"
 
 #: ../resources/installer/js/welcome.coffee:866
 msgid "Computer Name"
-msgstr "Nome do Computador"
+msgstr "نام کامپیوتر"
 
 #: ../resources/installer/js/welcome.coffee:869
 msgid "Password"
-msgstr "Senha"
+msgstr "گذرواژه"
 
 #: ../resources/installer/js/welcome.coffee:874
 msgid "Retype Password"
-msgstr "Redigitar Senha"
+msgstr "تکرار گذرواژه"
 
 #: ../resources/installer/js/welcome.coffee:901
 msgid "Next"
-msgstr "Próximo"
+msgstr "بعدی"
 
 #: ../resources/installer/js/welcome.coffee:958
 msgid "Time Zone"
-msgstr "Fuso Horário"
+msgstr "منطقه زمانی"
 
 #: ../resources/installer/js/welcome.coffee:963
 msgid "Keyboard"
-msgstr "Teclado"
+msgstr "صفحه کلید"
 
 #: ../resources/installer/js/progress.coffee:25
 msgid "Error Report"
-msgstr "Relatório de Erro"
+msgstr "گزارش خطا"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "A instalação do sistema falhou. Por favor envie o log para o Time Deepin."
+msgstr "نصب سیستم شکست خورد. لطفا log را برای تیم دیپین بفرستید."
 
 #: ../resources/installer/js/progress.coffee:41
 msgid "Preparing for Installation"
-msgstr "Preparando para Instalação"
+msgstr "در حال آماده سازی برای نصب"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "Deepin Store"
-msgstr "Deepin Store"
+msgstr "فروشگاه دیپین"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "One-stop Software Management"
-msgstr "Gerenciamento Rápido de Software "
+msgstr "مدیریت نرم افزار یک مرحله ای"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:64
 msgid "Continuous Update of Wonderful Software"
-msgstr "Atualização contínua do Software maravilhoso"
+msgstr "به روزرسانی مداوم از طریق نرم افزار \"شگفت انگیز\""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:65
 msgid "Unimpeded Online Communication"
-msgstr "Comunicação Online Sem Fronteiras"
+msgstr "دسترسی آنلاین آزاد"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Deepin Movie"
-msgstr "Deepin Movie"
+msgstr "نرم افزار تماشای فیلم دیپین"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
 msgid "Comprehensive Audio-visual Shock"
-msgstr "Chocante Compreensão Audio-visual"
+msgstr "مدیریت جامع صوتی و تصویری"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:72
 msgid "New Interactive Experience"
-msgstr "Nova Experiência de Interatividade"
+msgstr "نمای تعاملی جدید"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:73
 msgid "Intelligent Subtitle Loading"
-msgstr "Carregamento Inteligente de Legendas"
+msgstr "لودینگ هوشمند زیرنویس"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
 msgid "Deepin Music"
-msgstr "Deepin Music"
+msgstr "دیپین موسیقی"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
 msgid "Ultimate Music Journey"
-msgstr "Jornada Musical Perfeita"
+msgstr "سفر به نهایت موسیقی"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr "Funções complementares"
+msgstr "سرشار از توابع گسترش یافته"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
-msgstr "Aproveite a Mais Forte Voz Online"
+msgstr "از قدرتمندترین صدای آنلاین لذت ببرید"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
 msgid "Deepin Community"
-msgstr "Comunidade Deepin"
+msgstr "جامعه دیپین"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
 msgid "Free and United Open Source Community"
-msgstr "Comunidade Open Source Gratuita e Unida"
+msgstr "جامعه ی متن باز رایگان و یکپارچه"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:88
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "Seja Bem Vindo à Participar do Projeto Internacional Deepin"
+msgstr "به جمع پروژه بین المللی دیپین خوش آمدید"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:89
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "Sinta-se a Vontade para nos Seguir no Weibo, Twitter, Facebook, Google+, Lista de email e IRC"
+msgstr "به لیست دنبال کنندگان ما در Weibo, Twitter, Facebook, Google , Mailing List و IRC خوش آمدید"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
-msgstr "%a, %b %d, %Y"
+msgstr ""
 
 #: ../app/language-selector/greeter.c:301
 msgid "Invalid Password"
-msgstr "Senha Inválida"
+msgstr "گذرواژه نامعتبر"

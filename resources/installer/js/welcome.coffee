@@ -21,7 +21,6 @@ __focused_layout_item = null
 
 __legal_keys='abcdefghijklmnopqrstuvwxyz' + '0123456789' + '-_'
 illegalErrCode =
-    define:-1
     empty:1
     invalid:2
     firstUpper:3
@@ -314,7 +313,7 @@ class KeyboardDetectDialog extends  Widget
         __in_model = true
         __board.setAttribute("style", "display:block")
         @element.style.display = "block"
-        @element.setAttribute("tabindex", 100)
+        enable_tab(@element)
         @element.focus()
 
     hide_dialog: ->
@@ -507,6 +506,7 @@ class Timezone extends Widget
         @query_input = create_element("input", "", @query_wrap)
         @query_input.setAttribute("placeholder", _("Please select or search your location."))
         @query_input.addEventListener("keyup", (e) =>
+            console.debug "query_input keyup"
             if e.which == 13
                 @execute_query()
             else if e.which == 27
@@ -562,11 +562,15 @@ class Timezone extends Widget
         __account_widget?.hide()
         @displayed = true
         @element.style.display = "block"
+        console.debug "set query_input tabindex 0"
+        enable_tab(@query_input)
         ArrowToolTip.container?.style.display = "block"
 
     hide: ->
         @displayed = false
         @element.style.display = "none"
+        console.debug "set query_input tabindex -1"
+        disable_tab(@query_input)
         ArrowToolTip.container?.style.display = "none"
 
     construct_map: ->
@@ -578,6 +582,7 @@ class Timezone extends Widget
 
     construct_area: (key) ->
         area = create_element("area", "TimezoneArea", @imagemap)
+        disable_tab(area)
         area.setAttribute("data-timezone", key)
         area.setAttribute("data-country", __database[key]["country"])
         area.setAttribute("data-pin", __database[key]["pin"])
@@ -590,6 +595,7 @@ class Timezone extends Widget
             area.setAttribute("shape", "rect")
             area.setAttribute("coords", __database[key]["rects"])
         area.addEventListener("click", (e) =>
+            console.debug "area click"
             @show_pin(area)
             __selected_timezone = area.getAttribute("data-timezone")
             update_timezone_text(@tri)
@@ -713,6 +719,7 @@ class Timezone extends Widget
             @set_timezone(@zone_dict[matched[0]])
 
 class WelcomeFormItem extends Widget
+    ACCOUNTS = "com.deepin.daemon.Accounts"
     constructor: (@id)->
         super
         @tooltip = null
@@ -726,14 +733,23 @@ class WelcomeFormItem extends Widget
         @fill_widget()
         @input.addEventListener("focus", (e) =>
             @check_capslock()
+            @input.style.borderColor = "#7bbefb"
         )
         @input.addEventListener("blur", (e) =>
+            @input.style.borderColor = ""
             @check_capslock()
             @input.setAttribute("style", "")
             if @check_valid()
                 @destroy_tooltip()
             else
-                @set_tooltip(@valid.msg)
+                setTimeout(=>
+                    msg = @valid.msg
+                    if @id == "confirmpassword"
+                        if Widget.look_up("password").input.value.length != 0
+                            msg = _("The two passwords do not match.")
+                        else msg = ""
+                    @set_tooltip(msg)
+                ,500)
         )
         @input.addEventListener("input", (e) =>
             switch @id
@@ -742,20 +758,27 @@ class WelcomeFormItem extends Widget
                     if @check_valid()
                         @destroy_tooltip()
                     else
-                        if @valid.code in [illegalErrCode.invalid,illegalErrCode.firstUpper,illegalErrCode.systemUsed,illegalErrCode.exist]
+                        if @valid.code in [illegalErrCode.invalid,illegalErrCode.firstUpper]
                             @input.value = @value_origin
+                            @set_tooltip(@valid.msg)
+                        else if @valid.code in [illegalErrCode.systemUsed,illegalErrCode.exist]
                             @set_tooltip(@valid.msg)
                     if Widget.look_up("account")?.hostname.change == false
                         Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
+                when "password"
+                    @destroy_tooltip()
+                    confirm = Widget.look_up("confirmpassword")
+                    if @input.value != confirm.input.value and confirm.change
+                        msg = _("The two passwords do not match.")
+                        confirm.set_tooltip(msg)
+                    else
+                        confirm.destroy_tooltip()
                 when "confirmpassword"
                     clearTimeout(@msg_tid)
-                    if @check_valid()
-                        @destroy_tooltip()
+                    if not @check_valid() and @valid.code in [illegalErrCode.different]
+                        @set_tooltip(@valid.msg)
                     else
-                        if @valid.code in [illegalErrCode.different]
-                            @msg_tid = setTimeout(=>
-                                @set_tooltip(@valid.msg)
-                            ,500)
+                        @destroy_tooltip()
 
             @value_origin = @input.value
             Widget.look_up("account")?.check_start_ready()
@@ -770,20 +793,18 @@ class WelcomeFormItem extends Widget
         )
 
     set_tooltip: (text) ->
-        if text is null then return
-        if @input.value.length != 0
-            @input.setAttribute("style", "border:2px solid #F79C3B;border-radius:4px;background-position:-2px -2px;")
+        if text is null or text is "" then return
         if @tooltip == null
             @tooltip = new ArrowToolTip(@input, text)
+            @input.removeEventListener('mouseover', @tooltip.on_mouseover)
+            @input.removeEventListener('mouseout', @tooltip.hide)
             @tooltip.set_delay_time(0)
-            @tooltip.buddy.removeEventListener('mouseover', @tooltip.on_mouseover)
         @tooltip.set_text(text)
         @tooltip.show()
         pos = @tooltip.get_xy()
-        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY)
+        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY - 10)
 
     destroy_tooltip:->
-        @input.setAttribute("style", "border:2px solid rgba(255,255,255,0.6);border-radius:4px;background-position:-2px -2px;")
         @tooltip?.hide()
         @tooltip?.destroy()
         @tooltip = null
@@ -794,34 +815,43 @@ class WelcomeFormItem extends Widget
 
     get_valid_msg_code: ->
         console.debug "[get_valid_msg_code]:value:===#{@input.value}---"
-        if not @input.value? or @input.value.length == 0
-            return {valid:false,msg:_("Nothing Input"),code:illegalErrCode.empty}
-        ACCOUNTS = "com.deepin.daemon.Accounts"
         if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
         switch @id
             when "username"
                 val = @account_dbus.IsUsernameValid_sync(@input.value)
                 #TODO:this is only a temporary solution
                 #fixed the deepin username in pxe is invalid
-                echo "[get_valid_msg_code]:len:#{val.length}===========#{val.toString()}-------"
                 if not val[0]
                     user_path = @account_dbus.FindUserByName_sync(@input.value)
                     if user_path != ""
                         return {valid:true,msg:"",code:val[2]}
-                return {valid:val[0],msg:val[1],code:val[2]}
+                return {valid:val[0],msg:DCore.dgettext("dde-daemon",val[1]),code:val[2]}
             when "hostname"
                 #TODO:The Account dbus must provide a function to check hostname
-                return {valid:true,msg:"",code:-1}
+                if not @input.value? or @input.value.length == 0
+                    return {valid:false,msg:_("Computer name can not be empty."),code:illegalErrCode.empty}
+                else
+                    return {valid:true,msg:"",code:-1}
             when "password"
-                if not @account_dbus.IsPasswordValid_sync(@input.value)
-                    return {valid:false,msg:_("Invalid Password"),code:illegalErrCode.invalid}
+                #TODO:The Account dbus must provide a function to check password
+                if not @input.value? or @input.value.length == 0
+                    return {valid:false,msg:_("Password can not be empty."),code:illegalErrCode.empty}
+                else if not @account_dbus.IsPasswordValid_sync(@input.value)
+                    return {valid:false,msg:_("Invalid password."),code:illegalErrCode.invalid}
                 else
                     return {valid:true,msg:"",code:-1}
             when "confirmpassword"
-                if @input.value != Widget.look_up("password")?.input.value
-                    return {valid:false,msg:_("Different Password"),code:illegalErrCode.different}
+                pwd = Widget.look_up("password")?.input.value
+                if 0 < @input.value.length <= pwd.length and pwd.indexOf(@input.value) == 0
+                    if @input.value != pwd
+                        return {valid:false,msg:"",code:-1}
+                    else
+                        return {valid:true,msg:"",code:-1}
                 else
-                    return {valid:true,msg:"",code:-1}
+                    if @input.value.length == 0
+                        return {valid:false,msg:"",code:-1}
+                    else
+                        return {valid:false,msg:_("The two passwords do not match."),code:illegalErrCode.different}
             else
                 return {valid:true,msg:"",code:-1}
 
@@ -853,6 +883,10 @@ class WelcomeFormItem extends Widget
             @input.classList.add("PasswordStyle")
             @warn = create_element("div", "CapsWarning", @element)
 
+    input_focus: ->
+        @input.setAttribute("autofocus","autofocus")
+        @input.focus()
+
 
 class Account extends Widget
     constructor: (@id) ->
@@ -860,6 +894,7 @@ class Account extends Widget
         @form = create_element("div", "WelcomeForm", @element)
 
         @username = new WelcomeFormItem("username")
+        @username.input.setAttribute("maxLength",32)
         @form.appendChild(@username.element)
 
         @hostname = new WelcomeFormItem("hostname")
@@ -876,6 +911,8 @@ class Account extends Widget
         @next_step.set_pos("absolute","260px","60px")
         @next_step.next_bt_disable()
 
+        @username.input_focus()
+
     show: ->
         __timezone_widget?.hide()
         __keyboard_widget?.hide()
@@ -885,6 +922,7 @@ class Account extends Widget
         @element.style.display = "none"
 
     check_start_ready: ->
+        if DEBUG then __init_parted_finish = true
         if !__init_parted_finish
             return false
         if @username.check_valid() and @hostname.check_valid() and @password.check_valid() and @confirmpassword.check_valid()
@@ -904,6 +942,10 @@ class Account extends Widget
         @fill_item_data()
         if @check_start_ready()
             undo_part_table_info()
+            @username.destroy_tooltip()
+            @hostname.destroy_tooltip()
+            @password.destroy_tooltip()
+            @confirmpassword.destroy_tooltip()
             pc.switch_page(new Part("Part"))
             __selected_item?.focus()
         else
@@ -922,11 +964,13 @@ class Welcome extends Page
 
         @timezone_set = create_element("div", "TimezoneSet", @title_set)
         @timezone_set.setAttribute("id","TimezoneSet")
+        enable_tab(@timezone_set)
         @timezone_set.innerText = _("Time Zone", "INSTALLER")
         timezoneSet_div = @timezone_set
 
         @keyboard_set = create_element("div", "KeyboardSet", @title_set)
         @keyboard_set.setAttribute("id","KeyboardSet")
+        enable_tab(@keyboard_set)
         @keyboard_set.innerText = _("Keyboard")
         keyboardSet_div = @keyboard_set
 

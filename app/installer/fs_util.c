@@ -22,8 +22,8 @@
 #include "fs_util.h"
 
 //when command output supply free blocks number and block size
-gdouble 
-_get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar *free_num_regex, 
+gdouble
+_get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar *free_num_regex,
                           const gchar *unit_regex, const gchar *unit_num_regex)
 {
     gdouble result = 0;
@@ -78,7 +78,7 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex, const gchar
 }
 
 gdouble
-get_mounted_partition_free (const gchar *path) 
+get_mounted_partition_free (const gchar *path)
 {
     gchar *result = NULL;
     gchar *output = NULL;
@@ -144,7 +144,7 @@ _get_ext3_free (const gchar *path)
     return _get_ext4_free (path);
 }
 
-double 
+double
 _get_ext2_free (const gchar *path)
 {
     return _get_ext4_free (path);
@@ -453,14 +453,14 @@ double _get_ntfs_free (const gchar *path)
         g_free(output);
         return -1;
     }
-    long free_cluster = (int)g_ascii_strtod(free_cluster_str, NULL);
+    double free_cluster = (int)g_ascii_strtod(free_cluster_str, NULL);
     g_free(free_cluster_str);
 
     g_free(output);
     return free_cluster * cluster_size;
 }
 
-gpointer 
+gpointer
 get_partition_free (gpointer data)
 {
     double free = 0;
@@ -656,7 +656,7 @@ void mkfs(const gchar *path, const gchar *fs)
     g_free (cmd);
 }
 
-gboolean 
+gboolean
 inhibit_disk ()
 {
     gboolean ret = FALSE;
@@ -683,7 +683,7 @@ inhibit_disk ()
 }
 
 //attention this test is block, put it in a thread
-gpointer 
+gpointer
 is_slowly_device (gpointer data)
 {
     struct SpeedHandler *handler = (struct SpeedHandler *)data;
@@ -705,7 +705,7 @@ is_slowly_device (gpointer data)
     }
 
     speed_cmd = g_strdup_printf ("hdparm -t %s", handler->path);
-    g_spawn_command_line_sync (speed_cmd, &output, NULL, NULL, &error); 
+    g_spawn_command_line_sync (speed_cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
         g_warning ("is slowly device:run hdparm %s\n", error->message);
         goto out;
