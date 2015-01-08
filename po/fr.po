@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# lexross <its4moi@gmail.com>, 2014
+# lexross <its4moi@gmail.com>, 2014-2015
 # Tristan Denni <tristan.denni@viacesi.fr>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-26 08:41+0000\n"
+"PO-Revision-Date: 2015-01-03 09:40+0000\n"
 "Last-Translator: lexross <its4moi@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/deepin-installer/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: ../resources/installer/js/finish.coffee:34
 #: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Now"
-msgstr "Redémarrer maintenant"
+msgstr "Redémarrer "
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
@@ -287,7 +287,7 @@ msgstr "Fin"
 
 #: ../resources/installer/js/dialog.coffee:257
 msgid "Filesystem:"
-msgstr "Système de fichier : "
+msgstr "Fichier système: "
 
 #: ../resources/installer/js/dialog.coffee:281
 msgid "Mount:"
@@ -389,7 +389,7 @@ msgstr "Logithèque Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "One-stop Software Management"
-msgstr "Logiciel de gestion \"Ultra Facile\""
+msgstr "Logiciel de gestion très facile"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:64
 msgid "Continuous Update of Wonderful Software"
@@ -397,7 +397,7 @@ msgstr "Mises à jour logicielles simplifiée"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:65
 msgid "Unimpeded Online Communication"
-msgstr "Communication en ligne inninterompue"
+msgstr "Communication en ligne "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Deepin Movie"
@@ -425,7 +425,7 @@ msgstr "Experience Musicale Ultime"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr "Beaucoup de fonctions étendues"
+msgstr "Riche en fonctions étendues"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
