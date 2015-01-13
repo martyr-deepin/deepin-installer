@@ -1,0 +1,5 @@
+#!/bin/bash
+
+for pkg in iputils-ping;do
+    dpkg -l | grep -q $pkg && dpkg-reconfigure $pkg
+done
