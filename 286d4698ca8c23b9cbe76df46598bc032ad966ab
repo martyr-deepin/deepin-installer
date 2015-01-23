@@ -1,5 +1,16 @@
 Code-Review+2: leaeasy <leaeasy@gmail.com>
 Verified+1: Anonymous Coward #1000004
+Code-Review+2: <songwenwu@linuxdeepin.com>
+build-config+1: <songwenwu@linuxdeepin.com>
+build-config+1: leaeasy <leaeasy@gmail.com>
+Submitted-by: leaeasy <leaeasy@gmail.com>
+Submitted-at: Tue, 13 Jan 2015 12:56:25 -0500
+Reviewed-on: https://cr.deepin.io/2545
+Project: deepin-installer
+Branch: refs/heads/develop
+
+Code-Review+2: leaeasy <leaeasy@gmail.com>
+Verified+1: Anonymous Coward #1000004
 build-config+1: 宋文武 <songwenwu@linuxdeepin.com>
 Code-Review+2: 宋文武 <songwenwu@linuxdeepin.com>
 build-config+1: leaeasy <leaeasy@gmail.com>
