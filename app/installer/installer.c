@@ -226,6 +226,18 @@ void fix_without_wm(GtkWidget* child)
 }
 
 /*
+ * Catch all signals to make sure we quit properly.
+ */
+void catch_signals()
+{
+    signal(SIGTERM, sigterm_cb);
+    signal(SIGINT, sigterm_cb);
+    signal(SIGQUIT, sigterm_cb);
+    signal(SIGKILL, sigterm_cb);
+    signal(SIGTSTP, sigterm_cb);
+}
+
+/*
  * Entry function.
  */
 int main(int argc, char **argv)
@@ -273,12 +285,7 @@ int main(int argc, char **argv)
         exit(0);
     }
 
-    // Catch all signals to make sure we quit properly.
-    signal(SIGTERM, sigterm_cb);
-    signal(SIGINT, sigterm_cb);
-    signal(SIGQUIT, sigterm_cb);
-    signal(SIGKILL, sigterm_cb);
-    signal(SIGTSTP, sigterm_cb);
+    catch_signals();
 
     // Create container widget for the webview.
     installer_container = create_web_container(FALSE, TRUE);
