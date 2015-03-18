@@ -117,9 +117,12 @@ _sort_part_op =  (part_a, part_b) ->
             return -1
     else if m_part_info[part_a]["op"] == "add"
         if m_part_info[part_a]["type"] == "extended"
-            return -1
-        else
-            return 1
+            if m_part_info[part_b] == "logical"
+                return -1
+        else if m_part_info[part_a]["type"] == "logical"
+            if m_part_info[part_b] == "extended"
+                return 1
+        return m_part_info[part_a]["start"] - m_part_info[part_b]["start"]
     else
         echo "error in sort part op"
         return -1
