@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-19 03:06+0000\n"
+"PO-Revision-Date: 2015-01-07 15:31+0000\n"
 "Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/deepin-installer/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -328,7 +328,7 @@ msgstr "אנא בחר או חפש את המיקום שלך"
 #: ../resources/installer/js/welcome.coffee:763
 #: ../resources/installer/js/welcome.coffee:847
 msgid "The two passwords do not match."
-msgstr ""
+msgstr "שתי הסיסמאות לא תואמות"
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Computer name can not be empty."
@@ -336,7 +336,7 @@ msgstr ""
 
 #: ../resources/installer/js/welcome.coffee:831
 msgid "Password can not be empty."
-msgstr ""
+msgstr "הסיסמא לא יכולה להיות ריקה"
 
 #: ../resources/installer/js/welcome.coffee:833
 msgid "Invalid password."
