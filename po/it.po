@@ -4,15 +4,15 @@
 # 
 # Translators:
 # Gioacchino Nigrelli <gioacchino.nigrelli@gmail.com>, 2014
-# Massimo Antonio Carofano <real.massimo@hotmail.it>, 2014
+# Massimo Antonio Carofano <real.massimo@hotmail.it>, 2014-2015
 # Massimo Antonio Carofano <real.massimo@hotmail.it>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-26 08:41+0000\n"
-"Last-Translator: Massimo Antonio Carofano <real.massimo@hotmail.it>\n"
+"PO-Revision-Date: 2015-04-03 14:28+0000\n"
+"Last-Translator: Martin <martin.ceronio@infosize.co.za>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/deepin-installer/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,7 +34,7 @@ msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Trucco: rimuovi il dispositivo di installazione dopo il reboot, in questo modo non si avvierà nuovamente il processo di installazione."
+msgstr "NB: rimuovi il dispositivo di installazione dopo il reboot, in questo modo non si avvierà nuovamente il processo di installazione."
 
 #: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
