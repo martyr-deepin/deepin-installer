@@ -178,7 +178,7 @@ class Install:
         self.source = '/var/lib/deepin-installer/source'
         with open('/proc/cmdline') as fp:
             for line in fp:
-                if 'locale=%s' % lang.lower() in line.lower():
+                if ' locale=%s' % lang.lower() in line.lower():
                     if os.path.isdir('/rofs'):
                         self.source = '/rofs'
         print("Detect source folder %s" % self.source)
@@ -186,7 +186,7 @@ class Install:
         assert os.path.ismount(self.target), 'Failed to mount target: %s' % str(self.target)
 
     def mount_squashfs_image(self, sqfsfile, mountpoint=None):
-        dev = '' 
+        dev = ''
         sysloops = sorted([x for x in os.listdir('/sys/block') if x.startswith('loop')])
         for sysloop in sysloops:
             try:
