@@ -3,6 +3,8 @@
 #TODO: check rootfs exists !!!
 #      this script seems bad!!!
 
+tr -d '\r'  < /etc/deepin-installer.conf > /etc/deepin-installer.conf
+
 . /etc/deepin-installer.conf
 
 #mount for lupin
