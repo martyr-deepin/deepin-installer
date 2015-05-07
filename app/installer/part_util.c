@@ -837,6 +837,7 @@ gboolean installer_write_disk (const gchar *uuid)
             return FALSE;
         }
         g_spawn_command_line_async ("sync", NULL);
+        g_spawn_command_line_async ("partprobe", NULL);
 	return TRUE;
     } else {
         g_warning ("write disk:find peddisk %s failed\n", uuid);
