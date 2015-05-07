@@ -814,7 +814,6 @@ class WelcomeFormItem extends Widget
         return @valid.valid
 
     get_valid_msg_code: ->
-        console.debug "[get_valid_msg_code]:value:===#{@input.value}---"
         if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
         switch @id
             when "username"
