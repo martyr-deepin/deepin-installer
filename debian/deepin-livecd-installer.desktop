@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=DeepinLiveCDInstaller
-Commnet=Deepin LiveCD Installer
-Exec=gksudo -- /usr/bin/deepin-installer --without-wm
-TryExec=gksudo

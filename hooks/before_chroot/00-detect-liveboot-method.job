@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e 
+
+if grep -q boot=casper /proc/cmdline;then
+    BOOT=casper
+    CDROM=/cdrom
+    DISTRIBUTION=ubuntu
+elif grep -q boot=live /proc/cmdline;then
+    BOOT=live
+    CDROM=/lib/live/mount/medium
+    DISTRIBUTION=debian
+else
+    echo "[Error] No boot value found!"; exit 101
+fi
+
+LIVE_FILESYSTEM=${CDROM}/${BOOT}
+echo -e "DISTRIBUTION=${DISTRIBUTION}\nLIVE=${BOOT}\nLIVE_FILESYSTEM=${LIVE_FILESYSTEM}\nCDROM=${CDROM}" | tee -a /etc/deepin-installer.conf

@@ -1,0 +1,31 @@
+#!/bin/sh
+#set -e
+
+Cmdline ()
+{
+    # Reading kernel command line
+    for _PARAMETER in ${LIVE_CONFIG_CMDLINE}
+    do
+    case "${_PARAMETER}" in
+        live-config.username=*|username=*)
+	USERNAME="${_PARAMETER#*username=}"	
+        ;;
+    esac
+    done
+}
+
+Config ()
+{
+    file=/usr/share/applications/deepin-installer.desktop
+    if [ -f "$file" ]; then
+        install -d -o $USERNAME -g $USERNAME /home/$USERNAME/Desktop
+        install -D -o $USERNAME -g $USERNAME $file /home/$USERNAME/Desktop/$(basename "$file")
+    fi
+
+    install -d -o $USERNAME -g $USERNAME /home/$USERNAME/.config
+    touch /home/$USERNAME/.config/not_first_run_dde
+    chown $USERNAME:$USERNAME /home/$USERNAME/.config/not_first_run_dde
+}
+
+Cmdline
+Config

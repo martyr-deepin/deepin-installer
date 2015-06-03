@@ -77,7 +77,7 @@ void normalization()
     g_assert(InstallerConf.root_disk != NULL);
     g_assert(g_file_test(InstallerConf.root_disk, G_FILE_TEST_EXISTS));
     g_assert(InstallerConf.root_partition != NULL);
-    g_assert(g_file_test(InstallerConf.root_partition, G_FILE_TEST_EXISTS));
+    //g_assert(g_file_test(InstallerConf.root_partition, G_FILE_TEST_EXISTS));
     if (InstallerConf.simple_mode && InstallerConf.bootloader == NULL) {
 	InstallerConf.bootloader = g_strdup(InstallerConf.root_disk);
     }

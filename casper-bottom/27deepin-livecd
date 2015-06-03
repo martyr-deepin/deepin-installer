@@ -20,6 +20,18 @@ esac
 
 log_begin_msg "$DESCRIPTION"
 
+generate_livecd_installer()
+{
+(
+cat <<EOF
+[Desktop Entry]
+Name=DeepinLiveCDInstaller
+Comment=Deepin LiveCD Installer
+Exec=$2
+TryExec=gksudo
+EOF
+) > $1
+}
 
 generate_lightdm_conf()
 {
@@ -28,6 +40,17 @@ cat <<EOF
 [SeatDefaults]
 greeter-session=deepin-lightdm-language-selector
 user-session=deepin-livecd-installer
+EOF
+) > $1
+}
+
+generate_install_helper()
+{
+(
+cat <<EOF
+#!/bin/sh
+gconftool-2 --set --type=bool /apps/gksu/display-no-pass-info false || true
+gksudo -- /usr/bin/deepin-installer --without-wm
 EOF
 ) > $1
 }
@@ -42,7 +65,14 @@ done
 
 if [ "$live_mode" = "true" ]; then
 	chroot /root mount -o remount,rw /
+
+	install_helper=/usr/lib/deepin-install-helper
+	root_install_helper=/root$install_helper
+        $(generate_install_helper $root_install_helper)
+	$(generate_livecd_installer /root/usr/share/xsessions/deepin-livecd-installer.desktop $install_helper)
 	$(generate_lightdm_conf /root/etc/lightdm/lightdm.conf)
+
+	chmod +x $root_install_helper
 	chroot /root mount -o remount,ro /
 fi
 

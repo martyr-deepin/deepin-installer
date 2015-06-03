@@ -1,5 +1,11 @@
 #!/bin/bash
 # Remove unused packages
 
-apt-get --force-yes -y purge deepin-installer casper
+if grep -q boot=casper /proc/cmdline;then
+    apt-get --force-yes -y purge deepin-installer casper
+fi
+if grep -q boot=live /proc/cmdline;then
+    apt-get --force-yes -y purge deepin-installer live-boot* live-config*
+fi
+
 apt-get --force-yes -y autoremove --purge

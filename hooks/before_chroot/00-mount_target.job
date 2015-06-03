@@ -5,18 +5,7 @@
 
 . /etc/deepin-installer.conf
 
-#mount for lupin
-if [ x${DI_LUPIN} = xtrue ];then
-    hostdev=`df /isodevice | tail -1 | awk '{printf $1}'`
-    echo "DI_HOST_DEV=\"${hostdev}\"" >> /etc/deepin-installer.conf
-    mkdir /host
-    mount --bind /isodevice /host
-    losetup ${DI_ROOT_PARTITION} /host/${DI_LOOP_ROOT_FILE}
-    mkfs.ext4 -L "Computer" -F -F ${DI_ROOT_PARTITION}
-fi
-
 target="/target"
-
 mkdir -p ${target}
 #must mount rootfs first
 echo "mount rootfs(${DI_ROOT_PARTITION}) to ${target}"

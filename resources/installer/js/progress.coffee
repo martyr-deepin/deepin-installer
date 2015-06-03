@@ -61,6 +61,7 @@ class Progress extends Page
         @deg += 12
 
     update_progress: (progress) ->
+        #console.debug "update_progress:=============#{progress}================="
         @progressbar.style.width = progress
 
     ppt_prepare: =>
