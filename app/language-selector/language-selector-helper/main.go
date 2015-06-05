@@ -1,38 +1,33 @@
 package main
 
-import "io/ioutil"
-import "pkg.linuxdeepin.com/lib/dbus"
-import log "pkg.linuxdeepin.com/lib/log"
-import "os"
-import "os/exec"
+import (
+	"pkg.linuxdeepin.com/lib/dbus"
+	log "pkg.linuxdeepin.com/lib/log"
+)
 
 var logger = log.NewLogger("com.deepin.helper.LanguageSelector")
 
 type LanguageSelector struct {
 }
 
-func run_shell_content(code string, argv ...string) {
-	f, err := ioutil.TempFile(os.TempDir(), "shell_code")
-	if err != nil {
-		logger.Warning("can't create temp file: ", err)
+func (*LanguageSelector) Set(lang string) {
+	var locale = lang + ".UTF-8"
+	if !isSupportedLocale(locale) {
+		logger.Warning("Invalid locale:", locale)
 		return
 	}
-	f.Close()
-	os.Remove(f.Name())
 
-	ioutil.WriteFile(f.Name(), ([]byte)(code), 0755)
-	argv = append([]string{f.Name()}, argv...)
-	cmd := exec.Command("/bin/sh", argv...)
-	d, err := cmd.Output()
-	logger.Info(string(d))
+	err := doSetLocale(locale)
 	if err != nil {
-		logger.Error("Can't run shell code:", err)
+		logger.Warning("Set locale failed:", err)
+		return
 	}
-	defer os.Remove(f.Name())
-}
 
-func (*LanguageSelector) Set(lang string) {
-	run_shell_content(shell_code, lang)
+	err = setTimezoneByLocale(locale)
+	if err != nil {
+		logger.Warning("Set timezone failed:", err)
+		return
+	}
 }
 
 func (*LanguageSelector) GetDBusInfo() dbus.DBusInfo {

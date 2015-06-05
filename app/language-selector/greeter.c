@@ -48,6 +48,7 @@
 #include "mouse.h"
 
 #define GREETER_HTML_PATH "file://"RESOURCE_DIR"/language-selector/index.html"
+#define LANG_PATH RESOURCE_DIR"/language-selector/support_language_list.ini"
 
 LightDMGreeter *greeter;
 GKeyFile *greeter_keyfile;
@@ -67,28 +68,10 @@ struct AuthHandler {
 
 struct AuthHandler *handler;
 
-char* get_langpath() {
-    gchar* LANG_PATH;
-    if (g_file_test("/lib/live/mount/medium/support_language_list.ini", G_FILE_TEST_EXISTS)) 
-    {
-    	LANG_PATH = "/lib/live/mount/medium/support_language_list.ini";
-    } 
-    else if (g_file_test("/cdrom/support_language_list.ini", G_FILE_TEST_EXISTS))
-    {
-    	LANG_PATH = "/cdrom/support_language_list.ini";
-    } 
-    else 
-    {
-        g_message("No support_language_list.ini found!\n");
-    	LANG_PATH = RESOURCE_DIR"/language-selector/support_language_list.ini";
-    }
-    return LANG_PATH;
-}
-
 char** get_lang_groups()
 {
     GKeyFile* key = g_key_file_new();
-    gboolean load = g_key_file_load_from_file (key,get_langpath(), G_KEY_FILE_NONE, NULL);
+    gboolean load = g_key_file_load_from_file (key,LANG_PATH, G_KEY_FILE_NONE, NULL);
     gsize len;
     char** list = g_key_file_get_groups(key,&len);
     g_message("get_lang_groups length:%d,load:%d",(int)len,load);
@@ -100,7 +83,7 @@ JS_EXPORT_API
 JSObjectRef greeter_get_local_list()
 {
     GKeyFile* key = g_key_file_new();
-    gboolean load = g_key_file_load_from_file (key,get_langpath() , G_KEY_FILE_NONE, NULL);
+    gboolean load = g_key_file_load_from_file (key,LANG_PATH , G_KEY_FILE_NONE, NULL);
     gsize len;
     char** list = g_key_file_get_groups(key,&len);
     g_message("get_lang_groups length:%d,load:%d",(int)len,load);
@@ -127,7 +110,7 @@ JS_EXPORT_API
 JSObjectRef greeter_get_lang_list()
 {
     GKeyFile* key = g_key_file_new();
-    gboolean load = g_key_file_load_from_file (key,get_langpath() , G_KEY_FILE_NONE, NULL);
+    gboolean load = g_key_file_load_from_file (key,LANG_PATH , G_KEY_FILE_NONE, NULL);
     gsize len;
     char** list = g_key_file_get_groups(key,&len);
     g_message("get_lang_groups length:%d,load:%d",(int)len,load);
@@ -153,7 +136,7 @@ JS_EXPORT_API
 char* greeter_get_lang_by_name(gchar* lang_name)
 {
     GKeyFile* key = g_key_file_new();
-    gboolean load = g_key_file_load_from_file (key,get_langpath(), G_KEY_FILE_NONE, NULL);
+    gboolean load = g_key_file_load_from_file (key,LANG_PATH, G_KEY_FILE_NONE, NULL);
     gsize len;
     char** list = g_key_file_get_groups(key,&len);
     g_message("get_lang_groups length:%d,load:%d",(int)len,load);
