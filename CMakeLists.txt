@@ -99,7 +99,7 @@ if (LIVE_BOOT)
     )
     install (
         FILES ${CMAKE_CURRENT_SOURCE_DIR}/deepin-installer.conf
-        DESTINATION /etc/live/boot/
+        DESTINATION /etc/live/config/
     )
 else()
     install(
