@@ -1,11 +1,41 @@
 #!/bin/bash
 # Remove unused packages
+declare -a remove_pkgs
+declare -a REMOVE_PKGS
 
+detect_btrfs() {
+    for i in ` lsblk -o FSTYPE | sed '/^$/d' | uniq `;do
+        [ "${i}" = "btrfs" ] && return 0
+    done
+    return 1
+}
+
+detect_vbox() {
+    if dmidecode | grep -q "Product Name: VirtualBox";then
+        return 0
+    fi
+    return 1
+}
+
+REMOVE_PKGS+=(deepin-installer)
 if grep -q boot=casper /proc/cmdline;then
-    apt-get --force-yes -y purge deepin-installer casper
+    REMOVE_PKGS+=("casper")
 fi
 if grep -q boot=live /proc/cmdline;then
-    apt-get --force-yes -y purge deepin-installer live-boot* live-config*
+    REMOVE_PKGS+=("live-boot*" "live-config*")
 fi
 
+if [ -f /deepinhost/etc/deepin-installer.conf ];then
+    . /deepinhost/etc/deepin-installer.conf
+fi
+
+detect_btrfs || remove_pkgs+=("btrfs-tools")
+[ x${DI_LUPIN} = xtrue ] || remove_pkgs+=("lupin-support")
+detect_vbox || remove_pkgs+=("virtualbox-guest-*")
+
+for pkg in ${remove_pkgs[@]};do
+    dpkg -l | grep -q $pkg && REMOVE_PKGS+=($pkg)
+done
+
+apt-get --force-yes -y purge ${REMOVE_PKGS[@]}
 apt-get --force-yes -y autoremove --purge
