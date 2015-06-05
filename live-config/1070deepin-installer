@@ -8,7 +8,7 @@ Cmdline ()
     do
     case "${_PARAMETER}" in
         live-config.username=*|username=*)
-	USERNAME="${_PARAMETER#*username=}"	
+	    LIVE_USERNAME="${_PARAMETER#*username=}"	
         ;;
     esac
     done
@@ -18,13 +18,16 @@ Config ()
 {
     file=/usr/share/applications/deepin-installer.desktop
     if [ -f "$file" ]; then
-        install -d -o $USERNAME -g $USERNAME /home/$USERNAME/Desktop
-        install -D -o $USERNAME -g $USERNAME $file /home/$USERNAME/Desktop/$(basename "$file")
+        install -d -o $LIVE_USERNAME -g $LIVE_USERNAME /home/$LIVE_USERNAME/Desktop
+        install -D -o $LIVE_USERNAME -g $LIVE_USERNAME $file /home/$LIVE_USERNAME/Desktop/$(basename "$file")
     fi
 
-    install -d -o $USERNAME -g $USERNAME /home/$USERNAME/.config
-    touch /home/$USERNAME/.config/not_first_run_dde
-    chown $USERNAME:$USERNAME /home/$USERNAME/.config/not_first_run_dde
+    install -d -o $LIVE_USERNAME -g $LIVE_USERNAME /home/$LIVE_USERNAME/.config
+    cat > /home/$LIVE_USERNAME/.config/not_first_run_dde << EOF
+Generate by deepin-installer.
+Timestamp: `LC_ALL=C date`
+EOF
+    chown $LIVE_USERNAME:$LIVE_USERNAME /home/$LIVE_USERNAME/.config/not_first_run_dde
 }
 
 Cmdline
