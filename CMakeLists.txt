@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 option(DEVELOP "enable develop mode (use src's resource)" false)
 option(TEST "enable test mode (run project's test code)" false)
+option(LIVE_BOOT "enable test mode (run project's test code)" true)
 
 
 macro(GEN_JSC_SOURCE2 JSC_GEN_SRC CFG_DIR OUTPUT)
@@ -89,16 +90,25 @@ install(
    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/deepin-installer
    USE_SOURCE_PERMISSIONS
 )
-install(
-   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/casper-bottom
-   DESTINATION ${CMAKE_INSTALL_PREFIX}/share/initramfs-tools/scripts
-   USE_SOURCE_PERMISSIONS
-)
-install(
-   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/live-config/
-   DESTINATION /lib/live/config
-   USE_SOURCE_PERMISSIONS
-)
+
+if (LIVE_BOOT)
+    install(
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/live-config/
+        DESTINATION /lib/live/config
+        USE_SOURCE_PERMISSIONS
+    )
+    install (
+        FILES ${CMAKE_CURRENT_SOURCE_DIR}/deepin-installer.conf
+        DESTINATION /etc/live/boot/
+    )
+else()
+    install(
+       DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/casper-bottom
+       DESTINATION ${CMAKE_INSTALL_PREFIX}/share/initramfs-tools/scripts
+       USE_SOURCE_PERMISSIONS
+    )
+endif()
+
 install(
    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/deepin-installer
