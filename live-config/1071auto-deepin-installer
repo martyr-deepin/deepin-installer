@@ -64,23 +64,22 @@ for x in $(cat /proc/cmdline); do
 done
 
 if [ "$auto_mode" = "true" ]; then
-	chroot /root mount -o remount,rw /
 	lang=$(echo $locale | awk -F '.' '{print $1}')
-
 	# set locale
 	echo $locale
-	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" > /root/etc/default/locale
-	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" >> /root/etc/environment
-	chroot /root /usr/sbin/locale-gen "$locale" || true
+	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" > /etc/default/locale
+	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" >> /etc/environment
+    sed -i "s/# \(en_US\.UTF-8.*$\)/\1/g" /etc/locale.gen
+    sed -i "s/# \(${locale}\.UTF-8.*$\)/\1/g" /etc/locale.gen
+	/usr/sbin/locale-gen || true
+
 
 	install_conf=$install_path/install/deepin-installer.conf
 	install_log=$install_path/install/deepin-installer.log
 	install_helper=/usr/lib/deepin-install-helper
-	root_install_helper=/root$install_helper
-	$(generate_install_helper $root_install_helper $locale $install_conf $install_log)
-	$(generate_auto_installer /root/usr/share/xsessions/deepin-auto-installer.desktop $install_helper)
-	$(generate_lightdm_conf /root/etc/lightdm/lightdm.conf)
+	$(generate_install_helper $install_helper $locale $install_conf $install_log)
+	$(generate_auto_installer /usr/share/xsessions/deepin-auto-installer.desktop $install_helper)
+	$(generate_lightdm_conf /etc/lightdm/lightdm.conf)
 
-	chmod +x $root_install_helper
-	chroot /root mount -o remount,ro /
+	chmod +x $install_helper
 fi
