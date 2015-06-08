@@ -55,7 +55,7 @@ for x in $(cat /proc/cmdline); do
         auto_mode=true
         ;;
     install-path=*)
-        install_path="/isodevice/${x#install-path=}"
+        install_path="${x#install-path=}"
         ;;
     deepin-installer/locale=*)
         locale=${x#deepin-installer/locale=}
@@ -64,6 +64,11 @@ for x in $(cat /proc/cmdline); do
 done
 
 if [ "$auto_mode" = "true" ]; then
+    #fix install_path
+    #if use boot config, iso mount on /lib/live/mount/findiso
+    iso_root=/lib/live/mount/findiso
+    install_path=$iso_root/$install_path
+
 	lang=$(echo $locale | awk -F '.' '{print $1}')
 	# set locale
 	echo $locale
