@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -n "${FINDISO}" ];then
+Remount_ntfs() {
     awk '{if ($2 == "/live/findiso") {print $3, $2} }' /proc/mounts | while read fstype devname
     do
         loopdevname=$(/sbin/losetup --noheading --list | grep /live/findiso/ | awk '{print $1}')
@@ -9,21 +9,30 @@ if [ -n "${FINDISO}" ];then
             mountpoint=$(cat /proc/mounts | grep ${loopdevname} | awk '{print $2}')
             if [ -n "${mountpoint}" ];then
                 /sbin/losetup -d ${loopdevname}
-    	    umount ${mountpoint}
+    	        umount ${mountpoint}
             fi
         fi
     
         if [ "$fstype" = "ntfs" ];then
-    	modprobe fuse
-    	mount -t ntfs-3g -o remount,rw,noatime "${devname}" /live/findiso
+            umount /live/findiso
+    	    modprobe fuse
+    	    mount.ntfs-3g -o rw "${devname}" /live/findiso
         else
-    	mount -t $fstype -o remount,rw,noatime "${devname}" /live/findiso
+    	    mount -t $fstype -o remount,rw,noatime "${devname}" /live/findiso
         fi 
     
         if [ -n "${mountpoint}" ];then 
             /sbin/losetup ${loopdevname} ${isofile}
-    	mount -t iso9660 -o ro,noatime "${loopdevname}" ${mountpoint}
+    	    mount -t iso9660 -o ro,noatime "${loopdevname}" ${mountpoint}
         fi
     
     done
-fi
+}
+
+for _p in $(cat /proc/cmdline);do
+    case "${_p}" in
+        auto-deepin-installer)
+            Remount_ntfs
+            ;;
+    esac
+done
