@@ -1,0 +1,4 @@
+#!/bin/sh
+# try to fix systemd machine-id config at first boot
+dbus-uuidgen | tee /etc/machine-id
+
