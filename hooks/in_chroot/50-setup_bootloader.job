@@ -35,9 +35,12 @@ case ${BOOT} in
         echo "INFO: Detected legacy machine, installing grub to ${DI_BOOTLOADER}"
         DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
 	if [ x${DI_LUPIN} = xtrue ];then
+        echo "Fix grub install failed in lupin"
+        [ -d /boot/grub ] || mkdir /boot/grub
 	    echo "(hd0) ${DI_BOOTLOADER}" > /boot/grub/device.map
 	    mkdir /host
 	    mount ${DI_HOST_DEV} /host
+        echo "Mount DI_HOST_DEV: " ${DI_HOST_DEV}
 	fi
         grub-install --no-floppy --force ${DI_BOOTLOADER}
         ;;

@@ -10,7 +10,7 @@ mkdir -p ${target}
 
 #mount for lupin
 if [ x${DI_LUPIN} = xtrue ];then
-    hostdev=`df /isodevice | tail -1 | awk '{printf $1}'`
+    hostdev=`df ${DI_LUPIN_ROOT} | tail -1 | awk '{printf $1}'`
     echo "DI_HOST_DEV=\"${hostdev}\"" >> /etc/deepin-installer.conf
     mkdir /host
     mount --bind ${DI_LUPIN_ROOT} /host
