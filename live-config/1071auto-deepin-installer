@@ -75,7 +75,7 @@ if [ "$auto_mode" = "true" ]; then
 	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" > /etc/default/locale
 	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" >> /etc/environment
     sed -i "s/# \(en_US\.UTF-8.*$\)/\1/g" /etc/locale.gen
-    sed -i "s/# \(${locale}\.UTF-8.*$\)/\1/g" /etc/locale.gen
+    sed -i "s/# \(${locale}.*$\)/\1/g" /etc/locale.gen
 	/usr/sbin/locale-gen || true
 
 
