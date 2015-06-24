@@ -34,6 +34,7 @@ void workaround_gtk_theme()
 GtkWidget* create_web_container(bool normal, bool above)
 {
     GtkWidget* window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_widget_set_app_paintable(window, TRUE);
     workaround_gtk_theme();
 
     g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
