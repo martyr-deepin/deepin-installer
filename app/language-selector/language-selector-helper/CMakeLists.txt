@@ -1,8 +1,9 @@
 SET(NAME "language-selector-helper")
+set(GOPATH "/usr/share/gocode")
 
 add_custom_command(
     OUTPUT ${NAME}
-    COMMAND go build 
+	COMMAND GOPATH=${GOPATH} go build
     COMMAND mv ${NAME} ${CMAKE_BINARY_DIR}
     DEPENDS main.go
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
