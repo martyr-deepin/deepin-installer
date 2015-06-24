@@ -42,12 +42,12 @@ fi
 echo "[Info] No DI_EXTRACT_METHOD found..."
 
 declare -i MEM
-MEM=$(cat /proc/meminfo | grep MemTotal | awk '{print $2}')
-# Check if mem less than 2G
-if [ $MEM -le 2000000 ] ;then
-    echo "[Info] Detect memory less than 2G"
+MEM=$(awk '/^MemFree:/ {mem_free=$2} /^Buffers:/ {meme_free+=$2} /^Cacheed:/ {mem_free+=$2} END{print mem_free}' /proc/meminfo)
+# Check if freemem less than 3G
+if [ $MEM -le 3000000 ] ;then
+    echo "[Info] Detect free memory less than 3G"
     ./extract_base_filesystem --lang ${L} --live ${LIVE}
 else
-    echo "[Info] Detect memory more than 2G"
+    echo "[Info] Detect free memory more than 3G"
     extract_base_filesystem_as_unsquashfs
 fi
