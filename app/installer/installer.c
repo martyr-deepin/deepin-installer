@@ -178,7 +178,8 @@ void redirect_log(const char* path)
 
 void fix_without_wm(GtkWidget* child)
 {
-    GdkCursor* cursor = gdk_cursor_new (GDK_LEFT_PTR);
+    GdkCursor* cursor = gdk_cursor_new_for_display (gdk_display_get_default(),
+                                                    GDK_LEFT_PTR);
     gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
     g_object_unref(cursor);
     INSTALLER_WIN_WIDTH = gdk_screen_width();

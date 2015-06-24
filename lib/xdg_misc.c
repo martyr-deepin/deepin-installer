@@ -37,7 +37,7 @@ void set_desktop_env_name(const char* name)
 {
     size_t max_len = strlen(name) + 1;
     memcpy(DE_NAME, name, max_len > 100 ? max_len : 100);
-    g_desktop_app_info_set_desktop_env(name);
+    g_setenv("XDG_CURRENT_DESKTOP", DE_NAME, TRUE);
 }
 
 char* check_xpm(const char* path)

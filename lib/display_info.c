@@ -125,7 +125,6 @@ void widget_move_by_rect(GtkWidget* widget,struct DisplayInfo info)
         GdkWindow* gdk = gtk_widget_get_window(widget);
         gdk_window_set_geometry_hints(gdk, &geo, GDK_HINT_MIN_SIZE);
         gdk_window_move_resize(gdk, info.x, info.y,info.width,info.height );
-        gdk_window_flush(gdk);
     }
 }
 

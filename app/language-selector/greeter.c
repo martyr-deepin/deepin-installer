@@ -442,7 +442,8 @@ monitors_set_cb ()
     gdk_window_set_skip_taskbar_hint (gdkwindow, TRUE);
     gdk_window_set_keep_above (gdkwindow, TRUE);
     gdk_window_set_accept_focus(gdkwindow,TRUE);
-    GdkCursor* cursor = gdk_cursor_new (GDK_LEFT_PTR);
+    GdkCursor* cursor = gdk_cursor_new_for_display (gdk_display_get_default(),
+                                                    GDK_LEFT_PTR);
     gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
     g_object_unref(cursor);
 
