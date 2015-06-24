@@ -62,7 +62,6 @@ pkg_check_modules(WEBKIT REQUIRED deepin-webkit-3.0)
 set(CMAKE_C_FLAGS "-std=c99")
 
 
-
 set(JSC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/lib/jsc_extension/)
 include_directories(${JSC_HEADER})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
@@ -86,6 +85,8 @@ add_subdirectory(tools)
 #    DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
 #    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/glib-2.0
 #)
+install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/share/deepin-installer)
+
 install(
    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/hooks
    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/deepin-installer
