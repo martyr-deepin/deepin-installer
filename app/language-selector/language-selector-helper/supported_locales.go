@@ -22,16 +22,17 @@
 package main
 
 import (
-	"dbus/com/deepin/api/localehelper"
 	"fmt"
 	"io/ioutil"
-	dutils "pkg.linuxdeepin.com/lib/utils"
+	"os"
 	"strings"
+
+	"dbus/com/deepin/api/localehelper"
 )
 
 const (
-	supportedLocaleFile = "/usr/share/i18n/SUPPORTED"
 	defaultLocaleFile   = "/etc/default/locale"
+	supportedLocaleFile = "/usr/share/i18n/SUPPORTED"
 )
 
 func isSupportedLocale(locale string) bool {
@@ -76,7 +77,7 @@ func setTimezoneByLocale(locale string) error {
 		file = "/usr/share/zoneinfo/UTC"
 	}
 
-	return dutils.SymlinkFile(file, "/etc/localtime")
+	return os.Symlink(file, "/etc/localtime")
 }
 
 func getSupportedLocales(file string) ([]string, error) {
