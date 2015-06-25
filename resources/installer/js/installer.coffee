@@ -21,19 +21,19 @@ pc = new PageContainer("pc")
 document.body.appendChild(pc.element)
 
 DCore.signal_connect("without_wm", ->
-    console.log "signal_connect:without_wm==============="
+    console.log "signal_connect: without window manager"
     pc.without_wm = true
 )
 
 DCore.signal_connect("is_virtual_machine", ->
-    console.log "signal_connect:is_virtual_machine===================="
+    console.log "signal_connect: is running in virtual machine"
     pc.is_virtual_machine = true
     virtual_page = new VirtualMachine("VirtualMachine") if not virtual_page?
     pc.switch_page(virtual_page)
 )
 
 DCore.signal_connect("auto_mode", ->
-    console.log "signal_connect:auto_mode========================"
+    console.log "signal_connect: in auto mode"
     pc.auto_mode = true
     if pc.is_virtual_machine then return
     progress_page = new Progress("progress") if not progress_page?

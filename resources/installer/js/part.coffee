@@ -550,7 +550,7 @@ class PartTable extends Widget
                 when KEYCODE.DOWN_ARROW
                     currentIndex++
                 when KEYCODE.ENTER
-                    console.log "========ENTER"
+                    console.log "[ENTER] pressed"
                     enter_cb?()
                 else
                     return

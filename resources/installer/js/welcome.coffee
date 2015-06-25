@@ -761,7 +761,7 @@ class WelcomeFormItem extends Widget
                         if @valid.code in [illegalErrCode.invalid,illegalErrCode.firstUpper]
                             @input.value = @value_origin
                             @set_tooltip(@valid.msg)
-                        else if @valid.code in [illegalErrCode.systemUsed,illegalErrCode.exist]
+                        else
                             @set_tooltip(@valid.msg)
                     if Widget.look_up("account")?.hostname.change == false
                         Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
@@ -818,13 +818,15 @@ class WelcomeFormItem extends Widget
         switch @id
             when "username"
                 val = @account_dbus.IsUsernameValid_sync(@input.value)
-                #TODO:this is only a temporary solution
-                #fixed the deepin username in pxe is invalid
-                if not val[0]
-                    user_path = @account_dbus.FindUserByName_sync(@input.value)
-                    if user_path != ""
-                        return {valid:true,msg:"",code:val[2]}
-                return {valid:val[0],msg:DCore.dgettext("dde-daemon",val[1]),code:val[2]}
+                if val[0]
+                        return {valid: true, msg: "", code: 0}
+                user_val = []
+                try
+                    user_val = @account_dbus.FindUserByName_sync(@input.value)
+                    if user_val[0] != ""
+                        return {valid: true, msg: "", code: 0}
+                catch error
+                return {valid: false, msg: DCore.dgettext("dde-daemon", val[1]), code: val[2]}
             when "hostname"
                 #TODO:The Account dbus must provide a function to check hostname
                 if not @input.value? or @input.value.length == 0
