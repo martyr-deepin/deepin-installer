@@ -26,8 +26,6 @@ extract_base_filesystem_as_unsquashfs() {
     fi
 }
 
-NOCACHE=$(command -v nocache)
-
 # Do DI_EXTRACT_METHOD first
 if [ x"${DI_EXTRACT_METHOD}" = x"unsquashfs" ];then
     echo "[Info] Detect DI_EXTRACT_METHOD as unsquashfs"
@@ -37,7 +35,7 @@ fi
 
 if [ x"${DI_EXTRACT_METHOD}" = x"fallback" ];then
     echo "[Info] Detect DI_EXTRACT_METHOD as fallback"
-    ${NOCACHE} ./extract_base_filesystem --lang ${L} --live ${LIVE}
+    ./extract_base_filesystem --lang ${L} --live ${LIVE}
     exit 0
 fi
 
@@ -48,7 +46,7 @@ MEM=$(awk '/^MemFree:/ {mem_free=$2} /^Buffers:/ {meme_free+=$2} /^Cacheed:/ {me
 # Check if freemem less than 3G
 if [ $MEM -le 3000000 ] ;then
     echo "[Info] Detect free memory less than 3G"
-    ${NOCACHE} ./extract_base_filesystem --lang ${L} --live ${LIVE}
+    ./extract_base_filesystem --lang ${L} --live ${LIVE}
 else
     echo "[Info] Detect free memory more than 3G"
     extract_base_filesystem_as_unsquashfs
