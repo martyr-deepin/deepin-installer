@@ -3,6 +3,7 @@
 #
 #Author:      LongWei <yilang2007lw@gmail.com>
 #Maintainer:  LongWei <yilang2007lw@gmail.com>
+#             Xu Shaohua <xushaohua@linuxdeepin.com>
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
@@ -19,17 +20,20 @@
 
 __focused_layout_item = null
 
+# TODO: remove this variable
 __legal_keys='abcdefghijklmnopqrstuvwxyz' + '0123456789' + '-_'
-illegalErrCode =
-    empty:1
-    invalid:2
-    firstUpper:3
-    exist:4
-    systemUsed:5
-    different:6
+
+ErrorCode =
+    EMPTY:       1
+    INVALID:     2
+    FIRST_UPPER: 3
+    EXIST:       4
+    SYSTEM_USED: 5
+    NOT_MATCH:   6
 
 __selected_zone_index = 8
 
+# TODO: WTF is this, rename it to `timezone`
 __database = JSON.parse(timezone_json)
 
 _sort_layout = (layout_a, layout_b) ->
@@ -37,6 +41,7 @@ _sort_layout = (layout_a, layout_b) ->
     b_desc = DCore.Installer.get_layout_description(layout_b)
     return a_desc.localeCompare(b_desc)
 
+# TODO: move this function to `utils` module
 get_matched_items = (key, list) ->
     matched = []
     for item in list
@@ -44,6 +49,7 @@ get_matched_items = (key, list) ->
             matched.push(item)
     return matched
 
+# TODO: move this function to `utils` module
 is_ancestor = (ancestor, el) ->
     while el?
         if el == ancestor
@@ -63,7 +69,7 @@ tooltipOffsetY = (document.body.clientHeight - document.body.offsetHeight) / 2
 
 update_keyboard_text = (tri) ->
     current_layout = DCore.Installer.get_layout_description(__selected_layout)
-    echo "current_layout:#{current_layout}"
+    echo "current layout: #{current_layout}"
     keyboardSet_div?.innerText = current_layout
     keyboardSet_div?.title = current_layout
 
@@ -73,10 +79,8 @@ update_keyboard_text = (tri) ->
     DCore.Installer.set_layout(__selected_layout)
 
 update_timezone_text = (tri) ->
-    console.debug "[update_timezone_text]: __selected_timezone:#{__selected_timezone}"
-
     utc = DCore.Installer.get_timezone_utc(__selected_timezone)
-    echo "current_timezone_utc:#{utc}"
+    echo "current timezone: #{utc}"
     timezoneSet_div?.title = utc
 
     city = __selected_timezone.split("/")[1]
@@ -87,6 +91,7 @@ update_timezone_text = (tri) ->
     x = timezoneSet_div?.offsetLeft - 15
     tri?.style.left = x if x > 0
 
+# Keyboard Layout wrapper
 class LayoutItem extends Widget
     constructor: (@id, @layout, @keyboard)->
         super
@@ -138,6 +143,7 @@ class LayoutItem extends Widget
             return
         @element.setAttribute("class", "LayoutItem")
 
+# Keyboard Variant
 class VariantItem extends Widget
     constructor: (@id, @variant, @keyboard)->
         super
@@ -247,7 +253,7 @@ class KeyboardDetectDialog extends  Widget
         r = null
         code = DCore.Installer.get_keycode_from_keysym(e.which) - 8
         if code > 255 or code < 0
-            echo "invalid code"
+            echo "invalid code #{code}"
             return
         try
             keycodes = DCore.Installer.keyboard_detect_get_keycodes()
@@ -320,6 +326,7 @@ class KeyboardDetectDialog extends  Widget
         __in_model = false
         __board.setAttribute("style", "display:none")
         @element.style.display = "none"
+
 
 class Keyboard extends Widget
     constructor: (@id)->
@@ -495,6 +502,7 @@ class Keyboard extends Widget
         echo layout
         @set_to_layout(layout)
 
+
 class Timezone extends Widget
     constructor: (@id) ->
         super
@@ -504,7 +512,8 @@ class Timezone extends Widget
         @query_div = create_element("div", "Left", @query)
         @query_wrap = create_element("div", "QueryWrap", @query_div)
         @query_input = create_element("input", "", @query_wrap)
-        @query_input.setAttribute("placeholder", _("Please select or search your location."))
+        @query_input.setAttribute("placeholder",
+                                  _("Please select or search your location."))
         @query_input.addEventListener("keyup", (e) =>
             console.debug "query_input keyup"
             if e.which == 13
@@ -718,19 +727,31 @@ class Timezone extends Widget
         if matched.length == 1
             @set_timezone(@zone_dict[matched[0]])
 
+
 class WelcomeFormItem extends Widget
     ACCOUNTS = "com.deepin.daemon.Accounts"
     constructor: (@id)->
         super
+        # Global tooltip object
         @tooltip = null
-        @valid = {}
-        @account_dbus = null
+
+        # To mark content validation status
+        @valid = {ok: false, msg: _("Empty"), code: ErrorCode.EMPTY}
+
+        @account_dbus = DCore.DBus.sys(ACCOUNTS)
+
+        # Content of input form before user-changed
         @value_origin = null
-        @change = false
+
+        # To mark content of <input> is setup or not
+        @changed = false
         @msg_tid = null
+        @status = {}
 
         @input = create_element("input", "input_#{@id}", @element)
+
         @fill_widget()
+
         @input.addEventListener("focus", (e) =>
             @check_capslock()
             @input.style.borderColor = "#7bbefb"
@@ -739,58 +760,149 @@ class WelcomeFormItem extends Widget
             @input.style.borderColor = ""
             @check_capslock()
             @input.setAttribute("style", "")
-            if @check_valid()
+
+            switch @id
+                when "hostname"
+                    @validateHostname(@input.value, false)
+                when "password"
+                    @validatePassword(@input.value)
+                when "confirmpassword"
+                    @validateConfirmPassword(@input.value)
+
+            if @valid.ok
                 @destroy_tooltip()
             else
-                setTimeout(=>
-                    msg = @valid.msg
-                    if @id == "confirmpassword"
-                        if Widget.look_up("password").input.value.length != 0
-                            msg = _("The two passwords do not match.")
-                        else msg = ""
-                    @set_tooltip(msg)
-                ,500)
+                @set_tooltip(@valid.msg)
         )
-        @input.addEventListener("input", (e) =>
+
+        @input.addEventListener('input', (e) =>
             switch @id
                 when "username"
                     @input.value = @input.value.toLowerCase()
-                    if @check_valid()
+                    @validateUsername(@input.value)
+                    if @valid.ok
+                        @destroy_tooltip()
+                        # Setup hostname based on username
+                        if Widget.look_up("account")?.hostname.changed == false
+                            Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
+                    else
+                        if @valid.code in [ErrorCode.INVALID, ErrorCode.FIRST_UPPER]
+                            @input.value = @value_origin
+                        @set_tooltip(@valid.msg)
+
+
+                when "hostname"
+                    @validateHostname(@input.value, true)
+                    if @valid.ok
                         @destroy_tooltip()
                     else
-                        if @valid.code in [illegalErrCode.invalid,illegalErrCode.firstUpper]
-                            @input.value = @value_origin
-                            @set_tooltip(@valid.msg)
-                        else
-                            @set_tooltip(@valid.msg)
-                    if Widget.look_up("account")?.hostname.change == false
-                        Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
+                        @input.value = @value_origin
+                        @set_tooltip(@valid.msg)
+
                 when "password"
-                    @destroy_tooltip()
+                    @validatePassword(@input.value)
+                    if @valid.ok
+                        @destroy_tooltip()
+                    else
+                        @set_tooltip(@valid.msg)
                     confirm = Widget.look_up("confirmpassword")
-                    if @input.value != confirm.input.value and confirm.change
-                        msg = _("The two passwords do not match.")
-                        confirm.set_tooltip(msg)
+                    if @input.value != confirm.input.value and confirm.changed
+                        confirm.valid =
+                            ok: false
+                            msg: _("The two passwords do not match.")
+                            code: ErrorCode.NOT_MATCH
+                        confirm.set_tooltip(confirm.valid.msg)
                     else
                         confirm.destroy_tooltip()
+
                 when "confirmpassword"
-                    clearTimeout(@msg_tid)
-                    if not @check_valid() and @valid.code in [illegalErrCode.different]
-                        @set_tooltip(@valid.msg)
-                    else
+                    @validateConfirmPassword(@input.value, true)
+                    if @valid.ok
                         @destroy_tooltip()
+                    else if @valid.code == ErrorCode.PARTICAL_MATCH
+                        @destroy_tooltip()
+                    else
+                        @set_tooltip(@valid.msg)
 
             @value_origin = @input.value
             Widget.look_up("account")?.check_start_ready()
         )
         @input.addEventListener("change", (e) =>
-            @change = true
+            @changed = true
         )
-        @input.addEventListener("keydown", (e) =>
+        @input.addEventListener('keydown', (e) =>
             @check_capslock()
             if @id == "confirmpassword" and e.keyCode == 13
                 Widget.look_up("account")?.start_install_cb()
         )
+
+    validateUsername: (username) =>
+        val = @account_dbus.IsUsernameValid_sync(username)
+        if val[0]
+            @valid = {ok: true, msg: "", code: 0}
+            return
+        user_val = []
+        try
+            user_val = @account_dbus.FindUserByName_sync(username)
+            if user_val[0] != ""
+                @valid = {ok: true, msg: "", code: 0}
+                return
+        catch error
+            echo error
+        @valid =
+            ok: false
+            msg: DCore.dgettext("dde-daemon", val[1])
+            code: val[2]
+
+    #TODO: move these two validate functions to dde-api
+    doValidateHostnameTmp: (hostname) =>
+        regexp = /^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9\-\.])*$/
+        return regexp.test(hostname)
+
+    doValidateHostname: (hostname) =>
+        regexp = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/
+        return regexp.test(hostname)
+
+    validateHostname: (hostname, temp) =>
+        if not hostname? or hostname.length == 0 or
+                (temp and @doValidateHostnameTmp(hostname)) or
+                @doValidateHostname(hostname)
+            @valid = {ok: true, msg: "", code: 0}
+        else
+            @valid =
+                ok: false
+                msg: _("Computer name is invald.")
+                code: ErrorCode.INVALID
+
+    validatePassword: (password) =>
+        #TODO: The Account dbus must provide a function to check password
+        if not password? or password.length == 0
+            @valid =
+                ok: false
+                msg: _("Password can not be empty.")
+                code: ErrorCode.EMPTY
+        else if not @account_dbus.IsPasswordValid_sync(password)
+            @valid =
+                ok: false
+                msg: _("Invalid password.")
+                code: ErrorCode.INVALID
+        else
+            @valid = {ok: true, msg: "", code: 0}
+
+    validateConfirmPassword: (password2, temp) =>
+        password = Widget.look_up("password")?.input.value
+        if password == password2
+            @valid = {ok: true, msg: "", code: 0}
+        else if temp and password.substring(0, password2.length) == password2
+            @valid =
+                ok: false
+                msg: "Partial match"
+                code: ErrorCode.PARTICAL_MATCH
+        else
+            @valid =
+                ok: false
+                msg: _("The two passwords do not match.")
+                code: ErrorCode.NOT_MATCH
 
     set_tooltip: (text) ->
         if text is null or text is "" then return
@@ -802,59 +914,14 @@ class WelcomeFormItem extends Widget
         @tooltip.set_text(text)
         @tooltip.show()
         pos = @tooltip.get_xy()
-        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY - 10)
+        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX,
+                             pos.y - tooltipOffsetY - 10)
 
     destroy_tooltip:->
+        # TODO: do not destroy tooltip object manually
         @tooltip?.hide()
         @tooltip?.destroy()
         @tooltip = null
-
-    check_valid: ->
-        @valid = @get_valid_msg_code()
-        return @valid.valid
-
-    get_valid_msg_code: ->
-        if not @account_dbus? then @account_dbus = DCore.DBus.sys(ACCOUNTS)
-        switch @id
-            when "username"
-                val = @account_dbus.IsUsernameValid_sync(@input.value)
-                if val[0]
-                        return {valid: true, msg: "", code: 0}
-                user_val = []
-                try
-                    user_val = @account_dbus.FindUserByName_sync(@input.value)
-                    if user_val[0] != ""
-                        return {valid: true, msg: "", code: 0}
-                catch error
-                return {valid: false, msg: DCore.dgettext("dde-daemon", val[1]), code: val[2]}
-            when "hostname"
-                #TODO:The Account dbus must provide a function to check hostname
-                if not @input.value? or @input.value.length == 0
-                    return {valid:false,msg:_("Computer name can not be empty."),code:illegalErrCode.empty}
-                else
-                    return {valid:true,msg:"",code:-1}
-            when "password"
-                #TODO:The Account dbus must provide a function to check password
-                if not @input.value? or @input.value.length == 0
-                    return {valid:false,msg:_("Password can not be empty."),code:illegalErrCode.empty}
-                else if not @account_dbus.IsPasswordValid_sync(@input.value)
-                    return {valid:false,msg:_("Invalid password."),code:illegalErrCode.invalid}
-                else
-                    return {valid:true,msg:"",code:-1}
-            when "confirmpassword"
-                pwd = Widget.look_up("password")?.input.value
-                if 0 < @input.value.length <= pwd.length and pwd.indexOf(@input.value) == 0
-                    if @input.value != pwd
-                        return {valid:false,msg:"",code:-1}
-                    else
-                        return {valid:true,msg:"",code:-1}
-                else
-                    if @input.value.length == 0
-                        return {valid:false,msg:"",code:-1}
-                    else
-                        return {valid:false,msg:_("The two passwords do not match."),code:illegalErrCode.different}
-            else
-                return {valid:true,msg:"",code:-1}
 
     get_input_value: ->
         return @input.value
@@ -867,22 +934,24 @@ class WelcomeFormItem extends Widget
                 @warn.style.display = "none"
 
     fill_widget: ->
-        if @id == "username"
-            username_holder = _("Username")
-            @input.setAttribute("placeholder", username_holder)
-        else if @id == "hostname"
-            hostname_holder = _("Computer Name")
-            @input.setAttribute("placeholder", hostname_holder)
-        else if @id == "password"
-            password_holder = _("Password")
-            @input.setAttribute("placeholder", password_holder)
-            @input.classList.add("PasswordStyle")
-            @warn = create_element("div", "CapsWarning", @element)
-        else if @id == "confirmpassword"
-            confirm_holder = _("Retype Password")
-            @input.setAttribute("placeholder", confirm_holder)
-            @input.classList.add("PasswordStyle")
-            @warn = create_element("div", "CapsWarning", @element)
+        # Setup placeholder text of <input> elements
+        switch @id
+            when "username"
+                username_holder = _("Username")
+                @input.setAttribute("placeholder", username_holder)
+            when "hostname"
+                hostname_holder = _("Computer Name")
+                @input.setAttribute("placeholder", hostname_holder)
+            when "password"
+                password_holder = _("Password")
+                @input.setAttribute("placeholder", password_holder)
+                @input.classList.add("PasswordStyle")
+                @warn = create_element("div", "CapsWarning", @element)
+            when "confirmpassword"
+                confirm_holder = _("Retype Password")
+                @input.setAttribute("placeholder", confirm_holder)
+                @input.classList.add("PasswordStyle")
+                @warn = create_element("div", "CapsWarning", @element)
 
     input_focus: ->
         @input.setAttribute("autofocus","autofocus")
@@ -894,17 +963,38 @@ class Account extends Widget
         super
         @form = create_element("div", "WelcomeForm", @element)
 
+        # Username <input>
         @username = new WelcomeFormItem("username")
         @username.input.setAttribute("maxLength",32)
+        @username.valid =
+            ok: false
+            msg: _("Username can not be empty.")
+            code: ErrorCode.EMPTY
         @form.appendChild(@username.element)
 
+        # Hostname <input>
         @hostname = new WelcomeFormItem("hostname")
+        @hostname.valid =
+            ok: false
+            msg: _("Computer name can not be empty."),
+            code: ErrorCode.EMPTY
         @form.appendChild(@hostname.element)
 
+        # Password <input>
         @password = new WelcomeFormItem("password")
+        @password.valid =
+            ok: false
+            msg: _("Password can not be empty.")
+            code: ErrorCode.EMPTY
         @form.appendChild(@password.element)
 
+
+        # ConfirmPassword <input>
         @confirmpassword = new WelcomeFormItem("confirmpassword")
+        @confirmpassword.valid =
+            ok: false
+            msg: _("Password cannot be empty.")
+            code: ErrorCode.EMPTY
         @form.appendChild(@confirmpassword.element)
 
         @next_step = new NextStep("start",_("Next"),@start_install_cb)
@@ -926,7 +1016,8 @@ class Account extends Widget
         if DEBUG then __init_parted_finish = true
         if !__init_parted_finish
             return false
-        if @username.check_valid() and @hostname.check_valid() and @password.check_valid() and @confirmpassword.check_valid()
+        if @username.valid.ok and @hostname.valid.ok and
+                @password.valid.ok and @confirmpassword.valid.ok
             @next_step?.next_bt_enable()
             return true
         else
@@ -949,17 +1040,18 @@ class Account extends Widget
             @confirmpassword.destroy_tooltip()
             pc.switch_page(new Part("Part"))
             __selected_item?.focus()
-        else
-            if __init_parted_finish
-                @username.check_valid()
-                @hostname.check_valid()
-                @password.check_valid()
-                @confirmpassword.check_valid()
+#        else
+#            if __init_parted_finish
+#                @username.check_valid()
+#                @hostname.check_valid()
+#                @password.check_valid()
+#                @confirmpassword.check_valid()
 
 class Welcome extends Page
     constructor: (@id)->
         super
-        @titleimg = create_img("", "images/progress_account.png", @titleprogress)
+        @titleimg = create_img("", "images/progress_account.png",
+                               @titleprogress)
 
         @title_set = create_element("div", "TitleSet", @title)
 
