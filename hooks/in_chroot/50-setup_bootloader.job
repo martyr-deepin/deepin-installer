@@ -21,9 +21,13 @@ if [ x${BOOT} == xuefi ];then
     fi
 fi
 
-[ -e /etc/lsb-release ] && BOOTLOADER_ID=$(cat /etc/lsb-release | grep -e '^DISTRIB_DESCRIPTION' | cut -d '=' -f2 | sed 's/"//g')
+if [ -e /etc/lsb-release ];then
+    _version=$(cat /etc/deepin-version | grep -e '^Version' | cut -d '=' -f2)
+    _type=$(cat /etc/deepin-version | grep -e '^Type' | cut -d '=' -f2)
+    BOOTLOADER_ID="Deepin ${_type} ${_version}"
+fi
 
-BOOTLOADER_ID="${BOOTLOADER_ID:-linuxdeepin}"
+BOOTLOADER_ID="${BOOTLOADER_ID:-'Deepin GNU/Linux'}"
 
 case ${BOOT} in
     "uefi")
