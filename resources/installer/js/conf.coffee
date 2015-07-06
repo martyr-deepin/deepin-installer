@@ -45,16 +45,16 @@ record_mount_points = ->
                     if v_part_info[part]["mp"] == "/"
                         DCore.Installer.record_root_disk_info(disk)
                 catch error
-                    echo error
+                    console.error("[conf.coffee] record_mount_points() error: ", error)
 
 
 #TODO: try remove
 try_removed_start_install = ->
+        console.log("[conf.coffee] try_removed_start_install() partition mode: ", __selected_mode)
         if __selected_mode == "simple"
             undo_part_table_info()
             auto_simple_partition(__selected_item.id, "part")
-        else if __selected_mode == "advance"
-            echo "do advance partition"
+        #else if __selected_mode == "advance"
         do_partition()
 
         sync_installer_conf()
@@ -64,4 +64,4 @@ try_removed_start_install = ->
         pc.switch_page(progress_page)
 
 install_by_anyway = (disk) ->
-    echo "rebuild at #{disk}"
+    console.log("[conf.coffee] install_by_anyway(), disk: ", disk)

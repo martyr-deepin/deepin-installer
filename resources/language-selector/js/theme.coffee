@@ -29,7 +29,7 @@ setTheme = (theme)->
     _b = document.body
     _b.style.height = screen.height
     _b.style.width = screen.width
-    echo "setTheme:#{theme}"
+    console.log("[theme.coffee] setTheme: #{theme}")
     path = "#{THEME_PATH}/#{theme}"
     switch theme
         when THEME.sky

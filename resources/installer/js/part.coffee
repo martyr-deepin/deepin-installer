@@ -169,6 +169,7 @@ class PartTableItem extends Widget
             @label_detail.style.display = "none"
 
     update_device_os: (os) ->
+        console.log("[part.coffee] PartTableItem.update_device_os, os: #{os}")
         if os? and os.length > 2
             if os.toLowerCase().indexOf("deepin") != -1
                 os_img = "images/deepin.png"
@@ -179,8 +180,6 @@ class PartTableItem extends Widget
             else if os.toLowerCase().indexOf("mac") != -1
                 os_img = "images/mac.png"
             else
-                echo "--------upate device os--------"
-                echo os
                 os_img = "images/linux.png"
             create_img("", os_img, @os)
 
@@ -334,6 +333,7 @@ class PartTableItem extends Widget
                     @mount_txt.innerText = v_part_info[@id]["mp"]
 
     mp_change_cb: (partid, mp) ->
+        console.log("[part.coffee] PartTableItem.mp_change_cb(), partid: #{partid}, mp: #{mp}")
         if mp.substring(0,1) != "/"
             mp = "unused"
 
@@ -350,7 +350,7 @@ class PartTableItem extends Widget
                 v_part_info[part]["mp"] = "unused"
                 Widget.look_up(part)?.fill_mount()
             else
-                echo "error in get mp partition"
+                console.error("[part.coffee] PartTableItem.mp_change_cb() error, invalid part: #{part}, partid: #{partid}")
         update_part_mp(partid, mp)
 
     set_btn_status: ->
@@ -510,9 +510,9 @@ class PartTable extends Widget
         @part_delete.setAttribute("id", "part_delete")
         @part_delete.innerText = _("Delete Partition")
         @part_delete.addEventListener("click", (e)=>
-            echo "handle delete"
+            console.log("[part.coffee] PartTable.constructor() handle click(delete) event")
             if __in_model
-                echo "already had delete part mode dialog"
+                console.warn("[part.coffee] PartTable.constructor() handle click(delete) event, delete-part-mode-dialog exists, ignored!")
                 return
             new DeletePartDialog("DeleteModel", __selected_item.id).show_at(document.body)
         )
@@ -521,9 +521,9 @@ class PartTable extends Widget
         @part_add.setAttribute("id", "part_add")
         @part_add.innerText = _("New Partition")
         @part_add.addEventListener("click", (e)=>
-            echo "handle add"
+            console.log("[part.coffee] PartTable.constructor() handle click(add) event")
             if __in_model
-                echo "already had add part mode dialog"
+                console.warn("[part.coffee] PartTable.constructor() handle click(add) event, add-part-mode-dialog exists, ignored!")
                 return
             @add_model = new AddPartDialog("AddModel", __selected_item.id)
             @add_model.show_at(document.body)
@@ -550,13 +550,13 @@ class PartTable extends Widget
                 when KEYCODE.DOWN_ARROW
                     currentIndex++
                 when KEYCODE.ENTER
-                    console.log "[ENTER] pressed"
+                    console.log("[part.coffee] PartTable.key_select() ENTER key pressed")
                     enter_cb?()
                 else
                     return
             if currentIndex < 0 then currentIndex = @partitems.length - 1
             else if currentIndex > @partitems.length - 1 then currentIndex = 0
-            console.debug "to index #{currentIndex}"
+            console.debug("[part.coffee] PartTable.key_select() currentIndex: #{currentIndex}")
             select = @partitems[currentIndex]
             select?.focus()
             select?.click()
@@ -761,7 +761,7 @@ class Part extends Page
                     if DCore.Installer.get_partition_mp(part) not in ["/", "/cdrom"]
                         DCore.Installer.unmount_partition(part)
                 catch error
-                    echo error
+                    console.error("[part.coffee] Part.umount_part() call umount_part() error: #{error}, part: #{part}")
         for item in Widget.look_up("part_table")?.partitems
             item.check_busy()
 

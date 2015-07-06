@@ -69,7 +69,7 @@ tooltipOffsetY = (document.body.clientHeight - document.body.offsetHeight) / 2
 
 update_keyboard_text = (tri) ->
     current_layout = DCore.Installer.get_layout_description(__selected_layout)
-    echo "current layout: #{current_layout}"
+    console.log("[welcome.coffee]update_keyboard_text() current layout: #{current_layout}")
     keyboardSet_div?.innerText = current_layout
     keyboardSet_div?.title = current_layout
 
@@ -80,7 +80,7 @@ update_keyboard_text = (tri) ->
 
 update_timezone_text = (tri) ->
     utc = DCore.Installer.get_timezone_utc(__selected_timezone)
-    echo "current timezone: #{utc}"
+    console.log("[welcome.coffee] update_timezone_text(), current timezone: #{utc}")
     timezoneSet_div?.title = utc
 
     city = __selected_timezone.split("/")[1]
@@ -211,64 +211,64 @@ class KeyboardDetectDialog extends  Widget
             @process_key_press(e)
 
     process_have_key: ->
-        #echo "detect dialog process have key"
+        console.log("[welcome.coffee] KeyboardDetectDialog.process_have_key(), detect dialog process have key")
         step = null
         r = null
         try
             step = DCore.Installer.keyboard_detect_get_present()
         catch error
-            echo error
+            console.error("[welcome.coffee] call keyboard_detect_get_present() error: #{error}")
         if step?
             try
                 r = DCore.Installer.keyboard_detect_read_step(step)
             catch error
-                echo error
+                console.error("[welcome.coffee] call keyboard_detect_read_step() error: #{error}")
         if r?
             @keyboard.process_keyboard_detect(r)
         else
             @hide_dialog()
 
     process_no_have_key: ->
-        #echo "detect dialog process no have key"
+        console.log("[welcome.coffee] KeyboardDetectDialog.process_no_have_key() detect dialog process no have key")
         step = null
         r = null
         try
             step = DCore.Installer.keyboard_detect_get_not_present()
         catch error
-            echo error
+            console.error("[welcome.coffee] call keyboard_detect_get_not_present() error: #{error}")
         if step?
             try
                 r = DCore.Installer.keyboard_detect_read_step(step)
             catch error
-                echo error
+                console.error("[welcome.coffee] call keyboard_detect_read_step() error: #{error}")
         if r?
             @keyboard.process_keyboard_detect(r)
         else
             @hide_dialog()
 
     process_key_press: (e) =>
-        #echo "detect dialog process key press"
+        console.log("[welcome.coffee] KeyboardDetectDialog.process_key_process() detect dialog process key press")
         keycodes = null
         step = null
         r = null
         code = DCore.Installer.get_keycode_from_keysym(e.which) - 8
         if code > 255 or code < 0
-            echo "invalid code #{code}"
+            console.eror("[welcome.coffee] call get_keycode_from_keysym() error: got invalid code #{code}")
             return
         try
             keycodes = DCore.Installer.keyboard_detect_get_keycodes()
         catch error
-            echo error
+            console.error("[welcome.coffee] call keyboard_detect_get_keycodes() error: #{error}")
         if keycodes?
             try
                 step = keycodes[code]
             catch error
-                echo error
+                console.error("[welcome.coffee] KeyboardDetectDialog.process_key_press() error, failed to get `step`: #{error}")
             if step?
                 try
                     r = DCore.Installer.keyboard_detect_read_step(step)
                 catch error
-                    echo error
+                    console.error("[welcome.coffee] call keyboard_detect_read_step() error: #{error}")
                 if r?
                     @keyboard.process_keyboard_detect(r)
                 else
@@ -292,7 +292,7 @@ class KeyboardDetectDialog extends  Widget
         try
             symbols = DCore.Installer.keyboard_detect_get_symbols()
         catch error
-            echo error
+            console.error("[welcome.coffee] call keyboard_detect_get_symbols() error: #{error}")
         if type == "press"
             @type = type
             @foot.style.display = "none"
@@ -308,7 +308,7 @@ class KeyboardDetectDialog extends  Widget
         else if type == "result"
             @hide_dialog()
         else
-            echo "invalid type"
+            console.warn("[welcome.coffee] KeyboardDetectDialog.update_type() invalid type: #{type}")
             @hide_dialog()
 
     #TODO: Should this directly inherit from Dialog ?
@@ -443,7 +443,6 @@ class Keyboard extends Widget
         matched = []
         for match in matched_pinyin
             matched.push(@layouts_des_pinyin[match])
-        echo matched
         @layout_list.innerHTML = ""
         @variant_list.innerHTML = ""
 
@@ -468,12 +467,9 @@ class Keyboard extends Widget
             Widget.look_up("layoutitem_" + lay_var)?.focus()
             Widget.look_up("variantitem_" + layout)?.focus()
         else
-            echo "set_to_layout invalid layout"
-            echo layout
-            echo lay_var
+            console.warn("[welcome.coffee] Keyboard.set_to_layout() invalid layout, layout: #{layout}, lay_var: #{lay_var}")
 
     detect_keyboard_cb: (e)=>
-        #echo "detect keyboard cb"
         r = DCore.Installer.keyboard_detect_read_step("0")
         if @detect_dialog?
             @detect_dialog.destroy()
@@ -492,14 +488,13 @@ class Keyboard extends Widget
             @detect_dialog.update_type("result")
             @handle_detect_result()
         else
-            echo "Invalid Detect Type"
-            echo r
+            console.warn("[welcome.coffee] Keyboard.process_keyboard_detect() invalid keyboard type: #{r}")
 
     handle_detect_result: ->
-        echo "handle detect result"
+        console.log("[welcome.coffee] Keyboard.handle_detect_result()")
         detect_result = DCore.Installer.keyboard_detect_get_result()
         layout = detect_result.split(":").join(",")
-        echo layout
+        console.log("[welcome.coffee] Keyboard.handle_detect_result() layout: #{layout}")
         @set_to_layout(layout)
 
 
@@ -515,7 +510,6 @@ class Timezone extends Widget
         @query_input.setAttribute("placeholder",
                                   _("Please select or search your location."))
         @query_input.addEventListener("keyup", (e) =>
-            console.debug "query_input keyup"
             if e.which == 13
                 @execute_query()
             else if e.which == 27
@@ -564,21 +558,19 @@ class Timezone extends Widget
                         @search_list.push(l)
                         @zone_dict[l] = zone
             catch error
-                pass
+                console.error("[welcome.coffee] call dgettext() error: #{error}")
 
     show: ->
         __keyboard_widget?.hide()
         __account_widget?.hide()
         @displayed = true
         @element.style.display = "block"
-        console.debug "set query_input tabindex 0"
         enable_tab(@query_input)
         ArrowToolTip.container?.style.display = "block"
 
     hide: ->
         @displayed = false
         @element.style.display = "none"
-        console.debug "set query_input tabindex -1"
         disable_tab(@query_input)
         ArrowToolTip.container?.style.display = "none"
 
@@ -604,7 +596,6 @@ class Timezone extends Widget
             area.setAttribute("shape", "rect")
             area.setAttribute("coords", __database[key]["rects"])
         area.addEventListener("click", (e) =>
-            console.debug "area click"
             @show_pin(area)
             __selected_timezone = area.getAttribute("data-timezone")
             update_timezone_text(@tri)
@@ -631,7 +622,6 @@ class Timezone extends Widget
         @pin.setAttribute("style", style)
 
         text = area.getAttribute("data-timezone").split("/")[1]
-        console.debug "#{text}-->#{_(text, "tzdata")},(#{pin[0]},#{pin[1]})-->#{style}"
 
         if not @tooltip?
             @tooltip = new ArrowToolTip(@pin, _(text,"tzdata"))
@@ -848,7 +838,7 @@ class WelcomeFormItem extends Widget
                 @valid = {ok: true, msg: "", code: 0}
                 return
         catch error
-            echo error
+            console.error("[welcome.coffee] call FindUserByName_sync() error: #{error}")
         @valid =
             ok: false
             msg: DCore.dgettext("dde-daemon", val[1])
@@ -1028,7 +1018,7 @@ class Account extends Widget
         __selected_username = @username.get_input_value()
         __selected_hostname = @hostname.get_input_value()
         __selected_password = @password.get_input_value()
-        echo "#{__selected_username};#{__selected_hostname};"
+        console.log("[welcome.coffee] Account.fill_item_data() selected_username: #{__selected_username}, selected_hostname: #{__selected_hostname}")
 
     start_install_cb: =>
         @fill_item_data()

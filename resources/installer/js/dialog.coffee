@@ -97,7 +97,7 @@ class FormatDialog extends Dialog
         @format_tips.innerText = _("Are you sure you want to format this partition?")
 
     format_cb: ->
-        echo "format to do install"
+        console.log("[dialog.coffee] FormatDialog.format_cb()")
 
 class InstallDialog extends Dialog
     constructor: (@id) ->
@@ -303,7 +303,7 @@ class AddPartDialog extends Dialog
                 v_part_info[part]["mp"] = "unused"
                 Widget.look_up(part)?.fill_mount()
             else
-                echo "error to get mp partition in add dialog"
+                console.error("[dialog.coffee] AddPartDialog.mp_change_cb(), failed to get mp_partition in add_dialog, partid:", partid, ", mp:", mp)
 
     fill_tips: ->
         @tips = create_element("div", "", @content)
@@ -322,4 +322,3 @@ class AddPartDialog extends Dialog
         @n_align = @align_radio
         @n_fs = @fs_select.get_selected()
         @n_mp = @mount_select.get_selected()
-

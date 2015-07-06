@@ -98,7 +98,7 @@ class Widget extends Module
                 else
                     @element.addEventListener(key, v.bind(this))
             else
-                echo "found the do_ prefix but the name #{key} is not an dom events"
+                console.error("[widget.coffee] Widget.constructor(), found the do_ prefix but the name #{key} is not an dom events")
 
         # filter unnecessary event binding.
         if f_menu || f_rclick

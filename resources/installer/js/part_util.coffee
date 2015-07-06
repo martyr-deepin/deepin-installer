@@ -121,7 +121,7 @@ _sort_part_op =  (part_a, part_b) ->
         else
             return 1
     else
-        echo "error in sort part op"
+        console.error("[part_util.coffee] _sort_part_op() error, invalid op: ", m_part_info[part_a]["op"])
         return -1
 
 _sort_disk = (disk_a, disk_b) ->
@@ -143,7 +143,7 @@ _filter_modeled_add = (part, index) ->
 
 #include original to delete part and virtual new part
 get_modeled_partitions = (disk) ->
-    echo "get modeled partitons"
+    console.log("[part_util.coffee] get_modeled_partitons: #{disk}")
     partitions = []
     for part of m_part_info
         if m_part_info[part]["disk"] == disk and m_part_info[part]["op"] != "keep"
@@ -165,20 +165,20 @@ get_modeled_partitions = (disk) ->
 
 #mark update for original part
 mark_update = (part) ->
-    echo "mark update"
+    console.log("[part_util.coffee] mark_update() part: #{part}, #{m_part_info[part]}")
     if part in m_disk_info[v_part_info[part]["disk"]]["partitions"]
         m_disk_info[v_part_info[part]["disk"]]["change"] = true
         if m_part_info[part]["op"] not in ["keep", "update"]
-            echo "should not reach for mark update"
+            console.error("[part_util.coffee] mark_update(), should not reach for mark update, op: " + m_part_info[part]["op"])
         m_part_info[part]["op"] = "update"
     else
-        echo "skip mark update for new partition"
+        console.warn("[part_util.coffee] mark_update(), skip mark update for new partition, " + m_part_info[part])
 
 #mark add flag for new partition
 mark_add = (part) ->
-    echo "mark add"
+    console.log("[part_util.coffee] mark_add() part: #{part}, #{m_part_info[part]}")
     if part in m_disk_info[v_part_info[part]["disk"]]["partitions"]
-        echo "error in mark add, part originally exists"
+        console.error("[part_util.coffee] mark_add() error in mark add, part originally exists, #{part}, #{m_disk_info[v_part_info][part]}")
     else
         m_disk_info[v_part_info[part]["disk"]]["change"] = true
         m_part_info[part] = {}
@@ -193,26 +193,26 @@ mark_add = (part) ->
 
 #mark delete for original part, delete from flags for new partition
 mark_delete = (part) ->
-    echo "mark delete"
+    console.log("[part_util.coffee] mark_delete() part: #{part}")
     if part in m_disk_info[v_part_info[part]["disk"]]["partitions"]
         if m_part_info[part]["op"] in ["keep", "update"]
             m_disk_info[v_part_info[part]["disk"]]["change"] = true
             m_part_info[part]["op"] = "delete"
         else
-            echo "invalid flag for orig partition to mark delete"
+            console.error("[part_util.coffee] mark_delete() invalid flag for orig partition to mark delete, #{part}, #{m_part_info[part]}")
     else
         if m_part_info[part]["op"] == "add"
             m_disk_info[v_part_info[part]["disk"]]["change"] = true
             delete m_part_info[part]
         else
-            echo "invalid flag for new part to mark delete"
+            console.error("[part_util.coffee] mark_delete() invalid flag for new part to mark delete, #{part}")
 
 __update_fs_json = (part, fs) ->
     return '{"op":"update_fs","part":"#{part}","fs":"#{fs}"}'
 
 #do real add/delete/update partition operation
 do_partition = ->
-    echo "do partition"
+    console.log("[part_util.coffee] do_partition()")
     for disk in disks
         if m_disk_info[disk]["change"] != true
             continue
@@ -222,57 +222,57 @@ do_partition = ->
                     try
                         DCore.Installer.delete_disk_partition(part)
                     catch error
-                        echo error
+                        console.error("[part_util.coffee] call delete_disk_partition() failed, part: #{part}")
                     try
                         DCore.Installer.write_disk(disk)
                     catch error
-                        echo error
+                        console.error("[part_util.coffee] call write_disk() failed, disk: #{disk}")
 
                 when "update"
                     if m_part_info[part]["start"] != v_part_info[part]["start"] or m_part_info[part]["length"] != v_part_info[part]["length"]
                         try
                             DCore.Installer.update_partition_geometry(part, v_part_info[part]["start"], v_part_info[part]["length"])
                         catch error
-                            echo error
+                            console.error("[part_util.coffee] do_partition() call update_partition_geometry() failed: #{error}")
                         try
                             DCore.Installer.write_disk(disk)
                         catch error
-                            echo error
+                            console.error("[part_util.coffee] do_partition() call write_disk() failed: #{error}")
 
                     if m_part_info[part]["fs"] != v_part_info[part]["fs"] or v_part_info[part]["format"]
                         if v_part_info[part]["fs"] not in ["", "unused"]
                             try
-                                DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
+                                ret = DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
                             catch error
-                                echo error
+                                console.error("[part_util.coffee] do_partition() call update_partition_fs() failed: #{error}")
                     try
                         DCore.Installer.write_disk(disk)
                     catch error
-                        echo error
+                        console.error("[part_util.coffee] do_partition() call write_disk() error: #{error}, disk: #{disk}")
 
                 when "add"
                     try
                         DCore.Installer.new_disk_partition(part, disk, m_part_info[part]["type"], m_part_info[part]["fs"], m_part_info[part]["start"], m_part_info[part]["end"])
                     catch error
-                        echo error
+                        console.error("[part_util.coffee] do_partition() call new_disk_partition() error: #{error}, part: #{part}, disk: #{disk}")
                     try
                         DCore.Installer.write_disk(disk)
                     catch error
-                        echo error
+                        console.error("[part_util.coffee] do_partition() call write_disk() error: #{error}, disk: #{disk}")
 
                     if v_part_info[part]["type"] != "extended"
                         try
                             DCore.Installer.update_partition_fs(part, v_part_info[part]["fs"])
                         catch error
-                            echo error
+                            console.error("[part_util.coffee] do_partition() call update_partition_fs() error: #{error}, part: #{part}")
                         try
                             DCore.Installer.write_disk(disk)
                         catch error
-                            echo error
+                            console.error("[part_util.coffee] do_partition() call write_disk() error: #{error}, disk: #{disk}")
 
 #auto partition for simple mode
 auto_simple_partition = (device, type) ->
-    echo "auto_simple_partition: #{device} #{type}"
+    console.log("[part_util.coffee] auto_simple_partition(), device: #{device}, type: #{type}")
     if type == "part"
         #create a new part when install to freespace
         if m_part_info[device]["type"] == "freespace"
@@ -286,18 +286,17 @@ auto_simple_partition = (device, type) ->
             fs = "ext4"
             mp = "/"
             add_part(partid, type, size, align, fs, mp)
-            echo "add_part", partid, type, size, align, fs, mp
         #just update the part fs and mp to install
         else if m_part_info[device]["type"] in ["normal", "logical"]
             update_part_fs(device,"ext4")
             update_part_format(device, true)
             update_part_mp(device,"/")
         else
-            echo "invalid as extended doesn't show in simple view"
+            console.error("[part_util.coffee] auto_simple_partition(), invalid as extended doesn't show in simple view")
         if __selected_home?
             update_part_mp(__selected_home, "/home")
     else
-        echo "invalid type to do simple partition"
+        console.error("[part_util.coffee] auto_simple_partition(), invalid type to do simple partition")
 
 #get recommand part to install target
 get_recommand_target = ->
@@ -314,7 +313,7 @@ get_recommand_target = ->
 
 #get target part that mount root
 get_target_part = ->
-    echo "get target part"
+    console.log("[part_util.coffee] get_target_part()")
     for disk in disks
         for part in v_disk_info[disk]["partitions"]
             if v_part_info[part]["mp"] == "/"
@@ -440,7 +439,7 @@ _sort_part_geom = (part_a, part_b) ->
         else if v_part_info[part_b]["type"] == "extended"
             return 1
         else
-            echo "error in sort part geom"
+            console.error("[part_util.coffee] _sort_part_geom() error, part type is invalid: #{v_part_info[part_a]}, #{v_part_info[part_b]}")
             return v_part_info[part_a]["end"] - v_part_info[part_b]["end"]
     else
         return v_part_info[part_a]["start"] - v_part_info[part_b]["start"]
@@ -472,7 +471,7 @@ is_in_extended = (part) ->
         else
             return false
     else
-        echo "invalid part type in v_part_info"
+        console.error("[part_util.coffee] is_in_extended() error, unknown part type: #{v_part_info[part]["type"]}")
         return false
 
 _filter_in_extended = (part, index) ->
@@ -515,12 +514,12 @@ get_freespace_partitions = (disk) ->
 
 get_part_num = (part) ->
     if v_part_info[part]["type"] not in ["normal", "logical", "extended"]
-        echo "invalid type to get part num"
+        console.error("[part_util.coffee] get_part_num() invalid part type: #{v_part_info[part]["type"]}, part: #{part}")
         return -1
     if v_part_info[part]["path"]?
         return parseInt(v_part_info[part]["path"].replace(/\D/g, ''))
     else
-        echo "invalid part path"
+        console.error("[part_util.coffee] get_part_num() invalid part path: #{v_part_info[part]["path"]}, part: #{part}")
         return -1
 
 is_in_same_block = (part_a, part_b) ->
@@ -549,7 +548,7 @@ get_prev_part = (part) ->
             return secondary_blocks[index-1]
 
     else
-        echo "error in get prev part"
+        console.error("[part_util.coffee] get_prev_part() error: part #{part} is neither in main_blocks nor in secondary_blocks")
 
 #get next part:include freespace block
 get_next_part = (part) ->
@@ -569,7 +568,7 @@ get_next_part = (part) ->
             return secondary_blocks[index+1]
 
     else
-        echo "error in get prev part"
+        console.error("[part_util.coffee] get_next_part() error: part #{part} is neither in main_blocks nor in secondary_blocks")
 
 #whether can add a normal partition in the freespace
 can_add_normal = (part) ->
@@ -630,9 +629,7 @@ can_add_logical = (part) ->
 #Control
 #Control: communicate with model and view
 update_part_fs = (part, fs) ->
-    echo "--------update part fs--------"
-    echo v_part_info[part]["path"]
-    echo fs
+    console.log("[part_util.coffee] update_part_fs(), part: #{part}, fs: #{fs}, path: #{v_part_info[part]["path"]}")
     v_part_info[part]["fs"] = fs
     if fs in ["unused", "fat16", "fat32", "ntfs", "swap", "efi"]
         v_part_info[part]["mp"] = "unused"
@@ -641,15 +638,12 @@ update_part_fs = (part, fs) ->
     mark_update(part)
 
 update_part_format = (part, format) ->
-    echo "--------update part format--------"
-    echo v_part_info[part]["path"]
-    echo format
+    console.log("[part_util.coffee] update_part_format(), part: #{part}, format: #{format}, path: #{v_part_info[part]["path"]}")
     v_part_info[part]["format"] = format
     mark_update(part)
 
 update_part_mp = (part, mp) ->
-    echo "--------update part mp #{part} <==> #{mp}--------"
-    echo v_part_info[part]["path"]
+    console.log("[part_util.coffee] update_part_mp(), part: #{part}, mp: #{mp}")
     v_part_info[part]["mp"] = mp
     mark_update(part)
 
@@ -674,14 +668,13 @@ update_part_display_path = (part, op) ->
                     maxnum = part_num
             v_part_info[part]["path"] = disk_path + (maxnum + 1)
         else if v_part_info[part]["type"] in ["normal", "extended"]
-            echo "just keep others num when add primary"
             path_list = get_primary_partitions(disk).map(get_part_num).sort()
             part_num = 1
             while part_num in path_list
                 part_num++
             v_part_info[part]["path"] = disk_path + part_num
         else
-            echo "invalid part type to add for update part display path"
+            console.error("[part_util.coffee] update_part_display_path(), invalid part type: #{v_part_info[part]["type"]}, part: #{part}, op: #{op}")
 
     else if op == "delete"
         current_num = get_part_num(part)
@@ -692,13 +685,12 @@ update_part_display_path = (part, op) ->
                     v_part_info[item]["path"] = disk_path + (part_num - 1)
             v_part_info[part]["path"] = ""
         else if v_part_info[part]["type"] in ["normal", "extended"]
-            echo "just keep others num when delete primary"
             v_part_info[part]["path"] = ""
         else
-            echo "invalid part type to add for update part display path"
+            console.error("[part_util.coffee] update_part_display_path(), invalid part type: #{v_part_info[part]["type"]}, part: #{part}, op: #{op}")
 
     else
-        echo "invalid op in update part display path"
+        console.error("[part_util.coffee] update_part_display_path(), invalid op type: #{op}, part: #{part}")
 
 get_selected_mp = ->
     mp_list = []
@@ -717,11 +709,10 @@ get_mp_partition = (mp) ->
 
 #delete normal partition, merge slibing freespace
 _delete_normal = (disk, part) ->
-    echo "delete normal"
+    console.log("[part_util.coffee] _delete_normal(), disk: #{disk}, part: #{part}")
     prev = get_prev_part(part)
     if prev?
         if v_part_info[prev]["type"] == "freespace"
-            echo "directly merge prev freespace"
             v_part_info[part]["start"] = v_part_info[prev]["start"]
             v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -735,7 +726,6 @@ _delete_normal = (disk, part) ->
                 extended_last = secondary_blocks[-1]
 
             if extended_last? and v_part_info[extended_last]["type"] == "freespace"
-                echo "merge freespace block before last of extended"
                 v_part_info[part]["start"] = v_part_info[extended_last]["start"]
                 v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -752,7 +742,6 @@ _delete_normal = (disk, part) ->
     next = get_next_part(part)
     if next?
         if v_part_info[next]["type"] == "freespace"
-            echo "directly merge next freespace"
             v_part_info[part]["end"] = v_part_info[next]["end"]
             v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -766,7 +755,6 @@ _delete_normal = (disk, part) ->
                 extended_first = secondary_blocks[0]
 
             if extended_first? and v_part_info[extended_first]["type"] == "freespace"
-                echo "merge freespace block which first in extended"
                 v_part_info[part]["end"] = v_part_info[extended_first]["end"]
                 v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -782,11 +770,10 @@ _delete_normal = (disk, part) ->
 
 #delete logical partition, merge slibing freespace
 _delete_logical = (disk, part) ->
-    echo "delete logical"
+    console.log("[part_util.coffee] _delete_logical() disk: #{disk}, part: #{part}")
     prev = get_prev_part(part)
     if prev?
         if v_part_info[prev]["type"] == "freespace"
-            echo "directly merge prev freespace"
             v_part_info[part]["start"] = v_part_info[prev]["start"]
             v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -798,9 +785,8 @@ _delete_logical = (disk, part) ->
         if extended?
             before_extended = get_prev_part(extended)
         else
-            echo "handle prev->error in delete logical, should already has an extended contains it"
+            console.error("[part_util.coffee] _delete_logical() handle prev part error, should already have an extended part, disk: #{disk}, part: #{part}")
         if before_extended? and v_part_info[before_extended]["type"] == "freespace"
-            echo "merge freespace block just before the extended partition"
             v_part_info[part]["start"] = v_part_info[before_extended]["start"]
             v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -817,7 +803,6 @@ _delete_logical = (disk, part) ->
     next = get_next_part(part)
     if next?
         if v_part_info[next]["type"] == "freespace"
-            echo "directly merge next freespace"
             v_part_info[part]["end"] = v_part_info[next]["end"]
             v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -829,9 +814,8 @@ _delete_logical = (disk, part) ->
         if extended?
             after_extended = get_next_part(extended)
         else
-            echo "handle next->error in delete logical, should already has an extended contains it"
+            console.error("[part_util.coffee] _delete_logical() handle next part error, should already have an extended part, disk: #{disk}, part: #{part}")
         if after_extended? and v_part_info[after_extended]["type"] == "freespace"
-            echo "merge freespace block just after the extended partition"
             v_part_info[part]["end"] = v_part_info[after_extended]["end"]
             v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -846,7 +830,7 @@ _delete_logical = (disk, part) ->
             v_part_info[extended]["width"] = Math.floor((v_part_info[extended]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
 _delete_extended = (disk, part) ->
-    echo "delete extended"
+    console.log("[part_util.coffee] _delete_extended(), disk: #{disk}, part: #{part}")
     mark_delete(part)
     secondarys = get_secondary_blocks(disk)
     #fix me, need test delete in for loop
@@ -857,7 +841,6 @@ _delete_extended = (disk, part) ->
 
     prev = get_prev_part(part)
     if prev? and v_part_info[prev]["type"] == "freespace"
-        echo "directly merge prev freespace"
         v_part_info[part]["start"] = v_part_info[prev]["start"]
         v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -867,7 +850,6 @@ _delete_extended = (disk, part) ->
 
     next = get_next_part(part)
     if next? and v_part_info[next]["type"] == "freespace"
-        echo "directly merge next freespace"
         v_part_info[part]["end"] = v_part_info[next]["end"]
         v_part_info[part]["length"] = v_part_info[part]["end"] - v_part_info[part]["start"] + 1
 
@@ -884,7 +866,7 @@ _delete_extended = (disk, part) ->
     v_part_info[part]["width"] = Math.round((v_part_info[part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
 
 delete_part = (part) ->
-    echo "delete part"
+    console.log("[part_util.coffee] delete_part(), part: #{part}")
     remain_part = part
     mark_delete(part)
     disk = v_part_info[part]["disk"]
@@ -892,10 +874,9 @@ delete_part = (part) ->
     if v_part_info[part]["type"] == "normal"
         _delete_normal(disk, part)
     else if v_part_info[part]["type"] == "logical"
-        echo "delete part, you called delete logical"
         _delete_logical(disk, part)
     else
-        echo "error in delete part, invalid partition type"
+        console.error("[part_util.coffee] delete_part(), invalid parttion type: #{v_part_info[part]["type"]}, part: #{part}")
 
     #need update part type first to decide whether need delete extended
     update_part_display_path(part, "delete")
@@ -918,20 +899,20 @@ delete_part = (part) ->
 #add normal partition
 _add_normal = (disk, free_part) ->
 #adapt extended space when free_part has intersection with extended, usually reduce extended size
-    echo "add normal"
+    console.log("[part_util.coffee] _add_normal(), disk: #{disk}, free_part: #{free_part}")
     extended = get_extended_partition(disk)
     if extended?
         #has left intersection
         if v_part_info[extended]["start"] > v_part_info[free_part]["start"] and v_part_info[extended]["start"] < v_part_info[free_part]["end"]
             if v_part_info[free_part]["end"] > v_part_info[extended]["end"]
-                echo "error in _add_normal, invalid extended"
+                console.error("[part_util.coffee] _add_normal() invalid extended partition, #{extended}, disk: #{disk}")
             v_part_info[extended]["start"] = v_part_info[free_part]["end"] + 1
             mark_update(extended)
 
         #has right intersection
         if v_part_info[extended]["end"] > v_part_info[free_part]["start"] and v_part_info[extended]["end"] < v_part_info[free_part]["end"]
             if v_part_info[free_part]["start"] < v_part_info[extended]["start"]
-                echo "error in _add_normal, invalid extended"
+                console.error("[part_util.coffee] _add_normal() invalid extended partition, #{extended}, disk: #{disk}")
             v_part_info[extended]["end"] = v_part_info[free_part]["start"] - 1
             mark_update(extended)
 
@@ -947,9 +928,9 @@ _add_normal = (disk, free_part) ->
                     v_part_info[extended]["end"] = v_part_info[free_part]["start"] - 1
                     mark_update(extended)
                 else
-                    echo "error, can't add an normal deep inner an extended partition"
+                    console.error("[part_util.coffee] _add_normal() error, cannot add a normal partion inside an extended partition, disk: #{disk}")
             else
-                echo "error in _add_normal, invalid secondary blocks"
+                console.error("[part_util.coffee] _add_normal() error, invalid secondary blocks, disk: #{disk}")
 
         v_part_info[extended]["length"] = v_part_info[extended]["end"] - v_part_info[extended]["start"] + 1
         v_part_info[extended]["width"] = Math.floor((v_part_info[extended]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
@@ -957,7 +938,7 @@ _add_normal = (disk, free_part) ->
 #add logical partition adaption
 _add_logical = (disk, free_part) ->
 #automaticly create an extended partition or expand extended size as needed
-    echo "add logical"
+    console.log("[part_util.coffee] _add_logical(), disk: #{disk}, free_part: #{free_part}")
     if not get_extended_partition(disk)?
         extended = DCore.Installer.rand_uuid("part")
         v_part_info[extended] = {}
@@ -983,6 +964,7 @@ _add_logical = (disk, free_part) ->
 
 #add partition
 add_part = (free_part, type, size, align, fs, mp) ->
+    console.log("[part_util.coffee] add_part(), free_part: #{free_part}, type: #{type}, size: #{size}, align: #{align}, fs: #{fs}, mp: #{mp}")
     new_part = DCore.Installer.rand_uuid("part")
     disk = v_part_info[free_part]["disk"]
     v_part_info[new_part] = {}
@@ -1000,10 +982,9 @@ add_part = (free_part, type, size, align, fs, mp) ->
     else if type == "logical"
         _add_logical(disk, free_part)
     else
-        echo "error in add_part, invalid partition type"
+        console.error("[part_util.coffee] add_part() error, invalid partition type: #{type}")
     #handle new part geometry
     if Math.abs(size - v_part_info[free_part]["length"]) < 10 * MB
-        echo "whole freespace to new part"
         v_part_info[new_part]["start"] = v_part_info[free_part]["start"]
         v_part_info[new_part]["length"] = v_part_info[free_part]["length"]
         v_part_info[new_part]["end"] = v_part_info[free_part]["end"]
@@ -1012,7 +993,6 @@ add_part = (free_part, type, size, align, fs, mp) ->
         v_disk_info[disk]["partitions"].splice(free_index, 1)
         delete v_part_info[free_part]
     else
-        echo "partial freespace to new part"
         if align == "start"
             v_part_info[new_part]["start"] = v_part_info[free_part]["start"]
             v_part_info[new_part]["length"] = size

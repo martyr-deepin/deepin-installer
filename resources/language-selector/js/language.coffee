@@ -36,7 +36,7 @@ class Language extends Widget
 
     select_lang: (name) ->
         lang = la["lang"] for la in @lang_list when la["name"] is name
-        echo lang + "===for  lang_list  name===" + name
+        console.log("[language.coffee] Language.select_lang() language name: ", name, ", language: ", lang)
         DCore.Greeter.set_language(lang)
         session = DCore.Greeter.get_session_by_conf()
         if not session?
@@ -73,11 +73,11 @@ class Language extends Widget
                 that.select_lang(this.id)
             )
         document.body.addEventListener("keydown",(e)=>
-            echo "keydown:#{e.which}"
+            console.log("[language.coffee] Language.boxscroll_create() keydown event: ", e)
             if e.which == KEYCODE.ENTER
                 if list.currentIndex < 0 then return
                 local = @local_list[list.currentIndex]["name"]
-                echo "#{list.currentIndex}:#{local}"
+                console.log("[language.coffee] Language.boxscroll_create() index: ", list.currentIndex, ", local: ", local)
                 @select_lang(local)
         )
 

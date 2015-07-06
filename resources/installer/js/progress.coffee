@@ -27,7 +27,6 @@ class ReportDialog extends Dialog
         @report_tips.innerText = _("System installation failed. Please send the log to Deepin Team.")
 
     cb: ->
-        echo "report dialog cb"
         DCore.Installer.finish_install()
 
 class Progress extends Page
@@ -61,18 +60,15 @@ class Progress extends Page
         @deg += 12
 
     update_progress: (progress) ->
-        #console.debug "update_progress:=============#{progress}================="
         @progressbar.style.width = progress
 
     ppt_prepare: =>
         @ppt.onload = =>
-            console.debug "===========iframe onload"
             @ppt_show()
         @ppt.onerror = =>
-            console.debug "===========iframe onerror"
             window.frames['ppt_iframe'].window.location.reload()
         lang = document.body.lang
-        echo "Installer lang:" + lang
+        console.log("[progress.cofffee] Progress.ppt_prepare() lang: ", lang)
         @ppt.src = "ppt/slideshow2014/index.html?lang=#{lang}"
 
         #apply_animation(@progress_container, "pptin", "2s", "linear")
@@ -86,10 +82,10 @@ class Progress extends Page
                 if window.frames['ppt_iframe'].document.body
                     clearInterval(reload_tid)
                 else
-                    console.debug "===========iframe document.body is null and reload interval:#{reload_tid}"
+                    console.debug("[progress.coffee] Progress.ppt_show() iframe document.body is null, reload interval: #{reload_tid}")
                     window.frames['ppt_iframe'].window.location.reload()
-            catch e
-                console.debug "===========iframe document.body is null and reload interval:#{reload_tid}:#{e}"
+            catch error
+                console.error("[progress.coffee] Progress.ppt_show() iframe document.body is null, reload interval: #{reload_tid}, error: #{error}")
                 window.frames['ppt_iframe'].window.location.reload()
 
         ,800)
