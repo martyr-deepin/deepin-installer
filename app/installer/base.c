@@ -37,13 +37,14 @@ gboolean installer_is_running ()
     struct sockaddr_un server_addr;
 
     server_addr.sun_path[0] = '\0';
-    int path_size = g_sprintf (server_addr.sun_path+1, "%s", "installer.app.deepin");
+    int path_size = g_sprintf (server_addr.sun_path+1, "%s",
+                               "installer.app.deepin");
     server_addr.sun_family = AF_UNIX;
     server_len = 1 + path_size + offsetof(struct sockaddr_un, sun_path);
 
     server_sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
 
-    if (0 == bind(server_sockfd, (struct sockaddr *)&server_addr, server_len)) {
+    if (0 == bind(server_sockfd, (struct sockaddr *) & server_addr, server_len)) {
         return FALSE;
     } else {
         return TRUE;
@@ -58,7 +59,7 @@ gchar* get_matched_string (const gchar *target, const gchar *regex_string)
     GError *error = NULL;
     GRegex* regex = g_regex_new (regex_string, 0, 0, &error);
     if (error != NULL) {
-        g_warning ("get matched string:%s\n", error->message);
+        g_warning ("[%s] error: %s\n", __func__, error->message);
         g_error_free (error);
         return NULL;
     }
@@ -70,7 +71,8 @@ gchar* get_matched_string (const gchar *target, const gchar *regex_string)
     if (g_match_info_matches (match_info)) {
         result = g_match_info_fetch (match_info, 1);
     } else {
-        g_debug("get matched string:failed in \"%s\" to find \"%s\"\n", target, regex_string);
+        g_debug("[%s]: failed in `%s` to find `%s`\n", __func__, target,
+                regex_string);
     }
 
     g_match_info_free (match_info);
@@ -87,7 +89,7 @@ gchar* get_matched_string_old (const gchar *target, const gchar *regex_string)
     GMatchInfo *match_info = NULL;
 
     if (target == NULL || regex_string == NULL) {
-        g_warning ("get matched string:paramemter NULL\n");
+        g_warning ("[%s]: paramemter NULL\n", __func__);
         return NULL;
     }
 
@@ -104,7 +106,8 @@ gchar* get_matched_string_old (const gchar *target, const gchar *regex_string)
         result = g_match_info_fetch (match_info, 0);
 
     } else {
-        g_debug("get matched string:failed in \"%s\" to find \"%s\"\n", target, regex_string);
+        g_debug("[%s]: failed in `%s` to find `%s`\n", __func__, target,
+                regex_string);
     }
 
     g_match_info_free (match_info);
@@ -118,7 +121,7 @@ double installer_get_memory_size ()
 {
     struct sysinfo info;
     if (sysinfo (&info) != 0) {
-        g_warning ("get memory size:%s\n", strerror (errno));
+        g_warning ("[%s]: %s\n", __func__, strerror (errno));
         return 0;
     }
 
@@ -130,7 +133,7 @@ double installer_get_keycode_from_keysym (double keysym)
 {
     Display *dpy = XOpenDisplay (0);
     if (dpy == NULL) {
-        g_warning ("get keycode from keysym:XOpenDisplay\n");
+        g_warning ("[%s] display is NULL\n", __func__);
         return 0;
     }
     KeyCode code = XKeysymToKeycode (dpy, (KeySym) keysym);
@@ -161,7 +164,7 @@ double get_free_memory_size ()
 {
     struct sysinfo info;
     if (sysinfo (&info) != 0) {
-        g_warning ("get free memory size:%s\n", strerror (errno));
+        g_warning ("[%s] error: %s\n", __func__, strerror (errno));
         return 0;
     }
 
@@ -178,7 +181,7 @@ get_cpu_num ()
 
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("get cpu num:%s\n", error->message);
+        g_warning ("[%s] error: %s\n", __func__, error->message);
         g_error_free (error);
         error = NULL;
     }
@@ -195,7 +198,7 @@ void
 unmount_partition_by_device (const gchar *path)
 {
     if (path == NULL) {
-        g_warning ("unmount partition by device:path NULL\n");
+        g_warning ("[%s] error: path NULL\n", __func__);
         return;
     }
     gchar *mp = NULL;
@@ -206,12 +209,13 @@ unmount_partition_by_device (const gchar *path)
         } else {
             cmd = g_strdup_printf ("umount -l %s", mp);
         }
-	GError* error = NULL;
+	      GError* error = NULL;
         g_spawn_command_line_sync(cmd, NULL, NULL, NULL, &error);
-	if (error != NULL) {
-	    g_warning("unmount_partition_by_device failed (cmd:%s) : %s\n", cmd, error->message);
-	    g_error_free(error);
-	}
+        if (error != NULL) {
+            g_warning("[%s] failed (cmd: %s) : %s\n", __func__, cmd,
+                      error->message);
+            g_error_free(error);
+        }
         g_free (cmd);
         g_free (mp);
     }
@@ -227,23 +231,24 @@ get_mount_target_count (const gchar *target)
     GError *error = NULL;
 
     if (target == NULL) {
-        g_warning ("get target mount count:target NULL\n");
+        g_warning ("[%s]: target NULL\n", __func__);
         goto out;
     }
 
     findcmd = g_strdup_printf ("findmnt --target %s", target);
     g_spawn_command_line_sync (findcmd, &output, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("get target mount count:run %s error->%s\n", findcmd, error->message);
+        g_warning ("[%s]:run %s error->%s\n", __func__, findcmd,
+                   error->message);
         goto out;
     }
     if (output == NULL || output == "") {
-        g_warning ("get target mount count:output invalid\n");
+        g_warning ("[%s]: output invalid\n", __func__);
         goto out;
     }
     array = g_strsplit (output, "\n", -1);
     if (array == NULL) {
-        g_warning ("get target mount count:array NULL\n");
+        g_warning ("[%s]: array NULL\n", __func__);
         goto out;
     }
     count = g_strv_length (array);
@@ -274,14 +279,14 @@ get_partition_uuid (const gchar *path)
     GError *error = NULL;
 
     if (path == NULL || !g_file_test (path, G_FILE_TEST_EXISTS)) {
-        g_warning ("get partition uuid:path %s not exists", path);
+        g_warning ("[%s]: path %s does not exist\n", __func__, path);
         return NULL;
     }
 
     cmd = g_strdup_printf ("blkid -s UUID -o value %s", path);
     g_spawn_command_line_sync (cmd, &uuid, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("get partition uuid:%s\n", error->message);
+        g_warning ("[%s] error: %s\n", __func__, error->message);
         g_error_free (error);
         error = NULL;
     }
@@ -298,14 +303,14 @@ get_partition_label (const gchar *path)
     GError *error = NULL;
 
     if (path == NULL || !g_file_test (path, G_FILE_TEST_EXISTS)) {
-        g_warning ("get partition label:path %s not exists", path);
+        g_warning ("[%s]: path %s does not exist", __func__, path);
         return NULL;
     }
 
     cmd = g_strdup_printf ("blkid -s LABEL -o value %s", path);
     g_spawn_command_line_sync (cmd, &label, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("get partition label:%s\n", error->message);
+        g_warning ("[%s] error: %s\n", __func__, error->message);
         g_error_free (error);
         error = NULL;
     }

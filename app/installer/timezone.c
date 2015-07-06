@@ -26,8 +26,10 @@
 
 int get_offset(const char *timezone )
 {
-    g_debug("[%s]:%s;==============", __func__, timezone);
-    if (timezone == NULL) return 0;
+    g_debug("[%s] timezone: %s\n", __func__, timezone);
+    if (timezone == NULL) {
+        return 0;
+    }
     const char *tz = g_getenv("TZ");
     g_setenv("TZ", timezone, TRUE);
     time_t t = time(NULL);
@@ -50,8 +52,9 @@ char* installer_get_timezone_utc (const char* timezone)
     int offset_hour = offset / 3600;
     int offset_min =  60 * ( (float)offset / 3600 - offset_hour );
     const char * sign = offset_hour >= 0 ? "+" : "";
-    char* utc = g_strdup_printf("UTC%s%02d:%02d" , sign , offset_hour, offset_min );
-    g_debug("[%s]:offset:%d;utc:%s;" , __func__, offset, utc);
+    char* utc = g_strdup_printf("UTC%s%02d:%02d" , sign , offset_hour,
+                                offset_min );
+    g_debug("[%s] offset: %d, utc: %s;" , __func__, offset, utc);
     return utc;
 }
 
@@ -60,4 +63,3 @@ char* installer_get_timezone_local()
 {
     return get_timezone_local();
 }
-

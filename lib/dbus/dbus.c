@@ -5,22 +5,27 @@
 #include "jsextension.h"
 #include "dbus_introspect.h"
 
-JS_EXPORT_API JSValueRef dbus_sys_object( const char* bus_name, const char* object_path, const char* interface, JSData* js)
+JS_EXPORT_API JSValueRef dbus_sys_object(const char* bus_name,
+                                         const char* object_path,
+                                         const char* interface,
+                                         JSData* js)
 {
     static GDBusConnection* sys_con = NULL;
     if (sys_con == NULL) {
-	GError *error = NULL;
-	sys_con = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
-	if (error != NULL) {
-	    g_warning("ERROR:%s\n", error->message);
-	    g_error_free(error);
-	}
-	g_assert(sys_con != NULL);
-	g_dbus_connection_add_filter(sys_con, watch_signal, NULL, NULL);
+        GError *error = NULL;
+        sys_con = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+        if (error != NULL) {
+            g_error("[%s] ERROR:%s\n", __func__, error->message);
+            g_error_free(error);
+        }
+        g_assert(sys_con != NULL);
+        g_dbus_connection_add_filter(sys_con, watch_signal, NULL, NULL);
     }
-    JSValueRef value = get_dbus_object(get_global_context(), sys_con, bus_name, object_path, interface, js->exception);
+    JSValueRef value = get_dbus_object(get_global_context(), sys_con,
+                                       bus_name, object_path, interface,
+                                       js->exception);
     if (value == NULL) {
-	return NULL;
+        return NULL;
     }
     return value;
 }
@@ -41,22 +46,27 @@ JSValueRef dbus_sys(const char* bus_name, JSData* js)
 
 
 JS_EXPORT_API
-JSValueRef dbus_session_object( const char* bus_name, const char* object_path, const char* interface, JSData* js)
+JSValueRef dbus_session_object(const char* bus_name,
+                               const char* object_path,
+                               const char* interface,
+                               JSData* js)
 {
     static GDBusConnection* session_con = NULL;
     if (session_con == NULL) {
-	GError *error = NULL;
-	session_con = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
-	if (error != NULL) {
-	    g_warning("ERROR:%s\n", error->message);
-	    g_error_free(error);
-	}
-	g_assert(session_con!= NULL);
-	g_dbus_connection_add_filter(session_con, watch_signal, NULL, NULL);
+        GError *error = NULL;
+        session_con = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
+        if (error != NULL) {
+            g_error("[%s] error: %s\n", __func__, error->message);
+            g_error_free(error);
+        }
+        g_assert(session_con!= NULL);
+        g_dbus_connection_add_filter(session_con, watch_signal, NULL, NULL);
     }
-    JSValueRef value = get_dbus_object(get_global_context(), session_con, bus_name, object_path, interface, js->exception);
+    JSValueRef value = get_dbus_object(get_global_context(), session_con,
+                                       bus_name, object_path, interface,
+                                       js->exception);
     if (value == NULL) {
-	return NULL;
+        return NULL;
     }
     return value;
 }

@@ -25,8 +25,10 @@ static GRecMutex __ctx_lock;
 void GRAB_CTX() { g_rec_mutex_trylock(&__ctx_lock); }
 void UNGRAB_CTX() { g_rec_mutex_unlock(&__ctx_lock); }
 
-
-void js_fill_exception(JSContextRef ctx, JSValueRef* excp, const char* format, ...)
+void js_fill_exception(JSContextRef ctx,
+                       JSValueRef* excp,
+                       const char* format,
+                       ...)
 {
     va_list args;
     va_start (args, format);
@@ -41,12 +43,10 @@ void js_fill_exception(JSContextRef ctx, JSValueRef* excp, const char* format, .
     *excp= JSValueToObject(ctx, exc_str, NULL);
 }
 
-
 JSValueRef jsvalue_from_number(JSContextRef ctx, double number)
 {
     return JSValueMakeNumber(ctx, number);
 }
-
 
 JSValueRef jsvalue_from_cstr(JSContextRef ctx, const char* str)
 {
@@ -64,10 +64,10 @@ JSValueRef jsvalue_null()
 char* jsstring_to_cstr(JSContextRef ctx, JSStringRef js_string)
 {
     (void)ctx;
-  size_t len = JSStringGetMaximumUTF8CStringSize(js_string);
-  char *c_str = g_new(char, len);
-  JSStringGetUTF8CString(js_string, c_str, len);
-  return c_str;
+    size_t len = JSStringGetMaximumUTF8CStringSize(js_string);
+    char *c_str = g_new(char, len);
+    JSStringGetUTF8CString(js_string, c_str, len);
+    return c_str;
 }
 
 char* jsvalue_to_cstr(JSContextRef ctx, JSValueRef jsvalue)
@@ -82,17 +82,18 @@ char* jsvalue_to_cstr(JSContextRef ctx, JSValueRef jsvalue)
     return cstr;
 }
 
-gboolean jsvalue_instanceof(JSContextRef ctx, JSValueRef test, const char *klass)
+gboolean jsvalue_instanceof(JSContextRef ctx,
+                            JSValueRef test,
+                            const char *klass)
 {
   JSStringRef property = JSStringCreateWithUTF8CString(klass);
   JSObjectRef ctor = JSValueToObject(ctx,
-                         JSObjectGetProperty(ctx, JSContextGetGlobalObject(ctx),
-                             property, NULL),
-                         NULL);
+        JSObjectGetProperty(ctx, JSContextGetGlobalObject(ctx),
+                            property, NULL),
+        NULL);
   JSStringRelease(property);
   return JSValueIsInstanceOfConstructor(ctx, test, ctor, NULL);
 }
-
 
 PRIVATE gboolean _js_value_unprotect(JSValueRef v)
 {
@@ -103,13 +104,14 @@ void js_value_unprotect(JSValueRef v)
 {
     g_main_context_invoke(NULL, (GSourceFunc)_js_value_unprotect, (gpointer)v);
 }
+
 PRIVATE gboolean _js_value_protect(JSValueRef v)
 {
     JSValueProtect(get_global_context(), v);
     return FALSE;
 }
+
 void js_value_protect(JSValueRef v)
 {
     g_main_context_invoke(NULL, (GSourceFunc)_js_value_protect, (gpointer)v);
 }
-

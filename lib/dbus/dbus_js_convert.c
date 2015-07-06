@@ -3,14 +3,18 @@
 
 gboolean filter_function_child(JSContextRef ctx, JSValueRef jsvalue, int i)
 {
-    JSObjectRef p =JSValueToObject(ctx, JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, NULL), NULL);
+    JSObjectRef p =JSValueToObject(ctx,
+            JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, NULL),
+            NULL);
     if (p == NULL) {
         return FALSE;
     }
     return JSObjectIsFunction(ctx, p);
 }
 
-gboolean filter_array_child(JSContextRef ctx, JSPropertyNameArrayRef array, int index)
+gboolean filter_array_child(JSContextRef ctx,
+                            JSPropertyNameArrayRef array,
+                            int index)
 {
     JSStringRef key = JSPropertyNameArrayGetNameAtIndex(array, index);
     char* c_key = jsstring_to_cstr(ctx, key);
@@ -24,86 +28,119 @@ gboolean filter_array_child(JSContextRef ctx, JSPropertyNameArrayRef array, int 
     }
 }
 
-GVariant* js_to_dbus(JSContextRef ctx, const JSValueRef jsvalue, const GVariantType* sig, JSValueRef *exception)
+GVariant* js_to_dbus(JSContextRef ctx,
+                     const JSValueRef jsvalue,
+                     const GVariantType* sig,
+                     JSValueRef *exception)
 {
     if (g_variant_type_is_array(sig)) {
         GVariantBuilder builder;
         g_variant_builder_init(&builder, sig);
-        JSPropertyNameArrayRef array = JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);
+        JSPropertyNameArrayRef array = JSObjectCopyPropertyNames(ctx,
+                (JSObjectRef)jsvalue);
 
         const GVariantType* child_sig = g_variant_type_element(sig);
 
         if (g_variant_type_is_dict_entry(child_sig)) {
-
             const GVariantType* key_sig = g_variant_type_first(child_sig);
             const GVariantType* value_sig = g_variant_type_next(key_sig);
             for (size_t i=0; i < JSPropertyNameArrayGetCount(array); i++) {
-                if (filter_function_child(ctx, jsvalue, i)) continue;
+                if (filter_function_child(ctx, jsvalue, i)) {
+                    continue;
+                }
 
                 g_variant_builder_open(&builder, child_sig);
-                JSValueRef key = JSValueMakeString(ctx, JSPropertyNameArrayGetNameAtIndex(array, i));
-                JSValueRef value = JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, NULL);
-                g_variant_builder_add_value(&builder, js_to_dbus(ctx, key, key_sig, exception));
-                g_variant_builder_add_value(&builder, js_to_dbus(ctx, value, value_sig, exception));
+                JSValueRef key = JSValueMakeString(ctx,
+                        JSPropertyNameArrayGetNameAtIndex(array, i));
+                JSValueRef value = JSObjectGetPropertyAtIndex(ctx,
+                        (JSObjectRef)jsvalue, i, NULL);
+                g_variant_builder_add_value(&builder,
+                        js_to_dbus(ctx, key, key_sig, exception));
+                g_variant_builder_add_value(&builder,
+                        js_to_dbus(ctx, value, value_sig, exception));
                 g_variant_builder_close(&builder);
             }
             return g_variant_builder_end(&builder);
 
-	} else {
-	    GVariantBuilder builder;
-	    g_variant_builder_init(&builder, sig);
-	    JSPropertyNameArrayRef array = JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);
-	    const GVariantType* child_sig = g_variant_type_element(sig);
-	    for (size_t i=0; i < JSPropertyNameArrayGetCount(array); i++) {
-		if (filter_array_child(ctx, array, i)) continue;
-		g_variant_builder_add_value(&builder, js_to_dbus(ctx, JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, NULL), child_sig, exception));
-	    }
-	    JSPropertyNameArrayRelease(array);
-	    return g_variant_builder_end(&builder);
-	}
-    } else if (g_variant_type_is_tuple(sig)) {
-	    GVariantBuilder builder;
-	    g_variant_builder_init(&builder, sig);
-	    JSPropertyNameArrayRef array = JSObjectCopyPropertyNames(ctx, (JSObjectRef)jsvalue);
-	    const GVariantType* current_sig = g_variant_type_first(sig);
+        } else {
+            GVariantBuilder builder;
+            g_variant_builder_init(&builder, sig);
+            JSPropertyNameArrayRef array = JSObjectCopyPropertyNames(ctx,
+                    (JSObjectRef)jsvalue);
+            const GVariantType* child_sig = g_variant_type_element(sig);
             for (size_t i=0; i < JSPropertyNameArrayGetCount(array); i++) {
-                if (filter_array_child(ctx, array, i)) continue;
-                g_variant_builder_add_value(&builder, js_to_dbus(ctx, JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, NULL), current_sig, exception));
-		current_sig = g_variant_type_next(current_sig);
+                if (filter_array_child(ctx, array, i)) {
+                    continue;
+                }
+                g_variant_builder_add_value(&builder,
+                    js_to_dbus(ctx,
+                        JSObjectGetPropertyAtIndex(ctx,
+                                                   (JSObjectRef)jsvalue, i,
+                                                   NULL),
+                        child_sig, exception));
             }
             JSPropertyNameArrayRelease(array);
             return g_variant_builder_end(&builder);
+        }
+    } else if (g_variant_type_is_tuple(sig)) {
+        GVariantBuilder builder;
+        g_variant_builder_init(&builder, sig);
+        JSPropertyNameArrayRef array = JSObjectCopyPropertyNames(ctx,
+                (JSObjectRef)jsvalue);
+        const GVariantType* current_sig = g_variant_type_first(sig);
+        for (size_t i=0; i < JSPropertyNameArrayGetCount(array); i++) {
+            if (filter_array_child(ctx, array, i)) {
+                continue;
+            }
+            g_variant_builder_add_value(&builder,
+                js_to_dbus(ctx,
+                    JSObjectGetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i,
+                                               NULL),
+                    current_sig, exception));
+            current_sig = g_variant_type_next(current_sig);
+        }
+        JSPropertyNameArrayRelease(array);
+        return g_variant_builder_end(&builder);
     } else {
         switch (g_variant_type_peek_string(sig)[0]) {
             case 'y':
-                return g_variant_new_byte(JSValueToNumber(ctx, jsvalue, exception));
+                return g_variant_new_byte(JSValueToNumber(ctx, jsvalue,
+                                                          exception));
             case 'n':
-                return g_variant_new_int16(JSValueToNumber(ctx, jsvalue, exception));
+                return g_variant_new_int16(JSValueToNumber(ctx, jsvalue,
+                                                           exception));
             case 'q':
-                return g_variant_new_uint16(JSValueToNumber(ctx, jsvalue, exception));
+                return g_variant_new_uint16(JSValueToNumber(ctx, jsvalue,
+                                                            exception));
             case 'i':
-                return g_variant_new_int32(JSValueToNumber(ctx, jsvalue, exception));
+                return g_variant_new_int32(JSValueToNumber(ctx, jsvalue,
+                                                           exception));
             case 'u':
-                return g_variant_new_uint32(JSValueToNumber(ctx, jsvalue, exception));
+                return g_variant_new_uint32(JSValueToNumber(ctx, jsvalue,
+                                                            exception));
             case 'x':
-                return g_variant_new_int64(JSValueToNumber(ctx, jsvalue, exception));
+                return g_variant_new_int64(JSValueToNumber(ctx, jsvalue,
+                                                           exception));
             case 't':
-                return g_variant_new_uint64(JSValueToNumber(ctx, jsvalue, exception));
+                return g_variant_new_uint64(JSValueToNumber(ctx, jsvalue,
+                                                            exception));
             case 'd':
-                return g_variant_new_double(JSValueToNumber(ctx, jsvalue, exception));
+                return g_variant_new_double(JSValueToNumber(ctx, jsvalue,
+                                                            exception));
             case 'h':
-                return g_variant_new_handle(JSValueToNumber(ctx, jsvalue, exception));
+                return g_variant_new_handle(JSValueToNumber(ctx, jsvalue,
+                                                            exception));
             case 'b':
                 return g_variant_new_boolean(JSValueToBoolean(ctx, jsvalue));
-            case 's':
-                {
+
+            case 's': {
                     char* v = jsvalue_to_cstr(ctx, jsvalue);
                     GVariant* r = g_variant_new_string(v);
                     g_free(v);
                     return r;
                 }
-            case 'v':
-                {
+
+            case 'v': {
                     //TODO:
                     /*g_variant_new_variant()*/
                     g_assert_not_reached();
@@ -120,36 +157,46 @@ JSValueRef dbus_to_js(JSContextRef ctx, GVariant *dbus)
     switch (type) {
         case G_VARIANT_CLASS_STRING:
         case G_VARIANT_CLASS_OBJECT_PATH:
-        case G_VARIANT_CLASS_SIGNATURE:
-            {
-                JSStringRef js_string = JSStringCreateWithUTF8CString(g_variant_get_string(dbus, NULL));
+        case G_VARIANT_CLASS_SIGNATURE: {
+                JSStringRef js_string = JSStringCreateWithUTF8CString(
+                      g_variant_get_string(dbus, NULL));
                 jsvalue = JSValueMakeString(ctx, js_string);
                 JSStringRelease(js_string);
                 return jsvalue;
             }
+
         case G_VARIANT_CLASS_BYTE:
             return JSValueMakeNumber(ctx, g_variant_get_byte(dbus));
+
         case G_VARIANT_CLASS_DOUBLE:
             return JSValueMakeNumber(ctx, g_variant_get_double(dbus));
+
         case G_VARIANT_CLASS_INT16:
             return JSValueMakeNumber(ctx, g_variant_get_int16(dbus));
+
         case G_VARIANT_CLASS_UINT16:
             return JSValueMakeNumber(ctx, g_variant_get_uint16(dbus));
+
         case G_VARIANT_CLASS_INT32:
             return JSValueMakeNumber(ctx, g_variant_get_int32(dbus));
+
         case G_VARIANT_CLASS_UINT32:
             return JSValueMakeNumber(ctx, g_variant_get_uint32(dbus));
+
         case G_VARIANT_CLASS_INT64:
             return JSValueMakeNumber(ctx, g_variant_get_int64(dbus));
+
         case G_VARIANT_CLASS_UINT64:
             return JSValueMakeNumber(ctx, g_variant_get_uint64(dbus));
+
         case G_VARIANT_CLASS_BOOLEAN:
             return JSValueMakeBoolean(ctx, g_variant_get_boolean(dbus));
+
         case G_VARIANT_CLASS_HANDLE:
-            g_warning("didn't support FD type");
+            g_warning("[%s] does not support FD type\n", __func__);
             return JSValueMakeNumber(ctx, g_variant_get_uint32(dbus));
-        case G_VARIANT_CLASS_VARIANT:
-            {
+
+        case G_VARIANT_CLASS_VARIANT: {
                 GVariant* v = g_variant_get_variant(dbus);
                 jsvalue = dbus_to_js(ctx, v);
                 g_variant_unref(v);
@@ -160,9 +207,9 @@ JSValueRef dbus_to_js(JSContextRef ctx, GVariant *dbus)
             /*g_assert_not_reached();*/
             break;
 
-        case G_VARIANT_CLASS_ARRAY:
-            {
-                if (g_variant_type_is_dict_entry(g_variant_type_element(g_variant_get_type(dbus)))) {
+        case G_VARIANT_CLASS_ARRAY: {
+                if (g_variant_type_is_dict_entry(
+                        g_variant_type_element(g_variant_get_type(dbus)))) {
                     jsvalue = JSObjectMake(ctx, NULL, NULL);
                     for (size_t i=0; i<g_variant_n_children(dbus); i++) {
                         GVariant *dic = g_variant_get_child_value(dbus, i);
@@ -172,8 +219,10 @@ JSValueRef dbus_to_js(JSContextRef ctx, GVariant *dbus)
                         JSValueRef js_key = dbus_to_js(ctx, key);
                         JSValueRef js_value = dbus_to_js(ctx, value);
 
-                        JSStringRef key_str = JSValueToStringCopy(ctx, js_key, NULL);
-                        JSObjectSetProperty(ctx, (JSObjectRef)jsvalue, key_str, js_value, 0, NULL);
+                        JSStringRef key_str = JSValueToStringCopy(ctx, js_key,
+                                                                  NULL);
+                        JSObjectSetProperty(ctx, (JSObjectRef)jsvalue,
+                                            key_str, js_value, 0, NULL);
                         JSStringRelease(key_str);
 
                         g_variant_unref(key);
@@ -194,24 +243,25 @@ JSValueRef dbus_to_js(JSContextRef ctx, GVariant *dbus)
                     return jsvalue;
                 }
             }
-        case G_VARIANT_CLASS_TUPLE:
-            {
+
+        case G_VARIANT_CLASS_TUPLE: {
                 int n = g_variant_n_children(dbus);
                 jsvalue = JSObjectMakeArray(ctx, 0, NULL, NULL);
                 for (int i=0; i < n; i++) {
                     GVariant* v = g_variant_get_child_value(dbus, i);
-                    JSObjectSetPropertyAtIndex(ctx, (JSObjectRef)jsvalue, i, dbus_to_js(ctx, v), NULL);
+                    JSObjectSetPropertyAtIndex(ctx, (JSObjectRef)jsvalue,
+                                               i, dbus_to_js(ctx, v), NULL);
                     g_variant_unref(v);
                 }
                 return jsvalue;
             }
+
         case G_VARIANT_CLASS_MAYBE:
             g_assert_not_reached();
     }
-    g_warning("didn't support signature type:%c", type);
+    g_warning("[%s] does not  support signature type:%c\n", __func__, type);
     return JSValueMakeUndefined(ctx);
 }
-
 
 GVariantType* gslit_to_varianttype(GSList* l)
 {
@@ -223,4 +273,3 @@ GVariantType* gslit_to_varianttype(GSList* l)
     g_string_append(str, ")");
     return g_variant_type_new(g_string_free(str, FALSE));
 }
-

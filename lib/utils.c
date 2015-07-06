@@ -42,18 +42,18 @@ char* shell_escape(const char* source)
     p = (unsigned char *) source;
     q = dest = g_malloc (strlen (source) * 4 + 1);
 
-    while (*p)
-    {
-        switch (*p)
-        {
+    while (*p) {
+        switch (*p) {
             case '\'':
                 *q++ = '\\';
                 *q++ = '\'';
                 break;
+
             case '\\':
                 *q++ = '\\';
                 *q++ = '\\';
                 break;
+
             case ' ':
                 *q++ = '\\';
                 *q++ = ' ';
@@ -90,6 +90,7 @@ void run_command(const char* cmd)
 {
     g_spawn_command_line_async(cmd, NULL);
 }
+
 void run_command1(const char* cmd, const char* p1)
 {
     char* e_p = shell_escape(p1);
@@ -99,6 +100,7 @@ void run_command1(const char* cmd, const char* p1)
     g_spawn_command_line_async(e_cmd, NULL);
     g_free(e_cmd);
 }
+
 void run_command2(const char* cmd, const char* p1, const char* p2)
 {
     char* e_p1 = shell_escape(p1);
@@ -110,7 +112,6 @@ void run_command2(const char* cmd, const char* p1, const char* p2)
     g_spawn_command_line_async(e_cmd, NULL);
     g_free(e_cmd);
 }
-
 
 JS_EXPORT_API
 const char* dcore_gettext(const char* c)
@@ -130,9 +131,9 @@ void dcore_bindtextdomain(char const* domain, char const* mo_file)
     bindtextdomain(domain, mo_file);
 }
 
-
 #include <unistd.h>
 #include <fcntl.h>
+
 char* get_name_by_pid(int pid)
 {
 #define LEN 1024
@@ -155,10 +156,8 @@ char* get_name_by_pid(int pid)
         }
     }
 
-
     return g_path_get_basename(content);
 }
-
 
 GKeyFile* load_app_config(const char* name)
 {
@@ -190,13 +189,13 @@ gboolean write_to_file(const char* path, const char* content, size_t size/* if 0
     char* dir = g_path_get_dirname(path);
     if (g_file_test(dir, G_FILE_TEST_IS_REGULAR)) {
         g_free(dir);
-        g_warning("write content to %s, but %s is not directory!!\n",
-                path, dir);
+        g_warning("[%s] write content to %s, but %s is not directory!!\n",
+                  __func__, path, dir);
         return FALSE;
     } else if (!g_file_test(dir, G_FILE_TEST_EXISTS)) {
         if (g_mkdir_with_parents(dir, 0755) == -1) {
-            g_warning("write content to %s, but create %s is failed!!\n",
-                    path, dir);
+            g_warning("[%s] write content to %s, but create %s is failed!!\n",
+                      __func__, path, dir);
             return FALSE;
         }
     }
@@ -221,33 +220,40 @@ int close_std_stream()
     //redirect them to /dev/null
     int fd;
     close(STDIN_FILENO);
-    fd=open("/dev/null", O_RDWR);
-    if(fd!=STDIN_FILENO)
+    fd = open("/dev/null", O_RDWR);
+    if (fd != STDIN_FILENO) {
         return 1;
-    if(dup2(STDIN_FILENO, STDOUT_FILENO)!=STDOUT_FILENO)
+    }
+    if (dup2(STDIN_FILENO, STDOUT_FILENO) != STDOUT_FILENO) {
         return 1;
-    if(dup2(STDIN_FILENO, STDERR_FILENO)!=STDERR_FILENO)
+    }
+    if (dup2(STDIN_FILENO, STDERR_FILENO) != STDERR_FILENO) {
         return 1;
+    }
     return 0;
 }
 
 // reparent to init process.
 int reparent_to_init ()
 {
-    switch (fork())
-    {
-	case -1:
-	    return EXIT_FAILURE;
-	case 0:
-	    return EXIT_SUCCESS;
-	default:
-	    _exit(EXIT_SUCCESS);
+    switch (fork()) {
+    case -1:
+        return EXIT_FAILURE;
+
+    case 0:
+        return EXIT_SUCCESS;
+
+    default:
+        _exit(EXIT_SUCCESS);
     }
 }
-static void _consolidate_cmd_line (int subargc G_GNUC_UNUSED, char*** subargv_ptr G_GNUC_UNUSED)
+
+static void _consolidate_cmd_line (int subargc G_GNUC_UNUSED,
+                                   char*** subargv_ptr G_GNUC_UNUSED)
 {
     //recursively consolidate
 }
+
 void parse_cmd_line (int* argc_ptr, char*** argv_ptr)
 {
     char*** subargv_ptr = argv_ptr;
@@ -256,46 +262,45 @@ void parse_cmd_line (int* argc_ptr, char*** argv_ptr)
     gboolean should_reparent = TRUE;
     gboolean enable_debug = FALSE;
     int i=0;
-    for (;i<(*argc_ptr);i++)
-    {
-	if(!g_strcmp0 ((*argv_ptr)[i], "-f"))
-	{
-	    should_reparent=FALSE;
+    for (; i<(*argc_ptr); i++) {
+        if(!g_strcmp0 ((*argv_ptr)[i], "-f")) {
+            should_reparent=FALSE;
             //(*argv_ptr)[i]=NULL;
-	    //(*argc_ptr)--;
+            //(*argc_ptr)--;
             continue;
-	}
-	if(!g_strcmp0 ((*argv_ptr)[i], "-d"))
-	{
+        }
+
+        if(!g_strcmp0 ((*argv_ptr)[i], "-d")) {
             enable_debug = TRUE;
-	    should_reparent=FALSE;
+            should_reparent = FALSE;
             //(*argv_ptr)[i]=NULL;
-	    //(*argc_ptr)--;
+            //(*argc_ptr)--;
             continue;
-	}
+        }
     }
     //uncomment previous comments
     //consolidate *argv, remove NULL slots.
     _consolidate_cmd_line(subargc, subargv_ptr);
 
-    if (should_reparent)
-    {
+    if (should_reparent) {
         //FIXME: shall we exit?
-        if (close_std_stream())
+        if (close_std_stream()) {
             return;
-	reparent_to_init();
+        }
+        reparent_to_init();
     }
-    if (enable_debug)
-    {
-	g_setenv("G_MESSAGES_DEBUG", "all", FALSE);
+
+    if (enable_debug) {
+        g_setenv("G_MESSAGES_DEBUG", "all", FALSE);
     }
 }
 
 char* to_lower_inplace(char* str)
 {
     g_assert(str != NULL);
-    for (size_t i=0; i<strlen(str); i++)
+    for (size_t i=0; i<strlen(str); i++) {
         str[i] = g_ascii_tolower(str[i]);
+    }
     return str;
 }
 
@@ -313,7 +318,6 @@ GDesktopAppInfo* guess_desktop_file(char const* app_id)
     return desktop_file;
 }
 
-
 char* get_basename_without_extend_name(char const* path)
 {
     g_assert(path!= NULL);
@@ -328,12 +332,10 @@ char* get_basename_without_extend_name(char const* path)
     return basename;
 }
 
-
 gboolean is_deepin_icon(char const* icon_path)
 {
     return g_str_has_prefix(icon_path, "/usr/share/icons/Deepin/");
 }
-
 
 static char* _check(char const* app_id)
 {
@@ -341,15 +343,15 @@ static char* _check(char const* app_id)
     char* temp_icon_name_holder = dcore_get_theme_icon(app_id, 48);
 
     if (temp_icon_name_holder != NULL) {
-        if (!g_str_has_prefix(temp_icon_name_holder, "data:image"))
+        if (!g_str_has_prefix(temp_icon_name_holder, "data:image")) {
             icon = temp_icon_name_holder;
-        else
+        } else {
             g_free(temp_icon_name_holder);
+        }
     }
 
     return icon;
 }
-
 
 char* check_absolute_path_icon(char const* app_id, char const* icon_path)
 {
@@ -357,9 +359,10 @@ char* check_absolute_path_icon(char const* app_id, char const* icon_path)
     if ((icon = _check(app_id)) == NULL) {
         char* basename = get_basename_without_extend_name(icon_path);
         if (basename != NULL) {
-            if (g_strcmp0(app_id, basename) == 0
-                || (icon = _check(basename)) == NULL)
+            if (g_strcmp0(app_id, basename) == 0 ||
+                (icon = _check(basename)) == NULL) {
                 icon = g_strdup(icon_path);
+            }
             g_free(basename);
         }
     }
@@ -367,16 +370,15 @@ char* check_absolute_path_icon(char const* app_id, char const* icon_path)
     return icon;
 }
 
-
 gboolean is_chrome_app(char const* name)
 {
     return g_str_has_prefix(name, "chrome-");
 }
 
-
 char* bg_blur_pict_get_dest_path (const char* src_uri)
 {
-    g_debug ("[%s] bg_blur_pict_get_dest_path: src_uri=%s", __func__, src_uri);
+    g_debug("[%s] bg_blur_pict_get_dest_path: src_uri: %s\n",
+            __func__, src_uri);
     g_return_val_if_fail (src_uri != NULL, NULL);
 
     //1. calculate original picture md5
@@ -394,10 +396,8 @@ char* bg_blur_pict_get_dest_path (const char* src_uri)
     file = g_strconcat (g_checksum_get_string (checksum), ".png", NULL);
     g_checksum_free (checksum);
     char* path;
-    path = g_build_filename (g_get_user_cache_dir (),
-                    BG_BLUR_PICT_CACHE_DIR,
-                    file,
-                    NULL);
+    path = g_build_filename(g_get_user_cache_dir (),
+                            BG_BLUR_PICT_CACHE_DIR, file, NULL);
     g_free (file);
 
     return path;
@@ -408,8 +408,7 @@ gboolean is_livecd ()
     const gchar *filename = "/proc/cmdline";
     gchar *contents = NULL;
     gboolean result = FALSE;
-    if (g_file_get_contents(filename,&contents,NULL,NULL))
-    {
+    if (g_file_get_contents(filename, &contents, NULL, NULL)) {
         result = (g_strstr_len(contents, -1, "boot=casper") != NULL);
         g_free(contents);
     }
@@ -424,9 +423,9 @@ gboolean is_virtual_pc ()
     const gchar* cmd = "dmidecode -s system-product-name";
     g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("[%s] cmd: %s ;failed:%s\n", __func__, cmd, error->message);
+        g_warning("[%s] cmd: %s, failed: %s\n", __func__, cmd, error->message);
         g_clear_error(&error);
-    }else{
+    } else {
         if (output != NULL){
             gchar* low = g_utf8_casefold(output, -1);
             result = (g_strstr_len(low, -1, "virtual") != NULL);
@@ -434,7 +433,8 @@ gboolean is_virtual_pc ()
         }
     }
     g_free(output);
-    g_debug ("[%s]:cmd:%s;output:%s; result:%d\n", __func__, cmd, output, result);
+    g_debug("[%s] cmd: %s, output: %s, result: %d\n",
+            __func__, cmd, output, result);
     cmd = NULL;
     return result;
 }
@@ -443,26 +443,24 @@ gchar* get_timezone_local ()
 {
     const gchar *filename = "/etc/timezone";
     gchar *contents = NULL;
-    if (g_file_get_contents(filename,&contents,NULL,NULL))
-    {
+    if (g_file_get_contents(filename, &contents, NULL, NULL)) {
         return g_strstrip(contents);
     }
     return NULL;
 }
 
-gboolean spawn_command_sync (const char* command,gboolean sync)
+gboolean spawn_command_sync (const char* command, gboolean sync)
 {
     GError *error = NULL;
     const gchar *cmd = g_strdup_printf ("%s",command);
-    if(sync){
-        g_message ("g_spawn_command_line_sync:%s",cmd);
+    g_message("[%s] cmd: %s, sync: %d\n", cmd, sync);
+    if (sync) {
         g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-    }else{
-        g_message ("g_spawn_command_line_async:%s",cmd);
+    } else {
         g_spawn_command_line_async (cmd, &error);
     }
     if (error != NULL) {
-        g_warning ("%s failed:%s\n",cmd, error->message);
+        g_warning("[%s] %s failed: %s\n", __func__, cmd, error->message);
         g_clear_error(&error);
         return FALSE;
     }

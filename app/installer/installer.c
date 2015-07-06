@@ -44,9 +44,12 @@ char* log_path = NULL;
 gboolean nowm = FALSE;
 static GOptionEntry entries[] =
 {
-    { "conf", 'c', 0, G_OPTION_ARG_STRING, &auto_conf_path, "set configure file path when installing with automate mode ", "path"},
-    { "log", 'l', 0, G_OPTION_ARG_STRING, &log_path, "write log message to ", "log path"},
-    { "without-wm", 'w', 0, G_OPTION_ARG_NONE, &nowm, "launch deepin-installer without window manager", NULL},
+    { "conf", 'c', 0, G_OPTION_ARG_STRING, &auto_conf_path,
+      "set configure file path when installing with automate mode ", "path"},
+    { "log", 'l', 0, G_OPTION_ARG_STRING, &log_path,
+      "write log message to ", "log path"},
+    { "without-wm", 'w', 0, G_OPTION_ARG_NONE, &nowm,
+      "launch deepin-installer without window manager", NULL},
     { NULL }
 };
 
@@ -54,11 +57,13 @@ static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
     g_debug ("installer:move window");
-    if (event->y > 50 || (event->x > 740) && (event->y < 50)) {
+    // Window is only moveable at the top
+    if (event->y > 50) {
         return TRUE;
     }
     if (event->button == 1) {
-        g_debug ("move window:in drag x_root->%g, y_root->%g", event->x_root, event->y_root);
+        g_debug ("move window: in drag x_root->%g, y_root->%g",
+                 event->x_root, event->y_root);
         gtk_widget_set_can_focus (widget, TRUE);
         gtk_widget_grab_focus (widget);
 
@@ -82,11 +87,10 @@ gboolean installer_is_debug()
 }
 
 
-
 JS_EXPORT_API
-void installer_spawn_command_sync (const char* cmd,gboolean sync )
+void installer_spawn_command_sync (const char* cmd, gboolean sync)
 {
-    spawn_command_sync(cmd,sync);
+    spawn_command_sync(cmd, sync);
 }
 
 JS_EXPORT_API
@@ -101,9 +105,10 @@ void installer_shutdown ()
 {
     g_warning("installer_shutdown()");
     GError* error=NULL;
-    g_spawn_command_line_async ("sh -c \"echo o > /proc/sysrq-trigger\"", &error);
+    g_spawn_command_line_async ("sh -c \"echo o > /proc/sysrq-trigger\"",
+                                &error);
     if(error != NULL){
-        g_warning("use echo to write b into /proc/sysrq-trigger failed:%s",error->message);
+        g_warning("[installer_shutdown] failed:%s", error->message);
         g_error_free(error);
         error = NULL;
     }
@@ -166,14 +171,18 @@ void redirect_log(const char* path)
     if (path == NULL) {
         path="/var/log/deepin-installer.log";
     }
-    g_message ("[%s]:deepin-installer.log path is:====%s=========",__func__ , path);
+    g_message ("[%s]: log path is: %s", __func__, path);
     int log_file = open(path, O_RDWR| O_CREAT| O_TRUNC, 0644);
     if (log_file == -1) {
         perror("redirect_log failed!");
-        return ;
+        return;
     }
-    dup2(log_file, 1);
-    dup2(log_file, 2);
+    if (dup2(log_file, 1) == -1) {
+      perror("Failed to redirect stdout!");
+    }
+    if (dup2(log_file, 2) == -1) {
+      perror("Failed to redirect stderr!");
+    }
 }
 
 void fix_without_wm(GtkWidget* child)
@@ -185,22 +194,26 @@ void fix_without_wm(GtkWidget* child)
     INSTALLER_WIN_WIDTH = gdk_screen_width();
     INSTALLER_WIN_HEIGHT = gdk_screen_height();
     gtk_window_move(GTK_WINDOW(installer_container), 0, 0);
-    BackgroundInfo* bg_info = create_background_info(installer_container, child);
-    background_info_set_background_by_file(bg_info, "/usr/share/backgrounds/default_background.jpg");
+    BackgroundInfo* bg_info = create_background_info(installer_container,
+                                                     child);
+    background_info_set_background_by_file(bg_info,
+        "/usr/share/backgrounds/default_background.jpg");
 }
 
 int main(int argc, char **argv)
 {
-    if (argc == 2 && 0 == g_strcmp0(argv[1], "-d"))
+    if (argc == 2 && 0 == g_strcmp0(argv[1], "-d")) {
         g_setenv("G_MESSAGES_DEBUG", "all", FALSE);
+    }
     GOptionContext *context = g_option_context_new("- Deepin Installer");
     g_option_context_add_main_entries(context, entries, "INSTALLER");
     g_option_context_add_group (context, gtk_get_option_group (TRUE));
     if (!g_option_context_parse (context, &argc, &argv, NULL)) {
         g_warning ("context parse failed\n");
     }
-    if (auto_conf_path != NULL && !g_file_test(auto_conf_path, G_FILE_TEST_IS_REGULAR)) {
-        g_warning("the configure is valid: %s", auto_conf_path);
+    if (auto_conf_path != NULL &&
+        !g_file_test(auto_conf_path, G_FILE_TEST_IS_REGULAR)) {
+        g_warning("the configure is invalid: %s", auto_conf_path);
         exit(1);
     }
     g_option_context_free(context);
@@ -232,20 +245,25 @@ int main(int argc, char **argv)
     gtk_window_set_decorated (GTK_WINDOW (installer_container), FALSE);
     GtkWidget *webview = d_webview_new_with_uri (INSTALLER_HTML_PATH);
     g_signal_connect (webview, "draw", G_CALLBACK (erase_background), NULL);
-    gtk_container_add (GTK_CONTAINER (installer_container), GTK_WIDGET (webview));
+    gtk_container_add (GTK_CONTAINER (installer_container),
+                       GTK_WIDGET (webview));
 
-    WebKitWebSettings *setting = webkit_web_view_get_settings(WEBKIT_WEB_VIEW(webview));
+    WebKitWebSettings *setting = webkit_web_view_get_settings(
+        WEBKIT_WEB_VIEW(webview));
     g_object_set(G_OBJECT(setting),
-            "enable-default-context-menu", FALSE,
-            NULL);
+                 "enable-default-context-menu", FALSE,
+                 NULL);
 
-    if (nowm){
+    if (nowm) {
         fix_without_wm(webview);
-    }else{
-        g_signal_connect (installer_container, "button-press-event", G_CALLBACK (move_window), NULL);
-        gtk_window_set_position (GTK_WINDOW (installer_container), GTK_WIN_POS_CENTER);
+    } else {
+        g_signal_connect (installer_container, "button-press-event",
+                          G_CALLBACK (move_window), NULL);
+        gtk_window_set_position (GTK_WINDOW (installer_container),
+                                 GTK_WIN_POS_CENTER);
     }
-    gtk_window_set_default_size (GTK_WINDOW (installer_container), INSTALLER_WIN_WIDTH, INSTALLER_WIN_HEIGHT);
+    gtk_window_set_default_size (GTK_WINDOW (installer_container),
+                                 INSTALLER_WIN_WIDTH, INSTALLER_WIN_HEIGHT);
     gtk_window_set_resizable (GTK_WINDOW (installer_container), FALSE);
     GdkGeometry geometry;
     geometry.min_width = INSTALLER_WIN_WIDTH;
@@ -254,7 +272,11 @@ int main(int argc, char **argv)
     geometry.min_height = INSTALLER_WIN_HEIGHT;
     geometry.max_height = INSTALLER_WIN_HEIGHT;
     geometry.base_height = INSTALLER_WIN_HEIGHT;
-    gtk_window_set_geometry_hints (GTK_WINDOW (installer_container), webview, &geometry, GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE | GDK_HINT_BASE_SIZE);
+    gtk_window_set_geometry_hints (GTK_WINDOW (installer_container), webview,
+                                   &geometry,
+                                   GDK_HINT_MIN_SIZE |
+                                   GDK_HINT_MAX_SIZE |
+                                   GDK_HINT_BASE_SIZE);
 
     gtk_widget_show_all (installer_container);
 /*#ifndef NDEBUG*/

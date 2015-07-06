@@ -5,18 +5,20 @@ gboolean partition_filter_by_path(PedPartition* part, const char* path)
 {
     char* part_path = ped_partition_get_path(part);
     if (part_path == NULL) {
-	return FALSE;
+        return FALSE;
     }
     if (g_strcmp0(part_path , path) == 0) {
-	g_free(part_path);
-	return TRUE;
+        g_free(part_path);
+        return TRUE;
     } else {
-	g_free(part_path);
-	return FALSE;
+        g_free(part_path);
+        return FALSE;
     }
 }
 
-PedPartition* create_and_add_partition(PedDisk* disk, PedPartitionType type, const PedFileSystemType* fs, PedSector start, PedSector end)
+PedPartition* create_and_add_partition(PedDisk* disk, PedPartitionType type,
+                                       const PedFileSystemType* fs,
+                                       PedSector start, PedSector end)
 {
     PedPartition* part = ped_partition_new (disk, type, fs, start, end);
     g_return_val_if_fail(part != NULL, FALSE);
@@ -30,19 +32,20 @@ PedPartition* create_and_add_partition(PedDisk* disk, PedPartitionType type, con
     return part;
 }
 
-PedPartition* find_partition(PedDisk* disk,  PartitionFilter filter, gpointer user_data, GDestroyNotify notify)
+PedPartition* find_partition(PedDisk* disk,  PartitionFilter filter,
+                             gpointer user_data, GDestroyNotify notify)
 {
     PedPartition* part = disk->part_list;
     gboolean found = false;
     while (part) {
-	if (filter(part, user_data)) {
-	    found = true;
-	    break;
-	}
-	part = ped_disk_next_partition(disk, part);
+        if (filter(part, user_data)) {
+            found = true;
+            break;
+        }
+        part = ped_disk_next_partition(disk, part);
     }
     if (notify) {
-	notify(user_data);
+        notify(user_data);
     }
     return part;
 }
@@ -57,25 +60,27 @@ int has_efi_directory(PedPartition* part)
     char *path = ped_partition_get_path(part);
 
     if (!is_busy) {
-	mount_point = g_dir_make_tmp("efi_detectorXXXXXX", &error);
-	if (error != NULL) {
-	    g_warning("create efi_detector failed :%s\n", error->message);
-	    g_error_free(error);
-	    error = NULL;
-	}
-	char* cmd = g_strdup_printf ("mount -t vfat %s %s", path, mount_point);
-	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-	g_free(cmd);
-	if (error != NULL) {
-	    g_warning("Can't detect whether is $ESP : %s", error->message);
-	    g_error_free(error);
-	    error = NULL;
-	    return FALSE;
-	}
+        mount_point = g_dir_make_tmp("efi_detectorXXXXXX", &error);
+        if (error != NULL) {
+            g_warning("[%s] create efi_detector failed :%s\n", __func__,
+                      error->message);
+            g_error_free(error);
+            error = NULL;
+        }
+        char* cmd = g_strdup_printf ("mount -t vfat %s %s", path, mount_point);
+        g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+        g_free(cmd);
+        if (error != NULL) {
+            g_warning("[%s] Can't detect whether is $ESP, cmd: %s, error: %s",
+                      __func__, cmd, error->message);
+            g_error_free(error);
+            error = NULL;
+            return FALSE;
+        }
     }
 
     if (mount_point == NULL) {
-	mount_point = get_partition_mount_point(path);
+        mount_point = get_partition_mount_point(path);
     }
     g_free(path);
 
@@ -84,19 +89,20 @@ int has_efi_directory(PedPartition* part)
     g_free(esp_path);
 
     if (!is_busy) {
-	char* cmd = g_strdup_printf ("umount -l %s", mount_point);
-	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-	g_free(cmd);
-	if (error != NULL) {
-	    g_warning("Can't detect whether is $ESP : %s", error->message);
-	    g_error_free(error);
-	    g_free(mount_point);
-	    return is_esp;
-	}
+        char* cmd = g_strdup_printf ("umount -l %s", mount_point);
+        g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+        g_free(cmd);
+        if (error != NULL) {
+            g_warning("[%s] Can't detect whether is $ESP, cmd: %s, error: %s",
+                      __func__, cmd, error->message);
+            g_error_free(error);
+            g_free(mount_point);
+            return is_esp;
+        }
 
-	//don't rm the dir if umount failed.
-	g_rmdir(mount_point);
-	g_free(mount_point);
+        //don't rm the dir if umount failed.
+        g_rmdir(mount_point);
+        g_free(mount_point);
     }
 
     return is_esp;
@@ -105,11 +111,11 @@ int has_efi_directory(PedPartition* part)
 gboolean filter_partition_by_esp(PedPartition* part)
 {
     if (part->num <  0) {
-	return FALSE;
+        return FALSE;
     }
 
     if (part->fs_type == 0 || strncmp(part->fs_type->name, "fat32", 5) != 0) {
-	return FALSE;
+        return FALSE;
     }
 
     return has_efi_directory(part);
@@ -120,19 +126,20 @@ char* query_esp_path_by_disk_path(const char* path)
     PedDevice* device = ped_device_get(path);
     PedDiskType *type = ped_disk_probe(device);
     if (type == 0) {
-	return NULL;
+        return NULL;
     }
     if (strncmp(type->name, "loop", 5) == 0) {
-	return NULL;
+        return NULL;
     }
     PedDisk* disk = ped_disk_new(device);
     if (disk == 0) {
-	return NULL;
+        return NULL;
     }
 
-    PedPartition* esp = find_partition(disk, (PartitionFilter)filter_partition_by_esp, NULL, NULL);
+    PedPartition* esp = find_partition(disk,
+        (PartitionFilter)filter_partition_by_esp, NULL, NULL);
     if (esp != NULL) {
-	return ped_partition_get_path(esp);
+        return ped_partition_get_path(esp);
     }
 
     return NULL;
@@ -148,27 +155,29 @@ gchar * get_partition_mount_point (const gchar *path)
     GError *error = NULL;
 
     if (path == NULL || !g_file_test (path, G_FILE_TEST_EXISTS)) {
-        g_warning ("get partition mount point:invalid path %s\n", path);
+        g_warning("[%s]: invalid path %s\n", __func__, path);
         return mp;
     }
 
-    swap_cmd = g_strdup_printf ("sh -c \"cat /proc/swaps |grep %s |awk '{print $1}'\"", path);
+    swap_cmd = g_strdup_printf(
+        "sh -c \"cat /proc/swaps |grep %s |awk '{print $1}'\"", path);
     g_spawn_command_line_sync (swap_cmd, &swap_output, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("get partition mount point:run swap cmd error->%s\n", error->message);
+        g_warning("[%s]: run swap cmd error->%s\n", __func__, error->message);
         g_error_free (error);
         error = NULL;
     }
     g_free (swap_cmd);
 
-    if (swap_output != NULL && g_strcmp0 (g_strstrip(swap_output), path) == 0) {
+    if (swap_output != NULL && g_strcmp0(g_strstrip(swap_output), path) == 0) {
         return g_strdup ("swap");
     }
 
     cmd = g_strdup_printf ("findmnt -k -f -n -o TARGET -S %s", path);
     g_spawn_command_line_sync (cmd, &mp, NULL, NULL, &error);
     if (error != NULL) {
-        g_warning ("get partition mount point:run cmd error->%s\n", error->message);
+        g_warning("[%s]: run cmd failed: %s,  error: %s\n", __func__, cmd,
+                  error->message);
         g_error_free (error);
         error = NULL;
     }

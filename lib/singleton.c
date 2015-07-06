@@ -19,7 +19,8 @@ int binding(int server_sockfd, const char* path)
 
     const int reuse = 1;
     socklen_t val_len = sizeof reuse;
-    setsockopt(server_sockfd, SOL_SOCKET, SO_REUSEADDR, (const void*)&reuse, val_len);
+    setsockopt(server_sockfd, SOL_SOCKET, SO_REUSEADDR,
+               (const void*)&reuse, val_len);
 
     // force quit
     /* const struct linger linger_val = {1, 0}; */
@@ -45,11 +46,12 @@ gboolean is_application_running(const char* path)
 void singleton(const char* name)
 {
     static int sd = 0;
-    if (sd != 0)
+    if (sd != 0) {
         return;
+    }
 
     sd = socket(AF_UNIX, SOCK_STREAM, 0);
-    while (0 != binding(sd, name))
-        g_debug("binding failed");
+    while (0 != binding(sd, name)) {
+        g_debug("[%s] binding failed\n", __func__);
+    }
 }
-
