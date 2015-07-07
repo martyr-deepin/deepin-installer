@@ -1,8 +1,8 @@
 package main
 
 import (
-	"pkg.linuxdeepin.com/lib/dbus"
-	log "pkg.linuxdeepin.com/lib/log"
+	"pkg.deepin.io/lib/dbus"
+	log "pkg.deepin.io/lib/log"
 )
 
 var logger = log.NewLogger("com.deepin.helper.LanguageSelector")
