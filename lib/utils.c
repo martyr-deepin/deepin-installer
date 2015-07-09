@@ -453,7 +453,7 @@ gboolean spawn_command_sync (const char* command, gboolean sync)
 {
     GError *error = NULL;
     const gchar *cmd = g_strdup_printf ("%s",command);
-    g_message("[%s] cmd: %s, sync: %d\n", cmd, sync);
+    g_message("[%s] cmd: %s, sync: %d\n", __func__, cmd, sync);
     if (sync) {
         g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     } else {
