@@ -69,7 +69,7 @@ tooltipOffsetY = (document.body.clientHeight - document.body.offsetHeight) / 2
 
 update_keyboard_text = (tri) ->
     current_layout = DCore.Installer.get_layout_description(__selected_layout)
-    console.log("[welcome.coffee]update_keyboard_text() current layout: #{current_layout}")
+    console.log("[welcome.coffee] update_keyboard_text() current layout: #{current_layout}")
     keyboardSet_div?.innerText = current_layout
     keyboardSet_div?.title = current_layout
 
@@ -693,7 +693,7 @@ class Timezone extends Widget
             @init_search_list()
         key = @query_input.value
         matched = get_matched_items(key, @search_list)
-        if matched.length > 0
+        if key.length > 0 and matched.length > 0
             @query_complete.style.display = "block"
             for item in matched
                 @create_complete_item(item)

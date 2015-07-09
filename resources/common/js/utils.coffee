@@ -60,9 +60,6 @@ Array.prototype.remove = (el)->
 #     else
 #         @.slice(0)
 
-echo = (log) ->
-    console.log log
-
 assert = (value, msg) ->
     if not value
         throw new Error(msg)
