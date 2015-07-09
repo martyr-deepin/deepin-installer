@@ -33,7 +33,7 @@ ErrorCode =
 
 __selected_zone_index = 8
 
-# TODO: WTF is this, rename it to `timezone`
+# TODO: rename it to `timezone`
 __database = JSON.parse(timezone_json)
 
 _sort_layout = (layout_a, layout_b) ->
@@ -491,7 +491,6 @@ class Keyboard extends Widget
             console.warn("[welcome.coffee] Keyboard.process_keyboard_detect() invalid keyboard type: #{r}")
 
     handle_detect_result: ->
-        console.log("[welcome.coffee] Keyboard.handle_detect_result()")
         detect_result = DCore.Installer.keyboard_detect_get_result()
         layout = detect_result.split(":").join(",")
         console.log("[welcome.coffee] Keyboard.handle_detect_result() layout: #{layout}")

@@ -294,6 +294,8 @@
 }
 
 .LayoutItem, .VariantItem, .KeyboardItem {
+    overflow:hidden;
+    text-overflow:clip;
     height:30px;
     line-height:30px;
     padding-left:30px;
