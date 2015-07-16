@@ -542,6 +542,16 @@ class Timezone extends Widget
         @hide()
         update_timezone_text(@tri)
 
+        # Set this flag to true if timezone is changed by user
+        @timezone_changed = false
+
+        @guessTimeZone((timezone) =>
+            console.log("[welcome.coffee] Timezone guessTimezone returns: #{timezone}")
+            if not @timezone_changed
+                console.log("[welcome.coffee] Timezone change current timezone based on IP address: #{timezone}")
+                @set_timezone(timezone, false)
+        )
+
     init_search_list: ->
         @search_list = []
         @zone_dict = {}
@@ -659,12 +669,15 @@ class Timezone extends Widget
             if area.getAttribute("data-timezone") == timezone
                 return area
 
-    set_timezone: (timezone) ->
+    set_timezone: (timezone, show_tooltip=true) ->
         area = @get_area(timezone)
+        console.log("[welcome.coffee] Timezone.set_timezone() timezone: #{timezone}")
         if area?
             @draw_timezone(area)
-            @show_pin(area)
+            if show_tooltip
+                @show_pin(area)
             __selected_timezone = timezone
+            @timezone_changed = true
             update_timezone_text(@tri)
 
     draw_canvas: (area) ->
@@ -716,6 +729,14 @@ class Timezone extends Widget
         if matched.length == 1
             @set_timezone(@zone_dict[matched[0]])
 
+    guessTimeZone: (callback) ->
+        url = "http://freegeoip.net/json/"
+        ajax(url, true, (xhr) =>
+            info = JSON.parse(xhr.response)
+            console.log("[welcome.coffee] Timezone guessTimezone() ip info: #{xhr.response}")
+            if info and info["time_zone"]
+                callback(info["time_zone"])
+        )
 
 class WelcomeFormItem extends Widget
     ACCOUNTS = "com.deepin.daemon.Accounts"
@@ -1029,12 +1050,6 @@ class Account extends Widget
             @confirmpassword.destroy_tooltip()
             pc.switch_page(new Part("Part"))
             __selected_item?.focus()
-#        else
-#            if __init_parted_finish
-#                @username.check_valid()
-#                @hostname.check_valid()
-#                @password.check_valid()
-#                @confirmpassword.check_valid()
 
 class Welcome extends Page
     constructor: (@id)->
