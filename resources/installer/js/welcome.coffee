@@ -377,10 +377,12 @@ class Keyboard extends Widget
         @displayed = true
         @element.style.display = "block"
         __selected_layout_item?.focus()
+        ArrowToolTip.container?.style.display = "none"
 
     hide: ->
         @displayed = false
         @element.style.display = "none"
+        #ArrowToolTip.container?.style.display = "none"
 
     init_query_ul: ->
         @selected_letter = null
@@ -575,7 +577,7 @@ class Timezone extends Widget
         @displayed = true
         @element.style.display = "block"
         enable_tab(@query_input)
-        ArrowToolTip.container?.style.display = "block"
+        ArrowToolTip.container?.style.display = "none"
 
     hide: ->
         @displayed = false
