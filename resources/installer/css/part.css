@@ -28,6 +28,7 @@
 
 .DiskTab .Prev:hover {
     background:url("../images/arrow_left_hover.png") no-repeat;
+    background-position:2px 2px;
 }
 
 .DiskTab .Content {
@@ -48,6 +49,7 @@
 
 .DiskTab .Next:hover {
     background:url("../images/arrow_right_hover.png") no-repeat;
+    background-position:2px 2px;
 }
 
 
