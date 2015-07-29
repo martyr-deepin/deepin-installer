@@ -56,12 +56,12 @@ static GOptionEntry entries[] =
 static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
-    g_debug ("installer:move window");
-    // Window is only moveable at the top
-    if (event->y > 50) {
+    // Window is only moveable at the top and ignores top right corner, which
+    // contains a close button
+    if (event->y > 50 || event->x + 50 > INSTALLER_WIN_WIDTH ||
+        event->button != 1) {
         return TRUE;
-    }
-    if (event->button == 1) {
+    } else {
         g_debug ("move window: in drag x_root->%g, y_root->%g",
                  event->x_root, event->y_root);
         gtk_widget_set_can_focus (widget, TRUE);
@@ -72,8 +72,8 @@ move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
                                     event->x_root,
                                     event->y_root,
                                     event->time);
+      return FALSE;
     }
-    return FALSE;
 }
 
 
