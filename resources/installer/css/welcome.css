@@ -67,19 +67,19 @@
 }
 
 #username input {
-    background:url("../images/username.png") no-repeat;
+    background:url("../images/username.png") no-repeat 0px -1px;
 }
 
 #hostname input {
-    background:url("../images/hostname.png") no-repeat;
+    background:url("../images/hostname.png") no-repeat 0px -1px;
 }
 
 #password input {
-    background:url("../images/password.png") no-repeat;
+    background:url("../images/password.png") no-repeat 0px -1px;
 }
 
 #confirmpassword input {
-    background:url("../images/password.png") no-repeat;
+    background:url("../images/password.png") no-repeat 0px -1px;
 }
 
 .WelcomeFormItem {
