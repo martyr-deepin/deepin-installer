@@ -766,12 +766,9 @@ class WelcomeFormItem extends Widget
 
         @input.addEventListener("focus", (e) =>
             @check_capslock()
-            @input.style.borderColor = "#7bbefb"
         )
         @input.addEventListener("blur", (e) =>
-            @input.style.borderColor = ""
             @check_capslock()
-            @input.setAttribute("style", "")
 
             switch @id
                 when "hostname"
