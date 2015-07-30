@@ -36,9 +36,8 @@
     background-position:10px 3px;
 }
 
-.TimezoneSet:focus, .KeyboardSet:focus, .PartTitleMode:focus {
-    box-shadow:0 0 2px 1px #7bbefb;
-    background-color:rgba(0,0,0,.05);
+.TimezoneSet:hover, .KeyboardSet:hover, .PartTitleMode:hover {
+    cursor:pointer;
 }
 
 .WelcomeWrap {
