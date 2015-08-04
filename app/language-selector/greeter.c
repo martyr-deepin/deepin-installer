@@ -45,7 +45,6 @@
 #include "session.h"
 #include "greeter_util.h"
 #include "theme.h"
-#include "mouse.h"
 
 #define GREETER_HTML_PATH "file://"RESOURCE_DIR"/language-selector/index.html"
 #define LANG_PATH RESOURCE_DIR"/language-selector/support_language_list.ini"
@@ -417,10 +416,7 @@ monitors_set_cb ()
     }
 
     container = create_web_container (FALSE, TRUE);
-    update_workarea_rect_by_mouse(&rect_workarea);
-    widget_move_by_rect(container,rect_workarea);
     gtk_window_set_decorated (GTK_WINDOW (container), FALSE);
-    listen_leave_notify_signal(container, NULL);
 
     GtkWidget* webview = d_webview_new_with_uri (GREETER_HTML_PATH);
     gtk_container_add (GTK_CONTAINER(container), GTK_WIDGET (webview));

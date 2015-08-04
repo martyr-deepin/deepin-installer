@@ -21,6 +21,7 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <signal.h>
 #include <glib.h>
 #include <fcntl.h>
@@ -36,6 +37,7 @@
 guint INSTALLER_WIN_WIDTH = 786;
 guint INSTALLER_WIN_HEIGHT = 576;
 
+const gchar* BACKGROUND = "/usr/share/backgrounds/default_background.jpg";
 static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
 
@@ -166,7 +168,7 @@ sigterm_cb (int sig)
     installer_finish_install ();
 }
 
-void redirect_log(const char* path)
+static void redirect_log(const char* path)
 {
     if (path == NULL) {
         path="/var/log/deepin-installer.log";
@@ -185,19 +187,83 @@ void redirect_log(const char* path)
     }
 }
 
-void fix_without_wm(GtkWidget* child)
+// Setup background image on all monitors.
+static void setup_monitor_background()
 {
-    GdkCursor* cursor = gdk_cursor_new_for_display (gdk_display_get_default(),
+  g_message("[%s]\n", __func__);
+  GtkWidget* window;
+  GtkWidget* image;
+  GdkPixbuf* pixbuf;
+  GdkScreen* default_screen;
+  GdkRectangle geometry;
+  GError* error = NULL;
+  gint monitor_id;
+  gint n_monitors;
+
+  default_screen = gdk_display_get_default_screen(gdk_display_get_default());
+  n_monitors = gdk_screen_get_n_monitors(default_screen);
+
+  for (monitor_id = 0; monitor_id < n_monitors; ++monitor_id) {
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DESKTOP);
+
+    gdk_screen_get_monitor_geometry(default_screen, monitor_id, &geometry);
+    g_message("[%s] monitor: %d, x: %d, y: %d, width: %d, height: %d\n",
+              __func__, monitor_id, geometry.x, geometry.y, geometry.width,
+              geometry.height);
+
+    image = gtk_image_new();
+    pixbuf = gdk_pixbuf_new_from_file_at_scale(BACKGROUND, geometry.width,
+        geometry.height, FALSE, &error);
+    if (error != NULL) {
+      g_warning("[%s] failed to load background image: %s\n", __func__,
+                BACKGROUND);
+      g_error_free(error);
+      return;
+    }
+    gtk_image_set_from_pixbuf(GTK_IMAGE(image), pixbuf);
+
+    gtk_window_move(GTK_WINDOW(window), geometry.x, geometry.y);
+    gtk_window_set_default_size(GTK_WINDOW(window), geometry.width,
+                                geometry.height);
+    gtk_window_fullscreen(GTK_WINDOW(window));
+    gtk_container_add(GTK_CONTAINER(window), image);
+    gtk_widget_show_all(window);
+  }
+}
+
+static void fix_without_wm(GtkWidget* child)
+{
+    GdkDisplay* default_display;
+    GdkScreen* default_screen;
+    gint primary_monitor;
+    GdkRectangle dest;
+
+    default_display = gdk_display_get_default();
+    default_screen = gdk_display_get_default_screen(default_display);
+    GdkCursor* cursor = gdk_cursor_new_for_display (default_display,
                                                     GDK_LEFT_PTR);
     gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
     g_object_unref(cursor);
-    INSTALLER_WIN_WIDTH = gdk_screen_width();
-    INSTALLER_WIN_HEIGHT = gdk_screen_height();
+    // NOTE: width/height is total width/height of multiple-screens.
+    // So, in this way, web-container window is forced to position in center
+    // of all screens.
+    //INSTALLER_WIN_WIDTH = gdk_screen_width();
+    //INSTALLER_WIN_HEIGHT = gdk_screen_height();
     gtk_window_move(GTK_WINDOW(installer_container), 0, 0);
+    gtk_window_fullscreen(GTK_WINDOW(installer_container));
+    primary_monitor = gdk_screen_get_primary_monitor(default_screen);
+    gdk_screen_get_monitor_geometry(default_screen, primary_monitor, &dest);
+    INSTALLER_WIN_WIDTH = dest.width;
+    INSTALLER_WIN_HEIGHT = dest.height;
+
+    g_message("[%s] installer container, width: %d, height: %d\n",
+              __func__, INSTALLER_WIN_WIDTH, INSTALLER_WIN_HEIGHT);
     BackgroundInfo* bg_info = create_background_info(installer_container,
                                                      child);
-    background_info_set_background_by_file(bg_info,
-        "/usr/share/backgrounds/default_background.jpg");
+    background_info_set_background_by_file(bg_info, BACKGROUND);
+
+    setup_monitor_background();
 }
 
 int main(int argc, char **argv)

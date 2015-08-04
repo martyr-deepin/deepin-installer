@@ -66,7 +66,7 @@ void background_info_set_background_by_drawable(BackgroundInfo* info,
 void background_info_set_background_by_file(BackgroundInfo* info,
                                             const char* file)
 {
-    g_message("background_info_set_background_by_file:%s",file);
+    g_message("[%s] file, :%s", __func__, file);
     GError* error = NULL;
 
     GdkScreen *screen;
