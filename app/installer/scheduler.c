@@ -23,6 +23,7 @@ enum {
 
 void update_install_progress(int v)
 {
+    g_message("[%s], v: %d\n", __func__, v);
     static int current_per = 0;
     if (v < current_per) {
         g_debug("[%s] INSTALL progress small previous PROGRESS: %d <= %d\n",
@@ -36,12 +37,14 @@ void update_install_progress(int v)
 
 void installer_terminate()
 {
+    g_message("[%s]\n", __func__);
     js_post_message("install_terminate", NULL);
 }
 
 void enter_next_stage()
 {
     static int current_stage = STAGE_START_INSTALL;
+    g_message("[%s], current_stage: %d\n", __func__, current_stage);
 
     switch (current_stage) {
     case STAGE_START_INSTALL:
@@ -73,6 +76,7 @@ static GHashTable* mkfs_pending_list = NULL;
 
 void mkfs_latter(const char* path, const char* fs)
 {
+    g_message("[%s], path: %s, fs: %s\n", __func__, path, fs);
     g_return_if_fail(path != NULL);
     g_return_if_fail(fs != NULL);
     if (mkfs_pending_list == NULL) {
@@ -84,6 +88,7 @@ void mkfs_latter(const char* path, const char* fs)
 
 static void do_mkfs()
 {
+    g_message("[%s]\n", __func__);
     g_assert(mkfs_pending_list != NULL);
     GHashTableIter iter;
     gpointer key, value;
@@ -96,12 +101,14 @@ static void do_mkfs()
 
 static void start_run_installer()
 {
+    g_message("[%s]\n", __func__);
     ped_device_free_all();
     enter_next_stage();
 }
 
 static void start_prepare_conf()
 {
+    g_message("[%s]\n", __func__);
     extern char* auto_conf_path;
     if (auto_conf_path != NULL) {
         GError* error = NULL;
@@ -137,6 +144,7 @@ static void start_prepare_conf()
 JS_EXPORT_API
 void installer_start_install()
 {
+    g_message("[%s]\n", __func__);
     if (mkfs_pending_list != NULL) {
         GTask* task = g_task_new(NULL, NULL, start_prepare_conf, NULL);
         g_task_run_in_thread(task, do_mkfs);

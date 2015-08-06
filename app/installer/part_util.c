@@ -106,6 +106,7 @@ gboolean is_freespace_and_smaller_than_10MB(PedPartition* part)
 
 GList* build_part_list(PedDisk* disk)
 {
+    g_message("[%s], disk: %s\n", __func__, disk->dev->path);
     GList *part_list = NULL;
 
     PedPartition *part = NULL;
@@ -137,6 +138,7 @@ const PedDiskType* best_disk_type()
 
 PedDisk* try_build_disk(PedDevice* device)
 {
+    g_message("[%s], device: %s\n", __func__, device->path);
     if (device->read_only) {
         return NULL;
     }
@@ -155,6 +157,7 @@ PedDisk* try_build_disk(PedDevice* device)
 
 static gpointer thread_init_parted (gpointer data)
 {
+    g_message("[%s]\n", __func__);
     ped_device_probe_all ();
 
     PedDevice *device = NULL;
@@ -181,6 +184,7 @@ static gpointer thread_init_parted (gpointer data)
 
 void init_parted ()
 {
+    g_message("[%s]\n", __func__);
     disks = g_hash_table_new_full((GHashFunc) g_str_hash,
                                   (GEqualFunc) g_str_equal,
                                   (GDestroyNotify) g_free,
@@ -226,6 +230,7 @@ JSObjectRef installer_list_disks()
 JS_EXPORT_API
 gchar *installer_get_disk_path (const gchar *uuid)
 {
+    g_message("[%s], uuid: %s\n", __func__, uuid);
     g_return_val_if_fail(uuid != NULL, g_strdup("Unknow"));
 
     PedDisk* disk = (PedDisk *) g_hash_table_lookup (disks, uuid);
@@ -237,6 +242,7 @@ gchar *installer_get_disk_path (const gchar *uuid)
 JS_EXPORT_API
 gchar *installer_get_disk_type (const gchar *uuid)
 {
+    g_message("[%s], uuid: %s\n", __func__, uuid);
     g_return_val_if_fail(uuid != NULL, g_strdup("Unknow"));
 
     PedDisk* peddisk = (PedDisk *) g_hash_table_lookup (disks, uuid);
@@ -270,6 +276,7 @@ double installer_get_disk_max_primary_count (const gchar *uuid)
 JS_EXPORT_API
 double installer_get_disk_size (const gchar *uuid)
 {
+    g_message("[%s], uuid: %s\n", __func__, uuid);
     g_return_val_if_fail(uuid != NULL, 0);
     PedDisk *disk = (PedDisk *) g_hash_table_lookup(disks, uuid);
     g_return_val_if_fail(disk != NULL, 0);
@@ -280,6 +287,7 @@ double installer_get_disk_size (const gchar *uuid)
 JS_EXPORT_API
 JSObjectRef installer_get_disk_partitions (const gchar *disk)
 {
+    g_message("[%s], disk: %s\n", __func__, disk);
     GRAB_CTX ();
     JSObjectRef array = json_array_create ();
     int i;
@@ -311,6 +319,7 @@ gboolean installer_system_support_efi ()
 JS_EXPORT_API
 gboolean installer_disk_is_gpt(const char* disk)
 {
+    g_message("[%s], disk: %s\n", __func__, disk);
     PedDisk* peddisk = (PedDisk *) g_hash_table_lookup(disks, disk);
     if (peddisk != NULL) {
         if ((peddisk->type != NULL) &&
@@ -326,6 +335,7 @@ gboolean installer_disk_is_gpt(const char* disk)
 JS_EXPORT_API
 gchar* installer_get_partition_type (const gchar *part)
 {
+    g_message("[%s], part: %s\n", __func__, part);
     gchar *type = NULL;
     PedPartition *pedpartition = NULL;
     if (part == NULL) {
@@ -379,6 +389,7 @@ gchar* installer_get_partition_type (const gchar *part)
 JS_EXPORT_API
 gchar *installer_get_partition_name (const gchar *part)
 {
+    g_message("[%s], part: %s\n", __func__, part);
     gchar *name = NULL;
     PedPartition *pedpartition = NULL;
     if (part == NULL) {
@@ -402,6 +413,7 @@ gchar *installer_get_partition_name (const gchar *part)
 JS_EXPORT_API
 gchar* installer_get_partition_path (const gchar *uuid)
 {
+    g_message("[%s], uuid: %s\n", __func__, uuid);
     PedPartition *part = (PedPartition *)g_hash_table_lookup(partitions, uuid);
     g_assert(part != NULL);
 
@@ -420,6 +432,7 @@ gchar* installer_get_partition_path (const gchar *uuid)
 JS_EXPORT_API
 gchar* installer_get_partition_mp (const gchar *uuid)
 {
+    g_message("[%s], uuid: %s\n", __func__, uuid);
     g_return_val_if_fail(uuid != NULL, NULL);
     PedPartition* part = (PedPartition *)g_hash_table_lookup(partitions, uuid);
     g_return_val_if_fail(part != NULL, NULL);
@@ -435,6 +448,7 @@ gchar* installer_get_partition_mp (const gchar *uuid)
 JS_EXPORT_API
 double installer_get_partition_start (const gchar *uuid)
 {
+    g_message("[%s], uuid: %s\n", __func__, uuid);
     if (uuid == NULL) {
         g_warning("[%s]: part is NULL\n", __func__);
         return 0;
@@ -453,6 +467,7 @@ double installer_get_partition_start (const gchar *uuid)
 JS_EXPORT_API
 double installer_get_partition_size (const gchar *uuid)
 {
+    g_message("[%s], uuid: %s\n", __func__, uuid);
     if (uuid == NULL) {
         g_warning("[%s]: part NULL\n", __func__);
         return 0;
@@ -471,6 +486,7 @@ double installer_get_partition_size (const gchar *uuid)
 JS_EXPORT_API
 double installer_get_partition_end (const gchar *uuid)
 {
+    g_message("[%s], uuid: %s\n", __func__, uuid);
     if (uuid == NULL) {
         g_warning("[%s]: part is NULL\n", __func__);
         return 0;
@@ -489,6 +505,7 @@ double installer_get_partition_end (const gchar *uuid)
 JS_EXPORT_API
 gchar *installer_get_partition_fs (const gchar *part)
 {
+    g_message("[%s], part: %s\n", __func__, part);
     gchar *fs = NULL;
     PedPartition *pedpartition = NULL;
     if (part == NULL) {
@@ -521,6 +538,7 @@ gchar *installer_get_partition_fs (const gchar *part)
 JS_EXPORT_API
 gchar* installer_get_partition_label (const gchar *part)
 {
+    g_message("[%s], part: %s\n", __func__, part);
     gchar *label = NULL;
     PedPartition *pedpartition = NULL;
     gchar *path = NULL;
@@ -551,6 +569,7 @@ gchar* installer_get_partition_label (const gchar *part)
 JS_EXPORT_API
 gboolean installer_is_partition_busy (const gchar *uuid)
 {
+    g_message("[%s], uuid: %s\n", __func__, uuid);
     g_return_val_if_fail(uuid != NULL, FALSE);
     PedPartition* part = (PedPartition *)g_hash_table_lookup(partitions, uuid);
     g_return_val_if_fail(part != NULL, FALSE);
@@ -562,6 +581,7 @@ JS_EXPORT_API
 gboolean installer_get_partition_flag (const gchar *part,
                                        const gchar *flag_name)
 {
+    g_message("[%s], part: %s, flag_name: %s\n", __func__, part, flag_name);
     gboolean result = FALSE;
     PedPartition *pedpartition = NULL;
     PedPartitionFlag flag;
@@ -596,6 +616,7 @@ out:
 JS_EXPORT_API
 void installer_get_partition_free (const gchar *part)
 {
+    g_message("[%s], part: %s\n", __func__, part);
     PedPartition *pedpartition = NULL;
     if (part == NULL) {
         g_warning("[%s]: part NULL\n", __func__);
@@ -656,6 +677,7 @@ void installer_get_partition_free (const gchar *part)
 JS_EXPORT_API
 gchar* installer_get_partition_os (const gchar *part)
 {
+    g_message("[%s], part: %s\n", __func__, part);
     gchar* result = NULL;
     gchar *path = NULL;
     PedPartition *pedpartition = NULL;
@@ -686,6 +708,7 @@ gchar* installer_get_partition_os (const gchar *part)
 JS_EXPORT_API
 gchar* installer_get_partition_os_desc (const gchar *part)
 {
+    g_message("[%s], part: %s\n", __func__, part);
     gchar* result = NULL;
     gchar *path = NULL;
     PedPartition *pedpartition = NULL;
@@ -721,6 +744,9 @@ gboolean installer_new_disk_partition(const gchar *part_uuid,
                                       double byte_start,
                                       double byte_end)
 {
+    g_message("[%s], part_uuid: %s, disk_uuid: %s, type: %s, fs: %s, "
+              "byte_start: %f, byte_end: %f\n",
+              __func__, part_uuid, disk_uuid, type, fs, byte_start, byte_end);
     g_assert(part_uuid != NULL);
     g_assert(disk_uuid != NULL);
     g_assert(type != NULL);
@@ -762,6 +788,7 @@ gboolean installer_new_disk_partition(const gchar *part_uuid,
 JS_EXPORT_API
 gboolean installer_delete_disk_partition (const gchar *part_uuid)
 {
+    g_message("[%s], part_uuid: %s\n", __func__, part_uuid);
     g_assert(part_uuid != NULL);
 
     PedPartition* part = (PedPartition *)g_hash_table_lookup(partitions,
@@ -783,6 +810,8 @@ gboolean installer_update_partition_geometry(const gchar *uuid,
                                              double byte_start,
                                              double byte_size)
 {
+    g_message("[%s], uuid: %s, byte_start: %f, byte_size: %f\n",
+              __func__, uuid, byte_start, byte_size);
     g_return_val_if_fail(uuid != NULL, FALSE);
     g_return_val_if_fail(byte_start >= 0, FALSE);
     g_return_val_if_fail(byte_size > 0, FALSE);
@@ -808,7 +837,7 @@ gboolean installer_update_partition_geometry(const gchar *uuid,
 JS_EXPORT_API
 gboolean installer_update_partition_fs (const gchar *uuid, const gchar *fs)
 {
-    g_message("[%d] uuid: %s, fs: %s\n", __func__, uuid, fs);
+    g_message("[%s] uuid: %s, fs: %s\n", __func__, uuid, fs);
     g_return_val_if_fail(uuid != NULL, FALSE);
     g_return_val_if_fail(fs != NULL, FALSE);
 
@@ -882,6 +911,8 @@ gboolean installer_set_partition_flag (const gchar *uuid,
                                        const gchar *flag_name,
                                        gboolean status)
 {
+    g_message("[%s], uuid: %s, flag_name: %s, status: %d\n",
+              __func__, uuid, flag_name, (int)status);
     g_return_val_if_fail(uuid!= NULL, FALSE);
     g_return_val_if_fail(flag_name != NULL, FALSE);
 
@@ -900,6 +931,7 @@ gboolean installer_set_partition_flag (const gchar *uuid,
 
 char* find_partition_path_by_sector_and_disk_path(const char* path, int start)
 {
+    g_message("[%s], path: %s, start: %d\n", __func__, path, start);
     PedDevice* dev = ped_device_get(path);
     g_return_val_if_fail(dev != NULL, NULL);
     PedDisk* disk = ped_disk_new(dev);
@@ -917,6 +949,7 @@ char* find_partition_path_by_sector_and_disk_path(const char* path, int start)
 JS_EXPORT_API
 void installer_unmount_partition (const gchar *part)
 {
+    g_message("[%s] part: %s\n", __func__, part);
     if (part == NULL) {
         g_warning("[%s]: part NULL\n", __func__);
         return;

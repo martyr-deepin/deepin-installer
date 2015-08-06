@@ -84,6 +84,7 @@ _get_partition_free_size (const gchar *cmd, const gchar *free_regex,
 gdouble
 get_mounted_partition_free (const gchar *path)
 {
+    g_message("[%s]: path, %s\n", __func__, path);
     gchar *result = NULL;
     gchar *output = NULL;
     gint exit_status;
@@ -481,6 +482,7 @@ double _get_ntfs_free (const gchar *path)
 gpointer
 get_partition_free (gpointer data)
 {
+    g_message("[%s]\n", __func__);
     double free = 0;
 
     struct FsHandler *handler = (struct FsHandler *) data;
@@ -554,6 +556,7 @@ get_partition_free (gpointer data)
 
 void mkfs(const gchar *path, const gchar *fs)
 {
+    g_message("[%s], path: %s, fs: %s\n", __func__, path, fs);
     if (path == NULL || fs == NULL) {
         g_warning ("[%s]: invalid path: %s or fs: %s\n", __func__, path, fs);
         return;
@@ -679,6 +682,7 @@ void mkfs(const gchar *path, const gchar *fs)
 gboolean
 inhibit_disk ()
 {
+    g_message("[%s]\n", __func__);
     gboolean ret = FALSE;
     GError *error = NULL;
     gchar *installer = g_find_program_in_path ("installer");
