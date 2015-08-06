@@ -22,8 +22,8 @@ if [ x${BOOT} == xuefi ];then
 fi
 
 if [ -e /etc/lsb-release ];then
-    _version=$(cat /etc/deepin-version | grep -e '^Version' | cut -d '=' -f2)
-    _type=$(cat /etc/deepin-version | grep -e '^Type' | cut -d '=' -f2)
+    _version=$(grep '^Version=' /etc/deepin-version | cut -d '=' -f2)
+    _type=$(grep '^Type=' /etc/deepin-version | cut -d '=' -f2)
     BOOTLOADER_ID="Deepin ${_type} ${_version}"
 fi
 
@@ -33,6 +33,7 @@ case ${BOOT} in
     "uefi")
         echo "INFO: Detected efi machine"
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-efi efibootmgr
+        echo "Run 'grub-install', BOOTLOAD_ID=${BOOTLOAD_ID}"
         grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck
         ;;
     "legacy")
