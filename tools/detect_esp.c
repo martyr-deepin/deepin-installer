@@ -8,6 +8,7 @@ int has_efi_directory(PedPartition* part)
 {
     int is_busy = ped_partition_is_busy(part);
     char *path = ped_partition_get_path(part);
+    g_message("[%s] path: %s\n", __func__, path);
     //TODO: free path
     char* mount_point = NULL; 
     GError* error = NULL;
@@ -60,6 +61,7 @@ int has_efi_directory(PedPartition* part)
 
 gchar *get_partition_mount_point (const gchar *path)
 {
+    g_message("[%s], path: %s\n", __func__, path);
     gchar *mp = NULL;
     gchar *swap_cmd = NULL;
     gchar *swap_output = NULL;
@@ -108,6 +110,7 @@ gchar *get_partition_mount_point (const gchar *path)
 
 char* query_esp_path_by_disk(const char* path)
 {
+    g_message("[%s], path: %s\n", __func__, path);
     PedDevice* device = ped_device_get(path);
     PedDiskType *type = ped_disk_probe(device);
     if (type == 0) {
@@ -158,6 +161,7 @@ int main(int argc, char* argv[])
             if (esp != NULL) {
                 g_message("[%s] ESP: %s, path: %s\n", __func__, esp,
                           device->path);
+                return 0;
             }
         }
     } else {
@@ -165,7 +169,9 @@ int main(int argc, char* argv[])
         char* esp = query_esp_path_by_disk(disk_path);
         if (esp != NULL) {
             g_message("[%s] ESP: %s, at: %s\n", __func__, esp, argv[1]);
+            return 0;
         }
     }
+    g_message("[%s] No ESP found\n", __func__);
     return 0;
 }
