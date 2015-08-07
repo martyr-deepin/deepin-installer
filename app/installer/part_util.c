@@ -27,7 +27,7 @@
 #include "ped_utils.h"
 #include "info.h"
 #include <math.h>
-
+#include <unistd.h>
 
 static GHashTable *disks;
 static GHashTable *partitions;
@@ -226,6 +226,7 @@ JSObjectRef installer_list_disks()
 
     return array;
 }
+
 
 JS_EXPORT_API
 gchar *installer_get_disk_path (const gchar *uuid)
@@ -887,18 +888,28 @@ gboolean installer_write_disk (const gchar *uuid)
     PedDisk *disk = (PedDisk *) g_hash_table_lookup (disks, uuid);
     if (disk != NULL) {
         g_message("[%s] write disk->%s\n", __func__, disk->dev->path);
+        g_message("[%s] will call ped_disk_commit_to_dev(dev)\n", __func__);
         if ((ped_disk_commit_to_dev (disk)) == 0) {
             g_warning("[%s] write disk(%s): commit to dev failed\n",
                       __func__, disk->dev->path);
             return FALSE;
         }
+        g_message("[%s] will call ped_disk_commit_to_os(disk)\n", __func__);
         if ((ped_disk_commit_to_os (disk)) == 0) {
-            g_warning("[%s] write disk(%s): commit to os failed\n",
-                      __func__, disk->dev->path);
-            return FALSE;
+            // Retry if failed
+            sleep(1);
+            if ((ped_disk_commit_to_os (disk)) == 0) {
+              g_warning("[%s] write disk(%s): commit to os failed\n",
+                        __func__, disk->dev->path);
+              return FALSE;
+            }
         }
-        g_spawn_command_line_async ("sync", NULL);
-        g_spawn_command_line_async ("partprobe", NULL);
+        // Watches the udev event queue.
+        g_message("[%s] will call udevadm settle --timeout=2\n", __func__);
+        g_spawn_command_line_sync ("udevadm settle --timeout=2",
+                                   NULL, NULL, NULL, NULL);
+        // Wait for kernel to handle pending events
+        sleep(2);
         return TRUE;
     } else {
         g_warning("[%s]: find peddisk %s failed\n", __func__, uuid);
