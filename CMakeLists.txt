@@ -43,10 +43,10 @@ macro(GEN_JS_FILE NAME)
 endmacro()
 
 if (DEVELOP)
-    SET(RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/")
+    SET(RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
     add_definitions("-DHOOKS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/hooks\"")
 else()
-    SET(RESOURCE_DIR "${CMAKE_INSTALL_PREFIX}/share/deepin-installer/resources/")
+    SET(RESOURCE_DIR "${CMAKE_INSTALL_PREFIX}/share/deepin-installer/resources")
     add_definitions("-DHOOKS_DIR=\"${CMAKE_INSTALL_PREFIX}/share/deepin-installer/hooks\"")
 endif()
 

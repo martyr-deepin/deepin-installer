@@ -16,12 +16,13 @@ typedef struct _HookInfo {
     int current_job_num;
 } HookInfo;
 
+// chroot_fd is used to break out of chroot jail.
 static int chroot_fd;
 static gboolean in_chroot = FALSE;
 
 HookInfo before_chroot_info = { HOOKS_DIR"/before_chroot", 5, 80, NULL, 0};
 
-#define TMP_HOOKS_DIR "/tmp/hooks/"
+#define TMP_HOOKS_DIR "/tmp/hooks"
 HookInfo in_chroot_info = { TMP_HOOKS_DIR"/in_chroot", 80, 90, NULL, 0};
 
 HookInfo after_chroot_info = { HOOKS_DIR"/after_chroot", 90, 100, NULL, 0};
@@ -46,7 +47,7 @@ void ensure_we_can_find_in_chroot_hooks()
     }
 }
 
-
+// Chroot to `/target`
 gboolean enter_chroot()
 {
     //Never use "." instead of "/" otherwise if "." equal TARGET then we can't break chroot"
@@ -55,28 +56,25 @@ gboolean enter_chroot()
         return FALSE;
     }
 
-    chdir("/target"); //change to an valid directory
+    chdir("/target"); //change to a valid directory
     if (chroot ("/target") == 0) {
-        chdir("/"); //change to an valid directory
+        chdir("/"); //change to a valid directory
         in_chroot = TRUE;
         return TRUE;
     } else {
         g_warning ("[%s]: chroot to /target falied:%s\n", __func__,
-                   strerror (errno));
+                   g_strerror (errno));
         return FALSE;
     }
 }
 
+// Escape from a chroot jail
 gboolean break_chroot()
 {
     if (in_chroot) {
         if (fchdir (chroot_fd) != 0) {
-            g_warning ("finish install:reset to chroot fd dir failed\n");
-        } else {
-            int i = 0;
-            for (i = 0; i < 1024; i++) {
-                chdir ("..");
-            }
+            g_warning ("[%s] reset to chroot fd dir failed\n", __func__);
+            return !in_chroot;
         }
         chroot (".");
         in_chroot = FALSE;

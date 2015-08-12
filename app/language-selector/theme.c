@@ -26,7 +26,7 @@
 
 #define SCHEMA_ID "com.deepin.dde.personalization"
 #define GREETER_THEME_KEY "greeter-theme"
-#define GREETER_THEME_PATH ""RESOURCE_DIR"language-selector/greeter-theme"
+#define GREETER_THEME_PATH ""RESOURCE_DIR"/language-selector/greeter-theme"
 
 GSettings* s;
 
