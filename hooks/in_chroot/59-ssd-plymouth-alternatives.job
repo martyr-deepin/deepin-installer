@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "[$0]"
+set -x
+
 . /deepinhost/etc/deepin-installer.conf
 
 detect_rootblk(){

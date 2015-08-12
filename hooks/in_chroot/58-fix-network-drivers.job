@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "[$0]"
+set -x
+
 is_pci_exists() {
     local pci_info="$(lspci -d "${1}" 2>/dev/null)"
     if [ "${pci_info}" ]; then

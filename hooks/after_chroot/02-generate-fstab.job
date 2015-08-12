@@ -1,19 +1,20 @@
 #!/bin/bash
 # generate fstab
 
+echo "[$0]"
+set -x
+
 . /etc/deepin-installer.conf
 
-[ -d /target/deepinhost ] && umount /target/deepinhost || true
-
 #fstab for lupin
-if [ x${DI_LUPIN} = xtrue ];then
+if [ x${DI_LUPIN} = xtrue ]; then
     echo "# <file system> <mount point>   <type>  <options>       <dump>  <pass>" > /target/etc/fstab
     echo "${DI_LOOP_ROOT_FILE} /               ext4    loop,errors=remount-ro 0       1" >> /target/etc/fstab
     echo "${DI_LOOP_SWAP_FILE} none            swap    loop,sw         0       0" >> /target/etc/fstab
     exit 0
 fi
 
-type ./genfstab >/dev/null 2>&1 || { echo >&2 "[ERROR] require genfstab but it's not found. Aborting.";exit 1; }
-umount /target/media/cdrom
+type ./genfstab >/dev/null 2>&1 || { echo >&2 "[ERROR] require genfstab but it's not found. Aborting."; exit 1; }
+umount -v /target/media/cdrom
 ./genfstab -p -U /target > /target/etc/fstab
 chroot /target /usr/sbin/update-initramfs -u

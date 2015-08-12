@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "[$0]"
+set -x
+
 resolution=$(xrandr | grep Screen\ 0 | awk -F, '{print $2}' | sed -e 's/current//g' -e 's/ //g')
 
 if [ -z "$resolution" ];then

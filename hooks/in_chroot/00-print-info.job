@@ -1,4 +1,8 @@
 #!/bin/bash
+
+echo "[$0]"
+set -x
+
 echo "--------------------------Start In Chroot Hooks-----------------"
 
 echo "--------------------------Debug Info: mount-----------------"

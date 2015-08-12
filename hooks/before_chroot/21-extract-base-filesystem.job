@@ -1,6 +1,7 @@
 #!/bin/bash
 
-[ ! -f /etc/deepin-installer.conf ] && exit 0
+echo "[$0]"
+set -x
 
 . /etc/deepin-installer.conf
 L=${DI_LOCALE%.*}
@@ -29,13 +30,13 @@ extract_base_filesystem_as_unsquashfs() {
 # Do DI_EXTRACT_METHOD first
 if [ x"${DI_EXTRACT_METHOD}" = x"unsquashfs" ];then
     echo "[Info] Detect DI_EXTRACT_METHOD as unsquashfs"
-    extract_base_filesystem_as_unsquashfs
+    extract_base_filesystem_as_unsquashfs || exit 101
     exit 0
 fi
 
 if [ x"${DI_EXTRACT_METHOD}" = x"fallback" ];then
     echo "[Info] Detect DI_EXTRACT_METHOD as fallback"
-    ./extract_base_filesystem --lang ${L} --live ${LIVE}
+    ./extract_base_filesystem --lang ${L} --live ${LIVE} || exit 101
     exit 0
 fi
 

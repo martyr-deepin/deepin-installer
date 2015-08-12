@@ -105,7 +105,6 @@ void run_hooks_after_chroot()
     run_hooks(&after_chroot_info);
 }
 
-
 void update_hooks_progress(HookInfo* info)
 {
     if (info == &before_chroot_info) {
@@ -277,6 +276,7 @@ static gboolean monitor_extract_progress(HookInfo* info)
         return FALSE;
     }
 }
+
 void setup_monitor_extract_progress()
 {
     g_remove(PROGRESS_LOG_BASE);
