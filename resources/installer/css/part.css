@@ -52,10 +52,12 @@
     background-position:2px 2px;
 }
 
+.Prev, .Next {
+  cursor: default;
+}
 
-.DiskTab .Prev:focus,.DiskTab .Next:focus {
-    box-shadow:0 0 2px 1px #7bbefb;
-    background-color:rgba(0,0,0,.05);
+.Prev:hover, .Next:hover {
+  cursor: pointer;
 }
 
 .PartLineMaps {
