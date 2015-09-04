@@ -106,6 +106,7 @@ void write_installer_conf(const char* path)
 JS_EXPORT_API
 void installer_record_mountpoint_info(const char* uuid, const char* mountpoint)
 {
+    g_message("[%s] uuid: %s, mountpoint: %s\n", __func__, uuid, mountpoint);
     g_return_if_fail(uuid != NULL);
     g_return_if_fail(mountpoint != NULL);
 
