@@ -148,7 +148,6 @@ char* query_esp_path_by_disk_path(const char* path)
 
 gchar * get_partition_mount_point (const gchar *path)
 {
-    g_message("[%s], path: %s\n", __func__, path);
     gchar *mp = NULL;
     gchar *swap_cmd = NULL;
     gchar *swap_output = NULL;
