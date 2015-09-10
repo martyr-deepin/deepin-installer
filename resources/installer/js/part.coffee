@@ -574,7 +574,7 @@ class PartTable extends Widget
                 item = new PartTableItem(part)
                 @items.appendChild(item.element)
                 @partitems.push(item)
-        @items.setAttribute("style","height:220px")
+        @items.setAttribute("style","height:222px")
         @element.setAttribute("style", "height:280px")
 
     fill_items_simple: ->
