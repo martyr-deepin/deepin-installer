@@ -774,9 +774,9 @@ class WelcomeFormItem extends Widget
                 when "hostname"
                     @validateHostname(@input.value, false)
                 when "password"
-                    @validatePassword(@input.value)
+                    @validatePassword(@input.value, false)
                 when "confirmpassword"
-                    @validateConfirmPassword(@input.value)
+                    @validateConfirmPassword(@input.value, false)
 
             if @valid.ok
                 @destroy_tooltip()
@@ -792,8 +792,11 @@ class WelcomeFormItem extends Widget
                     if @valid.ok
                         @destroy_tooltip()
                         # Setup hostname based on username
-                        if Widget.look_up("account")?.hostname.changed == false
-                            Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
+                        hostnameItem = Widget.look_up("hostname")
+                        if hostnameItem.changed == false
+                            hostnameItem.input.value = @input.value + "-pc"
+                            # Reset validation status of hostname element.
+                            hostnameItem.valid = {ok: true, msg: "", code: 0}
                     else
                         if @valid.code in [ErrorCode.INVALID, ErrorCode.FIRST_UPPER]
                             @input.value = @value_origin
@@ -809,8 +812,10 @@ class WelcomeFormItem extends Widget
                         @set_tooltip(@valid.msg)
 
                 when "password"
-                    @validatePassword(@input.value)
+                    @validatePassword(@input.value, true)
                     if @valid.ok
+                        @destroy_tooltip()
+                    else if @valid.code == ErrorCode.PARTICAL_MATCH
                         @destroy_tooltip()
                     else
                         @set_tooltip(@valid.msg)
@@ -828,6 +833,8 @@ class WelcomeFormItem extends Widget
                     @validateConfirmPassword(@input.value, true)
                     if @valid.ok
                         @destroy_tooltip()
+                    # If `confirmPassword` matches first half of `password`
+                    # ignore this error.
                     else if @valid.code == ErrorCode.PARTICAL_MATCH
                         @destroy_tooltip()
                     else
@@ -883,26 +890,39 @@ class WelcomeFormItem extends Widget
                 msg: _("Computer name is invald.")
                 code: ErrorCode.INVALID
 
-    validatePassword: (password) =>
-        #TODO: The Account dbus must provide a function to check password
+    validatePassword: (password, temp) =>
+        # Clear validation status of confirmPassword item.
+        confirmPasswordItem = Widget.look_up("confirmpassword")
+        # Make sure that confirmPassword is changed by user explicitly.
+        if confirmPasswordItem.changed
+            confirmPasswordItem.valid = {ok: true, msg:"", code: 0}
+        confirmPassword = confirmPasswordItem.input.value
         if not password? or password.length == 0
             @valid =
                 ok: false
                 msg: _("Password can not be empty.")
                 code: ErrorCode.EMPTY
-        else if not @account_dbus.IsPasswordValid_sync(password)
+        else if password == confirmPassword
+            @valid = {ok: true, msg: "", code: 0}
+        # Check if user input password in `confirmpassword` element, then input
+        # password again in `password` element.
+        else if temp and confirmPassword.substring(0, password.length) == password
             @valid =
                 ok: false
-                msg: _("Invalid password.")
-                code: ErrorCode.INVALID
+                msg: "Partial match"
+                code: ErrorCode.PARTICAL_MATCH
         else
             @valid = {ok: true, msg: "", code: 0}
 
-    validateConfirmPassword: (password2, temp) =>
-        password = Widget.look_up("password")?.input.value
-        if password == password2
+    validateConfirmPassword: (confirmPassword, temp) =>
+        # Clear validation status of passwordItem
+        passwordItem = Widget.look_up("password")
+        passwordItem.valid = {ok: true, msg: "", code: 0}
+        password = passwordItem.input.value
+        if password == confirmPassword
             @valid = {ok: true, msg: "", code: 0}
-        else if temp and password.substring(0, password2.length) == password2
+        # Check `confirmPassword` matches first half of `password`.
+        else if temp and password.substring(0, confirmPassword.length) == confirmPassword
             @valid =
                 ok: false
                 msg: "Partial match"
@@ -1025,6 +1045,8 @@ class Account extends Widget
         if DEBUG then __init_parted_finish = true
         if !__init_parted_finish
             return false
+        console.log("[welcome.coffee] Account check_start_ready():", @username.valid,
+            @hostname.valid, @password.valid, @confirmpassword.valid)
         if @username.valid.ok and @hostname.valid.ok and
                 @password.valid.ok and @confirmpassword.valid.ok
             @next_step?.next_bt_enable()
