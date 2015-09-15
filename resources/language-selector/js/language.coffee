@@ -36,7 +36,7 @@ class Language extends Widget
 
     select_lang: (name) ->
         lang = la["lang"] for la in @lang_list when la["name"] is name
-        console.log("[language.coffee] Language.select_lang() language name: ", name, ", language: ", lang)
+        console.log("[language.coffee] Language.select_lang() language name: #{name}, language: #{lang}")
         DCore.Greeter.set_language(lang)
         session = DCore.Greeter.get_session_by_conf()
         if not session?
@@ -44,6 +44,7 @@ class Language extends Widget
         @start_session("deepin","",session)
 
     start_session: (@username = "deepin",@password = "",@session = DCore.Greeter.get_default_session()) ->
+        console.log("[language.coffee] language.start_session(), username: #{username}, session: #{session}")
         if not @session?
             @session = "deepin"
         document.body.cursor = "wait"

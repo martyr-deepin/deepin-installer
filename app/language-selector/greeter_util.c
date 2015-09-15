@@ -221,6 +221,7 @@ gboolean greeter_get_user_session_on(const gchar *username)
 JS_EXPORT_API
 void greeter_set_language(char* lang)
 {
+    g_message("[%s] language: %s\n", __func__, lang);
     GError *error = NULL;
     GDBusProxy* proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
                                       0,

@@ -22,6 +22,7 @@
 
 #include <gtk/gtk.h>
 #include <cairo-xlib.h>
+#include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <lightdm.h>
@@ -30,6 +31,7 @@
 #include <stdlib.h>
 #include <glib/gstdio.h>
 #include <glib/gprintf.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <X11/XKBlib.h>
@@ -48,6 +50,10 @@
 
 #define GREETER_HTML_PATH "file://"RESOURCE_DIR"/language-selector/index.html"
 #define LANG_PATH RESOURCE_DIR"/language-selector/support_language_list.ini"
+
+// Absolute path to log file.
+// TODO(xushaohua): move log to /var/log/deepin-lightdm-language-selector.log
+const char* kLogPath = "/tmp/deepin-lightdm-language-selector.log";
 
 LightDMGreeter *greeter;
 GKeyFile *greeter_keyfile;
@@ -497,11 +503,27 @@ init_lightdm ()
                               G_KEY_FILE_NONE, NULL);
 }
 
+static void redirect_log()
+{
+    g_message ("[%s]: log path is: %s", __func__, kLogPath);
+    int log_file = open(kLogPath, O_RDWR| O_CREAT| O_TRUNC, 0644);
+    if (log_file == -1) {
+        perror("redirect_log failed!");
+        return;
+    }
+    if (dup2(log_file, 1) == -1) {
+        perror("Failed to redirect stdout!");
+    }
+    if (dup2(log_file, 2) == -1) {
+        perror("Failed to redirect stderr!");
+    }
+}
+
 int main (int argc, char **argv)
 {
+    redirect_log();
     g_message("[%s] greeter main\n", __func__);
     g_setenv("G_MESSAGES_DEBUG", "all", TRUE);
-
 
     init_i18n ();
     init_theme();
