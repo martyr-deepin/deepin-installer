@@ -44,7 +44,7 @@ class Language extends Widget
         @start_session("deepin","",session)
 
     start_session: (@username = "deepin",@password = "",@session = DCore.Greeter.get_default_session()) ->
-        console.log("[language.coffee] language.start_session(), username: #{username}, session: #{session}")
+        console.log("[language.coffee] language.start_session(), username: #{@username}, session: #{@session}")
         if not @session?
             @session = "deepin"
         document.body.cursor = "wait"
