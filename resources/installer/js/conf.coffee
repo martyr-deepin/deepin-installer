@@ -49,17 +49,21 @@ record_mount_points = ->
                     console.error("[conf.coffee] record_mount_points() error: ", error)
 
 
-#TODO: try remove
 try_removed_start_install = ->
         console.log("[conf.coffee] try_removed_start_install() partition mode: ", __selected_mode)
-        if __selected_mode == "simple"
-            undo_part_table_info()
-            auto_simple_partition(__selected_item.id, "part")
-        do_partition()
-        console.log("[conf.coffee] try_removed_start_install() end of do_partition()")
 
-        sync_installer_conf()
-        DCore.Installer.start_install()
-
+        # Show progress page first.
         progress_page = new Progress("progress") if not progress_page?
         pc.switch_page(progress_page)
+
+        callback = ->
+            if __selected_mode == "simple"
+                undo_part_table_info()
+                auto_simple_partition(__selected_item.id, "part")
+            do_partition()
+            console.log("[conf.coffee] try_removed_start_install() end of do_partition()")
+
+            sync_installer_conf()
+            DCore.Installer.start_install()
+
+        setTimeout callback, 1000
