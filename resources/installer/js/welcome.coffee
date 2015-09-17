@@ -540,6 +540,9 @@ class Timezone extends Widget
         @canvas.setAttribute("height", 370)
         @img = create_img("TimezoneMap", "images/zonemap.png", @picker)
         @img.setAttribute("usemap", "#ImageMap")
+        @img.addEventListener("click", (e) =>
+            @hide_query_complete()
+        )
         @construct_map()
         @hide()
         update_timezone_text(@tri)
@@ -700,6 +703,7 @@ class Timezone extends Widget
         ctx.clearRect(0,0,700,370)
 
     show_query_complete: ->
+        console.log("[welcome.coffee.Timezone] show_query_complete()")
         if @query_complete?
             @query_div.removeChild(@query_complete)
             @query_complete = null
@@ -714,6 +718,10 @@ class Timezone extends Widget
                 @create_complete_item(item)
         else
             @query_complete.style.display = "none"
+
+    hide_query_complete: ->
+        console.log("[welcome.coffee.Timezone] hide_query_complete()")
+        @query_complete?.style.display = "none"
 
     create_complete_item: (txt) ->
         item = create_element("div", "QueryCompleteItem", @query_complete)
