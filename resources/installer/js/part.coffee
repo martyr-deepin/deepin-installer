@@ -79,7 +79,7 @@ class PartTableItem extends Widget
         @size = create_element("div", "Thin Size", @element)
         @used = create_element("div", "Thin", @element)
         @fs = create_element("div", "Thin Fs", @element)
-        @mount = create_element("div", "Thin Mount", @element)
+        @mount = create_element("div", "Thin SimpleMount", @element)
         @format = create_element("div", "Thin", @element)
         @fill_device()
         @fill_size()
@@ -301,11 +301,12 @@ class PartTableItem extends Widget
     fill_mount: ->
         @mount.innerHTML = ""
         if __selected_mode != "advance"
+            @mount.setAttribute("class", "Thin SimpleMount")
             if @active
                 @mount.innerText = _("Install Here")
-                @mount.setAttribute("style", "text-align:right")
             return
         else
+            @mount.setAttribute("class", "Thin AdvancedMount")
             @fill_mount_advance()
 
     fill_mount_advance: ->

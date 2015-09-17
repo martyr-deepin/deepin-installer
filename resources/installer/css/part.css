@@ -141,6 +141,8 @@
     line-height:27px;
     border-right:1px solid rgba(0,0,0,0.2);
     box-shadow:inset 1px 0 rgba(255,255,255,0.2);
+    overflow: hidden;
+    text-overflow:ellipsis;
 }
 
 .PartTableHeader .Info{
@@ -194,6 +196,7 @@
     line-height:40px;
     float:left;
     text-align:center;
+    overflow: hidden;
 }
 
 .PartTableItem .Fat {
@@ -204,8 +207,16 @@
     width:100px;
 }
 
-.PartTableItem .Fs, .PartTableItem .Mount {
+.PartTableItem .Fs {
     width:110px;
+}
+
+.PartTableItem .SimpleMount {
+    width:209px;
+}
+
+.PartTableItem .AdvancedMount {
+    width:105px;
 }
 
 .PartTableItem .Size {
