@@ -26,7 +26,7 @@
 #include <libxklavier/xklavier.h>
 #include "utils.h"
 
-#define KEYBOARD_DETECT_FILE    "/usr/share/console-setup/pc105.tree"
+#define KEYBOARD_DETECT_FILE    RESOURCE_DIR"/pc105.tree"
 /**
  setxkbmap -query
  can get current keyboard layout

@@ -355,6 +355,10 @@
     background-position:0 10px;
 }
 
+.KeyboardOp .Default:hover, .KeyboardOp .Detect:hover {
+  cursor: pointer;
+}
+
 .KeyboardDetectDialog .DialogContent {
     background:rgba(255,255,255,0.1);
     height:90px;
