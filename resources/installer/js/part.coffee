@@ -712,9 +712,12 @@ class Part extends Page
 
         @part_uefi = create_element("div","PartUefi",@wrap)
         enable_tab(@part_uefi)
-        @uefi_radio = create_element("input","uefi_radio",@part_uefi)
+        @uefi_radio = create_element("input","grub_radio",@part_uefi)
         @uefi_radio.setAttribute("type","radio")
+        @uefi_radio.setAttribute("id", "uefi_radio_id")
         @uefi_radio.defaultChecked = false
+        uefi_label = create_element("label", "uefi_label", @part_uefi)
+        uefi_label.setAttribute("for", "uefi_radio_id")
         @uefi_txt = create_element("div","uefi_txt",@part_uefi)
         @uefi_txt.innerText = _("UEFI")
 
@@ -722,7 +725,10 @@ class Part extends Page
         enable_tab(@part_grub)
         @grub_radio = create_element("input", "grub_radio", @part_grub)
         @grub_radio.setAttribute("type","radio")
+        @grub_radio.setAttribute("id", "grub_radio_id")
         @grub_radio.defaultChecked = true
+        grub_label = create_element("label", "grub_label", @part_grub)
+        grub_label.setAttribute("for", "grub_radio_id")
         @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
         @grub_loader.innerText = _("Boot Loader")
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
