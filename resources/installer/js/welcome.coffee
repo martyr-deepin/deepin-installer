@@ -545,7 +545,10 @@ class Timezone extends Widget
         )
         @construct_map()
         @hide()
+
         update_timezone_text(@tri)
+        # Mark default timezone on timezone map.
+        @set_timezone(__selected_timezone, false)
 
         # Set this flag to true if timezone is changed by user
         @timezone_changed = false
@@ -622,7 +625,7 @@ class Timezone extends Widget
             @destroy_canvas(area)
         )
 
-    show_pin: (area) ->
+    show_pin: (area, show_tooltip=true) ->
         if not @pin?
             @pin = create_element("div", "Pin", @picker_wrap)
             @pin_img = create_img("", "images/pin.png", @pin)
@@ -637,13 +640,14 @@ class Timezone extends Widget
 
         text = area.getAttribute("data-timezone").split("/")[1]
 
-        if not @tooltip?
-            @tooltip = new ArrowToolTip(@pin, _(text,"tzdata"))
-        @tooltip.set_text(_(text,"tzdata"))
-        @tooltip.setPointerEvents('none')
-        @tooltip.show()
-        pos = @tooltip.get_xy()
-        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY)
+        if show_tooltip
+            if not @tooltip?
+                @tooltip = new ArrowToolTip(@pin, _(text,"tzdata"))
+            @tooltip.set_text(_(text,"tzdata"))
+            @tooltip.setPointerEvents('none')
+            @tooltip.show()
+            pos = @tooltip.get_xy()
+            ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY)
 
         if @circle?
             @circle.parentElement.removeChild(@circle)
@@ -679,8 +683,7 @@ class Timezone extends Widget
         console.log("[welcome.coffee] Timezone.set_timezone() timezone: #{timezone}")
         if area?
             @draw_timezone(area)
-            if show_tooltip
-                @show_pin(area)
+            @show_pin(area, show_tooltip)
             __selected_timezone = timezone
             @timezone_changed = true
             update_timezone_text(@tri)
