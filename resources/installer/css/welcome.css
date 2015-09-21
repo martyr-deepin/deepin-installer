@@ -94,13 +94,14 @@
     padding:0;
     width:272px;
     height:36px;
+    line-height:34px;
     padding-left:36px;
     outline-style:none;
     color: #dadada;
     text-shadow: 1px 1px rgba(0,0,0,0.5);
     border-radius: 3px;
     border: 1px solid rgba(64, 64, 64, 0.6);
-    box-shadow: 1px 1px 3px rgba(64, 64, 64, 0.2) outset;
+    box-shadow: 1px 1px 3px rgba(64, 64, 64, 0.2);
 }
 
 .WelcomeFormItem input:focus {
