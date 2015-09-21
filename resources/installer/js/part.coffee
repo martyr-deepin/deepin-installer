@@ -555,12 +555,15 @@ class PartTable extends Widget
                     enter_cb?()
                 else
                     return
-            if currentIndex < 0 then currentIndex = @partitems.length - 1
-            else if currentIndex > @partitems.length - 1 then currentIndex = 0
+            if currentIndex < 0
+                currentIndex = @partitems.length - 1
+            else if currentIndex > @partitems.length - 1
+                currentIndex = 0
             console.debug("[part.coffee] PartTable.key_select() currentIndex: #{currentIndex}")
             select = @partitems[currentIndex]
-            select?.focus()
-            select?.click()
+            if select
+                select.focus()
+            return
         )
 
 
@@ -636,6 +639,9 @@ class Part extends Page
             @disktab.focus_disk(__selected_disk)
         if  __selected_item? then @next_step.next_bt_enable()
 
+        # Global instance of confirm dialog.
+        @confirm_installation_dialog = null
+
     start_install_cb: =>
         if __selected_mode == "advance"
             @handle_install_advance()
@@ -675,7 +681,16 @@ class Part extends Page
             if not __selected_bootloader
                 __selected_bootloader = v_part_info[target]["disk"]
 
-        new InstallDialog("InstallModel").show_at(document.body)
+        if @confirm_installation_dialog
+            @confirm_installation_dialog.hide_dialog()
+        @confirm_installation_dialog = new InstallDialog("InstallModel")
+        callback = ->
+            document.querySelector(".PartTable").focus()
+        @confirm_installation_dialog.cancel_cb = callback
+        @confirm_installation_dialog.title_close.addEventListener("click", (e)=>
+            callback()
+        )
+        @confirm_installation_dialog.show_at(document.body)
 
     handle_install_simple: ->
         if not __selected_item
@@ -692,7 +707,17 @@ class Part extends Page
         if DCore.Installer.system_support_efi() and not DCore.Installer.disk_is_gpt(__selected_disk)
             __selected_use_uefi = false
         __selected_bootloader = __selected_disk
-        new InstallDialog("InstallMode").show_at(document.body)
+
+        if @confirm_installation_dialog
+            @confirm_installation_dialog.hide_dialog()
+        @confirm_installation_dialog = new InstallDialog("InstallModel")
+        callback = ->
+            document.querySelector(".PartTable").focus()
+        @confirm_installation_dialog.cancel_cb = callback
+        @confirm_installation_dialog.title_close.addEventListener("click", (e)=>
+            callback()
+        )
+        @confirm_installation_dialog.show_at(document.body)
 
     init_part_page: ->
         if __selected_mode == null
@@ -734,10 +759,6 @@ class Part extends Page
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
         @fill_bootloader()
 
-        # PartTable is the default focus element in partition page
-        callback = ->
-            document.querySelector("#part_table").focus()
-        setTimeout callback, 100
 
     fill_bootloader: ->
         keys = []

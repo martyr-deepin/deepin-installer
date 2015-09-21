@@ -10,21 +10,30 @@ class Dialog extends Widget
 
         @content = create_element("div", "DialogContent", @element)
         @foot = create_element("div", "DialogBtn", @element)
-        @ok = create_element("div", "", @foot)
+        @ok = create_element("div", "DialogOKButton", @foot)
         @ok.addEventListener("click", (e) =>
             @hide_dialog()
             @ok_cb?()
         )
         if @with_cancel
-            @cancel = create_element("div", "", @foot)
+            @cancel = create_element("div", "DialogCancelButton", @foot)
             @cancel.addEventListener("click", (e) =>
-                @cancel_cb?()
                 @hide_dialog()
+                @cancel_cb?()
             )
         else
             @ok.setAttribute("style", "margin:31px 145px 0 0")
         @set_button_text()
         @show_dialog()
+
+        if @with_cancel
+            @foot.addEventListener('keyup', (e) =>
+                code = e.keyCode
+                if code == KEYCODE.LEFT_ARROW
+                    @cancel.focus()
+                else if code == KEYCODE.RIGHT_ARROW
+                    @ok.focus()
+            )
 
     show_at: (parent) ->
         parent.appendChild(@element)
@@ -37,6 +46,15 @@ class Dialog extends Widget
         enable_tab(@title_close)
         enable_tab(@ok)
         enable_tab(@cancel) if @cancel
+        callback = ->
+            cancelButton = document.querySelector(".DialogCancelButton")
+            if cancelButton
+                cancelButton.focus()
+            else
+                okButton = document.querySelector(".DialogOKButton")
+                if okButton
+                    okButton.focus()
+        setTimeout callback, 50
 
     hide_dialog: ->
         __in_model = false
