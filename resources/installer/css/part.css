@@ -4,6 +4,10 @@
     margin-right:20px;
 }
 
+.PartTitleMode:focus {
+    box-shadow:0 0 2px 1px #7bbefb;
+}
+
 .part_wrap{
     width:750px;
     height:450px;

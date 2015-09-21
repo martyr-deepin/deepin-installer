@@ -734,6 +734,10 @@ class Part extends Page
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
         @fill_bootloader()
 
+        # PartTable is the default focus element in partition page
+        callback = ->
+            document.querySelector("#part_table").focus()
+        setTimeout callback, 100
 
     fill_bootloader: ->
         keys = []
