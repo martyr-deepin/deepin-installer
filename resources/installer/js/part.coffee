@@ -777,7 +777,8 @@ class Part extends Page
         @grub_dropdown = new DropDown("dd_grub", false, null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
-        @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 65, 20)
+        width = 500
+        @grub_dropdown.set_drop_size(width, 20)
         @grub_dropdown.show_drop()
 
     switch_mode: ->
@@ -812,7 +813,8 @@ class Part extends Page
 
         if DCore.Installer.system_support_efi()
             @part_uefi.style.display = ""
-            @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 90, 20)
+            width = 500
+            @grub_dropdown.set_drop_size(width, 20)
             @grub_dropdown.show_drop()
 
             click_cb = =>
