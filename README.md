@@ -1,16 +1,42 @@
 # About
-Deepin Installer, new installer for linuxdeepin(TM)
+Deepin Installer, new installer for linuxdeepin(TM).
 
+# Dependencies
+* coffeescript, front end is written in coffeescript.
+* deepin-webkit3, customized webkit-gtk3.
+* libparted, backend of partition operation.
+* dde-go-dbus-factory
+* btrfs-tools
+* dosfstools
+* e2fsprogs
+* jfsutils
+* unionfs-fuse
+* ntfs-3g
+* xfsprogs
+* hfsprogs
+* reiserfsprogs
+* squashfs-tools
+* os-prober
+
+# Build and Install
+Easist way to build deepin-installer is by using `debuild` command.
+
+If you need to build manually, execute commands below:
+```
+mkdir build
+cd build
+cmake ..
+make
+```
+
+And then type `$ sudo make isntall` to install it into system.
+
+# Getting involved
+We encourage you to report issues and contribute changes. Please check out the [Contribution Guidelines](http://wiki.deepin.org/index.php?title=Contribution_Guidelines) about how to proceed.
 
 # TODO
-* BOOTLOADER 高级模式下生效
-* os-probe 支持EFI系统
-* 如果覆盖安装了一个EFI系统，需要清除对应系统在EFI变量中的信息
-* move dde-first-run to hooks
-* 修复键盘模块(依赖com.deepin.daemon.Search模块)
-
-# Copyright
-Copyright (C) 2011-2015 linuxdeepin Ltd.
+* os-prober does not support EFI system.
+* Update EFI environment when it is overwritten.
 
 # License
-Deepin Installer is released under GPLv2.
+Deepin Installer is released under GPLv3.
