@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 option(DEVELOP "enable develop mode (use src's resource)" false)
 option(TEST "enable test mode (run project's test code)" false)
 option(LIVE_BOOT "enable test mode (run project's test code)" true)
-
+option(USE_GCCGO "use gccgo or cgo" false)
 
 macro(GEN_JSC_SOURCE2 JSC_GEN_SRC CFG_DIR OUTPUT)
     set(OUT ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT})
