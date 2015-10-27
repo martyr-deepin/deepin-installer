@@ -795,7 +795,7 @@ gboolean installer_delete_disk_partition (const gchar *part_uuid)
     PedPartition* part = (PedPartition *)g_hash_table_lookup(partitions,
                                                              part_uuid);
     g_assert(part != NULL);
-    g_message("[%S] delete path: %s, with uuid: %s\n", __func__,
+    g_message("[%s] delete path: %s, with uuid: %s\n", __func__,
               part->disk->dev->path, part_uuid);
 
     if ((ped_disk_delete_partition (part->disk, part) != 0)) {

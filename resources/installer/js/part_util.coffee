@@ -26,6 +26,10 @@ GB = 1024 * MB
 
 BOOT_SIZE_MIN = 300 * MB
 minimum_disk_size_required = 8 * GB
+# An additional trace or MEBIBYTE is required for the Master Boot Record or
+# Extended Boot Record. Or else it is unable to install grub into filesystems
+# like btrfs.
+MINIMUM_PRECEDING_SIZE = 1 * MB
 
 DCore.signal_connect("used", (msg) ->
     v_part_info[msg.part]["used"] = msg.free
@@ -1008,6 +1012,13 @@ add_part = (free_part, type, size, align, fs, mp) ->
             v_part_info[free_part]["end"] = v_part_info[new_part]["start"] - 1
             v_part_info[free_part]["length"] = v_part_info[free_part]["end"] - v_part_info[free_part]["start"] + 1
         v_part_info[free_part]["width"] = Math.floor((v_part_info[free_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
+
+    # If |new_part| is at the beginning of disk device, add some preceding
+    # space reserved for MBR.
+    console.log("[part_util.coffee] add_part() start of new_part:", v_part_info[new_part]["start"])
+    if v_part_info[new_part]["start"] < MINIMUM_PRECEDING_SIZE
+        v_part_info[new_part]["start"] = MINIMUM_PRECEDING_SIZE
+        v_part_info[new_part]["length"] = v_part_info[new_part]["end"] - v_part_info[new_part]["start"]
 
     update_part_display_path(new_part, "add")
     v_part_info[new_part]["width"] = Math.floor((v_part_info[new_part]["length"] / v_disk_info[disk]["length"]) * 100) + "%"
