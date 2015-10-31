@@ -4,7 +4,7 @@ Deepin Installer, new installer for Deepin.
 
 ## Dependencies
 
-### Build Dependencies
+### Build dependencies
 
 * cmake
 * coffeescript, front end is written in coffeescript.
@@ -13,7 +13,7 @@ Deepin Installer, new installer for Deepin.
 * libparted, backend of partition operation.
 * sqlite3
 
-### Runtime Dependencies
+### Runtime dependencies
 
 * btrfs-tools
 * dosfstools
@@ -60,7 +60,7 @@ Any usage issues can ask for help via
 
 We encourage you to report issues and contribute changes
 
-* [Contirubtion guide for users](http://wiki.deepin.org/index.php?title=Contribution_Guidelines_for_Users)
+* [Contribution guide for users](http://wiki.deepin.org/index.php?title=Contribution_Guidelines_for_Users)
 * [Contribution guide for developers](http://wiki.deepin.org/index.php?title=Contribution_Guidelines_for_Developers).
 
 ## License
