@@ -24,8 +24,9 @@ void object_finlize(JSObjectRef object)
 {
     struct _ObjectData* data = JSObjectGetPrivate(object);
     g_assert(data != NULL);
-    if (data->unref)
+    if (data->unref) {
         data->unref(data->core);
+    }
     data->core = NULL;
     g_free(data);
 }
@@ -61,8 +62,10 @@ JSClassRef obj_class()
     return objclass;
 }
 
-
-JSObjectRef create_nobject(JSContextRef ctx, void* obj, NObjectRef ref, NObjectUnref unref)
+JSObjectRef create_nobject(JSContextRef ctx,
+                           void* obj,
+                           NObjectRef ref,
+                           NObjectUnref unref)
 {
     g_assert(obj != NULL);
     struct _ObjectData* data = g_new(struct _ObjectData, 1);
@@ -76,10 +79,15 @@ JSObjectRef create_nobject(JSContextRef ctx, void* obj, NObjectRef ref, NObjectU
     return r;
 }
 
-JSObjectRef create_nobject_and_own(JSContextRef ctx, void* obj, NObjectRef ref, NObjectUnref unref)
+JSObjectRef create_nobject_and_own(JSContextRef ctx,
+                                   void* obj,
+                                   NObjectRef ref,
+                                   NObjectUnref unref)
 {
     JSObjectRef r = create_nobject(ctx, obj, ref, unref);
-    if (unref) unref(obj);
+    if (unref) {
+        unref(obj);
+    }
     return r;
 }
 
@@ -97,12 +105,11 @@ void* jsvalue_to_nobject(JSContextRef ctx, JSValueRef value)
     if (JSValueIsObjectOfClass(ctx, value, obj_class())) {
         JSObjectRef obj = JSValueToObject(ctx, value, NULL);
         void* core = object_to_core(obj);
-	UNGRAB_CTX();
+        UNGRAB_CTX();
         return core;
     } else {
-	UNGRAB_CTX();
-        g_warning("This JSValueRef is not an DeepinObject!!");
+        UNGRAB_CTX();
+        g_warning("[%s] This JSValueRef is not an DeepinObject!\n", __func__);
         return NULL;
     }
 }
-

@@ -1,0 +1,54 @@
+#!/bin/bash
+
+echo "[$0]"
+set -x
+
+. /etc/deepin-installer.conf
+L=${DI_LOCALE%.*}
+
+if [ ! -f ${LIVE_FILESYSTEM}/${L}.list ];then
+    L="en_US"
+fi
+
+extract_base_filesystem_as_unsquashfs() {
+    if [ -f ${LIVE_FILESYSTEM}/${L}.list ];then
+        echo "Unsquashfs listed sqfs file"
+        echo "$(cat ${LIVE_FILESYSTEM}/${L}.list)"
+        for file in $(cat ${LIVE_FILESYSTEM}/${L}.list);do
+            if [ ${file} == "filesystem.squashfs" ];then
+                unsquashfs -f -d /target ${LIVE_FILESYSTEM}/filesystem.squashfs | unsquashfs_progress /tmp/deepin-installer/unsquashfs_base_progress
+            else
+                unsquashfs -f -d /target ${LIVE_FILESYSTEM}/${file} | unsquashfs_progress /tmp/deepin-installer/unsquashfs_lang_progress
+            fi
+        done
+    else 
+        echo "No file list found, Just used filesystem.squashfs"
+        unsquashfs -f -d /target ${LIVE_FILESYSTEM}/filesystem.squashfs | unsquashfs_progress /tmp/deepin-installer/unsquashfs_base_progress
+    fi
+}
+
+# Do DI_EXTRACT_METHOD first
+if [ x"${DI_EXTRACT_METHOD}" = x"unsquashfs" ];then
+    echo "[Info] Detect DI_EXTRACT_METHOD as unsquashfs"
+    extract_base_filesystem_as_unsquashfs || exit 101
+    exit 0
+fi
+
+if [ x"${DI_EXTRACT_METHOD}" = x"fallback" ];then
+    echo "[Info] Detect DI_EXTRACT_METHOD as fallback"
+    ./extract_base_filesystem --lang ${L} --live ${LIVE} || exit 101
+    exit 0
+fi
+
+echo "[Info] No DI_EXTRACT_METHOD found..."
+
+declare -i MEM
+MEM=$(awk '/^MemFree:/ {mem_free=$2} /^Buffers:/ {meme_free+=$2} /^Cacheed:/ {mem_free+=$2} END{print mem_free}' /proc/meminfo)
+# Check if freemem less than 3G
+if [ $MEM -le 3000000 ] ;then
+    echo "[Info] Detect free memory less than 3G"
+    ./extract_base_filesystem --lang ${L} --live ${LIVE}
+else
+    echo "[Info] Detect free memory more than 3G"
+    extract_base_filesystem_as_unsquashfs
+fi

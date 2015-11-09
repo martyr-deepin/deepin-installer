@@ -26,11 +26,12 @@ void ugly_handle_esp()
 {
     char* esp = query_esp_path_by_disk_path(InstallerConf.root_disk);
     if (esp == NULL) {
-	PedPartition* part = must_get_partition(InstallerConf.root_disk, InstallerConf.root_partition);
-	char* root;
-	create_esp_by_split(part, &esp, &root);
-	g_assert(esp != NULL);
-	installer_record_mountpoint_info(root, "/");
+        PedPartition* part = must_get_partition(InstallerConf.root_disk,
+                                                InstallerConf.root_partition);
+        char* root;
+        create_esp_by_split(part, &esp, &root);
+        g_assert(esp != NULL);
+        installer_record_mountpoint_info(root, "/");
     }
     installer_record_bootloader_info(esp, true);
 }
@@ -65,25 +66,27 @@ void init_esp_partition(PedPartition* part)
     GError* error = NULL;
 
     if (!is_busy) {
-	mount_point = g_dir_make_tmp("efi_detectorXXXXXX", &error);
-	if (error != NULL) {
-	    g_warning("create efi_detector failed :%s\n", error->message);
-	    g_error_free(error);
-	    error = NULL;
-	}
-	char* cmd = g_strdup_printf ("mount -t vfat %s %s", path, mount_point);
-	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-	g_free(cmd);
-	if (error != NULL) {
-	    g_warning("Can't detect whether is $ESP : %s", error->message);
-	    g_error_free(error);
-	    error = NULL;
-	    return;
-	}
+	      mount_point = g_dir_make_tmp("efi_detectorXXXXXX", &error);
+        if (error != NULL) {
+            g_warning("[%s] create efi_detector failed :%s\n", __func__,
+                      error->message);
+            g_error_free(error);
+            error = NULL;
+        }
+        char* cmd = g_strdup_printf ("mount -t vfat %s %s", path, mount_point);
+        g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+        g_free(cmd);
+        if (error != NULL) {
+            g_warning("[%s] can't detect whether is $ESP : %s", __func__,
+                      error->message);
+            g_error_free(error);
+            error = NULL;
+            return;
+        }
     }
 
     if (mount_point == NULL) {
-	mount_point = get_partition_mount_point(path);
+        mount_point = get_partition_mount_point(path);
     }
 
     char* efi_path = g_build_filename(mount_point, "EFI", NULL);
@@ -91,32 +94,35 @@ void init_esp_partition(PedPartition* part)
     g_free(efi_path);
 
     if (!is_busy) {
-	char* cmd = g_strdup_printf ("umount -l %s", mount_point);
-	g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
-	g_free(cmd);
-	if (error != NULL) {
-	    g_warning("Can't detect whether is $ESP : %s", error->message);
-	    g_error_free(error);
-	    g_free(mount_point);
-	    return;
-	}
+        char* cmd = g_strdup_printf ("umount -l %s", mount_point);
+        g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
+        g_free(cmd);
+        if (error != NULL) {
+            g_warning("[%s] can't detect whether is $ESP : %s", __func__,
+                      error->message);
+            g_error_free(error);
+            g_free(mount_point);
+            return;
+        }
 
-	g_rmdir(mount_point);
-	g_free(mount_point);
+        g_rmdir(mount_point);
+        g_free(mount_point);
     }
 }
 
-gboolean create_esp_by_split(PedPartition* old, char** esp_path, char** new_path)
+gboolean create_esp_by_split(PedPartition* old, char** esp_path,
+                             char** new_path)
 {
     PedSector length512 = 512 * 1024 * 1024 / old->disk->dev->sector_size;
 
     PedSector old_length = old->geom.length;
     g_assert(g_strcmp0("gpt", old->disk->type->name) == 0);
     g_assert(old->geom.length >= length512 * 8  + length512); //at least 4.5GB space
-    g_assert(old->type == PED_PARTITION_NORMAL || old->type == PED_PARTITION_FREESPACE);
+    g_assert(old->type == PED_PARTITION_NORMAL ||
+             old->type == PED_PARTITION_FREESPACE);
 
     if (old->type == PED_PARTITION_NORMAL) {
-	ped_disk_remove_partition(old->disk, old);
+        ped_disk_remove_partition(old->disk, old);
     }
 
     PedGeometry geom;
@@ -124,7 +130,9 @@ gboolean create_esp_by_split(PedPartition* old, char** esp_path, char** new_path
 
     ped_geometry_init(&geom, old->disk->dev, old->geom.start, length512);
     cst = ped_constraint_new_from_max(&geom);
-    PedPartition* esp_part = ped_partition_new(old->disk, PED_PARTITION_NORMAL, ped_file_system_type_get("fat32"), geom.start, geom.end);
+    PedPartition* esp_part = ped_partition_new(old->disk,
+        PED_PARTITION_NORMAL, ped_file_system_type_get("fat32"),
+        geom.start, geom.end);
     ped_partition_set_flag(esp_part, PED_PARTITION_BOOT, 1);
     ped_partition_set_flag(esp_part, PED_PARTITION_HIDDEN, 1);
     ped_partition_set_name(esp_part, "ESP");
@@ -132,10 +140,13 @@ gboolean create_esp_by_split(PedPartition* old, char** esp_path, char** new_path
     ped_disk_commit (old->disk);
     ped_constraint_destroy(cst);
 
-    ped_geometry_init(&geom, old->disk->dev,  esp_part->geom.end + 1, old_length - length512);
+    ped_geometry_init(&geom, old->disk->dev,  esp_part->geom.end + 1,
+                      old_length - length512);
 
     cst = ped_constraint_new_from_max(&geom);
-    PedPartition* new_part = ped_partition_new (old->disk, PED_PARTITION_NORMAL, ped_file_system_type_get("ext4"), geom.start, geom.end);
+    PedPartition* new_part = ped_partition_new (old->disk,
+        PED_PARTITION_NORMAL, ped_file_system_type_get("ext4"), geom.start,
+        geom.end);
     ped_partition_set_flag(new_part, PED_PARTITION_BOOT, 1);
 
     ped_disk_add_partition(old->disk, new_part, cst);

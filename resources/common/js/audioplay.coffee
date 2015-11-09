@@ -39,7 +39,8 @@ class AudioPlay
         @now_mpris = @get_mpris_now()
         @now_mpris_dbus_name = @now_mpris?.mpris
         @now_mpris_name = @now_mpris?.name
-        echo "@now_mpris:#{@now_mpris_name}:#{@now_mpris_dbus_name}"
+        console.log("[audioplay.coffee] constructor() now_mpris_name: ", @now_mpris_name,
+                    ", now_mpris_dbus_name: ", @now_mpris_dbus_name)
         @mpris_dbus = @get_mpris_dbus(@now_mpris_dbus_name)
 
     get_mpris_now:->
@@ -58,7 +59,7 @@ class AudioPlay
                 mpris = {"name":name,"mpris":dbus}
                 @mpris_all.push(mpris)
         
-        echo @mpris_all
+        console.log("[audioplay.coffee] get_mpris_now(), mpris_all: ", @mpris_all)
 
         #2.check which mpris is now playing
         switch(@mpris_all.length)
@@ -81,8 +82,8 @@ class AudioPlay
                         )
                         #if dbus.name is @get_default_audio_player_name return dbus
                         if mpris_dbus.PlaybackStatus isnt "Stopped" then return dbus
-                    catch e
-                        echo "get_mpris_dbus_name #{e}"
+                    catch error
+                        console.error("[audioplay.coffee] get_mpris_now() call session_object() error: ", error)
                         return null
                 
                 #3. else return null
@@ -99,9 +100,9 @@ class AudioPlay
             )
             @launched_status = true
             return mpris_dbus
-        catch e
+        catch error
             @launched_status = false
-            echo "@mpris_dbus is null ,the player isnt launched!:#{e}"
+            console.error("[audioplay.coffee] get_mpris_dbus() error, mpris_dbus is null, the play is not launched: ", error)
             return null
 
     get_launched_status:->

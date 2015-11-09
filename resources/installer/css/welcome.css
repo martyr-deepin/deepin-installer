@@ -36,9 +36,8 @@
     background-position:10px 3px;
 }
 
-.TimezoneSet:focus, .KeyboardSet:focus, .PartTitleMode:focus {
-    box-shadow:0 0 2px 1px #7bbefb;
-    background-color:rgba(0,0,0,.05);
+.TimezoneSet:hover, .KeyboardSet:hover, .PartTitleMode:hover {
+    cursor:pointer;
 }
 
 .WelcomeWrap {
@@ -67,19 +66,19 @@
 }
 
 #username input {
-    background:url("../images/username.png") no-repeat;
+    background:url("../images/username.png") no-repeat 0px -1px;
 }
 
 #hostname input {
-    background:url("../images/hostname.png") no-repeat;
+    background:url("../images/hostname.png") no-repeat 0px -1px;
 }
 
 #password input {
-    background:url("../images/password.png") no-repeat;
+    background:url("../images/password.png") no-repeat 0px -1px;
 }
 
 #confirmpassword input {
-    background:url("../images/password.png") no-repeat;
+    background:url("../images/password.png") no-repeat 0px -1px;
 }
 
 .WelcomeFormItem {
@@ -95,12 +94,24 @@
     padding:0;
     width:272px;
     height:36px;
+    line-height:1.1;
     padding-left:36px;
     outline-style:none;
-    text-shadow:0 1px rgba(0,0,0,0.5);
-    border:2px solid rgba(255,255,255,0.6);
-    border-radius:4px;
-    background-position:-2px -2px;
+    color: #dadada;
+    text-shadow: 1px 1px rgba(0,0,0,0.5);
+    border-radius: 3px;
+    border: 1px solid rgba(64, 64, 64, 0.6);
+    box-shadow: 1px 1px 3px rgba(64, 64, 64, 0.2);
+}
+
+.WelcomeFormItem input:focus {
+    border: 1px solid rgba(123, 190, 251, 0.9);
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3) inset;
+}
+
+.WelcomeFormItem input::-webkit-input-placeholder {
+    color: #94a9c8;
+    text-shadow: 1px 1px rgba(0,0,0,0.5);
 }
 
 .PasswordStyle {
@@ -153,18 +164,18 @@
 .Query ul li {
     float:left;
     font-size:14px;
-    margin:6px;
+    margin:4px;
     width:14px;
     height:14px;
     line-height:14px;
     text-align:center;
+    border: 2px solid transparent;
 }
 
 .LetterActive {
     background:transparent;
-    border:solid 2px rgba(255,255,3,0.5);
+    border:solid 2px rgba(255,255,3,0.5) !important;
     border-radius:50%;
-    margin:2px 6px 6px 6px;
 }
 
 .Query .QueryWrap {
@@ -294,6 +305,8 @@
 }
 
 .LayoutItem, .VariantItem, .KeyboardItem {
+    overflow:hidden;
+    text-overflow:clip;
     height:30px;
     line-height:30px;
     padding-left:30px;
@@ -341,6 +354,10 @@
 .KeyboardOp .Detect {
     background:url("../images/detect_layout.png") no-repeat;
     background-position:0 10px;
+}
+
+.KeyboardOp .Default:hover, .KeyboardOp .Detect:hover {
+  cursor: pointer;
 }
 
 .KeyboardDetectDialog .DialogContent {

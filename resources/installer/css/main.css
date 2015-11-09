@@ -206,10 +206,6 @@ input:focus {
     color:rgba(255,255,255,0.5);
 }
 
-.DialogBtn div:focus {
-    box-shadow:0 0 2px 1px #7bbefb;
-}
-
 .DropBoard {
     position:absolute;
     width:100%;
@@ -322,7 +318,6 @@ input:focus {
 }
 
 .NextStep {
-    width:180px;
     height:38px;
     border:2px solid rgba(0,0,0,0.0);
     border-radius:7px;
@@ -333,16 +328,15 @@ input:focus {
 }
 
 .NextStep input {
-    width:180px;
     height:38px;
-    padding-top:5px;
+    min-width:180px;
+    padding:1px 25px 0px 25px;
     font-size:18px;
     font-style:bold;
 }
 
 
 .DialogClose:focus, .Close:focus {
-    box-shadow:0 0 2px 1px #7bbefb;
     background-color:rgba(0,0,0,.05);
 }
 

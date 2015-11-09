@@ -44,24 +44,20 @@ class Accounts
 
     getDBus:->
         try
-            console.log(ACCOUNTS_DAEMON)
+            console.log("[accounts.coffee] ACCOUNTS_DAEMON: ", ACCOUNTS_DAEMON)
             @Dbus_Account = get_dbus("system", ACCOUNTS_DAEMON, "UserList")
-            echo "ACCOUNTS_DAEMON succeed and then connect path" if @Dbus_Account
+            console.log("[accounts.coffee] Dbus_Account: ", @Dbus_Account)
             for path in @Dbus_Account.UserList
-                echo path
                 ACCOUNTS_USER.path = path
                 user_dbus = get_dbus("system", ACCOUNTS_USER, "UserName")
-                echo "Uid:#{user_dbus.Uid}"
-                echo "UserName:#{user_dbus.UserName}"
+                console.log("[accuonts.coffee] user_dbus: ", user_dbus)
                 @users_id.push(user_dbus.Uid)
                 @users_name.push(user_dbus.UserName)
                 @users_id_dbus[user_dbus.Uid] = user_dbus
                 @users_name_dbus[user_dbus.UserName] = user_dbus
-        catch e
-            echo "Dbus_Account #{ACCOUNTS_DAEMON} ERROR: #{e}"
+        catch error
+            console.error("[accounts.coffee] getDBus(0 error: ", error)
             @get_dbus_failed = true
-
-
 
     get_user_name: (uid) ->
         username = @users_id_dbus[uid].UserName
@@ -72,15 +68,15 @@ class Accounts
         id = null
         try
             id = @users_name_dbus[user].Uid
-        catch e
-            echo "get_user_id #{e}"
+        catch error
+            console.error("[accounts.coffee] get_user_id() error: ", error, ", user: ", user)
         if not id? then id = "1000"
         return id
 
     is_user_logined:(uid)->
         is_logined = false
         LoginTime = @users_id_dbus[uid].LoginTime
-        echo "LoginTime:#{LoginTime}"
+        console.log("[accounts.coffee] is_user_logined() logintime: ", LoginTime)
         if LoginTime is null or LoginTime == 0 or LoginTime is undefined then is_logined = false
         else is_logined = true
         return is_logined
@@ -91,8 +87,8 @@ class Accounts
         username = @users_id_dbus[uid].UserName
         try
             is_sessioned_on = DCore.Greeter.get_user_session_on(username)
-        catch e
-            echo "#{e}"
+        catch error
+            console.error("[accounts.coffee] is_user_sessioned_on() error: ", error, ", uid: ", udi)
             is_sessioned_on = false
         return is_sessioned_on
     
@@ -109,8 +105,8 @@ class Accounts
                 LOCK = "com.deepin.dde.lock"
                 dbus = DCore.DBus.sys(LOCK)
             return dbus?.NeedPwd_sync(username)
-        catch e
-            echo "is_need_pwd dbus error #{e}"
+        catch error
+            console.error("[accounts.coffee] is_need_pwd() error: ", error, ", uid: ", uid)
             return true
 
 
@@ -118,8 +114,8 @@ class Accounts
         icon = null
         try
             icon = @users_id_dbus[uid].IconFile
-        catch e
-            echo "get_user_bg #{e}"
+        catch error
+            console.error("[accounts.coffee] get_use_icon() error: ", error)
         return icon
 
 
@@ -127,8 +123,8 @@ class Accounts
         bg = null
         try
             bg = @users_id_dbus[uid].BackgroundFile
-        catch e
-            echo "get_user_bg #{e}"
+        catch error
+            console.error("[accounts.coffee] get_user_bg() error: ", error, ", uid: ", uid)
         return bg
 
     get_default_username:->
@@ -137,9 +133,9 @@ class Accounts
                 @_default_username = DCore[APP].get_default_user()
             else
                 @_default_username = DCore[APP].get_username()
-        catch e
-            echo "#{APP}get_default_username:#{e}"
-        echo "#{APP} get_default_username:---------#{@_default_username}-------------"
+        catch error
+            console.error("[accounts.coffee] get_default_username() error: ", error, ", APP: ", APP)
+        console.log("[accounts.coffee] get_default_username(), default_username: ", @_default_username)
         return @_default_username
 
     get_current_user_background:->
@@ -159,5 +155,5 @@ class Accounts
 
     getRandUserIcon:->
         icon = @Dbus_Account.RandUserIcon_sync()
-        echo icon
+        console.log("[account.coffee] getRandUserIcon() icon: ", icon)
         return icon

@@ -26,7 +26,7 @@
 
 #define SCHEMA_ID "com.deepin.dde.personalization"
 #define GREETER_THEME_KEY "greeter-theme"
-#define GREETER_THEME_PATH ""RESOURCE_DIR"language-selector/greeter-theme"
+#define GREETER_THEME_PATH ""RESOURCE_DIR"/language-selector/greeter-theme"
 
 GSettings* s;
 
@@ -48,25 +48,29 @@ char* get_current_bg_path()
 void set_theme_background(GtkWidget* container,GtkWidget* child)
 {
     char* theme = get_theme_config();
-    g_message("theme:%s",theme);
-    const char* bg_path = g_strdup_printf("%s/%s/bg.jpg",GREETER_THEME_PATH,theme);
+    g_message("[%s] theme: %s\n", __func__, theme);
+    const char* bg_path = g_strdup_printf("%s/%s/bg.jpg", GREETER_THEME_PATH,
+                                          theme);
     g_free(theme);
-    g_message("theme_bg_path:%s",bg_path);
+    g_message("[%s] theme_bg_path: %s\n", __func__, bg_path);
     GFile* gf = g_file_new_for_path(bg_path);
     if(!g_file_query_exists(gf,NULL)){
         const char* bg_url = get_current_bg_path();
         gf = g_file_new_for_uri(bg_url);
         bg_path = g_file_get_path(gf);
-        g_message("bg isnt exists and current bg:%s",bg_path);
+        g_message("[%s] bg does not exist, current bg: %s\n", __func__,
+                  bg_path);
     }
     g_object_unref(gf);
     BackgroundInfo* bg_info = create_background_info(container, child);
     background_info_set_background_by_file(bg_info, bg_path);
 }
 
-void draw_background_by_theme(GtkWidget* widget, GtkWidget* child, struct DisplayInfo info)
+void draw_background_by_theme(GtkWidget* widget, GtkWidget* child,
+                              struct DisplayInfo info)
 {
-    g_message("[%s], :%dx%d(%d,%d)",__func__, info.width, info.height, info.x, info.y);
+    g_message("[%s] width: %d, height: %d, x: %d y: %d\n", __func__,
+              info.width, info.height, info.x, info.y);
 
     gtk_widget_set_size_request(widget, info.width, info.height);
     gtk_window_move(GTK_WINDOW(widget), info.x, info.y);

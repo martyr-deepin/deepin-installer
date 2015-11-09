@@ -26,7 +26,7 @@
 #include <libxklavier/xklavier.h>
 #include "utils.h"
 
-#define KEYBOARD_DETECT_FILE    "/usr/share/console-setup/pc105.tree"
+#define KEYBOARD_DETECT_FILE    RESOURCE_DIR"/pc105.tree"
 /**
  setxkbmap -query
  can get current keyboard layout
@@ -52,35 +52,40 @@ static gchar *not_present = NULL;
 static gchar *result = NULL;
 
 static void 
-_foreach_variant (XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
+_foreach_variant (XklConfigRegistry *config, const XklConfigItem *item,
+                  gpointer data)
 {
     if (item == NULL || data == NULL) {
-        g_warning ("_foreach variant:some param NULL\n");
+        g_warning ("[%s]: some param NULL\n", __func__);
         return;
     }
     XklConfigItem *layout = (XklConfigItem *) data;
 
-    GList *variants = g_list_copy (g_hash_table_lookup (layout_variants_hash, layout->name));
+    GList *variants = g_list_copy(
+        g_hash_table_lookup(layout_variants_hash, layout->name));
     variants = g_list_append (variants, g_strdup (item->name));
-    g_hash_table_replace (layout_variants_hash, g_strdup (layout->name), variants);
+    g_hash_table_replace(layout_variants_hash, g_strdup(layout->name),
+                         variants);
 
-    gchar *key = g_strdup_printf ("%s,%s", layout->name, item->name);
-    gchar *value = g_strdup_printf ("%s,%s", layout->description, item->description);
+    gchar *key = g_strdup_printf("%s,%s", layout->name, item->name);
+    gchar *value = g_strdup_printf("%s,%s", layout->description,
+                                   item->description);
     g_hash_table_insert (layout_desc_hash, key, value);
 }
 
 static void 
-_foreach_layout(XklConfigRegistry *config, const XklConfigItem *item, gpointer data)
+_foreach_layout(XklConfigRegistry *config, const XklConfigItem *item,
+                gpointer data)
 {
     if (config == NULL || item == NULL) {
-        g_warning ("_foreach layout:some param NULL\n");
+        g_warning ("[%s]: some param NULL\n", __func__);
         return;
     }
     GList *variants = NULL;
-    g_hash_table_insert (layout_variants_hash, g_strdup (item->name), variants);
-    g_hash_table_insert (layout_desc_hash, g_strdup (item->name), g_strdup (item->description));
-    xkl_config_registry_foreach_layout_variant(config, 
-                                               item->name,
+    g_hash_table_insert(layout_variants_hash, g_strdup (item->name), variants);
+    g_hash_table_insert(layout_desc_hash, g_strdup(item->name),
+                        g_strdup(item->description));
+    xkl_config_registry_foreach_layout_variant(config, item->name,
                                                _foreach_variant, 
                                                (gpointer) item);
 }
@@ -90,19 +95,19 @@ init_keyboard_layouts ()
 {
     static gboolean inited = FALSE;
     if (inited) {
-        g_warning ("init keyboard layouts:already inited\n");
+        g_warning ("[%s]: already inited\n", __func__);
     }
     inited = TRUE;
 
-    layout_variants_hash = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                                  (GEqualFunc) g_str_equal, 
-                                                  (GDestroyNotify) g_free, 
-                                                  (GDestroyNotify) g_list_free);
+    layout_variants_hash = g_hash_table_new_full((GHashFunc) g_str_hash, 
+                                                 (GEqualFunc) g_str_equal, 
+                                                 (GDestroyNotify) g_free, 
+                                                 (GDestroyNotify) g_list_free);
 
-    layout_desc_hash = g_hash_table_new_full ((GHashFunc) g_str_hash, 
-                                                  (GEqualFunc) g_str_equal, 
-                                                  (GDestroyNotify) g_free, 
-                                                  (GDestroyNotify) g_list_free);
+    layout_desc_hash = g_hash_table_new_full((GHashFunc) g_str_hash, 
+                                             (GEqualFunc) g_str_equal, 
+                                             (GDestroyNotify) g_free, 
+                                             (GDestroyNotify) g_list_free);
 
     Display *dpy = NULL;
     XklEngine *engine = NULL;
@@ -110,30 +115,30 @@ init_keyboard_layouts ()
     
     dpy = XOpenDisplay (NULL);
     if (dpy == NULL) {
-        g_warning ("init keyboard layouts: XOpenDisplay\n");
+        g_warning("[%s] display is NULL\n", __func__);
         goto out;
     }
 
     engine = xkl_engine_get_instance (dpy);
     if (engine == NULL) {
-        g_warning ("init keyboard layouts: xkl engine get instance\n");
+        g_warning ("[%s]: xkl engine is NULL\n", __func__);
         goto out;
     }
 
     config_rec = xkl_config_rec_new ();
     xkl_config_rec_get_from_server (config_rec, engine);
     if (config_rec == NULL) {
-        g_warning ("init keyboard layouts: xkl config rec\n");
+        g_warning ("[%s]: xkl config rec is NULL\n", __func__);
         goto out;
     }
 
     cfg_reg = xkl_config_registry_get_instance (engine);
     if (cfg_reg == NULL) {
-        g_warning ("init keyboard layouts: xkl config registry get instance\n");
+        g_warning ("[%s]: cfg_reg is NULL\n", __func__);
         goto out;
     }
     if (!xkl_config_registry_load(cfg_reg, TRUE)) {
-        g_warning ("init keyboard layouts: xkl config registry load\n");
+        g_warning ("[%s]: xkl config registry load\n", __func__);
         goto out;
     }
 
@@ -157,7 +162,7 @@ gchar *installer_get_layout_description (const gchar *layout)
 {
     gchar *desc = NULL;
     if (layout_desc_hash == NULL) {
-        g_warning ("get layout description:layout desc hash NULL\n");
+        g_warning ("[%s]: layout desc hash NULL\n", __func__);
         init_keyboard_layouts ();
     }
     desc = g_strdup (g_hash_table_lookup (layout_desc_hash, layout));
@@ -182,7 +187,8 @@ JSObjectRef installer_get_keyboard_layouts ()
 
     for (index = 0; index < g_list_length (keys); index++) {
         gchar *layout = g_strdup (g_list_nth_data (keys, index));
-        json_array_insert (layouts, index, jsvalue_from_cstr (get_global_context (), layout));
+        json_array_insert(layouts, index,
+                          jsvalue_from_cstr(get_global_context(), layout));
         g_free (layout);
     }
 
@@ -196,20 +202,22 @@ JSObjectRef installer_get_layout_variants (const gchar *layout_name)
     GRAB_CTX ();
     JSObjectRef layout_variants = json_array_create ();
     if (layout_name == NULL) {
-        g_warning ("get layout variants:layout NULL\n");
+        g_warning ("[%s]: layout is NULL\n", __func__);
         return layout_variants;
     }
     if (layout_variants_hash == NULL) {
-        g_warning ("get layout variants:layout variants hash NULL\n");
+        g_warning ("[%s]: layout variants hash NULL\n", __func__);
         init_keyboard_layouts ();
     }
 
     gsize index = 0;
-    GList *variants = (GList *) g_hash_table_lookup (layout_variants_hash, layout_name);
+    GList *variants = (GList *) g_hash_table_lookup(layout_variants_hash,
+                                                    layout_name);
 
-    for (index = 0; index < g_list_length (variants); index++) {
-        gchar *variant = g_strdup (g_list_nth_data (variants, index));
-        json_array_insert (layout_variants, index, jsvalue_from_cstr (get_global_context (), variant));
+    for (index = 0; index < g_list_length(variants); index++) {
+        gchar *variant = g_strdup (g_list_nth_data(variants, index));
+        json_array_insert(layout_variants, index,
+                          jsvalue_from_cstr(get_global_context(), variant));
         g_free (variant);
     }
     UNGRAB_CTX ();
@@ -224,7 +232,7 @@ JSObjectRef installer_get_current_layout_variant ()
     JSObjectRef current = json_create ();
 
     if (config_rec == NULL) {
-        g_warning ("get current layout variant:xkl config null\n");
+        g_warning("[%s]: config_rec is NULL\n", __func__);
         init_keyboard_layouts ();
     }
 
@@ -236,12 +244,16 @@ JSObjectRef installer_get_current_layout_variant ()
 
     gsize index = 0;
     for (index = 0; index < g_strv_length (layouts); index++) {
-        json_array_insert (layout_array, index, jsvalue_from_cstr (get_global_context (), layouts[index]));
+        json_array_insert(layout_array, index,
+                          jsvalue_from_cstr(get_global_context(),
+                                            layouts[index]));
     }
     json_append_value (current, "layouts", (JSValueRef) layout_array);
 
     for (index = 0; index < g_strv_length (variants); index++) {
-        json_array_insert (variant_array, index, jsvalue_from_cstr (get_global_context (), variants[index]));
+        json_array_insert(variant_array, index,
+                          jsvalue_from_cstr(get_global_context(),
+                                            variants[index]));
     }
     json_append_value (current, "variants", (JSValueRef) variant_array);
 
@@ -257,7 +269,7 @@ init_keyboard_detect ()
 {
     static gboolean inited = FALSE;
     if (inited) {
-        g_warning ("init keyboard detect:already inited\n");
+        g_warning("[%s]: already inited\n", __func__);
         return;
     }
     inited = TRUE;
@@ -265,8 +277,10 @@ init_keyboard_detect ()
     gsize length;
     GError *error = NULL;
 
-    if (!g_file_get_contents (KEYBOARD_DETECT_FILE, &pc105_contents, &length, &error)) {
-        g_warning ("init keyboard detect:get %s contents->%s\n", KEYBOARD_DETECT_FILE, error->message);
+    if (!g_file_get_contents(KEYBOARD_DETECT_FILE, &pc105_contents, &length,
+                             &error)) {
+        g_warning("[%s]: detect_file: %s, error: %s\n", __func__,
+                  KEYBOARD_DETECT_FILE, error->message);
         g_error_free (error);
     }
 }
@@ -274,9 +288,10 @@ init_keyboard_detect ()
 JS_EXPORT_API 
 double installer_keyboard_detect_read_step (gchar *step)
 {
-    g_debug ("read step:read step->%s, current_step->%s\n", step, current_step);
+    g_debug("[%s]: step: %s, current_step: %s\n", __func__, step,
+            current_step);
     if (step == NULL) {
-        g_warning ("keyboard detect read step:step NULL\n");
+        g_warning("[%s]: step NULL\n", __func__);
         return 0;
     }
     if (pc105_contents == NULL) {
@@ -284,7 +299,7 @@ double installer_keyboard_detect_read_step (gchar *step)
     }
     if (current_step != NULL) {
         if (result != NULL) {
-            g_warning ("read step:already done\n");
+            g_warning("[%s]: already done\n", __func__);
         }
     }
 
@@ -329,19 +344,20 @@ double installer_keyboard_detect_read_step (gchar *step)
             continue;
 
         } else if (g_str_has_prefix (lines[i], "PRESS ")) {
-            g_debug ("prefix PRESS :%s\n", lines[i]);
+            g_debug("[%s] prefix PRESS: %s\n", __func__, lines[i]);
             if (t == UNKNOWN) {
                 t = PRESS_KEY;
             } 
             if (t != PRESS_KEY) {
-                g_warning ("read step:invalid step goto PRESS\n");
+                g_warning("[%s]: invalid step goto PRESS\n", __func__);
             }
-            symbols = g_list_append (symbols, g_strstrip (g_strdup (lines[i] + 6)));
+            symbols = g_list_append(symbols,
+                                    g_strstrip(g_strdup(lines[i] + 6)));
 
         } else if (g_str_has_prefix (lines[i], "CODE ")) {
-            g_debug ("prefix CODE:%s\n", lines[i]);
+            g_debug("[%s] prefix CODE: %s\n", __func__, lines[i]);
             if (t != PRESS_KEY) {
-                g_warning ("read step:invalid step goto CODE\n");
+                g_warning("[%s]: invalid step goto CODE\n", __func__);
             }
             gchar **items = g_strsplit (lines[i], " ", -1);
             gchar *key = g_strdup(items[1]);
@@ -349,32 +365,35 @@ double installer_keyboard_detect_read_step (gchar *step)
             g_strfreev (items);
 
             if (keycodes == NULL) {
-                keycodes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+                keycodes = g_hash_table_new_full(g_str_hash, g_str_equal,
+                                                 g_free, g_free);
             }
             g_hash_table_insert (keycodes, key, value);
 
         } else if (g_str_has_prefix (lines[i], "FIND ")) {
-            g_debug ("prefix FIND :%s\n", lines[i]);
+            g_debug("[%s] prefix FIND: %s\n", __func__, lines[i]);
             if (t == UNKNOWN) {
                 t = KEY_PRESENT;
             } else {
-                g_warning ("read step:invalid step goto FIND\n");
+                g_warning("[%s]: invalid step goto FIND\n", __func__);
             }
-            symbols = g_list_append (symbols, g_strstrip (g_strdup (lines[i] + 5)));
+            symbols = g_list_append(symbols,
+                                    g_strstrip(g_strdup(lines[i] + 5)));
 
         } else if (g_str_has_prefix (lines[i], "FINDP ")) {
-            g_debug ("prefix FINDP :%s\n", lines[i]);
+            g_debug("[%s] prefix FINDP: %s\n", __func__, lines[i]);
             if (t == UNKNOWN) {
                 t = KEY_PRESENT_P;
             } else {
-                g_warning ("read step:invalid step goto FINDP\n");
+                g_warning("[%s]: invalid step goto FINDP\n", __func__);
             }
-            symbols = g_list_append (symbols, g_strstrip (g_strdup (lines[i] + 6)));
+            symbols = g_list_append(symbols,
+                                    g_strstrip(g_strdup(lines[i] + 6)));
 
         } else if (g_str_has_prefix (lines[i], "YES ")) {
-            g_debug ("prefix YES :%s\n", lines[i]);
+            g_debug("[%s] prefix YES: %s\n", __func__, lines[i]);
             if (t != KEY_PRESENT_P && t != KEY_PRESENT) {
-                g_warning ("read step:invalid step goto YES\n");
+                g_warning("[%s]: invalid step goto YES\n", __func__);
             }
             if (present != NULL) {
                 g_free (present);
@@ -383,9 +402,9 @@ double installer_keyboard_detect_read_step (gchar *step)
             present = g_strstrip (g_strdup (lines[i] + 4));
 
         } else if (g_str_has_prefix (lines[i], "NO ")) {
-            g_debug ("prefix NO :%s\n", lines[i]);
+            g_debug("[%s] prefix NO: s\n", __func__, lines[i]);
             if (t != KEY_PRESENT_P && t != KEY_PRESENT) {
-                g_warning ("read step:invalid step goto NO\n");
+                g_warning("[%s]: invalid step goto NO\n", __func__);
             }
             if (not_present != NULL) {
                 g_free (not_present);
@@ -394,7 +413,7 @@ double installer_keyboard_detect_read_step (gchar *step)
             not_present = g_strstrip (g_strdup (lines[i] + 3));
 
         } else if (g_str_has_prefix (lines[i], "MAP ")) {
-            g_debug ("prefix MAP :%s\n", lines[i]);
+            g_debug("[%s] prefix MAP: %s\n", __func__, lines[i]);
             if (t == UNKNOWN) {
                 t = RESULT;
             }
@@ -417,7 +436,8 @@ JSObjectRef installer_keyboard_detect_get_symbols ()
     guint i = 0;
     for (i = 0; i < g_list_length (symbols); i++) {
         gchar * symbol = g_strdup (g_list_nth_data (symbols, i));
-        json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), symbol));
+        json_array_insert(array, i,
+                          jsvalue_from_cstr(get_global_context(), symbol));
         g_free (symbol);
     }
     UNGRAB_CTX ();
@@ -467,6 +487,7 @@ gchar* installer_keyboard_detect_get_result ()
 JS_EXPORT_API
 void installer_set_layout(const gchar* layout)
 {
-    const gchar* cmd = g_strdup_printf("/usr/bin/setxkbmap -layout %s",layout);
+    const gchar* cmd = g_strdup_printf("/usr/bin/setxkbmap -layout %s", 
+                                       layout);
     spawn_command_sync(cmd,TRUE);
 }

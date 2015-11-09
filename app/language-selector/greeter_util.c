@@ -37,7 +37,7 @@ JSObjectRef greeter_get_users ()
     if (users == NULL) {
         LightDMUserList *user_list = lightdm_user_list_get_instance ();
         if (user_list == NULL) {
-            g_warning ("get users:user list is NULL\n");
+            g_warning("[%s]: user list is NULL\n", __func__);
             return array;
         }
 
@@ -50,7 +50,8 @@ JSObjectRef greeter_get_users ()
         user = (LightDMUser *) g_list_nth_data (users, i);
         username = g_strdup (lightdm_user_get_name (user));
 
-        json_array_insert (array, i, jsvalue_from_cstr (get_global_context (), g_strdup (username)));
+        json_array_insert(array, i, jsvalue_from_cstr(get_global_context(),
+                                                      g_strdup(username)));
 
         g_free (username);
     }
@@ -83,7 +84,9 @@ gchar* greeter_get_default_user ()
     extern LightDMGreeter *greeter;
     extern GKeyFile *greeter_keyfile;
 
-    username = g_strdup (g_key_file_get_value (greeter_keyfile, "deepin-greeter", "last-user", NULL));
+    username = g_strdup(g_key_file_get_value(greeter_keyfile,
+                                             "deepin-greeter", "last-user",
+                                             NULL));
     if (username == NULL) {
         username = g_strdup (lightdm_greeter_get_select_user_hint (greeter));
     }
@@ -100,13 +103,13 @@ gchar* greeter_get_user_session (const gchar *name)
 
     user_list = lightdm_user_list_get_instance ();
     if (user_list == NULL) {
-        g_warning ("greeter get user session:user list is NULL\n");
+        g_warning("[%s]: user list is NULL\n", __func__);
         return NULL;
     }
 
     user = lightdm_user_list_get_user_by_name (user_list, name);
     if (user == NULL) {
-        g_warning ("greeter get user session:user for %s is NULL\n", name);
+        g_warning("[%s]: user for %s is NULL\n", __func__, name);
         return NULL;
     }
 
@@ -165,13 +168,13 @@ LightDMUser* lightdm_user_get_by_username(const gchar *name)
 
     user_list = lightdm_user_list_get_instance ();
     if (user_list == NULL) {
-        g_warning ("greeter get user session:user list is NULL\n");
+        g_warning("[%s]: user list is NULL\n", __func__);
         return NULL;
     }
 
     user = lightdm_user_list_get_user_by_name (user_list, name);
     if (user == NULL) {
-        g_warning ("greeter get user session:user for %s is NULL\n", name);
+        g_warning("[%s]: user for %s is NULL\n", __func__, name);
         return NULL;
     }
     
@@ -182,7 +185,7 @@ LightDMUser* lightdm_user_get_by_username(const gchar *name)
 JS_EXPORT_API
 gboolean greeter_get_user_session_on(const gchar *username)
 {
-    g_warning("greeter_get_user_session_on:%s\n",username);
+    g_message("[%s] username: %s\n", __func__, username);
     extern LightDMGreeter *greeter;
     const gchar *user_lock_path = NULL;
     const gchar *username_authentication = NULL;
@@ -191,58 +194,58 @@ gboolean greeter_get_user_session_on(const gchar *username)
 
     user = lightdm_user_get_by_username(username);
     result = lightdm_user_get_logged_in(user);
-    if(result){
-        g_warning("lightdm_user_get_logged_in return TRUE\n");
-    }else{
-        g_warning("lightdm_user_get_logged_in return FALSE\n");
+    if (result){
+        g_warning("[%s] lightdm_user_get_logged_in return TRUE\n", __func__);
+    } else {
+        g_warning("[%s] lightdm_user_get_logged_in return FALSE\n", __func__);
     }
 
     user_lock_path = g_strdup_printf("%s%s", username, ".dlock.app.deepin");
     if (app_is_running (user_lock_path)) {
         /*result = TRUE;*/
-        g_warning("user_lock_path is_running,and login_on is TRUE;\n");
+        g_warning("[%s] user_lock_path is_running, login_on is TRUE\n",
+                  __func__);
     }
 
     username_authentication = lightdm_greeter_get_authentication_user(greeter);
     if (g_strcmp0 (username, username_authentication) == 0) {
         /*result = TRUE;*/
-        g_warning("username_authentication is %s,and login_on is TRUE;\n",username);
+        g_warning("[%s] username_authentication is %s, login_on is TRUE\n",
+                  __func__, username);
     }
 
-    g_warning("greeter_get_user_session_on result is %d.\n",result);
+    g_warning("[%s] result is %d.\n", __func__, result);
     return result;
-
 }
-
-
 
 JS_EXPORT_API
 void greeter_set_language(char* lang)
 {
+    g_message("[%s] language: %s\n", __func__, lang);
     GError *error = NULL;
     GDBusProxy* proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
-	    0,
-	    NULL,
-	    "com.deepin.helper.LanguageSelector",
-	    "/com/deepin/helper/LanguageSelector",
-	    "com.deepin.helper.LanguageSelector",
-	    NULL,
-	    &error);
+                                      0,
+                                      NULL,
+                                      "com.deepin.helper.LanguageSelector",
+                                      "/com/deepin/helper/LanguageSelector",
+                                      "com.deepin.helper.LanguageSelector",
+                                      NULL,
+                                      &error);
     if (error != NULL) {
-	g_warning ("call greeter_set_language on com.deepin.helper.LanguageHelper failed: %s",
-		error->message);
-	g_error_free(error);
+        g_warning("[%s] on com.deepin.helper.LanguageHelper failed: %s\n",
+                  __func__, error->message);
+        g_error_free(error);
     }
 
     if (proxy != NULL) {
-	GVariant* params = NULL;
-	GVariant* retval = g_dbus_proxy_call_sync(proxy, "Set", g_variant_new("(s)", lang),
-		G_DBUS_CALL_FLAGS_NONE,
-		-1, NULL, NULL);
-	if (retval != NULL) {
-	    g_variant_unref(retval);
-	}
-	g_object_unref(proxy);
+        GVariant* params = NULL;
+        GVariant* retval = g_dbus_proxy_call_sync(proxy, "Set",
+                                                  g_variant_new("(s)", lang),
+                                                  G_DBUS_CALL_FLAGS_NONE,
+                                                  -1, NULL, NULL);
+        if (retval != NULL) {
+            g_variant_unref(retval);
+        }
+        g_object_unref(proxy);
     }
 }
-

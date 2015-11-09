@@ -1,0 +1,90 @@
+#!/bin/sh
+
+prereqs()
+{
+       echo "$PREREQ"
+}
+
+case $1 in
+prereqs)
+       prereqs
+       exit 0
+       ;;
+esac
+
+generate_auto_installer()
+{
+(
+cat <<EOF
+[Desktop Entry]
+Name=DeepinAutoInstaller
+Comment=Deepin Auto Installer
+Exec=$2
+TryExec=gksudo
+EOF
+) > $1
+}
+
+generate_lightdm_conf()
+{
+(
+cat <<EOF
+[SeatDefaults]
+greeter-session=lightdm-deepin-greeter
+user-session=deepin-auto-installer
+autologin-user=deepin
+autologin-user-time=0
+EOF
+) > $1
+}
+
+generate_install_helper()
+{
+(
+cat <<EOF
+#!/bin/sh
+gconftool-2 --set --type=bool /apps/gksu/display-no-pass-info false || true
+gksudo -- /usr/bin/deepin-installer -c "$3" -l "$4" --without-wm
+EOF
+) > $1
+}
+
+for x in $(cat /proc/cmdline); do
+    case $x in
+	auto-deepin-installer)
+        auto_mode=true
+        ;;
+    install-path=*)
+        install_path="${x#install-path=}"
+        ;;
+    deepin-installer/locale=*)
+        locale=${x#deepin-installer/locale=}
+        ;;
+    esac
+done
+
+if [ "$auto_mode" = "true" ]; then
+    #fix install_path
+    #if use boot config, iso mount on /lib/live/mount/findiso
+    iso_root=/lib/live/mount/findiso
+    install_path=$iso_root/$install_path
+
+	lang=$(echo $locale | awk -F '.' '{print $1}')
+	# set locale
+	echo $locale
+	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" > /etc/default/locale
+	printf 'LANG="%s"\nLANGUAGE="%s"\n' "$locale" "$lang" >> /etc/environment
+    sed -i "s/# \(en_US\.UTF-8.*$\)/\1/g" /etc/locale.gen
+    sed -i "s/# \(${locale}.*$\)/\1/g" /etc/locale.gen
+	/usr/sbin/locale-gen || true
+
+
+	install_conf=$install_path/install/deepin-installer.conf
+	install_log=$install_path/install/deepin-installer.log
+	install_helper=/usr/lib/deepin-install-helper
+	$(generate_install_helper $install_helper $locale $install_conf $install_log)
+	$(generate_auto_installer /usr/share/xsessions/deepin-auto-installer.desktop $install_helper)
+	$(generate_lightdm_conf /etc/lightdm/lightdm.conf)
+
+	chmod +x $install_helper
+fi

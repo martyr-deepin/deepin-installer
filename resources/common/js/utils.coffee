@@ -60,9 +60,6 @@ Array.prototype.remove = (el)->
 #     else
 #         @.slice(0)
 
-echo = (log) ->
-    console.log log
-
 assert = (value, msg) ->
     if not value
         throw new Error(msg)
@@ -94,7 +91,6 @@ build_menu = (info) ->
                 item.setActive(v[2])
             menu.append(item)
         else  # submenu
-            echo "submenu"
             submenu = build_menu(v[1])
             menu.append(new MenuItem(count, v[1]).setSubMenu(build_menu(v[1])))
             count += 1
@@ -189,13 +185,10 @@ ajax = (url,sync=true,callback,callback_error) ->
     xhr.open("GET", url, sync)
 
     xhr.onload = ->
-        # echo "callback： #{typeof callback}"
-        echo "XMLHttpRequest onload"
         callback?(xhr)
         return
 
     xhr.onerror = ->
-        echo "XMLHttpRequest onerror"
         callback_error?(xhr)
     xhr.send(null)
 

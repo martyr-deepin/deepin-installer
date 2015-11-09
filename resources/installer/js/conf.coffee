@@ -12,6 +12,7 @@ __selected_password = null
 __selected_locale = DCore.Installer.get_current_locale()
 
 sync_installer_conf = ->
+    console.log("[conf.coffee] sync_installer_conf()")
     DCore.Installer.record_accounts_info(__selected_username, __selected_hostname, __selected_password)
 
     DCore.Installer.record_timezone_info(__selected_timezone)
@@ -45,23 +46,24 @@ record_mount_points = ->
                     if v_part_info[part]["mp"] == "/"
                         DCore.Installer.record_root_disk_info(disk)
                 catch error
-                    echo error
+                    console.error("[conf.coffee] record_mount_points() error: ", error)
 
 
-#TODO: try remove
 try_removed_start_install = ->
-        if __selected_mode == "simple"
-            undo_part_table_info()
-            auto_simple_partition(__selected_item.id, "part")
-        else if __selected_mode == "advance"
-            echo "do advance partition"
-        do_partition()
+        console.log("[conf.coffee] try_removed_start_install() partition mode: ", __selected_mode)
 
-        sync_installer_conf()
-        DCore.Installer.start_install()
-
+        # Show progress page first.
         progress_page = new Progress("progress") if not progress_page?
         pc.switch_page(progress_page)
 
-install_by_anyway = (disk) ->
-    echo "rebuild at #{disk}"
+        callback = ->
+            if __selected_mode == "simple"
+                undo_part_table_info()
+                auto_simple_partition(__selected_item.id, "part")
+            do_partition()
+            console.log("[conf.coffee] try_removed_start_install() end of do_partition()")
+
+            sync_installer_conf()
+            DCore.Installer.start_install()
+
+        setTimeout callback, 1000

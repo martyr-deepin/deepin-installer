@@ -175,8 +175,8 @@ class Menu
         try
             @dbus?.connect("ItemInvoked", @callback)
             @
-        catch e
-            echo "listenItemSelected: #{e}"
+        catch error
+            console.error("[menu.coffee] Menu.addListener() error: ", error)
 
     unregisterHook: (fn)->
         @dbus?.connect("MenuUnregistered", fn)
@@ -193,7 +193,6 @@ class Menu
         return if not manager
 
         menu_dbus_path = manager.RegisterMenu_sync()
-        # echo "menu path is: #{menu_dbus_path}"
         @dbus = get_dbus(
             "session",
             name:DEEPIN_MENU_NAME,
@@ -203,16 +202,14 @@ class Menu
         )
 
         if not @dbus?
-            echo "get deepin dbus menu failed"
+            console.warn("[menu.coffee] Menu._init_dbus() failed to get deepin dbus menu")
 
     showMenu: (x, y, ori=null)->
         @menu.x = x
         @menu.y = y
         if ori != null
-            # console.log("#{ori}")
             @menu.isDockMenu = true
             @menu.cornerDirection = ori
-        # echo @menu
         @dbus?.ShowMenu("#{@menu}")
 
     toString: ->

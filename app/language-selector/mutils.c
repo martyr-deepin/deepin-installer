@@ -36,7 +36,7 @@ app_is_running(const char* path)
 
     server_sockfd = socket (AF_UNIX, SOCK_STREAM, 0);
 
-    if (0 == bind (server_sockfd, (struct sockaddr *)&server_addr, server_len)) {
+    if (0 == bind(server_sockfd, (struct sockaddr *)&server_addr, server_len)) {
         return FALSE;
     } else {
         return TRUE;
@@ -78,11 +78,11 @@ get_date_string ()
     tmp = localtime (&t);
 
     if (tmp == NULL) {
-        g_warning ("get date string:localtime\n");
+        g_warning("[%S] call localtime() failed\n", __func__);
     }
 
     if (strftime (outstr, sizeof(outstr), _("%a, %b %d, %Y"), tmp) == 0) {
-        fprintf (stderr, "strftime returned 0");
+        g_error("[%s] strftime returns 0\n", __func__);
     }
 
     ret = g_strdup (outstr);

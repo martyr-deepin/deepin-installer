@@ -30,32 +30,33 @@ GDBusProxy *get_user_proxy (const gchar *username)
     GDBusProxy *account_proxy = NULL;
     GError *error = NULL;
 
-    account_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                                   G_DBUS_PROXY_FLAGS_NONE,
-                                                   NULL,
-                                                   "org.freedesktop.Accounts",
-                                                   "/org/freedesktop/Accounts",
-                                                   "org.freedesktop.Accounts",
-                                                   NULL,
-                                                   &error);
+    account_proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
+                                                  G_DBUS_PROXY_FLAGS_NONE,
+                                                  NULL,
+                                                  "org.freedesktop.Accounts",
+                                                  "/org/freedesktop/Accounts",
+                                                  "org.freedesktop.Accounts",
+                                                  NULL,
+                                                  &error);
 
     if (error != NULL) {
-        g_warning ("get user proxy:account proxy %s\n", error->message);
+        g_warning("[%s]: account proxy %s\n", __func__, error->message);
         g_error_free (error);
         return user_proxy;
     }
     error = NULL;
 
-    GVariant* user_path_var = g_dbus_proxy_call_sync (account_proxy,
-                                                      "FindUserByName",
-                                                      g_variant_new ("(s)", username),
-                                                      G_DBUS_CALL_FLAGS_NONE,
-                                                      -1,
-                                                      NULL,
-                                                      &error);
+    GVariant* user_path_var = g_dbus_proxy_call_sync(account_proxy,
+                                                     "FindUserByName",
+                                                     g_variant_new("(s)",
+                                                                   username),
+                                                     G_DBUS_CALL_FLAGS_NONE,
+                                                     -1,
+                                                     NULL,
+                                                     &error);
 
     if (error != NULL) {
-        g_warning ("get user proxy:FindUserByName %s\n", error->message);
+        g_warning("[%s]: FindUserByName %s\n", __func__, error->message);
         g_error_free (error);
         g_object_unref (account_proxy);
         return user_proxy;
@@ -66,21 +67,21 @@ GDBusProxy *get_user_proxy (const gchar *username)
     gchar * user_path = NULL;
     g_variant_get (user_path_var, "(o)", &user_path);
     if (user_path == NULL) {
-        g_warning ("get user proxy:user path is NULL\n");
+        g_warning("[%s]: user path is NULL\n", __func__);
         g_variant_unref (user_path_var);
         return user_proxy;
     }
 
-    user_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                                G_DBUS_PROXY_FLAGS_NONE,
-                                                NULL,
-                                                "org.freedesktop.Accounts",
-                                                user_path,
-                                                "org.freedesktop.Accounts.User",
-                                                NULL,
-                                                &error);
+    user_proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
+                                               G_DBUS_PROXY_FLAGS_NONE,
+                                               NULL,
+                                               "org.freedesktop.Accounts",
+                                               user_path,
+                                               "org.freedesktop.Accounts.User",
+                                               NULL,
+                                               &error);
     if (error != NULL) {
-        g_warning ("get use proxy:user proxy %s\n", error->message);
+        g_warning("[%s]: user proxy %s\n", __func__, error->message);
         g_error_free (error);
     }
     error = NULL;
@@ -101,21 +102,21 @@ get_user_icon (const gchar *username)
 
     user_proxy = get_user_proxy (username);
     if (user_proxy == NULL) {
-        g_warning ("get user icon:get user proxy failed\n");
+        g_warning("[%s]: get user proxy failed\n", __func__);
         return icon;
     }
 
     user_icon_var = g_dbus_proxy_get_cached_property (user_proxy, "IconFile");
     if (user_icon_var == NULL) {
-        g_warning ("get user icon:user icon var is NULL\n");
+        g_warning("[%s]: user icon var is NULL\n", __func__);
         g_object_unref (user_proxy);
         return icon;
     }
 
     icon = g_variant_dup_string (user_icon_var, NULL);
 
-    if (!g_file_test (icon, G_FILE_TEST_EXISTS) || g_access (icon, R_OK) != 0) {
-        g_warning ("get user icon:%s not exists or not readable\n", icon);
+    if (!g_file_test(icon, G_FILE_TEST_EXISTS) || g_access(icon, R_OK) != 0) {
+        g_warning("[%s]: %s not exists or not readable\n", __func__, icon);
         icon = NULL;
     }
 
@@ -136,22 +137,24 @@ get_user_background (const gchar *username)
     user_proxy = get_user_proxy (username);
     if (user_proxy == NULL) {
         g_warning ("get user background:get user proxy failed\n");
-        background = g_strdup ("/usr/share/backgrounds/default_background.jpg");
+        background = g_strdup("/usr/share/backgrounds/default_background.jpg");
         return background;
     }
 
-    background_var = g_dbus_proxy_get_cached_property (user_proxy, "BackgroundFile");
+    background_var = g_dbus_proxy_get_cached_property(user_proxy,
+                                                      "BackgroundFile");
     if (background_var == NULL) {
-        g_warning ("get user background:background var is NULL\n");
+        g_warning("[%s]: background var is NULL\n", __func__);
         g_object_unref (user_proxy);
         return background;
     }
 
     background = g_variant_dup_string (background_var, NULL);
 
-    if (!g_file_test (background, G_FILE_TEST_EXISTS) || g_access (background, R_OK) != 0) {
-        g_debug ("get user background:%s not exists or not readable\n", background);
-        background = g_strdup ("/usr/share/backgrounds/default_background.jpg");
+    if (!g_file_test(background, G_FILE_TEST_EXISTS) ||
+        g_access(background, R_OK) != 0) {
+        g_debug("[%s]: %s not exists or not readable\n", __func__, background);
+        background = g_strdup("/usr/share/backgrounds/default_background.jpg");
     }
 
     g_variant_unref (background_var);
@@ -170,13 +173,13 @@ get_user_realname (const gchar *username)
 
     user_proxy = get_user_proxy (username);
     if (user_proxy == NULL) {
-        g_warning ("get user realname:get user proxy failed\n");
+        g_warning("[%s]: get user proxy failed\n", __func__);
         return realname;
     }
 
     realname_var = g_dbus_proxy_get_cached_property (user_proxy, "RealName");
     if (realname_var == NULL) {
-        g_warning ("get user realname:realname var is NULL\n");
+        g_warning("[%s]: realname var is NULL\n", __func__);
         g_object_unref (user_proxy);
         return realname;
     }
@@ -197,40 +200,40 @@ is_need_pwd (const gchar *username)
     GDBusProxy *lock_proxy = NULL;
     GVariant *lock_need_pwd = NULL;
     GError *error = NULL;
-    g_message("is_need_pwd : %s",username);
+    g_message("[%s] username: %s", __func__, username);
     if (g_ascii_strncasecmp ("Guest", username, 5) == 0) {
-        g_warning ("is need pwd:guest user don't need password\n");
+        g_warning("[%s] guest user don't need password\n", __func__);
         needed = FALSE;
 
         return needed;
     }
 
-    lock_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                                G_DBUS_PROXY_FLAGS_NONE,
-                                                NULL,
-                                                "com.deepin.dde.lock",
-                                                "/com/deepin/dde/lock",
-                                                "com.deepin.dde.lock",
-                                                NULL,
-                                                &error);
+    lock_proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
+                                               G_DBUS_PROXY_FLAGS_NONE,
+                                               NULL,
+                                               "com.deepin.dde.lock",
+                                               "/com/deepin/dde/lock",
+                                               "com.deepin.dde.lock",
+                                               NULL,
+                                               &error);
 
     if (error != NULL) {
-        g_warning ("is need pwd:lock proxy %s\n", error->message);
+        g_warning("[%s] lock proxy error: %s\n", __func__, error->message);
         g_error_free (error);
         return needed;
     }
     error = NULL;
 
-    lock_need_pwd  = g_dbus_proxy_call_sync (lock_proxy,
-                                             "NeedPwd",
-                                             g_variant_new ("(s)", username),
-                                             G_DBUS_CALL_FLAGS_NONE,
-                                             -1,
-                                             NULL,
-                                             &error);
+    lock_need_pwd  = g_dbus_proxy_call_sync(lock_proxy,
+                                            "NeedPwd",
+                                            g_variant_new ("(s)", username),
+                                            G_DBUS_CALL_FLAGS_NONE,
+                                            -1,
+                                            NULL,
+                                            &error);
 
     if (error != NULL) {
-        g_warning ("is need pwd:need pwd var %s\n", error->message);
+        g_warning("[%s] need pwd var %s\n", __func__, error->message);
         g_error_free (error);
         g_object_unref (lock_proxy);
         return needed;
@@ -251,19 +254,20 @@ draw_user_background (JSValueRef canvas, const gchar *username)
 
     gchar* image_path = get_user_background (username);
     if (image_path == NULL) {
-        g_warning ("draw user bakcground: image path is NULL\n");
+        g_warning("[%s] image path is NULL\n", __func__);
         return ;
     }
 
     gint height = gdk_screen_get_height (gdk_screen_get_default ());
     gint width = gdk_screen_get_width (gdk_screen_get_default ());
 
-    cairo_t* cr =  fetch_cairo_from_html_canvas (get_global_context(), canvas);
+    cairo_t* cr =  fetch_cairo_from_html_canvas(get_global_context(), canvas);
 
-    GdkPixbuf *image_pixbuf = gdk_pixbuf_new_from_file_at_scale (image_path, width, height, FALSE, &error);
+    GdkPixbuf *image_pixbuf = gdk_pixbuf_new_from_file_at_scale(image_path,
+        width, height, FALSE, &error);
 
     if (error != NULL) {
-        g_warning ("get lockfile pixbuf failed");
+        g_warning("[%s] get lockfile pixbuf failed\n", __func__);
         g_error_free (error);
 
         cairo_set_source_rgba (cr, 0.3, 0.3, 0.3, 0.5);
@@ -294,26 +298,27 @@ create_root_surface (GdkScreen *screen)
     /* Open a new connection so with Retain Permanent so the pixmap remains when the greeter quits */
     gdk_flush ();
 
-    display = XOpenDisplay (gdk_display_get_name (gdk_screen_get_display (screen)));
+    display = XOpenDisplay(gdk_display_get_name(
+          gdk_screen_get_display(screen)));
     if (!display) {
-        g_warning("Failed to create root pixmap\n");
+        g_warning("[%s] failed to create root pixmap\n", __func__);
         return NULL;
     }
 
     XSetCloseDownMode (display, RetainPermanent);
-    pixmap = XCreatePixmap (display, RootWindow (display, number), width, height, DefaultDepth (display, number));
+    pixmap = XCreatePixmap(display, RootWindow(display, number), width,
+                           height, DefaultDepth(display, number));
     XCloseDisplay (display);
 
     /* Convert into a Cairo surface */
-    surface = cairo_xlib_surface_create (GDK_SCREEN_XDISPLAY (screen),
-                                         pixmap,
-                                         GDK_VISUAL_XVISUAL (gdk_screen_get_system_visual (screen)),
-                                         width, height);
+    surface = cairo_xlib_surface_create(GDK_SCREEN_XDISPLAY (screen),
+        pixmap, GDK_VISUAL_XVISUAL(gdk_screen_get_system_visual(screen)),
+        width, height);
 
     /* Use this pixmap for the background */
-    XSetWindowBackgroundPixmap (GDK_SCREEN_XDISPLAY (screen),
-                                RootWindow (GDK_SCREEN_XDISPLAY (screen), number),
-                                cairo_xlib_surface_get_drawable (surface));
+    XSetWindowBackgroundPixmap(GDK_SCREEN_XDISPLAY (screen),
+        RootWindow(GDK_SCREEN_XDISPLAY(screen), number),
+        cairo_xlib_surface_get_drawable(surface));
 
 
     return surface;
@@ -330,8 +335,10 @@ keep_user_background (const gchar *username)
 
     if (!gdk_rgba_parse (&background_color, bg_path)) {
         background_pixbuf = gdk_pixbuf_new_from_file (bg_path, NULL);
-        if (!background_pixbuf)
-           g_warning ("Failed to load background: %s\n", bg_path);
+        if (!background_pixbuf) {
+           g_warning("[%s] failed to load background: %s\n", __func__,
+                     bg_path);
+        }
     }
     g_free (bg_path);
 
@@ -345,18 +352,17 @@ keep_user_background (const gchar *username)
     surface = create_root_surface (screen);
     c = cairo_create (surface);
 
-    for (monitor = 0; monitor < gdk_screen_get_n_monitors (screen); monitor++) {
+    for (monitor = 0; monitor < gdk_screen_get_n_monitors(screen); monitor++) {
         gdk_screen_get_monitor_geometry (screen, monitor, &monitor_geometry);
 
         if (background_pixbuf) {
-            GdkPixbuf *pixbuf = gdk_pixbuf_scale_simple (background_pixbuf,
-                                                         monitor_geometry.width,
-                                                         monitor_geometry.height,
-                                                         GDK_INTERP_BILINEAR);
+            GdkPixbuf *pixbuf = gdk_pixbuf_scale_simple(background_pixbuf,
+                monitor_geometry.width, monitor_geometry.height,
+                GDK_INTERP_BILINEAR);
 
-            gdk_cairo_set_source_pixbuf (c, pixbuf, monitor_geometry.x, monitor_geometry.y);
+            gdk_cairo_set_source_pixbuf(c, pixbuf, monitor_geometry.x,
+                                        monitor_geometry.y);
             g_object_unref (pixbuf);
-
         } else {
             gdk_cairo_set_source_rgba (c, &background_color);
         }
@@ -383,33 +389,33 @@ kill_user_lock (const gchar *username, const gchar *password)
     user_lock_path = g_strdup_printf("%s%s", username, ".dlock.app.deepin");
 
     if (app_is_running (user_lock_path)) {
-        g_warning ("kill user lock:found user had locked\n");
+        g_warning("[%s]: found user had locked\n", __func__);
 
-        lock_proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-                                                    G_DBUS_PROXY_FLAGS_NONE,
-                                                    NULL,
-                                                    "com.deepin.dde.lock",
-                                                    "/com/deepin/dde/lock",
-                                                    "com.deepin.dde.lock",
-                                                    NULL,
-                                                    &error);
+        lock_proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SYSTEM,
+                                                   G_DBUS_PROXY_FLAGS_NONE,
+                                                   NULL,
+                                                   "com.deepin.dde.lock",
+                                                   "/com/deepin/dde/lock",
+                                                   "com.deepin.dde.lock",
+                                                   NULL,
+                                                   &error);
 
         if (error != NULL) {
-            g_warning ("kill user lock:connect com.deepin.dde.lock failed\n");
+            g_warning("[%s]: connect com.deepin.dde.lock failed\n", __func__);
             g_error_free (error);
         }
         error = NULL;
 
-        g_dbus_proxy_call_sync (lock_proxy,
-                                "ExitLock",
-                                g_variant_new ("(ss)", username, password),
-                                G_DBUS_CALL_FLAGS_NONE,
-                                -1,
-                                NULL,
-                                &error);
+        g_dbus_proxy_call_sync(lock_proxy,
+                               "ExitLock",
+                               g_variant_new("(ss)", username, password),
+                               G_DBUS_CALL_FLAGS_NONE,
+                               -1,
+                               NULL,
+                               &error);
 
         if (error != NULL) {
-            g_warning ("kill user lock:unlock failed\n");
+            g_warning("[%s]: unlock failed\n", __func__);
             g_error_free (error);
         }
         error = NULL;

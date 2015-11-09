@@ -1,0 +1,24 @@
+#!/bin/sh
+# Also create a policy-rc.d script if it doesn't already exist.
+# Chroot invoke some postinstall script will failed.
+set -x
+
+RC="/target/usr/sbin/policy-rc.d"
+
+if [ -f "$RC" ]; then
+    echo "[INFO] policy-rc.d already exists"
+else
+    echo "[INFO] installing dummy policy-rc.d"
+    echo "\
+#!/bin/sh
+while true; do
+case "\$1" in
+    -*) shift ;;
+    makedev) exit 0;;
+    x11-common) exit 0;;
+    *)  exit 101;;
+esac
+done" >  "$RC"
+chmod a+x "$RC"
+fi
+

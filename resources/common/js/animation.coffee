@@ -43,7 +43,7 @@ apply_refuse_rotate = (el, time)->
     , time * 1000)
 
 apply_linear_hide_show = (el, time,timefunc)->
-    echo "apply_linear_hide_show"
+    console.log("[animation.coffee] apply_linear_hide_show():", el, time, timefunc)
     el.style.opacity = "1"
     apply_animation(el, "linear-hide-show", "#{time}s", timefunc)
     id = setTimeout(->

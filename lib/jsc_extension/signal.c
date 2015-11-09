@@ -34,7 +34,6 @@ gboolean _interal_call(Call* call)
     JSValueRef js_args[1];
     js_args[0] = call->arg;
 
-
     JSContextRef ctx = get_global_context();
     JSObjectCallAsFunction(ctx, call->cb, NULL, 1, js_args, NULL);
     JSValueUnprotect(ctx, call->arg);
@@ -45,7 +44,7 @@ gboolean _interal_call(Call* call)
 void js_post_message(const char* name, JSValueRef json)
 {
     if (signals == NULL) {
-        g_warning("signals %s has not init!\n", name);
+        g_warning("[%s] signals %s has not been inited!\n", __func__, name);
         return;
     }
 
@@ -57,10 +56,10 @@ void js_post_message(const char* name, JSValueRef json)
         Call* call = g_new0(Call, 1);
         call->cb = cb;
         call->arg = json;
-	JSValueProtect(ctx, json);
+        JSValueProtect(ctx, json);
         g_main_context_invoke(NULL, (GSourceFunc)_interal_call, call);
     } else {
-        g_warning("signal %s has not connected!\n", name);
+        g_warning("[%s] signal %s has not been connected!\n", __func__,  name);
     }
 }
 
@@ -69,7 +68,9 @@ void js_post_message_simply(const char* name, const char* format, ...)
 {
     JSContextRef ctx = get_global_context();
     if (ctx == NULL) {
-        g_warning("send js message [%s] failed beacause js runtime hasn't be prepared.", name);
+        g_warning(
+            "[%s] send js message [%s] failed, js runtime hasn't be prepared.",
+            __func__, name);
         return;
     }
     if (format == NULL) {
@@ -103,7 +104,8 @@ JS_EXPORT_API
 void dcore_signal_connect(const char* type, JSValueRef value, JSData* js)
 {
     if (signals == NULL) {
-        signals = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, unprotect);
+        signals = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
+                                        unprotect);
     }
     JSContextRef ctx = get_global_context();
     JSObjectRef cb = JSValueToObject(ctx, value, js->exception);
@@ -112,7 +114,6 @@ void dcore_signal_connect(const char* type, JSValueRef value, JSData* js)
         g_hash_table_insert(signals, g_strdup(type), (gpointer)value);
         /*g_message("signal connect %s \n", type);*/
     } else {
-        g_warning("signal_connect's second parameter must be an function object");
+        g_warning("[%s] a function object is required in arg2\n", __func__);
     }
 }
-

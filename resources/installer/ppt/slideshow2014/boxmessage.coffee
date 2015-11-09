@@ -1,5 +1,3 @@
-echo = (log) ->
-    console.log log
 
 _ = (s, d)->
     try
@@ -40,7 +38,7 @@ lang = getQueryParams(document.location.search).lang
 if not lang?
     lang = "en"
 document.body.lang = lang
-echo "slideshow2014 lang:#{document.body.lang}"
+console.log("[boxmessage.coffee] slideshow2014 lang:#{document.body.lang}")
 
 class BoxMessage
     constructor:(@id,@class,@parent) ->

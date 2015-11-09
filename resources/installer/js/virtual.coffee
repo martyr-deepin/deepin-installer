@@ -32,7 +32,7 @@ class VirtualMachine extends Page
         @element.style.display = "block"
 
     ok_cb: =>
-        console.debug "ok_cb and #{pc.auto_mode}"
+        console.debug("[virtual.coffee] VirtualMachine.ok_cb() auto_mode: #{pc.auto_mode}")
         if pc.auto_mode
             progress_page = new Progress("progress") if not progress_page?
             pc.switch_page(progress_page)

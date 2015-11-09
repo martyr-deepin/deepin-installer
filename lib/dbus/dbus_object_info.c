@@ -4,12 +4,10 @@
 #include "utils.h"
 #include "dbus_object_info.h"
 
-
 static struct DBusObjectInfo *c_obj_info;
 static struct Method *c_method;
 static struct Signal *c_signal;
 static struct Property *c_property;
-
 
 enum State {
     S_NONE,
@@ -18,8 +16,6 @@ enum State {
     S_SIGNAL,
     S_PROPERTY
 } state = S_NONE;
-
-
 
 static
 void method_free(gpointer data)
@@ -40,7 +36,6 @@ void signal_free(gpointer data)
     g_free(data);
 }
 
-
 static
 void property_free(gpointer data)
 {
@@ -50,7 +45,6 @@ void property_free(gpointer data)
     g_free(data);
 }
 
-
 static
 void parse_property(const gchar **names, const gchar **values)
 {
@@ -59,19 +53,21 @@ void parse_property(const gchar **names, const gchar **values)
 
     while (*n_c) {
         if (g_strcmp0(*n_c, "type") == 0) {
-            c_property->signature = g_slist_append(c_property->signature, g_strdup(*v_c));
+            c_property->signature = g_slist_append(c_property->signature,
+                                                   g_strdup(*v_c));
         }
         if (g_strcmp0(*n_c, "name") == 0) {
             c_property->name = g_strdup(*v_c);
         }
 
         if (g_strcmp0(*n_c, "access") == 0) {
-            if (g_strcmp0(*v_c, "read") == 0)
+            if (g_strcmp0(*v_c, "read") == 0) {
                 c_property->access = kJSPropertyAttributeReadOnly;
-            else if (g_strcmp0(*v_c, "readwrite") == 0)
+            } else if (g_strcmp0(*v_c, "readwrite") == 0) {
                 c_property->access = kJSPropertyAttributeNone;
-            else
+            } else {
                 g_assert_not_reached();
+            }
         }
         n_c++;
         v_c++;
@@ -108,14 +104,16 @@ void parse_parms(const gchar **names, const gchar **values)
             type = *v_c;
         }
         if (g_strcmp0(*n_c, "direction") == 0) {
-            if (g_strcmp0(*v_c, "in") == 0)
+            if (g_strcmp0(*v_c, "in") == 0) {
                 in = TRUE;
-            else
+            } else {
                 in = FALSE;
+            }
         }
         n_c++;
         v_c++;
     }
+
     if (type) {
         if (in)  {
             c_method->signature_in =
@@ -129,11 +127,11 @@ void parse_parms(const gchar **names, const gchar **values)
 
 static
 void parse_start(GMarkupParseContext* context G_GNUC_UNUSED,
-        const gchar *element_name,
-        const gchar **attribute_names,
-        const gchar **attribute_values,
-        gpointer user_data G_GNUC_UNUSED,
-        GError **error G_GNUC_UNUSED)
+                const gchar *element_name,
+                const gchar **attribute_names,
+                const gchar **attribute_values,
+                gpointer user_data G_GNUC_UNUSED,
+                GError **error G_GNUC_UNUSED)
 {
     const gchar **name_cursor = attribute_names;
     const gchar **value_cursor = attribute_values;
@@ -183,9 +181,11 @@ void parse_start(GMarkupParseContext* context G_GNUC_UNUSED,
         case S_METHOD:
             parse_parms(attribute_names, attribute_values);
             break;
+
         case S_SIGNAL:
             parse_signal(attribute_names, attribute_values);
             break;
+
         // fall through, avoid warning
         case S_NONE:
         case S_PENDING:
@@ -194,12 +194,11 @@ void parse_start(GMarkupParseContext* context G_GNUC_UNUSED,
     }
 }
 
-
 static
 void parse_end(GMarkupParseContext *context G_GNUC_UNUSED,
-        const gchar* element_name,
-        gpointer user_data G_GNUC_UNUSED,
-        GError **error G_GNUC_UNUSED)
+               const gchar* element_name,
+               gpointer user_data G_GNUC_UNUSED,
+               GError **error G_GNUC_UNUSED)
 {
     if (g_strcmp0(element_name, "interface") == 0) {
         state = S_NONE;
@@ -220,7 +219,8 @@ void parse_end(GMarkupParseContext *context G_GNUC_UNUSED,
 }
 
 static
-void build_current_object_info(const char* xml, const char* interface G_GNUC_UNUSED)
+void build_current_object_info(const char* xml,
+                               const char* interface G_GNUC_UNUSED)
 {
     g_assert(xml != NULL);
     static GMarkupParser parser = {
@@ -231,49 +231,67 @@ void build_current_object_info(const char* xml, const char* interface G_GNUC_UNU
         .error = NULL
     };
 
-
-    GMarkupParseContext *context = g_markup_parse_context_new(&parser, 0, NULL, NULL);
+    GMarkupParseContext *context = g_markup_parse_context_new(&parser, 0,
+                                                              NULL, NULL);
     GError* error = NULL;
     if (g_markup_parse_context_parse(context, xml, strlen(xml), &error)
             == FALSE) {
-        g_warning("introspect's xml content error!\n");
-        g_debug("%s\n\n%s", error->message, xml);
+        g_warning("[%s] introspect's xml content error, %s, xml: %s!\n",
+                  __func__, error->message, xml);
         g_clear_error(&error);
     }
     g_markup_parse_context_free(context);
 }
 
-
-struct DBusObjectInfo* build_object_info( GDBusConnection* con, const char *name, const char* path, const char *interface)
+struct DBusObjectInfo* build_object_info(GDBusConnection* con,
+                                         const char *name,
+                                         const char* path,
+                                         const char *interface)
 {
     struct DBusObjectInfo *obj_info = g_new(struct DBusObjectInfo, 1);
 
     c_obj_info = obj_info;
     obj_info->connection = con;
-    obj_info->methods = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, method_free);
-    obj_info->properties = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, property_free);
-    obj_info->signals = g_hash_table_new_full(g_str_hash, g_str_equal, NULL, signal_free);
+    obj_info->methods = g_hash_table_new_full(g_str_hash, g_str_equal,
+                                              NULL, method_free);
+    obj_info->properties = g_hash_table_new_full(g_str_hash, g_str_equal,
+                                                 NULL, property_free);
+    obj_info->signals = g_hash_table_new_full(g_str_hash, g_str_equal,
+                                              NULL, signal_free);
     obj_info->name = g_strdup(name);
     obj_info->path = g_strdup(path);
     obj_info->iface = g_strdup(interface);
 
-
     GError* error = NULL;
-    GDBusProxy* proxy = g_dbus_proxy_new_sync(con, G_DBUS_PROXY_FLAGS_NONE, NULL, name, path, "org.freedesktop.DBus.Introspectable", NULL, &error);
+    GDBusProxy* proxy = g_dbus_proxy_new_sync(con,
+                                      G_DBUS_PROXY_FLAGS_NONE,
+                                      NULL,
+                                      name,
+                                      path,
+                                      "org.freedesktop.DBus.Introspectable",
+                                      NULL,
+                                      &error);
     if (error != NULL) {
-	g_warning("build_object_info create proxy:%s\n", error->message);
-	g_error_free(error);
-	return NULL;
+        g_warning("[%s] create proxy error: %s\n", __func__, error->message);
+        g_error_free(error);
+        return NULL;
     }
     g_assert(G_IS_DBUS_PROXY(proxy));
 
-    GVariant* args = g_dbus_proxy_call_sync(proxy, "Introspect", NULL, G_DBUS_PROXY_FLAGS_NONE, -1, NULL, &error);
+    GVariant* args = g_dbus_proxy_call_sync(proxy,
+                                            "Introspect",
+                                            NULL,
+                                            G_DBUS_PROXY_FLAGS_NONE,
+                                            -1,
+                                            NULL,
+                                            &error);
     g_assert(G_IS_DBUS_PROXY(proxy));
 
     if (error != NULL) {
-	g_warning("build_object_info: call Introspect: %s\n", error->message);
-	g_error_free(error);
-	return NULL;
+        g_warning("[%s] call Introspect error: %s\n", __func__,
+                  error->message);
+        g_error_free(error);
+        return NULL;
     }
 
     GVariant* r = g_variant_get_child_value(args, 0);
@@ -282,7 +300,6 @@ struct DBusObjectInfo* build_object_info( GDBusConnection* con, const char *name
     c_obj_info = NULL;
     g_variant_unref(r);
     g_variant_unref(args);
-
 
     g_object_unref(proxy);
 
@@ -301,4 +318,3 @@ void dbus_object_info_free(struct DBusObjectInfo* info)
     g_hash_table_unref(info->signals);
     g_free(info);
 }
-

@@ -1,0 +1,63 @@
+#!/bin/sh
+generate_livecd_installer()
+{
+(
+cat <<EOF
+[Desktop Entry]
+Name=DeepinLiveCDInstaller
+Comment=Deepin LiveCD Installer
+Exec=$2
+TryExec=gksudo
+EOF
+) > $1
+}
+
+generate_lightdm_conf()
+{
+(
+cat <<EOF
+[SeatDefaults]
+greeter-session=deepin-lightdm-language-selector
+user-session=deepin-livecd-installer
+EOF
+) > $1
+}
+
+generate_install_helper()
+{
+(
+cat <<EOF
+#!/bin/sh
+
+gksudo -- /usr/bin/deepin-installer --without-wm
+EOF
+) > $1
+}
+
+Cmdline ()
+{
+    # Reading kernel command line
+    for _PARAMETER in ${LIVE_CONFIG_CMDLINE}
+    do
+        case "${_PARAMETER}" in
+            live-config.livecd-installer|livecd-installer)
+            LIVE_MODE=true
+            ;;
+        esac
+    done
+}
+
+
+Config()
+{
+if [ "$LIVE_MODE" = "true" ]; then
+	install_helper=/usr/lib/deepin-install-helper
+    $(generate_install_helper $install_helper)
+	$(generate_livecd_installer /usr/share/xsessions/deepin-livecd-installer.desktop $install_helper)
+	$(generate_lightdm_conf /etc/lightdm/lightdm.conf)
+	chmod +x $install_helper
+fi
+}
+
+Cmdline
+Config

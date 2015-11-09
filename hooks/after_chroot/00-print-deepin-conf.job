@@ -1,2 +1,6 @@
 #!/bin/bash
+
+echo "[$0]"
+set -x
+
 cat /etc/deepin-installer.conf

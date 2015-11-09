@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "[$0]"
+set -x
+
 . /etc/deepin-installer.conf
 
 mkdir -p /target/dev
@@ -15,7 +18,7 @@ mkdir -p /target/sys
 mount -vt sysfs sysfs /target/sys
 
 mkdir -p /target/media/cdrom
-mount --bind /cdrom /target/media/cdrom
+mount --bind ${CDROM} /target/media/cdrom
 
 if [ x${DI_UEFI} == xtrue ];then
     mkdir -p /target/boot/efi
@@ -24,4 +27,3 @@ fi
 
 mkdir -p /target/run
 mount --bind /run /target/run
-

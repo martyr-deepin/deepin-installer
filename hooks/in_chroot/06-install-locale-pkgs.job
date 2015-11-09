@@ -1,0 +1,31 @@
+#!/bin/bash
+
+echo "[$0]"
+set -x
+
+if [ -f /deepinhost/etc/deepin-installer.conf ];then
+    . /deepinhost/etc/deepin-installer.conf
+fi
+
+DI_LOCALE=${DI_LOCALE:-en_US}
+LOCALE=${DI_LOCALE%.*}
+
+case ${LOCALE} in
+    en*)
+	PKGS="dde-meta-en"
+	;;
+    zh_CN|zh_cn)
+	PKGS="dde-meta-zh-hans"
+	;;
+    zh_*)
+	PKGS="dde-meta-zh-hant"
+	;;
+    *)
+	echo "[WARN] ${LOCALE} is not support now."
+	PKGS="dde-meta-en"
+	;;
+esac
+
+echo "[INFO] Installing ${PKGS}..."
+#Always return true
+apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated ${PKGS} || true

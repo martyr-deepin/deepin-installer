@@ -10,12 +10,13 @@ JS_EXPORT_API
 gchar* installer_get_current_locale ()
 {
     gchar *locale = NULL;
-    gchar *cmd = g_strdup ("sh -c \"locale | head -n1 | awk -F= '{print $2}' | tr -d '\n' \"");
+    gchar *cmd = g_strdup(
+        "sh -c \"locale | head -n1 | awk -F= '{print $2}' | tr -d '\n' \"");
     GError* error = NULL;
     g_spawn_command_line_sync (cmd, &locale, NULL, NULL, &error);
     if (error != NULL) {
-	g_warning("get_current_locale:%s", error->message);
-	g_error_free(error);
+        g_warning("[%s] failed: %s", __func__, error->message);
+        g_error_free(error);
     }
     g_free (cmd);
     return locale;
@@ -36,19 +37,19 @@ JSObjectRef installer_get_timezone_list ()
 
     file = g_file_new_for_path ("/usr/share/zoneinfo/zone.tab");
     if (!g_file_query_exists (file, NULL)) {
-        g_warning ("get timezone list:zone.tab not exists\n");
+        g_warning("[%s]: zone.tab not exists\n", __func__);
         goto out;
     }
 
     input = g_file_read (file, NULL, &error);
     if (error != NULL){
-        g_warning ("get timezone list:read zone.tab error->%s", error->message);
+        g_warning("[%s] read zone.tab error->%s", __func__, error->message);
         goto out;
     }
 
     data_input = g_data_input_stream_new ((GInputStream *) input);
     if (data_input == NULL) {
-        g_warning ("get timezone list:get data input stream failed\n");
+        g_warning("[%s] get data input stream failed\n", __func__);
         goto out;
     }
     
@@ -59,20 +60,22 @@ JSObjectRef installer_get_timezone_list ()
             break;
         }
         if (g_str_has_prefix (data, "#")){
-            g_debug ("get timezone list:comment line, just pass");
+            g_debug("[%s] comment line, just pass", __func__);
             continue;
         } else {
             gchar **line = g_strsplit (data, "\t", -1);
             if (line == NULL) {
-                g_warning ("get timezone list:split %s failed\n", data);
+                g_warning("[%s] split %s failed\n", __func__, data);
             } else {
-                json_array_insert (timezones, index, jsvalue_from_cstr (get_global_context (), line[2]));
+                json_array_insert(timezones, index,
+                    jsvalue_from_cstr(get_global_context(), line[2]));
                 index++;
                 g_strfreev (line);
             }
         }
     }
     goto out;
+
 out:
     if (file != NULL) {
         g_object_unref (file);
@@ -92,8 +95,6 @@ out:
     return timezones;
 }
 
-
-
 #define LOG_FILE_PATH           "/tmp/deepin-installer.log"
 
 JS_EXPORT_API 
@@ -103,7 +104,6 @@ void  installer_show_log ()
     g_spawn_command_line_async (cmd, NULL);
     g_free (cmd);
 }
-
 
 JS_EXPORT_API 
 JSObjectRef installer_get_system_users()
@@ -120,7 +120,8 @@ JSObjectRef installer_get_system_users()
             continue;
         }
         username = g_strdup (user->pw_name);
-        json_array_insert (array, i, jsvalue_from_cstr (get_global_context(), username));
+        json_array_insert(array, i, jsvalue_from_cstr (get_global_context(),
+                          username));
         i++;
         g_free (username);
     }

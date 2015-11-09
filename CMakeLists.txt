@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 
 option(DEVELOP "enable develop mode (use src's resource)" false)
 option(TEST "enable test mode (run project's test code)" false)
-
+option(LIVE_BOOT "enable test mode (run project's test code)" true)
+option(USE_GCCGO "use gccgo or cgo" false)
 
 macro(GEN_JSC_SOURCE2 JSC_GEN_SRC CFG_DIR OUTPUT)
     set(OUT ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT})
@@ -21,6 +22,7 @@ macro(GEN_JSC_SOURCE JSC_GEN CFG_DIR)
         )
     AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_BINARY_DIR} ${JSC_GEN})
 endmacro()
+
 macro(GEN_JSC_SOURCE_WITH_NO_INIT JSC_GEN CFG_DIR)
     execute_process(
         COMMAND ${BIN_JSC_GEN} -s "${CMAKE_CURRENT_SOURCE_DIR}/${CFG_DIR}" "-I=True"
@@ -41,10 +43,10 @@ macro(GEN_JS_FILE NAME)
 endmacro()
 
 if (DEVELOP)
-    SET(RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/")
+    SET(RESOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
     add_definitions("-DHOOKS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/hooks\"")
 else()
-    SET(RESOURCE_DIR "${CMAKE_INSTALL_PREFIX}/share/deepin-installer/resources/")
+    SET(RESOURCE_DIR "${CMAKE_INSTALL_PREFIX}/share/deepin-installer/resources")
     add_definitions("-DHOOKS_DIR=\"${CMAKE_INSTALL_PREFIX}/share/deepin-installer/hooks\"")
 endif()
 
@@ -58,7 +60,6 @@ find_package(PkgConfig)
 pkg_check_modules(WEBKIT REQUIRED deepin-webkit-3.0)
 
 set(CMAKE_C_FLAGS "-std=c99")
-
 
 
 set(JSC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/lib/jsc_extension/)
@@ -84,16 +85,38 @@ add_subdirectory(tools)
 #    DIRECTORY ${PROJECT_SOURCE_DIR}/schemas
 #    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/glib-2.0
 #)
+install(DIRECTORY DESTINATION ${CMAKE_INSTALL_PREFIX}/share/deepin-installer)
+
 install(
    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/hooks
    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/deepin-installer
-   USE_SOURCE_PERMISSIONS
+   FILES_MATCHING PATTERN "*"
+   PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
-install(
-   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/casper-bottom
-   DESTINATION ${CMAKE_INSTALL_PREFIX}/share/initramfs-tools/scripts
-   USE_SOURCE_PERMISSIONS
-)
+
+if (LIVE_BOOT)
+    install(
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/live-config/
+        DESTINATION /lib/live/config
+        USE_SOURCE_PERMISSIONS
+    )
+    install(
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/live-boot/
+        DESTINATION /lib/live/boot
+        USE_SOURCE_PERMISSIONS
+    )
+    install (
+        FILES ${CMAKE_CURRENT_SOURCE_DIR}/deepin-installer.conf
+        DESTINATION /etc/live/config.conf.d/
+    )
+else()
+    install(
+       DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/casper-bottom
+       DESTINATION ${CMAKE_INSTALL_PREFIX}/share/initramfs-tools/scripts
+       USE_SOURCE_PERMISSIONS
+    )
+endif()
+
 install(
    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/deepin-installer

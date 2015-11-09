@@ -1,0 +1,85 @@
+#!/bin/bash
+
+echo "[$0]"
+set -x 
+
+. /etc/deepin-installer.conf
+
+target="/target"
+mkdir -p ${target}
+#Try to fix wrong permission (owned by 1001)
+chown root:root ${target}
+
+#mount for lupin
+if [ x${DI_LUPIN} = xtrue ];then
+    hostdev=`df ${DI_LUPIN_ROOT} | tail -1 | awk '{printf $1}'`
+    echo "DI_HOST_DEV=\"${hostdev}\"" >> /etc/deepin-installer.conf
+    mkdir -v /host
+    mount --bind ${DI_LUPIN_ROOT} /host
+    losetup ${DI_ROOT_PARTITION} /host/${DI_LOOP_ROOT_FILE}
+    mkfs.ext4 -L "Computer" -F -F ${DI_ROOT_PARTITION}
+fi
+
+get_fstype()
+{
+    local FS FSTYPE FSSIZE RET
+    FS="${1}"
+    eval $(fstype "${FS}" 2>/dev/null)
+    FSTYPE=$(blkid -o value -s TYPE "${FS}")
+    RET=$?
+    echo "${FSTYPE:-unknown}"
+    return ${RET}
+}
+
+find_target(){
+    local target
+    target="${1}"
+    for p in $(cat /proc/mounts | awk '{print $2}');do
+        if [ ${p} = "${target}" ];then
+            echo "${target}"
+            return 0
+        fi
+    done
+    return 1
+}
+
+# mount rootfs first
+echo "mount rootfs(${DI_ROOT_PARTITION}) to ${target}"
+n=0
+DI_ROOT_FSTYPE=$(get_fstype ${DI_ROOT_PARTITION})
+while [ "$n" -lt 30 ];do
+    if [ ${DI_ROOT_FSTYPE} != "unknown" ];then
+        mount -t ${DI_ROOT_FSTYPE} ${DI_ROOT_PARTITION} ${target}
+    else
+        mount ${DI_ROOT_PARTITION} ${target}
+    fi
+    result=$(find_target $target)
+    if [ "${result}" ];then
+        break
+    fi
+    sleep 1
+    n="$(($n + 1))"
+done
+
+if [ -z ${result} ];then
+    echo "[Error] ${target} can not mount!"
+    exit 101
+fi
+
+[ ! -d ${target}/deepinhost ] && mkdir -p ${target}/deepinhost
+mount --bind / ${target}/deepinhost
+
+# Mount other mountpoints
+array=`echo ${DI_MOUNTPOINTS//;/ }`
+for i in $array;do
+	mountpoint=$(echo $i | cut -d'=' -f1)
+	mountpath=$(echo $i | cut -d'=' -f2)
+	if [ $mountpath !=  '/' ] && [ $mountpath != 'swap' ];then
+        echo "mount ${mountpoint} -> ${mountpath}"
+		mkdir -p ${target}${mountpath}
+		mount $mountpoint ${target}${mountpath}
+    elif [ $mountpath == 'swap' ];then
+        echo "Detect swap partition, try swapon it first"
+        swapon $mountpoint || true
+	fi
+done

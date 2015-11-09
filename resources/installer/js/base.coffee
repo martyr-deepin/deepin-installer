@@ -23,7 +23,7 @@ __os_prober_finish = false
 DEBUG = DCore.Installer.is_debug()
 
 DCore.signal_connect("init_parted", (msg) ->
-    echo "signal tell init parted finish"
+    console.log("[base.coffee] connected to `init_parted` dbus signal")
     __init_parted_finish = true
     if not is_match_install_require()
         new MessageDialog(
@@ -34,7 +34,7 @@ DCore.signal_connect("init_parted", (msg) ->
 )
 
 DCore.signal_connect("os_prober", (msg) ->
-    echo "signal tell os-prober finish"
+    console.log("[base.coffee] connected to `os_proper` dbus signal")
     __os_prober_finish = true
     if __init_parted_finish
         sync_part_os()
@@ -535,15 +535,14 @@ class PageContainer extends Widget
             code = e.keyCode
             el = document.activeElement
             if code == KEYCODE.TAB
-                console.debug "=========Tab:#{el?.className}"
+                console.debug("[base.coffee] PageContainer.constructor() `tab` keyup event:", e, ", element:", el)
                 #if el?.tagName == "DIV"
                     #el?.style.boxShadow = "0 0 1px rgba(0,255,255,0.8)"
                 el?.focus()
                 #tabElementPrev?.style.boxShadow = ""
             else if code == KEYCODE.ENTER
-                console.debug "=========Enter:#{el?.className}"
+                console.debug("[base.coffee] PageContainer.constructor() `enter` keyup event:", e, ", element:", el)
                 if tabElementPrev == null or tabElementPrev == el
-                    console.debug "click by enter"
                     el?.click()
             tabElementPrev = el
         ,true)

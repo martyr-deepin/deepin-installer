@@ -18,19 +18,19 @@ class DDEPluginManager
 
     enable_plugin_front: (id, value) ->
         name = get_name(id)
-        echo "plugin's name: #{name}"
+        console.log("[plugin.coffee] DDEPluginManager.enable_plugin_front(), plugin name: #{name}")
         plugin = DDEPluginManager._plugins[name]
         if plugin
             if value
-                echo "enable #{id}"
+                console.log("[plugin.coffee] DDEPluginManager.enable_plugin_fron(), enable plugin: ", id)
                 plugin.inject_css(name)
             else
-                echo "disable #{id}"
+                console.log("[plugin.coffee] DDEPluginManager.enable_plugin_fron(), disable plugin: ", id)
                 plugin.destroy()
                 delete DDEPluginManager._plugins[name]
                 DDEPluginManager._plugins[name] = null
         else
-            echo "plugin #{id} does not exists"
+            console.warn("[plugin.coffee] DDEPluginManager.enable_plugin_front(), plugin #{id} does not exist!")
 
     get_plugin: (name) ->
         DDEPluginManager._plugins[name]
@@ -51,7 +51,7 @@ class DDEPluginManager
                 if not DDEPluginManager._plugins or not DDEPluginManager._plugins[name]
                     if id_prefix == 'desktop:'
                         new DesktopPlugin(get_path_base(plugin), name)
-                        echo "id: #{id}"
+                        console.log("[plugin.coffee] DDEPluginManager.plugin_changed_handler() plugin id: #{id}")
                         PluginManager.enable_plugin_front(id, true)
                         place_all_widgets()
 

@@ -22,6 +22,7 @@
 
 #include <gtk/gtk.h>
 #include <cairo-xlib.h>
+#include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <lightdm.h>
@@ -30,6 +31,7 @@
 #include <stdlib.h>
 #include <glib/gstdio.h>
 #include <glib/gprintf.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <X11/XKBlib.h>
@@ -45,10 +47,13 @@
 #include "session.h"
 #include "greeter_util.h"
 #include "theme.h"
-#include "mouse.h"
 
 #define GREETER_HTML_PATH "file://"RESOURCE_DIR"/language-selector/index.html"
-#define LANG_PATH "/cdrom/support_language_list.ini"
+#define LANG_PATH RESOURCE_DIR"/language-selector/support_language_list.ini"
+
+// Absolute path to log file.
+// TODO(xushaohua): move log to /var/log/deepin-lightdm-language-selector.log
+const char* kLogPath = "/tmp/deepin-lightdm-language-selector.log";
 
 LightDMGreeter *greeter;
 GKeyFile *greeter_keyfile;
@@ -71,10 +76,11 @@ struct AuthHandler *handler;
 char** get_lang_groups()
 {
     GKeyFile* key = g_key_file_new();
-    gboolean load = g_key_file_load_from_file (key,LANG_PATH , G_KEY_FILE_NONE, NULL);
+    gboolean load = g_key_file_load_from_file(key, LANG_PATH,
+                                              G_KEY_FILE_NONE, NULL);
     gsize len;
     char** list = g_key_file_get_groups(key,&len);
-    g_message("get_lang_groups length:%d,load:%d",(int)len,load);
+    g_message("[%s] length:%d, load: %d\n", __func__, (int)len, load);
     g_key_file_unref(key);
     return list;
 }
@@ -83,17 +89,18 @@ JS_EXPORT_API
 JSObjectRef greeter_get_local_list()
 {
     GKeyFile* key = g_key_file_new();
-    gboolean load = g_key_file_load_from_file (key,LANG_PATH , G_KEY_FILE_NONE, NULL);
+    gboolean load = g_key_file_load_from_file(key, LANG_PATH,
+                                              G_KEY_FILE_NONE, NULL);
     gsize len;
     char** list = g_key_file_get_groups(key,&len);
-    g_message("get_lang_groups length:%d,load:%d",(int)len,load);
+    g_message("[%s] length: %d, load: %d\n", __func__, (int)len, load);
     JSObjectRef array = json_array_create();
     for (guint i = 0;i < len; i++)
     {
-        g_message("list:%d:%s",i,list[i]);
+        g_message("[%s] list: %d: %s\n", __func__, i, list[i]);
         gchar* name = g_key_file_get_string(key,list[i],"name",NULL);
         gchar* local = g_key_file_get_string(key,list[i],"local",NULL);
-        g_message("name:%s,local:%s;======\n",name,local);
+        g_message("[%s] name: %s, local: %s\n", __func__, name, local);
 
         JSObjectRef json = json_create();
         json_append_string(json,"name",name);
@@ -106,24 +113,26 @@ JSObjectRef greeter_get_local_list()
     g_key_file_unref(key);
     return array;
 }
+
 JS_EXPORT_API
 JSObjectRef greeter_get_lang_list()
 {
     GKeyFile* key = g_key_file_new();
-    gboolean load = g_key_file_load_from_file (key,LANG_PATH , G_KEY_FILE_NONE, NULL);
+    gboolean load = g_key_file_load_from_file(key, LANG_PATH,
+                                              G_KEY_FILE_NONE, NULL);
     gsize len;
     char** list = g_key_file_get_groups(key,&len);
-    g_message("get_lang_groups length:%d,load:%d",(int)len,load);
+    g_message("[%s] length: %d, load: %d\n", __func__, (int)len, load);
     JSObjectRef array = json_array_create();
     for (guint i = 0;i < len; i++)
     {
-        g_message("list:%d:%s",i,list[i]);
+        g_message("[%s] list: %d: %s\n", __func__, i, list[i]);
         gchar* name = g_key_file_get_string(key,list[i],"name",NULL);
 
         JSObjectRef json = json_create();
         json_append_string(json,"name",name);
         json_append_string(json,"lang",list[i]);
-        g_message("name:%s,lang:%s;======\n",name,list[i]);
+        g_message("[%s] name: %s, lang: %s\n", __func__, name, list[i]);
         g_free(name);
         json_array_insert(array,i,json);
     }
@@ -136,17 +145,18 @@ JS_EXPORT_API
 char* greeter_get_lang_by_name(gchar* lang_name)
 {
     GKeyFile* key = g_key_file_new();
-    gboolean load = g_key_file_load_from_file (key,LANG_PATH , G_KEY_FILE_NONE, NULL);
+    gboolean load = g_key_file_load_from_file(key, LANG_PATH,
+                                              G_KEY_FILE_NONE, NULL);
     gsize len;
-    char** list = g_key_file_get_groups(key,&len);
-    g_message("get_lang_groups length:%d,load:%d",(int)len,load);
+    char** list = g_key_file_get_groups(key, &len);
+    g_message("[%s] length: %d,load: %d\n", __func__, (int)len, load);
     gchar* local = NULL;
-    for (guint i = 0;i < len; i++)
-    {
-        gchar* name = g_key_file_get_string(key,list[i],"name",NULL);
-        if(g_str_equal(lang_name,name)){
+    for (guint i = 0;i < len; i++) {
+        gchar* name = g_key_file_get_string(key,list[i], "name", NULL);
+        if (g_str_equal(lang_name,name)){
             local = list[i];
-            g_message("list[%d]:=====name:%s,local:%s;======\n",i,name,local);
+            g_message("[%s] list[%d]: name: %s, local: %s\n", __func__, i,
+                      name, local);
         }
         g_free(name);
     } 
@@ -155,19 +165,18 @@ char* greeter_get_lang_by_name(gchar* lang_name)
     return g_strdup(local);
 }
 
-
 JS_EXPORT_API
-void greeter_spawn_command_sync (const char* command,gboolean sync){
+void greeter_spawn_command_sync (const char* command, gboolean sync){
     GError *error = NULL;
-    const gchar *cmd = g_strdup_printf ("%s",command);
-    g_message ("g_spawn_command_line_sync:%s",cmd);
+    const gchar *cmd = g_strdup_printf ("%s", command);
+    g_message("[%s] cmd: %s, sync: %d\n", __func__, cmd, sync);
     if(sync){
         g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &error);
     }else{
         g_spawn_command_line_async (cmd, &error);
     }
     if (error != NULL) {
-        g_warning ("%s failed:%s\n",cmd, error->message);
+        g_warning("[%s] %s failed: %s\n", __func__, cmd, error->message);
         g_error_free (error);
         error = NULL;
     }
@@ -214,12 +223,11 @@ static void
 start_authentication (struct AuthHandler *handler)
 {
     gchar *username = g_strdup (handler->username);
-    g_warning ("start authentication:%s\n", username);
+    g_warning("[%s]: %s\n", __func__, username);
 
     if (g_strcmp0 (username, "guest") == 0) {
         lightdm_greeter_authenticate_as_guest (greeter);
-        g_warning ("start authentication for guest\n");
-
+        g_warning("[%s] for guest\n", __func__);
     } else {
         lightdm_greeter_authenticate (greeter, username);
     }
@@ -228,22 +236,22 @@ start_authentication (struct AuthHandler *handler)
 }
 
 static void
-respond_authentication (LightDMGreeter *greeter, const gchar *text G_GNUC_UNUSED, LightDMPromptType type)
+respond_authentication(LightDMGreeter *greeter,
+                       const gchar *text G_GNUC_UNUSED,
+                       LightDMPromptType type)
 {
-    g_warning("respond_authentication");
+    g_message("[%s]\n", __func__);
     gchar *respond = NULL;
 
     if (type == LIGHTDM_PROMPT_TYPE_QUESTION) {
         respond = g_strdup (handler->username);
-
     }  else if (type == LIGHTDM_PROMPT_TYPE_SECRET) {
         respond = g_strdup (handler->password);
-
     } else {
-        g_warning ("respond authentication failed:invalid prompt type\n");
+        g_warning("[%s] failed: invalid prompt type\n", __func__);
         return ;
     }
-    g_warning ("respond authentication:%s\n", respond);
+    g_warning("[%s] respond: %s\n", __func__, respond);
 
     lightdm_greeter_respond (greeter, respond);
 
@@ -256,19 +264,18 @@ set_last_user (const gchar* username)
     gchar *data;
     gsize length;
 
-    g_key_file_set_value (greeter_keyfile, "deepin-greeter", "last-user", g_strdup (username));
+    g_key_file_set_value(greeter_keyfile, "deepin-greeter", "last-user",
+                         g_strdup(username));
     data = g_key_file_to_data (greeter_keyfile, &length, NULL);
     g_file_set_contents (greeter_file, data, length, NULL);
 
     g_free (data);
 }
 
-
-
 static void
 start_session (LightDMGreeter *greeter)
 {
-    g_warning ("start session\n");
+    g_warning("[%s]\n", __func__);
 
     gchar *session = g_strdup (handler->session);
     set_last_user (handler->username);
@@ -276,14 +283,11 @@ start_session (LightDMGreeter *greeter)
     kill_user_lock (handler->username, handler->password);
 
     if (!lightdm_greeter_start_session_sync (greeter, session, NULL)) {
-        g_warning ("start session %s failed\n", session);
-
+        g_warning("[%s] session %s failed\n", __func__, session);
         g_free (session);
         free_auth_handler (handler);
-
     } else {
-        g_warning ("start session %s succeed\n", session);
-
+        g_warning("[%s] %s succeed\n", __func__, session);
         g_key_file_free (greeter_keyfile);
         g_free (greeter_file);
         g_free (session);
@@ -294,22 +298,22 @@ start_session (LightDMGreeter *greeter)
 static void
 authenticated_complete(LightDMGreeter *greeter)
 {
-    g_warning ("authenticated_complete:%ld\n",g_get_real_time());
+    g_message("[%s] real_time: %ld\n", __func__, g_get_real_time());
     if (!lightdm_greeter_get_is_authenticated (greeter)) {
-        g_warning("authenticated auth-failed\n");
+        g_warning("[%s] auth-failed\n", __func__);
         JSObjectRef error_message = json_create();
         json_append_string(error_message, "error", _("Invalid Password"));
         js_post_message("auth-failed", error_message);
         return;
     }
-    g_warning("authenticated auth-succeed\n");
+    g_message("[%s] auth-succeed\n", __func__);
     js_post_signal("auth-succeed");
     start_session(greeter);
 }
 
-
 JS_EXPORT_API
-gboolean greeter_start_session (const gchar *username, const gchar *password, const gchar *session)
+gboolean greeter_start_session(const gchar *username, const gchar *password,
+                               const gchar *session)
 {
     gboolean ret = FALSE;
 
@@ -323,54 +327,49 @@ gboolean greeter_start_session (const gchar *username, const gchar *password, co
     handler->session = g_strdup (session);
 
     if (lightdm_greeter_get_is_authenticated (greeter)) {
-
-        g_warning ("greeter start session:already authenticated\n");
+        g_warning("[%s] :already authenticated\n", __func__);
         /*start_session (handler);*/
         ret = TRUE;
-
     } else if (lightdm_greeter_get_in_authentication (greeter)) {
-
-        if (g_strcmp0 (username, lightdm_greeter_get_authentication_user (greeter)) == 0) {
-
-            g_warning ("greeter start session:current user in authentication\n");
+        if (g_strcmp0(username,
+              lightdm_greeter_get_authentication_user(greeter)) == 0) {
+            g_message("[%s]: current user in authentication\n", __func__);
          //   respond_authentication (handler);
-
         } else {
-
-            g_warning ("greeter start session:other user in authentication\n");
+            g_message("[%s]: other user in authentication\n", __func__);
           //  lightdm_greeter_cancel_authentication (greeter);
         }
-
     } else {
-
-        g_warning ("greeter start session:start authenticated\n");
+        g_message("[%s]: start authenticated\n", __func__);
         start_authentication (handler);
-
         ret = TRUE;
     }
 
     return ret;
 }
 
-
 static gboolean
 monitors_extend()
 {
-    g_message("====%s====start",__func__);
+    g_message("[%s]\n", __func__);
     GdkScreen* screen = gdk_screen_get_default();
-    if (screen == NULL) return FALSE;
+    if (screen == NULL) {
+        return FALSE;
+    }
     gint len = gdk_screen_get_n_monitors(screen);
-    g_message("[%s]:len:%d",__func__,len);
-    if (len < 2) return TRUE;
+    g_message("[%s] len: %d\n", __func__, len);
+    if (len < 2) {
+        return TRUE;
+    }
 
     gchar* xrandr_primary = NULL;
     gchar* xrandr_extend = "";
     for (int i = 0; i < len; i++){
         gchar* name = gdk_screen_get_monitor_plug_name(screen,i);
-        g_message("[%s]:name[%d]:%s",__func__, i, name);
+        g_message("[%s]: name[%d]: %s", __func__, i, name);
         if (i == 0){
             xrandr_primary = g_strdup_printf(" %s --auto",name);
-        }else{
+        } else {
             gchar* extend = g_strdup_printf(" --right-of %s",name);
             gchar* xrandr_extend_tmp = g_strdup(xrandr_extend);
             xrandr_extend = NULL;
@@ -380,12 +379,13 @@ monitors_extend()
         }
         g_free(name);
     }
-    gchar* cmd = g_strconcat("/usr/bin/xrandr --output", xrandr_primary, xrandr_extend, NULL);
+    gchar* cmd = g_strconcat("/usr/bin/xrandr --output", xrandr_primary,
+                             xrandr_extend, NULL);
     g_free(xrandr_primary);
     g_free(xrandr_extend);
 
     gboolean result = spawn_command_sync(cmd,FALSE);
-    g_message("[%s]:cmd:%s,succeed:%d",__func__,cmd,result);
+    g_message("[%s] cmd: %s, succeed: %d\n", __func__, cmd, result);
     g_free(cmd);
     return result;
 }
@@ -396,14 +396,16 @@ void move_pointer_to_center(struct DisplayInfo info)
     GdkDisplay* display = gdk_window_get_display(window);
     GdkScreen* screen = gdk_display_get_default_screen (display);
     GdkDeviceManager* manager = gdk_display_get_device_manager(display);
-    GList* devices = gdk_device_manager_list_devices(manager, GDK_DEVICE_TYPE_MASTER);
+    GList* devices = gdk_device_manager_list_devices(manager,
+                                                     GDK_DEVICE_TYPE_MASTER);
     GdkDevice* device = NULL;
     for (GList* dev = devices; dev != NULL; dev = dev->next) {
         device = GDK_DEVICE(dev->data);
         if (gdk_device_get_source(device) != GDK_SOURCE_MOUSE) {
             continue;
         }
-        gdk_device_warp (device, screen, info.x + info.width/2, info.y + info.height/2);
+        gdk_device_warp(device, screen, info.x + info.width / 2,
+                        info.y + info.height / 2);
     }
     g_list_free(devices);
 }
@@ -412,7 +414,7 @@ static gboolean
 monitors_set_cb ()
 {
     gint len = update_monitors_num();
-    g_message("====%s====monitors len:%d",__func__,len);
+    g_message("[%s] monitors len: %d\n", __func__, len);
     if (len > 1){
         update_screen_info(&rect_screen);
         bg_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -420,10 +422,7 @@ monitors_set_cb ()
     }
 
     container = create_web_container (FALSE, TRUE);
-    update_workarea_rect_by_mouse(&rect_workarea);
-    widget_move_by_rect(container,rect_workarea);
     gtk_window_set_decorated (GTK_WINDOW (container), FALSE);
-    listen_leave_notify_signal(container, NULL);
 
     GtkWidget* webview = d_webview_new_with_uri (GREETER_HTML_PATH);
     gtk_container_add (GTK_CONTAINER(container), GTK_WIDGET (webview));
@@ -434,7 +433,9 @@ monitors_set_cb ()
     gtk_widget_realize (webview);
     gtk_widget_realize (container);
 
-    if (len > 1) move_pointer_to_center(rect_workarea);
+    if (len > 1) {
+      move_pointer_to_center(rect_workarea);
+    }
 
     GdkWindow* gdkwindow = gtk_widget_get_window (container);
     GdkRGBA rgba = { 0, 0, 0, 0.0 };
@@ -442,7 +443,8 @@ monitors_set_cb ()
     gdk_window_set_skip_taskbar_hint (gdkwindow, TRUE);
     gdk_window_set_keep_above (gdkwindow, TRUE);
     gdk_window_set_accept_focus(gdkwindow,TRUE);
-    GdkCursor* cursor = gdk_cursor_new (GDK_LEFT_PTR);
+    GdkCursor* cursor = gdk_cursor_new_for_display (gdk_display_get_default(),
+                                                    GDK_LEFT_PTR);
     gdk_window_set_cursor (gdk_get_default_root_window (), cursor);
     g_object_unref(cursor);
 
@@ -456,34 +458,38 @@ monitors_set_cb ()
 static gboolean
 init_monitors ()
 {
-    g_message("====%s====start",__func__);
+    g_message("[%s]\n", __func__);
     gboolean xrandr = monitors_extend();
-    g_message("====%s====succeed:%d",__func__, xrandr);
+    g_message("[%s] succeed, xrandr: %d\n", __func__, xrandr);
     if (xrandr){
-        g_timeout_add(500,(GSourceFunc)monitors_set_cb,NULL);
+        g_timeout_add(500, (GSourceFunc)monitors_set_cb, NULL);
         return FALSE;
-    }else
+    } else {
         return TRUE;
+    }
 }
 
 static void
 init_lightdm ()
 {
-    g_message("====%s====",__func__);
+    g_message("[%s]\n", __func__);
     greeter = lightdm_greeter_new ();
     g_assert (greeter);
 
-    g_signal_connect (greeter, "show-prompt", G_CALLBACK (respond_authentication), NULL);
+    g_signal_connect(greeter, "show-prompt",
+                     G_CALLBACK(respond_authentication), NULL);
     //g_signal_connect(greeter, "show-message", G_CALLBACK(show_message_cb), NULL);
-    g_signal_connect (greeter, "authentication-complete", G_CALLBACK (authenticated_complete), NULL);
+    g_signal_connect(greeter, "authentication-complete",
+                     G_CALLBACK(authenticated_complete), NULL);
     //g_signal_connect(greeter, "autologin-timer-expired", G_CALLBACK(autologin_timer_expired_cb), NULL);
 
-    if(!lightdm_greeter_connect_sync (greeter, NULL)){
-        g_message ("connect greeter failed\n");
+    if (!lightdm_greeter_connect_sync(greeter, NULL)){
+        g_warning("[%s] connect greeter failed\n", __func__);
         exit (EXIT_FAILURE);
     }
 
-    gchar *greeter_dir = g_build_filename (g_get_user_cache_dir (), "lightdm", NULL);
+    gchar *greeter_dir = g_build_filename(g_get_user_cache_dir(),
+                                          "lightdm", NULL);
 
     if (g_mkdir_with_parents (greeter_dir, 0755) < 0){
         greeter_dir = "/var/cache/lightdm";
@@ -493,12 +499,30 @@ init_lightdm ()
     g_free (greeter_dir);
 
     greeter_keyfile = g_key_file_new ();
-    g_key_file_load_from_file (greeter_keyfile, greeter_file, G_KEY_FILE_NONE, NULL);
+    g_key_file_load_from_file(greeter_keyfile, greeter_file,
+                              G_KEY_FILE_NONE, NULL);
+}
+
+static void redirect_log()
+{
+    g_message ("[%s]: log path is: %s", __func__, kLogPath);
+    int log_file = open(kLogPath, O_RDWR| O_CREAT| O_TRUNC, 0644);
+    if (log_file == -1) {
+        perror("redirect_log failed!");
+        return;
+    }
+    if (dup2(log_file, 1) == -1) {
+        perror("Failed to redirect stdout!");
+    }
+    if (dup2(log_file, 2) == -1) {
+        perror("Failed to redirect stderr!");
+    }
 }
 
 int main (int argc, char **argv)
 {
-    g_message("-------------greeter main--------------");
+    redirect_log();
+    g_message("[%s] greeter main\n", __func__);
     g_setenv("G_MESSAGES_DEBUG", "all", TRUE);
 
     init_i18n ();

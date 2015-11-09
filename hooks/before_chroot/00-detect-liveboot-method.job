@@ -1,0 +1,23 @@
+#!/bin/bash
+
+echo "[$0]"
+set -x
+
+# Read kernel boostrap options from /proc/cmdline
+if grep -q boot=casper /proc/cmdline; then
+    BOOT=casper
+    CDROM=/cdrom
+    LUPIN_ROOT=/isodevice
+    DISTRIBUTION=ubuntu
+elif grep -q boot=live /proc/cmdline; then
+    BOOT=live
+    CDROM=/lib/live/mount/medium
+    LUPIN_ROOT=/lib/live/mount/findiso
+    DISTRIBUTION=debian
+else
+    echo "[Error] No boot value found!"
+    exit 101
+fi
+
+LIVE_FILESYSTEM=${CDROM}/${BOOT}
+echo -e "DISTRIBUTION=${DISTRIBUTION}\nLIVE=${BOOT}\nLIVE_FILESYSTEM=${LIVE_FILESYSTEM}\nCDROM=${CDROM}\nDI_LUPIN_ROOT=${LUPIN_ROOT}" | tee -a /etc/deepin-installer.conf

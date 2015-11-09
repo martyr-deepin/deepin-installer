@@ -167,9 +167,13 @@ def get_casper(key, default=None):
     return _casper_config.get(key, default)
 
 class Install:
-    def __init__(self, lang='en_US'):
+    def __init__(self, lang='en_US', live="casper"):
         self.target = '/target'
-        self.casper_path = os.path.join('/cdrom', get_casper('LIVE_MEDIA_PATH','casper').lstrip('/'))
+        if live == "casper":
+            self.casper_path = os.path.join('/cdrom', get_casper('LIVE_MEDIA_PATH','casper').lstrip('/'))
+        if live == "live":
+            self.casper_path = "/lib/live/mount/medium/live"
+
         self.lang = lang
 
         if not os.path.exists('/var/lib/deepin-installer'):
@@ -412,11 +416,12 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--lang', default="en_US",type=str)
+    parser.add_argument('--live', default="casper",type=str)
     args = parser.parse_args()
     if not os.path.exists(os.path.dirname(PROGRESS_FILE)):
         os.makedirs(os.path.dirname(PROGRESS_FILE))
     if not os.path.exists('/var/lib/deepin-installer'):
         os.makedirs('/var/lib/deepin-installer')
-    install = Install(args.lang)
+    install = Install(lang=args.lang,live=args.live)
     install.run()
     sys.exit(0)
