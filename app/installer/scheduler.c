@@ -23,7 +23,6 @@ enum {
 
 void update_install_progress(int v)
 {
-    g_message("[%s], v: %d\n", __func__, v);
     static int current_per = 0;
     if (v < current_per) {
         g_debug("[%s] INSTALL progress small previous PROGRESS: %d <= %d\n",
