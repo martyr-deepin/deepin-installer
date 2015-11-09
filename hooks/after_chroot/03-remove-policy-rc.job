@@ -1,0 +1,13 @@
+#!/bin/sh
+# delete policy-rc.d script if it already exist.
+set -x
+
+RC="/target/usr/sbin/policy-rc.d"
+
+if [ -f "$RC" ]; then
+    echo "[INFO] policy-rc.d exists.Will remove it..."
+    rm "$RC"
+else
+    echo "[INFO] policy-rc.d not exists"
+fi
+
