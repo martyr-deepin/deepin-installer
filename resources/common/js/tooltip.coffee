@@ -95,7 +95,11 @@ class ArrowToolTip extends ToolTipBase
     @container: null
     @tooltip: null
     @arrow: null
-    constructor: (@buddy, @text, @parent=document.body)->
+
+    # Set direction of arrow inversed or not.
+    @inversed: false
+
+    constructor: (@buddy, @text, @inversed=false, @parent=document.body)->
         super(@buddy, @text, @parent)
         ArrowToolTip.container ?= create_element('div', 'arrow_tooltip_container ', @parent)
         ArrowToolTip.tooltip ?= create_element('canvas', 'arrow_tooltip', ArrowToolTip.container)
@@ -129,11 +133,20 @@ class ArrowToolTip extends ToolTipBase
         triangle =
             width: 18
             height: 10
-        padding =
-            horizontal: 5
-            vertical: 0
+        if @inversed
+            padding =
+                horizontal: 5
+                vertical: 2
+                abs_horizontal: 25
+        else
+            padding =
+                horizontal: 5
+                vertical: 0
         radius = 4
-        offsetForShadow = 6
+        if @inversed
+            offsetForShadow = 12
+        else
+            offsetForShadow = 6
         offsetForRadius = 0
         height = content.clientHeight - offsetForRadius * 2
 
@@ -182,6 +195,12 @@ class ArrowToolTip extends ToolTipBase
         ctx.arc(arch['TopLeft'].ox, arch['TopLeft'].oy, arch['TopLeft'].radius,
                 arch['TopLeft'].startAngle, arch['TopLeft'].endAngle)
 
+        if @inversed
+        # triangle
+            ctx.lineTo(leftX + padding.abs_horizontal, topY - radius)
+            ctx.lineTo(leftX + padding.abs_horizontal + triangle.width / 2, topY - radius - triangle.height)
+            ctx.lineTo(leftX + padding.abs_horizontal + triangle.width, topY - radius)
+
         ctx.lineTo(rightX, topY - radius)
 
         ctx.arc(arch['TopRight'].ox, arch['TopRight'].oy, arch['TopRight'].radius,
@@ -193,28 +212,28 @@ class ArrowToolTip extends ToolTipBase
                 arch['BottomRight'].startAngle, arch['BottomRight'].endAngle)
 
         # bottom line
-        #
+        if ! @inversed
         # calculate the offset for trangle
-        page_xy= get_page_xy(@buddy, 0, 0)
-        offset = (@buddy.clientWidth - ArrowToolTip.container.clientWidth) / 2
+            page_xy= get_page_xy(@buddy, 0, 0)
+            offset = (@buddy.clientWidth - ArrowToolTip.container.clientWidth) / 2
 
-        x = parseInt((page_xy.x + offset).toFixed())
-        if x > 0
-            x = x + ArrowToolTip.container.clientWidth
-            if x > screen.width
-                x = x - screen.width
-            else
-                x = 0
+            x = parseInt((page_xy.x + offset).toFixed())
+            if x > 0
+                x = x + ArrowToolTip.container.clientWidth
+                if x > screen.width
+                    x = x - screen.width
+                else
+                    x = 0
 
-        ctx.lineTo(leftX + padding.horizontal + (content.clientWidth + triangle.width) / 2 + x,
-                   bottomY + radius)
+            ctx.lineTo(leftX + padding.horizontal + (content.clientWidth + triangle.width) / 2 + x,
+                       bottomY + radius)
 
-        # triangle
-        ctx.lineTo(leftX + padding.horizontal + content.clientWidth / 2 + x,
-                   bottomY + radius + triangle.height)
+            # triangle
+            ctx.lineTo(leftX + padding.horizontal + content.clientWidth / 2 + x,
+                       bottomY + radius + triangle.height)
 
-        ctx.lineTo(leftX + padding.horizontal + (content.clientWidth - triangle.width)/2 + x,
-                   bottomY + radius)
+            ctx.lineTo(leftX + padding.horizontal + (content.clientWidth - triangle.width)/2 + x,
+                       bottomY + radius)
 
         # bottom line
         ctx.lineTo(leftX, bottomY + radius)

@@ -642,7 +642,7 @@ class Timezone extends Widget
 
         if show_tooltip
             if not @tooltip?
-                @tooltip = new ArrowToolTip(@pin, _(text,"tzdata"))
+                @tooltip = new ArrowToolTip(@pin, _(text,"tzdata"), false)
             @tooltip.set_text(_(text,"tzdata"))
             @tooltip.setPointerEvents('none')
             @tooltip.show()
@@ -947,15 +947,14 @@ class WelcomeFormItem extends Widget
     set_tooltip: (text) ->
         if text is null or text is "" then return
         if @tooltip == null
-            @tooltip = new ArrowToolTip(@input, text)
+            @tooltip = new ArrowToolTip(@input, text, true)
             @input.removeEventListener('mouseover', @tooltip.on_mouseover)
             @input.removeEventListener('mouseout', @tooltip.hide)
             @tooltip.set_delay_time(0)
         @tooltip.set_text(text)
         @tooltip.show()
         pos = @tooltip.get_xy()
-        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX,
-                             pos.y - tooltipOffsetY - 10)
+        ArrowToolTip.move_to(@tooltip, 245 - tooltipOffsetX, pos.y - tooltipOffsetY - 103)
 
     destroy_tooltip:->
         # TODO: do not destroy tooltip object manually
