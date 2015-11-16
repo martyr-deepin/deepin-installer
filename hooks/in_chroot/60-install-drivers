@@ -1,4 +1,4 @@
 #!/bin/bash
 # install drivers using ubuntu-drivers-common
-
-ubuntu-drivers autoinstall
+echo "[$0]"
+ubuntu-drivers autoinstall || echo 1
