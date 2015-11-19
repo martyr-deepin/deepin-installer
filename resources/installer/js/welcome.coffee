@@ -782,6 +782,8 @@ class WelcomeFormItem extends Widget
             @check_capslock()
 
             switch @id
+                when "username"
+                    @validateUsername(@input.value)
                 when "hostname"
                     @validateHostname(@input.value, false)
                 when "password"
