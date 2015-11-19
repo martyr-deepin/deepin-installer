@@ -811,8 +811,11 @@ class WelcomeFormItem extends Widget
                     else
                         if @valid.code in [ErrorCode.INVALID, ErrorCode.FIRST_UPPER]
                             @input.value = @value_origin
+                        if @input.value.length == 0
+                            hostnameItem = Widget.look_up("hostname")
+                            if hostnameItem.changed == false
+                                hostnameItem.input.value = ""
                         @set_tooltip(@valid.msg)
-
 
                 when "hostname"
                     @validateHostname(@input.value, true)
