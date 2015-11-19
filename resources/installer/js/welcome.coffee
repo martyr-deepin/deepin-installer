@@ -957,7 +957,7 @@ class WelcomeFormItem extends Widget
         @tooltip.set_text(text)
         @tooltip.show()
         pos = @tooltip.get_xy()
-        ArrowToolTip.move_to(@tooltip, 245 - tooltipOffsetX, pos.y - tooltipOffsetY - 103)
+        ArrowToolTip.move_to(@tooltip, 228, pos.y - tooltipOffsetY - 95)
 
     destroy_tooltip:->
         # TODO: do not destroy tooltip object manually
