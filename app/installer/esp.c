@@ -151,6 +151,13 @@ gboolean create_esp_by_split(PedPartition* old, char** esp_path,
 
     ped_disk_add_partition(old->disk, new_part, cst);
     ped_disk_commit(old->disk);
+
+    // Watches the udev event queue.
+    // Wait for kernel to handle pending events
+    g_message("[%s] will call udevadm settle --timeout=5\n", __func__);
+    g_spawn_command_line_sync ("udevadm settle --timeout=5",
+                               NULL, NULL, NULL, NULL);
+
     ped_constraint_destroy(cst);
 
     *esp_path = ped_partition_get_path(esp_part);

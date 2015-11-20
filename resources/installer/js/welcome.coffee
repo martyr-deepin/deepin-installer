@@ -782,6 +782,8 @@ class WelcomeFormItem extends Widget
             @check_capslock()
 
             switch @id
+                when "username"
+                    @validateUsername(@input.value)
                 when "hostname"
                     @validateHostname(@input.value, false)
                 when "password"
@@ -811,8 +813,11 @@ class WelcomeFormItem extends Widget
                     else
                         if @valid.code in [ErrorCode.INVALID, ErrorCode.FIRST_UPPER]
                             @input.value = @value_origin
+                        if @input.value.length == 0
+                            hostnameItem = Widget.look_up("hostname")
+                            if hostnameItem.changed == false
+                                hostnameItem.input.value = ""
                         @set_tooltip(@valid.msg)
-
 
                 when "hostname"
                     @validateHostname(@input.value, true)
@@ -954,7 +959,7 @@ class WelcomeFormItem extends Widget
         @tooltip.set_text(text)
         @tooltip.show()
         pos = @tooltip.get_xy()
-        ArrowToolTip.move_to(@tooltip, 245 - tooltipOffsetX, pos.y - tooltipOffsetY - 103)
+        ArrowToolTip.move_to(@tooltip, 228, pos.y - tooltipOffsetY - 95)
 
     destroy_tooltip:->
         # TODO: do not destroy tooltip object manually
