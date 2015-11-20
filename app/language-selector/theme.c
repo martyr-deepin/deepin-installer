@@ -24,7 +24,7 @@
 #include "background.h"
 #include "theme.h"
 
-#define SCHEMA_ID "com.deepin.dde.personalization"
+#define SCHEMA_ID "com.deepin.dde.appearance"
 #define GREETER_THEME_KEY "greeter-theme"
 #define GREETER_THEME_PATH ""RESOURCE_DIR"/language-selector/greeter-theme"
 
@@ -42,7 +42,7 @@ char* get_theme_config()
 
 char* get_current_bg_path()
 {
-    return g_settings_get_string(s, "current-picture");
+    return g_settings_get_string(s, "background");
 }
 
 void set_theme_background(GtkWidget* container,GtkWidget* child)
