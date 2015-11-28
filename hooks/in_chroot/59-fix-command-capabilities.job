@@ -1,0 +1,9 @@
+#! /bin/sh
+# reconfigure command lost setcap flag cause by squashfs filesystem store capabilities bug.
+
+echo "[$0]"
+set -x
+
+for pkg in libgstreamer1.0-0 systemd iputils-ping;do
+    dpkg -l | grep -q -e  "^ii\ \ ${pkg}\ " && /usr/sbin/dpkg-reconfigure ${pkg} || true
+done
