@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Automatically create disk partitions.
-# 4G for linux-swap
-# 20G for /var with ext4 filesystem.
+# 2G for linux-swap
+# %20 for /var/log with ext4 filesystem.
 # All remaining space used as / with ext4 filesystem.
 
 echo "[$0]"
@@ -10,6 +10,9 @@ set -x
 
 # Path to installer configuration file.
 CONF_FILE='/etc/deepin-installer.conf'
+
+# 2G space for linux-swap.
+SWAP_SIZE=2048
 
 # The disk with largest storage capacity is used as system device.
 get_max_capacity_device() {
@@ -26,6 +29,15 @@ get_max_capacity_device() {
 }
 
 DEVICE=$(get_max_capacity_device)
+DEVICE_SIZE=$(blockdev --getsize64 $DEVICE)
+DEVICE_SIZE=$((DEVICE_SIZE / 1048576))
+REMAINING_SIZE=$((DEVICE_SIZE - SWAP_SIZE))
+
+# 20% remaining space for /var/log.
+LOG_SIZE=$((REMAINING_SIZE / 5 + SWAP_SIZE))
+
+# 80% remaining space for /.
+#ROOT_SIZE=$((REMAINING_SIZE - LOG_SIZE))
 
 if [ -z $DEVICE ]; then
   echo 'Error: no supported storage device found!'
@@ -34,34 +46,32 @@ if [ -z $DEVICE ]; then
 fi
 
 # Write bootloader info to conf.
-echo "DI_BOOTLOADER=\"$DEVICE\"" >> $CONF_FILE
-echo "DI_ROOT_DISK=\"$DEVICE\"" >> $CONF_FILE
-echo 'DI_SIMPLE_MODE="false"' >> $CONF_FILE
-echo 'DI_UEFI="false"' >> $CONF_FILE
+sed -i "s|DI_BOOTLOADER=.*$|DI_BOOTLOADER=\"$DEVICE\"|" $CONF_FILE
+sed -i "s|DI_ROOT_DISK=.*$|DI_ROOT_DISK=\"$DEVICE\"|" $CONF_FILE
 
 # First create a msdos partition table.
 parted -s $DEVICE mktable msdos || \
   (echo "Failed to create msdos partition on $DEVICE"; exit 1)
 
 # Then create a swap partition with 4G.
-parted -s $DEVICE mkpart primary linux-swap 1M 4096M || \
+parted -s $DEVICE mkpart primary linux-swap 1M ${SWAP_SIZE}M || \
   (echo "Failed to create linux-swap on ${DEVICE}1"; exit 1)
 mkswap ${DEVICE}1 || \
   (echo "Failed to call mkswap ${DEVICE}1"; exit 1)
 
-# And then create an ext4 partition with 20G capacity to mount /var
-parted -s $DEVICE mkpart primary ext4 4097M 20480M || \
+# And then create an ext4 partition with 20G capacity to mount /var/log
+parted -s $DEVICE mkpart primary ext4 ${SWAP_SIZE}M ${LOG_SIZE}M || \
   (echo "Failed to create partition ${DEVICE}2"; exit 1)
 mkfs.ext4 ${DEVICE}2 || \
   (echo "Failed to make ext4 filesystem on ${DEVICE}2"; exit 1)
-echo "DI_MOUNTPOINTS=\"${DEVICE}1=swap;${DEVICE}2=/var;\"" >> $CONF_FILE
+sed -i "s|DI_MOUNTPOINTS=.*$|DI_MOUNTPOINTS=\"${DEVICE}1=swap;${DEVICE}2=/var/log;\"|" $CONF_FILE
 
 # All the remaining space is used as /, with ext4 type.
-parted -s $DEVICE mkpart primary ext4 20481M 100% || \
+parted -s $DEVICE mkpart primary ext4 ${LOG_SIZE}M 100% || \
   (echo "Failed to create partition ${DEVICE}3"; exit 1)
 mkfs.ext4 ${DEVICE}3 || \
   (echo "Failed to make ext4 filesystem on ${DEVICE}3"; exit 1)
-echo "DI_ROOT_PARTITION=\"${DEVICE}3\"" >> $CONF_FILE
+sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=\"${DEVICE}3\"|" $CONF_FILE
 
 # Commit to os.
 partprobe
