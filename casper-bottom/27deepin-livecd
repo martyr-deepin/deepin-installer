@@ -52,7 +52,7 @@ generate_install_helper()
 cat <<EOF
 #!/bin/sh
 
-/usr/bin/deepin-installer -c /etc/deepin-installer.conf --without-wm
+/usr/bin/deepin-installer -c /usr/share/deepin-installer/templates/lfs-atm.conf --without-wm
 EOF
 ) > $1
 }
