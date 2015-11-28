@@ -415,28 +415,31 @@ gboolean is_livecd ()
     return result;
 }
 
+// This signal is used to popup installation warning in ATM machine,
+// So always returns TRUE.
 gboolean is_virtual_pc ()
 {
-    gboolean result = FALSE;
-    GError *error = NULL;
-    gchar* output = NULL;
-    const gchar* cmd = "dmidecode -s system-product-name";
-    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
-    if (error != NULL) {
-        g_warning("[%s] cmd: %s, failed: %s\n", __func__, cmd, error->message);
-        g_clear_error(&error);
-    } else {
-        if (output != NULL){
-            gchar* low = g_utf8_casefold(output, -1);
-            result = (g_strstr_len(low, -1, "virtual") != NULL);
-            g_free(low);
-        }
-    }
-    g_free(output);
-    g_debug("[%s] cmd: %s, output: %s, result: %d\n",
-            __func__, cmd, output, result);
-    cmd = NULL;
-    return result;
+    return TRUE;
+//    gboolean result = FALSE;
+//    GError *error = NULL;
+//    gchar* output = NULL;
+//    const gchar* cmd = "dmidecode -s system-product-name";
+//    g_spawn_command_line_sync (cmd, &output, NULL, NULL, &error);
+//    if (error != NULL) {
+//        g_warning("[%s] cmd: %s, failed: %s\n", __func__, cmd, error->message);
+//        g_clear_error(&error);
+//    } else {
+//        if (output != NULL){
+//            gchar* low = g_utf8_casefold(output, -1);
+//            result = (g_strstr_len(low, -1, "virtual") != NULL);
+//            g_free(low);
+//        }
+//    }
+//    g_free(output);
+//    g_debug("[%s] cmd: %s, output: %s, result: %d\n",
+//            __func__, cmd, output, result);
+//    cmd = NULL;
+//    return result;
 }
 
 gchar* get_timezone_local ()
