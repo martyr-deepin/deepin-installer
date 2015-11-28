@@ -6,7 +6,7 @@
 # All remaining space used as / with ext4 filesystem.
 
 echo "[$0]"
-#set -x
+set -x
 
 # Path to installer configuration file.
 CONF_FILE='/etc/deepin-installer.conf'
@@ -36,13 +36,15 @@ fi
 # Write bootloader info to conf.
 echo "DI_BOOTLOADER=\"$DEVICE\"" >> $CONF_FILE
 echo "DI_ROOT_DISK=\"$DEVICE\"" >> $CONF_FILE
+echo 'DI_SIMPLE_MODE="false"' >> $CONF_FILE
+echo 'DI_UEFI="false"' >> $CONF_FILE
 
 # First create a msdos partition table.
 parted -s $DEVICE mktable msdos || \
   (echo "Failed to create msdos partition on $DEVICE"; exit 1)
 
 # Then create a swap partition with 4G.
-parted -s $DEVICE mkpart priamry linux-swap 1M 4096M || \
+parted -s $DEVICE mkpart primary linux-swap 1M 4096M || \
   (echo "Failed to create linux-swap on ${DEVICE}1"; exit 1)
 mkswap ${DEVICE}1 || \
   (echo "Failed to call mkswap ${DEVICE}1"; exit 1)
@@ -59,7 +61,7 @@ parted -s $DEVICE mkpart primary ext4 20481M 100% || \
   (echo "Failed to create partition ${DEVICE}3"; exit 1)
 mkfs.ext4 ${DEVICE}3 || \
   (echo "Failed to make ext4 filesystem on ${DEVICE}3"; exit 1)
-echo "DI_ROOT_PARTITION=\"$DEVICE3\"" >> $CONF_FILE
+echo "DI_ROOT_PARTITION=\"${DEVICE}3\"" >> $CONF_FILE
 
 # Commit to os.
 partprobe
