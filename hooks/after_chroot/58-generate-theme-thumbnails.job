@@ -1,0 +1,14 @@
+#! /bin/sh
+# Generate themes thumbnails
+
+if [ -x /usr/lib/deepin-daemon/theme-thumb-tool ];then
+    echo "[INFO] Generate thmemes thumbnails"
+    /usr/lib/deepin-daemon/theme-thumb-tool --gtk   /usr/share/personalization/thumbnail
+    /usr/lib/deepin-daemon/theme-thumb-tool --icon  /usr/share/personalization/thumbnail
+    /usr/lib/deepin-daemon/theme-thumb-tool --cursor  /usr/share/personalization/thumbnail
+    /usr/lib/deepin-daemon/theme-thumb-tool --background  /usr/share/personalization/thumbnail
+    [ -d /target/usr/share/personalization/thumbnail/autogen ] && rm -rf /target/usr/share/personalization/thumbnail/autogen
+    cp -ar /usr/share/personalization/thumbnail/autogen /target/usr/share/personalization/thumbnail/
+else
+    echo "[WARN] No theme-thumb-tool found. Pass"
+fi

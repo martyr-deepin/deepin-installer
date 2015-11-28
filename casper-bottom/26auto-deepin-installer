@@ -27,7 +27,7 @@ cat <<EOF
 [Desktop Entry]
 Name=DeepinAutoInstaller
 Comment=Deepin Auto Installer
-Exec=$2
+Exec=gksudo -- $2
 TryExec=gksudo
 EOF
 ) > $1
@@ -51,8 +51,8 @@ generate_install_helper()
 (
 cat <<EOF
 #!/bin/sh
-gconftool-2 --set --type=bool /apps/gksu/display-no-pass-info false || true
-gksudo -- /usr/bin/deepin-installer -c "$3" -l "$4" --without-wm
+
+/usr/bin/deepin-installer -c "$3" -l "$4" --without-wm
 EOF
 ) > $1
 }

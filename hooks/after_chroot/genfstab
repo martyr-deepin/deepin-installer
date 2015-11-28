@@ -31,10 +31,7 @@ declare -A pseudofs_types=([anon_inodefs]=1
                            [sockfs]=1
                            [spufs]=1
                            [sysfs]=1
-                           [tmpfs]=1
-
-                           # Fixed: remove overlay type which points to /deepinhost directory in 20150914.iso
-                           [overlay]=1)
+                           [tmpfs]=1)
 
 # generated from: pkgfile -vbr '/fsck\..+' | awk -F. '{ print $NF }' | sort
 declare -A fsck_types=([cramfs]=1

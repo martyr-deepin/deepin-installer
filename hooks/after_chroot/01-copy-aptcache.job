@@ -1,8 +1,4 @@
 #!/bin/bash
 # copy apt-cache list
-
-echo "[$0]"
-set -x
-
 [ -d /target/var/lib/apt/lists ] && rm -rf /target/var/lib/apt/lists
 [ -d /target/deepinhost/var/lib/apt/lists ] && cp -r /target/deepinhost/var/lib/apt/lists /target/var/lib/apt

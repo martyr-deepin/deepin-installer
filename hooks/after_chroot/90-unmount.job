@@ -1,19 +1,12 @@
 #!/bin/bash
 
-echo "[$0]"
-
 . /etc/deepin-installer.conf
 
-target='/target'
+target="/target"
 chown root:root ${target} 
 
-# sync data to disk
-sync
-
-[ -d /target/deepinhost ] && umount -v /target/deepinhost && \
-rmdir -rvf /target/deepinhost
-
+umount /target/deepinhost && rm -rf /target/deepinhost
 for i in $(cat /proc/mounts | awk '{print $2}' | grep -e ^$target | sort -r);do
-    umount -v $i
+    umount $i
 done
-echo "[$0] finished"
+echo "umount target finish"

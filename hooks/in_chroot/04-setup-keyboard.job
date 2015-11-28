@@ -1,9 +1,6 @@
 #!/bin/bash
 # set keyboard
 
-echo "[$0]"
-set -x
-
 if [ -f /deepinhost/etc/deepin-installer.conf ];then
     . /deepinhost/etc/deepin-installer.conf
 fi

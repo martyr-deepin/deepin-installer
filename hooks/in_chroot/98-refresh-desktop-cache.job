@@ -1,11 +1,7 @@
 #!/bin/bash
 # refresh desktop cache
 
-echo "[$0]"
-set -x
-
 DB_PATH=/var/cache/deepin-store/new-desktop.db
 DSTORE_BACKEND=/usr/lib/deepin-store/deepin-store-backend
 [ -e $DB_PATH ] && rm -f $DB_PATH
-[ -x $DSTORE_BACKEND ] && $DSTORE_BACKEND --init 
-echo "[Info] refresh desktop cache done."
+[ -x $DSTORE_BACKEND ] && $DSTORE_BACKEND -s || true

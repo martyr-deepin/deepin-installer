@@ -1,6 +1,5 @@
 #!/bin/bash
-
-echo "[$0]"
+# TODO: add more than one users
 set -e
 
 if [ -f /deepinhost/etc/deepin-installer.conf ];then
@@ -42,6 +41,7 @@ chown -hR ${DI_USERNAME}:${DI_USERNAME} /home/${DI_USERNAME}
 
 echo "[INFO] Set Hostname to ${DI_HOSTNAME}"
 echo "${DI_HOSTNAME}" | tee /etc/hostname
+
 
 cat > /etc/hosts <<EOF
 127.0.0.1	localhost

@@ -1,7 +1,5 @@
 #!/bin/bash
-
-echo "[$0]"
-set -x
+set -e 
 
 if [ -f /deepinhost/etc/deepin-installer.conf ];then
     . /deepinhost/etc/deepin-installer.conf
@@ -13,10 +11,10 @@ LOCALE=${DI_LOCALE%.*}
 
 #alway generate en_US locale
 echo "Generating locale: en_US ${LOCALE}"
-sed -i "s/# \(en_US\.UTF-8.*$\)/\1/g" /etc/locale.gen
+locale-gen en_US.UTF-8
 
 if [ ! -z ${LOCALE} ];then
-    sed -i "s/# \(${LOCALE}\.UTF-8.*$\)/\1/g" /etc/locale.gen
+    locale-gen ${LOCALE}.UTF-8
     cat > /etc/default/locale <<EOF
 LANG=${LOCALE}.UTF-8
 LANGUAGE=${LOCALE}
@@ -28,7 +26,6 @@ LANGUAGE=en_US
 EOF
 fi
 
-/usr/sbin/locale-gen
 
 echo "Check timezone ${DI_TIMEZONE}"
 if awk '{print $3}' /usr/share/zoneinfo/zone.tab | grep -q "^${DI_TIMEZONE}$";then
