@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Automatically create disk partitions.
+# 4G for linux-swap
+# 20G for /var with ext4 filesystem.
+# All remaining space used as / with ext4 filesystem.
+
+echo "[$0]"
+#set -x
+
+# Path to installer configuration file.
+CONF_FILE='/tmp/deepin-installer.conf'
+
+# The disk with largest storage capacity is used as system device.
+DEVICE=''
+MAX_CAPACITY=0
+for device in $(parted -s -l -m 2>/dev/null | grep '/dev/' | awk -F ':' '{print $1}'); do
+  capacity=$(blockdev --getsz $device)
+  echo $device:$capacity
+  if [ $capacity -gt $MAX_CAPACITY ]; then
+    MAX_CAPACITY=$capacity
+    DEVICE=$device
+    echo $DEVICE:$MAX_CAPACITY
+  fi
+done
+
+if [ -z $DEVICE ]; then
+  echo 'Error: no supported storage device found!'
+  echo 'There shall be a IDE or SATA disk available at /dev/sda or /dev/hda'
+  exit 1
+fi
+
+# First create a msdos partition table.
+parted -s $DEVICE mktable msdos || \
+  (echo "Failed to create msdos partition on $DEVICE"; exit 1)
+
+# Then create a swap partition with 4G.
+parted -s $DEVICE mkpart priamry linux-swap 1M 4096M || \
+  (echo "Failed to create linux-swap on ${DEVICE}1"; exit 1)
+mkswap ${DEVICE}1 || \
+  (echo "Failed to call mkswap ${DEVICE}1"; exit 1)
+
+# And then create an ext4 partition with 20G capacity to mount /var
+parted -s $DEVICE mkpart primary ext4 4097M 20480M || \
+  (echo "Failed to create partition ${DEVICE}2"; exit 1)
+mkfs.ext4 ${DEVICE}2 || \
+  (echo "Failed to make ext4 filesystem on ${DEVICE}2"; exit 1)
+echo "${DEVICE}2:/var" >> $CONF_FILE
+
+# All the remaining space is used as /, with ext4 type.
+parted -s $DEVICE mkpart primary ext4 20481M 100% || \
+  (echo "Failed to create partition ${DEVICE}3"; exit 1)
+mkfs.ext4 ${DEVICE}3 || \
+  (echo "Failed to make ext4 filesystem on ${DEVICE}3"; exit 1)
+echo "${DEVICE}3:/" >> $CONF_FILE
+
+# Commit to os.
+partprobe
+
+exit 0
