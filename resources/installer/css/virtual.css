@@ -4,19 +4,21 @@
 
 .VirtualTitle {
     text-align:center;
-    font-size:18px;
+    font-size:30px;
 }
 
 .VirtualTips {
     text-align:center;
     min-height:30px;
     line-height:30px;
-    margin-top:100px;
+    margin-top:60px;
+    margin-bottom:80px;
     padding:10px 50px;
+    font-size:16px;
 }
 
 .VirtualFoot {
-    margin-top:100px;
+    margin-top:170px;
     text-align:center;
     display:-webkit-box;
     -webkit-box-align:center;
