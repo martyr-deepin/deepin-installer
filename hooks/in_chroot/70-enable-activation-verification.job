@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Auto start Deepin Activation Verification service.
+
+echo "[$0]"
+set -x
+
+SRC="/etc/xdg/autostart/activationVerification.desktop.dpkg-init"
+DST="/etc/xdg/autostart/activationVerification.desktop"
+
+mv -v $SRC $DST
+
+exit 0
