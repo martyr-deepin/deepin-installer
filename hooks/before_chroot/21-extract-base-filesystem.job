@@ -29,6 +29,9 @@ extract_overlay_filesystem() {
 declare -i MEM
 MEM=$(awk '/^MemFree:/ {mem_free=$2} /^Buffers:/ {meme_free+=$2} /^Cacheed:/ {mem_free+=$2} END{print mem_free}' /proc/meminfo)
 
+# Disable unsquashfs
+DI_EXTRACT_METHOD="fallback"
+
 # Do DI_EXTRACT_METHOD first
 if [ x"${DI_EXTRACT_METHOD}" = x"unsquashfs" ];then
     MEM=9999999
