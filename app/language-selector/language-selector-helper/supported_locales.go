@@ -22,12 +22,11 @@
 package main
 
 import (
+	"dbus/com/deepin/api/localehelper"
+	"dbus/org/freedesktop/timedate1"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"strings"
-
-	"dbus/com/deepin/api/localehelper"
 )
 
 const (
@@ -67,17 +66,24 @@ func doSetLocale(locale string) error {
 }
 
 func setTimezoneByLocale(locale string) error {
-	var file string
+	tm, err := timedate1.NewTimedate1("org.freedesktop.timedate1",
+		"/org/freedesktop/timedate1")
+	if err != nil {
+		return err
+	}
+	defer timedate1.DestroyTimedate1(tm)
+
+	var zone string
 	switch locale {
 	case "zh_CN.UTF-8":
-		file = "/usr/share/zoneinfo/Asia/Shanghai"
+		zone = "Asia/Shanghai"
 	case "zh_TW.UTF-8":
-		file = "/usr/share/zoneinfo/Asia/Taipei"
+		zone = "Asia/Taipei"
 	default:
-		file = "/usr/share/zoneinfo/UTC"
+		zone = "UTC"
 	}
 
-	return os.Symlink(file, "/etc/localtime")
+	return tm.SetTimezone(zone, false)
 }
 
 func getSupportedLocales(file string) ([]string, error) {

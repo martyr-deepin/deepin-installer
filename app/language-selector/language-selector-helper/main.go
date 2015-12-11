@@ -2,7 +2,7 @@ package main
 
 import (
 	"pkg.deepin.io/lib/dbus"
-	log "pkg.deepin.io/lib/log"
+	"pkg.deepin.io/lib/log"
 )
 
 var logger = log.NewLogger("com.deepin.helper.LanguageSelector")
@@ -32,9 +32,9 @@ func (*LanguageSelector) Set(lang string) {
 
 func (*LanguageSelector) GetDBusInfo() dbus.DBusInfo {
 	return dbus.DBusInfo{
-		"com.deepin.helper.LanguageSelector",
-		"/com/deepin/helper/LanguageSelector",
-		"com.deepin.helper.LanguageSelector",
+		Dest:       "com.deepin.helper.LanguageSelector",
+		ObjectPath: "/com/deepin/helper/LanguageSelector",
+		Interface:  "com.deepin.helper.LanguageSelector",
 	}
 }
 
