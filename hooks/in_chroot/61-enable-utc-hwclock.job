@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Keep the hardware clock in UTC.
+
+echo "$[0]"
+set -x
+
+hwclock -s --utc
+
+exit 0
