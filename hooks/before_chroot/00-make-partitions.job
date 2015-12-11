@@ -8,15 +8,8 @@
 echo "[$0]"
 set -x
 
-# Switch off all the swap filesystems.
-swapoff --all || \
-  (echo 'Failed to call swapoff --all'; exit 1)
-
 # Path to installer configuration file.
 CONF_FILE='/etc/deepin-installer.conf'
-
-# Unit of MB.
-MB=1048576
 
 # 4G space for linux-swap.
 SWAP_SIZE=4096
@@ -40,15 +33,14 @@ get_max_capacity_device() {
 
 DEVICE=$(get_max_capacity_device)
 DEVICE_SIZE=$(blockdev --getsize64 $DEVICE)
-DEVICE_SIZE=$((DEVICE_SIZE / MB))
+DEVICE_SIZE=$((DEVICE_SIZE / 1048576))
 REMAINING_SIZE=$((DEVICE_SIZE - SWAP_SIZE))
 
-# 50% remaining space for /.
-ROOT_SIZE=$((REMAINING_SIZE / 2))
-if [ $ROOT_SIZE -gt $ROOT_MAX_SIZE ]; then
-  ROOT_SIZE=$ROOT_MAX_SIZE
+# 20% remaining space for /var/log.
+ROOT_SIZE=$((REMAINING_SIZE / 2 + SWAP_SIZE))
+if [ $ROOT_SIZE -lt $ROOT_MAX_SIZE ]; then
+  $ROOT_SIZE=$ROOT_MAX_SIZE
 fi
-ROOT_SIZE=$((ROOT_SIZE + SWAP_SIZE))
 
 if [ -z $DEVICE ]; then
   echo 'Error: no supported storage device found!'
@@ -65,20 +57,20 @@ parted -s $DEVICE mktable msdos || \
   (echo "Failed to create msdos partition on $DEVICE"; exit 1)
 
 # Then create a swap partition with 4G.
-parted -s $DEVICE mkpart primary linux-swap 1MB ${SWAP_SIZE}MB || \
+parted -s $DEVICE mkpart primary linux-swap 1M ${SWAP_SIZE}M || \
   (echo "Failed to create linux-swap on ${DEVICE}1"; exit 1)
 mkswap ${DEVICE}1 || \
   (echo "Failed to call mkswap ${DEVICE}1"; exit 1)
 
-# And then create an ext4 partition to mount /.
-parted -s $DEVICE mkpart primary ext4 ${SWAP_SIZE}MB ${ROOT_SIZE}MB || \
+# And then create an ext4 partition with 20G capacity to mount /var/log
+parted -s $DEVICE mkpart primary ext4 ${SWAP_SIZE}M ${ROOT_SIZE}M || \
   (echo "Failed to create partition ${DEVICE}2"; exit 1)
 mkfs.ext4 ${DEVICE}2 || \
   (echo "Failed to make ext4 filesystem on ${DEVICE}2"; exit 1)
 sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=\"${DEVICE}2\"|" $CONF_FILE
 
-# All the remaining space is used as /var/log, with ext4 filesystem.
-parted -s $DEVICE mkpart primary ext4 ${ROOT_SIZE}MB 100% || \
+# All the remaining space is used as /var/log, with ext4 type.
+parted -s $DEVICE mkpart primary ext4 ${ROOT_SIZE}M 100% || \
   (echo "Failed to create partition ${DEVICE}3"; exit 1)
 mkfs.ext4 ${DEVICE}3 || \
   (echo "Failed to make ext4 filesystem on ${DEVICE}3"; exit 1)
