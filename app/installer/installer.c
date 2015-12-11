@@ -153,8 +153,8 @@ void installer_emit_webview_ok ()
             js_post_signal("is_virtual_machine");
         }
 
+        init_parted ();
         if (auto_conf_path == NULL) {
-            init_parted ();
         }else{
             js_post_signal("auto_mode");
         }

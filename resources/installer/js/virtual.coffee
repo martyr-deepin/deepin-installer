@@ -34,9 +34,9 @@ class VirtualMachine extends Page
     ok_cb: =>
         console.debug("[virtual.coffee] VirtualMachine.ok_cb() auto_mode: #{pc.auto_mode}")
         if pc.auto_mode
-            progress_page = new Progress("progress") if not progress_page?
-            pc.switch_page(progress_page)
-            DCore.Installer.start_install()
+            undo_part_table_info()
+            part_page = new Part("part")
+            pc.switch_page(part_page)
         else
             welcome_page = new Welcome("welcome") if not welcome_page?
             pc.switch_page(welcome_page)
