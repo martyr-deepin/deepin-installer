@@ -167,7 +167,6 @@ void installer_record_bootloader_info(const char* uuid, gboolean uefi)
     }
 
     g_debug("[%s] uuid: %s, uefi: %d\n", __func__, uuid, uefi);
-
 }
 
 JS_EXPORT_API

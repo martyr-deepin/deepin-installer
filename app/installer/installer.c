@@ -28,6 +28,7 @@
 #include "dwebview.h"
 #include "dcore.h"
 #include "i18n.h"
+#include "info.h"
 #include "fs_util.h"
 #include "part_util.h"
 #include "background.h"
@@ -42,18 +43,23 @@ static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
 
 char* auto_conf_path = NULL;
+char* conf_group_name = NULL;
 char* log_path = NULL;
 gboolean nowm = FALSE;
 static GOptionEntry entries[] =
 {
     { "conf", 'c', 0, G_OPTION_ARG_STRING, &auto_conf_path,
       "set configure file path when installing with automate mode ", "path"},
+    { "group", 'g', 0, G_OPTION_ARG_STRING, &conf_group_name,
+      "group name of lfs conf ", "group name"},
     { "log", 'l', 0, G_OPTION_ARG_STRING, &log_path,
       "write log message to ", "log path"},
     { "without-wm", 'w', 0, G_OPTION_ARG_NONE, &nowm,
       "launch deepin-installer without window manager", NULL},
     { NULL }
 };
+
+gboolean read_lfs_atm_template();
 
 static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
@@ -154,12 +160,123 @@ void installer_emit_webview_ok ()
         }
 
         init_parted ();
-        if (auto_conf_path == NULL) {
-        }else{
-            js_post_signal("auto_mode");
-        }
-
+        // TODO: check return status.
+        read_lfs_atm_template();
+        js_post_signal("auto_mode");
     }
+}
+
+// Read lfs-atm.conf. If failed, returns FALSE.
+gboolean read_lfs_atm_template() {
+  g_message("[%s]\n", __func__);
+
+  GError* error = NULL;
+  const char filepath[] = "lfs-atm.conf";
+  GKeyFile* key_file = g_key_file_new();
+
+  g_key_file_load_from_file(key_file, auto_conf_path, G_KEY_FILE_NONE, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return FALSE;
+  }
+
+  const char username_key[] = "DI_USERNAME";
+  const char password_key[] = "DI_PASSWORD";
+  const char hostname_key[] = "DI_HOSTNAME";
+
+  gchar* username = NULL;
+  gchar* hostname = NULL;
+  gchar* password = NULL;
+  username = g_key_file_get_value(key_file, conf_group_name,
+                                  username_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  hostname = g_key_file_get_value(key_file, conf_group_name,
+                                  hostname_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  password = g_key_file_get_value(key_file, conf_group_name,
+                                  password_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  installer_record_accounts_info(username, hostname, password);
+  g_free(username);
+  g_free(hostname);
+  g_free(password);
+
+  const char locale_key[] = "DI_LOCALE";
+  gchar* locale = NULL;
+  locale  = g_key_file_get_value(key_file, conf_group_name, locale_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  installer_record_locale_info(locale);
+  g_free(locale);
+
+  const char timezone_key[] = "DI_TIMEZONE";
+  gchar* timezone = NULL;
+  timezone = g_key_file_get_value(key_file, conf_group_name,
+                                  timezone_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  installer_record_timezone_info(timezone);
+  g_free(timezone);
+
+  const char layout_key[] = "DI_LAYOUT";
+  const char layout_variant_key[] = "DI_LAYOUT_VARIANT";
+  gchar* layout = NULL;
+  gchar* layout_variant = NULL;
+  layout = g_key_file_get_value(key_file, conf_group_name,
+                                layout_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  layout_variant = g_key_file_get_value(key_file, conf_group_name,
+                                        layout_variant_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  installer_record_keyboard_layout_info(layout, layout_variant);
+  g_free(layout);
+  g_free(layout_variant);
+
+  g_key_file_free(key_file);
+  return TRUE;
 }
 
 static void

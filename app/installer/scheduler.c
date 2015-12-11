@@ -108,35 +108,10 @@ static void start_run_installer()
 static void start_prepare_conf()
 {
     g_message("[%s]\n", __func__);
-    extern char* auto_conf_path;
-    if (auto_conf_path != NULL) {
-        GError* error = NULL;
-        char* cmd = g_strdup_printf("sh -c '[ %s -ef %s ] || cp -f %s %s'",
-                                    auto_conf_path, CONF_PATH,
-                                    auto_conf_path, CONF_PATH);
-        g_warning("%s\n", cmd);
-        int exit_code = 0;
-        g_spawn_command_line_sync(cmd, NULL, NULL, &exit_code, &error);
-        g_free(cmd);
-        if (error != NULL) {
-            //TODO: report error
-            g_warning("[%s] auto install mode failed: %s, cmd: %s", __func__,
-                      error->message, cmd);
-            g_clear_error(&error);
-            installer_terminate();
-            return;
-        }
-        if (exit_code != 0) {
-            installer_terminate();
-            return;
-        }
-    } else {
-        if (InstallerConf.simple_mode && InstallerConf.uefi) {
-            auto_handle_esp();
-        }
-        write_installer_conf(CONF_PATH);
+    if (InstallerConf.simple_mode && InstallerConf.uefi) {
+        auto_handle_esp();
     }
-
+    write_installer_conf(CONF_PATH);
     start_run_installer();
 }
 
