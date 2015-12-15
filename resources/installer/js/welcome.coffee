@@ -83,7 +83,10 @@ update_timezone_text = (tri) ->
     console.log("[welcome.coffee] update_timezone_text(), current timezone: #{utc}")
     timezoneSet_div?.title = utc
 
-    city = __selected_timezone.split("/")[1]
+    try
+        city = __selected_timezone.split("/").pop()
+    catch
+        city = __selected_timezone
     right = DCore.dgettext("tzdata", city)
     if not right? then right = city
     timezoneSet_div?.innerText = right
@@ -638,7 +641,7 @@ class Timezone extends Widget
         style = "left:" + x + "px;" + "top:" + y + "px"
         @pin.setAttribute("style", style)
 
-        text = area.getAttribute("data-timezone").split("/")[1]
+        text = area.getAttribute("data-timezone").split("/").pop()
 
         if show_tooltip
             if not @tooltip?
