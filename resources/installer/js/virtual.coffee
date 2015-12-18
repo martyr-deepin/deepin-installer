@@ -24,7 +24,7 @@ class VirtualMachine extends Page
         @title_txt.innerText = _("Tips")
         @content = create_element("div", "VirtualContent", @element)
         @tips = create_element("div", "VirtualTips", @content)
-        @tips.innerText = "安装过程中会格式化整个磁盘，请提前备份重要数据!"
+        @tips.innerText = "系统安装过程中需要格式化所选分区，请谨慎操作！"
         @foot = create_element("div", "VirtualFoot", @element)
         @continue = new NextStep("VirtualMachineContinue","安装", @ok_cb)
         @foot.appendChild(@continue.element)
