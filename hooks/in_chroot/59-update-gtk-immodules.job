@@ -1,0 +1,10 @@
+#! /bin/sh
+
+INFO="Refresh gtk2 im-modules cache"
+
+echo "[$0] ${INFO}"
+if dpkg -l | grep -q ^ii\ \ libgtk2.0-0;then
+	dpkg-reconfigure libgtk2.0-0 || true
+fi
+
+exit 0
