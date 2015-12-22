@@ -1,0 +1,28 @@
+#!/bin/sh
+set -e
+
+. /usr/share/os-prober/common.sh
+
+oldMachineID="/var/cache/machine-id"
+if [ -f $oldMachineID ]; then
+	log "alreay has old machine-id";
+	exit 1;
+fi
+
+
+partition="$1"
+dir="$2"
+type="$3"
+
+if grep -iq deepin "$dir/etc/lsb-release" ;then
+	log "release is deepin"
+	if [ -f "$dir/etc/machine-id" ] ;then
+		log "found old machine-id"
+		cp "$dir/etc/machine-id" $oldMachineID
+	fi
+else
+	log "release is not deepin"
+fi
+
+
+exit 1

@@ -3,5 +3,12 @@
 
 echo "[$0]"
 set -x
-dbus-uuidgen | tee /etc/machine-id
 
+oldMachineID="/deepinhost/var/cache/machine-id"
+if [ -f $oldMachineID ] ;then
+    cp $oldMachineID /etc/
+else
+    systemd-machine-id-setup
+fi
+
+chmod 644 /etc/machine-id
