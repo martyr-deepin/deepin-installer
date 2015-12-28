@@ -3,18 +3,19 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Heimen Stoffels <motionshot@vivaldi.net>, 2014
+# Heimen Stoffels <vistausss@outlook.com>, 2014
+# Heimen Stoffels <vistausss@outlook.com>, 2015
 # jezusisstoer <jezusisstoer@gmail.com>, 2014
-# Jop <jop@jopv.net>, 2014
-# Stefan van den Brink <stefan.vandenbrink@gmail.com>, 2014
+# Jop Vernooij <jop@jopv.net>, 2014
+# Stefan van den Brink <inactive+stefan.vandenbrink@transifex.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-26 08:41+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/deepin-installer/language/nl/)\n"
+"PO-Revision-Date: 2015-11-20 12:05+0000\n"
+"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+"Language-Team: Dutch (http://www.transifex.com/linuxdeepin/deepin-installer/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,24 +29,24 @@ msgstr "Nu herstarten"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr "Installatie geslaagd!"
+msgstr "De installatie is geslaagd!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Tip: Verwijder het installatiemedium alvorens te herstarten om te voorkomen dat u terugkeert naar de installatieomgeving wanneer u de computer volgende keer opstart."
+msgstr "Tip: verwijder het installatiemedium alvorens te herstarten om te voorkomen dat u terugkeert naar de installatieomgeving wanneer u de computer de volgende keer opstart."
 
 #: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
-msgstr "Installatie is mislukt!"
+msgstr "De installatie is mislukt!"
 
 #: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr "Het installatielogboek is voor u op uw bureaublad opgeslagen. \nOm ons te helpen het systeem te verbeteren, gelieve het logboek naar het Deepin Team te sturen. Bedankt!"
+msgstr "Het installatielogboek is opgeslagen op uw bureaublad.\nOm ons te helpen bij het verbeteren van het systeem, zouden we het op prijs stellen als u het logboek aan ons, het Deepin-team, opstuurt. Bij voorbaat dank!"
 
 #: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
@@ -60,7 +61,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr "Er werd gedetecteerd dat je een virtuele machine gebruikt. Deepin installeren op een virtuele machine zal de performantie beïnvloeden. Je beleeft de beste ervaring in een echte omgeving."
+msgstr "Het lijkt erop dat u een virtuele machine gebruikt. Het installeren van Deepin in een virtuele machine zal impact hebben op de prestaties. We raden aan om Deepin te installeren op een fysieke computer."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -68,7 +69,7 @@ msgstr "Doorgaan"
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
-msgstr "Installatie vereisten"
+msgstr "Installatievereisten"
 
 #: ../resources/installer/js/base.coffee:29
 #, python-format
@@ -150,7 +151,7 @@ msgstr "Nieuwe partitie"
 #: ../resources/installer/js/part.coffee:585
 #: ../resources/installer/js/part.coffee:805
 msgid "Expert Mode"
-msgstr "Expert-modus"
+msgstr "Geavanceerde modus"
 
 #: ../resources/installer/js/part.coffee:595
 msgid "Install"
@@ -164,17 +165,17 @@ msgstr "Installatietips"
 
 #: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
-msgstr "Een hoofdpartitie (/) is vereist."
+msgstr "Een root-partitie (/) is vereist."
 
 #: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "UEFI-native installatie ondersteunt alleen GPT-geformatteerde schijven."
+msgstr "Een UEFI-installatie ondersteunt alleen een in GPT geformatteerde schijf."
 
 #: ../resources/installer/js/part.coffee:638
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr "ESP's ondersteuning is benodigd in UEFI-modus en maak een partitie van 100 MB of meer aan in EFI-formaat."
+msgstr "ESP's ondersteuning is benodigd in UEFI-modus. Creëer een partitie van 100 MB of meer in EFI-formaat."
 
 #: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:121
@@ -183,7 +184,7 @@ msgstr "Partitie toevoegen"
 
 #: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
-msgstr "Kan hier geen partitie maken"
+msgstr "Er kan hier geen partitie worden gemaakt"
 
 #: ../resources/installer/js/part.coffee:687
 msgid "UEFI"
@@ -207,7 +208,7 @@ msgstr "De partitie is aangekoppeld.\nWeet u zeker dat u hem wilt ontkoppelen?"
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr "Installatie gebaseerd op UEFI ondersteunt enkel schijven met GPT-verdeling. Je verliest alle gegevens op de schijf als je doorgaat met installeren."
+msgstr "Een UEFI-installatie ondersteunt alleen een in GPT geformatteerde schijf. Als u toch door wilt gaan met installeren zal u alle gegevens op de schijf kwijtraken."
 
 #: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
@@ -223,7 +224,7 @@ msgstr "Annuleren"
 
 #: ../resources/installer/js/dialog.coffee:50
 msgid "Are you sure to exit from installation?"
-msgstr "Ben je zeker dat je het installatieproces wil verlaten?"
+msgstr "Weet u zeker dat de installatie af wilt breken?"
 
 #: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure you want to delete this partition?"
@@ -239,7 +240,7 @@ msgstr "Weet u zeker dat u deze partitie wilt formatteren?"
 
 #: ../resources/installer/js/dialog.coffee:99
 msgid "Proceed with installation"
-msgstr "Doorgaan met installatie"
+msgstr "Doorgaan met de installatie"
 
 #: ../resources/installer/js/dialog.coffee:108
 msgid "Deepin OS will be installed to freespace."
@@ -253,7 +254,7 @@ msgstr "Deepin OS zal geïnstalleerd worden in"
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\nDe partitie zal geformatteerd worden als u de installatie voortzet. Maak een backup van belangrijke data.\n"
+msgstr "\nDe partitie zal worden geformatteerd als doorgaat met installeren. Maak een backup van uw belangrijke data.\n"
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid "Do you want to continue the installation ?"
@@ -297,7 +298,7 @@ msgstr "Aankoppelen:"
 
 #: ../resources/installer/js/dialog.coffee:314
 msgid "Please enter a valid partition size."
-msgstr "Voer alstublieft een geldige partitiegrootte in."
+msgstr "Vul alstublieft een geldige partitiegrootte in."
 
 #: ../resources/installer/js/welcome.coffee:193
 msgid "Yes"
@@ -321,7 +322,7 @@ msgstr "Indeling detecteren"
 
 #: ../resources/installer/js/welcome.coffee:348
 msgid "View Current"
-msgstr "Huidige bekijken"
+msgstr "Huidige weergeven"
 
 #: ../resources/installer/js/welcome.coffee:507
 msgid "Please select or search your location."
@@ -335,11 +336,11 @@ msgstr "De twee wachtwoorden komen niet overeen."
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Computer name can not be empty."
-msgstr "De naam van de computer mag niet leeg zijn."
+msgstr "De naam van de computer mag niet leeg worden gelaten."
 
 #: ../resources/installer/js/welcome.coffee:831
 msgid "Password can not be empty."
-msgstr "Wachtwoord mag niet leeg zijn."
+msgstr "Het wachtwoord mag niet leeg worden gelaten."
 
 #: ../resources/installer/js/welcome.coffee:833
 msgid "Invalid password."
@@ -379,11 +380,11 @@ msgstr "Foutrapport"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "Systeeminstallatie mislukt. Verstuur alstublieft het log naar het Deepin-team."
+msgstr "De systeeminstallatie is mislukt. Verstuur alstublieft het logboek naar het Deepin-team."
 
 #: ../resources/installer/js/progress.coffee:41
 msgid "Preparing for Installation"
-msgstr "Voorbereiden voor installatie"
+msgstr "Bezig met voorbereiden van de installatie"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "Deepin Store"
@@ -403,7 +404,7 @@ msgstr "Ongeëvenaarde online communicatie"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Deepin Movie"
-msgstr "Deepin Film"
+msgstr "Deepin Video"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
 msgid "Comprehensive Audio-visual Shock"
@@ -427,7 +428,7 @@ msgstr "Ultieme muziekreis"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr "Rich Extended-functies"
+msgstr "Vele uitgebreide functies"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
@@ -443,13 +444,13 @@ msgstr "Vrije en verbonden open bron-gemeenschap"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:88
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "U bent welkom om mee te doen aan het Deepin-internationalisatie-project"
+msgstr "U bent van harte welkom om mee te doen aan het Deepin-internationalisatie-project"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:89
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "U bent welkom om ons te volgen op Weibo, Twitter, Facebook, Google+, mailinglijst en IRC"
+msgstr "U bent van harte welkom om ons te volgen op Weibo, Twitter, Facebook, Google+, onze mailinglijst en op IRC"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"

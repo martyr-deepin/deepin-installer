@@ -4,16 +4,16 @@
 # 
 # Translators:
 # Gioacchino Nigrelli <gioacchino.nigrelli@gmail.com>, 2014
-# Massimo Antonio Carofano <real.massimo@hotmail.it>, 2014
+# Massimo Antonio Carofano <real.massimo@hotmail.it>, 2014-2015
 # Massimo Antonio Carofano <real.massimo@hotmail.it>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-26 08:41+0000\n"
+"PO-Revision-Date: 2015-09-30 18:20+0000\n"
 "Last-Translator: Massimo Antonio Carofano <real.massimo@hotmail.it>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/deepin-installer/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/linuxdeepin/deepin-installer/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -34,7 +34,7 @@ msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Trucco: rimuovi il dispositivo di installazione dopo il reboot, in questo modo non si avvierà nuovamente il processo di installazione."
+msgstr "NB: rimuovi il dispositivo di installazione dopo il reboot, in questo modo non si avvierà nuovamente il processo di installazione."
 
 #: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
@@ -59,7 +59,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr "È stato rilevato l'utilizzo di Deepin su virtual machine, questo potrebbe influire pesantemente sulle performance. Si consiglia l'installazione tradizionale pulita."
+msgstr "È stato rilevato l'utilizzo di Deepin su virtual machine, questo potrebbe influire pesantemente sulle performance. Si consiglia l'installazione tradizionale della Distro."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -324,7 +324,7 @@ msgstr "Visualizza attuale"
 
 #: ../resources/installer/js/welcome.coffee:507
 msgid "Please select or search your location."
-msgstr "Seleziona o cerca la tua Zona."
+msgstr "Seleziona o cerca il tuo fuso orario."
 
 #: ../resources/installer/js/welcome.coffee:740
 #: ../resources/installer/js/welcome.coffee:763
@@ -378,7 +378,7 @@ msgstr "Report errori"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "L'installazione del sistema è fallita. Per cortesia invia un feedback al team Deepin."
+msgstr "L'installazione del sistema è fallita: per cortesia invia un feedback al team Deepin."
 
 #: ../resources/installer/js/progress.coffee:41
 msgid "Preparing for Installation"
@@ -390,11 +390,11 @@ msgstr "Deepin Store"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "One-stop Software Management"
-msgstr "One-stop Software Management"
+msgstr "One-step Software Management"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:64
 msgid "Continuous Update of Wonderful Software"
-msgstr "Continui aggiornamenti di un software magnifico"
+msgstr "Aggiornamenti continui di un software magnifico"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:65
 msgid "Unimpeded Online Communication"
@@ -430,7 +430,7 @@ msgstr "Funzioni Rich Extended"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
-msgstr "Goditi la musica online"
+msgstr "Goditi la musica in streaming"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
 msgid "Deepin Community"
@@ -438,7 +438,7 @@ msgstr "Deepin Community"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
 msgid "Free and United Open Source Community"
-msgstr "Open Source Community libera ed unita"
+msgstr "Comunità open-source libera ed unita"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:88
 msgid "Welcome to participate in Deepin Internationalization Project"

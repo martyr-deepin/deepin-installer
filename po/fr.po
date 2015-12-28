@@ -3,16 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# lexross <its4moi@gmail.com>, 2014
+# lexross <its4moi@gmail.com>, 2014-2015
 # Tristan Denni <tristan.denni@viacesi.fr>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-26 08:41+0000\n"
+"PO-Revision-Date: 2015-10-31 11:34+0000\n"
 "Last-Translator: lexross <its4moi@gmail.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/deepin-installer/language/fr/)\n"
+"Language-Team: French (http://www.transifex.com/linuxdeepin/deepin-installer/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: ../resources/installer/js/finish.coffee:34
 #: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Now"
-msgstr "Redémarrer maintenant"
+msgstr "Redémarrer "
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
@@ -51,7 +51,7 @@ msgstr "Abandonner l'installation"
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
-msgstr "Astuces"
+msgstr "Conseils"
 
 #: ../resources/installer/js/virtual.coffee:27
 msgid ""
@@ -102,7 +102,7 @@ msgstr "Attention"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "Votre partition de montage /boot est trop petite, veuillez l'agrandir s'il vous plaît -au moins 300M-"
+msgstr "Votre partition de montage /boot est trop petite, veuillez la redimmensionner -au moins 300MB-"
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -122,19 +122,19 @@ msgstr "Espace libre"
 
 #: ../resources/installer/js/part.coffee:494
 msgid "Filesystem"
-msgstr "Système de fichier"
+msgstr "Genre"
 
 #: ../resources/installer/js/part.coffee:496
 msgid "Information"
-msgstr "Information"
+msgstr "Informations"
 
 #: ../resources/installer/js/part.coffee:498
 msgid "Mount Point"
-msgstr "Point de montage"
+msgstr "Montage"
 
 #: ../resources/installer/js/part.coffee:500
 msgid "Formatting"
-msgstr "Formatage en cours"
+msgstr "Formatage "
 
 #: ../resources/installer/js/part.coffee:507
 #: ../resources/installer/js/dialog.coffee:73
@@ -172,7 +172,7 @@ msgstr "Une installation native UEFI supporte uniquement les disques formatés e
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr "l'ESP est nécessaire en mode UEFI,veuillez s'il vous plaît créer une partition de 100 Mo ou plus au format EFI."
+msgstr "l'ESP est nécessaire en mode UEFI,veuillez s'il vous plaît créer une partition de 100 MB ou plus au format EFI."
 
 #: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:121
@@ -229,7 +229,7 @@ msgstr "Êtes vous sûr de vouloir supprimer cette partition ?"
 
 #: ../resources/installer/js/dialog.coffee:88
 msgid "Formatting Partition"
-msgstr "Formatage de la partition"
+msgstr "Formatage Partition"
 
 #: ../resources/installer/js/dialog.coffee:90
 msgid "Are you sure you want to format this partition?"
@@ -287,7 +287,7 @@ msgstr "Fin"
 
 #: ../resources/installer/js/dialog.coffee:257
 msgid "Filesystem:"
-msgstr "Système de fichier : "
+msgstr "Fichier système: "
 
 #: ../resources/installer/js/dialog.coffee:281
 msgid "Mount:"
@@ -389,15 +389,15 @@ msgstr "Logithèque Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "One-stop Software Management"
-msgstr "Logiciel de gestion \"Ultra Facile\""
+msgstr "Logiciel de gestion simplifié"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:64
 msgid "Continuous Update of Wonderful Software"
-msgstr "Mises à jour logicielles simplifiée"
+msgstr "Mises à jour logiciels facile"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:65
 msgid "Unimpeded Online Communication"
-msgstr "Communication en ligne inninterompue"
+msgstr "Communication en ligne "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Deepin Movie"
@@ -405,7 +405,7 @@ msgstr "Deepin Film"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
 msgid "Comprehensive Audio-visual Shock"
-msgstr "Visuellement parfait"
+msgstr "Visuellement agréable"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:72
 msgid "New Interactive Experience"
@@ -425,7 +425,7 @@ msgstr "Experience Musicale Ultime"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr "Beaucoup de fonctions étendues"
+msgstr "Riche en fonctions étendues"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
@@ -437,17 +437,17 @@ msgstr "Communauté Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
 msgid "Free and United Open Source Community"
-msgstr "Communauté libre et amicale "
+msgstr "Communauté unie et amicale "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:88
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "Merci de participer dans le projet d'internationalisation de Deepin"
+msgstr "Merci de participer dans le projet de Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:89
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "Merci de nous suivre sur Weibo, Twitter, Facebook, Google+, liste de diffusion et Canaux IRC "
+msgstr "Suivez-nous sur Weibo, Twitter, Facebook, Google+, liste de diffusion et Canaux IRC "
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"

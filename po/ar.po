@@ -3,450 +3,451 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Microtus <hrabosmartin@gmail.com>, 2014
+# goodboy5 <a6895118@drdrb.net>, 2014
+# alibacha19 <alibacha19@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2015-10-26 00:47+0000\n"
+"PO-Revision-Date: 2015-03-23 10:25+0000\n"
 "Last-Translator: Martin <martin.ceronio@infosize.co.za>\n"
-"Language-Team: Slovak (http://www.transifex.com/linuxdeepin/deepin-installer/language/sk/)\n"
+"Language-Team: Arabic (http://www.transifex.com/linuxdeepin/deepin-installer/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sk\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #: ../resources/installer/js/finish.coffee:34
 #: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Now"
-msgstr "Reštartovať teraz"
+msgstr "اعادة تشغيل اﻵن"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr "Inštalácia úspešná!"
+msgstr "نجحت عملية التثبيت"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Tipy: Prosím odstráňte inštalačné médium pred reštartom, aby ste sa vyhli znovu-spusteniu inštalačného prostredia, keď nabudúce spustíte počítač. "
+msgstr "نصائح: الرجاء إزالة وسيلة التثبيت قبل إعادة التشغيل، وذلك لتجنب  إعادة الدخول لبيئة تثبيث النظام عند بدء تشغيل جهاز الكمبيوترللمرة القادمة."
 
 #: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
-msgstr "Inštalácia zlyhala!"
+msgstr "فشل التثبيت"
 
 #: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr "Záznam inštalácie bol pre Vás uložený na plochu.\nPre pomoc zlepšiť nám systém prosím pošlite tento záznam Deepin tímu. Ďakujeme!"
+msgstr "تم حفظ سجل النظام على سطح المكتب لك. \\ N \" \"لمساعدتنا على تحسين نظام أفضل، يرجى إرسال السجل لفريقDeepin . شكرا لك!"
 
 #: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
-msgstr "Ukončiť inštaláciu"
+msgstr "الخروج من التثبيت"
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
-msgstr "Tipy"
+msgstr "نصائح"
 
 #: ../resources/installer/js/virtual.coffee:27
 msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr "Bolo zistené, že používate virtuálny stroj. Inštalácia Deepin-u do virtuálneho stroja ovplyvní jeho výkon. Je odporúčané vyskúšať Deepin v reálnom prostredí. "
+msgstr "تم الكشف انك تستخدم جهاز وهمي . تركيب Deepin من جهاز وهمي يؤثر على أداء الجهاز. ينصح لك تجربته في بيئة حقيقية.\""
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
-msgstr "Pokračovať"
+msgstr "استمرار"
 
 #: ../resources/installer/js/base.coffee:28
 msgid "Installation Requirements"
-msgstr "Inštalačné požiadavky"
+msgstr "متطلبات التثبيت"
 
 #: ../resources/installer/js/base.coffee:29
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr "Pre inštaláciu Deepin OS potrebujete aspoň %d GB diskového priestoru. "
+msgstr "لتثبيت Deepin OS، تحتاج إلى أن يكون لديك%d مساحة القرصGB على الأقل."
 
 #: ../resources/installer/js/base.coffee:49
 #: ../resources/installer/js/base.coffee:51
 #: ../resources/installer/js/base.coffee:53
 msgid "Unused"
-msgstr "Nepoužité"
+msgstr "غير مستخدم"
 
 #: ../resources/installer/js/part.coffee:126
 #: ../resources/installer/js/part.coffee:145
 msgid "Freespace"
-msgstr "Voľný priestor"
+msgstr "مساحة خالية"
 
 #: ../resources/installer/js/part.coffee:198
 #: ../resources/installer/js/part.coffee:203
 msgid "Unknown"
-msgstr "Neznámy"
+msgstr "غير معروف"
 
 #: ../resources/installer/js/part.coffee:306
 msgid "Install Here"
-msgstr "Inštalovať sem"
+msgstr "ثبت هنا"
 
 #: ../resources/installer/js/part.coffee:342
 #: ../resources/installer/js/part.coffee:780
 msgid "Warning"
-msgstr "Varovanie"
+msgstr "تحذير"
 
 #: ../resources/installer/js/part.coffee:343
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "Pravdepodobne nebudete moc spustiť systém kvôli malému priestoru /boot prípojného bodu, prosím zvýšte priestor na aspoň 300MB. "
+msgstr "لا يمكنك البدء  بسبب مساحة صغيرة جدا ل/ مكان تركيب التمهيد  ، يرجى اعداد مساحة لحجم لا يقل 300M"
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
-msgstr "Disk"
+msgstr "القرص الصلب"
 
 #: ../resources/installer/js/part.coffee:488
 msgid "Device"
-msgstr "Zariadenie"
+msgstr "جهاز"
 
 #: ../resources/installer/js/part.coffee:490
 msgid "Size"
-msgstr "Veľkosť"
+msgstr "الحجم"
 
 #: ../resources/installer/js/part.coffee:492
 msgid "Free Space"
-msgstr "Voľný priestor"
+msgstr "مساحة خالية"
 
 #: ../resources/installer/js/part.coffee:494
 msgid "Filesystem"
-msgstr "Súborový systém"
+msgstr "نوع نظام الملفات:"
 
 #: ../resources/installer/js/part.coffee:496
 msgid "Information"
-msgstr "Informácie"
+msgstr "معلومات"
 
 #: ../resources/installer/js/part.coffee:498
 msgid "Mount Point"
-msgstr "Prípojný bod"
+msgstr "موقع نظام ملفات الجذر"
 
 #: ../resources/installer/js/part.coffee:500
 msgid "Formatting"
-msgstr "Formátovanie"
+msgstr "إعادة التهيئة"
 
 #: ../resources/installer/js/part.coffee:507
 #: ../resources/installer/js/dialog.coffee:73
 msgid "Delete Partition"
-msgstr "Odstrániť partíciu"
+msgstr "حذف التقسيمات"
 
 #: ../resources/installer/js/part.coffee:518
 msgid "New Partition"
-msgstr "Nová partícia"
+msgstr "تقسيم جديد"
 
 #: ../resources/installer/js/part.coffee:585
 #: ../resources/installer/js/part.coffee:805
 msgid "Expert Mode"
-msgstr "Pokročilý režim"
+msgstr "وضع خبير"
 
 #: ../resources/installer/js/part.coffee:595
 msgid "Install"
-msgstr "Inštalovať"
+msgstr "تثبيت"
 
 #: ../resources/installer/js/part.coffee:621
 #: ../resources/installer/js/part.coffee:629
 #: ../resources/installer/js/part.coffee:637
 msgid "Installation Tips"
-msgstr "Inštalačné tipy"
+msgstr "إرشادات التثبيت"
 
 #: ../resources/installer/js/part.coffee:622
 msgid "A root partition (/) is required."
-msgstr "Root partícia (/) je požadovaná."
+msgstr "مطلوب القسم الجذر (/)"
 
 #: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "Iba UEFI-native inštalácia podporuje GPT-formátovaný disk."
+msgstr "يدعم-UEFI الأصلي التثبيت فقط القرص بتنسيقGPT ."
 
 #: ../resources/installer/js/part.coffee:638
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr "Podpora ESP je potrebná v UEFI režime, prosím vytvorte partíciu s aspoň 100MB priestoru v efi formáte. "
+msgstr "هناك حاجة لدعم ESP في وضع UEFI ويرجى إنشاء قسم من 100MB أو أكثر في تنسيق EFI."
 
 #: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/dialog.coffee:121
 msgid "Add Partition"
-msgstr "Pridať partíciu"
+msgstr "إضافة قسم تخزين:"
 
 #: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
-msgstr "Nie je možné tu vytvoriť partíciu"
+msgstr "لا يمكن انشاء تقسيم هنا"
 
 #: ../resources/installer/js/part.coffee:687
 msgid "UEFI"
-msgstr "UEFI"
+msgstr "واجة التشغيلUEFI"
 
 #: ../resources/installer/js/part.coffee:694
 msgid "Boot Loader"
-msgstr "Zavádzač"
+msgstr "محمل الاقلاع"
 
 #: ../resources/installer/js/part.coffee:741
 msgid "Unmount Partition"
-msgstr "Odpojiť partíciu"
+msgstr "إلغاء التقسيم"
 
 #: ../resources/installer/js/part.coffee:742
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr "Partícia bola detekovanáa ko pripojená. \nUrčite ju chcete odpojiť?"
+msgstr "تم الكشف عن التقسيمات .\\ n\nهل أنت متأكد أنك تريد إلغاءها؟"
 
 #: ../resources/installer/js/part.coffee:781
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr "Iba UEFI-native inštalácia podporuje GPT-formátovaný disk. Stratíte všetky dáta, ak trváte na inštalácii. "
+msgstr "تثبيت UEFI الأصلي يعتمد فقط على قرص مهيأ GPT-. ستفقد جميع البيانات على القرص إذا كنت تصر على التثبيت."
 
 #: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
-msgstr "Jednoduchý režim"
+msgstr "وضع بسيط"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "OK"
-msgstr "OK"
+msgstr "موافق"
 
 #: ../resources/installer/js/dialog.coffee:41
 msgid "Cancel"
-msgstr "Zrušiť"
+msgstr "إلغاء"
 
 #: ../resources/installer/js/dialog.coffee:50
 msgid "Are you sure to exit from installation?"
-msgstr "Určite chcete ukončiť inštaláciu?"
+msgstr "هل أنت متأكد الخروج من التثبيت؟"
 
 #: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure you want to delete this partition?"
-msgstr "Ste si istý, že chcete odstrániť partíciu?"
+msgstr "هل أنت متأكد من حذف هذا القسم"
 
 #: ../resources/installer/js/dialog.coffee:88
 msgid "Formatting Partition"
-msgstr "Formátovanie partície"
+msgstr " تهيئة القسم"
 
 #: ../resources/installer/js/dialog.coffee:90
 msgid "Are you sure you want to format this partition?"
-msgstr "Ste si istý, že chcete formátovať túto partíciu?"
+msgstr " \"هل أنت متأكد من تهيئة هذا القسم\""
 
 #: ../resources/installer/js/dialog.coffee:99
 msgid "Proceed with installation"
-msgstr "Pokračovať v inštalácii"
+msgstr "\"متابعة التثبيت\""
 
 #: ../resources/installer/js/dialog.coffee:108
 msgid "Deepin OS will be installed to freespace."
-msgstr "Deepin OS bude nainštalovaný na voľný priestor. "
+msgstr " \"سيتم تثبيت Deepin OS على المساحة الحرة\""
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid "Deepin OS will be installed to "
-msgstr "Deepin OS bude nainštalovaný na"
+msgstr " \"سيتم تثبيت نظام التشغيلDeepin  في\""
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\nPartícia bude naformátovná, ak budete pokračovať v inštalácii. Prosím zálohujte Vaše dôležité dáta. \n"
+msgstr "\nسيتم تنسيق التقسيم إذا كنت متابعة التثبيت. يرجى عمل نسخة احتياطية للبيانات الهامة. \\ ن\n"
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid "Do you want to continue the installation ?"
-msgstr "Chcete pokračovať v inštalácii?"
+msgstr "\"هل ترغب في متابعة التثبيت؟\""
 
 #: ../resources/installer/js/dialog.coffee:141
 msgid "Type:"
-msgstr "Typ:"
+msgstr "النوع"
 
 #: ../resources/installer/js/dialog.coffee:147
 msgid "Primary"
-msgstr "Primárny"
+msgstr "اولي"
 
 #: ../resources/installer/js/dialog.coffee:152
 msgid "Logical"
-msgstr "Logický"
+msgstr "منطقي"
 
 #: ../resources/installer/js/dialog.coffee:182
 msgid "Size:"
-msgstr "Veľkosť:"
+msgstr "الحجم:"
 
 #: ../resources/installer/js/dialog.coffee:226
 msgid "Align:"
-msgstr "Zarovnanie:"
+msgstr "محاذاة"
 
 #: ../resources/installer/js/dialog.coffee:232
 msgid "Begin"
-msgstr "Začiatok"
+msgstr "البداية"
 
 #: ../resources/installer/js/dialog.coffee:237
 msgid "End"
-msgstr "Koniec"
+msgstr "النهاية"
 
 #: ../resources/installer/js/dialog.coffee:257
 msgid "Filesystem:"
-msgstr "Súborový systém:"
+msgstr "نوع نظام الملفات:"
 
 #: ../resources/installer/js/dialog.coffee:281
 msgid "Mount:"
-msgstr "Pripojiť:"
+msgstr "Mount"
 
 #: ../resources/installer/js/dialog.coffee:314
 msgid "Please enter a valid partition size."
-msgstr "Prosím zadajte platnú veľkosť partície. "
+msgstr "الرجاء ادخال الحجم الصحيح للقسم"
 
 #: ../resources/installer/js/welcome.coffee:193
 msgid "Yes"
-msgstr "Áno"
+msgstr "نعم"
 
 #: ../resources/installer/js/welcome.coffee:198
 msgid "No"
-msgstr "Nie"
+msgstr "لا"
 
 #: ../resources/installer/js/welcome.coffee:293
 msgid "Please press one of the following keys."
-msgstr "Prosím stlačte jednu z nasledujúcich kláves."
+msgstr "يرجى الضغط على أحد المفاتيح التالية."
 
 #: ../resources/installer/js/welcome.coffee:299
 msgid "Please confirm you have the following keys."
-msgstr "Prosím potvrďte, že máte nasledujúce klávesy. "
+msgstr " \"الرجاء التأكد من أن لديك المفاتيح التالية\""
 
 #: ../resources/installer/js/welcome.coffee:342
 msgid "Detect Layout"
-msgstr "Detekovať rozmiestnenie"
+msgstr "كشف تخطيط"
 
 #: ../resources/installer/js/welcome.coffee:348
 msgid "View Current"
-msgstr "Zobraziť aktuálne"
+msgstr "\"العرض الحالي\""
 
 #: ../resources/installer/js/welcome.coffee:507
 msgid "Please select or search your location."
-msgstr "Prosím zvoľte alebo vyhľadajte Vašu lokalitu. "
+msgstr "\"يرجى تحديد أو البحث عن موقعك\""
 
 #: ../resources/installer/js/welcome.coffee:740
 #: ../resources/installer/js/welcome.coffee:763
 #: ../resources/installer/js/welcome.coffee:847
 msgid "The two passwords do not match."
-msgstr "Heslá sa nezhodujú. "
+msgstr "كلمتا المرور غير متطابقتين"
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Computer name can not be empty."
-msgstr "Názov počítača nesmie byť prázdny. "
+msgstr "لا يمكن ترك خانة اسم المستخدم فارغة"
 
 #: ../resources/installer/js/welcome.coffee:831
 msgid "Password can not be empty."
-msgstr "Heslo nesmie byť prázdne. "
+msgstr "لا يمكن ترك كلمة السر فارغة."
 
 #: ../resources/installer/js/welcome.coffee:833
 msgid "Invalid password."
-msgstr "Chybné heslo. "
+msgstr "كلمة السر غير صحيحة"
 
 #: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
-msgstr "Užívateľské meno"
+msgstr "اسم المستخدم"
 
 #: ../resources/installer/js/welcome.coffee:866
 msgid "Computer Name"
-msgstr "Názov počítača"
+msgstr "اسم الحاسب اﻵلي"
 
 #: ../resources/installer/js/welcome.coffee:869
 msgid "Password"
-msgstr "Heslo"
+msgstr "كلمة المرور"
 
 #: ../resources/installer/js/welcome.coffee:874
 msgid "Retype Password"
-msgstr "Znovu heslo"
+msgstr "إعادة كتابة كلمة السر"
 
 #: ../resources/installer/js/welcome.coffee:901
 msgid "Next"
-msgstr "Ďaľšie"
+msgstr "التالي"
 
 #: ../resources/installer/js/welcome.coffee:958
 msgid "Time Zone"
-msgstr "Časové pásmo"
+msgstr "المنطقة الزمنية"
 
 #: ../resources/installer/js/welcome.coffee:963
 msgid "Keyboard"
-msgstr "Klávesnica"
+msgstr "لوحة المفاتيح"
 
 #: ../resources/installer/js/progress.coffee:25
 msgid "Error Report"
-msgstr "Chybové hlásenie"
+msgstr "تقرير خطأ"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "Inštalácia systému zlyhala. Prosím odošlite log Deepin tímu. "
+msgstr "فشل تثبيت النظام. يرجى ارسال سجل لفريق Deepin"
 
 #: ../resources/installer/js/progress.coffee:41
 msgid "Preparing for Installation"
-msgstr "Príprava inštalácie"
+msgstr "\"التحضير للتثبيت\""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "Deepin Store"
-msgstr "Deepin Obchod"
+msgstr "متجر ديبين"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "One-stop Software Management"
-msgstr "One-stop Správa softvéru"
+msgstr "برامج إدارة فريدة من نوعها"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:64
 msgid "Continuous Update of Wonderful Software"
-msgstr "Trvalé aktualizácie úžasného softvéru"
+msgstr " تحديث للبرمجيات مستمر و رائع  "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:65
 msgid "Unimpeded Online Communication"
-msgstr "Nezdržiavaná online komunikácia"
+msgstr "الاتصالات على الانترنت دون عوائق "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Deepin Movie"
-msgstr "Deepin Filmy"
+msgstr "أفلام دييبن"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
 msgid "Comprehensive Audio-visual Shock"
-msgstr "Kompletný audio-vizuálny dojem"
+msgstr " صدمة شاملة سمعية وبصرية"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:72
 msgid "New Interactive Experience"
-msgstr "Nový interaktívny zážitok"
+msgstr "تجربة تفاعلية جديدة"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:73
 msgid "Intelligent Subtitle Loading"
-msgstr "Inteligentné načítanie titulkov"
+msgstr "تحميل ذكي فرعي"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
 msgid "Deepin Music"
-msgstr "Deepin Hudba"
+msgstr "دييبن صوتيات"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
 msgid "Ultimate Music Journey"
-msgstr "Nekonečná hudobná dráha"
+msgstr "  رحلة موسيقية نهاية المطاف"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr "Bohato rozšírené funkcie"
+msgstr "\"وظائف غنية ممتدة\""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
-msgstr "Užite si online najsilnejší hlas"
+msgstr "r \"استمتع باقوى صوت على الخط\""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
 msgid "Deepin Community"
-msgstr "Deepin komunita"
+msgstr "\"مجموعة Deepin\""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
 msgid "Free and United Open Source Community"
-msgstr "Slobodná a jednotná open-source komunita"
+msgstr " \"مجتمع المصادر المفتوحة حر ومتحد\""
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:88
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "Radi Vás uvítame v Deepin prekladateľskom projekte"
+msgstr " مرحبا بكم في المشاركة في تدويل المشروع Deepin "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:89
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "Sledujte nás na Weibo, Twitter, Facebook, Google+, Maling List a IRC"
+msgstr "\"مرحبا بكم في متابعة منا على يبو، تويتر، الفيسبوك، + Google و والقائمة البريدية\" \"IRC\""
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"
@@ -454,4 +455,4 @@ msgstr "%a, %b %d, %Y"
 
 #: ../app/language-selector/greeter.c:301
 msgid "Invalid Password"
-msgstr "Nesprávne heslo"
+msgstr "كلمة المرور غير صحيحة"

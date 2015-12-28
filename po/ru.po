@@ -4,21 +4,21 @@
 # 
 # Translators:
 # Анатолий Валерианович <ffox909@mail.ru>, 2014
-# Vasilii Rusu <basil_russu@hotmail.com>, 2014
+# Vasilii Rusu <basil_russu@hotmail.com>, 2014-2015
 # Анатолий Валерианович <ffox909@mail.ru>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-26 08:41+0000\n"
-"Last-Translator: Анатолий Валерианович <ffox909@mail.ru>\n"
-"Language-Team: Russian (http://www.transifex.com/projects/p/deepin-installer/language/ru/)\n"
+"PO-Revision-Date: 2015-11-24 02:04+0000\n"
+"Last-Translator: Vasilii Rusu <basil_russu@hotmail.com>\n"
+"Language-Team: Russian (http://www.transifex.com/linuxdeepin/deepin-installer/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #: ../resources/installer/js/finish.coffee:34
 #: ../resources/installer/js/finish.coffee:42
@@ -27,24 +27,24 @@ msgstr "Перезагрузить сейчас"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr "Установка успешна!"
+msgstr "Установка прошла успешно!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Советы: Удалите установочный носитель перед перезагрузкой, чтобы избежать повторного входа в среду установки, при Вашем следующем включении компьютера."
+msgstr "Советы: Извлеките установочный носитель перед перезагрузкой, чтобы избежать повторного входа в среду установки, при Вашем следующем включении компьютера."
 
 #: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
-msgstr "Установка не удалась!"
+msgstr "Ошибка установки!"
 
 #: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr "Журнал установки был сохранен для вас на рабочем столе. \nЧтобы помочь нам сделать систему лучше, отправьте журнал в Deepin Team. Спасибо!"
+msgstr "Журнал установки был сохранен на рабочем столе. \nЧтобы помочь нам сделать систему лучше, отправьте журнал команде разработчиков Deepin. Благодарим!"
 
 #: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
@@ -59,7 +59,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr "Обнаружено, что Вы используете виртуальную машину. Установка Deepin на виртуальной машине, влияет на его производительность. Рекомендуется испытывать в реальных условиях."
+msgstr "Похоже, что Вы используете виртуальную машину. Установка Deepin на виртуальной машине, влияет на его производительность. Мы рекомендуем пользоваться системой в реальных условиях на настоящем компьютере."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -72,7 +72,7 @@ msgstr "Требования к установке"
 #: ../resources/installer/js/base.coffee:29
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr "Для установки Deepin ОС, необходимо минимум %d GB дискового пространства."
+msgstr "Для установки Deepin ОС, необходимо минимум %d Гб дискового пространства."
 
 #: ../resources/installer/js/base.coffee:49
 #: ../resources/installer/js/base.coffee:51
@@ -83,7 +83,7 @@ msgstr "Не используется"
 #: ../resources/installer/js/part.coffee:126
 #: ../resources/installer/js/part.coffee:145
 msgid "Freespace"
-msgstr "Свободно место"
+msgstr "Свободное место"
 
 #: ../resources/installer/js/part.coffee:198
 #: ../resources/installer/js/part.coffee:203
@@ -103,7 +103,7 @@ msgstr "Предупреждение"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "Вы не можете загрузиться из-за очень маленького пространства в точки монтирования /boot, увеличите его минимум до 300Мб."
+msgstr "Система не может загрузиться из-за очень маленького пространства в разделе загрузки, увеличите его минимум до 300Мб."
 
 #: ../resources/installer/js/part.coffee:468
 msgid "Disk"
@@ -167,7 +167,7 @@ msgstr "Требуется корневой раздел (/)."
 
 #: ../resources/installer/js/part.coffee:630
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "UEFI-исходная установка поддерживает только GPT-формат диска."
+msgstr "UEFI-исходная установка поддерживает только диск отформатированный в формате  GPT."
 
 #: ../resources/installer/js/part.coffee:638
 msgid ""
@@ -182,7 +182,7 @@ msgstr "Добавить раздел"
 
 #: ../resources/installer/js/part.coffee:658
 msgid "Can't create a partition here"
-msgstr "Нельзя создать здесь раздел"
+msgstr "Невозможно создать здесь раздел"
 
 #: ../resources/installer/js/part.coffee:687
 msgid "UEFI"
@@ -194,13 +194,13 @@ msgstr "Загрузчик"
 
 #: ../resources/installer/js/part.coffee:741
 msgid "Unmount Partition"
-msgstr "Отмонтировать раздел"
+msgstr "Размонтировать раздел"
 
 #: ../resources/installer/js/part.coffee:742
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr "Раздел определён как примотированный.\nВы уверены, что хотите отмонтировать его?"
+msgstr "Раздел определён как примотированный.\nВы уверены, что хотите размонтировать его?"
 
 #: ../resources/installer/js/part.coffee:781
 msgid ""
@@ -222,7 +222,7 @@ msgstr "Отмена"
 
 #: ../resources/installer/js/dialog.coffee:50
 msgid "Are you sure to exit from installation?"
-msgstr "Вы уверены что хотите покинуть установку?"
+msgstr "Вы уверены что хотите прервать установку?"
 
 #: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure you want to delete this partition?"
@@ -242,21 +242,21 @@ msgstr "Приступить к установке"
 
 #: ../resources/installer/js/dialog.coffee:108
 msgid "Deepin OS will be installed to freespace."
-msgstr "Deepin OS будет установлен на свободное место."
+msgstr "Операционная система Deepin будет установлена на свободное место."
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid "Deepin OS will be installed to "
-msgstr "Deepin OS будет установлен на"
+msgstr "ОС Deepin  будет установлена на"
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\nРаздел будет отформатирован, если Вы продолжите установку. Сделайте резервную копию важных данных.\n"
+msgstr "\nРаздел будет отформатирован, если Вы продолжите установку.  Сохраните все важные данные.\n"
 
 #: ../resources/installer/js/dialog.coffee:110
 msgid "Do you want to continue the installation ?"
-msgstr "Уверены что хотите продолжить установку?"
+msgstr "Вы уверены что хотите продолжить установку?"
 
 #: ../resources/installer/js/dialog.coffee:141
 msgid "Type:"
@@ -268,7 +268,7 @@ msgstr "Основной"
 
 #: ../resources/installer/js/dialog.coffee:152
 msgid "Logical"
-msgstr "Лигический"
+msgstr "Логический"
 
 #: ../resources/installer/js/dialog.coffee:182
 msgid "Size:"
@@ -284,7 +284,7 @@ msgstr "Начало"
 
 #: ../resources/installer/js/dialog.coffee:237
 msgid "End"
-msgstr "Коенц"
+msgstr "Конец"
 
 #: ../resources/installer/js/dialog.coffee:257
 msgid "Filesystem:"
@@ -378,7 +378,7 @@ msgstr "Отчёт об ошибке"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "Установка системы не удалась. Отправьте журнал команде Deepin."
+msgstr "Ошибка установки системы. Отправьте журнал команде Deepin."
 
 #: ../resources/installer/js/progress.coffee:41
 msgid "Preparing for Installation"
@@ -386,31 +386,31 @@ msgstr "Подготовка к установке"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "Deepin Store"
-msgstr "Deepin Store"
+msgstr "Магазин Deepin "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "One-stop Software Management"
-msgstr "Универсальное управление программами"
+msgstr "Единое управление программами"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:64
 msgid "Continuous Update of Wonderful Software"
-msgstr "Непрерывное обновление превосходных программ"
+msgstr "Постоянное обновление первоклассных программ"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:65
 msgid "Unimpeded Online Communication"
-msgstr "Беспрепятственная онлайн связь"
+msgstr "Беспрепятственное онлайн общение"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Deepin Movie"
-msgstr "Deepin Movie"
+msgstr "Видеопроигрыватель Deepin "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
 msgid "Comprehensive Audio-visual Shock"
-msgstr "Комплексный Audio-visual Shock"
+msgstr "Эффект Всеобъемлющего аудио-визуального потрясения"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:72
 msgid "New Interactive Experience"
-msgstr "Новый интерактивный опыт"
+msgstr "Новый опыт интерактивного характера! "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:73
 msgid "Intelligent Subtitle Loading"
@@ -418,15 +418,15 @@ msgstr "Интеллектуальная загрузка субтитров"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
 msgid "Deepin Music"
-msgstr "Deepin Music"
+msgstr "Музыкальный проигрыватель Deepin "
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
 msgid "Ultimate Music Journey"
-msgstr "Всеобщее музыкальное погружение"
+msgstr "Всепоглощающее  музыкальное путешествие"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr "Сильно расширенный функции"
+msgstr "Расширенные Функции"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"
@@ -442,13 +442,13 @@ msgstr "Свободное и Объединенное Сообщество Open
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:88
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "Приглашаем принять участие в проекте интернационализации Deepin"
+msgstr "Приглашаем принять участие в процессе интернационализации проекта Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:89
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "Добро пожаловать к нам на Weibo, Twitter, Facebook, Google+, Mailing List и IRC"
+msgstr "Приглашаем Вас присоединится к нам на страницах Weibo, Twitter, Facebook, Google+, Mailing List и IRC"
 
 #: ../app/language-selector/mutils.c:84
 msgid "%a, %b %d, %Y"

@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Yuval Bar-On <hyuvii@gmail.com>, 2014
+# Yuval Bar-On <hyuvii@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-19 03:06+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
-"Language-Team: Hebrew (http://www.transifex.com/projects/p/deepin-installer/language/he/)\n"
+"PO-Revision-Date: 2015-10-07 08:37+0000\n"
+"Last-Translator: Martin <martin.ceronio@infosize.co.za>\n"
+"Language-Team: Hebrew (http://www.transifex.com/linuxdeepin/deepin-installer/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,7 +25,7 @@ msgstr "אתחל עכשיו"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "ההתקנה הושלמה בהצלחה!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -50,14 +50,14 @@ msgstr "צא מההתקנה"
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
-msgstr ""
+msgstr "טיפים"
 
 #: ../resources/installer/js/virtual.coffee:27
 msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "נראה כי אתה משתמש במכונה וירטואלית, וייתכן כי דבר זה ייפגע בכישורי הביצוע של Deepin. מומלץ לנסות את המערכת בסביבה אמיתית"
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -204,7 +204,7 @@ msgstr "נראה כי המחיצה עגונה (mount). האם אתה בטוח ש
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr ""
+msgstr "התקנה UEFI-native תומכת רק בדיסקים מפורמט GPT. את/ה תאבד את כל המידע על הדיסק אם תמשיך בהתקנה"
 
 #: ../resources/installer/js/part.coffee:794
 msgid "Simple Mode"
@@ -220,7 +220,7 @@ msgstr "ביטול"
 
 #: ../resources/installer/js/dialog.coffee:50
 msgid "Are you sure to exit from installation?"
-msgstr ""
+msgstr "האם אתה בטוח שברצונך לצאת מההתקנה?"
 
 #: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure you want to delete this partition?"
@@ -328,19 +328,19 @@ msgstr "אנא בחר או חפש את המיקום שלך"
 #: ../resources/installer/js/welcome.coffee:763
 #: ../resources/installer/js/welcome.coffee:847
 msgid "The two passwords do not match."
-msgstr ""
+msgstr "שתי הסיסמאות לא תואמות"
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Computer name can not be empty."
-msgstr ""
+msgstr "שם המחשב לא יכול להיות ריק"
 
 #: ../resources/installer/js/welcome.coffee:831
 msgid "Password can not be empty."
-msgstr ""
+msgstr "הסיסמא לא יכולה להיות ריקה"
 
 #: ../resources/installer/js/welcome.coffee:833
 msgid "Invalid password."
-msgstr ""
+msgstr "סיסמא לא חוקית"
 
 #: ../resources/installer/js/welcome.coffee:863
 msgid "Username"
@@ -424,7 +424,7 @@ msgstr "מסע המוסיקה האולטימטיבי"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
 msgid "Rich Extended Functions"
-msgstr ""
+msgstr "פונקציות מורחבות"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
 msgid "Enjoy Online Strongest Voice"

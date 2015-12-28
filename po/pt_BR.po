@@ -9,14 +9,15 @@
 # Ruy Sabino <ruysabino@gmail.com>, 2014
 # Tati Navarro <tahh.vampyra@gmail.com>, 2014
 # viniciusarl <vinniciusal@outlook.com>, 2014
+# William Bruno da Silva <williamsilvajdf@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2014-12-26 08:41+0000\n"
-"Last-Translator: Ruy Sabino <ruysabino@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/deepin-installer/language/pt_BR/)\n"
+"PO-Revision-Date: 2015-10-03 16:32+0000\n"
+"Last-Translator: William Bruno da Silva <williamsilvajdf@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/linuxdeepin/deepin-installer/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -62,7 +63,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr "Foi detectado que você está usando uma máquina virtual. Instalando Deepin em uma máquina virtual afetará seu desempenho. Para uma melhor experiência, recomendamos utilizar um equipamento real."
+msgstr "Detectamos que você está utilizando uma máquina virtual. Se você instalar o Deepin em uma máquina virtual terá seu desempenho afetado. Para uma melhor experiência, recomendamos instalar o sistema em uma máquina real."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -337,11 +338,11 @@ msgstr "As duas senhas não conferem."
 
 #: ../resources/installer/js/welcome.coffee:825
 msgid "Computer name can not be empty."
-msgstr "O nome do Computador não pode ser vazio."
+msgstr "O nome do Computador não pode ficar vazio."
 
 #: ../resources/installer/js/welcome.coffee:831
 msgid "Password can not be empty."
-msgstr "Senha não pode ficar vazia."
+msgstr "O campo Senha não pode ficar vazio."
 
 #: ../resources/installer/js/welcome.coffee:833
 msgid "Invalid password."
