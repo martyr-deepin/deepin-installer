@@ -122,7 +122,7 @@ esac
 
 # ignore uefi checking for windows partitions which effect by
 # /usr/lib/os-probes/mounted/20microsoft
-mkdir -p /var/lib/partman
-touch /var/lib/partman/ignore_uefi
+#mkdir -p /var/lib/partman
+#touch /var/lib/partman/ignore_uefi
 
 /usr/sbin/update-grub
