@@ -40,6 +40,10 @@ if [ x"${DI_EXTRACT_METHOD}" = x"fallback" ];then
     MEM=0
 fi
 
+# Disable unsquashfs mode.
+# NOTE(xushaohua): Currently unbuffer stucks at a random progress.
+MEM=0
+
 # Check if freemem less than 3G
 if [ $MEM -le 3000000 ] ;then
     echo "[Info] Detect free memory less than 3G"
