@@ -553,12 +553,6 @@ class Timezone extends Widget
         # Set this flag to true if timezone is changed by user
         @timezone_changed = false
 
-        @guessTimeZone((timezone) =>
-            console.log("[welcome.coffee] Timezone guessTimezone returns: #{timezone}")
-            if not @timezone_changed
-                console.log("[welcome.coffee] Timezone change current timezone based on IP address: #{timezone}")
-                @set_timezone(timezone, false)
-        )
 
     init_search_list: ->
         @search_list = []
@@ -742,14 +736,6 @@ class Timezone extends Widget
         if matched.length == 1
             @set_timezone(@zone_dict[matched[0]])
 
-    guessTimeZone: (callback) ->
-        url = "http://freegeoip.net/json/"
-        ajax(url, true, (xhr) =>
-            info = JSON.parse(xhr.response)
-            console.log("[welcome.coffee] Timezone guessTimezone() ip info: #{xhr.response}")
-            if info and info["time_zone"]
-                callback(info["time_zone"])
-        )
 
 class WelcomeFormItem extends Widget
     ACCOUNTS = "com.deepin.daemon.Accounts"
