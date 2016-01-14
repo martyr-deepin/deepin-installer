@@ -74,6 +74,15 @@ case $_kernel_version in
 	;;
 esac
 
+fix_pci_rtl8723ae_fwlps() {
+     if is_pci_exists "10ec:8723"; then
+         echo "fix rtl8723ae ---------------------------------"
+         echo 'options rtl8723ae fwlps=0' | tee -a /etc/modprobe.d/rtl8723ae.conf
+     fi
+}
+
+
 fix_pci_bcm4313 || true
 fix_pci_rtl8723be_fwlps || true
 fix_usb_rtl8723au || true
+fix_pci_rtl8723ae_fwlps || true
