@@ -66,13 +66,13 @@ fix_usb_rtl8723au() {
 }
 
 # fix device driver problems
-_kernel_version=$(uname -r)
-case $_kernel_version in
-	4.*)
-		echo "[INFO] Kernel version >> 4.0, skip fix network.."
-		exit 0
-	;;
-esac
+#_kernel_version=$(uname -r)
+#case $_kernel_version in
+#	4.*)
+#		echo "[INFO] Kernel version >> 4.0, skip fix network.."
+#		exit 0
+#	;;
+#esac
 
 fix_pci_rtl8723ae_fwlps() {
      if is_pci_exists "10ec:8723"; then
@@ -82,7 +82,7 @@ fix_pci_rtl8723ae_fwlps() {
 }
 
 
-fix_pci_bcm4313 || true
+#fix_pci_bcm4313 || true
 fix_pci_rtl8723be_fwlps || true
-fix_usb_rtl8723au || true
+#fix_usb_rtl8723au || true
 fix_pci_rtl8723ae_fwlps || true
