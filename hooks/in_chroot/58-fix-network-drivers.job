@@ -3,6 +3,14 @@
 echo "[$0]"
 set -x
 
+is_productname_exists() {
+    local productname="$(cat /sys/class/dmi/id/product_name |grep "${1}" 2>/dev/null)"
+    if [ "${productname}" ]; then
+        return 0
+    fi
+    return 1
+}
+
 is_pci_exists() {
     local pci_info="$(lspci -d "${1}" 2>/dev/null)"
     if [ "${pci_info}" ]; then
@@ -17,6 +25,16 @@ is_usb_exists() {
         return 0
     fi
     return 1
+}
+
+# add X550VC wlan software control
+fix_productname_x550vc() {
+    if is_productname_exists "X550VC"; then
+        echo "fix X550VC --------------------------------"
+
+       # add wapf = 4 to enable software control
+        echo "options asus_nb_wmi wapf=4" | tee -a /etc/modprobe.d/asus_nb_wmi.conf
+    fi
 }
 
 # bcm4313 [14e4:4727] wireless driver
@@ -86,3 +104,4 @@ fix_pci_rtl8723ae_fwlps() {
 fix_pci_rtl8723be_fwlps || true
 #fix_usb_rtl8723au || true
 fix_pci_rtl8723ae_fwlps || true
+fix_productname_x550vc || true
