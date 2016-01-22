@@ -13,8 +13,12 @@ type LanguageSelector struct {
 func (*LanguageSelector) Set(lang string) {
 	var locale = lang + ".UTF-8"
 	if !isSupportedLocale(locale) {
-		logger.Warning("Invalid locale:", locale)
-		return
+		if !isSupportedLocale(lang) {
+			logger.Warning("Invalid locale:", locale)
+			return
+		} else {
+			locale = lang
+		}
 	}
 
 	err := doSetLocale(locale)
