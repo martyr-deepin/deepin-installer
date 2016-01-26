@@ -4,6 +4,8 @@
 echo "[$0]"
 set -x
 
+export DEBIAN_FRONTEND="noninteractive"
+
 if [ -f /deepinhost/etc/deepin-installer.conf ];then
     . /deepinhost/etc/deepin-installer.conf
 fi
@@ -41,7 +43,7 @@ case ${BOOT} in
         ;;
     "legacy")
         echo "INFO: Detected legacy machine, installing grub to ${DI_BOOTLOADER}"
-        DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
+        apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
 	if [ x${DI_LUPIN} = xtrue ];then
         echo "Fix grub install failed in lupin"
         [ -d /boot/grub ] || mkdir /boot/grub
