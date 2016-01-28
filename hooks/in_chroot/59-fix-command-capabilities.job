@@ -4,6 +4,6 @@
 echo "[$0]"
 set -x
 
-for pkg in libgstreamer1.0-0 systemd iputils-ping;do
+for pkg in libgstreamer1.0-0 systemd iputils-ping netselect;do
     dpkg -l | grep -q -e  "^ii\ \ ${pkg}\ " && /usr/sbin/dpkg-reconfigure ${pkg} || true
 done
