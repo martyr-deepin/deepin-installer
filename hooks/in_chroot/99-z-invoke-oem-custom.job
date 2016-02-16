@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "[$0]"
+set -x
+
+# add cdrom to sources.list
+[ ! -d /media/cdrom/oem ] && { echo >&2 "[WARN] /media/cdrom/oem not exits.Skip."; exit 0; }
+
+# install oem packages
+dpkg -i /media/cdrom/oem/*.deb || true
+
+# invoke custom scripts
+for P in /media/cdrom/oem/*.sh;do
+	sh ${P}
+done
