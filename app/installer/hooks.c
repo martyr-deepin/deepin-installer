@@ -161,12 +161,19 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
     argv[0] = info->jobs->data;
     argv[1] = 0;
 
+    // Reset LC_ALL to C.
+    char** env = g_get_environ();
+    g_environ_setenv(env, "LC_ALL", "C", TRUE);
+
     g_message("[%s] RUN : %s\n", __func__, (char*)info->jobs->data);
     info->current_job_num = g_list_index(g_list_first(info->jobs),
                                          info->jobs->data);
     info->jobs = g_list_next(info->jobs);
-    g_spawn_async(info->jobs_path, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD,
+    g_spawn_async(info->jobs_path, argv, env, G_SPAWN_DO_NOT_REAP_CHILD,
                   NULL, NULL, &child_pid, &error);
+    if (env != NULL) {
+      g_strfreev(env);
+    }
     if (error != NULL) {
         g_warning("[%s] can't spawn %s: %s\n", __func__, argv[0],
                   error->message);
