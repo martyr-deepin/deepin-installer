@@ -20,9 +20,9 @@ mount -vt sysfs sysfs /target/sys
 mkdir -p /target/media/cdrom
 mount --bind ${CDROM} /target/media/cdrom
 
-if [ x${DI_UEFI} == xtrue ];then
+if [ x"${DI_UEFI}" = xtrue ];then
     mkdir -p /target/boot/efi
-    mount ${DI_BOOTLOADER} /target/boot/efi
+    mount ${DI_BOOTLOADER} /target/boot/efi || exit 1
 fi
 
 mkdir -p /target/run
