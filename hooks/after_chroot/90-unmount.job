@@ -10,8 +10,8 @@ chown root:root ${target}
 # sync data to disk
 sync
 
-[ -d /target/deepinhost ] && umount -v /target/deepinhost && \
-rmdir -rvf /target/deepinhost
+[ -d /target/deepinhost ] && umount -l /target/deepinhost 
+rm -rf /target/deepinhost
 
 for i in $(cat /proc/mounts | awk '{print $2}' | grep -e ^$target | sort -r);do
     umount -v $i
