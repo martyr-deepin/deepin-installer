@@ -21,18 +21,29 @@ class VirtualMachine extends Page
     constructor: (@id) ->
         super
         @title_txt = create_element("div", "VirtualTitle", @element)
-        @title_txt.innerText = _("Tips")
+        @title_txt.innerText = _("安装方式")
         @content = create_element("div", "VirtualContent", @element)
-        @tips = create_element("div", "VirtualTips", @content)
-        @tips.innerText = "系统安装过程中需要格式化所选分区，请谨慎操作！"
-        @foot = create_element("div", "VirtualFoot", @element)
-        @continue = new NextStep("VirtualMachineContinue","安装", @ok_cb)
-        @foot.appendChild(@continue.element)
-        @continue.next_bt_enable()
+
+        @auto_btn = new NextStep("VirtualMachineAutoBtn","全盘自动安装", @auto_cb)
+        @content.appendChild(@auto_btn.element)
+        @auto_btn.next_bt_enable()
+
+        @manual_btn = new NextStep("VirtualMachineManualBtn","自定义安装", @manual_cb)
+        @content.appendChild(@manual_btn.element)
+        @manual_btn.next_bt_enable()
+
         @element.style.display = "block"
 
-    ok_cb: =>
-        console.debug("[virtual.coffee] VirtualMachine.ok_cb() auto_mode: #{pc.auto_mode}")
+    auto_cb: =>
+        console.debug("[virtual.coffee] VirtualMachine.auto_cb() auto_mode: #{pc.auto_mode}")
+        progress_page = new Progress("progress") if not progress_page?
+        pc.switch_page(progress_page)
+        # DCore.Installer.start_install() is called in
+        # DCore.Installer.auto_install()
+        #DCore.Installer.auto_part()
+
+    manual_cb: =>
+        console.debug("[virtual.coffee] VirtualMachine.manual_cb() auto_mode: #{pc.auto_mode}")
         if pc.auto_mode
             undo_part_table_info()
             part_page = new Part("part")

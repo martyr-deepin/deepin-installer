@@ -24,3 +24,15 @@
     -webkit-box-align:center;
     -webkit-box-pack:center;
 }
+
+#VirtualMachineAutoBtn {
+    text-align: center;
+    margin: 125px auto 0 auto;
+    width: 180px;
+}
+
+#VirtualMachineManualBtn {
+    text-align: center;
+    margin: 40px auto 0 auto;
+    width: 180px;
+}
