@@ -284,3 +284,19 @@ void setup_monitor_extract_progress()
     g_timeout_add_seconds(1, (GSourceFunc)monitor_extract_progress,
                           &before_chroot_info);
 }
+
+void run_auto_part_hook()
+{
+    g_message("[%s]\n", __func__);
+    char* argv[2] = { "auto_part", 0 };
+    int exit_status = 0;
+    GError* error = NULL;
+    g_spawn_sync(before_chroot_info.jobs_path, argv, NULL,
+                 G_SPAWN_DEFAULT, NULL, NULL, NULL, NULL,
+                 &exit_status, &error);
+    g_message("exit_status: %d\n", exit_status);
+    if (exit_status != 0 && error != NULL) {
+      g_warning("[%s] run hook failed: %s\n", __func__, error->message);
+      g_error_free(error);
+    }
+}

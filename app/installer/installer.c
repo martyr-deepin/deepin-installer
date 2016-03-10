@@ -137,6 +137,14 @@ void installer_finish_reboot ()
 }
 
 JS_EXPORT_API
+void installer_auto_part()
+{
+    g_message("[%s]\n", __func__);
+    run_auto_part_hook();
+    installer_start_install();
+}
+
+JS_EXPORT_API
 void installer_restart_installer ()
 {
     extern int server_sockfd;

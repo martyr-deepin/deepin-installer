@@ -40,7 +40,7 @@ class VirtualMachine extends Page
         pc.switch_page(progress_page)
         # DCore.Installer.start_install() is called in
         # DCore.Installer.auto_install()
-        #DCore.Installer.auto_part()
+        DCore.Installer.auto_part()
 
     manual_cb: =>
         console.debug("[virtual.coffee] VirtualMachine.manual_cb() auto_mode: #{pc.auto_mode}")
