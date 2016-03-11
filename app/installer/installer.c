@@ -43,15 +43,12 @@ static GtkWidget *installer_container = NULL;
 char **global_argv = NULL;
 
 char* auto_conf_path = NULL;
-char* conf_group_name = NULL;
 char* log_path = NULL;
 gboolean nowm = FALSE;
 static GOptionEntry entries[] =
 {
     { "conf", 'c', 0, G_OPTION_ARG_STRING, &auto_conf_path,
       "set configure file path when installing with automate mode ", "path"},
-    { "group", 'g', 0, G_OPTION_ARG_STRING, &conf_group_name,
-      "group name of lfs conf ", "group name"},
     { "log", 'l', 0, G_OPTION_ARG_STRING, &log_path,
       "write log message to ", "log path"},
     { "without-wm", 'w', 0, G_OPTION_ARG_NONE, &nowm,
@@ -141,7 +138,7 @@ void installer_auto_part()
 {
     g_message("[%s]\n", __func__);
     run_auto_part_hook();
-    installer_start_install();
+    start_run_installer();
 }
 
 JS_EXPORT_API
@@ -194,6 +191,7 @@ gboolean read_lfs_atm_template() {
   const char username_key[] = "DI_USERNAME";
   const char password_key[] = "DI_PASSWORD";
   const char hostname_key[] = "DI_HOSTNAME";
+  const char conf_group_name = "";
 
   gchar* username = NULL;
   gchar* hostname = NULL;

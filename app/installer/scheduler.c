@@ -98,7 +98,7 @@ static void do_mkfs()
     g_hash_table_destroy(mkfs_pending_list);
 }
 
-static void start_run_installer()
+void start_run_installer()
 {
     g_message("[%s]\n", __func__);
     ped_device_free_all();

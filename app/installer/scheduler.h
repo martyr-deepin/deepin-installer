@@ -6,4 +6,6 @@ void update_install_progress(int v);
 void installer_terminate();
 void installer_start_install();
 
+void start_run_installer();
+
 #endif
