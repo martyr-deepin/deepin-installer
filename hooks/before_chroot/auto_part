@@ -14,6 +14,8 @@ set -x
 # Path to installer configuration file.
 CONF_FILE='/etc/deepin-installer.conf'
 
+cp -vf "/usr/share/deepin-installer/templates/lfs-atm.conf" $CONF_FILE
+
 # 4G space for linux-swap.
 SWAP_SIZE=4096
 
