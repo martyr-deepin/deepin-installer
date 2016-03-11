@@ -240,7 +240,8 @@ static void fix_without_wm(GtkWidget* child)
     //INSTALLER_WIN_HEIGHT = gdk_screen_height();
     gtk_window_move(GTK_WINDOW(installer_container), 0, 0);
     gtk_window_fullscreen(GTK_WINDOW(installer_container));
-    primary_monitor = gdk_screen_get_primary_monitor(default_screen);
+    //primary_monitor = gdk_screen_get_primary_monitor(default_screen);
+    primary_monitor = 0;
     gdk_screen_get_monitor_geometry(default_screen, primary_monitor, &dest);
     INSTALLER_WIN_WIDTH = dest.width;
     INSTALLER_WIN_HEIGHT = dest.height;
