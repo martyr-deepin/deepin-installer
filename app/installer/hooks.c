@@ -285,7 +285,7 @@ void setup_monitor_extract_progress()
                           &before_chroot_info);
 }
 
-void run_auto_part_hook()
+bool run_auto_part_hook()
 {
     g_message("[%s]\n", __func__);
     char* argv[2] = { "auto_part", 0 };
@@ -298,5 +298,7 @@ void run_auto_part_hook()
     if (exit_status != 0 && error != NULL) {
       g_warning("[%s] run hook failed: %s\n", __func__, error->message);
       g_error_free(error);
+      return false;
     }
+    return true;
 }

@@ -137,8 +137,12 @@ JS_EXPORT_API
 void installer_auto_part()
 {
     g_message("[%s]\n", __func__);
-    run_auto_part_hook();
-    start_run_installer();
+    if (run_auto_part_hook()) {
+      start_run_installer();
+    } else {
+      // Run auto_part failed.
+      installer_terminate();
+    }
 }
 
 JS_EXPORT_API
@@ -190,12 +194,12 @@ gboolean read_lfs_atm_template() {
   const char username_key[] = "DI_USERNAME";
   const char password_key[] = "DI_PASSWORD";
   const char hostname_key[] = "DI_HOSTNAME";
-  const char conf_group_name = "";
+  const char group_name = "default";
 
   gchar* username = NULL;
   gchar* hostname = NULL;
   gchar* password = NULL;
-  username = g_key_file_get_value(key_file, conf_group_name,
+  username = g_key_file_get_value(key_file, group_name,
                                   username_key, &error);
   if (error != NULL) {
     g_warning("[%s], g_key_file_new() failed: %s\n",
@@ -204,7 +208,7 @@ gboolean read_lfs_atm_template() {
     error = NULL;
     return 1;
   }
-  hostname = g_key_file_get_value(key_file, conf_group_name,
+  hostname = g_key_file_get_value(key_file, group_name,
                                   hostname_key, &error);
   if (error != NULL) {
     g_warning("[%s], g_key_file_new() failed: %s\n",
@@ -213,7 +217,7 @@ gboolean read_lfs_atm_template() {
     error = NULL;
     return 1;
   }
-  password = g_key_file_get_value(key_file, conf_group_name,
+  password = g_key_file_get_value(key_file, group_name,
                                   password_key, &error);
   if (error != NULL) {
     g_warning("[%s], g_key_file_new() failed: %s\n",
@@ -229,7 +233,7 @@ gboolean read_lfs_atm_template() {
 
   const char locale_key[] = "DI_LOCALE";
   gchar* locale = NULL;
-  locale  = g_key_file_get_value(key_file, conf_group_name, locale_key, &error);
+  locale  = g_key_file_get_value(key_file, group_name, locale_key, &error);
   if (error != NULL) {
     g_warning("[%s], g_key_file_new() failed: %s\n",
               __func__, error->message);
@@ -242,7 +246,7 @@ gboolean read_lfs_atm_template() {
 
   const char timezone_key[] = "DI_TIMEZONE";
   gchar* timezone = NULL;
-  timezone = g_key_file_get_value(key_file, conf_group_name,
+  timezone = g_key_file_get_value(key_file, group_name,
                                   timezone_key, &error);
   if (error != NULL) {
     g_warning("[%s], g_key_file_new() failed: %s\n",
@@ -258,7 +262,7 @@ gboolean read_lfs_atm_template() {
   const char layout_variant_key[] = "DI_LAYOUT_VARIANT";
   gchar* layout = NULL;
   gchar* layout_variant = NULL;
-  layout = g_key_file_get_value(key_file, conf_group_name,
+  layout = g_key_file_get_value(key_file, group_name,
                                 layout_key, &error);
   if (error != NULL) {
     g_warning("[%s], g_key_file_new() failed: %s\n",
@@ -267,7 +271,7 @@ gboolean read_lfs_atm_template() {
     error = NULL;
     return 1;
   }
-  layout_variant = g_key_file_get_value(key_file, conf_group_name,
+  layout_variant = g_key_file_get_value(key_file, group_name,
                                         layout_variant_key, &error);
   if (error != NULL) {
     g_warning("[%s], g_key_file_new() failed: %s\n",
