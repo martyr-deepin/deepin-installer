@@ -9,6 +9,8 @@
 
 #define CONF_PATH "/etc/deepin-installer.conf"
 
+extern char* auto_conf_path;
+
 void run_hooks_before_chroot();
 void run_hooks_in_chroot();
 void run_hooks_after_chroot();
@@ -105,11 +107,127 @@ void start_run_installer()
     enter_next_stage();
 }
 
+// Read lfs-atm.conf. If failed, returns FALSE.
+static gboolean read_lfs_atm_template() {
+  g_message("[%s]\n", __func__);
+
+  GError* error = NULL;
+  GKeyFile* key_file = g_key_file_new();
+
+  g_key_file_load_from_file(key_file, auto_conf_path, G_KEY_FILE_NONE, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return FALSE;
+  }
+
+  const char username_key[] = "DI_USERNAME";
+  const char password_key[] = "DI_PASSWORD";
+  const char hostname_key[] = "DI_HOSTNAME";
+  const char group_name[] = "default";
+
+  gchar* username = NULL;
+  gchar* hostname = NULL;
+  gchar* password = NULL;
+  username = g_key_file_get_value(key_file, group_name,
+                                  username_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  hostname = g_key_file_get_value(key_file, group_name,
+                                  hostname_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  password = g_key_file_get_value(key_file, group_name,
+                                  password_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  installer_record_accounts_info(username, hostname, password);
+  g_free(username);
+  g_free(hostname);
+  g_free(password);
+
+  const char locale_key[] = "DI_LOCALE";
+  gchar* locale = NULL;
+  locale  = g_key_file_get_value(key_file, group_name, locale_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  installer_record_locale_info(locale);
+  g_free(locale);
+
+  const char timezone_key[] = "DI_TIMEZONE";
+  gchar* timezone = NULL;
+  timezone = g_key_file_get_value(key_file, group_name,
+                                  timezone_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  installer_record_timezone_info(timezone);
+  g_free(timezone);
+
+  const char layout_key[] = "DI_LAYOUT";
+  const char layout_variant_key[] = "DI_LAYOUT_VARIANT";
+  gchar* layout = NULL;
+  gchar* layout_variant = NULL;
+  layout = g_key_file_get_value(key_file, group_name,
+                                layout_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  layout_variant = g_key_file_get_value(key_file, group_name,
+                                        layout_variant_key, &error);
+  if (error != NULL) {
+    g_warning("[%s], g_key_file_new() failed: %s\n",
+              __func__, error->message);
+    g_error_free(error);
+    error = NULL;
+    return 1;
+  }
+  installer_record_keyboard_layout_info(layout, layout_variant);
+  g_free(layout);
+  g_free(layout_variant);
+
+  g_key_file_free(key_file);
+  return TRUE;
+}
+
 static void start_prepare_conf()
 {
     g_message("[%s]\n", __func__);
     if (InstallerConf.simple_mode && InstallerConf.uefi) {
         auto_handle_esp();
+    }
+    if (!read_lfs_atm_template()) {
+       installer_terminate();
     }
     write_installer_conf(CONF_PATH);
     start_run_installer();
