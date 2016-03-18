@@ -17,8 +17,8 @@ swapoff -a
 # Path to installer configuration file.
 CONF_FILE='/etc/deepin-installer.conf'
 
-# Mimumum disk capacity required, 60G.
-MININUM_DISK_SIZE=61052
+# Mimumum disk capacity required, 30G.
+MININUM_DISK_SIZE=30000
 
 cp -vf "/usr/share/deepin-installer/templates/lfs-atm.conf" $CONF_FILE
 # Remote group name. Group name starts with [

@@ -194,7 +194,7 @@ gboolean read_lfs_atm_template() {
   const char username_key[] = "DI_USERNAME";
   const char password_key[] = "DI_PASSWORD";
   const char hostname_key[] = "DI_HOSTNAME";
-  const char group_name = "default";
+  const char group_name[] = "default";
 
   gchar* username = NULL;
   gchar* hostname = NULL;
