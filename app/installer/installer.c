@@ -56,8 +56,6 @@ static GOptionEntry entries[] =
     { NULL }
 };
 
-gboolean read_lfs_atm_template();
-
 static gboolean
 move_window (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {

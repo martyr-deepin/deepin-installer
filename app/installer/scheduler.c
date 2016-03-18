@@ -4,6 +4,7 @@
 #include "fs_util.h"
 #include "esp.h"
 
+#include <string.h>
 #include <glib.h>
 #include <gio/gio.h>
 
@@ -110,6 +111,10 @@ void start_run_installer()
 // Read lfs-atm.conf. If failed, returns FALSE.
 static gboolean read_lfs_atm_template() {
   g_message("[%s]\n", __func__);
+  g_message("auto_conf_path: %s\n", auto_conf_path);
+  if (auto_conf_path == NULL) {
+    return false;
+  }
 
   GError* error = NULL;
   GKeyFile* key_file = g_key_file_new();
@@ -121,6 +126,8 @@ static gboolean read_lfs_atm_template() {
     g_error_free(error);
     error = NULL;
     return FALSE;
+  } else {
+    g_message("read key file ok\n");
   }
 
   const char username_key[] = "DI_USERNAME";
@@ -128,9 +135,9 @@ static gboolean read_lfs_atm_template() {
   const char hostname_key[] = "DI_HOSTNAME";
   const char group_name[] = "default";
 
-  gchar* username = NULL;
-  gchar* hostname = NULL;
-  gchar* password = NULL;
+  char* username = NULL;
+  char* hostname = NULL;
+  char* password = NULL;
   username = g_key_file_get_value(key_file, group_name,
                                   username_key, &error);
   if (error != NULL) {
@@ -158,13 +165,15 @@ static gboolean read_lfs_atm_template() {
     error = NULL;
     return 1;
   }
-  installer_record_accounts_info(username, hostname, password);
+  InstallerConf.password = g_strdup(password);
+  InstallerConf.user_name = g_strdup(username);
+  InstallerConf.host_name = g_strdup(hostname);
   g_free(username);
   g_free(hostname);
   g_free(password);
 
   const char locale_key[] = "DI_LOCALE";
-  gchar* locale = NULL;
+  char* locale = NULL;
   locale  = g_key_file_get_value(key_file, group_name, locale_key, &error);
   if (error != NULL) {
     g_warning("[%s], g_key_file_new() failed: %s\n",
@@ -173,11 +182,11 @@ static gboolean read_lfs_atm_template() {
     error = NULL;
     return 1;
   }
-  installer_record_locale_info(locale);
+  InstallerConf.locale = g_strdup(locale);
   g_free(locale);
 
   const char timezone_key[] = "DI_TIMEZONE";
-  gchar* timezone = NULL;
+  char* timezone = NULL;
   timezone = g_key_file_get_value(key_file, group_name,
                                   timezone_key, &error);
   if (error != NULL) {
@@ -187,7 +196,7 @@ static gboolean read_lfs_atm_template() {
     error = NULL;
     return 1;
   }
-  installer_record_timezone_info(timezone);
+  InstallerConf.timezone = g_strdup(timezone);
   g_free(timezone);
 
   const char layout_key[] = "DI_LAYOUT";
@@ -212,7 +221,8 @@ static gboolean read_lfs_atm_template() {
     error = NULL;
     return 1;
   }
-  installer_record_keyboard_layout_info(layout, layout_variant);
+  InstallerConf.layout = g_strdup(layout);
+  InstallerConf.layout_variant = g_strdup(layout_variant);
   g_free(layout);
   g_free(layout_variant);
 

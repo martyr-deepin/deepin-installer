@@ -92,6 +92,7 @@ void write_installer_conf(const char* path)
 
     normalization();
     char* content = installer_conf_to_string();
+    g_message("[%s], content: %s\n", __func__, content);
     GError* error = NULL;
     g_file_set_contents(path, content, -1, &error);
     g_free(content);
@@ -135,6 +136,7 @@ JS_EXPORT_API
 void installer_record_accounts_info(const char* name, const char* hostname,
                                     const char* password)
 {
+    g_message("[%s]\n", __func__);
     g_return_if_fail(name != NULL);
     g_return_if_fail(hostname != NULL);
     g_return_if_fail(password != NULL);
