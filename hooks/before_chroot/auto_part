@@ -11,6 +11,12 @@
 echo "[$0]"
 set -x
 
+# Print error message and exit current executation context.
+error_exit() {
+  echo $*
+  exit 1;
+}
+
 # Umount all swap partitions.
 swapoff -a
 
@@ -43,16 +49,15 @@ get_max_capacity_device() {
 
 DEVICE=$(get_max_capacity_device)
 if [ -z $DEVICE ]; then
-  echo 'Error: no supported storage device found!'
-  echo 'There shall be a IDE or SATA disk available at /dev/sda or /dev/hda'
-  exit 1
+  echo 'Error: no supported storage device found!';
+  echo 'There shall be a IDE or SATA disk available at /dev/sda or /dev/hda';
+  exit 1;
 fi
 
 DEVICE_SIZE=$(blockdev --getsize64 $DEVICE)
 DEVICE_SIZE=$((DEVICE_SIZE / 1048576))
-if [ $DEVICE_SIZE < $MININUM_DISK_SIZE ]; then
-  echo 'Error: At least 60G is required to install!'
-  exit 1
+if [ $DEVICE_SIZE -lt $MININUM_DISK_SIZE ]; then
+  error_exit 'Error: At least 30G is required to install!';
 fi
 
 REMAINING_SIZE=$((DEVICE_SIZE - SWAP_SIZE))
@@ -69,31 +74,31 @@ sed -i "s|DI_ROOT_DISK=.*$|DI_ROOT_DISK=\"$DEVICE\"|" $CONF_FILE
 
 # First create a msdos partition table.
 parted -s $DEVICE mktable msdos || \
-  echo "Failed to create msdos partition on $DEVICE" && exit 1
+  error_exit "Failed to create msdos partition on $DEVICE";
 
 # Then create a swap partition with 4G.
 parted -s $DEVICE mkpart primary linux-swap 1M ${SWAP_SIZE}M || \
-  echo "Failed to create linux-swap on ${DEVICE}1" && exit 1
+  error_exit "Failed to create linux-swap on ${DEVICE}1";
 mkswap ${DEVICE}1 || \
-  echo "Failed to call mkswap ${DEVICE}1" && exit 1
+  error_exit "Failed to call mkswap ${DEVICE}1";
 
 # And then create an ext4 partition with 20G capacity to mount /var/log
 parted -s $DEVICE mkpart primary ext4 ${SWAP_SIZE}M ${ROOT_SIZE}M || \
-  echo "Failed to create partition ${DEVICE}2" && exit 1
+  error_exit "Failed to create partition ${DEVICE}2";
 mkfs.ext4 -F ${DEVICE}2 || \
-  echo "Failed to make ext4 filesystem on ${DEVICE}2" && exit 1
+  error_exit "Failed to make ext4 filesystem on ${DEVICE}2";
 sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=\"${DEVICE}2\"|" $CONF_FILE
 
 # Add 40% to /var/log, with ext4 type.
 parted -s $DEVICE mkpart primary ext4 ${ROOT_SIZE}M ${LOG_SIZE}M || \
-  echo "Failed to create partition ${DEVICE}3" && exit 1
+  error_exit "Failed to create partition ${DEVICE}3";
 mkfs.ext4 -F ${DEVICE}3 || \
-  echo "Failed to make ext4 filesystem on ${DEVICE}3" && exit 1
+  error_exit "Failed to make ext4 filesystem on ${DEVICE}3";
 sed -i "s|DI_MOUNTPOINTS=.*$|DI_MOUNTPOINTS=\"${DEVICE}1=swap;${DEVICE}3=/var/log;\"|" $CONF_FILE
 
 # All remaining space is used as backup partition.
 parted -s $DEVICE mkpart primary ext4 ${LOG_SIZE}M 100% || \
-  echo "Failed to create partition ${DEVICE}4" && exit 1
+  error_exit "Failed to create partition ${DEVICE}4";
 mkfs.ext4 -F ${DEVICE}4
 
 # Commit to kernel.

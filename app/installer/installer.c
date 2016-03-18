@@ -169,9 +169,12 @@ void installer_emit_webview_ok ()
         }
 
         init_parted ();
-        // TODO: check return status.
-        read_lfs_atm_template();
-        js_post_signal("auto_mode");
+
+        if (read_lfs_atm_template()) {
+            js_post_signal("auto_mode");
+        } else {
+           installer_terminate();
+        }
     }
 }
 
