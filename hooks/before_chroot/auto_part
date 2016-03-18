@@ -15,6 +15,8 @@ set -x
 CONF_FILE='/etc/deepin-installer.conf'
 
 cp -vf "/usr/share/deepin-installer/templates/lfs-atm.conf" $CONF_FILE
+# Remote group name. Group name starts with [
+sed -i -e '/\[/d' $CONF_FILE
 
 # 4G space for linux-swap.
 SWAP_SIZE=4096

@@ -176,7 +176,6 @@ gboolean read_lfs_atm_template() {
   g_message("[%s]\n", __func__);
 
   GError* error = NULL;
-  const char filepath[] = "lfs-atm.conf";
   GKeyFile* key_file = g_key_file_new();
 
   g_key_file_load_from_file(key_file, auto_conf_path, G_KEY_FILE_NONE, &error);
