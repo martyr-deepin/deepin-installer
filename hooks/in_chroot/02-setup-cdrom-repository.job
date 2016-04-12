@@ -7,4 +7,6 @@ set -x
 [ ! -d /media/cdrom ] && { echo >&2 "[WARN] /media/cdrom not exits.Skip."; exit 0; }
 #commented source.list to let apt-get just using cdrom repo.
 sed -i 's/^/#/g' /etc/apt/sources.list
-apt-cdrom add -d /media/cdrom -m  && apt-get update
+#ident the cdrom first.
+apt-cdrom ident -d /media/cdrom -m && apt-cdrom add -d /media/cdrom -m 
+apt-get update
