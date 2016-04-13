@@ -65,11 +65,11 @@ case ${BOOT} in
 	    mount ${DI_HOST_DEV} /host
         echo "Mount DI_HOST_DEV: " ${DI_HOST_DEV}
 	fi
-        grub-install --no-floppy --force ${DI_BOOTLOADER} || exit 101
+        grub-install --no-floppy ${DI_BOOTLOADER} --target=i386-pc --force|| exit 101
         ;;
     "uefi-secureboot")
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated shim-signed grub-efi-amd64-signed efibootmgr
-        grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck || exit 101
+        grub-install --target=x86_64-efi --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck || exit 101
 	[ -d /boot/efi/EFI/ubuntu ] || mkdir -p /boot/efi/EFI/ubuntu
 	[ -f /boot/efi/EFI/${BOOTLOADER_ID}/grub.cfg ] && cp /boot/efi/EFI/${BOOTLOADER_ID}/grub.cfg /boot/efi/EFI/ubuntu/grub.cfg
         ;;
