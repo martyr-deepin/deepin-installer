@@ -107,11 +107,33 @@ fix_boot_order(){
     efibootmgr -o ${cmdargs}
 }
 
+set_boot_flag(){
+    if [ x${DI_LUPIN} = xtrue ]; then 
+	echo "Lupin install method. Skip set boot flag"
+	return 0
+    fi
+
+    if mount -l | grep -q /boot ;then
+	BOOTBLK=$(mount -l | grep /boot | awk '{print $1}')
+    else
+	BOOTBLK=${DI_ROOT_PARTITION}
+    fi
+    ROOTBLK=$(echo ${BOOTBLK} | tr -d '[:digit]')
+    if [ -b ${ROOTBLK} ];then
+        BOOTNUM=$(echo $BOOTBLK | tr -d ${ROOTBLK})
+    	parted ${ROOTBLK} set ${BOOTNUM} boot on
+    fi
+}
+
 case ${BOOT} in
     uefi*)
         echo "Try to fix efi boot order to deepin first"
         fix_boot_order
         ;;
+    legacy)
+	echo "Try to set boot flag on"
+	set_boot_flag
+	;;
     *)
         ;;
 esac
