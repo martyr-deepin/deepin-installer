@@ -131,6 +131,7 @@ void update_hooks_progress(HookInfo* info)
 
 void run_one_by_one(GPid pid, gint status, HookInfo* info)
 {
+    g_message("[%s]\n", __func__);
     GError* error = NULL;
 
     if (pid != -1) {
@@ -149,6 +150,7 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
     }
 
     if (info->jobs->data == NULL) {
+        g_message("[%s] jobs is empty\n", __func__);
         g_list_free_full(g_list_first(info->jobs), g_free);
         enter_next_stage();
         return;
@@ -162,17 +164,24 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
     argv[1] = 0;
 
     // Reset LC_ALL to C.
-    char** env = g_get_environ();
+    gchar** env = g_get_environ();
+    g_message("[%s] add LC_ALL to env\n", __func__);
     g_environ_setenv(env, "LC_ALL", "C", TRUE);
 
     g_message("[%s] RUN : %s\n", __func__, (char*)info->jobs->data);
     info->current_job_num = g_list_index(g_list_first(info->jobs),
                                          info->jobs->data);
+    g_message("[%s] get next job\n");
     info->jobs = g_list_next(info->jobs);
+    g_spawn_async(info->jobs_path, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD,
+                  NULL, NULL, &child_pid, &error);
     g_spawn_async(info->jobs_path, argv, env, G_SPAWN_DO_NOT_REAP_CHILD,
                   NULL, NULL, &child_pid, &error);
+    g_message("[%s] will free env\n", __func__);
     if (env != NULL) {
-      g_strfreev(env);
+        g_message("[%s] free env, %p.\n", __func__, env);
+        g_strfreev(env);
+        env = NULL;
     }
     if (error != NULL) {
         g_warning("[%s] can't spawn %s: %s\n", __func__, argv[0],
@@ -181,8 +190,11 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
         return;
     }
 
+    g_message("[%s] will call g_child_watch_add()\n", __func__);
+
     g_child_watch_add(child_pid, (GChildWatchFunc)run_one_by_one, info);
     update_hooks_progress(info);
+    g_message("[%s] End\n", __func__);
 }
 
 void run_hooks(HookInfo* info)
