@@ -165,21 +165,15 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
 
     // Reset LC_ALL to C.
     gchar** env = g_get_environ();
-    g_message("[%s] add LC_ALL to env\n", __func__);
     g_environ_setenv(env, "LC_ALL", "C", TRUE);
 
     g_message("[%s] RUN : %s\n", __func__, (char*)info->jobs->data);
     info->current_job_num = g_list_index(g_list_first(info->jobs),
                                          info->jobs->data);
-    g_message("[%s] get next job\n", __func__);
     info->jobs = g_list_next(info->jobs);
-    g_spawn_async(info->jobs_path, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD,
-                  NULL, NULL, &child_pid, &error);
     g_spawn_async(info->jobs_path, argv, env, G_SPAWN_DO_NOT_REAP_CHILD,
                   NULL, NULL, &child_pid, &error);
-    g_message("[%s] will free env\n", __func__);
     if (env != NULL) {
-        g_message("[%s] free env, %p.\n", __func__, env);
         g_strfreev(env);
         env = NULL;
     }
@@ -190,11 +184,8 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
         return;
     }
 
-    g_message("[%s] will call g_child_watch_add()\n", __func__);
-
     g_child_watch_add(child_pid, (GChildWatchFunc)run_one_by_one, info);
     update_hooks_progress(info);
-    g_message("[%s] End\n", __func__);
 }
 
 void run_hooks(HookInfo* info)

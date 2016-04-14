@@ -99,7 +99,7 @@ def remove_target(source_root, target_root, relpath, st_source):
             pass
         if not os.path.exists(linktarget):
             try:
-                os.makedirs(os.path.dirname(linktarget))
+                os.makedirs(os.path.dirname(linktarget), exist_ok=True)
             except OSError as e:
                 if e.errno != errno.EEXIST:
                     raise
