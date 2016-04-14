@@ -171,7 +171,7 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
     g_message("[%s] RUN : %s\n", __func__, (char*)info->jobs->data);
     info->current_job_num = g_list_index(g_list_first(info->jobs),
                                          info->jobs->data);
-    g_message("[%s] get next job\n");
+    g_message("[%s] get next job\n", __func__);
     info->jobs = g_list_next(info->jobs);
     g_spawn_async(info->jobs_path, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD,
                   NULL, NULL, &child_pid, &error);
