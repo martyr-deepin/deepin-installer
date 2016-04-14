@@ -418,10 +418,8 @@ if __name__ == "__main__":
     parser.add_argument('--lang', default="en_US",type=str)
     parser.add_argument('--live', default="casper",type=str)
     args = parser.parse_args()
-    if not os.path.exists(os.path.dirname(PROGRESS_FILE)):
-        os.makedirs(os.path.dirname(PROGRESS_FILE))
-    if not os.path.exists('/var/lib/deepin-installer'):
-        os.makedirs('/var/lib/deepin-installer')
+    os.makedirs(os.path.dirname(PROGRESS_FILE), exist_ok=True)
+    os.makedirs('/var/lib/deepin-installer', exist_ok=True)
     install = Install(lang=args.lang,live=args.live)
     install.run()
     sys.exit(0)

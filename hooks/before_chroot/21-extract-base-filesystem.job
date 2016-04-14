@@ -47,12 +47,12 @@ MEM=0
 # Check if freemem less than 3G
 if [ $MEM -le 3000000 ] ;then
     echo "[Info] Detect free memory less than 3G"
-    ./extract_base_filesystem --lang ${L} --live ${LIVE}
+    ./extract_base_filesystem --lang ${L} --live ${LIVE} || exit 1
 else
     echo "[Info] Detect free memory more than 3G"
     unbuffer \
       unsquashfs -f -d /target ${LIVE_FILESYSTEM}/filesystem.squashfs | \
-      unsquashfs_progress /tmp/deepin-installer/unsquashfs_base_progress
+      unsquashfs_progress /tmp/deepin-installer/unsquashfs_base_progress || exit 2
 fi
 
 # Finally extract_overlay_filesystem 
