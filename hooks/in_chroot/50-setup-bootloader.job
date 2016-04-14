@@ -118,7 +118,7 @@ set_boot_flag(){
     else
 	BOOTBLK=${DI_ROOT_PARTITION}
     fi
-    ROOTBLK=$(echo ${BOOTBLK} | tr -d '[:digit]')
+    ROOTBLK=$(echo ${BOOTBLK} | tr -d '[:digit:]')
     if [ -b ${ROOTBLK} ];then
         BOOTNUM=$(echo $BOOTBLK | tr -d ${ROOTBLK})
     	parted ${ROOTBLK} set ${BOOTNUM} boot on
