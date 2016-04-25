@@ -14,6 +14,7 @@ import shutil
 _casper_config = None
 PROGRESS_FILE = '/tmp/deepin-installer/unsquashfs_base_progress'
 
+
 class InstallError(Exception):
     def __init__ (self,message):
         Exception.__init__(self, message)
@@ -99,7 +100,7 @@ def remove_target(source_root, target_root, relpath, st_source):
             pass
         if not os.path.exists(linktarget):
             try:
-                os.makedirs(os.path.dirname(linktarget), exist_ok=True)
+                os.makedirs(os.path.dirname(linktarget))
             except OSError as e:
                 if e.errno != errno.EEXIST:
                     raise
@@ -418,8 +419,10 @@ if __name__ == "__main__":
     parser.add_argument('--lang', default="en_US",type=str)
     parser.add_argument('--live', default="casper",type=str)
     args = parser.parse_args()
-    os.makedirs(os.path.dirname(PROGRESS_FILE), exist_ok=True)
-    os.makedirs('/var/lib/deepin-installer', exist_ok=True)
+    if not os.path.exists(os.path.dirname(PROGRESS_FILE)):
+        os.makedirs(os.path.dirname(PROGRESS_FILE))
+    if not os.path.exists('/var/lib/deepin-installer'):
+        os.makedirs('/var/lib/deepin-installer')
     install = Install(lang=args.lang,live=args.live)
     install.run()
     sys.exit(0)
