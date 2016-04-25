@@ -21,22 +21,9 @@ class VirtualMachine extends Page
     constructor: (@id) ->
         super
         @title_txt = create_element("div", "VirtualTitle", @element)
-        @title_txt.innerText = _("Tips")
+        @title_txt.innerText = _("提示")
         @content = create_element("div", "VirtualContent", @element)
         @tips = create_element("div", "VirtualTips", @content)
-        @tips.innerText = _("It is detected that you are using a virtual machine. Installing Deepin on a virtual machine will affect its performances. You are recommended to experience it in a real environment.")
+        @tips.innerText = _("正在扫描本地磁盘....")
         @foot = create_element("div", "VirtualFoot", @element)
-        @continue = new NextStep("VirtualMachineContinue",_("Continue"),@ok_cb)
-        @foot.appendChild(@continue.element)
-        @continue.next_bt_enable()
         @element.style.display = "block"
-
-    ok_cb: =>
-        console.debug("[virtual.coffee] VirtualMachine.ok_cb() auto_mode: #{pc.auto_mode}")
-        if pc.auto_mode
-            progress_page = new Progress("progress") if not progress_page?
-            pc.switch_page(progress_page)
-            DCore.Installer.start_install()
-        else
-            welcome_page = new Welcome("welcome") if not welcome_page?
-            pc.switch_page(welcome_page)

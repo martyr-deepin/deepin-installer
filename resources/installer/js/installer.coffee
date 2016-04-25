@@ -27,9 +27,6 @@ DCore.signal_connect("without_wm", ->
 
 DCore.signal_connect("is_virtual_machine", ->
     console.log("[installer.coffee] connected to dbus signal `is_virtual_machine`")
-    pc.is_virtual_machine = true
-    virtual_page = new VirtualMachine("VirtualMachine") if not virtual_page?
-    pc.switch_page(virtual_page)
 )
 
 DCore.signal_connect("auto_mode", ->
@@ -41,6 +38,6 @@ DCore.signal_connect("auto_mode", ->
     DCore.Installer.start_install()
 )
 
-welcome_page = new Welcome("welcome") if not welcome_page?
-pc.switch_page(welcome_page)
+virtual_page = new VirtualMachine("VirtualMachine") if not virtual_page?
+pc.switch_page(virtual_page)
 DCore.Installer.emit_webview_ok()

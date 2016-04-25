@@ -31,6 +31,10 @@ DCore.signal_connect("init_parted", (msg) ->
             _("To install Deepin OS, you need to have at least %d GB disk space.").replace("%d", (minimum_disk_size_required / GB).toFixed(0)),
             DCore.Installer.finish_install
         ).show_at(document.body)
+
+    undo_part_table_info()
+    part_page = new Part("partition")
+    pc.switch_page(part_page)
 )
 
 DCore.signal_connect("os_prober", (msg) ->
