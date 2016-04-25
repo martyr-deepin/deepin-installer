@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 
 option(DEVELOP "enable develop mode (use src's resource)" false)
 option(TEST "enable test mode (run project's test code)" false)
-option(LIVE_BOOT "enable test mode (run project's test code)" true)
 option(USE_GCCGO "use gccgo or cgo" false)
+
+set(LIVE_METHOD "live-boot" CACHE STRING "live-method support (live-boot or casper)")
 
 macro(GEN_JSC_SOURCE2 JSC_GEN_SRC CFG_DIR OUTPUT)
     set(OUT ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT})
@@ -94,7 +95,7 @@ install(
    PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
 
-if (LIVE_BOOT)
+if (LIVE_METHOD STREQUAL "live-boot")
     install(
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/live-config/
         DESTINATION /lib/live/config
@@ -109,12 +110,14 @@ if (LIVE_BOOT)
         FILES ${CMAKE_CURRENT_SOURCE_DIR}/deepin-installer.conf
         DESTINATION /etc/live/config.conf.d/
     )
-else()
+elseif (LIVE_METHOD STREQUAL "casper")
     install(
        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/casper-bottom
        DESTINATION ${CMAKE_INSTALL_PREFIX}/share/initramfs-tools/scripts
        USE_SOURCE_PERMISSIONS
     )
+else()
+    message(FATAL_ERROR "no live method parameter")    
 endif()
 
 install(
