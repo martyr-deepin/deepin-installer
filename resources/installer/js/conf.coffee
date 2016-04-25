@@ -3,13 +3,17 @@ __selected_layout_item = null
 __selected_variant_item = null
 __selected_use_uefi = DCore.Installer.system_support_efi()
 
-__selected_timezone = DCore.Installer.get_timezone_local()
-__selected_timezone = "UTC" if not __selected_timezone?
-__selected_username = null
-__selected_hostname = null
-__selected_password = null
+#__selected_timezone = DCore.Installer.get_timezone_local()
+__selected_timezone = "Asia/Shanghai"
+#__selected_username = null
+__selected_username = "wps-user"
+#__selected_hostname = null
+__selected_hostname = "WPS-PC"
+#__selected_password = null
+__selected_password = "abc123"
 
 __selected_locale = DCore.Installer.get_current_locale()
+__selected_locale = "zh_CN.UTF8"
 
 sync_installer_conf = ->
     console.log("[conf.coffee] sync_installer_conf()")
