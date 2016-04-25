@@ -1,53 +1,45 @@
-/**
- * Copyright (C) 2015 Deepin Technology Co., Ltd.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- **/
-
 package main
 
-import (
-	"pkg.deepin.io/lib/dbus"
-	"pkg.deepin.io/lib/log"
-)
+import "io/ioutil"
+import "pkg.linuxdeepin.com/lib/dbus"
+import log "pkg.linuxdeepin.com/lib/log"
+import "os"
+import "os/exec"
 
 var logger = log.NewLogger("com.deepin.helper.LanguageSelector")
 
 type LanguageSelector struct {
 }
 
+func run_shell_content(code string, argv ...string) {
+	f, err := ioutil.TempFile(os.TempDir(), "shell_code")
+	if err != nil {
+		logger.Warning("can't create temp file: ", err)
+		return
+	}
+	f.Close()
+	os.Remove(f.Name())
+
+	ioutil.WriteFile(f.Name(), ([]byte)(code), 0755)
+	argv = append([]string{f.Name()}, argv...)
+	cmd := exec.Command("/bin/sh", argv...)
+	d, err := cmd.Output()
+	logger.Info(string(d))
+	if err != nil {
+		logger.Error("Can't run shell code:", err)
+	}
+	defer os.Remove(f.Name())
+}
+
 func (*LanguageSelector) Set(lang string) {
-	var locale = lang + ".UTF-8"
-	if !isSupportedLocale(locale) {
-		if !isSupportedLocale(lang) {
-			logger.Warning("Invalid locale:", locale)
-			return
-		} else {
-			locale = lang
-		}
-	}
-
-	err := doSetLocale(locale)
-	if err != nil {
-		logger.Warning("Set locale failed:", err)
-		return
-	}
-
-	err = setTimezoneByLocale(locale)
-	if err != nil {
-		logger.Warning("Set timezone failed:", err)
-		return
-	}
+	run_shell_content(shell_code, lang)
 }
 
 func (*LanguageSelector) GetDBusInfo() dbus.DBusInfo {
 	return dbus.DBusInfo{
-		Dest:       "com.deepin.helper.LanguageSelector",
-		ObjectPath: "/com/deepin/helper/LanguageSelector",
-		Interface:  "com.deepin.helper.LanguageSelector",
+		"com.deepin.helper.LanguageSelector",
+		"/com/deepin/helper/LanguageSelector",
+		"com.deepin.helper.LanguageSelector",
 	}
 }
 

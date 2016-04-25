@@ -1,10 +1,10 @@
 /**
- * Copyright (c) 2011 ~ 2013 Deepin, Inc.
- *               2011 ~ 2013 Long Wei
+ * Copyright (c) 2011 ~ 2012 Deepin, Inc.
+ *               2011 ~ 2012 Liqiang Lee
  *
- * Author:      Long Wei <yilang2007lw@gmail.com>
+ * Author:      Liqiang Lee <liliqiang@linuxdeepin.com>
  *              bluth <yuanchenglu001@gmail.com>
- * Maintainer:  Long Wei <yilang2007lw@gamil.com>
+ * Maintainer:  Liqiang Lee <liliqiang@linuxdeepin.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,29 +20,12 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef _M_UTILS_H
-#define _M_UTILS_H
+#ifndef MOUSE_H
+#define MOUSE_H
 
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <glib.h>
-#include <stdlib.h>
-#include <glib/gstdio.h>
-#include <glib/gprintf.h>
-#include <sys/types.h>
-#include <X11/XKBlib.h>
-#include <gio/gio.h>
-#include <stdio.h>
-#include <string.h>
-#include <locale.h>
-#include "i18n.h"
+gboolean update_workarea_rect_by_mouse(struct DisplayInfo* area);
 
-gboolean app_is_running (const char* path);
+void listen_leave_notify_signal(GtkWidget* widget, gpointer data);
 
-gboolean is_capslock_on ();
+#endif /* end of THEME_H */
 
-gchar* get_date_string ();
-
-void turn_numlock_on ();
-
-#endif
