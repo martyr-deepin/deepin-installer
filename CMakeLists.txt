@@ -133,3 +133,7 @@ install(
     FILES ${CMAKE_CURRENT_SOURCE_DIR}/deepin-installer.png
     DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/48x48/apps/
 )
+install(
+    FILES ${CMAKE_CURRENT_SOURCE_DIR}/com.deepin.deepin-installer.appearance.gschema.xml
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/share/glib-2.0/schemas/
+)

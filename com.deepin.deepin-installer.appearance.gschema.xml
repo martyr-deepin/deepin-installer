@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema path="/com/deepin/deepin-installer/appearance/" id="com.deepin.deepin-installer.appearance" gettext-domain="DDE">
+    <key type="s" name="greeter-theme">
+      <default>'sky'</default>
+      <summary>greeter theme</summary>
+      <description>
+        the theme of greeter
+      </description>
+    </key>
+    <key type="s" name="background">
+      <default>'file:///usr/share/backgrounds/default_background.jpg'</default>
+      <summary>background</summary>
+      <description>
+        the background of greeter
+      </description>
+    </key>
+  </schema>
+</schemalist>
