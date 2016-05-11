@@ -35,5 +35,5 @@ setTheme = (theme)->
         when THEME.sky
             inject_js("#{path}/sky.js")
 
-theme = DCore[APP_NAME].get_theme()
+theme = "sky"
 setTheme(theme)
