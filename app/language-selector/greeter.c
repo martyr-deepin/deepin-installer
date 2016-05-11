@@ -175,6 +175,13 @@ char* greeter_get_resources_dir()
     return RESOURCE_DIR;
 }
 
+
+JS_EXPORT_API
+char* greeter_get_theme()
+{
+    return get_theme_config();
+}
+
 static void
 free_auth_handler (struct AuthHandler *handler)
 {
@@ -506,6 +513,7 @@ int main (int argc, char **argv)
     g_setenv("G_MESSAGES_DEBUG", "all", TRUE);
 
     init_i18n ();
+    init_theme();
     gtk_init (&argc, &argv);
 
     init_lightdm();

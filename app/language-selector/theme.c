@@ -11,6 +11,8 @@
 #include "background.h"
 #include "theme.h"
 
+#define SCHEMA_ID "com.deepin.dde.appearance"
+#define GREETER_THEME_KEY "greeter-theme"
 #define GREETER_THEME_PATH ""RESOURCE_DIR"/language-selector/greeter-theme"
 
 GSettings* s;
@@ -20,6 +22,11 @@ const char* get_theme_path()
     return GREETER_THEME_PATH;
 }
 
+char* get_theme_config()
+{
+    return g_settings_get_string(s, GREETER_THEME_KEY);
+}
+
 char* get_current_bg_path()
 {
     return g_settings_get_string(s, "background");
@@ -27,7 +34,7 @@ char* get_current_bg_path()
 
 void set_theme_background(GtkWidget* container,GtkWidget* child)
 {
-    char* theme = "sky";
+    char* theme = get_theme_config();
     g_message("[%s] theme: %s\n", __func__, theme);
     const char* bg_path = g_strdup_printf("%s/%s/bg.jpg", GREETER_THEME_PATH,
                                           theme);
@@ -61,4 +68,9 @@ void draw_background_by_theme(GtkWidget* widget, GtkWidget* child,
     gdk_window_set_accept_focus(gdkwindow,FALSE);
     gdk_window_set_override_redirect (gdkwindow, TRUE);
     gtk_widget_show (widget);
+}
+
+void init_theme()
+{
+    s = g_settings_new(SCHEMA_ID);
 }
