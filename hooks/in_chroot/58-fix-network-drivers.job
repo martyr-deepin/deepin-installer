@@ -44,7 +44,7 @@ fix_pci_bcm4313() {
 
         # uninstall bcmwl-kernel-source
         apt-get purge --force-yes -f bcmwl-kernel-source
-        apt-get install --allow-unauthenticated -y --force-yes linux-firmware-nonfree
+        apt-get install --allow-unauthenticated -y --force-yes firmware-brcm80211
 
         # blacklist b43 and wl driver
         echo "blacklist b43" | tee -a /etc/modprobe.d/bcm.conf
@@ -100,7 +100,7 @@ fix_pci_rtl8723ae_fwlps() {
 }
 
 
-#fix_pci_bcm4313 || true
+fix_pci_bcm4313 || true
 fix_pci_rtl8723be_fwlps || true
 #fix_usb_rtl8723au || true
 fix_pci_rtl8723ae_fwlps || true
