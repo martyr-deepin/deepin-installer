@@ -40,7 +40,7 @@ fi
 
 echo "Set timezone to ${DI_TIMEZONE}"
 echo "${DI_TIMEZONE}" > /etc/timezone
-[ -e /usr/share/zoneinfo/${DI_TIMEZONE} ] && cp -L /usr/share/zoneinfo/${DI_TIMEZONE} /etc/localtime
+[ -e /usr/share/zoneinfo/${DI_TIMEZONE} ] && cp /usr/share/zoneinfo/${DI_TIMEZONE} /etc/localtime
 dpkg-reconfigure --frontend noninteractive tzdata
 
 #check locale
