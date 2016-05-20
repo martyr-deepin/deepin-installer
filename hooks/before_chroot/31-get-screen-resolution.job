@@ -3,7 +3,8 @@
 echo "[$0]"
 set -x
 
-resolution=$(xrandr | grep Screen\ 0 | awk -F, '{print $2}' | sed -e 's/current//g' -e 's/ //g')
+# extract 1440x900 from "LVDS1 connected primary 1440x900+0+0 (normal left inverted right x axis y axis)"
+resolution=$(xrandr | grep primary | awk '{print $4}' | sed 's/\+.*$//')
 
 if [ -z "$resolution" ];then
     resolution="1024x768"
