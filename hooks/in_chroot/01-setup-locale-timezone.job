@@ -8,7 +8,7 @@ if [ -f /deepinhost/etc/deepin-installer.conf ];then
 fi
 
 DI_LOCALE=${DI_LOCALE:-en_US}
-DI_TIMEZONE=${DI_TIMEZONE:-UTC}
+DI_TIMEZONE=${DI_TIMEZONE:-Etc/UTC}
 LOCALE=${DI_LOCALE%.*}
 
 #alway generate en_US locale
@@ -31,16 +31,17 @@ fi
 /usr/sbin/locale-gen
 
 echo "Check timezone ${DI_TIMEZONE}"
-if awk '{print $3}' /usr/share/zoneinfo/zone.tab | grep -q "^${DI_TIMEZONE}$";then
+if cat /usr/share/zoneinfo/zone.tab | grep -v '^#' | awk '{print $3}' | grep -q "^${DI_TIMEZONE}$";then
     echo "${DI_TIMEZONE} is available"
 else
     echo "Timezone is not available, Fall back to UTC"
-        DI_TIMEZONE="UTC"
+    DI_TIMEZONE="Etc/UTC"
 fi
 
 echo "Set timezone to ${DI_TIMEZONE}"
 echo "${DI_TIMEZONE}" > /etc/timezone
-[ -e /usr/share/zoneinfo/${DI_TIMEZONE} ] && cp /usr/share/zoneinfo/${DI_TIMEZONE} /etc/localtime
+# Create /etc/localtime symbol links
+ln -nsf /usr/share/zoneinfo/${DI_TIMEZONE} /etc/localtime
 dpkg-reconfigure --frontend noninteractive tzdata
 
 #check locale
