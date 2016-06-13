@@ -75,6 +75,14 @@ case ${BOOT} in
         ;;
 esac
 
+# Try to avoid kernel update error when create symbol link
+case ${BOOT} in
+    "uefi*")
+        echo "# avoid kernel update fails with /boot on FAT32
+do_symlinks = no" | tee /etc/kernel-img.conf
+    ;;
+esac
+
 fix_boot_order(){
     command -v efibootmgr >/dev/null 2>&1 || { echo >&2 "Require efibootmgr installed but not found.Skip"; exit 0;}
     local bootinfo=$(efibootmgr)
