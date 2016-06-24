@@ -2,8 +2,10 @@
 
 set -e
 
-# NOTE(xushaohua): `dconf-cli` package is required by this script.
-dconf write "/com/deepin/dde/power/battery-screen-black-delay" 0
-dconf write "/com/deepin/dde/power/battery-sleep-delay" 0
+DISPLAY=:0 gsettings set com.deepin.dde.power battery-screen-black-delay 0
+DISPLAY=:0 gsettings set com.deepin.dde.power battery-sleep-delay 0
+
+su -c 'DISPLAY=:0 gsettings set com.deepin.dde.power battery-screen-black-delay 0' deepin
+su -c 'DISPLAY=:0 gsettings set com.deepin.dde.power battery-sleep-delay 0' deepin
 
 exit 0
