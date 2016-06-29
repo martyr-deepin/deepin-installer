@@ -8,8 +8,8 @@ TYPE=$(cat /etc/deepin-version  2>/dev/null | grep Type= | head -n 1 | sed 's/Ty
 case "$TYPE" in
     "Professional")
         cat > /etc/apt/sources.list <<EOF
-deb http://http://packages.deepin.com/professional raccoon main contrib non-free
-#deb-src http://http://packages.deepin.com/professional raccoon main contrib non-free
+deb http://packages.deepin.com/professional raccoon main contrib non-free
+#deb-src http://packages.deepin.com/professional raccoon main contrib non-free
 EOF
      ;;
      *)
