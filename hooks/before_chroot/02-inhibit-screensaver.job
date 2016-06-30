@@ -4,8 +4,12 @@ set -e
 
 DISPLAY=:0 gsettings set com.deepin.dde.power battery-screen-black-delay 0
 DISPLAY=:0 gsettings set com.deepin.dde.power battery-sleep-delay 0
+DISPLAY=:0 gsettings set com.deepin.dde.power line-power-screen-black-delay 0
+DISPLAY=:0 gsettings set com.deepin.dde.power line-power-sleep-delay 0
 
 su -c 'DISPLAY=:0 gsettings set com.deepin.dde.power battery-screen-black-delay 0' deepin
 su -c 'DISPLAY=:0 gsettings set com.deepin.dde.power battery-sleep-delay 0' deepin
+su -c 'DISPLAY=:0 gsettings set com.deepin.dde.power line-power-screen-black-delay 0' deepin
+su -c 'DISPLAY=:0 gsettings set com.deepin.dde.power line-power-sleep-delay 0' deepin
 
 exit 0
