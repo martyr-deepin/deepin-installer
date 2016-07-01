@@ -4,8 +4,8 @@ echo "[$0]"
 if [ -f /deepinhost/etc/deepin-installer.conf ];then
     . /deepinhost/etc/deepin-installer.conf
 fi
-
-LOCALE=${LOCALE:-en_US}
+DI_LOCALE=${DI_LOCALE%.*}
+DI_LOCALE=${DI_LOCALE:-en_US}
 
 if [ ! -e /etc/deepin-version ];then
     echo "/etc/deepin-version not exists, exits" >&2
@@ -16,7 +16,7 @@ VERSION=$(cat /etc/deepin-version | grep Version= | head -n 1 | sed 's/Version=/
 TYPE=$(cat /etc/deepin-version | grep Type= | head -n 1 | sed 's/Type=//')
 
 do_lsb_release() {
-    _TYPE=$(cat /etc/deepin-version | grep Type\\\[${LOCALE}\\\]= | head -n 1)
+    _TYPE=$(cat /etc/deepin-version | grep Type\\\[${DI_LOCALE}\\\]= | head -n 1)
     if [ -z ${_TYPE} ];then
         _TYPE=${TYPE}
     else
