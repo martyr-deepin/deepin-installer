@@ -40,7 +40,7 @@ case ${BOOT} in
             BOOTLOADER_ID="Deepin ${_type} ${_version}"
          fi
 	 ;;
-    "uefi*")
+     "uefi")
         BOOTLOADER_ID="$(config_item GRUB_DISTRIBUTOR | tr A-Z a-z | cut -d' ' -f1)"
 	;;
 esac
@@ -61,7 +61,7 @@ case ${BOOT} in
 	fi
         grub-install --no-floppy ${DI_BOOTLOADER} --target=i386-pc --force|| exit 101
         ;;
-    "uefi|uefi-secureboot")
+    "uefi")
 	# clover efi loader cannot grub.efi currectly, so we may patch grub or use grub.efi.signed.
         apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated shim-signed grub-efi-amd64-signed efibootmgr
 	# uefi-secure-boot options is enabled by default
@@ -73,7 +73,7 @@ esac
 
 # Try to avoid kernel update error when create symbol link
 case ${BOOT} in
-    "uefi*")
+    "uefi")
         echo "# avoid kernel update fails with /boot on FAT32
 do_symlinks = no" | tee /etc/kernel-img.conf
     ;;
