@@ -37,6 +37,16 @@ fix_productname_x550vc() {
     fi
 }
 
+# add N551ZU wireless fix
+fix_productname_n551zu() {
+    if is_productname_exists "N551ZU"; then
+        echo "fix N551ZU --------------------------------"
+
+        # add wapf = 1
+        echo "options asus_nb_wmi wapf=1" | tee -a /etc/modprobe.d/asus_nb_wmi.conf
+    fi
+}
+
 # bcm4313 [14e4:4727] wireless driver
 fix_pci_bcm4313() {
     if is_pci_exists "14e4:4727"; then
@@ -105,3 +115,4 @@ fix_pci_rtl8723be_fwlps || true
 #fix_usb_rtl8723au || true
 fix_pci_rtl8723ae_fwlps || true
 fix_productname_x550vc || true
+fix_productname_n551zu || true
