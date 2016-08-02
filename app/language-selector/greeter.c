@@ -146,7 +146,7 @@ char* greeter_get_lang_by_name(gchar* lang_name)
                       name, local);
         }
         g_free(name);
-    } 
+    }
     g_strfreev(list);
     g_key_file_unref(key);
     return g_strdup(local);
@@ -213,10 +213,10 @@ start_authentication (struct AuthHandler *handler)
     g_warning("[%s]: %s\n", __func__, username);
 
     if (g_strcmp0 (username, "guest") == 0) {
-        lightdm_greeter_authenticate_as_guest (greeter);
+        lightdm_greeter_authenticate_as_guest (greeter, NULL);
         g_warning("[%s] for guest\n", __func__);
     } else {
-        lightdm_greeter_authenticate (greeter, username);
+        lightdm_greeter_authenticate (greeter, username, NULL);
     }
 
     g_free (username);
@@ -240,7 +240,7 @@ respond_authentication(LightDMGreeter *greeter,
     }
     g_warning("[%s] respond: %s\n", __func__, respond);
 
-    lightdm_greeter_respond (greeter, respond);
+    lightdm_greeter_respond (greeter, respond, NULL);
 
     g_free (respond);
 }
