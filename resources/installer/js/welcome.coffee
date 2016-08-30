@@ -797,6 +797,7 @@ class WelcomeFormItem extends Widget
             if @valid.ok
                 @destroy_tooltip()
             else
+                @next_step.next_bt_disable()
                 @set_tooltip(@valid.msg)
         )
 
@@ -827,7 +828,6 @@ class WelcomeFormItem extends Widget
                     if @valid.ok
                         @destroy_tooltip()
                     else
-                        @input.value = @value_origin
                         @set_tooltip(@valid.msg)
 
                 when "password"
@@ -899,9 +899,7 @@ class WelcomeFormItem extends Widget
         return regexp.test(hostname)
 
     validateHostname: (hostname, temp) =>
-        if not hostname? or hostname.length == 0 or
-                (temp and @doValidateHostnameTmp(hostname)) or
-                @doValidateHostname(hostname)
+        if hostname.length > 0 and ((temp and @doValidateHostnameTmp(hostname)) or @doValidateHostname(hostname))
             @valid = {ok: true, msg: "", code: 0}
         else
             @valid =
