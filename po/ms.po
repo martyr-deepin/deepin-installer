@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-19 10:27+0800\n"
-"PO-Revision-Date: 2015-11-02 03:53+0000\n"
-"Last-Translator: abuyop <abuyop@gmail.com>\n"
+"POT-Creation-Date: 2016-09-02 09:44+0800\n"
+"PO-Revision-Date: 2016-09-02 02:32+0000\n"
+"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
 "Language-Team: Malay (http://www.transifex.com/linuxdeepin/deepin-installer/language/ms/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,11 +21,11 @@ msgstr ""
 #: ../resources/installer/js/finish.coffee:34
 #: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Now"
-msgstr "Mula Semula Sekarang"
+msgstr "But Semula Sekarang"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr "Pemasangan Berjaya!"
+msgstr ""
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -48,6 +48,18 @@ msgstr "Log pemasangan telah disimpan pada desktop untuk anda.\nBantu kami menam
 msgid "Exit Installation"
 msgstr "Keluar dari Pemasangan"
 
+#: ../resources/installer/js/progress.coffee:25
+msgid "Error Report"
+msgstr "Laporan Ralat"
+
+#: ../resources/installer/js/progress.coffee:27
+msgid "System installation failed. Please send the log to Deepin Team."
+msgstr "Pemasangan sistem gagal. Sila hantar log kepada Pasukan Deepin."
+
+#: ../resources/installer/js/progress.coffee:40
+msgid "Preparing for Installation"
+msgstr "Menyediakan pemasangan"
+
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
 msgstr "Petua"
@@ -57,34 +69,19 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr "Kelihatan anda menggunakan mesin maya. Pemasangan Deepin pada mesin maya akan mempengaruhi prestasinya. Kami mencadangkan penggunaan Deepin pada mesin yang sebenar."
+msgstr ""
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
 msgstr "Teruskan"
-
-#: ../resources/installer/js/base.coffee:28
-msgid "Installation Requirements"
-msgstr "Keperluan Pemasangan"
-
-#: ../resources/installer/js/base.coffee:29
-#, python-format
-msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr "Untuk memasang Deepin OS, anda perlu sekurang-kurangnya %dGB ruang cakera."
-
-#: ../resources/installer/js/base.coffee:49
-#: ../resources/installer/js/base.coffee:51
-#: ../resources/installer/js/base.coffee:53
-msgid "Unused"
-msgstr "Tidak digunakan"
 
 #: ../resources/installer/js/part.coffee:126
 #: ../resources/installer/js/part.coffee:145
 msgid "Freespace"
 msgstr "Ruang bebas"
 
-#: ../resources/installer/js/part.coffee:198
-#: ../resources/installer/js/part.coffee:203
+#: ../resources/installer/js/part.coffee:197
+#: ../resources/installer/js/part.coffee:202
 msgid "Unknown"
 msgstr "Tidak diketahui"
 
@@ -92,366 +89,381 @@ msgstr "Tidak diketahui"
 msgid "Install Here"
 msgstr "Pasang Di Sini"
 
-#: ../resources/installer/js/part.coffee:342
-#: ../resources/installer/js/part.coffee:780
+#: ../resources/installer/js/part.coffee:343
+#: ../resources/installer/js/part.coffee:846
 msgid "Warning"
 msgstr "Amaran"
 
-#: ../resources/installer/js/part.coffee:343
+#: ../resources/installer/js/part.coffee:344
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "Sistem mungkin tidak dapat dibutkan kerana ruang terlalu kecil dalam sekatan /boot. Sila tingkatkan ruang sekurang-kurangnya 300MB."
+msgstr ""
 
-#: ../resources/installer/js/part.coffee:468
+#: ../resources/installer/js/part.coffee:473
 msgid "Disk"
 msgstr "Cakera"
 
-#: ../resources/installer/js/part.coffee:488
+#: ../resources/installer/js/part.coffee:493
 msgid "Device"
 msgstr "Peranti"
 
-#: ../resources/installer/js/part.coffee:490
+#: ../resources/installer/js/part.coffee:495
 msgid "Size"
 msgstr "Saiz"
 
-#: ../resources/installer/js/part.coffee:492
+#: ../resources/installer/js/part.coffee:497
 msgid "Free Space"
 msgstr "Ruang Bebas"
 
-#: ../resources/installer/js/part.coffee:494
+#: ../resources/installer/js/part.coffee:499
 msgid "Filesystem"
 msgstr "Sistem Fail"
 
-#: ../resources/installer/js/part.coffee:496
+#: ../resources/installer/js/part.coffee:501
 msgid "Information"
 msgstr "Maklumat"
 
-#: ../resources/installer/js/part.coffee:498
+#: ../resources/installer/js/part.coffee:503
 msgid "Mount Point"
 msgstr "Titik Lekap"
 
-#: ../resources/installer/js/part.coffee:500
+#: ../resources/installer/js/part.coffee:505
 msgid "Formatting"
 msgstr "Pemformatan"
 
-#: ../resources/installer/js/part.coffee:507
-#: ../resources/installer/js/dialog.coffee:73
+#: ../resources/installer/js/part.coffee:512
+#: ../resources/installer/js/dialog.coffee:98
 msgid "Delete Partition"
 msgstr "Padam Sekatan"
 
-#: ../resources/installer/js/part.coffee:518
+#: ../resources/installer/js/part.coffee:523
 msgid "New Partition"
 msgstr "Sekatan Baharu"
 
-#: ../resources/installer/js/part.coffee:585
-#: ../resources/installer/js/part.coffee:805
+#: ../resources/installer/js/part.coffee:618
+#: ../resources/installer/js/part.coffee:871
 msgid "Expert Mode"
 msgstr "Mod Mahir"
 
-#: ../resources/installer/js/part.coffee:595
+#: ../resources/installer/js/part.coffee:628
 msgid "Install"
 msgstr "Pasang"
 
-#: ../resources/installer/js/part.coffee:621
-#: ../resources/installer/js/part.coffee:629
-#: ../resources/installer/js/part.coffee:637
+#: ../resources/installer/js/part.coffee:657
+#: ../resources/installer/js/part.coffee:665
+#: ../resources/installer/js/part.coffee:673
 msgid "Installation Tips"
 msgstr "Petua Pemasangan"
 
-#: ../resources/installer/js/part.coffee:622
+#: ../resources/installer/js/part.coffee:658
 msgid "A root partition (/) is required."
 msgstr "Satu sekatan root (/) diperlukan."
 
-#: ../resources/installer/js/part.coffee:630
+#: ../resources/installer/js/part.coffee:666
 msgid "UEFI-native installation only supports GPT-formatted disk."
 msgstr "Pemasangan tabii-UEFI hanya menyokong cakera terformat-GPT."
 
-#: ../resources/installer/js/part.coffee:638
+#: ../resources/installer/js/part.coffee:674
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
 msgstr "Sokongan ESP diperlukan dalam mod UEFI dan sila cipta satu sekatan bersaiz 100M atau lebih dalam format efi."
 
-#: ../resources/installer/js/part.coffee:657
-#: ../resources/installer/js/dialog.coffee:121
+#: ../resources/installer/js/part.coffee:702
+#: ../resources/installer/js/dialog.coffee:146
 msgid "Add Partition"
 msgstr "Tambah Sekatan"
 
-#: ../resources/installer/js/part.coffee:658
+#: ../resources/installer/js/part.coffee:703
 msgid "Can't create a partition here"
-msgstr "Tidak dapat cipta sekatan di sini"
+msgstr ""
 
-#: ../resources/installer/js/part.coffee:687
+#: ../resources/installer/js/part.coffee:747
 msgid "UEFI"
 msgstr "UEFI"
 
-#: ../resources/installer/js/part.coffee:694
+#: ../resources/installer/js/part.coffee:758
 msgid "Boot Loader"
 msgstr "Pemuat But"
 
-#: ../resources/installer/js/part.coffee:741
+#: ../resources/installer/js/part.coffee:806
 msgid "Unmount Partition"
 msgstr "Nyahlekap Sekatan"
 
-#: ../resources/installer/js/part.coffee:742
+#: ../resources/installer/js/part.coffee:807
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
 msgstr "Sekatan dikesan telah dilekapkan.\nAnda pasti mahu menyahlekapkannya?"
 
-#: ../resources/installer/js/part.coffee:781
+#: ../resources/installer/js/part.coffee:847
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
 msgstr "Pemasangan tabii-UEFI hanya menyokong cakera terformat-GPT. Anda akan kehilangan data cakera jika anda masih mahu memasangnya."
 
-#: ../resources/installer/js/part.coffee:794
+#: ../resources/installer/js/part.coffee:860
 msgid "Simple Mode"
 msgstr "Mod Ringkas"
 
-#: ../resources/installer/js/dialog.coffee:41
+#: ../resources/installer/js/base.coffee:30
+msgid "Installation Requirements"
+msgstr "Keperluan Pemasangan"
+
+#: ../resources/installer/js/base.coffee:31
+#, python-format
+msgid "To install Deepin OS, you need to have at least %d GB disk space."
+msgstr "Untuk memasang Deepin OS, anda perlu sekurang-kurangnya %dGB ruang cakera."
+
+#: ../resources/installer/js/base.coffee:51
+#: ../resources/installer/js/base.coffee:53
+#: ../resources/installer/js/base.coffee:55
+msgid "Unused"
+msgstr "Tidak digunakan"
+
+#: ../resources/installer/js/dialog.coffee:66
 msgid "OK"
 msgstr "OK"
 
-#: ../resources/installer/js/dialog.coffee:41
+#: ../resources/installer/js/dialog.coffee:66
 msgid "Cancel"
 msgstr "Batal"
 
-#: ../resources/installer/js/dialog.coffee:50
+#: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure to exit from installation?"
 msgstr "Anda pasti mahu keluar dari pemasangan?"
 
-#: ../resources/installer/js/dialog.coffee:75
+#: ../resources/installer/js/dialog.coffee:100
 msgid "Are you sure you want to delete this partition?"
 msgstr "Anda pasti mahu memadam sekatan ini?"
 
-#: ../resources/installer/js/dialog.coffee:88
+#: ../resources/installer/js/dialog.coffee:113
 msgid "Formatting Partition"
 msgstr "Memformat Sekatan"
 
-#: ../resources/installer/js/dialog.coffee:90
+#: ../resources/installer/js/dialog.coffee:115
 msgid "Are you sure you want to format this partition?"
 msgstr "Anda pasti mahu memformat sekatan ini?"
 
-#: ../resources/installer/js/dialog.coffee:99
+#: ../resources/installer/js/dialog.coffee:124
 msgid "Proceed with installation"
 msgstr "Teruskan dengan pemasangan"
 
-#: ../resources/installer/js/dialog.coffee:108
+#: ../resources/installer/js/dialog.coffee:133
 msgid "Deepin OS will be installed to freespace."
 msgstr "Deepin OS akan dipasang ke dalam ruang bebas."
 
-#: ../resources/installer/js/dialog.coffee:110
+#: ../resources/installer/js/dialog.coffee:135
 msgid "Deepin OS will be installed to "
 msgstr "Deepin OS dipasangkan"
 
-#: ../resources/installer/js/dialog.coffee:110
+#: ../resources/installer/js/dialog.coffee:135
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\nSekatan akan diformat jika anda teruskan pemasangan. Sila buat sandar mana-mana data yang penting.\n"
+msgstr ""
 
-#: ../resources/installer/js/dialog.coffee:110
+#: ../resources/installer/js/dialog.coffee:135
 msgid "Do you want to continue the installation ?"
 msgstr "Anda mahu teruskan pemasangan ?"
 
-#: ../resources/installer/js/dialog.coffee:141
+#: ../resources/installer/js/dialog.coffee:166
 msgid "Type:"
 msgstr "Jenis:"
 
-#: ../resources/installer/js/dialog.coffee:147
+#: ../resources/installer/js/dialog.coffee:172
 msgid "Primary"
 msgstr "Utama"
 
-#: ../resources/installer/js/dialog.coffee:152
+#: ../resources/installer/js/dialog.coffee:177
 msgid "Logical"
 msgstr "Logikal"
 
-#: ../resources/installer/js/dialog.coffee:182
+#: ../resources/installer/js/dialog.coffee:207
 msgid "Size:"
 msgstr "Saiz: "
 
-#: ../resources/installer/js/dialog.coffee:226
+#: ../resources/installer/js/dialog.coffee:251
 msgid "Align:"
 msgstr "Jajar:"
 
-#: ../resources/installer/js/dialog.coffee:232
+#: ../resources/installer/js/dialog.coffee:257
 msgid "Begin"
 msgstr "Mula"
 
-#: ../resources/installer/js/dialog.coffee:237
+#: ../resources/installer/js/dialog.coffee:262
 msgid "End"
 msgstr "Akhir"
 
-#: ../resources/installer/js/dialog.coffee:257
+#: ../resources/installer/js/dialog.coffee:282
 msgid "Filesystem:"
 msgstr "Sistem Fail:"
 
-#: ../resources/installer/js/dialog.coffee:281
+#: ../resources/installer/js/dialog.coffee:306
 msgid "Mount:"
 msgstr "Lekap:"
 
-#: ../resources/installer/js/dialog.coffee:314
+#: ../resources/installer/js/dialog.coffee:339
 msgid "Please enter a valid partition size."
 msgstr "Sila masukkan saiz sekatan yang sah."
 
-#: ../resources/installer/js/welcome.coffee:193
+#: ../resources/installer/js/welcome.coffee:202
 msgid "Yes"
 msgstr "Ya"
 
-#: ../resources/installer/js/welcome.coffee:198
+#: ../resources/installer/js/welcome.coffee:207
 msgid "No"
 msgstr "Tidak"
 
-#: ../resources/installer/js/welcome.coffee:293
+#: ../resources/installer/js/welcome.coffee:302
 msgid "Please press one of the following keys."
 msgstr "Sila tekan salah satu dari kunci berikut."
 
-#: ../resources/installer/js/welcome.coffee:299
+#: ../resources/installer/js/welcome.coffee:308
 msgid "Please confirm you have the following keys."
 msgstr "Sila sahkan anda mempunyai kunci berikut."
 
-#: ../resources/installer/js/welcome.coffee:342
+#: ../resources/installer/js/welcome.coffee:352
 msgid "Detect Layout"
 msgstr "Padam Bentangan"
 
-#: ../resources/installer/js/welcome.coffee:348
+#: ../resources/installer/js/welcome.coffee:358
 msgid "View Current"
 msgstr "Lihat Semasa"
 
-#: ../resources/installer/js/welcome.coffee:507
+#: ../resources/installer/js/welcome.coffee:515
 msgid "Please select or search your location."
 msgstr "Sila pilih atau gelintar lokasi anda."
 
-#: ../resources/installer/js/welcome.coffee:740
-#: ../resources/installer/js/welcome.coffee:763
-#: ../resources/installer/js/welcome.coffee:847
+#: ../resources/installer/js/welcome.coffee:765
+msgid "Empty"
+msgstr "Kosong"
+
+#: ../resources/installer/js/welcome.coffee:845
+#: ../resources/installer/js/welcome.coffee:950
 msgid "The two passwords do not match."
 msgstr "Kedua-dua kata laluan tidak sepadan."
 
-#: ../resources/installer/js/welcome.coffee:825
-msgid "Computer name can not be empty."
-msgstr "Nama komputer tidak boleh kosong."
+#: ../resources/installer/js/welcome.coffee:907
+msgid "Computer name is invald."
+msgstr ""
 
-#: ../resources/installer/js/welcome.coffee:831
+#: ../resources/installer/js/welcome.coffee:920
+#: ../resources/installer/js/welcome.coffee:1032
 msgid "Password can not be empty."
 msgstr "Kata laluan tidak boleh kosong."
 
-#: ../resources/installer/js/welcome.coffee:833
-msgid "Invalid password."
-msgstr "Kata laluan tidak sah."
-
-#: ../resources/installer/js/welcome.coffee:863
+#: ../resources/installer/js/welcome.coffee:985
 msgid "Username"
 msgstr "Nama Pengguna"
 
-#: ../resources/installer/js/welcome.coffee:866
+#: ../resources/installer/js/welcome.coffee:988
 msgid "Computer Name"
 msgstr "Nama Komputer"
 
-#: ../resources/installer/js/welcome.coffee:869
+#: ../resources/installer/js/welcome.coffee:991
 msgid "Password"
 msgstr "Kata laluan"
 
-#: ../resources/installer/js/welcome.coffee:874
+#: ../resources/installer/js/welcome.coffee:996
 msgid "Retype Password"
 msgstr "Taip Semula Kata Laluan"
 
-#: ../resources/installer/js/welcome.coffee:901
+#: ../resources/installer/js/welcome.coffee:1016
+msgid "Username can not be empty."
+msgstr "Nama pengguna tidak boleh kosong,"
+
+#: ../resources/installer/js/welcome.coffee:1024
+msgid "Computer name can not be empty."
+msgstr "Nama komputer tidak boleh kosong."
+
+#: ../resources/installer/js/welcome.coffee:1041
+msgid "Password cannot be empty."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"
 msgstr "Berikutnya"
 
-#: ../resources/installer/js/welcome.coffee:958
+#: ../resources/installer/js/welcome.coffee:1102
 msgid "Time Zone"
 msgstr "Zon Waktu"
 
-#: ../resources/installer/js/welcome.coffee:963
+#: ../resources/installer/js/welcome.coffee:1108
 msgid "Keyboard"
 msgstr "Papan Kekunci"
 
-#: ../resources/installer/js/progress.coffee:25
-msgid "Error Report"
-msgstr "Laporan Ralat"
-
-#: ../resources/installer/js/progress.coffee:27
-msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "Pemasangan sistem gagal. Sila hantar log kepada Pasukan Deepin."
-
-#: ../resources/installer/js/progress.coffee:41
-msgid "Preparing for Installation"
-msgstr "Menyediakan pemasangan"
-
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:59
 msgid "Deepin Store"
 msgstr "Kedai Deepin"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "One-stop Software Management"
 msgstr "Pengurusan Perisian Sehenti"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:64
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:62
 msgid "Continuous Update of Wonderful Software"
 msgstr "Kemaskini Perisian yang Berterusan"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:65
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "Unimpeded Online Communication"
 msgstr "Komunikasi Atas-Talian Tanpa Halangan"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:67
 msgid "Deepin Movie"
 msgstr "Cereka Deepin"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Comprehensive Audio-visual Shock"
 msgstr "Kejutan Audio-Visual yang Lengkap"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:72
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:70
 msgid "New Interactive Experience"
 msgstr "Pengalaman Interaktif Serba Baharu"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:73
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
 msgid "Intelligent Subtitle Loading"
 msgstr "Memuatkan Sarikata secara Pintar"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:75
 msgid "Deepin Music"
 msgstr "Muzik Deepin"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
 msgid "Ultimate Music Journey"
 msgstr "Perjalanan Muzik yang Paling Maju"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:80
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:78
 msgid "Rich Extended Functions"
 msgstr "Banyak Fungsi Tambahan"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:81
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
 msgid "Enjoy Online Strongest Voice"
 msgstr "Nikmatilah Suara Terkuat Diatas Talian"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:83
 msgid "Deepin Community"
 msgstr "Komuniti Deepin"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
 msgid "Free and United Open Source Community"
 msgstr "Komuniti Sumber Terbuka Bersatu yang Bebas"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:88
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:86
 msgid "Welcome to participate in Deepin Internationalization Project"
 msgstr "Selamat datang kerana menyertai Projek Pengantarabangsaan Deepin"
 
-#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:89
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
 msgstr "Anda dialu-alukan mengikuti kami di Weibo, Twitter, Facebook, Google+, Senarai Mel dan IRC"
 
-#: ../app/language-selector/mutils.c:84
+#: ../app/language-selector/mutils.c:71
 msgid "%a, %b %d, %Y"
 msgstr "%a, %b %d, %Y"
 
-#: ../app/language-selector/greeter.c:301
+#: ../app/language-selector/greeter.c:292
 msgid "Invalid Password"
 msgstr "Kata Laluan Tidak Sah"
