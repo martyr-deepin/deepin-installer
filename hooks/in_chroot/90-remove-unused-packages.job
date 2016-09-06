@@ -41,5 +41,5 @@ for pkg in ${remove_pkgs[@]};do
     dpkg -l | grep -q $pkg && REMOVE_PKGS+=($pkg)
 done
 
-apt-get --force-yes -y purge ${REMOVE_PKGS[@]}
-apt-get --force-yes -y autoremove --purge
+apt-get  -y purge ${REMOVE_PKGS[@]}
+apt-get  -y autoremove --purge

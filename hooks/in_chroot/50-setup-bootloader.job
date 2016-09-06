@@ -50,7 +50,7 @@ BOOTLOADER_ID="${BOOTLOADER_ID:-deepin}"
 case ${BOOT} in
     "legacy")
         echo "INFO: Detected legacy machine, installing grub to ${DI_BOOTLOADER}"
-        apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
+        apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --no-install-recommends --allow-unauthenticated install grub-pc
 	if [ x${DI_LUPIN} = xtrue ];then
         echo "Fix grub install failed in lupin"
         [ -d /boot/grub ] || mkdir /boot/grub
@@ -64,11 +64,11 @@ case ${BOOT} in
     "uefi")
 	# try to get efi architecture
 	if [ x$(cat /sys/firmware/efi/fw_platform_size 2>/dev/null) = 'x32' ];then 
-            apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-efi-ia32
+            apt-get install --no-install-recommends -y --allow-unauthenticated grub-efi-ia32
             grub-install --target=i386-efi --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck || exit 101
 	else
 	    # clover efi loader cannot grub.efi currectly, so we may patch grub or use grub.efi.signed.
-            apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated shim-signed grub-efi-amd64-signed efibootmgr
+            apt-get install --no-install-recommends -y --allow-unauthenticated shim-signed grub-efi-amd64-signed efibootmgr
 	    # uefi-secure-boot options is enabled by default
             grub-install --target=x86_64-efi --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck || exit 101
 	    [ -d /boot/efi/EFI/ubuntu ] || mkdir -p /boot/efi/EFI/ubuntu
