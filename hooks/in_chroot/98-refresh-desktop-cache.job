@@ -10,6 +10,6 @@ DSTORE_BACKEND=/usr/lib/deepin-store/deepin-store-backend
 [ -x $DSTORE_BACKEND ] && $DSTORE_BACKEND --init 
 
 if [ -x /var/lib/lastore/scripts/build_system_info ];then
-    /var/lib/lastore/scripts/build_system_info || true
+    /usr/bin/lastore-tools update -j=desktop -o /var/lib/lastore/ || true
 fi
 echo "[Info] refresh desktop cache done."
