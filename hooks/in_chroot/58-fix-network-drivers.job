@@ -47,6 +47,15 @@ fix_productname_n551zu() {
     fi
 }
 
+# add fix for wireless of xiaomi notebook 13.3
+fix_xiaomi_notebook_133() {
+     if is_productname_exists "TM1613"; then
+         if is_pci_exists "8086:24f3"; then
+             echo "fix Xiaomi notebook 13.3 ------------------"
+             echo "blacklist acer_wmi" | tee -a /etc/modprobe.d/xiaomi_disable_acer_wmi.conf
+         fi
+     fi
+}
 # bcm4313 [14e4:4727] wireless driver
 fix_pci_bcm4313() {
     if is_pci_exists "14e4:4727"; then
@@ -131,3 +140,4 @@ fix_pci_rtl8723be_fwlps || true
 fix_pci_rtl8723ae_fwlps || true
 fix_productname_x550vc || true
 fix_productname_n551zu || true
+fix_xiaomi_notebook_133 || true
