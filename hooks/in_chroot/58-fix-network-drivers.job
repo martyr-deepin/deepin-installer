@@ -56,6 +56,17 @@ fix_xiaomi_notebook_133() {
          fi
      fi
 }
+
+# fix wireless issue of lenovo y700
+fix_lenovo_y700() {
+    if is_productname_exists "80NV"; then
+        if is_pci_exists "8086:3166"; then
+            echo "fix lenovo y700 -----------------------"
+            echo "blacklist ideapad_laptop" | tee -a /etc/modprobe.d/ideapad.conf
+        fi
+    fi
+}
+
 # bcm4313 [14e4:4727] wireless driver
 fix_pci_bcm4313() {
     if is_pci_exists "14e4:4727"; then
@@ -141,3 +152,4 @@ fix_pci_rtl8723ae_fwlps || true
 fix_productname_x550vc || true
 fix_productname_n551zu || true
 fix_xiaomi_notebook_133 || true
+fix_lenovo_y700 || true
