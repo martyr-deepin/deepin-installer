@@ -68,12 +68,26 @@ ROOT_SIZE=$((REMAINING_SIZE * 2 / 5 + SWAP_SIZE))
 # 40$ for /var/log.
 LOG_SIZE=$((REMAINING_SIZE * 4 / 5 + SWAP_SIZE))
 
-# Write bootloader info to conf.
-sed -i "s|DI_BOOTLOADER=.*$|DI_BOOTLOADER=\"$DEVICE\"|" $CONF_FILE
-sed -i "s|DI_ROOT_DISK=.*$|DI_ROOT_DISK=\"$DEVICE\"|" $CONF_FILE
+PARTITION_INFO=("1:swap:${SWAP_SIZE}" "2:ext4:${ROOT_SIZE}" "3:ext4:${LOG_SIZE}")
+# check if has already partition with deepin-installer
+CHECK_PARTITION(){
+    for part in ${PARTITION_INFO};do
+	    read number fstype size < <(echo ${PARTITION_INFO} | awk -F':' '{print $1, $2, $3}')
+	    block=${DEVICE}${number}
+	    if [ ! -b ${block} ];then return 1;fi
+	    read _fstype _size < <(lsblk ${block} -o FSTYPE,SIZE -b -n)
+	    _size=$((size / 1048576))
+	    if [ x"${fstype}" != x"${_fstype}" ] || [ ${_size} -gt $((${size} + 10)) ] || [ ${_size}} -le $((${size} - 10)) ];then
+		    return 1
+	    fi
+     done
+     return 0
+}
+
 
 # First create a msdos partition table.
-parted -s $DEVICE mktable msdos || \
+if ! CHECK_PARTITION:
+  parted -s $DEVICE mktable msdos || \
   error_exit "Failed to create msdos partition on $DEVICE";
 
 # Then create a swap partition with 4G.
@@ -85,24 +99,31 @@ mkswap ${DEVICE}1 || \
 # And then create an ext4 partition with 20G capacity to mount /var/log
 parted -s $DEVICE mkpart primary ext4 ${SWAP_SIZE}M ${ROOT_SIZE}M || \
   error_exit "Failed to create partition ${DEVICE}2";
-mkfs.ext4 -F ${DEVICE}2 || \
-  error_exit "Failed to make ext4 filesystem on ${DEVICE}2";
-sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=\"${DEVICE}2\"|" $CONF_FILE
 
 # Add 40% to /var/log, with ext4 type.
 parted -s $DEVICE mkpart primary ext4 ${ROOT_SIZE}M ${LOG_SIZE}M || \
   error_exit "Failed to create partition ${DEVICE}3";
 mkfs.ext4 -F ${DEVICE}3 || \
   error_exit "Failed to make ext4 filesystem on ${DEVICE}3";
-sed -i "s|DI_MOUNTPOINTS=.*$|DI_MOUNTPOINTS=\"${DEVICE}1=swap;${DEVICE}3=/var/log;\"|" $CONF_FILE
 
 # All remaining space is used as backup partition.
 parted -s $DEVICE mkpart primary ext4 ${LOG_SIZE}M 100% || \
   error_exit "Failed to create partition ${DEVICE}4";
 mkfs.ext4 -F ${DEVICE}4
+fi
+
+mkfs.ext4 -F ${DEVICE}2 || \
+  error_exit "Failed to make ext4 filesystem on ${DEVICE}2";
 
 # Commit to kernel.
 partprobe
+
+# Write bootloader info to conf.
+sed -i "s|DI_BOOTLOADER=.*$|DI_BOOTLOADER=\"$DEVICE\"|" $CONF_FILE
+sed -i "s|DI_ROOT_DISK=.*$|DI_ROOT_DISK=\"$DEVICE\"|" $CONF_FILE
+sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=\"${DEVICE}2\"|" $CONF_FILE
+sed -i "s|DI_MOUNTPOINTS=.*$|DI_MOUNTPOINTS=\"${DEVICE}1=swap;${DEVICE}3=/var/log;\"|" $CONF_FILE
+
 
 exit 0
 
