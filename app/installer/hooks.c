@@ -1,3 +1,12 @@
+/**
+ * Copyright (C) 2015 Deepin Technology Co., Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ **/
+
 #define _GNU_SOURCE
 #include <glib.h>
 #include <string.h>
@@ -122,6 +131,7 @@ void update_hooks_progress(HookInfo* info)
 
 void run_one_by_one(GPid pid, gint status, HookInfo* info)
 {
+    g_message("[%s]\n", __func__);
     GError* error = NULL;
 
     if (pid != -1) {
@@ -140,6 +150,7 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
     }
 
     if (info->jobs->data == NULL) {
+        g_message("[%s] jobs is empty\n", __func__);
         g_list_free_full(g_list_first(info->jobs), g_free);
         enter_next_stage();
         return;
@@ -152,7 +163,6 @@ void run_one_by_one(GPid pid, gint status, HookInfo* info)
     argv[0] = info->jobs->data;
     argv[1] = 0;
 
-    g_message("[%s] RUN : %s\n", __func__, (char*)info->jobs->data);
     info->current_job_num = g_list_index(g_list_first(info->jobs),
                                          info->jobs->data);
     info->jobs = g_list_next(info->jobs);

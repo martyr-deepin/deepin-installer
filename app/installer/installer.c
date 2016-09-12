@@ -1,22 +1,10 @@
 /**
- * Copyright (c) 2011 ~ 2013 Deepin, Inc.
- *               2011 ~ 2013 Long Wei
- *
- * Author:      Long Wei <yilang2007lw@gmail.com>
- * Maintainer:  Long Wei <yilang2007lw@gamil.com>
+ * Copyright (C) 2015 Deepin Technology Co., Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
 #include <gtk/gtk.h>
@@ -252,7 +240,8 @@ static void fix_without_wm(GtkWidget* child)
     //INSTALLER_WIN_HEIGHT = gdk_screen_height();
     gtk_window_move(GTK_WINDOW(installer_container), 0, 0);
     gtk_window_fullscreen(GTK_WINDOW(installer_container));
-    primary_monitor = gdk_screen_get_primary_monitor(default_screen);
+    //primary_monitor = gdk_screen_get_primary_monitor(default_screen);
+    primary_monitor = 0;
     gdk_screen_get_monitor_geometry(default_screen, primary_monitor, &dest);
     INSTALLER_WIN_WIDTH = dest.width;
     INSTALLER_WIN_HEIGHT = dest.height;

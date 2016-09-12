@@ -1,16 +1,68 @@
-# About
-Deepin Installer, new installer for linuxdeepin(TM)
+# Deepin Installer
 
+Deepin Installer, new installer for Deepin.
 
-# TODO
-* BOOTLOADER 高级模式下生效
-* os-probe 支持EFI系统
-* 如果覆盖安装了一个EFI系统，需要清除对应系统在EFI变量中的信息
-* move dde-first-run to hooks
-* 修复键盘模块(依赖com.deepin.daemon.Search模块)
+## Dependencies
 
-# Copyright
-Copyright (C) 2011-2015 linuxdeepin Ltd.
+### Build dependencies
 
-# License
-Deepin Installer is released under GPLv2.
+* cmake
+* coffeescript, front end is written in coffeescript.
+* dde-go-dbus-factory
+* deepin-webkit3, customized webkit-gtk3.
+* libparted, backend of partition operation.
+* sqlite3
+
+### Runtime dependencies
+
+* btrfs-tools
+* dosfstools
+* e2fsprogs
+* jfsutils
+* unionfs-fuse
+* ntfs-3g
+* xfsprogs
+* hfsprogs
+* reiserfsprogs
+* squashfs-tools
+* os-prober
+
+## Build and Install
+
+The easiest way to build deepin-installer is by using `debuild` command
+which will generate a deb package.
+
+If you need to build manually, run commands below:
+```
+mkdir build
+cd build
+cmake ..
+make
+```
+
+And then type `$ sudo make install` to install it into system.
+
+## TODO
+
+* os-prober does not support EFI system.
+* Update EFI environment when it is overwritten.
+
+## Getting help
+
+Any usage issues can ask for help via
+
+* [Gitter](https://gitter.im/orgs/linuxdeepin/rooms)
+* [IRC channel](https://webchat.freenode.net/?channels=deepin)
+* [Forum](https://bbs.deepin.org)
+* [WiKi](http://wiki.deepin.org/)
+
+## Getting involved
+
+We encourage you to report issues and contribute changes
+
+* [Contribution guide for users](http://wiki.deepin.org/index.php?title=Contribution_Guidelines_for_Users)
+* [Contribution guide for developers](http://wiki.deepin.org/index.php?title=Contribution_Guidelines_for_Developers).
+
+## License
+
+Deepin Installer is released under [GPLv3](LICENSE).

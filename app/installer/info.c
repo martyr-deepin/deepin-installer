@@ -1,3 +1,12 @@
+/**
+ * Copyright (C) 2015 Deepin Technology Co., Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ **/
+
 #include "info.h"
 #include <glib.h>
 #include <stdio.h>
@@ -120,15 +129,19 @@ void installer_record_mountpoint_info(const char* uuid, const char* mountpoint)
     g_message("[%s]: uuid: %s, path: %s, mountpoint: %s \n", __func__, uuid,
               path, mountpoint);
     if (g_strcmp0(mountpoint, "/") == 0) {
+        g_message("[%s] --debug-- check InstallerConf.root_partition: %p\n", __func__, InstallerConf.root_partition);
         if (InstallerConf.root_partition) {
             g_free(InstallerConf.root_partition);
         }
-        ped_print();
+        g_message("[%s] --debug-- call ped_print", __func__);
+        //ped_print();
         InstallerConf.root_partition = path;
     } else {
         g_hash_table_insert(InstallerConf.mount_points, path,
                             g_strdup(mountpoint));
     }
+
+    g_message("[%s] --debug-- progress end uuid: %s, mountpoint: %s\n", __func__, uuid, mountpoint);
 }
 
 JS_EXPORT_API
@@ -218,10 +231,14 @@ void installer_record_simple_mode_info(gboolean simple)
 JS_EXPORT_API
 void installer_record_root_disk_info(const char* disk)
 {
+    g_debug("[%s] uuid: %p\n", __func__, disk);
     g_return_if_fail(disk != NULL);
 
+    g_debug("[%s] uuid: %s\n", __func__, disk);
+    g_message("[%s] --debug-- check: %p", __func__, InstallerConf.root_disk);
     if (InstallerConf.root_disk) {
         g_free(InstallerConf.root_disk);
     }
     InstallerConf.root_disk = find_path_by_uuid(disk);
+        g_debug("[%s] uuid: %s\n", __func__, disk);
 }

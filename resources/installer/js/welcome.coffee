@@ -83,7 +83,10 @@ update_timezone_text = (tri) ->
     console.log("[welcome.coffee] update_timezone_text(), current timezone: #{utc}")
     timezoneSet_div?.title = utc
 
-    city = __selected_timezone.split("/")[1]
+    try
+        city = __selected_timezone.split("/").pop()
+    catch
+        city = __selected_timezone
     right = DCore.dgettext("tzdata", city)
     if not right? then right = city
     timezoneSet_div?.innerText = right
@@ -540,9 +543,15 @@ class Timezone extends Widget
         @canvas.setAttribute("height", 370)
         @img = create_img("TimezoneMap", "images/zonemap.png", @picker)
         @img.setAttribute("usemap", "#ImageMap")
+        @img.addEventListener("click", (e) =>
+            @hide_query_complete()
+        )
         @construct_map()
         @hide()
+
         update_timezone_text(@tri)
+        # Mark default timezone on timezone map.
+        @set_timezone(__selected_timezone, false)
 
         # Set this flag to true if timezone is changed by user
         @timezone_changed = false
@@ -619,7 +628,7 @@ class Timezone extends Widget
             @destroy_canvas(area)
         )
 
-    show_pin: (area) ->
+    show_pin: (area, show_tooltip=true) ->
         if not @pin?
             @pin = create_element("div", "Pin", @picker_wrap)
             @pin_img = create_img("", "images/pin.png", @pin)
@@ -632,15 +641,16 @@ class Timezone extends Widget
         style = "left:" + x + "px;" + "top:" + y + "px"
         @pin.setAttribute("style", style)
 
-        text = area.getAttribute("data-timezone").split("/")[1]
+        text = area.getAttribute("data-timezone").split("/").pop()
 
-        if not @tooltip?
-            @tooltip = new ArrowToolTip(@pin, _(text,"tzdata"))
-        @tooltip.set_text(_(text,"tzdata"))
-        @tooltip.setPointerEvents('none')
-        @tooltip.show()
-        pos = @tooltip.get_xy()
-        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY)
+        if show_tooltip
+            if not @tooltip?
+                @tooltip = new ArrowToolTip(@pin, _(text,"tzdata"), false)
+            @tooltip.set_text(_(text,"tzdata"))
+            @tooltip.setPointerEvents('none')
+            @tooltip.show()
+            pos = @tooltip.get_xy()
+            ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX, pos.y - tooltipOffsetY)
 
         if @circle?
             @circle.parentElement.removeChild(@circle)
@@ -676,8 +686,7 @@ class Timezone extends Widget
         console.log("[welcome.coffee] Timezone.set_timezone() timezone: #{timezone}")
         if area?
             @draw_timezone(area)
-            if show_tooltip
-                @show_pin(area)
+            @show_pin(area, show_tooltip)
             __selected_timezone = timezone
             @timezone_changed = true
             update_timezone_text(@tri)
@@ -700,6 +709,7 @@ class Timezone extends Widget
         ctx.clearRect(0,0,700,370)
 
     show_query_complete: ->
+        console.log("[welcome.coffee.Timezone] show_query_complete()")
         if @query_complete?
             @query_div.removeChild(@query_complete)
             @query_complete = null
@@ -714,6 +724,10 @@ class Timezone extends Widget
                 @create_complete_item(item)
         else
             @query_complete.style.display = "none"
+
+    hide_query_complete: ->
+        console.log("[welcome.coffee.Timezone] hide_query_complete()")
+        @query_complete?.style.display = "none"
 
     create_complete_item: (txt) ->
         item = create_element("div", "QueryCompleteItem", @query_complete)
@@ -771,16 +785,19 @@ class WelcomeFormItem extends Widget
             @check_capslock()
 
             switch @id
+                when "username"
+                    @validateUsername(@input.value)
                 when "hostname"
                     @validateHostname(@input.value, false)
                 when "password"
-                    @validatePassword(@input.value)
+                    @validatePassword(@input.value, false)
                 when "confirmpassword"
-                    @validateConfirmPassword(@input.value)
+                    @validateConfirmPassword(@input.value, false)
 
             if @valid.ok
                 @destroy_tooltip()
             else
+                @next_step.next_bt_disable()
                 @set_tooltip(@valid.msg)
         )
 
@@ -792,25 +809,32 @@ class WelcomeFormItem extends Widget
                     if @valid.ok
                         @destroy_tooltip()
                         # Setup hostname based on username
-                        if Widget.look_up("account")?.hostname.changed == false
-                            Widget.look_up("account")?.hostname.input.value = @input.value + "-pc"
+                        hostnameItem = Widget.look_up("hostname")
+                        if hostnameItem.changed == false
+                            hostnameItem.input.value = @input.value + "-pc"
+                            # Reset validation status of hostname element.
+                            hostnameItem.valid = {ok: true, msg: "", code: 0}
                     else
                         if @valid.code in [ErrorCode.INVALID, ErrorCode.FIRST_UPPER]
                             @input.value = @value_origin
+                        if @input.value.length == 0
+                            hostnameItem = Widget.look_up("hostname")
+                            if hostnameItem.changed == false
+                                hostnameItem.input.value = ""
                         @set_tooltip(@valid.msg)
-
 
                 when "hostname"
                     @validateHostname(@input.value, true)
                     if @valid.ok
                         @destroy_tooltip()
                     else
-                        @input.value = @value_origin
                         @set_tooltip(@valid.msg)
 
                 when "password"
-                    @validatePassword(@input.value)
+                    @validatePassword(@input.value, true)
                     if @valid.ok
+                        @destroy_tooltip()
+                    else if @valid.code == ErrorCode.PARTICAL_MATCH
                         @destroy_tooltip()
                     else
                         @set_tooltip(@valid.msg)
@@ -828,6 +852,8 @@ class WelcomeFormItem extends Widget
                     @validateConfirmPassword(@input.value, true)
                     if @valid.ok
                         @destroy_tooltip()
+                    # If `confirmPassword` matches first half of `password`
+                    # ignore this error.
                     else if @valid.code == ErrorCode.PARTICAL_MATCH
                         @destroy_tooltip()
                     else
@@ -873,9 +899,7 @@ class WelcomeFormItem extends Widget
         return regexp.test(hostname)
 
     validateHostname: (hostname, temp) =>
-        if not hostname? or hostname.length == 0 or
-                (temp and @doValidateHostnameTmp(hostname)) or
-                @doValidateHostname(hostname)
+        if hostname.length > 0 and ((temp and @doValidateHostnameTmp(hostname)) or @doValidateHostname(hostname))
             @valid = {ok: true, msg: "", code: 0}
         else
             @valid =
@@ -883,26 +907,39 @@ class WelcomeFormItem extends Widget
                 msg: _("Computer name is invald.")
                 code: ErrorCode.INVALID
 
-    validatePassword: (password) =>
-        #TODO: The Account dbus must provide a function to check password
+    validatePassword: (password, temp) =>
+        # Clear validation status of confirmPassword item.
+        confirmPasswordItem = Widget.look_up("confirmpassword")
+        # Make sure that confirmPassword is changed by user explicitly.
+        if confirmPasswordItem.changed
+            confirmPasswordItem.valid = {ok: true, msg:"", code: 0}
+        confirmPassword = confirmPasswordItem.input.value
         if not password? or password.length == 0
             @valid =
                 ok: false
                 msg: _("Password can not be empty.")
                 code: ErrorCode.EMPTY
-        else if not @account_dbus.IsPasswordValid_sync(password)
+        else if password == confirmPassword
+            @valid = {ok: true, msg: "", code: 0}
+        # Check if user input password in `confirmpassword` element, then input
+        # password again in `password` element.
+        else if temp and confirmPassword.substring(0, password.length) == password
             @valid =
                 ok: false
-                msg: _("Invalid password.")
-                code: ErrorCode.INVALID
+                msg: "Partial match"
+                code: ErrorCode.PARTICAL_MATCH
         else
             @valid = {ok: true, msg: "", code: 0}
 
-    validateConfirmPassword: (password2, temp) =>
-        password = Widget.look_up("password")?.input.value
-        if password == password2
+    validateConfirmPassword: (confirmPassword, temp) =>
+        # Clear validation status of passwordItem
+        passwordItem = Widget.look_up("password")
+        passwordItem.valid = {ok: true, msg: "", code: 0}
+        password = passwordItem.input.value
+        if password == confirmPassword
             @valid = {ok: true, msg: "", code: 0}
-        else if temp and password.substring(0, password2.length) == password2
+        # Check `confirmPassword` matches first half of `password`.
+        else if temp and password.substring(0, confirmPassword.length) == confirmPassword
             @valid =
                 ok: false
                 msg: "Partial match"
@@ -916,15 +953,14 @@ class WelcomeFormItem extends Widget
     set_tooltip: (text) ->
         if text is null or text is "" then return
         if @tooltip == null
-            @tooltip = new ArrowToolTip(@input, text)
+            @tooltip = new ArrowToolTip(@input, text, true)
             @input.removeEventListener('mouseover', @tooltip.on_mouseover)
             @input.removeEventListener('mouseout', @tooltip.hide)
             @tooltip.set_delay_time(0)
         @tooltip.set_text(text)
         @tooltip.show()
         pos = @tooltip.get_xy()
-        ArrowToolTip.move_to(@tooltip, pos.x - tooltipOffsetX,
-                             pos.y - tooltipOffsetY - 10)
+        ArrowToolTip.move_to(@tooltip, 228, pos.y - tooltipOffsetY - 95)
 
     destroy_tooltip:->
         # TODO: do not destroy tooltip object manually
@@ -1025,6 +1061,8 @@ class Account extends Widget
         if DEBUG then __init_parted_finish = true
         if !__init_parted_finish
             return false
+        console.log("[welcome.coffee] Account check_start_ready():", @username.valid,
+            @hostname.valid, @password.valid, @confirmpassword.valid)
         if @username.valid.ok and @hostname.valid.ok and
                 @password.valid.ok and @confirmpassword.valid.ok
             @next_step?.next_bt_enable()

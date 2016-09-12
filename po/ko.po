@@ -1,0 +1,468 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin Installer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-02 09:44+0800\n"
+"PO-Revision-Date: 2016-09-02 02:32+0000\n"
+"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"Language-Team: Korean (http://www.transifex.com/linuxdeepin/deepin-installer/language/ko/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../resources/installer/js/finish.coffee:34
+#: ../resources/installer/js/finish.coffee:42
+msgid "Reboot Now"
+msgstr "지금 다시 시작하기"
+
+#: ../resources/installer/js/finish.coffee:40
+msgid "Installation Succeed!"
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:41
+msgid ""
+"Tips: Please remove the installation media before reboot, so as to avoid "
+"reentering into the installation environment when you start the computer "
+"next time. "
+msgstr "팁: 다음에 컴퓨터를 시작할 때 설치 환경으로 다시 돌아가지 않도록 \n재부팅 전에 설치 미디어를 제거하여 주십시오."
+
+#: ../resources/installer/js/finish.coffee:45
+msgid "Installation Failed!"
+msgstr "설치 실패!"
+
+#: ../resources/installer/js/finish.coffee:47
+msgid ""
+"The installation log has been saved on the desktop for you.\n"
+" To help us improve the system better, please send the log to Deepin Team. Thank you! "
+msgstr "해당 설치 로그는 귀하를 위해 데스크톱에 저장됩니다. 시스템 개선에 도움을 주시려면, 해당 로그를 Deepin Team에게 보내주세요. 감사합니다!"
+
+#: ../resources/installer/js/finish.coffee:48
+msgid "Exit Installation"
+msgstr "설치 나가기"
+
+#: ../resources/installer/js/progress.coffee:25
+msgid "Error Report"
+msgstr "에러 신고"
+
+#: ../resources/installer/js/progress.coffee:27
+msgid "System installation failed. Please send the log to Deepin Team."
+msgstr "시스템 설치 실패. Deepin 팀에게 로그를 보내주시기 바랍니다."
+
+#: ../resources/installer/js/progress.coffee:40
+msgid "Preparing for Installation"
+msgstr "설치 준비 중"
+
+#: ../resources/installer/js/virtual.coffee:24
+msgid "Tips"
+msgstr "팁"
+
+#: ../resources/installer/js/virtual.coffee:27
+msgid ""
+"It is detected that you are using a virtual machine. Installing Deepin on a "
+"virtual machine will affect its performances. You are recommended to "
+"experience it in a real environment."
+msgstr ""
+
+#: ../resources/installer/js/virtual.coffee:29
+msgid "Continue"
+msgstr "계속 "
+
+#: ../resources/installer/js/part.coffee:126
+#: ../resources/installer/js/part.coffee:145
+msgid "Freespace"
+msgstr "빈 공간"
+
+#: ../resources/installer/js/part.coffee:197
+#: ../resources/installer/js/part.coffee:202
+msgid "Unknown"
+msgstr "알 수 없음"
+
+#: ../resources/installer/js/part.coffee:306
+msgid "Install Here"
+msgstr "여기에 설치"
+
+#: ../resources/installer/js/part.coffee:343
+#: ../resources/installer/js/part.coffee:846
+msgid "Warning"
+msgstr "경고"
+
+#: ../resources/installer/js/part.coffee:344
+msgid ""
+"You  may not boot due to too small space of /boot mount point, please "
+"improve the space to 300M at least."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:473
+msgid "Disk"
+msgstr "디스크"
+
+#: ../resources/installer/js/part.coffee:493
+msgid "Device"
+msgstr "장치"
+
+#: ../resources/installer/js/part.coffee:495
+msgid "Size"
+msgstr "크기"
+
+#: ../resources/installer/js/part.coffee:497
+msgid "Free Space"
+msgstr "여유 공간"
+
+#: ../resources/installer/js/part.coffee:499
+msgid "Filesystem"
+msgstr "파일 시스템"
+
+#: ../resources/installer/js/part.coffee:501
+msgid "Information"
+msgstr "정보"
+
+#: ../resources/installer/js/part.coffee:503
+msgid "Mount Point"
+msgstr "마운트 지점"
+
+#: ../resources/installer/js/part.coffee:505
+msgid "Formatting"
+msgstr "포맷팅"
+
+#: ../resources/installer/js/part.coffee:512
+#: ../resources/installer/js/dialog.coffee:98
+msgid "Delete Partition"
+msgstr "파티션 삭제"
+
+#: ../resources/installer/js/part.coffee:523
+msgid "New Partition"
+msgstr "새 파티션 "
+
+#: ../resources/installer/js/part.coffee:618
+#: ../resources/installer/js/part.coffee:871
+msgid "Expert Mode"
+msgstr "전문가 모드"
+
+#: ../resources/installer/js/part.coffee:628
+msgid "Install"
+msgstr "설치"
+
+#: ../resources/installer/js/part.coffee:657
+#: ../resources/installer/js/part.coffee:665
+#: ../resources/installer/js/part.coffee:673
+msgid "Installation Tips"
+msgstr "설치 정보 "
+
+#: ../resources/installer/js/part.coffee:658
+msgid "A root partition (/) is required."
+msgstr " 루트 파티션 (/) 이(가) 필요함."
+
+#: ../resources/installer/js/part.coffee:666
+msgid "UEFI-native installation only supports GPT-formatted disk."
+msgstr "UEFI 기반 설비는 GPT 형식의 디스크만 지원합니다."
+
+#: ../resources/installer/js/part.coffee:674
+msgid ""
+"ESP’s support is needed in UEFI mode and please create a partition of 100MB "
+"or more in efi format."
+msgstr "UEIF 모드에 ESP 지원이 필요합니다. efi 형식으로 100MB 이상의 파티션을 생성하시기 바랍니다."
+
+#: ../resources/installer/js/part.coffee:702
+#: ../resources/installer/js/dialog.coffee:146
+msgid "Add Partition"
+msgstr "파티션 추가"
+
+#: ../resources/installer/js/part.coffee:703
+msgid "Can't create a partition here"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:747
+msgid "UEFI"
+msgstr "UEFI"
+
+#: ../resources/installer/js/part.coffee:758
+msgid "Boot Loader"
+msgstr "부트 로더"
+
+#: ../resources/installer/js/part.coffee:806
+msgid "Unmount Partition"
+msgstr "언마운트 파티션"
+
+#: ../resources/installer/js/part.coffee:807
+msgid ""
+"Partition is detected to have been mounted.\n"
+"Are you sure you want to unmount it?"
+msgstr "마운트된 파티션이 감지되었습니다. 정말로 언마운트하시겠습니까?"
+
+#: ../resources/installer/js/part.coffee:847
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. You will lose all"
+" disk data if you insist on installing."
+msgstr "UEFI-네이티브 설치는 GPT 형식 디스크만 지원합니다. 계속 설치하면 디스크 데이터를 모두 잃게 됩니다."
+
+#: ../resources/installer/js/part.coffee:860
+msgid "Simple Mode"
+msgstr "심플 모드"
+
+#: ../resources/installer/js/base.coffee:30
+msgid "Installation Requirements"
+msgstr "설치 조건"
+
+#: ../resources/installer/js/base.coffee:31
+#, python-format
+msgid "To install Deepin OS, you need to have at least %d GB disk space."
+msgstr "Deepin OS를 설치하려면 최소 %d GB의 디스크 여유공간이 필요합니다."
+
+#: ../resources/installer/js/base.coffee:51
+#: ../resources/installer/js/base.coffee:53
+#: ../resources/installer/js/base.coffee:55
+msgid "Unused"
+msgstr "쓰이지 않음"
+
+#: ../resources/installer/js/dialog.coffee:66
+msgid "OK"
+msgstr "확인"
+
+#: ../resources/installer/js/dialog.coffee:66
+msgid "Cancel"
+msgstr "취소"
+
+#: ../resources/installer/js/dialog.coffee:75
+msgid "Are you sure to exit from installation?"
+msgstr "정말로 설치를 종료하시겠습니까?"
+
+#: ../resources/installer/js/dialog.coffee:100
+msgid "Are you sure you want to delete this partition?"
+msgstr "이 파티션을 삭제 하시겠습니까?"
+
+#: ../resources/installer/js/dialog.coffee:113
+msgid "Formatting Partition"
+msgstr "파티션 포멧중"
+
+#: ../resources/installer/js/dialog.coffee:115
+msgid "Are you sure you want to format this partition?"
+msgstr "해당 파티션을 포맷하겠습니까?"
+
+#: ../resources/installer/js/dialog.coffee:124
+msgid "Proceed with installation"
+msgstr "설치를 통해 계속 실행"
+
+#: ../resources/installer/js/dialog.coffee:133
+msgid "Deepin OS will be installed to freespace."
+msgstr "Deepin OS가 여유 공간에 설치됩니다."
+
+#: ../resources/installer/js/dialog.coffee:135
+msgid "Deepin OS will be installed to "
+msgstr "Deepin OS가 다음에 설치될 예정임:"
+
+#: ../resources/installer/js/dialog.coffee:135
+msgid ""
+"\n"
+"The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
+msgstr ""
+
+#: ../resources/installer/js/dialog.coffee:135
+msgid "Do you want to continue the installation ?"
+msgstr "설치를 계속하시겠습니까?"
+
+#: ../resources/installer/js/dialog.coffee:166
+msgid "Type:"
+msgstr "유형:"
+
+#: ../resources/installer/js/dialog.coffee:172
+msgid "Primary"
+msgstr "기본"
+
+#: ../resources/installer/js/dialog.coffee:177
+msgid "Logical"
+msgstr "로지컬"
+
+#: ../resources/installer/js/dialog.coffee:207
+msgid "Size:"
+msgstr "크기:"
+
+#: ../resources/installer/js/dialog.coffee:251
+msgid "Align:"
+msgstr "정렬:"
+
+#: ../resources/installer/js/dialog.coffee:257
+msgid "Begin"
+msgstr "시작"
+
+#: ../resources/installer/js/dialog.coffee:262
+msgid "End"
+msgstr "끝"
+
+#: ../resources/installer/js/dialog.coffee:282
+msgid "Filesystem:"
+msgstr "파일시스템:"
+
+#: ../resources/installer/js/dialog.coffee:306
+msgid "Mount:"
+msgstr "마운트:"
+
+#: ../resources/installer/js/dialog.coffee:339
+msgid "Please enter a valid partition size."
+msgstr "올바른 파티션 크기를 입력하세요."
+
+#: ../resources/installer/js/welcome.coffee:202
+msgid "Yes"
+msgstr "네"
+
+#: ../resources/installer/js/welcome.coffee:207
+msgid "No"
+msgstr "아니오"
+
+#: ../resources/installer/js/welcome.coffee:302
+msgid "Please press one of the following keys."
+msgstr "다음 키 중 하나를 누르세요."
+
+#: ../resources/installer/js/welcome.coffee:308
+msgid "Please confirm you have the following keys."
+msgstr "다음 키로 확인하세요."
+
+#: ../resources/installer/js/welcome.coffee:352
+msgid "Detect Layout"
+msgstr "레이아웃 감지하기"
+
+#: ../resources/installer/js/welcome.coffee:358
+msgid "View Current"
+msgstr "흐름 보기"
+
+#: ../resources/installer/js/welcome.coffee:515
+msgid "Please select or search your location."
+msgstr "당신의 위치를 선택하거나 검색하세요."
+
+#: ../resources/installer/js/welcome.coffee:765
+msgid "Empty"
+msgstr "비었음"
+
+#: ../resources/installer/js/welcome.coffee:845
+#: ../resources/installer/js/welcome.coffee:950
+msgid "The two passwords do not match."
+msgstr "암호가 틀립니다."
+
+#: ../resources/installer/js/welcome.coffee:907
+msgid "Computer name is invald."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:920
+#: ../resources/installer/js/welcome.coffee:1032
+msgid "Password can not be empty."
+msgstr "암호를 채워주세요."
+
+#: ../resources/installer/js/welcome.coffee:985
+msgid "Username"
+msgstr "사용자 이름"
+
+#: ../resources/installer/js/welcome.coffee:988
+msgid "Computer Name"
+msgstr "컴퓨터 이름"
+
+#: ../resources/installer/js/welcome.coffee:991
+msgid "Password"
+msgstr "암호"
+
+#: ../resources/installer/js/welcome.coffee:996
+msgid "Retype Password"
+msgstr "비밀번호를 다시 입력하세요."
+
+#: ../resources/installer/js/welcome.coffee:1016
+msgid "Username can not be empty."
+msgstr "사용자 이름은 비워둘 수 없습니다."
+
+#: ../resources/installer/js/welcome.coffee:1024
+msgid "Computer name can not be empty."
+msgstr "컴퓨터 이름은 비워둘 수 없습니다."
+
+#: ../resources/installer/js/welcome.coffee:1041
+msgid "Password cannot be empty."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:1045
+msgid "Next"
+msgstr "다음"
+
+#: ../resources/installer/js/welcome.coffee:1102
+msgid "Time Zone"
+msgstr "시간대"
+
+#: ../resources/installer/js/welcome.coffee:1108
+msgid "Keyboard"
+msgstr "키보드 "
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:59
+msgid "Deepin Store"
+msgstr "Deepin 상점"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
+msgid "One-stop Software Management"
+msgstr "원스톱 소프트웨어 관리"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:62
+msgid "Continuous Update of Wonderful Software"
+msgstr "놀라운 소프트웨어의 지속적인 업데이트"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
+msgid "Unimpeded Online Communication"
+msgstr "장애물 없는 온라인 커뮤니케이션"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:67
+msgid "Deepin Movie"
+msgstr "Deepin 영화 "
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
+msgid "Comprehensive Audio-visual Shock"
+msgstr "종합 시청각 충격 "
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:70
+msgid "New Interactive Experience"
+msgstr "새로운 인터랙티브 경험"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
+msgid "Intelligent Subtitle Loading"
+msgstr "똑똑한 자막 로딩 "
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:75
+msgid "Deepin Music"
+msgstr "Deepin Music"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
+msgid "Ultimate Music Journey"
+msgstr "최후의 음악 여행"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:78
+msgid "Rich Extended Functions"
+msgstr "풍부한 확장 기능"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
+msgid "Enjoy Online Strongest Voice"
+msgstr "온라인 스트롱 보이스를 즐기세요."
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:83
+msgid "Deepin Community"
+msgstr "Deepin 커뮤니티"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
+msgid "Free and United Open Source Community"
+msgstr "자유롭고 통합된 오픈 소스 커뮤니티"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:86
+msgid "Welcome to participate in Deepin Internationalization Project"
+msgstr "Deepin 국제화 프로젝트에 참여하신 걸 환영합니다"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
+msgid ""
+"Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
+"IRC"
+msgstr "Weibo, Twitter, Facebook, Google+, 메일링 리스트, IRC에서 저희를 팔로우해주세요"
+
+#: ../app/language-selector/mutils.c:71
+msgid "%a, %b %d, %Y"
+msgstr "%a, %b %d, %Y"
+
+#: ../app/language-selector/greeter.c:292
+msgid "Invalid Password"
+msgstr "무효한 비밀번호"

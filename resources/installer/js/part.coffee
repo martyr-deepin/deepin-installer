@@ -79,7 +79,7 @@ class PartTableItem extends Widget
         @size = create_element("div", "Thin Size", @element)
         @used = create_element("div", "Thin", @element)
         @fs = create_element("div", "Thin Fs", @element)
-        @mount = create_element("div", "Thin Mount", @element)
+        @mount = create_element("div", "Thin SimpleMount", @element)
         @format = create_element("div", "Thin", @element)
         @fill_device()
         @fill_size()
@@ -301,11 +301,12 @@ class PartTableItem extends Widget
     fill_mount: ->
         @mount.innerHTML = ""
         if __selected_mode != "advance"
+            @mount.setAttribute("class", "Thin SimpleMount")
             if @active
                 @mount.innerText = _("Install Here")
-                @mount.setAttribute("style", "text-align:right")
             return
         else
+            @mount.setAttribute("class", "Thin AdvancedMount")
             @fill_mount_advance()
 
     fill_mount_advance: ->
@@ -554,12 +555,15 @@ class PartTable extends Widget
                     enter_cb?()
                 else
                     return
-            if currentIndex < 0 then currentIndex = @partitems.length - 1
-            else if currentIndex > @partitems.length - 1 then currentIndex = 0
+            if currentIndex < 0
+                currentIndex = @partitems.length - 1
+            else if currentIndex > @partitems.length - 1
+                currentIndex = 0
             console.debug("[part.coffee] PartTable.key_select() currentIndex: #{currentIndex}")
             select = @partitems[currentIndex]
-            select?.focus()
-            select?.click()
+            if select
+                select.focus()
+            return
         )
 
 
@@ -574,7 +578,7 @@ class PartTable extends Widget
                 item = new PartTableItem(part)
                 @items.appendChild(item.element)
                 @partitems.push(item)
-        @items.setAttribute("style","height:220px")
+        @items.setAttribute("style","height:222px")
         @element.setAttribute("style", "height:280px")
 
     fill_items_simple: ->
@@ -635,6 +639,9 @@ class Part extends Page
             @disktab.focus_disk(__selected_disk)
         if  __selected_item? then @next_step.next_bt_enable()
 
+        # Global instance of confirm dialog.
+        @confirm_installation_dialog = null
+
     start_install_cb: =>
         if __selected_mode == "advance"
             @handle_install_advance()
@@ -674,7 +681,16 @@ class Part extends Page
             if not __selected_bootloader
                 __selected_bootloader = v_part_info[target]["disk"]
 
-        new InstallDialog("InstallModel").show_at(document.body)
+        if @confirm_installation_dialog
+            @confirm_installation_dialog.hide_dialog()
+        @confirm_installation_dialog = new InstallDialog("InstallModel")
+        callback = ->
+            document.querySelector(".PartTable").focus()
+        @confirm_installation_dialog.cancel_cb = callback
+        @confirm_installation_dialog.title_close.addEventListener("click", (e)=>
+            callback()
+        )
+        @confirm_installation_dialog.show_at(document.body)
 
     handle_install_simple: ->
         if not __selected_item
@@ -691,7 +707,17 @@ class Part extends Page
         if DCore.Installer.system_support_efi() and not DCore.Installer.disk_is_gpt(__selected_disk)
             __selected_use_uefi = false
         __selected_bootloader = __selected_disk
-        new InstallDialog("InstallMode").show_at(document.body)
+
+        if @confirm_installation_dialog
+            @confirm_installation_dialog.hide_dialog()
+        @confirm_installation_dialog = new InstallDialog("InstallModel")
+        callback = ->
+            document.querySelector(".PartTable").focus()
+        @confirm_installation_dialog.cancel_cb = callback
+        @confirm_installation_dialog.title_close.addEventListener("click", (e)=>
+            callback()
+        )
+        @confirm_installation_dialog.show_at(document.body)
 
     init_part_page: ->
         if __selected_mode == null
@@ -711,9 +737,12 @@ class Part extends Page
 
         @part_uefi = create_element("div","PartUefi",@wrap)
         enable_tab(@part_uefi)
-        @uefi_radio = create_element("input","uefi_radio",@part_uefi)
+        @uefi_radio = create_element("input","grub_radio",@part_uefi)
         @uefi_radio.setAttribute("type","radio")
+        @uefi_radio.setAttribute("id", "uefi_radio_id")
         @uefi_radio.defaultChecked = false
+        uefi_label = create_element("label", "uefi_label", @part_uefi)
+        uefi_label.setAttribute("for", "uefi_radio_id")
         @uefi_txt = create_element("div","uefi_txt",@part_uefi)
         @uefi_txt.innerText = _("UEFI")
 
@@ -721,7 +750,10 @@ class Part extends Page
         enable_tab(@part_grub)
         @grub_radio = create_element("input", "grub_radio", @part_grub)
         @grub_radio.setAttribute("type","radio")
+        @grub_radio.setAttribute("id", "grub_radio_id")
         @grub_radio.defaultChecked = true
+        grub_label = create_element("label", "grub_label", @part_grub)
+        grub_label.setAttribute("for", "grub_radio_id")
         @grub_loader = create_element("div", "PartGrubLoader", @part_grub)
         @grub_loader.innerText = _("Boot Loader")
         @grub_select = create_element("div", "PartGrubSelect", @part_grub)
@@ -745,7 +777,8 @@ class Part extends Page
         @grub_dropdown = new DropDown("dd_grub", false, null)
         @grub_select.appendChild(@grub_dropdown.element)
         @grub_dropdown.set_drop_items(keys, values)
-        @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 65, 20)
+        width = 500
+        @grub_dropdown.set_drop_size(width, 20)
         @grub_dropdown.show_drop()
 
     switch_mode: ->
@@ -780,7 +813,8 @@ class Part extends Page
 
         if DCore.Installer.system_support_efi()
             @part_uefi.style.display = ""
-            @grub_dropdown.set_drop_size(700 - @grub_loader.offsetWidth - 10 - 90, 20)
+            width = 500
+            @grub_dropdown.set_drop_size(width, 20)
             @grub_dropdown.show_drop()
 
             click_cb = =>

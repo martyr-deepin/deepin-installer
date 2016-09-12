@@ -1,27 +1,15 @@
 /**
- * Copyright (c) 2011 ~ 2013 Deepin, Inc.
- *               2011 ~ 2013 Long Wei
- *
- * Author:      Long Wei <yilang2007lw@gmail.com>
- *              bluth <yuanchenglu001@gmail.com>
- * Maintainer:  Long Wei <yilang2007lw@gamil.com>
+ * Copyright (C) 2015 Deepin Technology Co., Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
 #include <gtk/gtk.h>
 #include <cairo-xlib.h>
+#include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <lightdm.h>
@@ -30,6 +18,7 @@
 #include <stdlib.h>
 #include <glib/gstdio.h>
 #include <glib/gprintf.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <X11/XKBlib.h>
@@ -48,6 +37,10 @@
 
 #define GREETER_HTML_PATH "file://"RESOURCE_DIR"/language-selector/index.html"
 #define LANG_PATH RESOURCE_DIR"/language-selector/support_language_list.ini"
+
+// Absolute path to log file.
+// TODO(xushaohua): move log to /var/log/deepin-lightdm-language-selector.log
+const char* kLogPath = "/tmp/deepin-lightdm-language-selector.log";
 
 LightDMGreeter *greeter;
 GKeyFile *greeter_keyfile;
@@ -153,7 +146,7 @@ char* greeter_get_lang_by_name(gchar* lang_name)
                       name, local);
         }
         g_free(name);
-    } 
+    }
     g_strfreev(list);
     g_key_file_unref(key);
     return g_strdup(local);
@@ -220,10 +213,10 @@ start_authentication (struct AuthHandler *handler)
     g_warning("[%s]: %s\n", __func__, username);
 
     if (g_strcmp0 (username, "guest") == 0) {
-        lightdm_greeter_authenticate_as_guest (greeter);
+        lightdm_greeter_authenticate_as_guest (greeter );
         g_warning("[%s] for guest\n", __func__);
     } else {
-        lightdm_greeter_authenticate (greeter, username);
+        lightdm_greeter_authenticate (greeter, username );
     }
 
     g_free (username);
@@ -247,7 +240,7 @@ respond_authentication(LightDMGreeter *greeter,
     }
     g_warning("[%s] respond: %s\n", __func__, respond);
 
-    lightdm_greeter_respond (greeter, respond);
+    lightdm_greeter_respond (greeter, respond );
 
     g_free (respond);
 }
@@ -497,11 +490,27 @@ init_lightdm ()
                               G_KEY_FILE_NONE, NULL);
 }
 
+static void redirect_log()
+{
+    g_message ("[%s]: log path is: %s", __func__, kLogPath);
+    int log_file = open(kLogPath, O_RDWR| O_CREAT| O_TRUNC, 0644);
+    if (log_file == -1) {
+        perror("redirect_log failed!");
+        return;
+    }
+    if (dup2(log_file, 1) == -1) {
+        perror("Failed to redirect stdout!");
+    }
+    if (dup2(log_file, 2) == -1) {
+        perror("Failed to redirect stderr!");
+    }
+}
+
 int main (int argc, char **argv)
 {
+    redirect_log();
     g_message("[%s] greeter main\n", __func__);
     g_setenv("G_MESSAGES_DEBUG", "all", TRUE);
-
 
     init_i18n ();
     init_theme();

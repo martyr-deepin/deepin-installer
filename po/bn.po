@@ -1,0 +1,469 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Sekander Badsha <badsha_eee@yahoo.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin Installer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-02 09:44+0800\n"
+"PO-Revision-Date: 2016-09-02 02:32+0000\n"
+"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"Language-Team: Bengali (http://www.transifex.com/linuxdeepin/deepin-installer/language/bn/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bn\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../resources/installer/js/finish.coffee:34
+#: ../resources/installer/js/finish.coffee:42
+msgid "Reboot Now"
+msgstr "এখনি রিবুট করুন"
+
+#: ../resources/installer/js/finish.coffee:40
+msgid "Installation Succeed!"
+msgstr "সফলভাবে ইন্সটল হয়েছে!"
+
+#: ../resources/installer/js/finish.coffee:41
+msgid ""
+"Tips: Please remove the installation media before reboot, so as to avoid "
+"reentering into the installation environment when you start the computer "
+"next time. "
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:45
+msgid "Installation Failed!"
+msgstr "ইনস্টলেশন ব্যর্থ হয়েছে!"
+
+#: ../resources/installer/js/finish.coffee:47
+msgid ""
+"The installation log has been saved on the desktop for you.\n"
+" To help us improve the system better, please send the log to Deepin Team. Thank you! "
+msgstr ""
+
+#: ../resources/installer/js/finish.coffee:48
+msgid "Exit Installation"
+msgstr "ইনস্টলেশন বাদ দিন"
+
+#: ../resources/installer/js/progress.coffee:25
+msgid "Error Report"
+msgstr "ত্রুটি প্রতিবেদন"
+
+#: ../resources/installer/js/progress.coffee:27
+msgid "System installation failed. Please send the log to Deepin Team."
+msgstr "সিস্টেম ইনস্টল ব্যার্থ হয়েছে। অনুগ্রহ করে ডিপিন টিমের কাছে লগটি পাঠান।"
+
+#: ../resources/installer/js/progress.coffee:40
+msgid "Preparing for Installation"
+msgstr "ইনস্টল করার জন্য তৈরি হচ্ছে"
+
+#: ../resources/installer/js/virtual.coffee:24
+msgid "Tips"
+msgstr "টিপস"
+
+#: ../resources/installer/js/virtual.coffee:27
+msgid ""
+"It is detected that you are using a virtual machine. Installing Deepin on a "
+"virtual machine will affect its performances. You are recommended to "
+"experience it in a real environment."
+msgstr ""
+
+#: ../resources/installer/js/virtual.coffee:29
+msgid "Continue"
+msgstr "চালিয়ে যান"
+
+#: ../resources/installer/js/part.coffee:126
+#: ../resources/installer/js/part.coffee:145
+msgid "Freespace"
+msgstr "খালি জায়গা"
+
+#: ../resources/installer/js/part.coffee:197
+#: ../resources/installer/js/part.coffee:202
+msgid "Unknown"
+msgstr "অজানা"
+
+#: ../resources/installer/js/part.coffee:306
+msgid "Install Here"
+msgstr "এখানে ইনস্টল করুন"
+
+#: ../resources/installer/js/part.coffee:343
+#: ../resources/installer/js/part.coffee:846
+msgid "Warning"
+msgstr "সতর্কতা"
+
+#: ../resources/installer/js/part.coffee:344
+msgid ""
+"You  may not boot due to too small space of /boot mount point, please "
+"improve the space to 300M at least."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:473
+msgid "Disk"
+msgstr "ডিস্ক"
+
+#: ../resources/installer/js/part.coffee:493
+msgid "Device"
+msgstr "ডিভাইস"
+
+#: ../resources/installer/js/part.coffee:495
+msgid "Size"
+msgstr "সাইজ"
+
+#: ../resources/installer/js/part.coffee:497
+msgid "Free Space"
+msgstr "খালি যায়গা"
+
+#: ../resources/installer/js/part.coffee:499
+msgid "Filesystem"
+msgstr "ফাইল সিস্টেম"
+
+#: ../resources/installer/js/part.coffee:501
+msgid "Information"
+msgstr "তথ্য"
+
+#: ../resources/installer/js/part.coffee:503
+msgid "Mount Point"
+msgstr "মাউন্ট পয়েন্ট"
+
+#: ../resources/installer/js/part.coffee:505
+msgid "Formatting"
+msgstr "ফরম্যাটিং"
+
+#: ../resources/installer/js/part.coffee:512
+#: ../resources/installer/js/dialog.coffee:98
+msgid "Delete Partition"
+msgstr "পার্টিশন"
+
+#: ../resources/installer/js/part.coffee:523
+msgid "New Partition"
+msgstr "নতুন পার্টিশন"
+
+#: ../resources/installer/js/part.coffee:618
+#: ../resources/installer/js/part.coffee:871
+msgid "Expert Mode"
+msgstr "এক্সপার্ট মোড"
+
+#: ../resources/installer/js/part.coffee:628
+msgid "Install"
+msgstr "ইনস্টল"
+
+#: ../resources/installer/js/part.coffee:657
+#: ../resources/installer/js/part.coffee:665
+#: ../resources/installer/js/part.coffee:673
+msgid "Installation Tips"
+msgstr "ইনস্টলের টিপস"
+
+#: ../resources/installer/js/part.coffee:658
+msgid "A root partition (/) is required."
+msgstr "একটি রুট পার্টিশন (/) আবশ্যক।"
+
+#: ../resources/installer/js/part.coffee:666
+msgid "UEFI-native installation only supports GPT-formatted disk."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:674
+msgid ""
+"ESP’s support is needed in UEFI mode and please create a partition of 100MB "
+"or more in efi format."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:702
+#: ../resources/installer/js/dialog.coffee:146
+msgid "Add Partition"
+msgstr "পার্টিশন যোগ"
+
+#: ../resources/installer/js/part.coffee:703
+msgid "Can't create a partition here"
+msgstr "এখানে পার্টিশন তৈরি করা যাচ্ছে না"
+
+#: ../resources/installer/js/part.coffee:747
+msgid "UEFI"
+msgstr "UEFI"
+
+#: ../resources/installer/js/part.coffee:758
+msgid "Boot Loader"
+msgstr "বুট লোডার"
+
+#: ../resources/installer/js/part.coffee:806
+msgid "Unmount Partition"
+msgstr "পার্টিসন আনমাউন্ট"
+
+#: ../resources/installer/js/part.coffee:807
+msgid ""
+"Partition is detected to have been mounted.\n"
+"Are you sure you want to unmount it?"
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:847
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. You will lose all"
+" disk data if you insist on installing."
+msgstr ""
+
+#: ../resources/installer/js/part.coffee:860
+msgid "Simple Mode"
+msgstr "সাধারণ মোড"
+
+#: ../resources/installer/js/base.coffee:30
+msgid "Installation Requirements"
+msgstr "ইনস্টলের জন্য আবশ্যক"
+
+#: ../resources/installer/js/base.coffee:31
+#, python-format
+msgid "To install Deepin OS, you need to have at least %d GB disk space."
+msgstr "ডিপিন অপারেটিং সিস্টেম ইনস্টল করার জন্য আপনার কমপক্ষে %d জায়গার প্রয়োজন।"
+
+#: ../resources/installer/js/base.coffee:51
+#: ../resources/installer/js/base.coffee:53
+#: ../resources/installer/js/base.coffee:55
+msgid "Unused"
+msgstr "অব্যবহৃত"
+
+#: ../resources/installer/js/dialog.coffee:66
+msgid "OK"
+msgstr "ঠিক আছে"
+
+#: ../resources/installer/js/dialog.coffee:66
+msgid "Cancel"
+msgstr "বাতিল"
+
+#: ../resources/installer/js/dialog.coffee:75
+msgid "Are you sure to exit from installation?"
+msgstr "আপনি কি নিশ্চিত, ইনস্টলেশন থেকে বের হতে চান?"
+
+#: ../resources/installer/js/dialog.coffee:100
+msgid "Are you sure you want to delete this partition?"
+msgstr "আপনি  কি নিশ্চিত, এই পার্টিশন মুছে ফেলবেন?"
+
+#: ../resources/installer/js/dialog.coffee:113
+msgid "Formatting Partition"
+msgstr "পার্টিশন ফরম্যাট করা হচ্ছে"
+
+#: ../resources/installer/js/dialog.coffee:115
+msgid "Are you sure you want to format this partition?"
+msgstr "আপনি কি নিশ্চিত, এই পার্টিশন ফরম্যাট করবেন?"
+
+#: ../resources/installer/js/dialog.coffee:124
+msgid "Proceed with installation"
+msgstr "ইনস্টলেশন চালিয়ে যান"
+
+#: ../resources/installer/js/dialog.coffee:133
+msgid "Deepin OS will be installed to freespace."
+msgstr "ডিপিন অপারেটিং সিস্টেম খালি জায়গায় ইনস্টল হবে।"
+
+#: ../resources/installer/js/dialog.coffee:135
+msgid "Deepin OS will be installed to "
+msgstr "ডিপিন অপারেটিং সিস্টেম ইনস্টল করা হবে"
+
+#: ../resources/installer/js/dialog.coffee:135
+msgid ""
+"\n"
+"The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
+msgstr ""
+
+#: ../resources/installer/js/dialog.coffee:135
+msgid "Do you want to continue the installation ?"
+msgstr "আপনি কি ইনস্টলেশন চালিয়ে যেতে চান?"
+
+#: ../resources/installer/js/dialog.coffee:166
+msgid "Type:"
+msgstr "ধরণ:"
+
+#: ../resources/installer/js/dialog.coffee:172
+msgid "Primary"
+msgstr "প্রাথমিক"
+
+#: ../resources/installer/js/dialog.coffee:177
+msgid "Logical"
+msgstr "লজিক্যাল"
+
+#: ../resources/installer/js/dialog.coffee:207
+msgid "Size:"
+msgstr "আকার:"
+
+#: ../resources/installer/js/dialog.coffee:251
+msgid "Align:"
+msgstr "এলাইন:"
+
+#: ../resources/installer/js/dialog.coffee:257
+msgid "Begin"
+msgstr "শুরু"
+
+#: ../resources/installer/js/dialog.coffee:262
+msgid "End"
+msgstr "শেষ"
+
+#: ../resources/installer/js/dialog.coffee:282
+msgid "Filesystem:"
+msgstr "ফাইল সিস্টেম:"
+
+#: ../resources/installer/js/dialog.coffee:306
+msgid "Mount:"
+msgstr "মাউন্ট:"
+
+#: ../resources/installer/js/dialog.coffee:339
+msgid "Please enter a valid partition size."
+msgstr "অনুগ্রহ করে একটি সঠিক পার্টিশন সাইজ লিখুন।"
+
+#: ../resources/installer/js/welcome.coffee:202
+msgid "Yes"
+msgstr "হ্যাঁ"
+
+#: ../resources/installer/js/welcome.coffee:207
+msgid "No"
+msgstr "না"
+
+#: ../resources/installer/js/welcome.coffee:302
+msgid "Please press one of the following keys."
+msgstr "অনুগ্রহ করে নিচের যেকোনো একটি কি চাপুন।"
+
+#: ../resources/installer/js/welcome.coffee:308
+msgid "Please confirm you have the following keys."
+msgstr "অনুগ্রহ করে নিশ্চিত করুন, আপনার নিচের কি গুলো রয়েছে।"
+
+#: ../resources/installer/js/welcome.coffee:352
+msgid "Detect Layout"
+msgstr "লে-আউট সনাক্ত করুন"
+
+#: ../resources/installer/js/welcome.coffee:358
+msgid "View Current"
+msgstr "বর্তমানটি দেখুন"
+
+#: ../resources/installer/js/welcome.coffee:515
+msgid "Please select or search your location."
+msgstr "অনুগ্রহ করে আপনার অবস্থান নির্বাচন করুন অথবা খোঁজ করুন।"
+
+#: ../resources/installer/js/welcome.coffee:765
+msgid "Empty"
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:845
+#: ../resources/installer/js/welcome.coffee:950
+msgid "The two passwords do not match."
+msgstr "উভয় পাসওয়ার্ড মিলছে না।"
+
+#: ../resources/installer/js/welcome.coffee:907
+msgid "Computer name is invald."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:920
+#: ../resources/installer/js/welcome.coffee:1032
+msgid "Password can not be empty."
+msgstr "পাসওয়ার্ড খালি রাখা যাবে না।"
+
+#: ../resources/installer/js/welcome.coffee:985
+msgid "Username"
+msgstr "ব্যবহারকারীর নাম "
+
+#: ../resources/installer/js/welcome.coffee:988
+msgid "Computer Name"
+msgstr "কম্পিউটার নাম"
+
+#: ../resources/installer/js/welcome.coffee:991
+msgid "Password"
+msgstr "পাসওয়ার্ড"
+
+#: ../resources/installer/js/welcome.coffee:996
+msgid "Retype Password"
+msgstr "পুনরায় পাসওয়ার্ড"
+
+#: ../resources/installer/js/welcome.coffee:1016
+msgid "Username can not be empty."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:1024
+msgid "Computer name can not be empty."
+msgstr "কম্পিউটার নাম খালি রাখা যাবেনা।"
+
+#: ../resources/installer/js/welcome.coffee:1041
+msgid "Password cannot be empty."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:1045
+msgid "Next"
+msgstr "পরবর্তী"
+
+#: ../resources/installer/js/welcome.coffee:1102
+msgid "Time Zone"
+msgstr "টাইম জোন"
+
+#: ../resources/installer/js/welcome.coffee:1108
+msgid "Keyboard"
+msgstr "কিবোর্ড"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:59
+msgid "Deepin Store"
+msgstr "ডিপিন ষ্টোর"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
+msgid "One-stop Software Management"
+msgstr "একক সফটওয়্যার ব্যবস্থাপনা"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:62
+msgid "Continuous Update of Wonderful Software"
+msgstr "অসাধারণ সফটওয়্যার এর নিয়মিত আপডেট"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
+msgid "Unimpeded Online Communication"
+msgstr "অবাধ অনলাইন যোগাযোগ"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:67
+msgid "Deepin Movie"
+msgstr "ডিপিন মুভি"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
+msgid "Comprehensive Audio-visual Shock"
+msgstr "কম্প্রিহেন্সিভ অডিও ভিজুয়াল শক"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:70
+msgid "New Interactive Experience"
+msgstr "নতুন ইন্টারেক্টিভ অভিজ্ঞতা"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
+msgid "Intelligent Subtitle Loading"
+msgstr "চৌকস সাবটাইটেল লোডিং"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:75
+msgid "Deepin Music"
+msgstr "ডিপিন মিউজিক"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
+msgid "Ultimate Music Journey"
+msgstr "অসাধারণ সঙ্গীতের যাত্রা"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:78
+msgid "Rich Extended Functions"
+msgstr "উন্নত বর্ধিত সুবিধা সমূহ"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
+msgid "Enjoy Online Strongest Voice"
+msgstr "অনলাইনে স্বচ্ছ কণ্ঠ উপভোগ করুন"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:83
+msgid "Deepin Community"
+msgstr "ডিপিন কমিউনিটি"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
+msgid "Free and United Open Source Community"
+msgstr "ফ্রী এবং একীভূত উন্মুক্ত সোর্স কমিউনিটি"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:86
+msgid "Welcome to participate in Deepin Internationalization Project"
+msgstr "ডিপিন আন্তর্জাতিকীকরণ প্রকল্পে স্বাগতম"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
+msgid ""
+"Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
+"IRC"
+msgstr "ওয়েইবো, টুইটার, ফেসবুক, গুগল প্লাস, মেইলিং লিস্ট এবং আইআরসি তে অনুসরণ করতে স্বাগত"
+
+#: ../app/language-selector/mutils.c:71
+msgid "%a, %b %d, %Y"
+msgstr "%a, %b %d, %Y"
+
+#: ../app/language-selector/greeter.c:292
+msgid "Invalid Password"
+msgstr "পাসওয়ার্ড সঠিক নয়"

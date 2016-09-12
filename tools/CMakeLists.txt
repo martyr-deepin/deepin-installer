@@ -21,3 +21,9 @@ install(
     PROGRAMS ${PROJECT_BINARY_DIR}/unsquashfs_progress
     DESTINATION bin
 )
+
+install(
+	PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/00reuse-machine-id
+	DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/os-probes/mounted/
+)
+

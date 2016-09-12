@@ -1,0 +1,471 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Espen Bye, 2016
+# nujugi <htclunde@gmail.com>, 2014
+# Kristoffer Ulseth <ulseth85@gmail.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin Installer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-02 09:44+0800\n"
+"PO-Revision-Date: 2016-09-02 02:32+0000\n"
+"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"Language-Team: Norwegian Bokmål (http://www.transifex.com/linuxdeepin/deepin-installer/language/nb/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nb\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../resources/installer/js/finish.coffee:34
+#: ../resources/installer/js/finish.coffee:42
+msgid "Reboot Now"
+msgstr "Restart nå"
+
+#: ../resources/installer/js/finish.coffee:40
+msgid "Installation Succeed!"
+msgstr "Installasjon vellykket!"
+
+#: ../resources/installer/js/finish.coffee:41
+msgid ""
+"Tips: Please remove the installation media before reboot, so as to avoid "
+"reentering into the installation environment when you start the computer "
+"next time. "
+msgstr "Tips: Vennligst fjern installasjonsmediet før omstart, så unngår du igjen å entre inn i installasjonsmiljøet når du starter datamaskinen neste gang."
+
+#: ../resources/installer/js/finish.coffee:45
+msgid "Installation Failed!"
+msgstr "Installasjonen mislyktes!"
+
+#: ../resources/installer/js/finish.coffee:47
+msgid ""
+"The installation log has been saved on the desktop for you.\n"
+" To help us improve the system better, please send the log to Deepin Team. Thank you! "
+msgstr "Installasjonsloggen er lagret på skrivebordet for deg.\nFor å hjelpe oss med å forbedre systemet bedre, kan du sende loggen til Deepin Laget. Takk!"
+
+#: ../resources/installer/js/finish.coffee:48
+msgid "Exit Installation"
+msgstr "Avslutt Installasjon"
+
+#: ../resources/installer/js/progress.coffee:25
+msgid "Error Report"
+msgstr "Feilrapport"
+
+#: ../resources/installer/js/progress.coffee:27
+msgid "System installation failed. Please send the log to Deepin Team."
+msgstr "Installasjon mislyktes. Vennligst send loggen til Deepin Laget."
+
+#: ../resources/installer/js/progress.coffee:40
+msgid "Preparing for Installation"
+msgstr "Klargjøring for Installasjon"
+
+#: ../resources/installer/js/virtual.coffee:24
+msgid "Tips"
+msgstr "Tips"
+
+#: ../resources/installer/js/virtual.coffee:27
+msgid ""
+"It is detected that you are using a virtual machine. Installing Deepin on a "
+"virtual machine will affect its performances. You are recommended to "
+"experience it in a real environment."
+msgstr "Det er oppdaget at du bruker en virtuell maskin. Installere Deepin på en virtuell maskin vil påvirke dets prestasjoner. Du anbefales å oppleve det i et reelt miljø."
+
+#: ../resources/installer/js/virtual.coffee:29
+msgid "Continue"
+msgstr "Fortsett"
+
+#: ../resources/installer/js/part.coffee:126
+#: ../resources/installer/js/part.coffee:145
+msgid "Freespace"
+msgstr "Ledig plass"
+
+#: ../resources/installer/js/part.coffee:197
+#: ../resources/installer/js/part.coffee:202
+msgid "Unknown"
+msgstr "Ukjent"
+
+#: ../resources/installer/js/part.coffee:306
+msgid "Install Here"
+msgstr "Installer her"
+
+#: ../resources/installer/js/part.coffee:343
+#: ../resources/installer/js/part.coffee:846
+msgid "Warning"
+msgstr "Advarsel"
+
+#: ../resources/installer/js/part.coffee:344
+msgid ""
+"You  may not boot due to too small space of /boot mount point, please "
+"improve the space to 300M at least."
+msgstr "Du kan ikke starte på grunn av for liten plass til /boot monteringspunkt, kan du forbedre plassen til 300M minst."
+
+#: ../resources/installer/js/part.coffee:473
+msgid "Disk"
+msgstr "Disk"
+
+#: ../resources/installer/js/part.coffee:493
+msgid "Device"
+msgstr "Enhet"
+
+#: ../resources/installer/js/part.coffee:495
+msgid "Size"
+msgstr "Størrelse"
+
+#: ../resources/installer/js/part.coffee:497
+msgid "Free Space"
+msgstr "Ledig plass"
+
+#: ../resources/installer/js/part.coffee:499
+msgid "Filesystem"
+msgstr "Filsystem"
+
+#: ../resources/installer/js/part.coffee:501
+msgid "Information"
+msgstr "Informasjon"
+
+#: ../resources/installer/js/part.coffee:503
+msgid "Mount Point"
+msgstr "Monteringspunkt"
+
+#: ../resources/installer/js/part.coffee:505
+msgid "Formatting"
+msgstr "Formattering"
+
+#: ../resources/installer/js/part.coffee:512
+#: ../resources/installer/js/dialog.coffee:98
+msgid "Delete Partition"
+msgstr "Slett partisjon"
+
+#: ../resources/installer/js/part.coffee:523
+msgid "New Partition"
+msgstr "Ny partisjon"
+
+#: ../resources/installer/js/part.coffee:618
+#: ../resources/installer/js/part.coffee:871
+msgid "Expert Mode"
+msgstr "Ekspertmodus"
+
+#: ../resources/installer/js/part.coffee:628
+msgid "Install"
+msgstr "Installer"
+
+#: ../resources/installer/js/part.coffee:657
+#: ../resources/installer/js/part.coffee:665
+#: ../resources/installer/js/part.coffee:673
+msgid "Installation Tips"
+msgstr "Installasjon Tips"
+
+#: ../resources/installer/js/part.coffee:658
+msgid "A root partition (/) is required."
+msgstr "En rot partisjon (/) er påkrevd."
+
+#: ../resources/installer/js/part.coffee:666
+msgid "UEFI-native installation only supports GPT-formatted disk."
+msgstr "UEFI-native installering støtter bare GPT-formatert disk."
+
+#: ../resources/installer/js/part.coffee:674
+msgid ""
+"ESP’s support is needed in UEFI mode and please create a partition of 100MB "
+"or more in efi format."
+msgstr "ESP støtte er nødvendig i UEFI-modus, og vennligst opprett en ny partisjon på 100MB eller mer i efi format."
+
+#: ../resources/installer/js/part.coffee:702
+#: ../resources/installer/js/dialog.coffee:146
+msgid "Add Partition"
+msgstr "Legg til partisjon"
+
+#: ../resources/installer/js/part.coffee:703
+msgid "Can't create a partition here"
+msgstr "Kan ikke lage en partisjon her"
+
+#: ../resources/installer/js/part.coffee:747
+msgid "UEFI"
+msgstr "UEFI"
+
+#: ../resources/installer/js/part.coffee:758
+msgid "Boot Loader"
+msgstr "Oppstarts Laster"
+
+#: ../resources/installer/js/part.coffee:806
+msgid "Unmount Partition"
+msgstr "Avmonter Partition"
+
+#: ../resources/installer/js/part.coffee:807
+msgid ""
+"Partition is detected to have been mounted.\n"
+"Are you sure you want to unmount it?"
+msgstr "Partisjon blir oppdaget til å ha blitt montert.\nEr du sikker på at du ønsker å avmontere den?"
+
+#: ../resources/installer/js/part.coffee:847
+msgid ""
+"UEFI-native installation only supports GPT-formatted disk. You will lose all"
+" disk data if you insist on installing."
+msgstr "UEFI-innfødte installasjonen støtter bare GPT-formatert disk. Du vil miste alle data på disken hvis du insisterer på å installere."
+
+#: ../resources/installer/js/part.coffee:860
+msgid "Simple Mode"
+msgstr "Enkel Modus"
+
+#: ../resources/installer/js/base.coffee:30
+msgid "Installation Requirements"
+msgstr "Installasjonskrav"
+
+#: ../resources/installer/js/base.coffee:31
+#, python-format
+msgid "To install Deepin OS, you need to have at least %d GB disk space."
+msgstr "For å installere Deepin OS, må du ha minst %d GB diskplass."
+
+#: ../resources/installer/js/base.coffee:51
+#: ../resources/installer/js/base.coffee:53
+#: ../resources/installer/js/base.coffee:55
+msgid "Unused"
+msgstr "Ubrukt"
+
+#: ../resources/installer/js/dialog.coffee:66
+msgid "OK"
+msgstr "OK"
+
+#: ../resources/installer/js/dialog.coffee:66
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: ../resources/installer/js/dialog.coffee:75
+msgid "Are you sure to exit from installation?"
+msgstr "Er du sikker på å avslutte installasjonen?"
+
+#: ../resources/installer/js/dialog.coffee:100
+msgid "Are you sure you want to delete this partition?"
+msgstr "Er du sikker på at du vil slette denne partisjonen?"
+
+#: ../resources/installer/js/dialog.coffee:113
+msgid "Formatting Partition"
+msgstr "Formaterer Partisjon"
+
+#: ../resources/installer/js/dialog.coffee:115
+msgid "Are you sure you want to format this partition?"
+msgstr "Er du sikker på at du vil formatere denne partisjonen?"
+
+#: ../resources/installer/js/dialog.coffee:124
+msgid "Proceed with installation"
+msgstr "Fortsett med installasjonen"
+
+#: ../resources/installer/js/dialog.coffee:133
+msgid "Deepin OS will be installed to freespace."
+msgstr "Deepin OS vil bli installert på Freespace."
+
+#: ../resources/installer/js/dialog.coffee:135
+msgid "Deepin OS will be installed to "
+msgstr "Deepin OS vil bli installert på"
+
+#: ../resources/installer/js/dialog.coffee:135
+msgid ""
+"\n"
+"The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
+msgstr "\nPartisjonen vil bli formatert hvis du fortsetter installasjonen. Vennligst ta en sikkerhetskopi av viktige data.\n"
+
+#: ../resources/installer/js/dialog.coffee:135
+msgid "Do you want to continue the installation ?"
+msgstr "Ønsker du å fortsette installasjonen?"
+
+#: ../resources/installer/js/dialog.coffee:166
+msgid "Type:"
+msgstr "Type:"
+
+#: ../resources/installer/js/dialog.coffee:172
+msgid "Primary"
+msgstr "Primær"
+
+#: ../resources/installer/js/dialog.coffee:177
+msgid "Logical"
+msgstr "Logiske"
+
+#: ../resources/installer/js/dialog.coffee:207
+msgid "Size:"
+msgstr "Størrelse:"
+
+#: ../resources/installer/js/dialog.coffee:251
+msgid "Align:"
+msgstr "Juster:"
+
+#: ../resources/installer/js/dialog.coffee:257
+msgid "Begin"
+msgstr "Begynn"
+
+#: ../resources/installer/js/dialog.coffee:262
+msgid "End"
+msgstr "Slutt"
+
+#: ../resources/installer/js/dialog.coffee:282
+msgid "Filesystem:"
+msgstr "Filsystem:"
+
+#: ../resources/installer/js/dialog.coffee:306
+msgid "Mount:"
+msgstr "Montering:"
+
+#: ../resources/installer/js/dialog.coffee:339
+msgid "Please enter a valid partition size."
+msgstr "Skriv inn en gyldig partisjon størrelse."
+
+#: ../resources/installer/js/welcome.coffee:202
+msgid "Yes"
+msgstr "Ja"
+
+#: ../resources/installer/js/welcome.coffee:207
+msgid "No"
+msgstr "Nei"
+
+#: ../resources/installer/js/welcome.coffee:302
+msgid "Please press one of the following keys."
+msgstr "Vennligst trykk på en av følgende taster."
+
+#: ../resources/installer/js/welcome.coffee:308
+msgid "Please confirm you have the following keys."
+msgstr "Bekreft at du har følgende taster."
+
+#: ../resources/installer/js/welcome.coffee:352
+msgid "Detect Layout"
+msgstr "Gjenkjenne oppsett"
+
+#: ../resources/installer/js/welcome.coffee:358
+msgid "View Current"
+msgstr "Se nåværende"
+
+#: ../resources/installer/js/welcome.coffee:515
+msgid "Please select or search your location."
+msgstr "Velg eller søk posisjonen din."
+
+#: ../resources/installer/js/welcome.coffee:765
+msgid "Empty"
+msgstr "Tomt"
+
+#: ../resources/installer/js/welcome.coffee:845
+#: ../resources/installer/js/welcome.coffee:950
+msgid "The two passwords do not match."
+msgstr "De to passordene stemmer ikke overens."
+
+#: ../resources/installer/js/welcome.coffee:907
+msgid "Computer name is invald."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:920
+#: ../resources/installer/js/welcome.coffee:1032
+msgid "Password can not be empty."
+msgstr "Passordet kan ikke være tomt."
+
+#: ../resources/installer/js/welcome.coffee:985
+msgid "Username"
+msgstr "Brukernavn"
+
+#: ../resources/installer/js/welcome.coffee:988
+msgid "Computer Name"
+msgstr "Datamaskin Navn"
+
+#: ../resources/installer/js/welcome.coffee:991
+msgid "Password"
+msgstr "Passord"
+
+#: ../resources/installer/js/welcome.coffee:996
+msgid "Retype Password"
+msgstr "Skriv inn passordet på nytt"
+
+#: ../resources/installer/js/welcome.coffee:1016
+msgid "Username can not be empty."
+msgstr "Brukernavn kan ikke være tomt."
+
+#: ../resources/installer/js/welcome.coffee:1024
+msgid "Computer name can not be empty."
+msgstr "Datamaskinnavn kan ikke være tomt."
+
+#: ../resources/installer/js/welcome.coffee:1041
+msgid "Password cannot be empty."
+msgstr ""
+
+#: ../resources/installer/js/welcome.coffee:1045
+msgid "Next"
+msgstr "Neste"
+
+#: ../resources/installer/js/welcome.coffee:1102
+msgid "Time Zone"
+msgstr "Tidssone"
+
+#: ../resources/installer/js/welcome.coffee:1108
+msgid "Keyboard"
+msgstr "Tastatur"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:59
+msgid "Deepin Store"
+msgstr "Deepin Butikk"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
+msgid "One-stop Software Management"
+msgstr "Et stops Programvareadministrasjon"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:62
+msgid "Continuous Update of Wonderful Software"
+msgstr "Kontinuerlig oppdatering av Fantastisk Programvare"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
+msgid "Unimpeded Online Communication"
+msgstr "Upåvirket Online kommunikasjon"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:67
+msgid "Deepin Movie"
+msgstr "Deepin Film"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
+msgid "Comprehensive Audio-visual Shock"
+msgstr "Omfattende Audiovisuelt Sjokk"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:70
+msgid "New Interactive Experience"
+msgstr "Ny Interaktiv Opplevelse"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
+msgid "Intelligent Subtitle Loading"
+msgstr "Intelligent Teksting Laster"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:75
+msgid "Deepin Music"
+msgstr "Deepin Musikk"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
+msgid "Ultimate Music Journey"
+msgstr "Optimale Musikk Reise"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:78
+msgid "Rich Extended Functions"
+msgstr "Rike Utvidede Funksjoner"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
+msgid "Enjoy Online Strongest Voice"
+msgstr "Nyt Online Sterkeste Stemme"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:83
+msgid "Deepin Community"
+msgstr "Deepin Fellesskap"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
+msgid "Free and United Open Source Community"
+msgstr "Gratis og Forent Åpen kildekode-miljø"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:86
+msgid "Welcome to participate in Deepin Internationalization Project"
+msgstr "Velkommen til å delta i Deepin Internasjonalisering Prosjekt"
+
+#: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
+msgid ""
+"Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
+"IRC"
+msgstr "Velkommen til å følge oss på Weibo, Twitter, Facebook, Google+, mailingliste og IRC"
+
+#: ../app/language-selector/mutils.c:71
+msgid "%a, %b %d, %Y"
+msgstr "%a, %b %d, %Y"
+
+#: ../app/language-selector/greeter.c:292
+msgid "Invalid Password"
+msgstr "Ugyldig passord"

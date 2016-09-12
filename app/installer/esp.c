@@ -1,3 +1,12 @@
+/**
+ * Copyright (C) 2015 Deepin Technology Co., Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ **/
+
 #include "esp.h"
 #include "info.h"
 #include "ped_utils.h"
@@ -151,6 +160,13 @@ gboolean create_esp_by_split(PedPartition* old, char** esp_path,
 
     ped_disk_add_partition(old->disk, new_part, cst);
     ped_disk_commit(old->disk);
+
+    // Watches the udev event queue.
+    // Wait for kernel to handle pending events
+    g_message("[%s] will call udevadm settle --timeout=5\n", __func__);
+    g_spawn_command_line_sync ("udevadm settle --timeout=5",
+                               NULL, NULL, NULL, NULL);
+
     ped_constraint_destroy(cst);
 
     *esp_path = ped_partition_get_path(esp_part);

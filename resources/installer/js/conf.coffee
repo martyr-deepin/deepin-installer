@@ -4,7 +4,7 @@ __selected_variant_item = null
 __selected_use_uefi = DCore.Installer.system_support_efi()
 
 __selected_timezone = DCore.Installer.get_timezone_local()
-__selected_timezone = "Asia/Shanghai" if not __selected_timezone?
+__selected_timezone = "UTC" if not __selected_timezone?
 __selected_username = null
 __selected_hostname = null
 __selected_password = null
@@ -45,21 +45,26 @@ record_mount_points = ->
                     DCore.Installer.record_mountpoint_info(part, v_part_info[part]["mp"])
                     if v_part_info[part]["mp"] == "/"
                         DCore.Installer.record_root_disk_info(disk)
+                    console.log("[conf.coffee] record_mount_points() end")
                 catch error
                     console.error("[conf.coffee] record_mount_points() error: ", error)
 
 
-#TODO: try remove
 try_removed_start_install = ->
         console.log("[conf.coffee] try_removed_start_install() partition mode: ", __selected_mode)
-        if __selected_mode == "simple"
-            undo_part_table_info()
-            auto_simple_partition(__selected_item.id, "part")
-        do_partition()
-        console.log("[conf.coffee] try_removed_start_install() end of do_partition()")
 
-        sync_installer_conf()
-        DCore.Installer.start_install()
-
+        # Show progress page first.
         progress_page = new Progress("progress") if not progress_page?
         pc.switch_page(progress_page)
+
+        callback = ->
+            if __selected_mode == "simple"
+                undo_part_table_info()
+                auto_simple_partition(__selected_item.id, "part")
+            do_partition()
+            console.log("[conf.coffee] try_removed_start_install() end of do_partition()")
+
+            sync_installer_conf()
+            DCore.Installer.start_install()
+
+        setTimeout callback, 1000

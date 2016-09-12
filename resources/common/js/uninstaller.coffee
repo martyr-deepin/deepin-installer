@@ -20,8 +20,6 @@
 
 NOTIFICATIONS = "org.freedesktop.Notifications"
 
-SOFTWARE_MANAGER = "com.linuxdeepin.softwarecenter"
-
 LAUNCHER_DAEMON="com.deepin.dde.daemon.Launcher"
 
 UNINSTALL_STATUS =

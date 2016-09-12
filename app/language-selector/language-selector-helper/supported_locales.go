@@ -1,33 +1,20 @@
 /**
- * Copyright (c) 2011 ~ 2015 Deepin, Inc.
- *               2013 ~ 2015 jouyouyun
- *
- * Author:      jouyouyun <jouyouwen717@gmail.com>
- * Maintainer:  jouyouyun <jouyouwen717@gmail.com>
+ * Copyright (C) 2015 Deepin Technology Co., Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
  **/
 
 package main
 
 import (
+	"dbus/com/deepin/api/localehelper"
+	"dbus/org/freedesktop/timedate1"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"strings"
-
-	"dbus/com/deepin/api/localehelper"
 )
 
 const (
@@ -67,17 +54,24 @@ func doSetLocale(locale string) error {
 }
 
 func setTimezoneByLocale(locale string) error {
-	var file string
+	tm, err := timedate1.NewTimedate1("org.freedesktop.timedate1",
+		"/org/freedesktop/timedate1")
+	if err != nil {
+		return err
+	}
+	defer timedate1.DestroyTimedate1(tm)
+
+	var zone string
 	switch locale {
 	case "zh_CN.UTF-8":
-		file = "/usr/share/zoneinfo/Asia/Shanghai"
+		zone = "Asia/Shanghai"
 	case "zh_TW.UTF-8":
-		file = "/usr/share/zoneinfo/Asia/Taipei"
+		zone = "Asia/Taipei"
 	default:
-		file = "/usr/share/zoneinfo/UTC"
+		zone = "UTC"
 	}
 
-	return os.Symlink(file, "/etc/localtime")
+	return tm.SetTimezone(zone, false)
 }
 
 func getSupportedLocales(file string) ([]string, error) {

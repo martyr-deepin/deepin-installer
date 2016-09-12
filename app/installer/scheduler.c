@@ -1,3 +1,12 @@
+/**
+ * Copyright (C) 2015 Deepin Technology Co., Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ **/
+
 #include "scheduler.h"
 #include "jsextension.h"
 #include "info.h"
@@ -23,7 +32,6 @@ enum {
 
 void update_install_progress(int v)
 {
-    g_message("[%s], v: %d\n", __func__, v);
     static int current_per = 0;
     if (v < current_per) {
         g_debug("[%s] INSTALL progress small previous PROGRESS: %d <= %d\n",
@@ -138,6 +146,7 @@ static void start_prepare_conf()
         write_installer_conf(CONF_PATH);
     }
 
+    g_message("[%s] write_installer_conf: %s", __func__, CONF_PATH); 
     start_run_installer();
 }
 

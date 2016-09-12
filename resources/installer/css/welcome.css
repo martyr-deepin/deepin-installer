@@ -94,13 +94,14 @@
     padding:0;
     width:272px;
     height:36px;
+    line-height:1.1;
     padding-left:36px;
     outline-style:none;
     color: #dadada;
     text-shadow: 1px 1px rgba(0,0,0,0.5);
     border-radius: 3px;
     border: 1px solid rgba(64, 64, 64, 0.6);
-    box-shadow: 1px 1px 3px rgba(64, 64, 64, 0.2) outset;
+    box-shadow: 1px 1px 3px rgba(64, 64, 64, 0.2);
 }
 
 .WelcomeFormItem input:focus {
@@ -163,18 +164,18 @@
 .Query ul li {
     float:left;
     font-size:14px;
-    margin:6px;
+    margin:4px;
     width:14px;
     height:14px;
     line-height:14px;
     text-align:center;
+    border: 2px solid transparent;
 }
 
 .LetterActive {
     background:transparent;
-    border:solid 2px rgba(255,255,3,0.5);
+    border:solid 2px rgba(255,255,3,0.5) !important;
     border-radius:50%;
-    margin:2px 6px 6px 6px;
 }
 
 .Query .QueryWrap {
@@ -353,6 +354,10 @@
 .KeyboardOp .Detect {
     background:url("../images/detect_layout.png") no-repeat;
     background-position:0 10px;
+}
+
+.KeyboardOp .Default:hover, .KeyboardOp .Detect:hover {
+  cursor: pointer;
 }
 
 .KeyboardDetectDialog .DialogContent {
