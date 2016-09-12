@@ -1,0 +1,29 @@
+#!/bin/bash
+# loongson: make sure we have /boot on sda1
+
+. /etc/deepin-installer.conf
+
+TARGET=/target/boot
+
+if [ -d /cdrom/casper/boot ]; then
+    echo "[INFO] Set Boot for Loongson"
+
+    # 1 get / uuid
+    rootuuidline=$(grep -r "UUID" /target/etc/fstab | grep "/ ")
+    rootuuid=${rootuuidline%%/*}
+
+    # sync from casper/boot
+    mkdir -pv $TARGET
+    cp -a /cdrom/casper/boot/* $TARGET
+    [ -f $TARGET/grub.cfg ] && [ -f $TARGET/boot.cfg ] && echo "boot files copied!" 
+    
+    # modify boot.cfg & grub.cfg set boot.cfg args root=UUID=xxx
+    sed -i "s/\(args.*\)/\1 root=$rootuuid/g" $TARGET/boot.cfg
+    sed -i "s/\(linux.*\)/\1 root=$rootuuid/g" $TARGET/grub.cfg
+    sed -i "s/\(args.*\)/\1 root=$rootuuid/g" $TARGET/boot.cfg
+fi
+
+# fix boot.cfg
+if grep -wqs $TARGET /proc/mounts ; then
+    sed -e 's@boot/@@g' -i $TARGET/boot.cfg
+fi

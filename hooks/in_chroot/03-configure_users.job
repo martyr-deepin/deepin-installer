@@ -1,6 +1,5 @@
 #!/bin/bash
-
-echo "[$0]"
+# TODO: add more than one users
 set -e
 
 if [ -f /deepinhost/etc/deepin-installer.conf ];then
@@ -37,11 +36,15 @@ gpasswd -a ${DI_USERNAME} storage
 gpasswd -a ${DI_USERNAME} network
 set -e 
 
+# for xfce4
+[ -d /root/.config/xfce4 ] && mkdir -p /home/${DI_USERNAME}/.config && cp -a /root/.config/xfce4 /home/${DI_USERNAME}/.config/xfce4
+
 echo "[INFO] Fix Home directory permission to ${DI_USERNAME}."
 chown -hR ${DI_USERNAME}:${DI_USERNAME} /home/${DI_USERNAME}
 
 echo "[INFO] Set Hostname to ${DI_HOSTNAME}"
 echo "${DI_HOSTNAME}" | tee /etc/hostname
+
 
 cat > /etc/hosts <<EOF
 127.0.0.1	localhost

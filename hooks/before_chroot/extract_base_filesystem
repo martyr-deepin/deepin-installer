@@ -167,13 +167,9 @@ def get_casper(key, default=None):
     return _casper_config.get(key, default)
 
 class Install:
-    def __init__(self, lang='en_US', live="casper"):
+    def __init__(self, lang='en_US'):
         self.target = '/target'
-        if live == "casper":
-            self.casper_path = os.path.join('/cdrom', get_casper('LIVE_MEDIA_PATH','casper').lstrip('/'))
-        if live == "live":
-            self.casper_path = "/lib/live/mount/medium/live"
-
+        self.casper_path = os.path.join('/cdrom', 'casper')
         self.lang = lang
 
         if not os.path.exists('/var/lib/deepin-installer'):
@@ -386,7 +382,6 @@ class Install:
 
 
     def umount_source(self):
-        execute('sync')
         devs= self.devs
         devs.reverse()
 
@@ -394,7 +389,7 @@ class Install:
         mountpoints.reverse()
 
         for mountpoint in mountpoints:
-            if not execute('umount', '-vl', mountpoint):
+            if not execute('umount','-l', mountpoint):
                 raise InstallError("Failed to umount %s" % mountpoint)
         for dev in devs:
             if (dev != '' and dev != 'unused' and not execute('losetup', '-d', dev)):
@@ -416,12 +411,11 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--lang', default="en_US",type=str)
-    parser.add_argument('--live', default="casper",type=str)
     args = parser.parse_args()
     if not os.path.exists(os.path.dirname(PROGRESS_FILE)):
         os.makedirs(os.path.dirname(PROGRESS_FILE))
     if not os.path.exists('/var/lib/deepin-installer'):
         os.makedirs('/var/lib/deepin-installer')
-    install = Install(lang=args.lang,live=args.live)
+    install = Install(args.lang)
     install.run()
     sys.exit(0)

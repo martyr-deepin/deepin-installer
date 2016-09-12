@@ -1,20 +1,30 @@
 #!/bin/bash
 
-echo "[$0]"
-set -x
-
 . /etc/deepin-installer.conf
 
-target='/target'
-chown root:root ${target} 
+target="/target"
 
-# sync data to disk
-sync
-
-[ -d /target/deepinhost ] && umount -v /target/deepinhost && \
-rmdir -rvf /target/deepinhost
-
-for i in $(cat /proc/mounts | awk '{print $2}' | grep -e ^$target | sort -r);do
-    umount -v $i
+array=`echo ${DI_MOUNTPOINTS//;/ }`
+for i in $array;do
+    mountpoint=$(echo $i | cut -d'=' -f1)
+    mountpath=$(echo $i | cut -d'=' -f2)
+    if [ $mountpath !=  '/' ];then
+	echo "unmount ${target}${mountpath}"
+	umount ${target}${mountpath}
+    fi
 done
-echo "[$0] finished"
+
+umount /target/deepinhost
+umount /target/media/cdrom
+umount /target/dev/pts
+umount /target/dev
+umount /target/proc
+umount /target/sys
+umount /target/boot/efi
+rm -rf /target/deepinhost
+umount /target/host
+#Try to fix wrong permission (owned by 1001)
+chown root:root /target
+umount /target/
+
+echo "umount target finish"

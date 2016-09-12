@@ -1,12 +1,11 @@
 #! /bin/sh
 # config lightdm greeter to deepin-lightdm-greeter
 
-echo "[$0]"
-set -x
-
+LIGHTDM_SESSION="[SeatDefaults]
+greeter-session=lightdm-deepin-greeter
+user-session=deepin
+"
 if [ -f /etc/lightdm/lightdm.conf ]; then
-    sed -i -r -e "s|^#.*greeter-session=.*\$|greeter-session=lightdm-deepin-greeter|" \
-    -e "s|^#.*user-session=.*\$|user-session=deepin|" \
-    /etc/lightdm/lightdm.conf
+  echo "${LIGHTDM_SESSION}" | tee /etc/lightdm/lightdm.conf
 fi
 

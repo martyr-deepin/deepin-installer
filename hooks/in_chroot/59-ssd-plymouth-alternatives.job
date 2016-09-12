@@ -1,8 +1,5 @@
 #!/bin/bash
 
-echo "[$0]"
-set -x
-
 . /deepinhost/etc/deepin-installer.conf
 
 detect_rootblk(){
@@ -31,6 +28,9 @@ update_plymouth(){
             /lib/plymouth/themes/deepin-ssd-logo/deepin-ssd-logo.plymouth 130 \
             --slave /lib/plymouth/themes/default.grub default.plymouth.grub \
             /lib/plymouth/themes/deepin-ssd-logo/deepin-ssd-logo.grub
+        if which update-initramfs > /dev/null 2>&1;then
+            update-initramfs -u
+        fi
     fi
 }
 

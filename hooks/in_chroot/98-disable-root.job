@@ -1,0 +1,4 @@
+#! /bin/bash
+
+# prevent root login using default password
+passwd -l root

@@ -1,0 +1,94 @@
+#!/bin/bash
+# install grub to detect machine
+
+if [ -f /deepinhost/etc/deepin-installer.conf ];then
+    . /deepinhost/etc/deepin-installer.conf
+fi
+
+# if no DI_BOOTLOADER, treat as not installing bootloader
+#[ -z ${DI_BOOTLOADER} ] && { echo >&2 "[WARN] DI_BOOTLOADER not set. Treat as not install bootloader. Skip."; exit 0;}
+
+#if [ x${DI_UEFI} == xtrue ];then
+#    BOOT="uefi"
+#else
+#    BOOT="legacy"
+#fi
+
+#if [ x${BOOT} == xuefi ];then
+#    if [ -x /usr/bin/fwts ];then
+#        value=$(fwts uefidump - | grep Secure\ Boot\ Mode | awk '{print $2}')
+#        [ x${value} == 0x01 ] && BOOT="uefi-secureboot"
+#    fi
+#fi
+
+#[ -e /etc/lsb-release ] && BOOTLOADER_ID=$(cat /etc/lsb-release | grep -e '^DISTRIB_DESCRIPTION' | cut -d '=' -f2 | sed 's/"//g')
+
+#BOOTLOADER_ID="${BOOTLOADER_ID:-linuxdeepin}"
+
+#case ${BOOT} in
+#    "uefi")
+#        echo "INFO: Detected efi machine"
+#        apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated grub-efi efibootmgr
+#        grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck
+#        ;;
+#    "legacy")
+#        echo "INFO: Detected legacy machine, installing grub to ${DI_BOOTLOADER}"
+#        DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes --no-install-recommends --allow-unauthenticated install grub-pc
+#	if [ x${DI_LUPIN} = xtrue ];then
+#	    echo "(hd0) ${DI_BOOTLOADER}" > /boot/grub/device.map
+#	    mkdir /host
+#	    mount ${DI_HOST_DEV} /host
+#	fi
+#        grub-install --no-floppy --force ${DI_BOOTLOADER}
+#        ;;
+#    "uefi-secureboot")
+#        apt-get install --no-install-recommends -y --force-yes --allow-unauthenticated sbsigntool grub-efi-amd64-signed linux-signed-generic efibootmgr
+#        grub-install --uefi-secure-boot --efi-directory=/boot/efi --bootloader-id="${BOOTLOADER_ID}" --recheck 
+#        [ -d /boot/efi/EFI/ubuntu ] || mkdir -p /boot/efi/EFI/ubuntu
+#        cp  /boot/efi/EFI/"${BOOTLOADER_ID}"/* /boot/efi/EFI/ubuntu
+#        ;;
+#esac
+
+#fix_boot_order(){
+#    command -v efibootmgr >/dev/null 2>&1 || { echo >&2 "Require efibootmgr installed but not found.Skip"; exit 0;}
+#    local bootinfo=$(efibootmgr)
+#    IFS=$'\n'
+#    for line in $bootinfo;do
+#        case $line in 
+#            Boot[0-9A-F][0-9A-F][0-9A-F][0-9A-F]\*\ "${BOOTLOADER_ID}")
+#                line="${line%%\**}"
+#                default_bootid="${line##Boot}"
+#            ;;
+#        esac
+#    done
+
+#    [ -z ${default_bootid} ] && { echo >&2 "No ${BOOTLOADER_ID} found, exit..."; exit 0; }
+#
+#    declare -a orderids
+#    for line in $bootinfo;do
+#        case $line in
+#            Boot[0-9A-F][0-9A-F][0-9A-F][0-9A-F]\*\ "${BOOTLOADER_ID}")
+#            ;;
+#            Boot[0-9A-F][0-9A-F][0-9A-F][0-9A-F]\*\ ?*)
+#                line="${line%%\**}"
+#                orderids[${#orderids[@]}]="${line##Boot}"
+#            ;;
+#        esac
+#    done
+#
+#    local cmdargs=${default_bootid}
+#    for arg in ${orderids[@]};do cmdargs=${cmdargs}","${arg};done
+#    efibootmgr -o ${cmdargs}
+#}
+
+#case ${BOOT} in
+#    uefi*)
+#        echo "Try to fix efi boot order to deepin first"
+#        fix_boot_order
+#        ;;
+#    *)
+#        ;;
+#esac
+#
+#[ -x /usr/lib/deepin-daemon/grub2 ] && /usr/lib/deepin-daemon/grub2 --setup --gfxmode="$DI_CUR_RESOLUTION"
+#/usr/sbin/update-grub

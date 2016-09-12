@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if [ -f /usr/share/glib-2.0/schemas/10_disable_lock_screen.gschema.override ]; then
+	rm -f /usr/share/glib-2.0/schemas/10_disable_lock_screen.gschema.override
+	glib-compile-schemas /usr/share/glib-2.0/schemas/
+fi

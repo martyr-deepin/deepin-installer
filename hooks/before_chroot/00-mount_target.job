@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#TODO: check rootfs exists !!!
+#      this script seems bad!!!
+
+. /etc/deepin-installer.conf
+
+#mount for lupin
+if [ x${DI_LUPIN} = xtrue ];then
+    hostdev=`df /isodevice | tail -1 | awk '{printf $1}'`
+    echo "DI_HOST_DEV=\"${hostdev}\"" >> /etc/deepin-installer.conf
+    mkdir /host
+    mount --bind /isodevice /host
+    losetup ${DI_ROOT_PARTITION} /host/${DI_LOOP_ROOT_FILE}
+    mkfs.ext4 -L "Computer" -F -F ${DI_ROOT_PARTITION}
+fi
+
+target="/target"
+
+mkdir -p ${target}
+#must mount rootfs first
+echo "mount rootfs(${DI_ROOT_PARTITION}) to ${target}"
+mount ${DI_ROOT_PARTITION} ${target}
+#Try to fix wrong permission (owned by 1001)
+chown root:root ${target}
+
+[ ! -d ${target}/deepinhost ] && mkdir -p ${target}/deepinhost
+mount --bind / ${target}/deepinhost
+
+array=`echo ${DI_MOUNTPOINTS//;/ }`
+for i in $array;do
+	mountpoint=$(echo $i | cut -d'=' -f1)
+	mountpath=$(echo $i | cut -d'=' -f2)
+	if [ $mountpath !=  '/' ] && [ $mountpath != 'swap' ];then
+        echo "mount ${mountpoint} -> ${mountpath}"
+		mkdir -p ${target}${mountpath}
+		mount $mountpoint ${target}${mountpath}
+    elif [ $mountpath == 'swap' ];then
+        echo "Detect swap partition, try swapon it first"
+        swapon $mountpoint || true
+	fi
+done

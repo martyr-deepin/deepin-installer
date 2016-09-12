@@ -1,0 +1,54 @@
+#!/bin/bash
+
+[ ! -f /etc/deepin-installer.conf ] && exit 0
+
+. /etc/deepin-installer.conf
+L=${DI_LOCALE%.*}
+
+if [ ! -f /cdrom/casper/${L}.list ];then
+    L="en_US"
+fi
+DI_EXTRACT_METHOD="fallback" 
+
+extract_base_filesystem_as_unsquashfs() {
+    if [ -f /cdrom/casper/${L}.list ];then
+        echo "Unsquashfs listed sqfs file"
+        echo "$(cat /cdrom/casper/${L}.list)"
+        for file in $(cat /cdrom/casper/${L}.list);do
+            if [ ${file} == "filesystem.squashfs" ];then
+                unsquashfs -f -d /target /cdrom/casper/filesystem.squashfs | unsquashfs_progress /tmp/deepin-installer/unsquashfs_base_progress
+            else
+                unsquashfs -f -d /target /cdrom/casper/${file} | unsquashfs_progress /tmp/deepin-installer/unsquashfs_lang_progress
+            fi
+        done
+    else 
+        echo "No file list found, Just used filesystem.squashfs"
+        unsquashfs -f -d /target /cdrom/casper/filesystem.squashfs | unsquashfs_progress /tmp/deepin-installer/unsquashfs_base_progress
+    fi
+}
+
+# Do DI_EXTRACT_METHOD first
+if [ x"${DI_EXTRACT_METHOD}" = x"unsquashfs" ];then
+    echo "[Info] Detect DI_EXTRACT_METHOD as unsquashfs"
+    extract_base_filesystem_as_unsquashfs
+    exit 0
+fi
+
+if [ x"${DI_EXTRACT_METHOD}" = x"fallback" ];then
+    echo "[Info] Detect DI_EXTRACT_METHOD as fallback"
+    ./extract_base_filesystem --lang ${L}
+    exit 0
+fi
+
+echo "[Info] No DI_EXTRACT_METHOD found..."
+
+declare -i MEM
+MEM=$(cat /proc/meminfo | grep MemTotal | awk '{print $2}')
+# Check if mem less than 2G
+if [ $MEM -le 2000000 ] ;then
+    echo "[Info] Detect memory less than 2G"
+    ./extract_base_filesystem --lang ${L}
+else
+    echo "[Info] Detect memory more than 2G"
+    extract_base_filesystem_as_unsquashfs
+fi

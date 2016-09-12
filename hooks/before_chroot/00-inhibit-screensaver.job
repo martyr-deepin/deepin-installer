@@ -1,0 +1,7 @@
+#!/bin/sh
+
+gsettings set com.deepin.dde.power line-power-screen-black-delay 0
+gsettings set com.deepin.dde.power line-power-sleep-delay 0
+xset s off -dpms
+
+exit 0
