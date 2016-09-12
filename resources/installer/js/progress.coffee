@@ -47,11 +47,11 @@ class Progress extends Page
         @progress_container = create_element("div", "ProgressContainer", @element)
         @progressbar = create_element("div", "ProgressBar", @progress_container)
 
-        @ppt = create_element("iframe","ppt_iframe",@element)
-        @ppt.setAttribute("id","ppt_iframe")
-        @ppt.name = "ppt_iframe"
-
-        setTimeout(@ppt_prepare,500)
+        # @ppt = create_element("iframe","ppt_iframe",@element)
+        # @ppt.setAttribute("id","ppt_iframe")
+        # @ppt.name = "ppt_iframe"
+        #
+        # setTimeout(@ppt_prepare,500)
 
     update_rotate: ->
         if @deg > 360

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Catherinelin <linhongxia@linuxdeepin.com>, 2014
 # szd_liufei <liufei@deepin.com>, 2016
@@ -60,7 +60,7 @@ msgstr "安装系统失败，请将安装日志反馈至Deepin团队。"
 
 #: ../resources/installer/js/progress.coffee:40
 msgid "Preparing for Installation"
-msgstr "正在为安装做准备"
+msgstr "安装中..."
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
