@@ -25,12 +25,8 @@ detect_solid(){
 }
 
 update_plymouth(){
-    if [ -e /lib/plymouth/themes/deepin-ssd-logo ] && detect_solid;then
-        update-alternatives \
-            --install /lib/plymouth/themes/default.plymouth default.plymouth \
-            /lib/plymouth/themes/deepin-ssd-logo/deepin-ssd-logo.plymouth 130 \
-            --slave /lib/plymouth/themes/default.grub default.plymouth.grub \
-            /lib/plymouth/themes/deepin-ssd-logo/deepin-ssd-logo.grub
+    if [ -e /usr/share/plymouth/themes/deepin-ssd-logo ] && detect_solid;then
+    	plymouth-set-default-theme deepin-ssd-logo
     fi
 }
 
