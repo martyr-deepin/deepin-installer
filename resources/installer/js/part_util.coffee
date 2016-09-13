@@ -287,12 +287,12 @@ auto_simple_partition = (device, type) ->
                 type = "normal"
             size = v_part_info[partid]["length"]
             align = "start"
-            fs = "ext4"
+            fs = "ext3"
             mp = "/"
             add_part(partid, type, size, align, fs, mp)
         #just update the part fs and mp to install
         else if m_part_info[device]["type"] in ["normal", "logical"]
-            update_part_fs(device,"ext4")
+            update_part_fs(device,"ext3")
             update_part_format(device, true)
             update_part_mp(device,"/")
         else

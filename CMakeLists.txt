@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 option(DEVELOP "enable develop mode (use src's resource)" false)
 option(TEST "enable test mode (run project's test code)" false)
-option(USE_GCCGO "use gccgo or cgo" false)
+option(USE_GCCGO "use gccgo or cgo" true)
 
 set(LIVE_METHOD "live-boot" CACHE STRING "live-method support (live-boot or casper)")
 
@@ -117,7 +117,7 @@ elseif (LIVE_METHOD STREQUAL "casper")
        USE_SOURCE_PERMISSIONS
     )
 else()
-    message(FATAL_ERROR "no live method parameter")    
+    message(FATAL_ERROR "no live method parameter")
 endif()
 
 install(

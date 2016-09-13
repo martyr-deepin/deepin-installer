@@ -291,7 +291,7 @@ class AddPartDialog extends Dialog
             @fs_select.set_drop_items(__fs_keys, __fs_values)
 
         @fs_select.set_drop_size(130,22)
-        @fs_select.set_selected("ext4")
+        @fs_select.set_selected("ext3")
         @fs_select.show_drop()
 
     fs_change_cb: (fs) ->

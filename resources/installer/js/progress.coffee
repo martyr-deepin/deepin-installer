@@ -46,12 +46,7 @@ class Progress extends Page
 
         @progress_container = create_element("div", "ProgressContainer", @element)
         @progressbar = create_element("div", "ProgressBar", @progress_container)
-
-        # @ppt = create_element("iframe","ppt_iframe",@element)
-        # @ppt.setAttribute("id","ppt_iframe")
-        # @ppt.name = "ppt_iframe"
-        #
-        # setTimeout(@ppt_prepare,500)
+        setTimeout(@ppt_prepare,500)
 
     update_rotate: ->
         if @deg > 360
@@ -63,39 +58,10 @@ class Progress extends Page
         @progressbar.style.width = progress
 
     ppt_prepare: =>
-        @ppt.onload = =>
-            @ppt_show()
-        @ppt.onerror = =>
-            window.frames['ppt_iframe'].window.location.reload()
-        lang = document.body.lang
-        console.log("[progress.cofffee] Progress.ppt_prepare() lang: ", lang)
-        @ppt.src = "ppt/slideshow2014/index.html?lang=#{lang}"
-
-        #apply_animation(@progress_container, "pptin", "2s", "linear")
+        console.log("[progress.cofffee] Progress.ppt_prepare() start")
         @titleimg.setAttribute("src", "images/progress_extract.png")
         @progress_container.style.display = "block"
         @update_progress("1%")
-
-    ppt_show: ->
-        reload_tid = setInterval(->
-            try
-                if window.frames['ppt_iframe'].document.body
-                    clearInterval(reload_tid)
-                else
-                    console.debug("[progress.coffee] Progress.ppt_show() iframe document.body is null, reload interval: #{reload_tid}")
-                    window.frames['ppt_iframe'].window.location.reload()
-            catch error
-                console.error("[progress.coffee] Progress.ppt_show() iframe document.body is null, reload interval: #{reload_tid}, error: #{error}")
-                window.frames['ppt_iframe'].window.location.reload()
-
-        ,800)
-        setTimeout(=>
-            clearInterval(@tid_rotate)
-            @loading.style.display = "none"
-            @ppt.style.display = "block"
-        ,500)
-        #apply_animation(@loading, "loadingout", "1s", "linear")
-        #apply_animation(@ppt, "pptin", "2s", "linear")
 
 progress_page = new Progress("progress")
 
