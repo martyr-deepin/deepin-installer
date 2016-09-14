@@ -68,25 +68,29 @@ ROOT_SIZE=$((REMAINING_SIZE * 2 / 5 + SWAP_SIZE))
 # 40$ for /var/log.
 LOG_SIZE=$((REMAINING_SIZE * 4 / 5 + SWAP_SIZE))
 
-PARTITION_INFO=("1:swap:${SWAP_SIZE}" "2:ext4:${ROOT_SIZE}" "3:ext4:${LOG_SIZE}")
+_SWAP=$((4095 * 95 / 100))
+# 2 / 5 * 0.95
+_ROOT=$((REMAINING_SIZE * 38 / 100 ))
+
+PARTITION_INFO=("1:swap:${_SWAP}" "2:ext4:${_ROOT}" "3:ext4:${_ROOT}")
+
 # check if has already partition with deepin-installer
 CHECK_PARTITION(){
-    for part in ${PARTITION_INFO};do
-	    read number fstype size < <(echo ${PARTITION_INFO} | awk -F':' '{print $1, $2, $3}')
-	    block=${DEVICE}${number}
-	    if [ ! -b ${block} ];then return 1;fi
-	    read _fstype _size < <(lsblk ${block} -o FSTYPE,SIZE -b -n)
-	    _size=$((size / 1048576))
-	    if [ x"${fstype}" != x"${_fstype}" ] || [ ${_size} -gt $((${size} + 10)) ] || [ ${_size}} -le $((${size} - 10)) ];then
-		    return 1
-	    fi
+    for part in ${PARTITION_INFO[@]};do
+            read number fstype size < <(echo ${part} | awk -F':' '{print $1, $2, $3}')
+            block=${DEVICE}${number}
+            if [ ! -b ${block} ];then return 1;fi
+            read _fstype _size < <(lsblk ${block} -o FSTYPE,SIZE -b -n)
+            _size=$((_size / 1048576))
+            if [ x"${fstype}" != x"${_fstype}" ] || [ ${_size} -gt $(( ${size} + 50 )) ] || [ ${_size} -le $(( ${size} - 50 )) ];then
+                    return 1
+            fi
      done
      return 0
 }
 
-
 # First create a msdos partition table.
-if ! CHECK_PARTITION:
+if ! CHECK_PARTITION;then
   parted -s $DEVICE mktable msdos || \
   error_exit "Failed to create msdos partition on $DEVICE";
 
