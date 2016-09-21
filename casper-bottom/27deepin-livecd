@@ -25,7 +25,7 @@ generate_livecd_installer()
 (
 cat <<EOF
 [Desktop Entry]
-Name=DeepinLiveCDInstaller
+Name=Deepin Installer
 Comment=Deepin LiveCD Installer
 Exec=$2
 TryExec=gksudo
@@ -38,7 +38,7 @@ generate_lightdm_conf()
 (
 cat <<EOF
 [SeatDefaults]
-greeter-session=deepin-lightdm-language-selector
+greeter-session=lightdm-gtk-greeter
 user-session=deepin-livecd-installer
 EOF
 ) > $1
@@ -66,11 +66,11 @@ done
 if [ "$live_mode" = "true" ]; then
 	chroot /root mount -o remount,rw /
 
-	install_helper=/usr/lib/deepin-install-helper
+	install_helper=/usr/bin/deepin-install-helper
 	root_install_helper=/root$install_helper
         $(generate_install_helper $root_install_helper)
-	$(generate_livecd_installer /root/usr/share/xsessions/deepin-livecd-installer.desktop $install_helper)
-	$(generate_lightdm_conf /root/etc/lightdm/lightdm.conf)
+        $(generate_livecd_installer /root/usr/share/xsessions/deepin-livecd-installer.desktop $install_helper)
+        $(generate_lightdm_conf /root/etc/lightdm/lightdm.conf)
 
 	chmod +x $root_install_helper
 	chroot /root mount -o remount,ro /

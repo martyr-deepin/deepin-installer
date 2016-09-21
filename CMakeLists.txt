@@ -4,7 +4,7 @@ option(DEVELOP "enable develop mode (use src's resource)" false)
 option(TEST "enable test mode (run project's test code)" false)
 option(USE_GCCGO "use gccgo or cgo" false)
 
-set(LIVE_METHOD "live-boot" CACHE STRING "live-method support (live-boot or casper)")
+set(LIVE_METHOD "casper" CACHE STRING "live-method support (live-boot or casper)")
 
 macro(GEN_JSC_SOURCE2 JSC_GEN_SRC CFG_DIR OUTPUT)
     set(OUT ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT})

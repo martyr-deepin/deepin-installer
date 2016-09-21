@@ -20,7 +20,7 @@ esac
 
 log_begin_msg "$DESCRIPTION"
 
-for file in /usr/share/applications/deepin-installer.desktop /usr/share/applications/skype.desktop; do
+for file in /usr/share/applications/deepin-installer.desktop; do
     if [ -f "/root/$file" ]; then
         chroot /root install -d -o $USERNAME -g $USERNAME /home/$USERNAME/Desktop
         chroot /root install -D -o $USERNAME -g $USERNAME $file /home/$USERNAME/Desktop/$(basename "$file")
