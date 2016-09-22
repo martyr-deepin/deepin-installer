@@ -40,6 +40,7 @@ cat <<EOF
 [SeatDefaults]
 greeter-session=lightdm-gtk-greeter
 user-session=deepin-livecd-installer
+autologin-user=deepin
 EOF
 ) > $1
 }
