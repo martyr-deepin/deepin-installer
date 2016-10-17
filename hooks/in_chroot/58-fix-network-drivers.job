@@ -107,6 +107,14 @@ fix_pci_bcm4350() {
      fi
 }
 
+# bcm4322 [14e4:432b] wl is not usable
+fix_pci_bcm4322() {
+    if is_pci_exists "14e4:432b"; then
+        echo "fix bcm4322--------------------------------"
+        apt-get purge -y -f bcmwl-kernel-source
+        echo "blacklist wl" | tee -a /etc/modprobe.d/bcm.conf
+    fi
+}
 # ar9485 [168C:0032] wireless driver
 fix_pci_ar9485_nohwcrypt() {
     # fix ar9485 issue that could not connect to wifi with password protect
@@ -154,6 +162,7 @@ fix_pci_rtl8723ae_fwlps() {
 
 fix_pci_bcm4313 || true
 fix_pci_bcm4350 || true
+fix_pci_bcm4322 || true
 fix_pci_rtl8723be_fwlps || true
 #fix_usb_rtl8723au || true
 fix_pci_rtl8723ae_fwlps || true
