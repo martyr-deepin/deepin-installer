@@ -75,6 +75,13 @@ fix_asus_x450jb() {
      fi
 }
 
+fix_asus_x450jn() {
+    if is_productname_exists "X450JN"; then
+        echo "fix asus x450jn --------------------------"
+        echo "blacklist acer_wmi" | tee -a /etc/modprobe.d/blacklist_acerwmi.conf
+    fi
+}
+
 # bcm4313 [14e4:4727] wireless driver
 fix_pci_bcm4313() {
     if is_pci_exists "14e4:4727"; then
@@ -171,3 +178,4 @@ fix_productname_n551zu || true
 fix_xiaomi_notebook_133 || true
 fix_lenovo_y700 || true
 fix_asus_x450jb || true
+fix_asus_x450jn || true
