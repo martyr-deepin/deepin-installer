@@ -1,0 +1,50 @@
+Source: deepin-installer
+Section: utils
+Priority: extra
+Maintainer: Deepin Sysdev <sysdev@deepin.com>
+Build-Depends: debhelper (>= 8.0.0),
+ cmake,
+ coffeescript,
+ golang-go,
+ golang-dlib-dev,
+ golang-fsnotify-dev,
+ libdbus-glib-1-dev,
+ libdeepin-webkit-3.0-0,
+ liblightdm-gobject-dev | liblightdm-gobject-1-dev,
+ libparted-dev,
+ libsqlite3-dev,
+ dde-go-dbus-factory(>= 0.6.1),
+ libwebkitgtk-3.0-dev,
+ libxklavier-dev,
+ pkg-config,
+ python,
+Standards-Version: 3.9.5
+Homepage: http://www.deepin.com
+
+Package: deepin-installer
+Architecture: any
+Depends: ${shlibs:Depends}, libdeepin-webkit-3.0-0,
+ ${misc:Depends},
+ btrfs-tools,
+ dconf-cli,
+ dosfstools,
+ e2fsprogs,
+ jfsutils,
+ unionfs-fuse,
+ os-prober,
+ ntfs-3g,
+ reiserfsprogs,
+ squashfs-tools,
+ tcl,
+ expect,
+ xfsprogs,
+ hfsprogs,
+ tzdata,
+ dmidecode,
+ gdisk,
+ python,
+ gksu,
+ xdg-user-dirs,
+ dde-daemon
+Description: New installer for deepin
+ New installer for deepin. 
