@@ -44,6 +44,14 @@ JS_EXPORT_API double installer_get_keycode_from_keysym (double keysym);
 
 JS_EXPORT_API gboolean installer_detect_capslock ();
 
+/**
+ * Read text file at |filepath| and returns its content.
+ *
+ * If |filepath| does not exist, or current user has no access permission,
+ * returns an empty string.
+ */
+JS_EXPORT_API char* installer_read_text_file (const char* filepath);
+
 double get_free_memory_size ();
 
 guint get_cpu_num ();

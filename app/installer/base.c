@@ -160,6 +160,25 @@ gboolean installer_detect_capslock ()
     return capslock_flag;
 }
 
+JS_EXPORT_API
+char* installer_read_text_file (const char* filepath)
+{
+  GFile* file;
+
+  file = g_file_new_for_path(filepath);
+  if (file) {
+    gchar* content;
+    if (g_file_load_contents(file, NULL, &content, NULL, NULL, NULL)) {
+      return content;
+    } else {
+      g_message("Failed to read: %s\n", filepath);
+    }
+  } else {
+    g_message("Failed to open %s\n", filepath);
+  }
+  return "";
+}
+
 double get_free_memory_size ()
 {
     struct sysinfo info;

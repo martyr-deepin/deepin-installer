@@ -21,7 +21,8 @@ class VirtualMachine extends Page
     constructor: (@id) ->
         super
         @title_txt = create_element("div", "VirtualTitle", @element)
-        @title_txt.innerText = _("安装方式")
+        build_version = DCore.Installer.read_text_file("/etc/lsb-release")
+        @title_txt.innerText = _("安装方式 (" + build_version + ")")
         @content = create_element("div", "VirtualContent", @element)
 
         @auto_btn = new NextStep("VirtualMachineAutoBtn","全盘自动安装", @auto_cb)
