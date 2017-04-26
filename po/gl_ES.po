@@ -4,14 +4,14 @@
 # 
 # Translators:
 # Rubén <feiticeiro2010@hotmail.es>, 2015
-# Xurxo Guerra Perez <xguerrap@gmail.com>, 2015
+# Xurxo Guerra Perez <xguerrap@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2017-03-25 17:37+0000\n"
+"Last-Translator: Xurxo Guerra Perez <xguerrap@gmail.com>\n"
 "Language-Team: Galician (Spain) (http://www.transifex.com/linuxdeepin/deepin-installer/language/gl_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +26,7 @@ msgstr "Reiniciar agora"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "Instalación completada!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -70,7 +70,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "Detectouse o uso dunha máquina virtual. Instalar Deepin nunha máquina virtual afectará ao seu rendemento. Recomendase o seu uso nun entorno real."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -99,7 +99,7 @@ msgstr "Atención"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "Non poderás iniciar o sistema debido ao pouco espazo no punto de montaxe /boot, por favor auméntao polo menos en 300M."
 
 #: ../resources/installer/js/part.coffee:473
 msgid "Disk"
@@ -178,7 +178,7 @@ msgstr "Engadir partición"
 
 #: ../resources/installer/js/part.coffee:703
 msgid "Can't create a partition here"
-msgstr ""
+msgstr "Non é posíbel crear unha partición aquí"
 
 #: ../resources/installer/js/part.coffee:747
 msgid "UEFI"
@@ -263,7 +263,7 @@ msgstr "Deepin OS vaise instalar na"
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr ""
+msgstr "\nSe continuas coa instalación formatearase a partición. Por favor fai unha copia de seguranza dos datos importantes. \n"
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid "Do you want to continue the installation ?"
@@ -348,7 +348,7 @@ msgstr "Os dous contrasinais non coinciden."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "Nome do computador non válido."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -381,7 +381,7 @@ msgstr "O nome do computador non pode estar baleiro."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "O contrasinal non pode estar baleiro."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"

@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# abuyop <abuyop@gmail.com>, 2015
+# abuyop <abuyop@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2016-12-03 01:36+0000\n"
+"Last-Translator: abuyop <abuyop@gmail.com>\n"
 "Language-Team: Malay (http://www.transifex.com/linuxdeepin/deepin-installer/language/ms/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,7 +25,7 @@ msgstr "But Semula Sekarang"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "Pemasangan Berjaya!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -69,7 +69,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "Telah dikesan bahawa anda menggunakan mesin maya. Pemasangan Deepin di dalam mesin maya akan mempengaruhi prestasinya. Anda disarankan menggunakan Deepin dalam persekitaran yang sebenar."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -98,7 +98,7 @@ msgstr "Amaran"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "Anda mungkin tidak dapat but disebabkan ruang titik lekap /boot yang terlalu kecil, sila tambah-baik ruang sekurang-kurangnya 300M."
 
 #: ../resources/installer/js/part.coffee:473
 msgid "Disk"
@@ -177,7 +177,7 @@ msgstr "Tambah Sekatan"
 
 #: ../resources/installer/js/part.coffee:703
 msgid "Can't create a partition here"
-msgstr ""
+msgstr "Tidak dapat cipta sekatan di sini"
 
 #: ../resources/installer/js/part.coffee:747
 msgid "UEFI"
@@ -262,7 +262,7 @@ msgstr "Deepin OS dipasangkan"
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr ""
+msgstr "\nSekatan akan diformatkan jika anda teruskan pemasangan. Pastikan anda telah melakukan menyandar data penting.\n"
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid "Do you want to continue the installation ?"
@@ -326,7 +326,7 @@ msgstr "Sila sahkan anda mempunyai kunci berikut."
 
 #: ../resources/installer/js/welcome.coffee:352
 msgid "Detect Layout"
-msgstr "Padam Bentangan"
+msgstr "Kesan Bentangan"
 
 #: ../resources/installer/js/welcome.coffee:358
 msgid "View Current"
@@ -347,7 +347,7 @@ msgstr "Kedua-dua kata laluan tidak sepadan."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "Nama komputer tidak sah."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -380,7 +380,7 @@ msgstr "Nama komputer tidak boleh kosong."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "Kata laluan tidak boleh kosong."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"
@@ -404,7 +404,7 @@ msgstr "Pengurusan Perisian Sehenti"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:62
 msgid "Continuous Update of Wonderful Software"
-msgstr "Kemaskini Perisian yang Berterusan"
+msgstr "Kemaskini Perisian Hebat yang Berterusan"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "Unimpeded Online Communication"

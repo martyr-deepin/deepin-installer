@@ -6,7 +6,7 @@
 # Ade Haryanto <xidsoftaplikasi@gmail.com>, 2014
 # Anthony Viriya <crashcode0@gmail.com>, 2014
 # Aril Apria Susanto <awriel@gmail.com>, 2014
-# szd_liufei <liufei@deepin.com>, 2014
+# szd_liufei <maggie.liufei@gmail.com>, 2014
 # Nana Suryana <nana@suryana.or.id>, 2014
 # Yugo Purwanto <dedy.yugo.purwanto@gmail.com>, 2014
 msgid ""

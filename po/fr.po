@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# lexross <its4moi@gmail.com>, 2014-2016
+# lexross <its4moi@gmail.com>, 2014-2017
 # Tristan Denni <tristan.denni@viacesi.fr>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2017-04-01 08:53+0000\n"
+"Last-Translator: lexross <its4moi@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/linuxdeepin/deepin-installer/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +26,7 @@ msgstr "Redémarrer "
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr "Installation Réussie!"
+msgstr "Installation réussie!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -37,7 +37,7 @@ msgstr "Conseil:  Hôter le support d'installation de Deepin avant le redémarra
 
 #: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
-msgstr "Installation Échouée!"
+msgstr "Échec de l'installation!"
 
 #: ../resources/installer/js/finish.coffee:47
 msgid ""
@@ -99,7 +99,7 @@ msgstr "Attention"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "Votre partition de montage /boot est trop petite, veuillez l'agrandir s'il vous plaît -au moins 300M-"
+msgstr "Votre partition de montage /boot est trop petite, elle doit être d'au moins 300MB."
 
 #: ../resources/installer/js/part.coffee:473
 msgid "Disk"
@@ -249,7 +249,7 @@ msgstr "Êtes vous sûr de vouloir formater cette partition ?"
 
 #: ../resources/installer/js/dialog.coffee:124
 msgid "Proceed with installation"
-msgstr "Procéder à l'installation"
+msgstr "Procéder à l'installation "
 
 #: ../resources/installer/js/dialog.coffee:133
 msgid "Deepin OS will be installed to freespace."
@@ -348,7 +348,7 @@ msgstr "Les mots de passe ne correspondent pas."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "Nom d'ordinateur invalide."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -357,7 +357,7 @@ msgstr "Le mot de passe ne peut être vide."
 
 #: ../resources/installer/js/welcome.coffee:985
 msgid "Username"
-msgstr "Utilisateur"
+msgstr "Nom d'utilisateur "
 
 #: ../resources/installer/js/welcome.coffee:988
 msgid "Computer Name"
@@ -381,7 +381,7 @@ msgstr "Le nom d'ordinateur ne peut être vide."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "Le mot de passe ne peut être vide."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"
@@ -389,7 +389,7 @@ msgstr "Suivant"
 
 #: ../resources/installer/js/welcome.coffee:1102
 msgid "Time Zone"
-msgstr "Zone de temps"
+msgstr "Fuseau horaire "
 
 #: ../resources/installer/js/welcome.coffee:1108
 msgid "Keyboard"
@@ -401,11 +401,11 @@ msgstr "Logithèque Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "One-stop Software Management"
-msgstr "Logiciel de gestion simplifié"
+msgstr "Gestionnaire de logiciel facile d'utilisation"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:62
 msgid "Continuous Update of Wonderful Software"
-msgstr "Mises à jour logiciels facile"
+msgstr "Logiciels constamment mis à jour"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "Unimpeded Online Communication"

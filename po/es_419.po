@@ -3,17 +3,20 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Benjamin Perez Carrillo <benperezc@gmail.com>, 2017
 # Grizzly Johnson <wbear_123@hotmail.es>, 2014-2015
 # Jhinel Arcaya <proyectoamicoro@gmail.com>, 2015
+# jmsarmiento <jmsarmientopalma@gmail.com>, 2016
 # Jonathan Ponce <jyv0708@gmail.com>, 2014
+# Mariano Agüero <nero1000000@gmail.com>, 2016
 # ranmaruhibikiya <ranmaru.hibikiya@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2017-04-16 01:49+0000\n"
+"Last-Translator: Benjamin Perez Carrillo <benperezc@gmail.com>\n"
 "Language-Team: Spanish (Latin America) (http://www.transifex.com/linuxdeepin/deepin-installer/language/es_419/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +31,7 @@ msgstr "Reiniciar ahora"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "Instalación Exitosa!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -72,7 +75,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "Se ha detectado que está usando una máquina virtual. Instalar Deepin en una máquina virtual afectará su rendimiento. Le recomendamos que experimente Deepin en un entorno real."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -101,7 +104,7 @@ msgstr "Precaución"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "El sistema probablemente no inicie debido a que el espacio en el punto de montaje /boot es muy pequeño. Por favor, aumente el espacio por lo menos a 300M."
 
 #: ../resources/installer/js/part.coffee:473
 msgid "Disk"
@@ -180,7 +183,7 @@ msgstr "Agregar Partición "
 
 #: ../resources/installer/js/part.coffee:703
 msgid "Can't create a partition here"
-msgstr ""
+msgstr "No se puede crear una partición aquí"
 
 #: ../resources/installer/js/part.coffee:747
 msgid "UEFI"
@@ -265,7 +268,7 @@ msgstr "Deepin OS sera instalado a"
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr ""
+msgstr "\nLa partición será formateada si continua con la instalación. Por favor, asegúrese de hacer un respaldo de cualquier archivo importante.\n"
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid "Do you want to continue the installation ?"
@@ -350,7 +353,7 @@ msgstr "Las contraseñas no coinciden."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "El nombre del ordenador no es válido."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -383,7 +386,7 @@ msgstr "El nombre de la computadora no puede estar vacío."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "La contraseña no puede estar vacía."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"

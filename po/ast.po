@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# enolp <enolp@softastur.org>, 2016
 # Ḷḷumex03 <tornes@opmbx.org>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2016-09-20 00:21+0000\n"
+"Last-Translator: enolp <enolp@softastur.org>\n"
 "Language-Team: Asturian (http://www.transifex.com/linuxdeepin/deepin-installer/language/ast/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,17 +33,17 @@ msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "Conseyos: Por favor, estrái'l mediu d'instalación enantes de reaniciar pa evitar entrar de nueves nel entornu d'instalación al aniciar l'ordenador la próxima vegada."
+msgstr "Conseyos: Estrái'l mediu d'instalación enantes de reaniciar pa evitar entrar de nueves nel entornu d'instalación al aniciar l'ordenador la próxima vegada, por favor."
 
 #: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
-msgstr "¡Instalación fallida!"
+msgstr "¡Falló la instalación!"
 
 #: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr ""
+msgstr "Guardóse'l rexistru d'instalación nel escritoriu.\nP'ayudamos a ameyorar meyor el sistema, únvialu al equipu de Deepin, por favor, ¡Gracies!"
 
 #: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
@@ -54,11 +55,11 @@ msgstr "Informe de fallu"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "Instalación del sistema fallida. Por favor, unvia'l rexistru al equipu Deepin."
+msgstr "Falló la instalación del sistema. Unvia'l rexistru al equipu de Deepin, por favor."
 
 #: ../resources/installer/js/progress.coffee:40
 msgid "Preparing for Installation"
-msgstr "Tresnándose pa la instalación"
+msgstr "Tresnando pa la instalación"
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
@@ -98,7 +99,7 @@ msgstr "Avisu"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "Deepin quiciabes nun arranque pola mor del pocu espaciu nel puntu de montaxe /boot. Amiesta polo menos 300MB d'espaciu, por favor."
 
 #: ../resources/installer/js/part.coffee:473
 msgid "Disk"
@@ -162,13 +163,13 @@ msgstr "Ríquese una partición root (/)."
 
 #: ../resources/installer/js/part.coffee:666
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "La instalación UEFI nativa namái sofita tabla de particiones GPT."
+msgstr "La instalación UEFI nativa namái sofita la tabla de particiones GPT."
 
 #: ../resources/installer/js/part.coffee:674
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr "Necesítase'l sofitu d'ESP nel mou UEFI. Por favor, crea tamién una partición de 100MB o más en formatu EFI."
+msgstr "Precísase'l sofitu d'ESP nel mou UEFI. Crea tamién una partición de 100MB o más en formatu EFI, por favor."
 
 #: ../resources/installer/js/part.coffee:702
 #: ../resources/installer/js/dialog.coffee:146
@@ -177,7 +178,7 @@ msgstr "Amestar partición"
 
 #: ../resources/installer/js/part.coffee:703
 msgid "Can't create a partition here"
-msgstr "Nun pue crease una partición equí"
+msgstr "Equí nun pue crease una partición"
 
 #: ../resources/installer/js/part.coffee:747
 msgid "UEFI"
@@ -195,17 +196,17 @@ msgstr "Desmontar partición"
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr ""
+msgstr "Deteutóse la partición como montada.\n¿De xuru que quies desmotala?"
 
 #: ../resources/installer/js/part.coffee:847
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr ""
+msgstr "La instalación UEFI nativa namái sofita la tabla de particiones GPT. Perderás tolos datos nel discu s'insistes n'instalar"
 
 #: ../resources/installer/js/part.coffee:860
 msgid "Simple Mode"
-msgstr "Mou simple"
+msgstr "Mou cenciellu"
 
 #: ../resources/installer/js/base.coffee:30
 msgid "Installation Requirements"
@@ -214,7 +215,7 @@ msgstr "Requirimientos d'instalación"
 #: ../resources/installer/js/base.coffee:31
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr "Pa instalar Deepin OS necesites tener polo menos %d GB d'espaciu en discu."
+msgstr "Pa instalar Deepin OS precises tener polo menos %d GB d'espaciu en discu."
 
 #: ../resources/installer/js/base.coffee:51
 #: ../resources/installer/js/base.coffee:53
@@ -256,13 +257,13 @@ msgstr "Deepin OS instalaráse nel espaciu llibre."
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid "Deepin OS will be installed to "
-msgstr ""
+msgstr "Deepin OS instalaráse en"
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\nLa partición formatiaráse si sigues cola instalación. Por favor, asegúrate de facer copies de los datos importantes. \n"
+msgstr "\nLa partición formatiaráse si sigues cola instalación. Asegúrate de facer respaldos de los datos importantes, por favor. \n"
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid "Do you want to continue the installation ?"
@@ -286,7 +287,7 @@ msgstr "Tamañu:"
 
 #: ../resources/installer/js/dialog.coffee:251
 msgid "Align:"
-msgstr ""
+msgstr "Alliniadura:"
 
 #: ../resources/installer/js/dialog.coffee:257
 msgid "Begin"
@@ -306,7 +307,7 @@ msgstr "Montaxe:"
 
 #: ../resources/installer/js/dialog.coffee:339
 msgid "Please enter a valid partition size."
-msgstr "Por favor, introduz un tamañu de partición válidu."
+msgstr "Introduz un tamañu de partición válidu, por favor."
 
 #: ../resources/installer/js/welcome.coffee:202
 msgid "Yes"
@@ -318,11 +319,11 @@ msgstr "Non"
 
 #: ../resources/installer/js/welcome.coffee:302
 msgid "Please press one of the following keys."
-msgstr "Por favor, primi una de les tecles siguientes."
+msgstr "Primi una de les tecles de darréu, por favor."
 
 #: ../resources/installer/js/welcome.coffee:308
 msgid "Please confirm you have the following keys."
-msgstr "Por favor, confirma que tienes les tecles siguientes."
+msgstr "Confirma que tienes les tecles de darréu, por favor."
 
 #: ../resources/installer/js/welcome.coffee:352
 msgid "Detect Layout"
@@ -334,11 +335,11 @@ msgstr "Ver actual"
 
 #: ../resources/installer/js/welcome.coffee:515
 msgid "Please select or search your location."
-msgstr "Por favor, esbilla o gueta'l to allugamientu."
+msgstr "Esbilla o gueta'l to allugamientu, por favor."
 
 #: ../resources/installer/js/welcome.coffee:765
 msgid "Empty"
-msgstr ""
+msgstr "Baleru"
 
 #: ../resources/installer/js/welcome.coffee:845
 #: ../resources/installer/js/welcome.coffee:950
@@ -347,7 +348,7 @@ msgstr "Les dos contraseñes nun concasen."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "Nun ye válidu'l nome l'ordenador."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -368,7 +369,7 @@ msgstr "Contraseña"
 
 #: ../resources/installer/js/welcome.coffee:996
 msgid "Retype Password"
-msgstr "Rescrbir contraseña"
+msgstr "Rescribir contraseña"
 
 #: ../resources/installer/js/welcome.coffee:1016
 msgid "Username can not be empty."
@@ -380,7 +381,7 @@ msgstr "El nome del ordenador nun pue tar baleru."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "La contraseña nun pue tar balera."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"
@@ -396,51 +397,51 @@ msgstr "Tecláu"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:59
 msgid "Deepin Store"
-msgstr "Deepin Store"
+msgstr "Tienda Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "One-stop Software Management"
-msgstr ""
+msgstr "Xestión de software nun llugar"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:62
 msgid "Continuous Update of Wonderful Software"
-msgstr ""
+msgstr "Anovamientu continuu de software maraviyosu"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "Unimpeded Online Communication"
-msgstr ""
+msgstr "Comunicación en llinia ensin torgues"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:67
 msgid "Deepin Movie"
-msgstr "Deepin Movie"
+msgstr "Películes Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Comprehensive Audio-visual Shock"
-msgstr ""
+msgstr "Impautu audiovisual íntegru"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:70
 msgid "New Interactive Experience"
-msgstr "Esperiencia d'usuariu nueva"
+msgstr "Esperencia interactiva nueva"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
 msgid "Intelligent Subtitle Loading"
-msgstr "Carga de sotítulos intelixente"
+msgstr "Carga intelixente de sotítulos"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:75
 msgid "Deepin Music"
-msgstr "Deepin Music"
+msgstr "Música Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
 msgid "Ultimate Music Journey"
-msgstr ""
+msgstr "El viaxe musical más prestosu"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:78
 msgid "Rich Extended Functions"
-msgstr ""
+msgstr "Funciones estenses y riques"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
 msgid "Enjoy Online Strongest Voice"
-msgstr ""
+msgstr "Esfruta de la voz más fuerte en llinia"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:83
 msgid "Deepin Community"
@@ -448,17 +449,17 @@ msgstr "Comunidá Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
 msgid "Free and United Open Source Community"
-msgstr ""
+msgstr "Comunidá de códigu abiertu llibre y xunida"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:86
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr ""
+msgstr "Dámoste l'acoyida al proyeutu d'internacionalización de Deepin"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr ""
+msgstr "Dámoste l'acoyida a siguimos en Weibo, Twitter, Facebook, Google+, IRC y llistes de corréu"
 
 #: ../app/language-selector/mutils.c:71
 msgid "%a, %b %d, %Y"
