@@ -3,16 +3,18 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# freddy4212 <freddy4212@gmail.com>, 2014-2015
+# 凡凡不想平凡 <freddy4212@gmail.com>, 2014-2015
 # Catherinelin <linhongxia@linuxdeepin.com>, 2014
 # LNDDYL, 2016
+# 凡凡不想平凡 <freddy4212@gmail.com>, 2017
+# 陳憶賢 <csjh21010@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2017-04-14 06:20+0000\n"
+"Last-Translator: 凡凡不想平凡 <freddy4212@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/linuxdeepin/deepin-installer/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,163 +25,163 @@ msgstr ""
 #: ../resources/installer/js/finish.coffee:34
 #: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Now"
-msgstr "立刻重新啟動"
+msgstr "Reboot Now"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr "安裝成功！"
+msgstr "Installation Succeed!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
 "Tips: Please remove the installation media before reboot, so as to avoid "
 "reentering into the installation environment when you start the computer "
 "next time. "
-msgstr "提醒 : 為避免重新啟動後再次進入安裝環境，請移除安裝載體。"
+msgstr "Tips: Please remove the installation media before reboot, so as to avoid reentering into the installation environment when you start the computer next time. "
 
 #: ../resources/installer/js/finish.coffee:45
 msgid "Installation Failed!"
-msgstr "安裝失敗 !"
+msgstr "Installation Failed!"
 
 #: ../resources/installer/js/finish.coffee:47
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr "安裝記錄已經幫你儲存在桌面。\n若願意幫助我們改進系統，請將記錄檔傳送給 Deepin 團隊。感謝您 !"
+msgstr "The installation log has been saved on the desktop for you.\n To help us improve the system better, please send the log to Deepin Team. Thank you! "
 
 #: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
-msgstr "結束安裝"
+msgstr "Exit Installation"
 
 #: ../resources/installer/js/progress.coffee:25
 msgid "Error Report"
-msgstr "錯誤報告"
+msgstr "Error Report"
 
 #: ../resources/installer/js/progress.coffee:27
 msgid "System installation failed. Please send the log to Deepin Team."
-msgstr "安裝系統失敗。請將日誌回饋給 Deepin 團隊。"
+msgstr "System installation failed. Please send the log to Deepin Team."
 
 #: ../resources/installer/js/progress.coffee:40
 msgid "Preparing for Installation"
-msgstr "正在為安裝做準備"
+msgstr "Preparing for Installation"
 
 #: ../resources/installer/js/virtual.coffee:24
 msgid "Tips"
-msgstr "提醒"
+msgstr "Tips"
 
 #: ../resources/installer/js/virtual.coffee:27
 msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr "偵測到您正在使用虛擬機。在虛擬機上安裝 Deepin 會影響使用表現。建議您使用實體電腦安裝。"
+msgstr "It is detected that you are using a virtual machine. Installing Deepin on a virtual machine will affect its performances. You are recommended to experience it in a real environment."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
-msgstr "繼續"
+msgstr "Continue"
 
 #: ../resources/installer/js/part.coffee:126
 #: ../resources/installer/js/part.coffee:145
 msgid "Freespace"
-msgstr "剩餘空間"
+msgstr "Freespace"
 
 #: ../resources/installer/js/part.coffee:197
 #: ../resources/installer/js/part.coffee:202
 msgid "Unknown"
-msgstr "未知"
+msgstr "Unknown"
 
 #: ../resources/installer/js/part.coffee:306
 msgid "Install Here"
-msgstr "安裝到這裡"
+msgstr "Install Here"
 
 #: ../resources/installer/js/part.coffee:343
 #: ../resources/installer/js/part.coffee:846
 msgid "Warning"
-msgstr "警告"
+msgstr "Warning"
 
 #: ../resources/installer/js/part.coffee:344
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "您的 /boot 空間過小可能會導致無法開機，請確保本空間至少有 300 MB"
+msgstr "You  may not boot due to too small space of /boot mount point, please improve the space to 300M at least."
 
 #: ../resources/installer/js/part.coffee:473
 msgid "Disk"
-msgstr "硬碟"
+msgstr "Disk"
 
 #: ../resources/installer/js/part.coffee:493
 msgid "Device"
-msgstr "裝置"
+msgstr "Device"
 
 #: ../resources/installer/js/part.coffee:495
 msgid "Size"
-msgstr "大小"
+msgstr "Size"
 
 #: ../resources/installer/js/part.coffee:497
 msgid "Free Space"
-msgstr "可用空間"
+msgstr "Free Space"
 
 #: ../resources/installer/js/part.coffee:499
 msgid "Filesystem"
-msgstr "檔案系統"
+msgstr "Filesystem"
 
 #: ../resources/installer/js/part.coffee:501
 msgid "Information"
-msgstr "分割區資訊"
+msgstr "Information"
 
 #: ../resources/installer/js/part.coffee:503
 msgid "Mount Point"
-msgstr "掛載點"
+msgstr "Mount Point"
 
 #: ../resources/installer/js/part.coffee:505
 msgid "Formatting"
-msgstr "格式化"
+msgstr "Formatting"
 
 #: ../resources/installer/js/part.coffee:512
 #: ../resources/installer/js/dialog.coffee:98
 msgid "Delete Partition"
-msgstr "刪除分割區"
+msgstr "Delete Partition"
 
 #: ../resources/installer/js/part.coffee:523
 msgid "New Partition"
-msgstr "新建分割區"
+msgstr "New Partition"
 
 #: ../resources/installer/js/part.coffee:618
 #: ../resources/installer/js/part.coffee:871
 msgid "Expert Mode"
-msgstr "專家模式"
+msgstr "Expert Mode"
 
 #: ../resources/installer/js/part.coffee:628
 msgid "Install"
-msgstr "安裝"
+msgstr "Install"
 
 #: ../resources/installer/js/part.coffee:657
 #: ../resources/installer/js/part.coffee:665
 #: ../resources/installer/js/part.coffee:673
 msgid "Installation Tips"
-msgstr "安裝提醒"
+msgstr "Installation Tips"
 
 #: ../resources/installer/js/part.coffee:658
 msgid "A root partition (/) is required."
-msgstr "至少需要一個 root(/) 分割區。"
+msgstr "A root partition (/) is required."
 
 #: ../resources/installer/js/part.coffee:666
 msgid "UEFI-native installation only supports GPT-formatted disk."
-msgstr "UEFI 模式僅支援磁碟分割表為 GPT 的硬碟。"
+msgstr "UEFI-native installation only supports GPT-formatted disk."
 
 #: ../resources/installer/js/part.coffee:674
 msgid ""
 "ESP’s support is needed in UEFI mode and please create a partition of 100MB "
 "or more in efi format."
-msgstr "UEFI 模式必須要有 ESP 的支援，請建立一個 100MB 以上的 EFI 分割區。"
+msgstr "ESP’s support is needed in UEFI mode and please create a partition of 100MB or more in efi format."
 
 #: ../resources/installer/js/part.coffee:702
 #: ../resources/installer/js/dialog.coffee:146
 msgid "Add Partition"
-msgstr "加入分割區"
+msgstr "Add Partition"
 
 #: ../resources/installer/js/part.coffee:703
 msgid "Can't create a partition here"
-msgstr "無法在此建立分割區"
+msgstr "Can't create a partition here"
 
 #: ../resources/installer/js/part.coffee:747
 msgid "UEFI"
@@ -187,285 +189,285 @@ msgstr "UEFI"
 
 #: ../resources/installer/js/part.coffee:758
 msgid "Boot Loader"
-msgstr "啟動程式"
+msgstr "Boot Loader"
 
 #: ../resources/installer/js/part.coffee:806
 msgid "Unmount Partition"
-msgstr "卸載分割區"
+msgstr "Unmount Partition"
 
 #: ../resources/installer/js/part.coffee:807
 msgid ""
 "Partition is detected to have been mounted.\n"
 "Are you sure you want to unmount it?"
-msgstr "偵測到分割區已經掛載。\n你確定要卸載嗎 ?"
+msgstr "Partition is detected to have been mounted.\nAre you sure you want to unmount it?"
 
 #: ../resources/installer/js/part.coffee:847
 msgid ""
 "UEFI-native installation only supports GPT-formatted disk. You will lose all"
 " disk data if you insist on installing."
-msgstr "UEFI 模式僅支援磁碟分割表為 GPT 的硬碟。若你執意安裝將導致硬碟資料遺失。"
+msgstr "UEFI-native installation only supports GPT-formatted disk. You will lose all disk data if you insist on installing."
 
 #: ../resources/installer/js/part.coffee:860
 msgid "Simple Mode"
-msgstr "簡易模式"
+msgstr "Simple Mode"
 
 #: ../resources/installer/js/base.coffee:30
 msgid "Installation Requirements"
-msgstr "安裝需求"
+msgstr "Installation Requirements"
 
 #: ../resources/installer/js/base.coffee:31
 #, python-format
 msgid "To install Deepin OS, you need to have at least %d GB disk space."
-msgstr "欲安裝 Deepin 作業系統，你必須擁有最少 %dGB 的硬碟空間。"
+msgstr "To install Deepin OS, you need to have at least %d GB disk space."
 
 #: ../resources/installer/js/base.coffee:51
 #: ../resources/installer/js/base.coffee:53
 #: ../resources/installer/js/base.coffee:55
 msgid "Unused"
-msgstr "未使用"
+msgstr "Unused"
 
 #: ../resources/installer/js/dialog.coffee:66
 msgid "OK"
-msgstr "確定"
+msgstr "OK"
 
 #: ../resources/installer/js/dialog.coffee:66
 msgid "Cancel"
-msgstr "取消"
+msgstr "Cancel"
 
 #: ../resources/installer/js/dialog.coffee:75
 msgid "Are you sure to exit from installation?"
-msgstr "你確定要結束安裝嗎 ?"
+msgstr "Are you sure to exit from installation?"
 
 #: ../resources/installer/js/dialog.coffee:100
 msgid "Are you sure you want to delete this partition?"
-msgstr "你確定要刪除該分割區 ?"
+msgstr "Are you sure you want to delete this partition?"
 
 #: ../resources/installer/js/dialog.coffee:113
 msgid "Formatting Partition"
-msgstr "格式化分割區"
+msgstr "Formatting Partition"
 
 #: ../resources/installer/js/dialog.coffee:115
 msgid "Are you sure you want to format this partition?"
-msgstr "你確定要格式化該分割區嗎 ?"
+msgstr "Are you sure you want to format this partition?"
 
 #: ../resources/installer/js/dialog.coffee:124
 msgid "Proceed with installation"
-msgstr "開始安裝"
+msgstr "Proceed with installation"
 
 #: ../resources/installer/js/dialog.coffee:133
 msgid "Deepin OS will be installed to freespace."
-msgstr "Deepin 將被安裝到剩餘的空間。"
+msgstr "Deepin OS will be installed to freespace."
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid "Deepin OS will be installed to "
-msgstr "Deepin 將被安裝到"
+msgstr "Deepin OS will be installed to "
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr "\n繼續安裝江會格式化分割區，請將重要數據做好備份\n"
+msgstr "\nThe partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid "Do you want to continue the installation ?"
-msgstr "你要繼續安裝嗎 ?"
+msgstr "Do you want to continue the installation ?"
 
 #: ../resources/installer/js/dialog.coffee:166
 msgid "Type:"
-msgstr "類型 :"
+msgstr "Type:"
 
 #: ../resources/installer/js/dialog.coffee:172
 msgid "Primary"
-msgstr "主要分割區"
+msgstr "Primary"
 
 #: ../resources/installer/js/dialog.coffee:177
 msgid "Logical"
-msgstr "邏輯分割區"
+msgstr "Logical"
 
 #: ../resources/installer/js/dialog.coffee:207
 msgid "Size:"
-msgstr "大小 :"
+msgstr "Size:"
 
 #: ../resources/installer/js/dialog.coffee:251
 msgid "Align:"
-msgstr "對齊 :"
+msgstr "Align:"
 
 #: ../resources/installer/js/dialog.coffee:257
 msgid "Begin"
-msgstr "開始"
+msgstr "Begin"
 
 #: ../resources/installer/js/dialog.coffee:262
 msgid "End"
-msgstr "結束"
+msgstr "End"
 
 #: ../resources/installer/js/dialog.coffee:282
 msgid "Filesystem:"
-msgstr "檔案系統 :"
+msgstr "Filesystem:"
 
 #: ../resources/installer/js/dialog.coffee:306
 msgid "Mount:"
-msgstr "掛載於 :"
+msgstr "Mount:"
 
 #: ../resources/installer/js/dialog.coffee:339
 msgid "Please enter a valid partition size."
-msgstr "請輸入一個有效的分割區大小。"
+msgstr "Please enter a valid partition size."
 
 #: ../resources/installer/js/welcome.coffee:202
 msgid "Yes"
-msgstr "昰"
+msgstr "Yes"
 
 #: ../resources/installer/js/welcome.coffee:207
 msgid "No"
-msgstr "否"
+msgstr "No"
 
 #: ../resources/installer/js/welcome.coffee:302
 msgid "Please press one of the following keys."
-msgstr "請按下其中一個按鍵。"
+msgstr "Please press one of the following keys."
 
 #: ../resources/installer/js/welcome.coffee:308
 msgid "Please confirm you have the following keys."
-msgstr "請確認你擁有以下按鍵。"
+msgstr "Please confirm you have the following keys."
 
 #: ../resources/installer/js/welcome.coffee:352
 msgid "Detect Layout"
-msgstr "測試鍵盤佈局"
+msgstr "Detect Layout"
 
 #: ../resources/installer/js/welcome.coffee:358
 msgid "View Current"
-msgstr "檢視目前"
+msgstr "View Current"
 
 #: ../resources/installer/js/welcome.coffee:515
 msgid "Please select or search your location."
-msgstr "請選擇或搜尋你的所在位置。"
+msgstr "Please select or search your location."
 
 #: ../resources/installer/js/welcome.coffee:765
 msgid "Empty"
-msgstr "清理"
+msgstr "Empty"
 
 #: ../resources/installer/js/welcome.coffee:845
 #: ../resources/installer/js/welcome.coffee:950
 msgid "The two passwords do not match."
-msgstr "兩次輸入的密碼不相同。"
+msgstr "The two passwords do not match."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "Computer name is invald."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
 msgid "Password can not be empty."
-msgstr "密碼不能空白。"
+msgstr "Password can not be empty."
 
 #: ../resources/installer/js/welcome.coffee:985
 msgid "Username"
-msgstr "使用者名稱"
+msgstr "Username"
 
 #: ../resources/installer/js/welcome.coffee:988
 msgid "Computer Name"
-msgstr "電腦名稱"
+msgstr "Computer Name"
 
 #: ../resources/installer/js/welcome.coffee:991
 msgid "Password"
-msgstr "密碼"
+msgstr "Password"
 
 #: ../resources/installer/js/welcome.coffee:996
 msgid "Retype Password"
-msgstr "確定密碼"
+msgstr "Retype Password"
 
 #: ../resources/installer/js/welcome.coffee:1016
 msgid "Username can not be empty."
-msgstr "使用者名稱不能空白。"
+msgstr "Username can not be empty."
 
 #: ../resources/installer/js/welcome.coffee:1024
 msgid "Computer name can not be empty."
-msgstr "電腦名稱不能空白。"
+msgstr "Computer name can not be empty."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "Password cannot be empty."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"
-msgstr "下一步"
+msgstr "Next"
 
 #: ../resources/installer/js/welcome.coffee:1102
 msgid "Time Zone"
-msgstr "時區"
+msgstr "Time Zone"
 
 #: ../resources/installer/js/welcome.coffee:1108
 msgid "Keyboard"
-msgstr "鍵盤"
+msgstr "Keyboard"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:59
 msgid "Deepin Store"
-msgstr "Deepin 商店"
+msgstr "Deepin Store"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "One-stop Software Management"
-msgstr "一條龍式的軟體管理服務"
+msgstr "One-stop Software Management"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:62
 msgid "Continuous Update of Wonderful Software"
-msgstr "不斷更新的完美軟體"
+msgstr "Continuous Update of Wonderful Software"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:63
 msgid "Unimpeded Online Communication"
-msgstr "線上交流毫無阻礙"
+msgstr "Unimpeded Online Communication"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:67
 msgid "Deepin Movie"
-msgstr "Deepin 劇院"
+msgstr "Deepin Movie"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:69
 msgid "Comprehensive Audio-visual Shock"
-msgstr "全方位的視聽震撼"
+msgstr "Comprehensive Audio-visual Shock"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:70
 msgid "New Interactive Experience"
-msgstr "全新的交互體驗"
+msgstr "New Interactive Experience"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:71
 msgid "Intelligent Subtitle Loading"
-msgstr "智慧的載入字幕"
+msgstr "Intelligent Subtitle Loading"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:75
 msgid "Deepin Music"
-msgstr "Deepin 音樂"
+msgstr "Deepin Music"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:77
 msgid "Ultimate Music Journey"
-msgstr "旗艦的音樂旅程"
+msgstr "Ultimate Music Journey"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:78
 msgid "Rich Extended Functions"
-msgstr "豐富的附加元件"
+msgstr "Rich Extended Functions"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:79
 msgid "Enjoy Online Strongest Voice"
-msgstr "享受線上震撼的聲音"
+msgstr "Enjoy Online Strongest Voice"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:83
 msgid "Deepin Community"
-msgstr "Deepin 社群"
+msgstr "Deepin Community"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:85
 msgid "Free and United Open Source Community"
-msgstr "自由且和睦的開放原始碼社群"
+msgstr "Free and United Open Source Community"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:86
 msgid "Welcome to participate in Deepin Internationalization Project"
-msgstr "歡迎參與 Deepin 的國際化計畫"
+msgstr "Welcome to participate in Deepin Internationalization Project"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:87
 msgid ""
 "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and "
 "IRC"
-msgstr "歡迎關注我們的微博、Twitter、Facebook、Google+、通訊論壇以及 IRC"
+msgstr "Welcome to follow us on Weibo, Twitter, Facebook, Google+, Mailing List and IRC"
 
 #: ../app/language-selector/mutils.c:71
 msgid "%a, %b %d, %Y"
-msgstr "%Y 年 %b%d 日 %A"
+msgstr "%a, %b %d, %Y"
 
 #: ../app/language-selector/greeter.c:292
 msgid "Invalid Password"
-msgstr "無效的密碼"
+msgstr "Invalid Password"

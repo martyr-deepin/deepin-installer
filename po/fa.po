@@ -4,14 +4,15 @@
 # 
 # Translators:
 # Alik Miankoli <alikmiankoliid@gmail.com>, 2016
+# ali rahimi <saeed.ali.rahimi@gmail.com>, 2017
 # Hadi Kamell <beemeyl@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2017-04-07 15:42+0000\n"
+"Last-Translator: ali rahimi <saeed.ali.rahimi@gmail.com>\n"
 "Language-Team: Persian (http://www.transifex.com/linuxdeepin/deepin-installer/language/fa/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -348,7 +349,7 @@ msgstr "گذرواژه ها یکسان نیستند."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "نام کامپیوتر نامعتبر است."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -381,7 +382,7 @@ msgstr "نام کامپیوتر را تکمیل کنید."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "جایگاه پسورد نمی تواند خالی باشد."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"

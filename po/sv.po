@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Jonatan Nyberg <jonatan@autistici.org>, 2016
 # Tobias Ahlström <tobias.ahlstrom@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2016-12-16 10:56+0000\n"
+"Last-Translator: Jonatan Nyberg <jonatan@autistici.org>\n"
 "Language-Team: Swedish (http://www.transifex.com/linuxdeepin/deepin-installer/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,7 +26,7 @@ msgstr "Starta om nu"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "Installation slutförd!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -69,7 +70,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "Det har upptäcks att du använder en virtuell maskin. Att installera Deepin på en virtuell maskin kommer att påverka dess prestanda. Du rekommenderas att uppleva det i en verklig miljö."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -98,7 +99,7 @@ msgstr "Varning"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr ""
+msgstr "Du kan inte starta upp på grund av alltför lite utrymme på /boot monteringspunkt , vänligen förbättra utrymmet till 300M åtminstone ."
 
 #: ../resources/installer/js/part.coffee:473
 msgid "Disk"
@@ -177,7 +178,7 @@ msgstr "Lägg till Partition"
 
 #: ../resources/installer/js/part.coffee:703
 msgid "Can't create a partition here"
-msgstr ""
+msgstr "Kan inte att skapa en partition här"
 
 #: ../resources/installer/js/part.coffee:747
 msgid "UEFI"
@@ -262,7 +263,7 @@ msgstr "Deepin OS kommer installeras till"
 msgid ""
 "\n"
 "The partition will be formatted if you continue the installation. Please make a backup for the important data. \n"
-msgstr ""
+msgstr "\nPartitionen kommer att formateras om du fortsätter installationen. Gör en säkerhetskopia för viktig data.\n"
 
 #: ../resources/installer/js/dialog.coffee:135
 msgid "Do you want to continue the installation ?"
@@ -347,7 +348,7 @@ msgstr "De två lösenorden matchar inte."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "Datornamn är ogiltigt."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -380,7 +381,7 @@ msgstr "Datornamnet kan inte vara tomt."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "Lösenord kan inte vara tomt."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"

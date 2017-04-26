@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Yuri Chornoivan <yurchor@ukr.net>, 2014
+# zubr139, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2017-03-03 14:31+0000\n"
+"Last-Translator: zubr139\n"
 "Language-Team: Ukrainian (http://www.transifex.com/linuxdeepin/deepin-installer/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,7 +26,7 @@ msgstr "Перезавантажити зараз"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "Встановлення завершено!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -69,7 +70,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "Виявлено, що ви використовуєте віртуальну машину. Встановлення Deepin на віртуальній машині буде впливати на продуктивнісь. Вам рекомендується, запустити її в реальному середовищі."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -347,7 +348,7 @@ msgstr "Паролі не збігаються."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "Ім'я комп'ютера є неприпустимим."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -380,7 +381,7 @@ msgstr "Поле, призначене для назви комп'ютера, н
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "Пароль не може бути порожнім."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"

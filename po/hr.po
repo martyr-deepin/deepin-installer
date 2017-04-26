@@ -5,13 +5,14 @@
 # Translators:
 # Ivica  Kolić <ikoli@yahoo.com>, 2014-2015
 # Ljubo Šimić <aske777@gmail.com>, 2015
+# dpnlin, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2016-10-29 11:44+0000\n"
+"Last-Translator: Ivica  Kolić <ikoli@yahoo.com>\n"
 "Language-Team: Croatian (http://www.transifex.com/linuxdeepin/deepin-installer/language/hr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +27,7 @@ msgstr "Ponovno podigni sustav sada "
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
-msgstr ""
+msgstr "Instalacija je uspjela!"
 
 #: ../resources/installer/js/finish.coffee:41
 msgid ""
@@ -70,7 +71,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr ""
+msgstr "Otkriveno je da koristiš virtualni stroj. Instaliranje Deepin-a na virtualni stroj utjecat će na njegovo izvođenje. Preporučeno ti je da ga iskusiš u stvarnoj okolini."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -348,7 +349,7 @@ msgstr "Dvije lozinke se ne podudaraju."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "Ime računala nije valjano."
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -381,7 +382,7 @@ msgstr "Naziv računala ne može biti prazan."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "Lozinka ne može biti prazna."
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"
