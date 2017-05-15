@@ -1,133 +1,218 @@
 #!/bin/bash
 
 # Automatically create disk partitions.
-# 4G for linux-swap
-# Remaining space is used in three parts:
-#  * 40% used as /
-#  * 40% used as /var/log
-#  * 20% used as backup.
-# Note that all of these partitions are ext4 filesystem.
+# * Create RAID1 if two largest devices has same capacity.
+# * Do not create new partition table if partitions layout matches predefined
+#   partition policy.
 
 echo "[$0]"
-set -x
 
-# Print error message and exit current executation context.
-error_exit() {
-  echo $*
-  exit 1;
+warn() {
+  local msg="$@"
+  echo "!! Warning: ${msg}" >&2
 }
 
-# Umount all swap partitions.
-swapoff -a
+# Print error message and exit current executation context.
+error() {
+  local msg="$@"
+  echo "!! Error: ${msg}" >&2
+  exit 1;
+}
 
 # Path to installer configuration file.
 CONF_FILE='/etc/deepin-installer.conf'
 
-# Mimumum disk capacity required, 30G.
-MININUM_DISK_SIZE=30000
-
-cp -vf "/usr/share/deepin-installer/templates/lfs-atm.conf" $CONF_FILE
-# Remote group name. Group name starts with [
-sed -i -e '/\[/d' $CONF_FILE
-
-# 4G space for linux-swap.
-SWAP_SIZE=4096
+# Mimumum disk capacity required, 30GiB.
+MININUM_DISK_SIZE=30720
 
 # The disk with largest storage capacity is used as system device.
 get_max_capacity_device() {
-  DEVICE=''
-  MAX_CAPACITY=0
-  lsblk -ndb -o NAME,SIZE 2>/dev/null | (while read NAME SIZE; do
-    #echo $NAME:$SIZE
-    #echo $DEVICE:$MAX_CAPACITY
-    if [ $MAX_CAPACITY -lt $SIZE ]; then
-      MAX_CAPACITY=$SIZE
-      DEVICE=$NAME
-    fi
-  done && echo /dev/$DEVICE)
+  local device=''
+  local max_capacity=0
+  lsblk -ndb -o name,size 2>/dev/null | \
+    (while read name size; do
+      if test $max_capacity -lt $size && test $size -gt $MININUM_DISK_SIZE; then
+        max_capacity=$size
+        device=$name
+      fi
+    done && echo /dev/$device)
 }
 
-DEVICE=$(get_max_capacity_device)
-if [ -z $DEVICE ]; then
-  echo 'Error: no supported storage device found!';
-  echo 'There shall be a IDE or SATA disk available at /dev/sda or /dev/hda';
-  exit 1;
-fi
-
-DEVICE_SIZE=$(blockdev --getsize64 $DEVICE)
-DEVICE_SIZE=$((DEVICE_SIZE / 1048576))
-if [ $DEVICE_SIZE -lt $MININUM_DISK_SIZE ]; then
-  error_exit 'Error: At least 30G is required to install!';
-fi
-
-REMAINING_SIZE=$((DEVICE_SIZE - SWAP_SIZE))
-
-# 40% remaining space for /.
-ROOT_SIZE=$((REMAINING_SIZE * 2 / 5 + SWAP_SIZE))
-
-# 40$ for /var/log.
-LOG_SIZE=$((REMAINING_SIZE * 4 / 5 + SWAP_SIZE))
-
-_SWAP=$((4095 * 95 / 100))
-# 2 / 5 * 0.95
-_ROOT=$((REMAINING_SIZE * 38 / 100 ))
-
-PARTITION_INFO=("1:swap:${_SWAP}" "2:ext4:${_ROOT}" "3:ext4:${_ROOT}")
-
-# check if has already partition with deepin-installer
-CHECK_PARTITION(){
-    for part in ${PARTITION_INFO[@]};do
-            read number fstype size < <(echo ${part} | awk -F':' '{print $1, $2, $3}')
-            block=${DEVICE}${number}
-            if [ ! -b ${block} ];then return 1;fi
-            read _fstype _size < <(lsblk ${block} -o FSTYPE,SIZE -b -n)
-            _size=$((_size / 1048576))
-            if [ x"${fstype}" != x"${_fstype}" ] || [ ${_size} -gt $(( ${size} + 50 )) ] || [ ${_size} -le $(( ${size} - 50 )) ];then
-                    return 1
-            fi
-     done
-     return 0
+# Returns device paths with largest storage capacity.
+# Returns nothing if no devices with same capacity found.
+# e.g. /dev/sda /dev/sdb
+get_max_capacity_devices_for_raid() {
+  local device1=''
+  local device2=''
+  local max_capacity=$MININUM_DISK_SIZE
+  lsblk -ndb -o name,size 2>/dev/null | \
+    (while read name size; do
+      if [ $size -eq $max_capacity ]; then
+        device2=$name
+      elif [ $size -gt $max_capacity ]; then
+        device1=$name
+        device2=''
+        max_capacity=$size
+      fi
+    done && echo "$device1:$device2")
 }
 
-# First create a msdos partition table.
-if ! CHECK_PARTITION;then
-  parted -s $DEVICE mktable msdos || \
-  error_exit "Failed to create msdos partition on $DEVICE";
+prepare_for_partitioning() {
+  # Umount all swap partitions.
+  swapoff -a
 
-# Then create a swap partition with 4G.
-parted -s $DEVICE mkpart primary linux-swap 1M ${SWAP_SIZE}M || \
-  error_exit "Failed to create linux-swap on ${DEVICE}1";
-mkswap ${DEVICE}1 || \
-  error_exit "Failed to call mkswap ${DEVICE}1";
+  cp -vf "/usr/share/deepin-installer/templates/lfs-atm.conf" "${CONF_FILE}"
 
-# And then create an ext4 partition with 20G capacity to mount /var/log
-parted -s $DEVICE mkpart primary ext4 ${SWAP_SIZE}M ${ROOT_SIZE}M || \
-  error_exit "Failed to create partition ${DEVICE}2";
+  # Remote group name. Group name starts with [
+  sed -i -e '/\[/d' "${CONF_FILE}"
+}
 
-# Add 40% to /var/log, with ext4 type.
-parted -s $DEVICE mkpart primary ext4 ${ROOT_SIZE}M ${LOG_SIZE}M || \
-  error_exit "Failed to create partition ${DEVICE}3";
-mkfs.ext4 -F ${DEVICE}3 || \
-  error_exit "Failed to make ext4 filesystem on ${DEVICE}3";
+# Notify kernel about device partition change.
+commit_to_os() {
+  partprobe
+  udevadm settle --timeout=3
+}
 
-# All remaining space is used as backup partition.
-parted -s $DEVICE mkpart primary ext4 ${LOG_SIZE}M 100% || \
-  error_exit "Failed to create partition ${DEVICE}4";
-mkfs.ext4 -F ${DEVICE}4
-fi
+# Check whether RAID1 is supported on machine.
+is_raid_supported() {
+  local dev1 dev2
+  local devices
+  devices=$(get_max_capacity_devices_for_raid)
+  dev1=${devices%:*}
+  dev2=${devices##*:}
+  if test -z $dev1 || test -z $dev2 ; then
+    return 1
+  else
+    return 0
+  fi
+}
 
-mkfs.ext4 -F ${DEVICE}2 || \
-  error_exit "Failed to make ext4 filesystem on ${DEVICE}2";
+# Create normal partitions with predefined policy.
+# * 4GiB swap;
+# * 40% for / with ext4 filesystem;
+# * 40% for /var/log with ext4 filesystem;
+# * 20% for backup with ext4 filesystem, no mount point;
+create_normal_partitions() {
+  local device=''
+  device=$(get_max_capacity_device)
+  if [ -z $device ]; then
+    warn 'No appropriate storage device found!'
+    warn 'There shall be an IDE/SATA/SCIS disk at /dev/sda or /dev/hda'
+    return 1
+  fi
 
-# Commit to kernel.
-partprobe
+  echo "create normal partition device: $device"
 
-# Write bootloader info to conf.
-sed -i "s|DI_BOOTLOADER=.*$|DI_BOOTLOADER=\"$DEVICE\"|" $CONF_FILE
-sed -i "s|DI_ROOT_DISK=.*$|DI_ROOT_DISK=\"$DEVICE\"|" $CONF_FILE
-sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=\"${DEVICE}2\"|" $CONF_FILE
-sed -i "s|DI_MOUNTPOINTS=.*$|DI_MOUNTPOINTS=\"${DEVICE}1=swap;${DEVICE}3=/var/log;\"|" $CONF_FILE
+  parted $device -s mklabel msdos && \
+    parted $device -s mkpart primary linux-swap 1MiB 4096MiB && \
+    parted $device -s mkpart primary ext4 4096MiB 40% && \
+    parted $device -s mkpart primary ext4 40% 80% && \
+    parted $device -s mkpart primary ext4 80% 100% && \
+    commit_to_os && \
+    mkswap ${device}1 && \
+    mkfs.ext4 -F -L atm_deepin ${device}2 && \
+    mkfs.ext4 -F -L atm_logs ${device}3 && \
+    mkfs.ext4 -F -L atm_backup ${device}4 ||
+    return 1
 
+  # Write bootloader info into conf.
+  sed -i "s|DI_BOOTLOADER=.*$|DI_BOOTLOADER=\"$device\"|" $CONF_FILE
+  sed -i "s|DI_ROOT_DISK=.*$|DI_ROOT_DISK=\"$device\"|" $CONF_FILE
+  sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=\"${device}2\"|" $CONF_FILE
+  local mp="${device}1=swap;${device}3=/var/log"
+  sed -i "s|DI_MOUNTPOINTS=.*$|DI_MOUNTPOINTS=\"${mp}\"|" $CONF_FILE
+}
+
+# Create physical partitions for RAID1 device.
+# Also create swap partition and boot partition.
+# * 1GiB for /boot;
+# * 4GiB for swap;
+# * Remaining space used as RAID1 partition;
+create_partitions_for_raid1() {
+  local device=$1
+  parted $device -s mklabel msdos && \
+    parted $device -s mkpart primary ext4 1M 1024M && \
+    parted $device -s set 1 boot on && \
+    parted $device -s mkpart primary linux-swap 1024M 5120M && \
+    parted $device -s mkpart primary ext2 5120M 100% && \
+    parted $device -s set 3 raid on && \
+    commit_to_os && \
+    mkfs.ext4 -F ${device}1 && \
+    mkswap ${device}2
+}
+
+# Create RAID1 device.
+create_md_raid1() {
+  local part1=$1
+  local part2=$2
+  local raid_dev=$3
+  yes | mdadm --create $raid_dev --level=raid1 --raid-devices=2 $part1 $part2
+}
+
+# Create partitions and filesystem on RAID1 device.
+# * 40% for / with ext4 filesystem;
+# * 40% for /var/log with ext4 filesystem;
+# * 20% for backup, no mount point.
+create_raid1_partitions() {
+  local raid_dev=$1
+  parted $raid_dev -s mklabel msdos && \
+    parted $raid_dev -s mkpart primary ext4 1MiB 40% && \
+    parted $raid_dev -s mkpart primary ext4 40% 80% && \
+    parted $raid_dev -s mkpart primary ext4 80% 100% && \
+    commit_to_os && \
+    mkfs.ext4 -F -L deepin ${raid_dev}p1 && \
+    mkfs.ext4 -F -L atm_logs ${raid_dev}p2 && \
+    mkfs.ext4 -F -L atm_backup ${raid_dev}p3
+}
+
+# Create RAID1 partitions based on predefined policy.
+create_raid_partitions() {
+  local raid_dev=/dev/md0
+
+  local dev1 dev2
+  local devices
+  devices=$(get_max_capacity_devices_for_raid)
+  dev1=${devices%:*}
+  dev2=${devices##*:}
+  if test -z $dev1 || test -z $dev2 ; then
+    warn "No appropriate device found for RAID1"
+    return 1
+  fi
+  dev1=/dev/$dev1
+  dev2=/dev/$dev2
+
+  echo "Create RAID1 partitions on $dev1 and $dev2"
+
+  create_partitions_for_raid1 $dev1 || return 1
+  create_partitions_for_raid1 $dev2 || return 2
+  # Both /dev/sda3 and /dev/sdb3 are raid physical partitions
+  create_md_raid1 ${dev1}3 ${dev2}3 $raid_dev || return 3
+  create_raid1_partitions $raid_dev || return 4
+  # Write bootloader info into conf.
+  sed -i "s|DI_BOOTLOADER=.*$|DI_BOOTLOADER=\"$dev1\"|" $CONF_FILE
+  sed -i "s|DI_ROOT_DISK=.*$|DI_ROOT_DISK=\"$dev1\"|" $CONF_FILE
+  sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=\"${raid_dev}p1\"|" \
+    $CONF_FILE
+  local mp="${dev1}1=/boot"
+  mp=${mp}";${dev1}2=swap"
+  mp=${mp}";${raid_dev}p1=/"
+  mp=${mp}";${raid_dev}p2=/var/log"
+  sed -i "s|DI_MOUNTPOINTS=.*$|DI_MOUNTPOINTS=\"${mp}\"|" $CONF_FILE
+}
+
+main() {
+  prepare_for_partitioning
+  if is_raid_supported; then
+    echo 'Create RAID1 partitions'
+    create_raid_partitions ||
+      error 'Failed to create RAID1 partitions'
+  else
+    echo 'Create normal partitions'
+    create_normal_partitions ||
+      error 'Failed to create normal partitions'
+  fi
+}
+
+main
 
 exit 0
-
