@@ -8,14 +8,15 @@
 # Aril Apria Susanto <awriel@gmail.com>, 2014
 # szd_liufei <maggie.liufei@gmail.com>, 2014
 # Nana Suryana <nana@suryana.or.id>, 2014
+# Rhevin Fardhika <rhevinf@gmail.com>, 2017
 # Yugo Purwanto <dedy.yugo.purwanto@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-02 02:32+0000\n"
-"Last-Translator: deepin_transifex <xiabin@linuxdeepin.com>\n"
+"PO-Revision-Date: 2017-05-12 02:34+0000\n"
+"Last-Translator: Rhevin Fardhika <rhevinf@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/linuxdeepin/deepin-installer/language/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -352,7 +353,7 @@ msgstr "Kedua kata sandi tidak cocok."
 
 #: ../resources/installer/js/welcome.coffee:907
 msgid "Computer name is invald."
-msgstr ""
+msgstr "Nama komputer tidak sesuai"
 
 #: ../resources/installer/js/welcome.coffee:920
 #: ../resources/installer/js/welcome.coffee:1032
@@ -385,7 +386,7 @@ msgstr "Nama komputer tidak boleh kosong."
 
 #: ../resources/installer/js/welcome.coffee:1041
 msgid "Password cannot be empty."
-msgstr ""
+msgstr "Kata sandi tidak boleh kosong"
 
 #: ../resources/installer/js/welcome.coffee:1045
 msgid "Next"

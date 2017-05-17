@@ -3,17 +3,18 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Adem Çalışkan <ademcal@yahoo.com>, 2017
 # Bek, 2016
 # Sinan Eldem, 2014
 # yakup <mutouk@yandex.ru>, 2014
-# iron_man <yunus_bakir92@hotmail.com>, 2014
+# iron_man <inactive+iron_man@transifex.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin Installer\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-02 09:44+0800\n"
-"PO-Revision-Date: 2016-09-09 02:53+0000\n"
-"Last-Translator: Bek\n"
+"PO-Revision-Date: 2017-05-01 07:13+0000\n"
+"Last-Translator: Adem Çalışkan <ademcal@yahoo.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/linuxdeepin/deepin-installer/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,7 +25,7 @@ msgstr ""
 #: ../resources/installer/js/finish.coffee:34
 #: ../resources/installer/js/finish.coffee:42
 msgid "Reboot Now"
-msgstr "Şimdi Tekrar Başlat"
+msgstr "Şimdi Yeniden Başlat"
 
 #: ../resources/installer/js/finish.coffee:40
 msgid "Installation Succeed!"
@@ -45,7 +46,7 @@ msgstr "Kurulum Başarısız!"
 msgid ""
 "The installation log has been saved on the desktop for you.\n"
 " To help us improve the system better, please send the log to Deepin Team. Thank you! "
-msgstr "Bu kurulum günlüğü senin için masaüstüne kayıt edildi.\nBu sistemi daha iyi geliştirmemize yadım etmek için, lütfen günlüğü Deepin Takımına gönderin. Teşekkürler"
+msgstr "Kurulum günlüğü sizin için masaüstüne kaydedildi.\nSistemi iyileştirmemize yardımcı olmak için lütfen günlüklerini Deepin Ekibi'ne gönder. Teşekkür ederim!"
 
 #: ../resources/installer/js/finish.coffee:48
 msgid "Exit Installation"
@@ -72,7 +73,7 @@ msgid ""
 "It is detected that you are using a virtual machine. Installing Deepin on a "
 "virtual machine will affect its performances. You are recommended to "
 "experience it in a real environment."
-msgstr "Bir sanal makina kullandığınız tespit edildi. Sanal makina Deepin'in performansını etkileyecektir. Gerçek bir ortamda denemeniz tavsiye edilmektedir."
+msgstr "Sanal bir makine kullandığınız tespit edilmiştir. Debian'ı sanal bir makineye yüklemek, performanslarını etkiler. Gerçek bir ortamda denemeniz önerilir."
 
 #: ../resources/installer/js/virtual.coffee:29
 msgid "Continue"
@@ -101,7 +102,7 @@ msgstr "Uyarı"
 msgid ""
 "You  may not boot due to too small space of /boot mount point, please "
 "improve the space to 300M at least."
-msgstr "Eğer /boot bağlama noktasına küçük bir alan ayırmazsanız ön yükleme işlemi çalışmayacaktır, en azından 300MB bir alan ayırın."
+msgstr "/boot bağlama noktası çok küçük bir olması nedeniyle önyükleme yapamazsınız, lütfen en az 300M alan ayırın."
 
 #: ../resources/installer/js/part.coffee:473
 msgid "Disk"
@@ -399,7 +400,7 @@ msgstr "Klavye"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:59
 msgid "Deepin Store"
-msgstr "Deepin Store"
+msgstr "Deepin Mağaza"
 
 #: ../resources/installer/ppt/slideshow2014/boxmessage.coffee:61
 msgid "One-stop Software Management"
