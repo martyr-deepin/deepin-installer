@@ -7,6 +7,12 @@
 
 echo "[$0]"
 
+SWAP_LABEL='atm-swap'
+BOOT_LABEL='atm-boot'
+ROOT_LABEL='atm-deepin'
+BACK_LABEL='atm-backup'
+LOGS_LABEL='atm-logs'
+
 warn() {
   local msg="$@"
   echo "!! Warning: ${msg}" >&2
@@ -87,6 +93,12 @@ is_raid_supported() {
   fi
 }
 
+# Check whether current partition list fit normal partition policy.
+# If it is matched, there is no need to reformat whole disk again.
+check_normal_partition_map() {
+  return 0
+}
+
 # Create normal partitions with predefined policy.
 # * 4GiB swap;
 # * 40% for / with ext4 filesystem;
@@ -109,10 +121,10 @@ create_normal_partitions() {
     parted $device -s mkpart primary ext4 40% 80% && \
     parted $device -s mkpart primary ext4 80% 100% && \
     commit_to_os && \
-    mkswap ${device}1 && \
-    mkfs.ext4 -F -L atm_deepin ${device}2 && \
-    mkfs.ext4 -F -L atm_logs ${device}3 && \
-    mkfs.ext4 -F -L atm_backup ${device}4 ||
+    mkswap -L "${SWAP_LABEL}" ${device}1 && \
+    mkfs.ext4 -F -L "${ROOT_LABEL}" ${device}2 && \
+    mkfs.ext4 -F -L "${LOGS_LABEL}" ${device}3 && \
+    mkfs.ext4 -F -L "${BACK_LABEL}" ${device}4 ||
     return 1
 
   # Write bootloader info into conf.
@@ -123,6 +135,42 @@ create_normal_partitions() {
   sed -i "s|DI_MOUNTPOINTS=.*$|DI_MOUNTPOINTS=\"${mp}\"|" $CONF_FILE
 }
 
+# Check whether current partitions match expected RAID1 partitioning policy.
+check_raid1_partition_map() {
+  local device=$1
+  echo "check raid1 partition map on ${device}"
+  local part1 part2 part3
+  part1=$(lsblk -rno LABEL ${device}1)
+  if [ x${part1} != x${BOOT_LABEL} ]; then
+    echo "part1 not match, ${part1} != ${BOOT_LABEL}"
+    return 1
+  fi
+
+  part2=$(lsblk -rno LABEL ${device}2)
+  if [ x${part2} != x${SWAP_LABEL} ]; then
+    echo "part2 not match ${part2} != ${SWAP_LABEL}"
+    return 1
+  fi
+
+  part3=$(lsblk -rno LABEL ${device}3 | sort -r)
+  if grep -q ${ROOT_LABEL} <<< ${part3} &&
+     grep -q ${BACK_LABEL} <<< ${part3} &&
+     grep -q ${LOGS_LABEL} <<< ${part3}; then
+    return 0
+  fi
+
+  echo "part 3 not match"
+
+  return 1
+}
+
+# Remove any existing raid devices before creating new one.
+remove_raid_devices() {
+  local mddev=$1
+  mdadm --stop "${mddev}"
+  mdadm --remove "${mddev}"
+}
+
 # Create physical partitions for RAID1 device.
 # Also create swap partition and boot partition.
 # * 1GiB for /boot;
@@ -131,14 +179,14 @@ create_normal_partitions() {
 create_partitions_for_raid1() {
   local device=$1
   parted $device -s mklabel msdos && \
-    parted $device -s mkpart primary ext4 1M 1024M && \
+    parted $device -s mkpart primary ext4 1MiB 1024MiB && \
     parted $device -s set 1 boot on && \
-    parted $device -s mkpart primary linux-swap 1024M 5120M && \
-    parted $device -s mkpart primary ext2 5120M 100% && \
+    parted $device -s mkpart primary linux-swap 1024MiB 5120MiB && \
+    parted $device -s mkpart primary ext2 5120MiB 100% && \
     parted $device -s set 3 raid on && \
     commit_to_os && \
-    mkfs.ext4 -F ${device}1 && \
-    mkswap ${device}2
+    mkfs.ext4 -L "${BOOT_LABEL}" -F ${device}1 && \
+    mkswap -L "${SWAP_LABEL}" ${device}2
 }
 
 # Create RAID1 device.
@@ -160,9 +208,9 @@ create_raid1_partitions() {
     parted $raid_dev -s mkpart primary ext4 40% 80% && \
     parted $raid_dev -s mkpart primary ext4 80% 100% && \
     commit_to_os && \
-    mkfs.ext4 -F -L deepin ${raid_dev}p1 && \
-    mkfs.ext4 -F -L atm_logs ${raid_dev}p2 && \
-    mkfs.ext4 -F -L atm_backup ${raid_dev}p3
+    mkfs.ext4 -F -L "${ROOT_LABEL}" ${raid_dev}p1 && \
+    mkfs.ext4 -F -L "${LOGS_LABEL}" ${raid_dev}p2 && \
+    mkfs.ext4 -F -L "${BACK_LABEL}" ${raid_dev}p3
 }
 
 # Create RAID1 partitions based on predefined policy.
@@ -180,6 +228,15 @@ create_raid_partitions() {
   fi
   dev1=/dev/$dev1
   dev2=/dev/$dev2
+
+  if check_raid1_partition_map $dev1 && check_raid1_partition_map $dev2; then
+    echo "RAID1 policy match"
+    # TODO(LiuLang): Format / on raid1 device
+  else
+    echo "RAID1 policy not match"
+  fi
+
+  exit 0
 
   echo "Create RAID1 partitions on $dev1 and $dev2"
 
