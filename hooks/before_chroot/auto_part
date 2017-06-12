@@ -1,9 +1,14 @@
 #!/bin/bash
 
 # Automatically create disk partitions.
-# * Create RAID1 if two largest devices has same capacity.
-# * Do not create new partition table if partitions layout matches predefined
-#   partition policy.
+#  * Device is checked only if its capacity is larger than MINIMUM_DEVICE_SIZE.
+#  * USB storage devices are ignored.
+#  * If multiple disk devices are found, use RAID1 mode.
+#  * In normal mode, do not reformat whole disk if partitioning policy mathces.
+#  * In RAID1 mode, do not destruct existing RAID devices if their label name
+#    matches partitioning policy; or else all RAID devices will be stopped
+#    and removed.
+#  * RAID failures are not handled.
 
 echo "[$0]"
 
@@ -12,7 +17,12 @@ BOOT_LABEL='atm-boot'
 ROOT_LABEL='atm-deepin'
 BACK_LABEL='atm-backup'
 LOGS_LABEL='atm-logs'
+
+# Convert bytes to MebiBytes.
 ONE_MIB=1048576
+
+# Minimum size of device to be used, 30GiB.
+MINIMUM_DEVICE_SIZE=30720
 
 warn() {
   local msg="$@"
@@ -21,9 +31,13 @@ warn() {
 
 # Print error message and exit current executation context.
 error() {
+  local ret=$?
   local msg="$@"
   echo "!! Error: ${msg}" >&2
-  exit 1;
+  if [ $ret -ne 0 ]; then
+    ret=1
+  fi
+  exit $ret
 }
 
 # Path to installer configuration file.
@@ -43,6 +57,7 @@ get_largest_disk_devices() {
   local disk_names
   local disk_paths
   local disk_path
+  local disk_size
   local disk_count=0
   # Sort by disk size, then by disk name.
   disk_names=$(lsblk -io KNAME,TYPE,SIZE | grep disk | sort -k3,3hr -k1,1 | \
@@ -50,6 +65,14 @@ get_largest_disk_devices() {
 
   for disk_name in $disk_names; do
     disk_path=/dev/$disk_name
+    # Check device size first.
+    disk_size=$(blockdev --getsize64 $disk_path)
+    disk_size=$((disk_size / ONE_MIB))
+    if [ $disk_size -lt $MINIMUM_DEVICE_SIZE ]; then
+      continue;
+    fi
+
+    # Filters usb storage devices.
     if ! $(is_usb_disk_device $disk_path); then
       if [ -z $disk_paths ]; then
         disk_paths=$disk_path
@@ -57,6 +80,7 @@ get_largest_disk_devices() {
         disk_paths="$disk_paths:$disk_path"
       fi
       disk_count=$((disk_count + 1))
+      # Only get two largest disk devices.
       if [ $disk_count -eq 2 ]; then
         echo $disk_paths
         return
@@ -72,14 +96,18 @@ prepare_for_partitioning() {
 
   cp -vf "/usr/share/deepin-installer/templates/lfs-atm.conf" "${CONF_FILE}"
 
-  # Remote group name. Group name starts with [
+  # Remove group name. Group name starts with [
   sed -i -e '/\[/d' "${CONF_FILE}"
 }
 
 # Notify kernel about device partition change.
 commit_to_os() {
+  local dev=$1
   partprobe
   udevadm settle --timeout=3
+  echo "commit to os: $dev"
+  [ x$dev != x ] && [ -b $dev ] && blockdev --rereadpt $dev
+  return 0
 }
 
 # Check whether RAID1 is supported on machine.
@@ -89,13 +117,33 @@ is_raid_supported() {
   local devices
   devices=$(get_largest_disk_devices)
   echo "devices $devices"
+  [ -n $devices ] || return 1
   dev1=${devices%:*}
   dev2=${devices##*:}
   if test -z $dev1 || test -z $dev2 ; then
-    return 1
+    return 2
   else
     return 0
   fi
+}
+
+# Remove any existing raid devices before creating new one.
+remove_raid_devices() {
+  local md_list
+  local dev_list
+  md_list=$(grep '^md' /proc/mdstat | awk '{print $1}')
+  echo "Remove raid_devices: $md_list"
+  for mddev in $md_list; do
+    echo "Stopping $mddev"
+    mddev=/dev/$mddev
+    dev_list=$(mdadm --detail $mddev | grep active | awk '{ print $7 }')
+    mdadm --stop $mddev || return 1
+    mdadm --remove $mddev || return 1
+    for dev in $dev_list; do
+      echo "Remove superblock of raid device: $dev"
+      mdadm --misc --zero-superblock $dev
+    done
+  done
 }
 
 # Check whether current partition list fit normal partition policy.
@@ -150,10 +198,13 @@ create_normal_partitions() {
     return 1
   fi
 
+  # Remove any raid devices first.
+  remove_raid_devices || return 2
+
   if check_normal_partition_map $device; then
     # Only format / partition.
     echo "partitioning policy match"
-    mkfs.ext4 -F -L $ROOT_LABEL ${device}2 || return 1
+    mkfs.ext4 -F -L $ROOT_LABEL ${device}2 || return 3
   else
     echo "create normal partitions on device: $device"
     local dev_size
@@ -173,7 +224,7 @@ create_normal_partitions() {
       mkfs.ext4 -F -L $ROOT_LABEL ${device}2 && \
       mkfs.ext4 -F -L $LOGS_LABEL ${device}3 && \
       mkfs.ext4 -F -L $BACK_LABEL ${device}4 ||
-      return 1
+      return 4
   fi
 
   # Write bootloader info into conf.
@@ -188,36 +239,28 @@ create_normal_partitions() {
 check_raid1_partition_map() {
   local device=$1
   echo "check raid1 partition map on ${device}"
-  local part1 part2 part3
-  part1=$(lsblk -rno LABEL ${device}1)
-  if [ x${part1} != x${BOOT_LABEL} ]; then
-    echo "part1 not match, ${part1} != ${BOOT_LABEL}"
-    return 1
-  fi
+  # Notify kernel to update partition info first.
+  blockdev --rereadpt $device
 
-  part2=$(lsblk -rno LABEL ${device}2)
-  if [ x${part2} != x${SWAP_LABEL} ]; then
-    echo "part2 not match ${part2} != ${SWAP_LABEL}"
-    return 1
-  fi
+  local policy=("1:${SWAP_LABEL}" "2:${ROOT_LABEL}" \
+                "3:${LOGS_LABEL}" "4:${BACK_LABEL}")
+  local part_path
+  local part_name
+  local mddev
+  local real_label
+  for item in ${policy[@]}; do
+    read part_num label < <(echo $item | awk -F':' '{print $1, $2}')
+    part_path=${device}${part_num}
+    [ -b ${part_path} ] || return 1
 
-  part3=$(lsblk -rno LABEL ${device}3 | sort -r)
-  if grep -q ${ROOT_LABEL} <<< ${part3} &&
-     grep -q ${BACK_LABEL} <<< ${part3} &&
-     grep -q ${LOGS_LABEL} <<< ${part3}; then
-    return 0
-  fi
-
-  echo "part 3 not match"
-
-  return 1
-}
-
-# Remove any existing raid devices before creating new one.
-remove_raid_devices() {
-  local mddev=$1
-  mdadm --stop "${mddev}"
-  mdadm --remove "${mddev}"
+    part_name=$(basename $part_path)
+    mddev=$(grep $part_name /proc/mdstat | awk '{print $1}')
+    mddev=/dev/$mddev
+    real_label=$(blkid -s LABEL -o value $mddev)
+    [ x"$label" = x"$real_label" ] || return 2
+  done
+  
+  return 0
 }
 
 # Create physical partitions for RAID1 device.
@@ -228,15 +271,21 @@ remove_raid_devices() {
 create_partitions_for_raid1() {
   local device=$1
   local capacity=$2
+  echo "create partitions for raid1: $device $capacity"
+  local swap_end=4096
+  local remaining_size=$((capacity - swap_end))
+  local root_end=$((remaining_size * 2 / 5 + swap_end))
+  local log_end=$((remaining_size * 4 / 5 + swap_end))
   parted $device -s mklabel msdos && \
+    commit_to_os $device && \
     parted $device -s mkpart primary ext2 1MiB 4096MiB && \
     parted $device -s set 1 raid on && \
-    parted $device -s mkpart primary ext2 4096MiB 40% && \
+    parted $device -s mkpart primary ext2 4096MiB ${root_end}MiB && \
     parted $device -s set 2 boot on && \
     parted $device -s set 2 raid on && \
-    parted $device -s mkpart primary ext2 40% 80% && \
+    parted $device -s mkpart primary ext2 ${root_end}MiB ${log_end}MiB && \
     parted $device -s set 3 raid on && \
-    parted $device -s mkpart primary ext2 80% 100% && \
+    parted $device -s mkpart primary ext2 ${log_end}MiB 100% && \
     parted $device -s set 4 raid on
 }
 
@@ -268,6 +317,7 @@ create_raid1_partitions() {
 create_raid_partitions() {
   local dev1 dev2
   local devices
+  local md1 md2 md3 md4
   devices=$(get_largest_disk_devices)
   dev1=${devices%:*}
   dev2=${devices##*:}
@@ -277,40 +327,71 @@ create_raid_partitions() {
     return 1
   fi
 
-  # TODO(LiuLang): remove any RAID devices first.
-
-  if check_raid1_partition_map $dev1 && check_raid1_partition_map $dev2; then
-    echo "RAID1 policy match"
-    # TODO(LiuLang): Format / on raid1 device
+  # Get minimum device capacity.
+  local dev1_size
+  local dev2_size
+  dev1_size=$(blockdev --getsize64 $dev1)
+  dev1_size=$((dev1_size / ONE_MIB))
+  dev2_size=$(blockdev --getsize64 $dev2)
+  dev2_size=$((dev2_size / ONE_MIB))
+  local minimum_capacity
+  if [ $dev1_size -lt $dev2_size ]; then
+    minimum_capacity=$dev1_size
   else
+    minimum_capacity=$dev2_size
+  fi
+
+  if check_raid1_partition_map $dev1 $minimum_capacity && \
+     check_raid1_partition_map $dev2 $minimum_capacity; then
+    echo "RAID1 policy match"
+    md1=$(realpath /dev/disk/by-label/${SWAP_LABEL})
+    md2=$(realpath /dev/disk/by-label/${ROOT_LABEL})
+    md3=$(realpath /dev/disk/by-label/${LOGS_LABEL})
+    md4=$(realpath /dev/disk/by-label/${BACK_LABEL})
+
+    # Only format / partition.
+    mkfs.ext4 -F -L ${ROOT_LABEL} $md2 || return 2
+
+  else
+    # Remove any RAID devices first.
+    remove_raid_devices || return 3
+
     echo "RAID1 policy not match"
     echo "Create RAID1 partitions on $dev1 and $dev2"
-    create_partitions_for_raid1 $dev1 || return 1
-    create_partitions_for_raid1 $dev2 || return 2
+    create_partitions_for_raid1 $dev1 $minimum_capacity || return 3
+    commit_to_os $dev1
 
-    commit_to_os
+    create_partitions_for_raid1 $dev2 $minimum_capacity || return 3
+    commit_to_os $dev2
 
-    yes | mdadm -C /dev/md0 -l 1 -n 2 ${dev1}1 ${dev2}1 && \
-      yes | mdadm -C /dev/md1 -l 1 -n 2 ${dev1}2 ${dev2}2 && \
-      yes | mdadm -C /dev/md2 -l 1 -n 2 ${dev1}3 ${dev2}3 && \
-      yes | mdadm -C /dev/md3 -l 1 -n 2 ${dev1}4 ${dev2}4 && \
+    md1=/dev/md1
+    md2=/dev/md2
+    md3=/dev/md3
+    md4=/dev/md4
+
+    echo "Create raid devices"
+    yes | mdadm -C $md1 -l 1 -n 2 ${dev1}1 ${dev2}1 && \
+      yes | mdadm -C $md2 -l 1 -n 2 ${dev1}2 ${dev2}2 && \
+      yes | mdadm -C $md3 -l 1 -n 2 ${dev1}3 ${dev2}3 && \
+      yes | mdadm -C $md4 -l 1 -n 2 ${dev1}4 ${dev2}4 && \
       commit_to_os && \
-      mkswap -L $SWAP_LABEL /dev/md0 && \
-      mkfs.ext4 -F -L $ROOT_LABEL /dev/md1 && \
-      mkfs.ext4 -F -L $LOGS_LABEL /dev/md2 && \
-      mkfs.ext4 -F -L $BACK_LABEL /dev/md3 ||
-      return 5
+      mkswap -L $SWAP_LABEL $md1 && \
+      mkfs.ext4 -F -L $ROOT_LABEL $md2 && \
+      mkfs.ext4 -F -L $LOGS_LABEL $md3 && \
+      mkfs.ext4 -F -L $BACK_LABEL $md4 ||
+      return 4
   fi
 
   # Write bootloader info into conf.
+  # Add alternative bootloader path.
+  echo "DI_BOOTLOADER2=\"$dev2\"" >> $CONF_FILE
   sed -i "s|DI_BOOTLOADER=.*$|DI_BOOTLOADER=\"$dev1\"|" $CONF_FILE
   sed -i "s|DI_ROOT_DISK=.*$|DI_ROOT_DISK=\"$dev1\"|" $CONF_FILE
-  sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=/dev/md1p1|" \
-    $CONF_FILE
+  sed -i "s|DI_ROOT_PARTITION=.*$|DI_ROOT_PARTITION=\"$md2\"|" $CONF_FILE
 
-  local mp="/dev/md0p1=swap"
-  mp=${mp}";/dev/md1p1=/"
-  mp=${mp}";/dev/md2p1=/var/log"
+  local mp="$md1=swap"
+  mp=${mp}";$md2=/"
+  mp=${mp}";$md3=/var/log"
   sed -i "s|DI_MOUNTPOINTS=.*$|DI_MOUNTPOINTS=\"${mp}\"|" $CONF_FILE
 }
 
@@ -327,7 +408,6 @@ main() {
   fi
 }
 
-#main
-create_normal_partitions
+main
 
 exit 0
