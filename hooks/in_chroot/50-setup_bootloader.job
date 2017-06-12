@@ -39,6 +39,10 @@ case ${BOOT} in
 	    mkdir /host
 	    mount ${DI_HOST_DEV} /host
 	fi
+        # In RAID1 mode, grub shall be installed into both real disk devices.
+        if [ -n ${DI_BOOTLOADER2} -a -b ${DI_BOOTLOADER2} ]; then
+          grub-install --no-floppy --force ${DI_BOOTLOADER2}
+        fi
         grub-install --no-floppy --force ${DI_BOOTLOADER}
         ;;
     "uefi-secureboot")
