@@ -12,6 +12,7 @@ BOOT_LABEL='atm-boot'
 ROOT_LABEL='atm-deepin'
 BACK_LABEL='atm-backup'
 LOGS_LABEL='atm-logs'
+ONE_MIB=1048576
 
 warn() {
   local msg="$@"
@@ -100,6 +101,37 @@ is_raid_supported() {
 # Check whether current partition list fit normal partition policy.
 # If it is matched, there is no need to reformat whole disk again.
 check_normal_partition_map() {
+  local dev=$1
+  local dev_size
+  dev_size=$(blockdev --getsize64 $dev)
+  dev_size=$((dev_size / ONE_MIB))
+  local swap_size=4095
+  local swap_end=4096
+  local remaining_size=$((dev_size - swap_end))
+  local root_size=$((remaining_size * 2 / 5))
+  local root_end=$((remaining_size * 2 / 5 + swap_end))
+  local log_size=$((remaining_size * 2 / 5))
+  local log_end=$((remaining_size * 4 / 5 + swap_end))
+
+  local policy=("1:swap:${swap_size}" "2:ext4:${root_size}" "3:ext4:${log_size}")
+  local part_path
+  local part_real_size
+  for item in ${policy[@]}; do
+    read part_num fstype part_size < <(echo ${item} | \
+      awk -F':' '{print $1, $2, $3}')
+
+    part_path=${dev}$part_num
+    [ -b ${part_path} ] || return 1
+
+    read real_fstype real_size < <(lsblk ${part_path} -o FSTYPE,SIZE -b -n)
+    real_size=$((real_size / ONE_MIB))
+    if [ x"${fstype}" != x"${real_fstype}" ] || \
+      [ ${real_size} -lt $((part_size - 50)) ] || \
+      [ ${real_size} -gt $((part_size + 50)) ]; then
+      echo "not match: $item => ${real_fstype}, ${real_size}"
+      return 1
+    fi
+  done
   return 0
 }
 
@@ -110,26 +142,39 @@ check_normal_partition_map() {
 # * 20% for backup with ext4 filesystem, no mount point;
 create_normal_partitions() {
   local device=''
-  device=$(get_max_capacity_device)
+  device=$(get_largest_disk_devices)
+  device=/dev/sda
   if [ -z $device ]; then
     warn 'No appropriate storage device found!'
     warn 'There shall be an IDE/SATA/SCIS disk at /dev/sda or /dev/hda'
     return 1
   fi
 
-  echo "create normal partition device: $device"
-
-  parted $device -s mklabel msdos && \
-    parted $device -s mkpart primary linux-swap 1MiB 4096MiB && \
-    parted $device -s mkpart primary ext4 4096MiB 40% && \
-    parted $device -s mkpart primary ext4 40% 80% && \
-    parted $device -s mkpart primary ext4 80% 100% && \
-    commit_to_os && \
-    mkswap -L $SWAP_LABEL ${device}1 && \
-    mkfs.ext4 -F -L $ROOT_LABEL ${device}2 && \
-    mkfs.ext4 -F -L $LOGS_LABEL ${device}3 && \
-    mkfs.ext4 -F -L $BACK_LABEL ${device}4 ||
-    return 1
+  if check_normal_partition_map $device; then
+    # Only format / partition.
+    echo "partitioning policy match"
+    mkfs.ext4 -F -L $ROOT_LABEL ${device}2 || return 1
+  else
+    echo "create normal partitions on device: $device"
+    local dev_size
+    dev_size=$(blockdev --getsize64 $device)
+    dev_size=$((dev_size / ONE_MIB))
+    local swap_end=4096
+    local remaining_size=$((dev_size - swap_end))
+    local root_end=$((remaining_size * 2 / 5 + swap_end))
+    local log_end=$((remaining_size * 4 / 5 + swap_end))
+    parted $device -s mklabel msdos && \
+      parted $device -s mkpart primary linux-swap 1MiB 4096MiB && \
+      parted $device -s mkpart primary ext4 4096MiB ${root_end}MiB && \
+      parted $device -s mkpart primary ext4 ${root_end}MiB ${log_end}MiB && \
+      parted $device -s mkpart primary ext4 ${log_end}MiB 100% && \
+      commit_to_os && \
+      mkswap -L $SWAP_LABEL ${device}1 && \
+      mkfs.ext4 -F -L $ROOT_LABEL ${device}2 && \
+      mkfs.ext4 -F -L $LOGS_LABEL ${device}3 && \
+      mkfs.ext4 -F -L $BACK_LABEL ${device}4 ||
+      return 1
+  fi
 
   # Write bootloader info into conf.
   sed -i "s|DI_BOOTLOADER=.*$|DI_BOOTLOADER=\"$device\"|" $CONF_FILE
@@ -282,6 +327,7 @@ main() {
   fi
 }
 
-main
+#main
+create_normal_partitions
 
 exit 0
