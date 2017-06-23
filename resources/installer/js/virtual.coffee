@@ -22,7 +22,7 @@ class VirtualMachine extends Page
         super
         @title_txt = create_element("div", "VirtualTitle", @element)
         lsb_release = DCore.Installer.read_text_file("/etc/lsb-release")
-        release_reg = /DISTRIB_DESCRIPTION=([^\n]+)/
+        release_reg = /PATCH_NUMBER=([^\n]+)/
         build_version_match = release_reg.exec(lsb_release)
         if build_version_match
             build_version = build_version_match[1]
